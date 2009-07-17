@@ -28,6 +28,13 @@ sub find_route {
     return undef;
 }
 
+sub call_route {
+    my ($class, $route) = @_;
+    my $code = $route->{code};
+    my $params = $route->{params};
+    $code->(%$params);
+}
+
 sub route_match {
     my ($path, $route) = @_;
     my ($regexp, @variables) = make_regexp_from_route($route);
