@@ -32,7 +32,9 @@ sub call_route {
     my ($class, $route) = @_;
     my $code = $route->{code};
     my $params = $route->{params};
-    $code->(%$params);
+    ref($params) eq 'HASH'
+        ? $code->(%$params)
+        : $code->() ;
 }
 
 sub route_match {
