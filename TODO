@@ -1,9 +1,3 @@
-* Wildcard matching in routes
-
-    get '/say/*/to/*' => sub {
-        ...
-    };
-
 * Regexp support for route definition 
     
     get '/hello/([\w]+)' => sub {

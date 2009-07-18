@@ -108,13 +108,31 @@ Here is an example of a route definition:
 The route is defined for the method 'get', so only GET requests will be honoured
 by that route.
 
-The route pattern contains a token (a word prefixed with ':'). Each token found
-in a route patter is used as a named-pattern match. Any match will be set in
-the params hashref given to the B<route action>.
+=head2 NAMED MATCHING
+
+A route pattern can contain one or more tokens (a word prefixed with ':'). Each
+token found in a route pattern is used as a named-pattern match. Any match will
+be set in the params hashref given to the B<route action>.
 
 The route action is the code reference declared, it receives the params as its
 first argument. This hashref is a merge of the route pattern matches and de
 request params.
+
+    get '/hello/:name' => sub {
+        my $params = shift;
+        "Hey ".$params->{name}.", welcome here!";
+    };
+
+=head2 WILDCARDS MATCHING 
+
+A route can contain a wildcard (represented by a '*'). Each wildcard match will
+be returned in an arrayref, assigned to the "splat" key of the params hashref.
+
+    get '/download/*.* => sub {
+        my $params = shift;
+        my ($file, $ext) = @{ $params->{splat} };
+        # do something with $file.$ext here
+    };
 
 =head1 EXAMPLE
 
