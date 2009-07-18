@@ -61,7 +61,7 @@ sub make_regexp_from_route {
     my @params = $pattern =~ /:([^\/]+)/g;
     if (@params) {
         $REG->{route_params}{$route} = \@params;
-        $pattern =~ s/(:[^\/]+)/\(\.\+\)/g;
+        $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
     }
     $pattern =~ s/\//\\\//g;
     return '^'.$pattern.'$', @params;
