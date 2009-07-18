@@ -2,6 +2,8 @@
 
 use Dancer;
 
+set content_type => 'text/plain';
+
 get '/' => sub {
     "Hello There!"
 };
