@@ -74,7 +74,7 @@ sub make_regexp_from_route {
     }
 
     # parse wildcards
-    $pattern =~ s/\*/\(\.\*\)/g;
+    $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
 
     # escape slashes
     $pattern =~ s/\//\\\//g;
