@@ -38,19 +38,26 @@ sub call_route {
 sub route_match {
     my ($path, $route) = @_;
     my ($regexp, @variables) = make_regexp_from_route($route);
+    
+    # first, try the match, and save potential values
+    my @values = $path =~ $regexp;
+    
+    # if no values found, do not match!
+    return 0 unless @values;
+    
+    # Hmm, I can has a match?
+    my %params;
 
+    # if named variables where found, return params accordingly
     if (@variables) {
-        my @values = $path =~ $regexp;
-        return 0 unless @values;
-        my %params;
         for (my $i=0; $i< ~~@variables; $i++) {
             $params{$variables[$i]} = $values[$i];
         }
         return \%params;
     }
-    else {
-        return $path =~ $regexp;
-    }
+    
+    # else, we have a unnamed matches, store them in params->{splat}
+    return { splat => \@values };
 }
 
 # replace any ':foo' by '(.+)' and stores all the named 
@@ -58,12 +65,21 @@ sub route_match {
 sub make_regexp_from_route {
     my ($route) = @_;
     my $pattern = $route;
+
+    # look for route with params (/hello/:foo)
     my @params = $pattern =~ /:([^\/]+)/g;
     if (@params) {
         $REG->{route_params}{$route} = \@params;
         $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
     }
+
+    # parse wildcards
+    $pattern =~ s/\*/\(\.\*\)/g;
+
+    # escape slashes
     $pattern =~ s/\//\\\//g;
+
+    # return the final regexp
     return '^'.$pattern.'$', @params;
 }
 
