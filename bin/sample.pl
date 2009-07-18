@@ -12,7 +12,8 @@ get '/hello/:name' => sub {
 };
 
 post '/new' => sub {
-    "creating new entry"
+    my ($params) = @_;
+    "creating new entry: ".$params->{name};
 };
 
 Dancer->dance;
