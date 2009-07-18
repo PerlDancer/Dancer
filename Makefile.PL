@@ -4,8 +4,10 @@ WriteMakefile(
     NAME => 'Dancer',
     VERSION_FROM => 'lib/Dancer.pm',
     PREREQ_PM => {
-        'HTTP::Server::Simple' => '0.38',
+        'CGI'                  => '0',
+        'HTTP::Server::Simple' => '0.36',
+        'Test::More'           => '0',
     },
     ABSTRACT => "A minimal-effort oriented web application framework",
-    test => {TESTS => join( ' ', glob( 't/*.t' ))},
+    test => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},
 );
