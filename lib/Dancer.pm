@@ -5,6 +5,7 @@ use warnings;
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config;
+use Dancer::HTTP;
 use Dancer::Registry;
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
@@ -25,7 +26,9 @@ sub post { Dancer::Registry->add_route('post', @_) }
 # The run method to call for starting the job
 sub dance { 
     my $class = shift;
-    my ($ipaddr, $port) = ('0.0.0.0', '8080');
+    my ($ipaddr, $port) = (
+        Dancer::Config->get_setting('server'), 
+        Dancer::Config->get_setting('port'));
     print ">> Listening on $ipaddr:$port\n";
     my $pid = $class->new($port)->run();
 }
@@ -35,19 +38,25 @@ sub handle_request {
     my ($self, $cgi) = @_;
 
     my $path = $cgi->path_info();
-    my $handler = Dancer::Registry->find_route($path, $cgi->request_method);
+    my $method = $cgi->request_method;
+    my $handler = Dancer::Registry->find_route($path, $method);
 
     if ($handler) {
-        print $cgi->header('text/plain');
+        print Dancer::HTTP->status('ok');
+        print $cgi->header(Dancer::Config->get_setting('content_type'));
         my $params = _merge_params(scalar($cgi->Vars), $handler->{params});
         print Dancer::Registry->call_route($handler, $params), "\n";
+        
+        print STDERR "== $method $path 200 OK (".join(', ', keys(%$params)).")\n" if Dancer::Config->get_setting('access_log');
     } 
     else {
-        print "HTTP/1.0 404 Not found\r\n";
+        print Dancer::HTTP->status('not_found');
         print $cgi->header,
               $cgi->start_html('Not found'),
               $cgi->h1('Not found'),
               $cgi->end_html;
+        
+        print STDERR "== $method $path 404 Not found\n" if Dancer::Config->get_setting('access_log');
     }
 }
 

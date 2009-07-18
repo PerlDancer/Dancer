@@ -21,5 +21,6 @@ Dancer::Config->update_setting( server       => '127.0.0.1');
 Dancer::Config->update_setting( port         => '1915'); # sinatra's birth year ;)
 Dancer::Config->update_setting( content_type => 'text/html');
 Dancer::Config->update_setting( charset      => 'UTF-8');
+Dancer::Config->update_setting( access_log   => 1);
 
 'Dancer::Config';
