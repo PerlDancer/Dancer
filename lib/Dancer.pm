@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
+use Dancer::Config;
 use Dancer::Registry;
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
@@ -15,6 +16,19 @@ $VERSION = '0.1';
     post 
 );
 
+# syntax sugar for our fellow users :)
+sub get  { Dancer::Registry->add_route('get', $_[0], $_[1])}
+sub post { Dancer::Registry->add_route('post', $_[0], $_[1])}
+
+# The run method to call for starting the job
+sub dance { 
+    my $class = shift;
+    my ($ipaddr, $port) = ('0.0.0.0', '8080');
+    print ">> Listening on $ipaddr:$port\n";
+    my $pid = $class->new($port)->run();
+}
+
+# HTTP server overload comes here
 sub handle_request {
     my ($self, $cgi) = @_;
 
@@ -38,16 +52,6 @@ sub handle_request {
 sub print_banner {
     print "== Entering the dance floor ...\n";
 }
-
-sub dance { 
-    my $class = shift;
-    my ($ipaddr, $port) = ('0.0.0.0', '8080');
-    print ">> Listening on $ipaddr:$port\n";
-    my $pid = $class->new($port)->run();
-}
-
-sub get  { Dancer::Registry->add_route('get', $_[0], $_[1])}
-sub post { Dancer::Registry->add_route('post', $_[0], $_[1])}
 
 # private
 
