@@ -1,1 +1,56 @@
 * Wildcard matching in routes
+
+    get '/say/*/to/*' => sub {
+        ...
+    };
+
+* Regexp support for route definition 
+    
+    get '/hello/([\w]+)' => sub {
+        ...
+    };
+
+* Conditions support for route matching: 
+
+    get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
+        ...
+    };
+
+* Header definition, per-action
+
+    If not specified, use the global setting value.
+
+    get '/', {content_type => 'text/html'} 
+    => sub {
+        ...
+    };
+
+* Template rendering support
+
+    get '/' => sub {
+        ...
+        render index => $stuff;
+    };
+ 
+ render should then use a template system for rendering the view 
+ located in $views_directory/index.tpl with $stuff data 
+
+* Configuration setting support, with the 'set' keyword
+
+    set port => 1234; 
+    set server => 127.0.0.1
+    set content_type => 'text/plain';
+    set charset => 'UTF-8';
+
+* Route passing support
+
+    get '/hello/:name' => sub {
+        my ($params) = @_;
+        pass if $params->{name} eq 'sukria';
+        "OK, fello stranger, welcome here";
+    };
+
+    get '/hello/* => sub {
+        "Hey sukria, welcome dude!"
+    };
+
