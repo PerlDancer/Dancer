@@ -79,6 +79,9 @@ sub make_regexp_from_route {
     # escape slashes
     $pattern =~ s/\//\\\//g;
 
+    # escape dots
+    $pattern =~ s/\./\\\./g;
+
     # return the final regexp
     return '^'.$pattern.'$', @params;
 }
