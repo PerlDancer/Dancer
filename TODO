@@ -1,9 +1,3 @@
-* Regexp support for route definition 
-    
-    get '/hello/([\w]+)' => sub {
-        ...
-    };
-
 * Conditions support for route matching: 
 
     get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {

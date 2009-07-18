@@ -108,15 +108,20 @@ Here is an example of a route definition:
 The route is defined for the method 'get', so only GET requests will be honoured
 by that route.
 
+The route action is the code reference declared, it receives the params as its
+first argument. This hashref is a merge of the route pattern matches and the
+request params.
+
+Below are all the possible ways to define a route, note that it is not
+possible to mix them up. Don't expect to have a working application if you mix
+different kinds of route!
+
 =head2 NAMED MATCHING
 
 A route pattern can contain one or more tokens (a word prefixed with ':'). Each
 token found in a route pattern is used as a named-pattern match. Any match will
 be set in the params hashref given to the B<route action>.
 
-The route action is the code reference declared, it receives the params as its
-first argument. This hashref is a merge of the route pattern matches and de
-request params.
 
     get '/hello/:name' => sub {
         my $params = shift;
@@ -132,6 +137,23 @@ be returned in an arrayref, assigned to the "splat" key of the params hashref.
         my $params = shift;
         my ($file, $ext) = @{ $params->{splat} };
         # do something with $file.$ext here
+    };
+
+=head2 REGULAR EXPRESSION MATCHING
+
+A route can be defined with a Perl regular expression. The syntax is assumed to
+be a classic Perl regexp except for the slashes that will be escaped before
+running the match.
+
+For instance, don't do '\/hello\/(.+)' but rather: '/hello/(.+)'
+
+In order to tell Dancer to consider the route as a real regexp, the route must
+be defined explicitly with the keyword regexp, like the following:
+    
+    get {regexp => '/hello/([\w]+)'} => sub {
+        my $params = shift;
+        my ($name) = @{$params->{splat});
+        return "Hello $name";
     };
 
 =head1 EXAMPLE

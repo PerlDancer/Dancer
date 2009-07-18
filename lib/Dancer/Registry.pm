@@ -64,25 +64,32 @@ sub route_match {
 # matches defined in $REG->{route_params}{$route}
 sub make_regexp_from_route {
     my ($route) = @_;
+    my @params;
     my $pattern = $route;
 
-    # look for route with params (/hello/:foo)
-    my @params = $pattern =~ /:([^\/]+)/g;
-    if (@params) {
-        $REG->{route_params}{$route} = \@params;
-        $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
+    if (ref($route) eq 'HASH' && $route->{regexp}) {
+        $pattern = $route->{regexp};
     }
+    else {
+        # look for route with params (/hello/:foo)
+        @params = $pattern =~ /:([^\/]+)/g;
+        if (@params) {
+            $REG->{route_params}{$route} = \@params;
+            $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
+        }
+        
+        # parse wildcards
+        $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
 
-    # parse wildcards
-    $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
+        # escape dots
+        $pattern =~ s/\./\\\./g;
+    }
 
     # escape slashes
     $pattern =~ s/\//\\\//g;
 
-    # escape dots
-    $pattern =~ s/\./\\\./g;
-
     # return the final regexp
+    # warn "regexp made is '/$pattern\$'";
     return '^'.$pattern.'$', @params;
 }
 
