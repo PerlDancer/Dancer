@@ -17,6 +17,7 @@ sub add_route {
 sub find_route {
     my ($class, $path, $method) = @_;
     $method ||= 'get';
+    $method = lc($method);
     
     foreach my $r (@{$REG->{routes}{$method}}) {
         my $params = route_match($path, $r->{route});
@@ -29,12 +30,8 @@ sub find_route {
 }
 
 sub call_route {
-    my ($class, $route) = @_;
-    my $code = $route->{code};
-    my $params = $route->{params};
-    ref($params) eq 'HASH'
-        ? $code->(%$params)
-        : $code->() ;
+    my ($class, $handler, $params) = @_;
+    $handler->{code}->($params); 
 }
 
 sub route_match {

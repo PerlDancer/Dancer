@@ -8,17 +8,21 @@ use Dancer::Registry;
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
 
-@EXPORT = qw(get);
+@EXPORT = qw(
+    get 
+    post 
+);
 
 sub handle_request {
     my ($self, $cgi) = @_;
 
     my $path = $cgi->path_info();
-    my $handler = Dancer::Registry->find_route($path);
+    my $handler = Dancer::Registry->find_route($path, $cgi->request_method);
 
     if ($handler) {
         print $cgi->header('text/plain');
-        print Dancer::Registry->call_route($handler), "\n";
+        my $params = _merge_params(scalar($cgi->Vars), $handler->{params});
+        print Dancer::Registry->call_route($handler, $params), "\n";
     } 
     else {
         print "HTTP/1.0 404 Not found\r\n";
@@ -40,9 +44,15 @@ sub dance {
     my $pid = $class->new($port)->run();
 }
 
-sub get {
-    my ($route, $code) = @_;
-    Dancer::Registry->add_route('get', $route, $code);
+sub get  { Dancer::Registry->add_route('get', $_[0], $_[1])}
+sub post { Dancer::Registry->add_route('post', $_[0], $_[1])}
+
+# private
+
+sub _merge_params {
+    my ($cgi_params, $route_params) = @_;
+    return $cgi_params if ref($route_params) ne 'HASH';
+    return { %{$cgi_params}, %{$route_params} };
 }
 
 'Dancer';
