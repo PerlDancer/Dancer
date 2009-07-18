@@ -1,0 +1,13 @@
+Dancer
+
+This is a pet-project (one more) that inted to become a port 
+of Ruby's Sinatra framework: a framework with minimal-effort 
+in mind.
+
+The user should be able to define a webapp with very few line of codes.
+
+See http://www.sinatrarb.com for details of the concept.
+
+Feel free to fork that project if you like the idea and want to add some
+features.
+
