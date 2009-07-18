@@ -31,6 +31,7 @@ sub find_route {
 
 sub call_route {
     my ($class, $handler, $params) = @_;
+    $params ||= $handler->{params};
     $handler->{code}->($params); 
 }
 
