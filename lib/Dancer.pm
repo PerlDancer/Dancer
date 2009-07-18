@@ -12,13 +12,15 @@ use base 'Exporter', 'HTTP::Server::Simple::CGI';
 $AUTHORITY = 'SUKRIA';
 $VERSION = '0.1';
 @EXPORT = qw(
+    set
     get 
     post 
 );
 
 # syntax sugar for our fellow users :)
-sub get  { Dancer::Registry->add_route('get', $_[0], $_[1])}
-sub post { Dancer::Registry->add_route('post', $_[0], $_[1])}
+sub set  { Dancer::Config->update_setting(@_)      }
+sub get  { Dancer::Registry->add_route('get', @_)  }
+sub post { Dancer::Registry->add_route('post', @_) }
 
 # The run method to call for starting the job
 sub dance { 
