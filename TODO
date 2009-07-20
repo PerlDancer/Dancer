@@ -4,24 +4,48 @@
         ...
     };
 
+* New method for handling actions
+
+    In the current implementation, an action is run and its return value is
+    used as content to print.
+
+    We should have a way to compile the action in order to see:
+        - if a status has been specified by the action
+        - if a content-type has been specified by the action
+        - if the action ended up with a string to render
+        - if the action ended up with a redirect
+        - if the action ended up with a passing
+    
+    In short, the Action->run mechanism should be aware of what's happening
+    inside the action, parse it, and then run it.
+
+    I have no idea yet on how to implement this...
+
+    Once this is done, the following TODO items will be easy to implement.
+
 * Header definition, per-action
 
     If not specified, use the global setting value.
 
-    get '/', {content_type => 'text/html'} 
-    => sub {
+    get '/' => sub {
         ...
+        
+        content_type 'text/plain';
+        "Hello there";
     };
 
-* Template rendering support
+* Status definition, per-action
+
+    If not specified, use the "200 OK" status when action is found
 
     get '/' => sub {
         ...
-        render index => $stuff;
+
+        if ($error) {
+            status 'not_found';
+            return "Document Not found my Lord";
+        }
     };
- 
- render should then use a template system for rendering the view 
- located in $views_directory/index.tpl with $stuff data 
 
 * Route passing support
 
@@ -34,4 +58,14 @@
     get '/hello/* => sub {
         "Hey sukria, welcome dude!"
     };
+
+* Template rendering support
+
+    get '/' => sub {
+        ...
+        render index => $stuff;
+    };
+ 
+ render should then use a template system for rendering the view 
+ located in $views_directory/index.tpl with $stuff data 
 
