@@ -15,23 +15,15 @@ sub current {
     return $cp; 
 }
 
-my @headers = qw(status content_type);
-declare_accessor($_) for @headers;
+# TODO We should refactor that on something generic with closures...
+sub status { 
+    my ($value) = @_; 
+    $CURRENT->{status} = $value;
+}
 
-sub declare_accessor {
-    my ($name) = @_;
-
-    my $code = sub {
-        my ($value) = @_;
-        $CURRENT->{$name} = $value;
-    };
-
-    my $accessor = "Dancer::Response::$name";
-    {
-        no strict 'refs';
-        no warnings;
-        *$accessor = $code;
-    }
+sub content_type { 
+    my ($value) = @_; 
+    $CURRENT->{content_type} = $value;
 }
 
 'Dancer::Response';
