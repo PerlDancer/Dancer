@@ -8,11 +8,17 @@ use vars '@EXPORT_OK';
 @EXPORT_OK = 'status';
 
 my $HTTP_CODES = {
-    ok => '200 OK',
-    not_found => '404 Not found',
-    error => '500 Internal Server Error',
-    forbidden => '503 Forbidden',
+    200 => '200 OK',
+    404 => '404 Not found',
+    500 => '500 Internal Server Error',
+    503 => '503 Forbidden',
 };
+
+# aliases
+$HTTP_CODES->{ok} = $HTTP_CODES->{200};
+$HTTP_CODES->{not_found} = $HTTP_CODES->{404};
+$HTTP_CODES->{error} = $HTTP_CODES->{500};
+$HTTP_CODES->{forbidden} = $HTTP_CODES->{503};
 
 sub status { 
     my $name = shift;
