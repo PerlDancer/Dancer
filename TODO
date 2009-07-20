@@ -1,7 +1,3 @@
-* Rename Dancer::Registry to Dancer::Route
-
-    Everything in this module is about routes handling
-
 * Conditions support for route matching: 
 
     get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {

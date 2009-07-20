@@ -1,4 +1,4 @@
-package Dancer::Registry;
+package Dancer::Route;
 
 use strict;
 use warnings;
@@ -7,20 +7,20 @@ use warnings;
 my $REG = {};
 
 # accessor for setting up a new route
-sub add_route {
+sub add {
     my ($class, $method, $route, $code) = @_;
     $REG->{routes}{$method} ||= [];
     push @{ $REG->{routes}{$method} }, {route => $route, code => $code};
 }
 
 # return the first route that matches the path
-sub find_route {
+sub find {
     my ($class, $path, $method) = @_;
     $method ||= 'get';
     $method = lc($method);
     
     foreach my $r (@{$REG->{routes}{$method}}) {
-        my $params = route_match($path, $r->{route});
+        my $params = match($path, $r->{route});
         if ($params) {
             $r->{params} = $params;
             return $r;
@@ -29,13 +29,13 @@ sub find_route {
     return undef;
 }
 
-sub call_route {
+sub call {
     my ($class, $handler, $params) = @_;
     $params ||= $handler->{params};
     $handler->{code}->($params); 
 }
 
-sub route_match {
+sub match {
     my ($path, $route) = @_;
     my ($regexp, @variables) = make_regexp_from_route($route);
     
@@ -93,4 +93,4 @@ sub make_regexp_from_route {
     return '^'.$pattern.'$', @params;
 }
 
-'Dancer::Registry';
+'Dancer::Route';

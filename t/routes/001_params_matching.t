@@ -4,7 +4,7 @@ use Test::More 'no_plan';
 
 BEGIN { 
     use_ok 'Dancer';
-    use_ok 'Dancer::Registry'; 
+    use_ok 'Dancer::Route'; 
 }
 
 # Register a couple of routes
@@ -16,17 +16,17 @@ BEGIN {
 
 # then make sure everything looks OK
 
-my $handle = Dancer::Registry->find_route('/');
+my $handle = Dancer::Route->find('/');
 ok( $handle, 'route found for /');
-is(Dancer::Registry->call_route($handle), 'first', 'first route is OK');
+is(Dancer::Route->call($handle), 'first', 'first route is OK');
 
-$handle = Dancer::Registry->find_route('/hello');
+$handle = Dancer::Route->find('/hello');
 ok( !defined($handle), 'no route found for /hello');
 
-$handle = Dancer::Registry->find_route('/hello/sukria');
+$handle = Dancer::Route->find('/hello/sukria');
 ok( $handle, 'route found for /hello/sukria');
-is(Dancer::Registry->call_route($handle), 'sukria', 'simple param match found');
+is(Dancer::Route->call($handle), 'sukria', 'simple param match found');
 
-$handle = Dancer::Registry->find_route('/hello/sukria/bar');
+$handle = Dancer::Route->find('/hello/sukria/bar');
 ok( $handle, 'route found for /hello/sukria/bar');
-is(Dancer::Registry->call_route($handle), 'sukria', 'wrapped param match found');
+is(Dancer::Route->call($handle), 'sukria', 'wrapped param match found');

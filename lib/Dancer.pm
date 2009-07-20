@@ -6,7 +6,7 @@ use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
 use Dancer::HTTP 'status';
-use Dancer::Registry;
+use Dancer::Route;
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
 
@@ -20,8 +20,8 @@ $VERSION = '0.1';
 
 # syntax sugar for our fellow users :)
 sub set  { setting(@_) }
-sub get  { Dancer::Registry->add_route('get', @_) }
-sub post { Dancer::Registry->add_route('post', @_) }
+sub get  { Dancer::Route->add('get', @_) }
+sub post { Dancer::Route->add('post', @_) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -39,13 +39,13 @@ sub handle_request {
 
     my $path = $cgi->path_info();
     my $method = $cgi->request_method;
-    my $handler = Dancer::Registry->find_route($path, $method);
+    my $handler = Dancer::Route->find($path, $method);
 
     if ($handler) {
         print status('ok');
         print $cgi->header(setting('content_type'));
         my $params = _merge_params(scalar($cgi->Vars), $handler->{params});
-        print Dancer::Registry->call_route($handler, $params), "\n";
+        print Dancer::Route->call($handler, $params), "\n";
         
         print STDERR "== $method $path 200 OK (".join(', ', keys(%$params)).")\n" if setting('access_log');
     } 

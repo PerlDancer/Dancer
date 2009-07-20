@@ -4,7 +4,7 @@ use Test::More 'no_plan';
 
 BEGIN { 
     use_ok 'Dancer';
-    use_ok 'Dancer::Registry'; 
+    use_ok 'Dancer::Route'; 
 }
 
 {
@@ -30,9 +30,9 @@ foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
     
-    $handle = Dancer::Registry->find_route($path);
+    $handle = Dancer::Route->find($path);
     ok( defined($handle), "route found for path `$path'");
     is_deeply(
-        Dancer::Registry->call_route($handle), $expected, 
+        Dancer::Route->call($handle), $expected, 
         "match data for path `$path' looks good");
 }
