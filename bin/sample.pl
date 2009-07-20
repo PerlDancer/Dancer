@@ -23,4 +23,15 @@ post '/new' => sub {
     "creating new entry: ".$params->{name};
 };
 
+get '/say/:word' => sub {
+    my ($params) = @_;
+    pass if ($params->{word} =~ /^\d+$/);
+    "I say a word: « ".$params->{word}."»";
+};
+
+get '/say/:number' => sub {
+    my ($params) = @_;
+    "I say a number: « ".$params->{number}."»";
+};
+
 Dancer->dance;
