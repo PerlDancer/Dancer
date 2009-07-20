@@ -2,25 +2,28 @@ package Dancer::Config;
 
 use strict;
 use warnings;
+use base 'Exporter';
+use vars '@EXPORT_OK';
+
+@EXPORT_OK = qw(setting);
 
 # singleton for storing settings
 my $SETTINGS = {};
-sub settings { $SETTINGS };
 
-# public accessor for adding/updating settings
-sub update_setting {
-    my ($class, $setting, $value) = @_;
-    $SETTINGS->{$setting} = $value;
+# public accessor for get/set
+sub setting {
+    my ($setting, $value) = @_;
+    (@_ == 2) 
+        ? $SETTINGS->{$setting} = $value
+        : $SETTINGS->{$setting} ;
 }
-
-sub get_setting { settings()->{$_[1]} }
 
 # load default settings
 
-Dancer::Config->update_setting( server       => '127.0.0.1');
-Dancer::Config->update_setting( port         => '1915'); # sinatra's birth year ;)
-Dancer::Config->update_setting( content_type => 'text/html');
-Dancer::Config->update_setting( charset      => 'UTF-8');
-Dancer::Config->update_setting( access_log   => 1);
+setting( server       => '127.0.0.1');
+setting( port         => '1915'); # sinatra's birth year ;)
+setting( content_type => 'text/html');
+setting( charset      => 'UTF-8');
+setting( access_log   => 1);
 
 'Dancer::Config';
