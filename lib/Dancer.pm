@@ -192,6 +192,25 @@ be defined explicitly with the keyword regexp, like the following:
         return "Hello $name";
     };
 
+=head1 ACTION SKIPPING
+
+An action can choose not to serve the current request and ask Dancer to process
+the request with the next matching route.
+
+This is done with the B<pass> keyword, like in the following example
+    
+    get '/say/:word' => sub {
+        my ($params) = @_;
+        pass if ($params->{word} =~ /^\d+$/);
+        "I say a word: ".$params->{word};
+    };
+
+    get '/say/:number' => sub {
+        my ($params) = @_;
+        "I say a number: ".$params->{number};
+    };
+
+
 =head1 EXAMPLE
 
 This is a possible webapp created with Dancer :

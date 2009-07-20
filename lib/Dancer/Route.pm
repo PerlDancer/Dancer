@@ -51,12 +51,12 @@ sub call {
     
     if ($response->{pass}) {
         if ($handler->{'next'}) {
-            return Dancer::Route->call($handler->{'next'}, $params);
+            return Dancer::Route->call($handler->{'next'});
         }
         else {
             return {
                 head => {status => 404, content_type => 'text/plain'},
-                content => "pass, but unable to find another matching route",
+                body => "pass, but unable to find another matching route",
             };
         }
     }

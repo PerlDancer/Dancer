@@ -26,12 +26,13 @@ post '/new' => sub {
 get '/say/:word' => sub {
     my ($params) = @_;
     pass if ($params->{word} =~ /^\d+$/);
-    "I say a word: « ".$params->{word}."»";
+    "I say a word: '".$params->{word}."'";
 };
 
 get '/say/:number' => sub {
     my ($params) = @_;
-    "I say a number: « ".$params->{number}."»";
+    pass if ($params->{number} == 42); # this is buggy :)
+    "I say a number: '".$params->{number}."'";
 };
 
 Dancer->dance;

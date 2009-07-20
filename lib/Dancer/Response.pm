@@ -15,15 +15,8 @@ sub current {
     return $cp; 
 }
 
-# TODO We should refactor that on something generic with closures...
-sub status { 
-    my ($value) = @_; 
-    $CURRENT->{status} = $value;
-}
-
-sub content_type { 
-    my ($value) = @_; 
-    $CURRENT->{content_type} = $value;
-}
+sub status       { $CURRENT->{status} = shift }
+sub content_type { $CURRENT->{content_type} = shift }
+sub pass         { $CURRENT->{pass} = 1 }
 
 'Dancer::Response';

@@ -1,14 +1,6 @@
-* Route passing support
+* Write a test suite for action passing
 
-    get '/hello/:name' => sub {
-        my ($params) = @_;
-        pass if $params->{name} eq 'sukria';
-        "OK, fello stranger, welcome here";
-    };
-
-    get '/hello/* => sub {
-        "Hey sukria, welcome dude!"
-    };
+    The action skipping mechanism works but is not tested.
 
 * Conditions support for route matching: 
 
