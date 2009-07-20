@@ -14,6 +14,10 @@ my $HTTP_CODES = {
     forbidden => '503 Forbidden',
 };
 
-sub status { "HTTP/1.0 " . $HTTP_CODES->{lc($_[0])} . "\r\n" }
+sub status { 
+    my $name = shift;
+    return undef unless exists $HTTP_CODES->{lc($name)};
+    return "HTTP/1.0 " . $HTTP_CODES->{lc($name)} . "\r\n";
+}
 
 'Dancer::HTTP';

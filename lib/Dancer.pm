@@ -5,8 +5,9 @@ use warnings;
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
-use Dancer::HTTP 'status';
+use Dancer::HTTP;
 use Dancer::Route;
+use Dancer::Response;
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
 
@@ -16,12 +17,16 @@ $VERSION = '0.1';
     set
     get 
     post 
+    status
+    content_type
 );
 
 # syntax sugar for our fellow users :)
 sub set  { setting(@_) }
 sub get  { Dancer::Route->add('get', @_) }
 sub post { Dancer::Route->add('post', @_) }
+sub status { Dancer::Response::status(@_) }
+sub content_type { Dancer::Response::content_type(@_) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -42,15 +47,13 @@ sub handle_request {
     my $handler = Dancer::Route->find($path, $method);
 
     if ($handler) {
-        print status('ok');
-        print $cgi->header(setting('content_type'));
         my $params = _merge_params(scalar($cgi->Vars), $handler->{params});
-        print Dancer::Route->call($handler, $params), "\n";
-        
-        print STDERR "== $method $path 200 OK (".join(', ', keys(%$params)).")\n" if setting('access_log');
+        my $resp = Dancer::Route->call($handler, $params);
+        print_response($resp, $cgi, $method, $path);
+
     } 
     else {
-        print status('not_found');
+        print Dancer::HTTP::status('not_found');
         print $cgi->header,
               $cgi->start_html('Not found'),
               $cgi->h1('Not found'),
@@ -70,6 +73,20 @@ sub _merge_params {
     my ($cgi_params, $route_params) = @_;
     return $cgi_params if ref($route_params) ne 'HASH';
     return { %{$cgi_params}, %{$route_params} };
+}
+
+sub print_response {
+    my ($resp, $cgi, $method, $path) = @_;
+
+    my $ct = $resp->{head}{content_type} || setting('content_type');
+    my $st = Dancer::HTTP::status($resp->{head}{status}) || Dancer::HTTP::status('ok');
+
+    print $st;
+    print $cgi->header($ct);
+    print $resp->{body};
+    print "\r\n";
+        
+    print STDERR "== $method $path $st";
 }
 
 'Dancer';

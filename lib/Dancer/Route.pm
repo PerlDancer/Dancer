@@ -32,7 +32,13 @@ sub find {
 sub call {
     my ($class, $handler, $params) = @_;
     $params ||= $handler->{params};
-    $handler->{code}->($params); 
+
+    my $content = $handler->{code}->($params); 
+    my $response = Dancer::Response->current;
+    return {
+        head => $response, 
+        body => $content
+    };
 }
 
 sub match {

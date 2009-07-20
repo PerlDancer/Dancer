@@ -10,6 +10,11 @@ get '/' => sub {
 
 get '/hello/:name' => sub {
     my ($params) = @_;
+    if ($params->{name} ne 'sukria') {
+        status('not_found');
+        content_type("text/plain");
+        return "Not found";
+    }
     return "Hey ".$params->{name}.", how are you?";
 };
 

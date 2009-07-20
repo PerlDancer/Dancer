@@ -30,6 +30,6 @@ foreach my $test (@tests) {
     $handle = Dancer::Route->find($path);
     ok( defined($handle), "route found for path `$path'");
     is_deeply(
-        Dancer::Route->call($handle), $expected, 
+        Dancer::Route->call($handle)->{body}, $expected, 
         "match data for path `$path' looks good");
 }

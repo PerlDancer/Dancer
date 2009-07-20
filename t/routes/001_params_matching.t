@@ -18,15 +18,15 @@ BEGIN {
 
 my $handle = Dancer::Route->find('/');
 ok( $handle, 'route found for /');
-is(Dancer::Route->call($handle), 'first', 'first route is OK');
+is(Dancer::Route->call($handle)->{body}, 'first', 'first route is OK');
 
 $handle = Dancer::Route->find('/hello');
 ok( !defined($handle), 'no route found for /hello');
 
 $handle = Dancer::Route->find('/hello/sukria');
 ok( $handle, 'route found for /hello/sukria');
-is(Dancer::Route->call($handle), 'sukria', 'simple param match found');
+is(Dancer::Route->call($handle)->{body}, 'sukria', 'simple param match found');
 
 $handle = Dancer::Route->find('/hello/sukria/bar');
 ok( $handle, 'route found for /hello/sukria/bar');
-is(Dancer::Route->call($handle), 'sukria', 'wrapped param match found');
+is(Dancer::Route->call($handle)->{body}, 'sukria', 'wrapped param match found');
