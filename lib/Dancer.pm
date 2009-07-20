@@ -5,7 +5,7 @@ use warnings;
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
-use Dancer::HTTP;
+use Dancer::HTTP 'status';
 use Dancer::Registry;
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
@@ -42,7 +42,7 @@ sub handle_request {
     my $handler = Dancer::Registry->find_route($path, $method);
 
     if ($handler) {
-        print Dancer::HTTP->status('ok');
+        print status('ok');
         print $cgi->header(setting('content_type'));
         my $params = _merge_params(scalar($cgi->Vars), $handler->{params});
         print Dancer::Registry->call_route($handler, $params), "\n";
@@ -50,7 +50,7 @@ sub handle_request {
         print STDERR "== $method $path 200 OK (".join(', ', keys(%$params)).")\n" if setting('access_log');
     } 
     else {
-        print Dancer::HTTP->status('not_found');
+        print status('not_found');
         print $cgi->header,
               $cgi->start_html('Not found'),
               $cgi->h1('Not found'),
