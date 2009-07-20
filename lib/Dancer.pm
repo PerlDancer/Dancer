@@ -15,18 +15,22 @@ $AUTHORITY = 'SUKRIA';
 $VERSION = '0.1';
 @EXPORT = qw(
     set
+    
     get 
     post 
+
     status
     content_type
+    pass
 );
 
 # syntax sugar for our fellow users :)
-sub set  { setting(@_) }
-sub get  { Dancer::Route->add('get', @_) }
-sub post { Dancer::Route->add('post', @_) }
-sub status { Dancer::Response::status(@_) }
+sub set          { setting(@_) }
+sub get          { Dancer::Route->add('get', @_) }
+sub post         { Dancer::Route->add('post', @_) }
+sub status       { Dancer::Response::status(@_) }
 sub content_type { Dancer::Response::content_type(@_) }
+sub pass         { Dancer::Response::pass() }
 
 # The run method to call for starting the job
 sub dance { 
