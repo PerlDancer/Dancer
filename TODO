@@ -1,3 +1,8 @@
+* Get rid of redefine warnings about 'pass'
+
+    Running the test suite triggers this warning: 
+    `Subroutine main::pass redefined at ...'
+
 * Write a test suite for action passing
 
     The action skipping mechanism works but is not tested.
