@@ -1,12 +1,44 @@
 Dancer
 
-This is a pet-project (one more) that inted to become a port 
-of Ruby's Sinatra framework: a framework with minimal-effort 
-in mind.
+That project intends to become a port of Ruby's Sinatra framework: a framework
+for building web application with minimal-effort in mind.
 
-The user should be able to define a webapp with very few line of codes.
+The user should be able to define a webapp with very few lines of codes.
 
-See http://www.sinatrarb.com for details of the concept.
+Here is an example of a webapp built with Dancer:
+
+    # webapp.pl
+    #!/usr/bin/perl
+
+    use Dancer;
+
+    get '/' => sub {
+        "Hello There!"
+    };
+
+    get '/hello/:name' => sub {
+        my ($params) = @_;
+        "Hey ".$params->{name}.", how are you?";
+    };
+
+    post '/new' => sub {
+        my ($params) = @_;
+        "creating new entry: ".$params->{name};
+    };
+
+    Dancer->dance;
+
+When running this script, a webserver is running and ready to serve:    
+
+    $ perl ./webapp.pl
+    >> Listening on 127.0.0.1:1915
+    == Entering the dance floor ...
+
+Then it's possible to access any route defined in the script:
+
+    $ curl http://localhost:1915/
+    Hello There!
+
 
 Feel free to fork that project if you like the idea and want to add some
 features.
