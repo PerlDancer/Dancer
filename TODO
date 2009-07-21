@@ -1,11 +1,16 @@
-* Get rid of redefine warnings about 'pass'
-
-    Running the test suite triggers this warning: 
-    `Subroutine main::pass redefined at ...'
-
 * Write a test suite for action passing
 
     The action skipping mechanism works but is not tested.
+
+* Route caching support
+
+    When a path is firstly resolved through the route tree, we should
+    cache the result for future calls.
+
+    The path would be the cache key, the first route the value.
+
+        1 - GET / -> first call, so browse the route tree
+        2 - GET / -> second call, return cache('/');
 
 * Conditions support for route matching: 
 
@@ -22,4 +27,10 @@
  
  render should then use a template system for rendering the view 
  located in $views_directory/index.tpl with $stuff data 
+
+* Static files rendering support
+
+    We should look for a directory 'public' in the root dir of the
+    application. Each files located here should be served prior to
+    any route defined.
 
