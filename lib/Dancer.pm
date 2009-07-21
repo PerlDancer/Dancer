@@ -15,13 +15,13 @@ $AUTHORITY = 'SUKRIA';
 $VERSION = '0.1';
 @EXPORT = qw(
     set
-    
     get 
     post 
-
     status
     content_type
     pass
+    true
+    false
 );
 
 # syntax sugar for our fellow users :)
@@ -31,13 +31,15 @@ sub post         { Dancer::Route->add('post', @_) }
 sub status       { Dancer::Response::status(@_) }
 sub content_type { Dancer::Response::content_type(@_) }
 sub pass         { Dancer::Response::pass() }
+sub true         { 1 }
+sub false        { 0 }
 
 # The run method to call for starting the job
 sub dance { 
     my $class = shift;
-    my ($ipaddr, $port) = (
-        setting('server'), 
-        setting('port'));
+    my $ipaddr = setting 'server';
+    my $port   = setting 'port';
+
     print ">> Listening on $ipaddr:$port\n";
     my $pid = $class->new($port)->run();
 }

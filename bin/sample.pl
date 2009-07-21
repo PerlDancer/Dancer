@@ -25,7 +25,9 @@ post '/new' => sub {
 
 get '/say/:word' => sub {
     my ($params) = @_;
-    pass if ($params->{word} =~ /^\d+$/);
+    if ($params->{word} =~ /^\d+$/) {
+        pass and return false;
+    }
     "I say a word: '".$params->{word}."'";
 };
 
