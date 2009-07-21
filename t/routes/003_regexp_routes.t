@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More 'no_plan';
+use Test::More 'no_plan', import => ['!pass'];
 
 BEGIN { 
     use_ok 'Dancer';

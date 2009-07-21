@@ -1,10 +1,11 @@
 use strict;
 use warnings;
-use Test::More 'no_plan';
 
-BEGIN { 
+use Test::More 'no_plan', import => ['!pass'];
+
+BEGIN {
     use_ok 'Dancer';
-    use_ok 'Dancer::Route'; 
+    use_ok 'Dancer::Route';
 }
 
 # Register a couple of routes
@@ -14,7 +15,7 @@ BEGIN {
     ok(get('/hello/:foo/bar' => sub { $_[0]->{foo} }), 'third route set');
 }
 
-# then make sure everything looks OK
+# then make sure everything loTest::More::oks OK
 
 my $handle = Dancer::Route->find('/');
 ok( $handle, 'route found for /');
