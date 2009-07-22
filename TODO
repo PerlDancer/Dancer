@@ -1,7 +1,3 @@
-* Write a test suite for action passing
-
-    The action skipping mechanism works but is not tested.
-
 * Route caching support
 
     When a path is firstly resolved through the route tree, we should
