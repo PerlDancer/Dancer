@@ -14,6 +14,10 @@
         ...
     };
 
+
+ render should then use a template system for rendering the view 
+ located in $views_directory/index.tpl with $stuff data 
+
 * Template rendering support
 
     get '/' => sub {
@@ -21,12 +25,23 @@
         render index => $stuff;
     };
  
- render should then use a template system for rendering the view 
- located in $views_directory/index.tpl with $stuff data 
+    Templates are assumed to be located directly under the ./views directory. To
+    use a different views directory:
 
-* Static files rendering support
+      set views =>  dirname(__FILE__) . '/templates'
 
-    We should look for a directory 'public' in the root dir of the
-    application. Each files located here should be served prior to
-    any route defined.
+* Static Files support
+
+    Static files are served from the ./public directory. You can specify a
+    different location by setting the 'public' option:
+
+      set public => dirname(__FILE__) . '/static'
+
+    Note that the public directory name is not included in the URL. A file
+    ./public/css/style.css is made available as example.com/css/style.css. 
+
+* Helper support
+
+    We should provide a way to define helpers, that are basically, methods
+    accessible from the action code blocks.
 
