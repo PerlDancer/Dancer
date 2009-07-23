@@ -5,16 +5,13 @@ use warnings;
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
-use Dancer::HTTP;
 use Dancer::Route;
+use Dancer::Renderer;
 use Dancer::Response;
+use Dancer::FileUtils;
 
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
-
-use File::Basename ();
-use File::Spec;
-use File::MimeInfo;
 
 $AUTHORITY = 'SUKRIA';
 $VERSION = '0.1';
@@ -39,11 +36,11 @@ sub post         { Dancer::Route->add('post', @_) }
 sub status       { Dancer::Response::status(@_) }
 sub content_type { Dancer::Response::content_type(@_) }
 sub pass         { Dancer::Response::pass() }
+sub dirname      { Dancer::FileUtils::dirname(@_) }
+sub path         { Dancer::FileUtils::path(@_) }
 sub true         { 1 }
 sub false        { 0 }
 sub r            { {regexp => $_[0]} }
-sub dirname      { File::Basename::dirname(@_) }
-sub path         { File::Spec->catfile(@_) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -56,71 +53,19 @@ sub dance {
 }
 
 # HTTP server overload comes here
-# TODO maybe a Dancer::RequestHandler would be very welcome here
 sub handle_request {
     my ($self, $cgi) = @_;
-
     my $path = $cgi->path_info();
-
-    # TODO : this has to move somewhere, maybe in Dancer::Static
-    my $static_file = path(setting('public'), $path);
-    if (-f $static_file) {
-        print STDERR "== static: $path\n";
-        print Dancer::HTTP::status('ok');
-        # should detect mime types here
-        print $cgi->header(mimetype($static_file));
-        open STATIC_FILE, '<', $static_file;
-        my @content = <STATIC_FILE>;
-        close STATIC_FILE;
-        print join("\n", @content);
-        return true;
-    }
-
-    my $method = $cgi->request_method;
-    my $handler = Dancer::Route->find($path, $method);
-
-    if ($handler) {
-        my $params = _merge_params(scalar($cgi->Vars), $handler->{params});
-        my $resp = Dancer::Route->call($handler, $params);
-        print_response($resp, $cgi, $method, $path);
-
-    } 
-    else {
-        print Dancer::HTTP::status('not_found');
-        print $cgi->header,
-              $cgi->start_html('Not found'),
-              $cgi->h1('Not found'),
-              $cgi->end_html;
-        
-        print STDERR "== $method $path 404 Not found\n" if setting('access_log');
-    }
+    
+    return Dancer::Renderer->render_file($path, $cgi) 
+        || Dancer::Renderer->render_action($path, $cgi)
+        || Dancer::Renderer->render_error($path, $cgi);
 }
 
 sub print_banner {
     print "== Entering the dance floor ...\n";
 }
 
-# private
-
-sub _merge_params {
-    my ($cgi_params, $route_params) = @_;
-    return $cgi_params if ref($route_params) ne 'HASH';
-    return { %{$cgi_params}, %{$route_params} };
-}
-
-sub print_response {
-    my ($resp, $cgi, $method, $path) = @_;
-
-    my $ct = $resp->{head}{content_type} || setting('content_type');
-    my $st = Dancer::HTTP::status($resp->{head}{status}) || Dancer::HTTP::status('ok');
-
-    print $st;
-    print $cgi->header($ct);
-    print $resp->{body};
-    print "\r\n";
-        
-    print STDERR "== $method $path $st";
-}
 
 # When importing the package, strict and warnings pragma are loaded, 
 # and the appdir detection is performed.
@@ -131,6 +76,8 @@ sub import {
 
     setting appdir => dirname(File::Spec->rel2abs($script));
     setting public => path(setting('appdir'), 'public');
+
+    warn "import: public=".setting('public');
 
     Dancer->export_to_level(1, @_);
 }

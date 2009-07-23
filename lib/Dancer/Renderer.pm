@@ -1,0 +1,76 @@
+package Dancer::Renderer;
+
+use strict;
+use warnings;
+
+use Dancer::Route;
+use Dancer::HTTP;
+use Dancer::Config 'setting';
+use Dancer::FileUtils qw(path dirname dump_file_content);
+use File::MimeInfo;
+
+sub render_file {
+    my ($class, $path, $cgi) = @_;
+
+    my $static_file = path(setting('public'), $path);
+    
+    if (-f $static_file) {
+        print STDERR "== static: $path\n";
+        print Dancer::HTTP::status('ok');
+        print $cgi->header(mimetype($static_file));
+        dump_file_content($static_file);
+        return 1;
+    }
+    return 0;
+}
+
+sub render_action {
+    my ($class, $path, $cgi) = @_;
+
+    my $method = $cgi->request_method;
+    my $handler = Dancer::Route->find($path, $method);
+
+    if ($handler) {
+        # merging request and route params
+        my $cgi_params = scalar($cgi->Vars);
+        my $route_params = $handler->{params};
+        my $params = (ref($route_params) ne 'HASH') 
+                   ? $cgi_params 
+                   : { %{$cgi_params}, %{$route_params} };
+
+        my $resp = Dancer::Route->call($handler, $params);
+        print_response($resp, $cgi, $method, $path);
+    } 
+
+}
+
+sub render_error {
+    my ($class, $path, $cgi) = @_;
+    my $method = $cgi->request_method;
+
+    print Dancer::HTTP::status('not_found');
+    print $cgi->header,
+          $cgi->start_html('Not found'),
+          $cgi->h1('Not found'),
+          "<p>Requested path is not found: <b>$path</b></p>",
+          "<p>No route match, no static file</p>",
+          $cgi->end_html;
+
+    print STDERR "== $method $path 404 Not found\n" if setting('access_log');
+}
+
+sub print_response {
+    my ($resp, $cgi, $method, $path) = @_;
+
+    my $ct = $resp->{head}{content_type} || setting('content_type');
+    my $st = Dancer::HTTP::status($resp->{head}{status}) || Dancer::HTTP::status('ok');
+
+    print $st;
+    print $cgi->header($ct);
+    print $resp->{body};
+    print "\r\n";
+        
+    print STDERR "== $method $path $st";
+}
+
+'Dancer::Renderer';
