@@ -8,8 +8,12 @@ use Dancer::Config 'setting';
 use Dancer::HTTP;
 use Dancer::Route;
 use Dancer::Response;
+
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
+
+use File::Basename ();
+use File::Spec;
 
 $AUTHORITY = 'SUKRIA';
 $VERSION = '0.1';
@@ -23,6 +27,8 @@ $VERSION = '0.1';
     true
     false
     r
+    dirname
+    path
 );
 
 # syntax sugar for our fellow users :)
@@ -35,6 +41,8 @@ sub pass         { Dancer::Response::pass() }
 sub true         { 1 }
 sub false        { 0 }
 sub r            { {regexp => $_[0]} }
+sub dirname      { File::Basename::dirname(@_) }
+sub path         { File::Spec->catfile(@_) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -95,6 +103,19 @@ sub print_response {
     print "\r\n";
         
     print STDERR "== $method $path $st";
+}
+
+# When importing the package, strict and warnings pragma are loaded, 
+# and the appdir detection is performed.
+sub import {
+    my ($package, $script) = caller;
+    strict->import;
+    warnings->import;
+
+    setting appdir => dirname(File::Spec->rel2abs($script));
+    setting public => path(setting('appdir'), 'public');
+
+    Dancer->export_to_level(1, @_);
 }
 
 'Dancer';
