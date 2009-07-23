@@ -7,9 +7,9 @@ BEGIN {
     use_ok 'Dancer::Route'; 
 }
 
-ok(get({regexp => '/hello/([\w]+)'} => sub { $_[0]->{splat} }), 'first route set');
-ok(get({regexp => '/show/([\d]+)'} => sub { $_[0]->{splat} }), 'second route set');
-ok(get({regexp => '/post/([\w\d\-\.]+)/#comment([\d]+)'} => sub { $_[0]->{splat} }), 'third route set');
+ok(get(r('/hello/([\w]+)') => sub { $_[0]->{splat} }), 'first route set');
+ok(get(r('/show/([\d]+)') => sub { $_[0]->{splat} }), 'second route set');
+ok(get(r('/post/([\w\d\-\.]+)/#comment([\d]+)') => sub { $_[0]->{splat} }), 'third route set');
 
 my @tests = ( 
     {path => '/hello/sukria', 

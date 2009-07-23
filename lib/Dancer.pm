@@ -22,6 +22,7 @@ $VERSION = '0.1';
     pass
     true
     false
+    r
 );
 
 # syntax sugar for our fellow users :)
@@ -33,6 +34,7 @@ sub content_type { Dancer::Response::content_type(@_) }
 sub pass         { Dancer::Response::pass() }
 sub true         { 1 }
 sub false        { 0 }
+sub r            { {regexp => $_[0]} }
 
 # The run method to call for starting the job
 sub dance { 
@@ -186,9 +188,9 @@ running the match.
 For instance, don't do '\/hello\/(.+)' but rather: '/hello/(.+)'
 
 In order to tell Dancer to consider the route as a real regexp, the route must
-be defined explicitly with the keyword regexp, like the following:
+be defined explicitly with the keyword 'r', like the following:
     
-    get {regexp => '/hello/([\w]+)'} => sub {
+    get r( '/hello/([\w]+)' ) => sub {
         my $params = shift;
         my ($name) = @{$params->{splat});
         return "Hello $name";

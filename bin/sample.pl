@@ -37,4 +37,11 @@ get '/say/:number' => sub {
     "I say a number: '".$params->{number}."'";
 };
 
+get r('/(.*)') => sub {
+    my $params = shift;
+    my $trash = $params->{splat}[0];
+
+    "got to trash: $trash";
+};
+
 Dancer->dance;
