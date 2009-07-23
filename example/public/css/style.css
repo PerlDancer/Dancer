@@ -1,0 +1,11 @@
+body {
+    font-family: sans-serif;
+    background-color: #000;
+    color: #eee;
+}
+
+h1, h2, h3 {
+    color: #cce;
+    border-bottom: 1px solid #cce;
+}
+

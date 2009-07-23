@@ -14,6 +14,7 @@ use base 'Exporter', 'HTTP::Server::Simple::CGI';
 
 use File::Basename ();
 use File::Spec;
+use File::MimeInfo;
 
 $AUTHORITY = 'SUKRIA';
 $VERSION = '0.1';
@@ -55,10 +56,26 @@ sub dance {
 }
 
 # HTTP server overload comes here
+# TODO maybe a Dancer::RequestHandler would be very welcome here
 sub handle_request {
     my ($self, $cgi) = @_;
 
     my $path = $cgi->path_info();
+
+    # TODO : this has to move somewhere, maybe in Dancer::Static
+    my $static_file = path(setting('public'), $path);
+    if (-f $static_file) {
+        print STDERR "== static: $path\n";
+        print Dancer::HTTP::status('ok');
+        # should detect mime types here
+        print $cgi->header(mimetype($static_file));
+        open STATIC_FILE, '<', $static_file;
+        my @content = <STATIC_FILE>;
+        close STATIC_FILE;
+        print join("\n", @content);
+        return true;
+    }
+
     my $method = $cgi->request_method;
     my $handler = Dancer::Route->find($path, $method);
 
