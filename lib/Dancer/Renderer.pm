@@ -52,8 +52,11 @@ sub render_error {
     print $cgi->header,
           $cgi->start_html('Not found'),
           $cgi->h1('Not found'),
-          "<p>Requested path is not found: <b>$path</b></p>",
-          "<p>No route match, no static file</p>",
+          "<p>No route matched your request `$path'.</p>\n".
+          "<p>".
+          "appdir is <code>".setting('appdir')."</code><br>\n".
+          "public is <code>".setting('public')."</code>".
+          "</p>",
           $cgi->end_html;
 
     print STDERR "== $method $path 404 Not found\n" if setting('access_log');
