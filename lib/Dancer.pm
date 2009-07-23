@@ -66,7 +66,6 @@ sub print_banner {
     print "== Entering the dance floor ...\n";
 }
 
-
 # When importing the package, strict and warnings pragma are loaded, 
 # and the appdir detection is performed.
 sub import {
@@ -76,8 +75,6 @@ sub import {
 
     setting appdir => dirname(File::Spec->rel2abs($script));
     setting public => path(setting('appdir'), 'public');
-
-    warn "import: public=".setting('public');
 
     Dancer->export_to_level(1, @_);
 }
@@ -199,6 +196,17 @@ This is done with the B<pass> keyword, like in the following example
         "I say a number: ".$params->{number};
     };
 
+=head1 STATIC FILES
+
+Static files are served from the ./public directory. You can specify a
+different location by setting the 'public' option:
+
+    set public => path(dirname(__FILE__), 'static');
+
+Note that the public directory name is not included in the URL. A file
+./public/css/style.css is made available as example.com/css/style.css. 
+
+Dancer will automatically detect the mime-types for the static files accessed.
 
 =head1 EXAMPLE
 
