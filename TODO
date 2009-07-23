@@ -30,16 +30,6 @@
 
       set views =>  dirname(__FILE__) . '/templates'
 
-* Static Files support
-
-    Static files are served from the ./public directory. You can specify a
-    different location by setting the 'public' option:
-
-      set public => dirname(__FILE__) . '/static'
-
-    Note that the public directory name is not included in the URL. A file
-    ./public/css/style.css is made available as example.com/css/style.css. 
-
 * Helper support
 
     We should provide a way to define helpers, that are basically, methods
