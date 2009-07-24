@@ -9,6 +9,7 @@ use Dancer::Route;
 use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::FileUtils;
+use Dancer::SharedData;
 
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
@@ -27,6 +28,8 @@ $VERSION = '0.1';
     r
     dirname
     path
+    params
+    splat
 );
 
 # syntax sugar for our fellow users :)
@@ -41,6 +44,8 @@ sub path         { Dancer::FileUtils::path(@_) }
 sub true         { 1 }
 sub false        { 0 }
 sub r            { {regexp => $_[0]} }
+sub params       { Dancer::SharedData->params  }
+sub splat        { @{ Dancer::SharedData->params->{splat} } }
 
 # The run method to call for starting the job
 sub dance { 
@@ -125,19 +130,17 @@ supported, a keyword is exported by the module.
 Here is an example of a route definition:
 
     get '/hello/:name' => sub {
-        my ($params) = @_;
-
         # do something important here
         
-        return "Hello ".$params->{name};
+        return "Hello ".params->{name};
     };
 
 The route is defined for the method 'get', so only GET requests will be honoured
 by that route.
 
-The route action is the code reference declared, it receives the params as its
-first argument. This hashref is a merge of the route pattern matches and the
-request params.
+The route action is the code reference declared, it can access parameters through 
+the `params' keyword, which returns an hashref.
+This hashref is a merge of the route pattern matches and the request params.
 
 Below are all the possible ways to define a route, note that it is not
 possible to mix them up. Don't expect to have a working application if you mix
@@ -147,22 +150,20 @@ different kinds of route!
 
 A route pattern can contain one or more tokens (a word prefixed with ':'). Each
 token found in a route pattern is used as a named-pattern match. Any match will
-be set in the params hashref given to the B<route action>.
+be set in the params hashref.
 
 
     get '/hello/:name' => sub {
-        my $params = shift;
-        "Hey ".$params->{name}.", welcome here!";
+        "Hey ".params->{name}.", welcome here!";
     };
 
 =head2 WILDCARDS MATCHING 
 
 A route can contain a wildcard (represented by a '*'). Each wildcard match will
-be returned in an arrayref, assigned to the "splat" key of the params hashref.
+be returned in an arrayref, accessible via the `splat' keyword.
 
     get '/download/*.* => sub {
-        my $params = shift;
-        my ($file, $ext) = @{ $params->{splat} };
+        my ($file, $ext) = splat;
         # do something with $file.$ext here
     };
 
@@ -178,8 +179,7 @@ In order to tell Dancer to consider the route as a real regexp, the route must
 be defined explicitly with the keyword 'r', like the following:
     
     get r( '/hello/([\w]+)' ) => sub {
-        my $params = shift;
-        my ($name) = @{$params->{splat});
+        my ($name) = splat;
         return "Hello $name";
     };
 
@@ -191,14 +191,50 @@ the request with the next matching route.
 This is done with the B<pass> keyword, like in the following example
     
     get '/say/:word' => sub {
-        my ($params) = @_;
-        pass if ($params->{word} =~ /^\d+$/);
-        "I say a word: ".$params->{word};
+        pass if (params->{word} =~ /^\d+$/);
+        "I say a word: ".params->{word};
     };
 
     get '/say/:number' => sub {
-        my ($params) = @_;
-        "I say a number: ".$params->{number};
+        "I say a number: ".params->{number};
+    };
+
+=head1 ACTION RESPONSES
+
+The action's return value is always considered to be the content to render. So
+take care to your return value.
+
+In order to change the default behaviour of the rendering of an action, you can
+use the following keywords.
+
+=head2 status
+
+By default, an action will produce an 'HTTP 200 OK' status code, meaning
+everything is OK. It's possible to change that with the keyword B<status> :
+
+    get '/download/:file' => {
+        if (! -f params->{file}) {
+            status 'not_found';
+            return "File does not exist, unable to download";
+        }
+        # serving the file...
+    };
+
+In that example, Dancer will notice that the status has changed, and will
+render the response accordingly.
+
+The status keyword receives the name of the status to render, it can be either
+an HTTP code or its alias, as defined in L<Dancer::HTTP>.
+
+=head2 content_type
+
+You can also change the content type rendered in the same maner, with the
+keyword B<content_type>
+
+    get '/cat/:txtfile' => {
+        content_type 'text/plain';
+
+        # here we can dump the contents of params->{txtfile}
     };
 
 =head1 STATIC FILES
@@ -212,6 +248,17 @@ Note that the public directory name is not included in the URL. A file
 ./public/css/style.css is made available as example.com/css/style.css. 
 
 Dancer will automatically detect the mime-types for the static files accessed.
+
+=head1 SETTINGS
+
+It's possible to change quite every parameter of the application via the
+settings mechanism.
+
+A setting is key/value pair assigned by the keyword B<set>:
+
+    set setting_name => 'setting_value';
+
+See L<Dancer::Config> for complete details about supported settings.
 
 =head1 EXAMPLE
 
@@ -228,7 +275,7 @@ This is a possible webapp created with Dancer :
     };
 
     get '/hello/:name' => sub {
-        "Hello ".$params{name}"
+        "Hello ".params->{name}"
     };
 
     # run the webserver

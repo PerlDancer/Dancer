@@ -9,40 +9,40 @@ get '/' => sub {
 };
 
 get '/hello/:name' => sub {
-    my ($params) = @_;
-    if ($params->{name} ne 'sukria') {
+    if (params->{name} ne 'sukria') {
         status('not_found');
         content_type("text/plain");
         return "Not found";
     }
-    return "Hey ".$params->{name}.", how are you?";
+    return "Hey ".params->{name}.", how are you?";
 };
 
 post '/new' => sub {
-    my ($params) = @_;
-    "creating new entry: ".$params->{name};
+    "creating new entry: ".params->{name};
 };
 
 get '/say/:word' => sub {
-    my ($params) = @_;
-    if ($params->{word} =~ /^\d+$/) {
+    if (params->{word} =~ /^\d+$/) {
         pass and return false;
     }
-    "I say a word: '".$params->{word}."'";
+    "I say a word: '".params->{word}."'";
+};
+
+get '/download/*.*' => sub { 
+    my ($file, $ext) = splat;
+    "Downloading $file.$ext";
 };
 
 get '/say/:number' => sub {
-    my ($params) = @_;
-    pass if ($params->{number} == 42); # this is buggy :)
-    "I say a number: '".$params->{number}."'";
+    pass if (params->{number} == 42); # this is buggy :)
+    "I say a number: '".params->{number}."'";
 };
 
 # this is the trash route
-#get r('/(.*)') => sub {
-#    my $params = shift;
-#    my $trash = $params->{splat}[0];
-#
-#    "got to trash: $trash";
-#};
-#
+get r('/(.*)') => sub {
+    my ($trash) = splat;
+    status 'not_found';
+    "got to trash: $trash";
+};
+
 Dancer->dance;
