@@ -28,6 +28,11 @@ get '/say/:word' => sub {
     "I say a word: '".params->{word}."'";
 };
 
+get '/download/*.*' => sub { 
+    my ($file, $ext) = splat;
+    "Downloading $file.$ext";
+};
+
 get '/say/:number' => sub {
     pass if (params->{number} == 42); # this is buggy :)
     "I say a number: '".params->{number}."'";
@@ -35,8 +40,8 @@ get '/say/:number' => sub {
 
 # this is the trash route
 get r('/(.*)') => sub {
-    my $trash = params->{splat}[0];
-
+    my ($trash) = splat;
+    status 'not_found';
     "got to trash: $trash";
 };
 

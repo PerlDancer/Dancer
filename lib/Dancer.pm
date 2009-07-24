@@ -29,6 +29,7 @@ $VERSION = '0.1';
     dirname
     path
     params
+    splat
 );
 
 # syntax sugar for our fellow users :)
@@ -43,7 +44,8 @@ sub path         { Dancer::FileUtils::path(@_) }
 sub true         { 1 }
 sub false        { 0 }
 sub r            { {regexp => $_[0]} }
-sub params       { Dancer::SharedData->params }
+sub params       { Dancer::SharedData->params  }
+sub splat        { @{ Dancer::SharedData->params->{splat} } }
 
 # The run method to call for starting the job
 sub dance { 
@@ -123,19 +125,17 @@ supported, a keyword is exported by the module.
 Here is an example of a route definition:
 
     get '/hello/:name' => sub {
-        my ($params) = @_;
-
         # do something important here
         
-        return "Hello ".$params->{name};
+        return "Hello ".params->{name};
     };
 
 The route is defined for the method 'get', so only GET requests will be honoured
 by that route.
 
-The route action is the code reference declared, it receives the params as its
-first argument. This hashref is a merge of the route pattern matches and the
-request params.
+The route action is the code reference declared, it can access parameters through 
+the `params' keyword, which returns an hashref.
+This hashref is a merge of the route pattern matches and the request params.
 
 Below are all the possible ways to define a route, note that it is not
 possible to mix them up. Don't expect to have a working application if you mix
@@ -145,22 +145,20 @@ different kinds of route!
 
 A route pattern can contain one or more tokens (a word prefixed with ':'). Each
 token found in a route pattern is used as a named-pattern match. Any match will
-be set in the params hashref given to the B<route action>.
+be set in the params hashref.
 
 
     get '/hello/:name' => sub {
-        my $params = shift;
-        "Hey ".$params->{name}.", welcome here!";
+        "Hey ".params->{name}.", welcome here!";
     };
 
 =head2 WILDCARDS MATCHING 
 
 A route can contain a wildcard (represented by a '*'). Each wildcard match will
-be returned in an arrayref, assigned to the "splat" key of the params hashref.
+be returned in an arrayref, accessible with keyword `splat'.
 
     get '/download/*.* => sub {
-        my $params = shift;
-        my ($file, $ext) = @{ $params->{splat} };
+        my ($file, $ext) = splat;
         # do something with $file.$ext here
     };
 
@@ -176,8 +174,7 @@ In order to tell Dancer to consider the route as a real regexp, the route must
 be defined explicitly with the keyword 'r', like the following:
     
     get r( '/hello/([\w]+)' ) => sub {
-        my $params = shift;
-        my ($name) = @{$params->{splat});
+        my ($name) = splat;
         return "Hello $name";
     };
 
@@ -189,14 +186,12 @@ the request with the next matching route.
 This is done with the B<pass> keyword, like in the following example
     
     get '/say/:word' => sub {
-        my ($params) = @_;
-        pass if ($params->{word} =~ /^\d+$/);
-        "I say a word: ".$params->{word};
+        pass if (params->{word} =~ /^\d+$/);
+        "I say a word: ".params->{word};
     };
 
     get '/say/:number' => sub {
-        my ($params) = @_;
-        "I say a number: ".$params->{number};
+        "I say a number: ".params->{number};
     };
 
 =head1 STATIC FILES
@@ -226,7 +221,7 @@ This is a possible webapp created with Dancer :
     };
 
     get '/hello/:name' => sub {
-        "Hello ".$params{name}"
+        "Hello ".params->{name}"
     };
 
     # run the webserver
