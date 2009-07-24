@@ -155,7 +155,7 @@ be set in the params hashref.
 =head2 WILDCARDS MATCHING 
 
 A route can contain a wildcard (represented by a '*'). Each wildcard match will
-be returned in an arrayref, accessible with keyword `splat'.
+be returned in an arrayref, accessible via the `splat' keyword.
 
     get '/download/*.* => sub {
         my ($file, $ext) = splat;

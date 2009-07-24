@@ -17,13 +17,11 @@ Here is an example of a webapp built with Dancer:
     };
 
     get '/hello/:name' => sub {
-        my ($params) = @_;
-        "Hey ".$params->{name}.", how are you?";
+        "Hey ".params->{name}.", how are you?";
     };
 
     post '/new' => sub {
-        my ($params) = @_;
-        "creating new entry: ".$params->{name};
+        "creating new entry: ".params->{name};
     };
 
     Dancer->dance;
