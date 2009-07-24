@@ -35,6 +35,10 @@
     We should provide a way to define helpers, that are basically, methods
     accessible from the action code blocks.
 
+    Well, this is certainly useless in Perl (whereas it's not in Ruby) because
+    any sub defined would be accessible....
+
+
 * Error handler support
 
     Could be interesting to have a real error handler mechanism instead of the 

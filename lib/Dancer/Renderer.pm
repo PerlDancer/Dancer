@@ -11,7 +11,8 @@ use File::MimeInfo;
 use Dancer::SharedData;
 
 sub render_file {
-    my ($class, $path, $cgi) = @_;
+    my $cgi = Dancer::SharedData->cgi;
+    my $path = $cgi->path_info;
 
     my $static_file = path(setting('public'), $path);
     
@@ -26,8 +27,10 @@ sub render_file {
 }
 
 sub render_action {
-    my ($class, $path, $cgi) = @_;
+    Dancer::Route->run_before_filters;
 
+    my $cgi = Dancer::SharedData->cgi;
+    my $path = $cgi->path_info;
     my $method = $cgi->request_method;
     my $handler = Dancer::Route->find($path, $method);
 
@@ -42,13 +45,16 @@ sub render_action {
         Dancer::SharedData->params($params);
         my $resp = Dancer::Route->call($handler);
 
+        Dancer::Route->run_after_filters;
+
         print_response($resp, $cgi, $method, $path);
     } 
 
 }
 
 sub render_error {
-    my ($class, $path, $cgi) = @_;
+    my $cgi = Dancer::SharedData->cgi;
+    my $path = $cgi->path_info;
     my $method = $cgi->request_method;
 
     print Dancer::HTTP::status('not_found');

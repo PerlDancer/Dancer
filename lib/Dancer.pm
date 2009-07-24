@@ -29,7 +29,11 @@ $VERSION = '0.1';
     dirname
     path
     params
+    vars
+    var
     splat
+    before
+    request
 );
 
 # syntax sugar for our fellow users :)
@@ -46,6 +50,10 @@ sub false        { 0 }
 sub r            { {regexp => $_[0]} }
 sub params       { Dancer::SharedData->params  }
 sub splat        { @{ Dancer::SharedData->params->{splat} } }
+sub var          { Dancer::SharedData->var(@_) }
+sub vars         { Dancer::SharedData->vars }
+sub before       { Dancer::Route->before_filter(@_) }
+sub request      { Dancer::SharedData->cgi }
 
 # The run method to call for starting the job
 sub dance { 
@@ -60,11 +68,12 @@ sub dance {
 # HTTP server overload comes here
 sub handle_request {
     my ($self, $cgi) = @_;
-    my $path = $cgi->path_info();
     
-    return Dancer::Renderer->render_file($path, $cgi) 
-        || Dancer::Renderer->render_action($path, $cgi)
-        || Dancer::Renderer->render_error($path, $cgi);
+    Dancer::SharedData->cgi($cgi);
+
+    return Dancer::Renderer->render_file
+        || Dancer::Renderer->render_action
+        || Dancer::Renderer->render_error;
 }
 
 sub print_banner {
@@ -231,6 +240,36 @@ keyword B<content_type>
 
         # here we can dump the contents of params->{txtfile}
     };
+
+=head1 FILTERS
+
+=head2 Before filters
+
+Before filters are evaluated before each request within the context of the
+request and can modify the request and response. It's possible to define variable 
+that will be accessible in the action blocks with the keyword 'var'.
+
+    before sub {
+        var note => 'Hi there';
+        request->path_info('/foo/oversee')
+    };
+    
+    get '/foo/*' => sub {
+        my ($match) = splat; # 'oversee';
+        vars->{note}; # 'Hi there'
+    };
+
+before => sub {
+    var note => 'Hi there';
+    request->path_info('bar/baz')
+};
+
+get '/foo/*' => sub {
+    vars->{note}; # 'Hi There'
+    my ($match) = splat; # ('bar/baz')
+};
+
+
 
 =head1 STATIC FILES
 

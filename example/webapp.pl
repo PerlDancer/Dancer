@@ -2,7 +2,24 @@
 
 use Dancer;
 
+
 set content_type => 'text/plain';
+
+before sub {
+    var note => 'Hi there';
+    request->path_info('/foo/oversee')
+};
+
+get '/foo/*' => sub {
+    my ($match) = splat; # ('bar/baz')
+    
+    use Data::Dumper;
+
+    "note: '".vars->{note}."'\n".
+    "match: $match\n".
+    "request: ".Dumper(request);
+};
+
 
 get '/' => sub {
     "Hello There!"

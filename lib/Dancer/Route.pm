@@ -42,14 +42,24 @@ sub find {
     return $first_match;
 }
 
+sub before_filter {
+    my ($class, $filter) = @_; 
+    $REG->{before_filters} ||= [];
+    push @{$REG->{before_filters}}, $filter;
+}
+
+sub before_filters { @{$REG->{before_filters}} }
+sub run_before_filters { $_->() for before_filters }
+sub run_after_filters { 1 }
+
 # Recursive call of actions through the matching tree
 sub call {
     my ($class, $handler) = @_;
     my $params = Dancer::SharedData->params;
-
+    
     my $content = $handler->{code}->($params); 
     my $response = Dancer::Response->current;
-    
+
     if ($response->{pass}) {
         if ($handler->{'next'}) {
             return Dancer::Route->call($handler->{'next'});
