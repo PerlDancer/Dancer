@@ -9,6 +9,7 @@ use Dancer::Route;
 use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::FileUtils;
+use Dancer::SharedData;
 
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
@@ -27,6 +28,7 @@ $VERSION = '0.1';
     r
     dirname
     path
+    params
 );
 
 # syntax sugar for our fellow users :)
@@ -41,6 +43,7 @@ sub path         { Dancer::FileUtils::path(@_) }
 sub true         { 1 }
 sub false        { 0 }
 sub r            { {regexp => $_[0]} }
+sub params       { Dancer::SharedData->params }
 
 # The run method to call for starting the job
 sub dance { 
