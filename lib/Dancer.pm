@@ -194,6 +194,44 @@ This is done with the B<pass> keyword, like in the following example
         "I say a number: ".params->{number};
     };
 
+=head1 ACTION RESPONSES
+
+The action's return value is always considered to be the content to render. So
+take care to your return value.
+
+In order to change the default behaviour of the rendering of an action, you can
+use the following keywords.
+
+=head2 status
+
+By default, an action will produce an 'HTTP 200 OK' status code, meaning
+everything is OK. It's possible to change that with the keyword B<status> :
+
+    get '/download/:file' => {
+        if (! -f params->{file}) {
+            status 'not_found';
+            return "File does not exist, unable to download";
+        }
+        # serving the file...
+    };
+
+In that example, Dancer will notice that the status has changed, and will
+render the response accordingly.
+
+The status keyword receives the name of the status to render, it can be either
+an HTTP code or its alias, as defined in L<Dancer::HTTP>.
+
+=head2 content_type
+
+You can also change the content type rendered in the same maner, with the
+keyword B<content_type>
+
+    get '/cat/:txtfile' => {
+        content_type 'text/plain';
+
+        # here we can dump the contents of params->{txtfile}
+    };
+
 =head1 STATIC FILES
 
 Static files are served from the ./public directory. You can specify a
@@ -205,6 +243,17 @@ Note that the public directory name is not included in the URL. A file
 ./public/css/style.css is made available as example.com/css/style.css. 
 
 Dancer will automatically detect the mime-types for the static files accessed.
+
+=head1 SETTINGS
+
+It's possible to change quite every parameter of the application via the
+settings mechanism.
+
+A setting is key/value pair assigned by the keyword B<set>:
+
+    set setting_name => 'setting_value';
+
+See L<Dancer::Config> for complete details about supported settings.
 
 =head1 EXAMPLE
 
