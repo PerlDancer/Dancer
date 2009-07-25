@@ -97,11 +97,6 @@ Dancer
 
 This is under heavy development
 
-=head1 Dependencies
-Dancer need following modules :
-- HTTP-Server-Simple
-- File-MimeInfo
-
 =head1 DESCRIPTION
 
 Dancer is a framework for writing web applications with minimal effort. It was
@@ -289,6 +284,24 @@ This module has been written by Alexis Sukrieh <sukria@cpan.org>
 
 The source code for this module is hosted on GitHub
 L<http://github.com/sukria/Dancer>
+
+=head1 DEPENDENCIES
+
+Dancer depends on the following modules:
+
+=over 4
+
+=item L<HTTP::Server::Simple>
+
+=item L<CGI>
+
+=item L<File::MimeInfo>
+
+=item L<File::Spec>
+
+=item L<File::Basename>
+
+=back
 
 =head1 LICENSE
 
