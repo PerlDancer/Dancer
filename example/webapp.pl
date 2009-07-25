@@ -5,7 +5,7 @@ use Dancer;
 set content_type => 'text/plain';
 
 get '/' => sub {
-    "Hello There!"
+    send_file '/index.html'
 };
 
 get '/hello/:name' => sub {

@@ -14,11 +14,10 @@
         ...
     };
 
-
- render should then use a template system for rendering the view 
- located in $views_directory/index.tpl with $stuff data 
-
 * Template rendering support
+
+    render should then use a template system for rendering the view 
+    located in $views_directory/index.tpl with $stuff data 
 
     get '/' => sub {
         ...
@@ -39,18 +38,6 @@
 
     Could be interesting to have a real error handler mechanism instead of the 
     single `Dancer::Renderer->render_error' method.
-
-* Helper for rendering a static file within an action
-
-    Once the helper system is ready, we could add one for letting the user 
-    render a static file, from an action, like that:
-
-        get '/download/*' => sub {
-            my $params = shift;
-            my ($file) = @{ $params->{splat} };
-
-            send_file $file;
-        };
 
 * Mime Types configuration
 

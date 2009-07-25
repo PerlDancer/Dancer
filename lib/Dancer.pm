@@ -30,6 +30,7 @@ $VERSION = '0.1';
     path
     params
     splat
+    send_file
 );
 
 # syntax sugar for our fellow users :)
@@ -46,6 +47,7 @@ sub false        { 0 }
 sub r            { {regexp => $_[0]} }
 sub params       { Dancer::SharedData->params  }
 sub splat        { @{ Dancer::SharedData->params->{splat} } }
+sub send_file    { Dancer::Renderer::send_file(@_) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -242,6 +244,22 @@ Note that the public directory name is not included in the URL. A file
 ./public/css/style.css is made available as example.com/css/style.css. 
 
 Dancer will automatically detect the mime-types for the static files accessed.
+
+It's possible for an action handler to pass the batton to a static file, like
+the following.
+
+    get '/download/*' => sub {
+        my $params = shift;
+        my ($file) = @{ $params->{splat} };
+
+        send_file $file;
+    };
+
+Or even if you want your index page to be a plain old index.html file, just do:
+
+    get '/' => sub {
+        send_file '/index.html'
+    };
 
 =head1 SETTINGS
 
