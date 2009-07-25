@@ -59,12 +59,11 @@ sub dance {
 
 # HTTP server overload comes here
 sub handle_request {
-    my ($self, $cgi) = @_;
-    my $path = $cgi->path_info();
+    my ($self, $request) = @_;
     
-    return Dancer::Renderer->render_file($path, $cgi) 
-        || Dancer::Renderer->render_action($path, $cgi)
-        || Dancer::Renderer->render_error($path, $cgi);
+    return Dancer::Renderer->render_file($request) 
+        || Dancer::Renderer->render_action($request)
+        || Dancer::Renderer->render_error($request);
 }
 
 sub print_banner {
