@@ -42,17 +42,28 @@ sub find {
     return $first_match;
 }
 
+sub build_params {
+    my ($handler, $cgi) = @_;
+    my $cgi_params = scalar($cgi->Vars);
+    my $route_params = $handler->{params};
+    return (ref($route_params) ne 'HASH') 
+        ? $cgi_params 
+        : { %{$cgi_params}, %{$route_params} };
+}
+
 # Recursive call of actions through the matching tree
 sub call {
-    my ($class, $handler) = @_;
-    my $params = Dancer::SharedData->params;
+    my ($class, $handler, $cgi) = @_;
 
-    my $content = $handler->{code}->($params); 
+    my $params = build_params($handler, $cgi);
+    Dancer::SharedData->params($params);
+
+    my $content = $handler->{code}->(); 
     my $response = Dancer::Response->current;
     
     if ($response->{pass}) {
         if ($handler->{'next'}) {
-            return Dancer::Route->call($handler->{'next'});
+            return Dancer::Route->call($handler->{'next'}, $cgi);
         }
         else {
             return {

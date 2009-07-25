@@ -8,26 +8,25 @@ BEGIN {
     use_ok 'Dancer::Route';
 }
 
-# Register a couple of routes
 {
-    ok(get('/' => sub { 'first' }), 'first route set');
-    ok(get('/hello/:name' => sub { $_[0]->{name}; }), 'second route set');
-    ok(get('/hello/:foo/bar' => sub { $_[0]->{foo} }), 'third route set');
+    ok(get('/' => sub { 'index' }), 'first route set');
+    ok(get('/hello/:name' => sub { params->{name} }), 'second route set');
+    ok(get('/hello/:foo/bar' => sub { params->{foo} }), 'third route set');
 }
 
-# then make sure everything loTest::More::oks OK
+my @tests = (
+    {path => '/', expected => 'index'},
+    {path => '/hello/sukria', expected => 'sukria'},
+    {path => '/hello/joe/bar', expected => 'joe' },
+);
 
-my $handle = Dancer::Route->find('/');
-ok( $handle, 'route found for /');
-is(Dancer::Route->call($handle)->{body}, 'first', 'first route is OK');
+foreach my $test (@tests) {
+    my $cgi = CGI->new;
+    $cgi->request_method('GET');
+    $cgi->path_info($test->{path});
+    
+    my $response = Dancer::Renderer::get_action_response($cgi);
 
-$handle = Dancer::Route->find('/hello');
-ok( !defined($handle), 'no route found for /hello');
-
-$handle = Dancer::Route->find('/hello/sukria');
-ok( $handle, 'route found for /hello/sukria');
-is(Dancer::Route->call($handle)->{body}, 'sukria', 'simple param match found');
-
-$handle = Dancer::Route->find('/hello/sukria/bar');
-ok( $handle, 'route found for /hello/sukria/bar');
-is(Dancer::Route->call($handle)->{body}, 'sukria', 'wrapped param match found');
+    ok(defined $response, "route handler found for path `".$test->{path}."'");
+    is($response->{body}, $test->{expected}, "matching param looks good: ".$response->{body});
+}

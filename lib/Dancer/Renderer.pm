@@ -25,26 +25,20 @@ sub render_file {
     return 0;
 }
 
+sub get_action_response {
+    my ($cgi) = @_;
+    my $path = $cgi->path_info;
+    my $method = $cgi->request_method;
+
+    my $handler = Dancer::Route->find($path, $method);
+    Dancer::Route->call($handler, $cgi) if ($handler);
+}
+
 sub render_action {
     my ($class, $path, $cgi) = @_;
-
     my $method = $cgi->request_method;
-    my $handler = Dancer::Route->find($path, $method);
-
-    if ($handler) {
-        # merging request and route params
-        my $cgi_params = scalar($cgi->Vars);
-        my $route_params = $handler->{params};
-        my $params = (ref($route_params) ne 'HASH') 
-                   ? $cgi_params 
-                   : { %{$cgi_params}, %{$route_params} };
-
-        Dancer::SharedData->params($params);
-        my $resp = Dancer::Route->call($handler);
-
-        print_response($resp, $cgi, $method, $path);
-    } 
-
+    my $resp = get_action_response($cgi);
+    print_response($resp, $cgi, $method, $path) if $resp;
 }
 
 sub render_error {
