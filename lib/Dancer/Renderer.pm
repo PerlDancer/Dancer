@@ -6,39 +6,26 @@ use warnings;
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path dirname dump_file_content);
+use Dancer::FileUtils qw(path dirname read_file_content);
 use File::MimeInfo;
 use Dancer::SharedData;
 
 sub render_file($$) {
     my ($class, $request) = @_;
     
-    my $path = $request->path_info;
-    my $static_file = path(setting('public'), $path);
-    
-    if (-f $static_file) {
-        print STDERR "== static: $path\n";
-        print Dancer::HTTP::status('ok');
-        print $request->header(mimetype($static_file));
-        dump_file_content($static_file);
-        return 1;
+    my $response = get_file_response($request);
+    if ($response) {
+        print_response($response, $request);
     }
-    return 0;
-}
-
-sub get_action_response($) {
-    my ($request) = @_;
-    my $path = $request->path_info;
-    my $method = $request->request_method;
-
-    my $handler = Dancer::Route->find($path, $method);
-    Dancer::Route->call($handler, $request) if ($handler);
 }
 
 sub render_action($$) {
     my ($class, $request) = @_;
+
     my $response = get_action_response($request);
-    print_response($response, $request) if $response;
+    if ($response) {
+        print_response($response, $request);
+    }
 }
 
 sub render_error($$) {
@@ -61,6 +48,29 @@ sub render_error($$) {
     print STDERR "== $method $path 404 Not found\n" if setting('access_log');
 }
 
+sub get_action_response($) {
+    my ($request) = @_;
+    my $path = $request->path_info;
+    my $method = $request->request_method;
+
+    my $handler = Dancer::Route->find($path, $method);
+    Dancer::Route->call($handler, $request) if ($handler);
+}
+
+sub get_file_response($) {
+    my ($request) = @_;
+    my $path = $request->path_info;
+    my $static_file = path(setting('public'), $path);
+    
+    if (-f $static_file) {
+        return {
+            head => {content_type => mimetype($static_file)},
+            body => read_file_content($static_file),
+        };
+    }
+    return undef;
+}
+
 sub print_response($$) {
     my ($resp, $request) = @_;
     my $path = $request->path_info;
@@ -72,8 +82,6 @@ sub print_response($$) {
     print $st;
     print $request->header($ct);
     print $resp->{body};
-    print "\r\n";
-        
     print STDERR "== $method $path $st";
 }
 
