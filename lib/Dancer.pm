@@ -92,6 +92,11 @@ Dancer
 
 This is under heavy development
 
+=head1 Dependencies
+Dancer need following modules :
+- HTTP-Server-Simple
+- File-MimeInfo
+
 =head1 DESCRIPTION
 
 Dancer is a framework for writing web applications with minimal effort. It was
