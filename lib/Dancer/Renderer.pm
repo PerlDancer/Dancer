@@ -8,6 +8,7 @@ use Dancer::HTTP;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname dump_file_content);
 use File::MimeInfo;
+use Dancer::SharedData;
 
 sub render_file {
     my ($class, $path, $cgi) = @_;
@@ -38,7 +39,9 @@ sub render_action {
                    ? $cgi_params 
                    : { %{$cgi_params}, %{$route_params} };
 
-        my $resp = Dancer::Route->call($handler, $params);
+        Dancer::SharedData->params($params);
+        my $resp = Dancer::Route->call($handler);
+
         print_response($resp, $cgi, $method, $path);
     } 
 

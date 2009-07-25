@@ -2,6 +2,7 @@ package Dancer::Route;
 
 use strict;
 use warnings;
+use Dancer::SharedData;
 
 # singleton for stroing the routes defined
 my $REG = {};
@@ -43,8 +44,8 @@ sub find {
 
 # Recursive call of actions through the matching tree
 sub call {
-    my ($class, $handler, $params) = @_;
-    $params ||= $handler->{params};
+    my ($class, $handler) = @_;
+    my $params = Dancer::SharedData->params;
 
     my $content = $handler->{code}->($params); 
     my $response = Dancer::Response->current;
