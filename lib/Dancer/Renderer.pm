@@ -63,9 +63,10 @@ sub get_file_response($) {
     my $path = $request->path_info;
     my $static_file = path(setting('public'), $path);
     
+    
     if (-f $static_file) {
         return {
-            head => {content_type => mimetype($static_file)},
+            head => {content_type => get_mime_type($static_file)},
             body => read_file_content($static_file),
         };
     }
@@ -84,6 +85,19 @@ sub print_response($$) {
     print $request->header($ct);
     print $resp->{body};
     print STDERR "== $method $path $st";
+}
+
+# private
+
+sub get_mime_type {
+    my ($filename) = @_;
+    my @tokens = reverse(split(/\./, $filename));
+    my $ext = $tokens[0];
+    
+    my $mime = Dancer::Config::mime_types($ext);
+    return (defined $mime) 
+        ? $mime
+        : mimetype($filename);
 }
 
 'Dancer::Renderer';

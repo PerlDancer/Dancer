@@ -32,6 +32,7 @@ $VERSION = '0.1';
     params
     splat
     send_file
+    mime_type
 );
 
 # Dancer's syntax 
@@ -39,6 +40,7 @@ sub get          { Dancer::Route->add('get', @_) }
 sub post         { Dancer::Route->add('post', @_) }
 sub r            { {regexp => $_[0]} }
 sub set          { setting(@_) }
+sub mime_type    { Dancer::Config::mime_types(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub path         { Dancer::FileUtils::path(@_) }
 sub true         { 1 }
@@ -236,6 +238,8 @@ keyword B<content_type>
 
 =head1 STATIC FILES
 
+=head2 STATIC DIRECTORY
+
 Static files are served from the ./public directory. You can specify a
 different location by setting the 'public' option:
 
@@ -244,9 +248,23 @@ different location by setting the 'public' option:
 Note that the public directory name is not included in the URL. A file
 ./public/css/style.css is made available as example.com/css/style.css. 
 
-Dancer will automatically detect the mime-types for the static files accessed.
+=head2 MIME-TYPES CONFIGURATION
 
-It's possible for an action handler to pass the batton to a static file, like
+By default, Dancer will automatically detect the mime-types to use for 
+the static files accessed.
+
+It's possible to choose specific mime-type per file extensions. For instance,
+we can imagine you want to sever *.foo as a text/foo content, instead of
+text/plain (which would be the content type detected by Dancer if *.foo are
+text files).
+
+        mime_type foo => 'text/foo';
+
+This configures the 'text/foo' content type for any file matching '*.foo'.
+
+=head2 STATIC FILE FROM A ROUTE HANDLER
+
+It's possible for a route handler to pass the batton to a static file, like
 the following.
 
     get '/download/*' => sub {

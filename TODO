@@ -39,15 +39,6 @@
     Could be interesting to have a real error handler mechanism instead of the 
     single `Dancer::Renderer->render_error' method.
 
-* Mime Types configuration
-
-    The user should be able to choose specific mime-type per file extensions, if 
-    he doesn't like the one Dancer finds when serving a static file.
-
-        mime_type foo => 'text/foo';
-
-    This would tell to serve any file matching '*.foo' as a 'text/foo' content.
-
 * Environment support
 
     It should be possible to run a Dancer server with a specific environment,
