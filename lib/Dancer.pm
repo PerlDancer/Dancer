@@ -34,6 +34,7 @@ $VERSION = '0.1';
     send_file
     mime_type
     template
+    layout
 );
 
 # Dancer's syntax 
@@ -53,6 +54,7 @@ sub status       { Dancer::Response::status(@_) }
 sub content_type { Dancer::Response::content_type(@_) }
 sub send_file    { Dancer::Helpers::send_file(@_) }
 sub template     { Dancer::Helpers::template(@_) }
+sub layout       { set(layout => shift) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -239,17 +241,19 @@ keyword B<content_type>
         # here we can dump the contents of params->{txtfile}
     };
 
+=head1 USING TEMPLATES
+
 =head1 VIEWS 
 
-It's possible to render your action views with a template. The appdir/views
-directory is the place where views are located. 
+It's possible to render the action's content with a template, this is called a
+view. The `appdir/views' directory is the place where views are located. 
 
 You can change this location by changing the setting 'views', for instance if
 your templates are located in the 'templates' directory, do the following:
 
     set views => path(dirname(__FILE__), 'templates');
 
-The templates should avec a '.phtml' extension and are rendered with the
+A view should have a '.tt' extension and is rendered with the
 L<Template> module. You have to import the `Template' module in your script if
 you want to render views within your actions.
 
@@ -261,10 +265,10 @@ view (note that all the route params are accessible in the view):
     use Template;
 
     get '/hello/:name' => sub {
-        template 'hello';
+        template 'hello' => {var => 42};
     };
 
-And the appdir/views/hello.phtml view can contain the following code:
+And the appdir/views/hello.tt view can contain the following code:
 
    <html>
     <head></head>
@@ -272,6 +276,40 @@ And the appdir/views/hello.phtml view can contain the following code:
         <h1>Hello <% params.name %></h1>
     </body>
    </html>
+
+=head2 LAYOUTS
+
+A layout is a special view, located in the 'layouts' directory (inside the
+views directory) which must have a token named `content'. That token marks the
+place where to render the action view. This lets you define a global layout for
+your actions. 
+
+Here is an example of a layout: views/layouts/main.tt :
+
+    <html>
+        <head>...</head>
+        <body>
+        <div id="header">
+        ...
+        </div>
+
+        <div id="content">
+        <% content %>
+        </div>
+
+        </body>
+    </html>
+
+This layout can be used like the following:
+
+    use Dancer;
+    use Template; 
+
+    layout 'main';
+
+    get '/' => sub {
+        template 'index';
+    };
 
 =head1 STATIC FILES
 

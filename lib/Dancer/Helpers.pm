@@ -31,18 +31,30 @@ sub send_file {
 
 sub template {
     my ($view, $tokens) = @_;
-    $view .= ".phtml" if $view !~ /\.phtml$/;
+    $view .= ".tt" if $view !~ /\.tt$/;
+
+    my $tt_config = {
+        START_TAG => '<%',
+        END_TAG => '%>',
+        ANYCASE => 1,
+    };
 
     $tokens ||= {};
     $tokens->{params} = Dancer::SharedData::params();
     
+    my $layout = setting('layout');
     my $content = '';
-    my $tt = Template->new(
-        INCLUDE_PATH => setting('views'),
-        START_TAG => '<%',
-        END_TAG => '%>');
+    my $tt = Template->new(INCLUDE_PATH => setting('views'), %{$tt_config});
     $tt->process($view, $tokens, \$content);
-    return $content;
+    return $content if not defined $layout;
+ 
+    $layout .= '.tt' if $layout !~ /\.tt/;
+    $tt = Template->new(
+        INCLUDE_PATH => File::Spec->catdir(setting('views'), 'layouts'),
+        %{$tt_config});
+    my $full_content = '';
+    $tt->process($layout, {%$tokens, content => $content}, \$full_content) or die "layout: $layout -> $!";
+    return $full_content;
 }
 
 'Dancer::Helpers';

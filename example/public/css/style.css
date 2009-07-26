@@ -19,3 +19,10 @@ img {
     margin: auto;
     width:700px;
 }
+
+#footer {
+    margin-top: 2em;
+    font-size: 10px;
+    color: #aaa;
+    border-top: 1px solid #aaa;
+}

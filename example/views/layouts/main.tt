@@ -6,9 +6,13 @@
 <body>
 
 <div id="container">
-<h1>Hello <% params.name %>!</h1>
 
-Welcome to the hello action <% params.name %>
+<% content %>
+
+  <div id="footer">
+    Powered by <a href="http://github.com/sukria/Dancer/">Dancer</a>
+  </div>
+</div>
 
 </body>
 </html>

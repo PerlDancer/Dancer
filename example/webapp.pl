@@ -3,17 +3,20 @@
 use Dancer;
 use Template;
 
+layout 'main';
+
 get '/' => sub {
-    send_file '/index.html'
-
-};
-
-get '/test' => sub {
-    template index => {token => 42};
+    template 'index';
 };
 
 get '/hello/:name' => sub {
     template 'hello';
+};
+
+get '/page/:slug' => sub {
+    template 'index' => {
+        message => 'This is the page '.params->{slug},    
+    };
 };
 
 post '/new' => sub {

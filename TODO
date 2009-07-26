@@ -39,4 +39,3 @@
 * Templates
 
     - support for changing views extensions
-    - support for layouts (default template that wrapp the action rendering).

@@ -1,0 +1,15 @@
+<h1>Welcome to the dance floor!</h1>
+
+<p>
+I'm a standalone web application, written in pure Perl. 
+</p>
+
+<img src="/images/dancers.jpg" alt="dancers" />
+
+<p>
+<% if message %>
+<% message %>
+<% else %>
+<em>Dance is beautiful, make your webapp move smoothly!</em>
+<% end %>
+</p>
