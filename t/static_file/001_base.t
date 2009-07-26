@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5, import => ['!pass'];
+use Test::More tests => 6, import => ['!pass'];
 
 BEGIN {
     use_ok 'Dancer';
@@ -22,4 +22,5 @@ my $path = $request->path_info;
 my $resp = Dancer::Renderer::get_file_response($request);
 ok( defined($resp), "static file is found for $path");
 
-is($resp->{body}, "hello there\n", 'static file content looks good');
+is_deeply($resp->{head}, {content_type => 'text/plain'}, "response header looks good for $path");
+is($resp->{body}, "hello there\n", "response content looks good for $path");
