@@ -5,6 +5,7 @@ use warnings;
 
 use Dancer::Route;
 use Dancer::HTTP;
+use Dancer::Response;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname read_file_content);
 use File::MimeInfo;
@@ -46,22 +47,6 @@ sub render_error($$) {
           $request->end_html;
 
     print STDERR "== $method $path 404 Not found\n" if setting('access_log');
-}
-
-sub send_file { 
-    my ($path) = @_;
-    my $request = CGI->new;
-    $request->path_info($path);
-    $request->request_method('GET');
-    my $resp = get_file_response($request);
-    if ($resp) {
-        Dancer::content_type($resp->{head}{content_type});
-        return $resp->{body};
-    }
-    else {
-        Dancer::status('error');
-        "No such file: $path";
-    }
 }
 
 sub get_action_response($) {

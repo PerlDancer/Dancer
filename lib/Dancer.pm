@@ -10,6 +10,7 @@ use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::FileUtils;
 use Dancer::SharedData;
+use Dancer::Helpers;
 
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
@@ -33,21 +34,21 @@ $VERSION = '0.1';
     send_file
 );
 
-# syntax sugar for our fellow users :)
-sub set          { setting(@_) }
+# Dancer's syntax 
 sub get          { Dancer::Route->add('get', @_) }
 sub post         { Dancer::Route->add('post', @_) }
-sub status       { Dancer::Response::status(@_) }
-sub content_type { Dancer::Response::content_type(@_) }
-sub pass         { Dancer::Response::pass() }
+sub r            { {regexp => $_[0]} }
+sub set          { setting(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub path         { Dancer::FileUtils::path(@_) }
 sub true         { 1 }
 sub false        { 0 }
-sub r            { {regexp => $_[0]} }
 sub params       { Dancer::SharedData->params  }
 sub splat        { @{ Dancer::SharedData->params->{splat} } }
-sub send_file    { Dancer::Renderer::send_file(@_) }
+sub pass         { Dancer::Response::pass() }
+sub status       { Dancer::Response::status(@_) }
+sub content_type { Dancer::Response::content_type(@_) }
+sub send_file    { Dancer::Helpers::send_file(@_) }
 
 # The run method to call for starting the job
 sub dance { 
