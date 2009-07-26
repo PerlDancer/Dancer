@@ -14,26 +14,6 @@
         ...
     };
 
-* Template rendering support
-
-    render should then use a template system for rendering the view 
-    located in $views_directory/index.tpl with $stuff data 
-
-    get '/' => sub {
-        ...
-        render index => $stuff;
-    };
- 
-    Templates are assumed to be located directly under the ./views directory. To
-    use a different views directory:
-
-      set views =>  dirname(__FILE__) . '/templates'
-
-* Helper support
-
-    We should provide a way to define helpers, that are basically, methods
-    accessible from the action code blocks.
-
 * Error handler support
 
     Could be interesting to have a real error handler mechanism instead of the 
@@ -56,4 +36,7 @@
         setting access_log => 1;
         setting verbosity => 1;
 
+* Templates
 
+    - support for changing views extensions
+    - support for layouts (default template that wrapp the action rendering).

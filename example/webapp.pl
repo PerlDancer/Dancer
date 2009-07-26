@@ -1,15 +1,19 @@
 #!/usr/bin/perl
 
 use Dancer;
-
-set content_type => 'text/plain';
+use Template;
 
 get '/' => sub {
     send_file '/index.html'
+
+};
+
+get '/test' => sub {
+    template index => {token => 42};
 };
 
 get '/hello/:name' => sub {
-    return "Hey ".params->{name}.", how are you?";
+    template 'hello';
 };
 
 post '/new' => sub {

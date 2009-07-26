@@ -33,6 +33,7 @@ $VERSION = '0.1';
     splat
     send_file
     mime_type
+    template
 );
 
 # Dancer's syntax 
@@ -51,6 +52,7 @@ sub pass         { Dancer::Response::pass() }
 sub status       { Dancer::Response::status(@_) }
 sub content_type { Dancer::Response::content_type(@_) }
 sub send_file    { Dancer::Helpers::send_file(@_) }
+sub template     { Dancer::Helpers::template(@_) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -84,6 +86,7 @@ sub import {
 
     setting appdir => dirname(File::Spec->rel2abs($script));
     setting public => path(setting('appdir'), 'public');
+    setting views  => path(setting('appdir'), 'views');
 
     Dancer->export_to_level(1, @_);
 }
@@ -235,6 +238,40 @@ keyword B<content_type>
 
         # here we can dump the contents of params->{txtfile}
     };
+
+=head1 VIEWS 
+
+It's possible to render your action views with a template. The appdir/views
+directory is the place where views are located. 
+
+You can change this location by changing the setting 'views', for instance if
+your templates are located in the 'templates' directory, do the following:
+
+    set views => path(dirname(__FILE__), 'templates');
+
+The templates should avec a '.phtml' extension and are rendered with the
+L<Template> module. You have to import the `Template' module in your script if
+you want to render views within your actions.
+
+In order to render a view, just call the 'template' keyword at the end of the
+action by giving the view name and the HASHREF of tokens to interpolate in the
+view (note that all the route params are accessible in the view):
+
+    use Dancer;
+    use Template;
+
+    get '/hello/:name' => sub {
+        template 'hello';
+    };
+
+And the appdir/views/hello.phtml view can contain the following code:
+
+   <html>
+    <head></head>
+    <body>
+        <h1>Hello <% params.name %></h1>
+    </body>
+   </html>
 
 =head1 STATIC FILES
 

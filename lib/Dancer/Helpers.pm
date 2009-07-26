@@ -9,6 +9,7 @@ use warnings;
 
 use CGI;
 use Dancer::Response;
+use Dancer::Config 'setting';
 
 sub send_file { 
     my ($path) = @_;
@@ -26,6 +27,22 @@ sub send_file {
         Dancer::Response::status('error');
         "No such file: $path";
     }
+}
+
+sub template {
+    my ($view, $tokens) = @_;
+    $view .= ".phtml" if $view !~ /\.phtml$/;
+
+    $tokens ||= {};
+    $tokens->{params} = Dancer::SharedData::params();
+    
+    my $content = '';
+    my $tt = Template->new(
+        INCLUDE_PATH => setting('views'),
+        START_TAG => '<%',
+        END_TAG => '%>');
+    $tt->process($view, $tokens, \$content);
+    return $content;
 }
 
 'Dancer::Helpers';
