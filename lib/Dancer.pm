@@ -16,7 +16,7 @@ use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION = '0.1';
+$VERSION = '0_0.99';
 @EXPORT = qw(
     before
     content_type
@@ -113,31 +113,29 @@ __END__
 
 Dancer 
 
-=head1 WARNING
-
-This is under heavy development
-
 =head1 DESCRIPTION
 
-Dancer is a framework for writing web applications with minimal effort. It was
-inspired by Sinatra, from the Ruby's community.
+Dancer is a web application framework designed to be as effortless as possible
+for the developer.
 
 Dancer is here to provide the simpliest way for writing a web application.
+
+It can be use to write light-weight web services or small standalone web
+applications.
+
+If you don't want to write a CGI by hand and find Catalyst too big for your
+project, Dancer is what you need.
 
 =head1 USAGE
 
 As soon as Dancer is imported to a script, that script becomes a webapp.
 
-All the script has to do is to declare a list of B<routes> which are basically:
+All the script has to do is to declare a list of B<routes>.
     
-=over 4
+A route handler is composed by an HTTP method, a path pattern and a code block.
 
-=item a B<pattern> for matching HTTP requests 
-
-=item a B<block of code> that has to return a string supposed to be the content
-to render.
-
-=back
+The code block given to the route handler has to return a string which will be
+used as the content to render to the client.
 
 Routes are defined for a given HTTP method (get or post). For each method
 supported, a keyword is exported by the module. 
