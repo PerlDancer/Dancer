@@ -1,18 +1,11 @@
 use strict;
 use warnings;
-use Test::More 'no_plan', import => ['!pass'];
+use Test::More import => ['!pass'];
 
-BEGIN { 
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route'; 
-}
+use Dancer;
+use Dancer::Route; 
 
-{
-    ok(get('/hello/*' => sub { [splat] }), 'first route set');
-    ok(get('/hello/*/welcome/*' => sub { [splat ] }), 'second route set');
-    ok(get('/download/*.*' => sub { [splat] }), 'third route set');
-}
-
+my @paths = ('/hello/*', '/hello/*/welcome/*', '/download/*.*');
 
 my @tests = ( 
     {path => '/hello/sukria', 
@@ -24,6 +17,11 @@ my @tests = (
     {path => '/download/wolverine.pdf',
      expected => ['wolverine', 'pdf']},
 );
+
+my $nb_tests = (scalar(@paths)) + (scalar(@tests) * 2);
+plan tests => $nb_tests;
+
+ok(get($_ => sub { [splat] }), "route $_ is set") for @paths;
 
 foreach my $test (@tests) {
     my $path = $test->{path};
