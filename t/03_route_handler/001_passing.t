@@ -8,31 +8,26 @@ BEGIN {
 }
 
 ok(get('/say/:char' => sub { 
-    my $params = shift;
-    pass and return false if length($params->{char}) > 1;
-    "char: ".$params->{char};
+    pass and return false if length(params->{char}) > 1;
+    "char: ".params->{char};
 }), 'route /say/:char defined');
 
 ok(get('/say/:number' => sub { 
-    my $params = shift;
-    pass and return false if $params->{number} !~ /^\d+$/;
-    "number: ".$params->{number};
+    pass and return false if params->{number} !~ /^\d+$/;
+    "number: ".params->{number};
 }), 'route /say/:number defined');
 
 ok(get({regexp => '/say/_(.*)'} => sub { 
-    my $params = shift;
-    "underscore: ".$params->{splat}[0];
+    "underscore: ".params->{splat}[0];
 }), 'route /say/_(.*) defined');
 
 ok(get('/say/:word' => sub { 
-    my $params = shift;
-    pass and return false if $params->{word} =~ /trash/;
-    "word: ".$params->{word};
+    pass and return false if params->{word} =~ /trash/;
+    "word: ".params->{word};
 }), 'route /say/:word defined');
 
 ok(get('/say/*' => sub { 
-    my $params = shift;
-    "trash: ".$params->{splat}[0];
+    "trash: ".params->{splat}[0];
 }), 'route /say/* defined');
 
 my @tests = ( 
@@ -45,13 +40,18 @@ my @tests = (
 );
 
 foreach my $test (@tests) {
-    my $handle;
     my $path = $test->{path};
     my $expected = $test->{expected};
-    
-    $handle = Dancer::Route->find($path);
-    ok( defined($handle), "route found for path `$path'");
+ 
+    my $cgi = CGI->new;
+    $cgi->request_method('GET');
+    $cgi->path_info($path);
+
+    Dancer::SharedData->cgi($cgi);
+    my $response = Dancer::Renderer::get_action_response();
+       
+    ok( defined($response), "route found for path `$path'");
     is_deeply(
-        Dancer::Route->call($handle)->{body}, $expected, 
+        $response->{body}, $expected, 
         "match data for path `$path' looks good");
 }

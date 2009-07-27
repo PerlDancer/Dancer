@@ -7,9 +7,9 @@ BEGIN {
     use_ok 'Dancer::Route'; 
 }
 
-ok(get(r('/hello/([\w]+)') => sub { $_[0]->{splat} }), 'first route set');
-ok(get(r('/show/([\d]+)') => sub { $_[0]->{splat} }), 'second route set');
-ok(get(r('/post/([\w\d\-\.]+)/#comment([\d]+)') => sub { $_[0]->{splat} }), 'third route set');
+ok(get(r('/hello/([\w]+)') => sub { [splat] }), 'first route set');
+ok(get(r('/show/([\d]+)') => sub { [splat] }), 'second route set');
+ok(get(r('/post/([\w\d\-\.]+)/#comment([\d]+)') => sub { [splat] }), 'third route set');
 
 my @tests = ( 
     {path => '/hello/sukria', 
@@ -26,10 +26,16 @@ foreach my $test (@tests) {
     my $handle;
     my $path = $test->{path};
     my $expected = $test->{expected};
-    
-    $handle = Dancer::Route->find($path);
-    ok( defined($handle), "route found for path `$path'");
+ 
+    my $cgi = CGI->new;
+    $cgi->request_method('GET');
+    $cgi->path_info($path);
+
+    Dancer::SharedData->cgi($cgi);
+    my $response = Dancer::Renderer::get_action_response();
+       
+    ok( defined($response), "route handler found for path `$path'");
     is_deeply(
-        Dancer::Route->call($handle)->{body}, $expected, 
+        $response->{body}, $expected, 
         "match data for path `$path' looks good");
 }

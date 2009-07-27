@@ -5,7 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(setting);
+@EXPORT_OK = qw(setting mime_types);
 
 # singleton for storing settings
 my $SETTINGS = {};
@@ -17,6 +17,17 @@ sub setting {
         ? $SETTINGS->{$setting} = $value
         : $SETTINGS->{$setting} ;
 }
+
+sub mime_types {
+    my ($ext, $content_type) = @_;
+    $SETTINGS->{mime_types} ||= {};
+    return $SETTINGS->{mime_types} if @_ == 0;
+
+    return (@_ == 2) 
+        ? $SETTINGS->{mime_types}{$ext} = $content_type
+        : $SETTINGS->{mime_types}{$ext};
+}
+
 
 # load default settings
 

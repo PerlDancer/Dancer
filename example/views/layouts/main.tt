@@ -1,0 +1,24 @@
+<html>
+<head>
+<title>Hello There!</title>
+  <link rel='stylesheet' href='/css/style.css' type='text/css' media="screen, projection">
+</head>
+<body>
+
+<div id="container">
+
+    <% if note %>
+    <div style="border: 1px solid #447; background-color: #dde; padding: 1em;">
+    <% note %>
+    </div>
+    <% end %>
+
+<% content %>
+
+  <div id="footer">
+    Powered by <a href="http://github.com/sukria/Dancer/">Dancer</a>
+  </div>
+</div>
+
+</body>
+</html>

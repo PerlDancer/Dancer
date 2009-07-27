@@ -1,11 +1,3 @@
-<html>
-<head>
-<title>Hello There!</title>
-  <link rel='stylesheet' href='/css/style.css' type='text/css' media="screen, projection">
-</head>
-<body>
-
-<div id="container">
 <h1>Welcome to the dance floor!</h1>
 
 <p>
@@ -15,9 +7,9 @@ I'm a standalone web application, written in pure Perl.
 <img src="/images/dancers.jpg" alt="dancers" />
 
 <p>
+<% if message %>
+<% message %>
+<% else %>
 <em>Dance is beautiful, make your webapp move smoothly!</em>
+<% end %>
 </p>
-</div>
-
-</body>
-</html>

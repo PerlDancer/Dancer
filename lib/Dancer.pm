@@ -10,6 +10,7 @@ use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::FileUtils;
 use Dancer::SharedData;
+use Dancer::Helpers;
 
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
@@ -34,26 +35,35 @@ $VERSION = '0.1';
     splat
     before
     request
+    send_file
+    mime_type
+    template
+    layout
 );
 
-# syntax sugar for our fellow users :)
-sub set          { setting(@_) }
-sub get          { Dancer::Route->add('get', @_) }
-sub post         { Dancer::Route->add('post', @_) }
-sub status       { Dancer::Response::status(@_) }
+# Dancer's syntax 
+
+sub before       { Dancer::Route->before_filter(@_) }
 sub content_type { Dancer::Response::content_type(@_) }
-sub pass         { Dancer::Response::pass() }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
-sub path         { Dancer::FileUtils::path(@_) }
-sub true         { 1 }
 sub false        { 0 }
-sub r            { {regexp => $_[0]} }
+sub get          { Dancer::Route->add('get', @_) }
+sub layout       { set(layout => shift) }
+sub mime_type    { Dancer::Config::mime_types(@_) }
 sub params       { Dancer::SharedData->params  }
+sub pass         { Dancer::Response::pass() }
+sub path         { Dancer::FileUtils::path(@_) }
+sub post         { Dancer::Route->add('post', @_) }
+sub r            { {regexp => $_[0]} }
+sub request      { Dancer::SharedData->cgi }
+sub send_file    { Dancer::Helpers::send_file(@_) }
+sub set          { setting(@_) }
 sub splat        { @{ Dancer::SharedData->params->{splat} } }
+sub status       { Dancer::Response::status(@_) }
+sub template     { Dancer::Helpers::template(@_) }
+sub true         { 1 }
 sub var          { Dancer::SharedData->var(@_) }
 sub vars         { Dancer::SharedData->vars }
-sub before       { Dancer::Route->before_filter(@_) }
-sub request      { Dancer::SharedData->cgi }
 
 # The run method to call for starting the job
 sub dance { 
@@ -89,6 +99,7 @@ sub import {
 
     setting appdir => dirname(File::Spec->rel2abs($script));
     setting public => path(setting('appdir'), 'public');
+    setting views  => path(setting('appdir'), 'views');
 
     Dancer->export_to_level(1, @_);
 }
@@ -259,19 +270,82 @@ that will be accessible in the action blocks with the keyword 'var'.
         vars->{note}; # 'Hi there'
     };
 
-before => sub {
-    var note => 'Hi there';
-    request->path_info('bar/baz')
-};
+The request keyword returns the current CGI object representing the incoming request.
+See the documentation of the L<CGI> module for details.
 
-get '/foo/*' => sub {
-    vars->{note}; # 'Hi There'
-    my ($match) = splat; # ('bar/baz')
-};
+=head1 USING TEMPLATES
 
+=head1 VIEWS 
 
+It's possible to render the action's content with a template, this is called a
+view. The `appdir/views' directory is the place where views are located. 
+
+You can change this location by changing the setting 'views', for instance if
+your templates are located in the 'templates' directory, do the following:
+
+    set views => path(dirname(__FILE__), 'templates');
+
+A view should have a '.tt' extension and is rendered with the
+L<Template> module. You have to import the `Template' module in your script if
+you want to render views within your actions.
+
+In order to render a view, just call the 'template' keyword at the end of the
+action by giving the view name and the HASHREF of tokens to interpolate in the
+view (note that all the route params are accessible in the view):
+
+    use Dancer;
+    use Template;
+
+    get '/hello/:name' => sub {
+        template 'hello' => {var => 42};
+    };
+
+And the appdir/views/hello.tt view can contain the following code:
+
+   <html>
+    <head></head>
+    <body>
+        <h1>Hello <% params.name %></h1>
+    </body>
+   </html>
+
+=head2 LAYOUTS
+
+A layout is a special view, located in the 'layouts' directory (inside the
+views directory) which must have a token named `content'. That token marks the
+place where to render the action view. This lets you define a global layout for
+your actions. 
+
+Here is an example of a layout: views/layouts/main.tt :
+
+    <html>
+        <head>...</head>
+        <body>
+        <div id="header">
+        ...
+        </div>
+
+        <div id="content">
+        <% content %>
+        </div>
+
+        </body>
+    </html>
+
+This layout can be used like the following:
+
+    use Dancer;
+    use Template; 
+
+    layout 'main';
+
+    get '/' => sub {
+        template 'index';
+    };
 
 =head1 STATIC FILES
+
+=head2 STATIC DIRECTORY
 
 Static files are served from the ./public directory. You can specify a
 different location by setting the 'public' option:
@@ -281,7 +355,37 @@ different location by setting the 'public' option:
 Note that the public directory name is not included in the URL. A file
 ./public/css/style.css is made available as example.com/css/style.css. 
 
-Dancer will automatically detect the mime-types for the static files accessed.
+=head2 MIME-TYPES CONFIGURATION
+
+By default, Dancer will automatically detect the mime-types to use for 
+the static files accessed.
+
+It's possible to choose specific mime-type per file extensions. For instance,
+we can imagine you want to sever *.foo as a text/foo content, instead of
+text/plain (which would be the content type detected by Dancer if *.foo are
+text files).
+
+        mime_type foo => 'text/foo';
+
+This configures the 'text/foo' content type for any file matching '*.foo'.
+
+=head2 STATIC FILE FROM A ROUTE HANDLER
+
+It's possible for a route handler to pass the batton to a static file, like
+the following.
+
+    get '/download/*' => sub {
+        my $params = shift;
+        my ($file) = @{ $params->{splat} };
+
+        send_file $file;
+    };
+
+Or even if you want your index page to be a plain old index.html file, just do:
+
+    get '/' => sub {
+        send_file '/index.html'
+    };
 
 =head1 SETTINGS
 
@@ -323,6 +427,24 @@ This module has been written by Alexis Sukrieh <sukria@cpan.org>
 
 The source code for this module is hosted on GitHub
 L<http://github.com/sukria/Dancer>
+
+=head1 DEPENDENCIES
+
+Dancer depends on the following modules:
+
+=over 4
+
+=item L<HTTP::Server::Simple>
+
+=item L<CGI>
+
+=item L<File::MimeInfo>
+
+=item L<File::Spec>
+
+=item L<File::Basename>
+
+=back
 
 =head1 LICENSE
 

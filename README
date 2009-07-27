@@ -41,3 +41,10 @@ Then it's possible to access any route defined in the script:
 Feel free to fork that project if you like the idea and want to add some
 features.
 
+Dancer depends on the following modules
+
+    - HTTP::Server::Simple
+    - File::MimeInfo
+    - File::Spec
+    - File::Basename
+

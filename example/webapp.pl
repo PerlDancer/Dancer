@@ -1,13 +1,14 @@
 #!/usr/bin/perl
 
 use Dancer;
+use Template;
 
 
-set content_type => 'text/plain';
+layout 'main';
 
 before sub {
-    var note => 'Hi there';
-    request->path_info('/foo/oversee')
+    var note => "I ARE IN TEH BEFOR FILTERZ";
+#    request->path_info('/foo/oversee')
 };
 
 get '/foo/*' => sub {
@@ -22,16 +23,17 @@ get '/foo/*' => sub {
 
 
 get '/' => sub {
-    "Hello There!"
+    template 'index', {note => vars->{note}};
 };
 
 get '/hello/:name' => sub {
-    if (params->{name} ne 'sukria') {
-        status('not_found');
-        content_type("text/plain");
-        return "Not found";
-    }
-    return "Hey ".params->{name}.", how are you?";
+    template 'hello';
+};
+
+get '/page/:slug' => sub {
+    template 'index' => {
+        message => 'This is the page '.params->{slug},    
+    };
 };
 
 post '/new' => sub {
