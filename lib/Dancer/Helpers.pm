@@ -43,6 +43,7 @@ sub template {
 
     $tokens ||= {};
     $tokens->{params} = Dancer::SharedData::params();
+    $tokens->{request} = Dancer::SharedData->cgi;
     
     my $layout = setting('layout');
     my $content = '';
