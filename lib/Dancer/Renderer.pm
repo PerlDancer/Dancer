@@ -52,19 +52,9 @@ sub get_action_response() {
     my $request = Dancer::SharedData->cgi;
     my $path = $request->path_info;
     my $method = $request->request_method;
+    
     my $handler = Dancer::Route->find($path, $method);
-
-    if ($handler) {
-        # merging request and route params
-        my $request_params = scalar($request->Vars);
-        my $route_params = $handler->{params};
-        my $params = (ref($route_params) ne 'HASH') 
-                   ? $request_params 
-                   : { %{$request_params}, %{$route_params} };
-
-        Dancer::SharedData->params($params);
-        return Dancer::Route->call($handler);
-    }
+    Dancer::Route->call($handler) if $handler;
 }
 
 sub get_file_response() {

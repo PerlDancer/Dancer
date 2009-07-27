@@ -52,12 +52,17 @@ sub before_filters { @{$REG->{before_filters}} }
 sub run_before_filters { $_->() for before_filters }
 
 sub build_params {
-    my ($handler, $cgi) = @_;
-    my $cgi_params = scalar($cgi->Vars);
-    my $route_params = $handler->{params};
-    return (ref($route_params) ne 'HASH') 
-        ? $cgi_params 
-        : { %{$cgi_params}, %{$route_params} };
+    my ($handler, $request) = @_;
+    
+    my $current_params = Dancer::SharedData->params || {};
+    my $request_params = scalar($request->Vars) || {};
+    my $route_params = $handler->{params} || {};
+
+    return { 
+        %{$request_params}, 
+        %{$route_params}, 
+        %{$current_params},
+    };
 }
 
 # Recursive call of actions through the matching tree
@@ -76,6 +81,7 @@ sub call($$) {
             return Dancer::Route->call($handler->{'next'});
         }
         else {
+            Dancer::SharedData->reset_all();
             return {
                 head => {status => 404, content_type => 'text/plain'},
                 body => "pass, but unable to find another matching route",
@@ -83,6 +89,7 @@ sub call($$) {
         }
     }
     else {
+        Dancer::SharedData->reset_all();
         return {
             head => $response, 
             body => $content
