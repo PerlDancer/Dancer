@@ -28,7 +28,7 @@ sub render_action {
 }
 
 sub render_error {
-    my $request = Dancer::SharedData->request;
+    my $request = Dancer::SharedData->cgi;
     my $path = $request->path_info;
     my $method = $request->request_method;
 
