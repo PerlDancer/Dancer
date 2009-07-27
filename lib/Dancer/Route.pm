@@ -5,7 +5,7 @@ use warnings;
 use Dancer::SharedData;
 
 # singleton for stroing the routes defined
-my $REG = { routes => [], before_filters => [] };
+my $REG = { routes => {}, before_filters => [] };
 
 # accessor for setting up a new route
 sub add {
@@ -61,7 +61,7 @@ sub build_params {
 }
 
 # Recursive call of actions through the matching tree
-sub call {
+sub call($$) {
     my ($class, $handler) = @_;
     
     my $cgi = Dancer::SharedData->cgi;
@@ -73,7 +73,7 @@ sub call {
 
     if ($response->{pass}) {
         if ($handler->{'next'}) {
-            return Dancer::Route->call($handler->{'next'}, $cgi);
+            return Dancer::Route->call($handler->{'next'});
         }
         else {
             return {

@@ -18,27 +18,27 @@ use base 'Exporter', 'HTTP::Server::Simple::CGI';
 $AUTHORITY = 'SUKRIA';
 $VERSION = '0.1';
 @EXPORT = qw(
-    set
-    get 
-    post 
-    status
-    content_type
-    pass
-    true
-    false
-    r
-    dirname
-    path
-    params
-    vars
-    var
-    splat
     before
+    content_type
+    dirname
+    false
+    get 
+    layout
+    mime_type
+    params
+    pass
+    path
+    post 
+    r
     request
     send_file
-    mime_type
+    set
+    splat
+    status
     template
-    layout
+    true
+    var
+    vars
 );
 
 # Dancer's syntax 
