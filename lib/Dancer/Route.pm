@@ -5,7 +5,7 @@ use warnings;
 use Dancer::SharedData;
 
 # singleton for stroing the routes defined
-my $REG = { before_filters => [] };
+my $REG = { routes => [], before_filters => [] };
 
 # accessor for setting up a new route
 sub add {
@@ -50,7 +50,6 @@ sub before_filter {
 
 sub before_filters { @{$REG->{before_filters}} }
 sub run_before_filters { $_->() for before_filters }
-sub run_after_filters { 1 }
 
 sub build_params {
     my ($handler, $cgi) = @_;

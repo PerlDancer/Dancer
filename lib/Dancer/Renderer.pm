@@ -63,9 +63,7 @@ sub get_action_response() {
                    : { %{$request_params}, %{$route_params} };
 
         Dancer::SharedData->params($params);
-        my $resp = Dancer::Route->call($handler);
-        Dancer::Route->run_after_filters;
-        return $resp;
+        return Dancer::Route->call($handler);
     }
 }
 
