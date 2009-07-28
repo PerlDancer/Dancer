@@ -9,20 +9,23 @@ use File::Spec;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(path dirname dump_file_content);
+@EXPORT_OK = qw(path dirname read_file_content);
 
 sub path { File::Spec->catfile(@_) }
 sub dirname { File::Basename::dirname(@_) }
 
-sub dump_file_content {
+sub read_file_content {
     my ($file) = @_;
+    my $content = '';
+
     if (open(FILE_TO_READ, '<', $file)) {
         binmode FILE_TO_READ;
         my $buffer;
         while (read(FILE_TO_READ, $buffer, 8192)) {
-            print $buffer;
+            $content .= $buffer;
         }
         close FILE_TO_READ;
+        return $content;
     }
     else {
         return undef;

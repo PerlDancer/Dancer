@@ -5,7 +5,7 @@ use warnings;
 use Dancer::SharedData;
 
 # singleton for stroing the routes defined
-my $REG = {};
+my $REG = { routes => {}, before_filters => [] };
 
 # accessor for setting up a new route
 sub add {
@@ -42,19 +42,63 @@ sub find {
     return $first_match;
 }
 
-# Recursive call of actions through the matching tree
-sub call {
-    my ($class, $handler) = @_;
-    my $params = Dancer::SharedData->params;
+sub before_filter {
+    my ($class, $filter) = @_; 
+    $REG->{before_filters} ||= [];
+    push @{$REG->{before_filters}}, $filter;
+}
 
-    my $content = $handler->{code}->($params); 
-    my $response = Dancer::Response->current;
+sub before_filters { @{$REG->{before_filters}} }
+sub run_before_filters { $_->() for before_filters }
+
+sub build_params {
+    my ($handler, $request) = @_;
     
+    my $current_params = Dancer::SharedData->params || {};
+    my $request_params = scalar($request->Vars) || {};
+    my $route_params = $handler->{params} || {};
+
+    return { 
+        %{$request_params}, 
+        %{$route_params}, 
+        %{$current_params},
+    };
+}
+
+# Recursive call of actions through the matching tree
+sub call($$) {
+    my ($class, $handler) = @_;
+    
+    my $cgi = Dancer::SharedData->cgi;
+    my $params = build_params($handler, $cgi);
+    Dancer::SharedData->params($params);
+
+    my $content;
+    
+    # catch warnings
+    my $warn;
+    local $SIG{__WARN__} = sub { $warn = $_[0] };
+
+    # eval the route handler
+    eval { $content = $handler->{code}->() };
+
+    # trap errors
+    if ($@ || $warn) {
+        Dancer::SharedData->reset_all();
+        return {
+            head => {status => 'error', content_type => 'text/plain'},
+            body => "Route Handler Error\n\n$warn\n$@",
+        };
+    }
+
+    my $response = Dancer::Response->current;
+
     if ($response->{pass}) {
         if ($handler->{'next'}) {
             return Dancer::Route->call($handler->{'next'});
         }
         else {
+            Dancer::SharedData->reset_all();
             return {
                 head => {status => 404, content_type => 'text/plain'},
                 body => "pass, but unable to find another matching route",
@@ -62,6 +106,7 @@ sub call {
         }
     }
     else {
+        Dancer::SharedData->reset_all();
         return {
             head => $response, 
             body => $content

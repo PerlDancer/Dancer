@@ -1,0 +1,1 @@
+in view index.tt: number="<% params.number %>"

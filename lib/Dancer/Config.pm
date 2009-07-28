@@ -5,7 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(setting);
+@EXPORT_OK = qw(setting mime_types);
 
 # singleton for storing settings
 my $SETTINGS = {};
@@ -18,6 +18,17 @@ sub setting {
         : $SETTINGS->{$setting} ;
 }
 
+sub mime_types {
+    my ($ext, $content_type) = @_;
+    $SETTINGS->{mime_types} ||= {};
+    return $SETTINGS->{mime_types} if @_ == 0;
+
+    return (@_ == 2) 
+        ? $SETTINGS->{mime_types}{$ext} = $content_type
+        : $SETTINGS->{mime_types}{$ext};
+}
+
+
 # load default settings
 
 setting( server       => '127.0.0.1');
@@ -25,6 +36,7 @@ setting( port         => '1915'); # sinatra's birth year ;)
 setting( content_type => 'text/html');
 setting( charset      => 'UTF-8');
 setting( access_log   => 1);
+setting( daemon       => 0);
 
 'Dancer::Config';
 __END__

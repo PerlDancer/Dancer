@@ -14,52 +14,19 @@
         ...
     };
 
-
- render should then use a template system for rendering the view 
- located in $views_directory/index.tpl with $stuff data 
-
-* Template rendering support
-
-    get '/' => sub {
-        ...
-        render index => $stuff;
-    };
- 
-    Templates are assumed to be located directly under the ./views directory. To
-    use a different views directory:
-
-      set views =>  dirname(__FILE__) . '/templates'
-
 * Helper support
 
     We should provide a way to define helpers, that are basically, methods
     accessible from the action code blocks.
 
+    Well, this is certainly useless in Perl (whereas it's not in Ruby) because
+    any sub defined would be accessible....
+
+
 * Error handler support
 
     Could be interesting to have a real error handler mechanism instead of the 
     single `Dancer::Renderer->render_error' method.
-
-* Helper for rendering a static file within an action
-
-    Once the helper system is ready, we could add one for letting the user 
-    render a static file, from an action, like that:
-
-        get '/download/*' => sub {
-            my $params = shift;
-            my ($file) = @{ $params->{splat} };
-
-            send_file $file;
-        };
-
-* Mime Types configuration
-
-    The user should be able to choose specific mime-type per file extensions, if 
-    he doesn't like the one Dancer finds when serving a static file.
-
-        mime_type foo => 'text/foo';
-
-    This would tell to serve any file matching '*.foo' as a 'text/foo' content.
 
 * Environment support
 
@@ -78,4 +45,6 @@
         setting access_log => 1;
         setting verbosity => 1;
 
+* Templates
 
+    - support for changing views extensions
