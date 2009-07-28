@@ -83,7 +83,10 @@ sub print_response($$) {
     print $st;
     print $request->header($ct);
     print $resp->{body};
-    print STDERR "== $method $path $st";
+    
+    if (setting('access_log')) {
+        print STDERR "== $method $path $st";
+    }
 }
 
 # private
