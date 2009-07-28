@@ -73,7 +73,24 @@ sub call($$) {
     my $params = build_params($handler, $cgi);
     Dancer::SharedData->params($params);
 
-    my $content = $handler->{code}->(); 
+    my $content;
+    
+    # catch warnings
+    my $warn;
+    local $SIG{__WARN__} = sub { $warn = $_[0] };
+
+    # eval the route handler
+    eval { $content = $handler->{code}->() };
+
+    # trap errors
+    if ($@ || $warn) {
+        Dancer::SharedData->reset_all();
+        return {
+            head => {status => 'error', content_type => 'text/plain'},
+            body => "Route Handler Error\n\n$warn\n$@",
+        };
+    }
+
     my $response = Dancer::Response->current;
 
     if ($response->{pass}) {

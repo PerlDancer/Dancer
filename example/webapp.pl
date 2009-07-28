@@ -20,6 +20,10 @@ get '/foo/*' => sub {
     "request: ".Dumper(request);
 };
 
+# for testing Perl errors
+get '/error' => sub {
+    template();   
+};
 
 get '/' => sub {
     template 'index', {note => vars->{note}};
