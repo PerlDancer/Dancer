@@ -3,7 +3,6 @@
 use Dancer;
 use Template;
 
-
 layout 'main';
 
 before sub {

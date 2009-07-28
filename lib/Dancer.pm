@@ -5,18 +5,19 @@ use warnings;
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
-use Dancer::Route;
+use Dancer::FileUtils;
+use Dancer::GetOpt;
+use Dancer::Helpers;
 use Dancer::Renderer;
 use Dancer::Response;
-use Dancer::FileUtils;
+use Dancer::Route;
 use Dancer::SharedData;
-use Dancer::Helpers;
 
 use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION = '0_0.99';
+$VERSION = '0.9901';
 @EXPORT = qw(
     before
     content_type
@@ -68,11 +69,22 @@ sub vars         { Dancer::SharedData->vars }
 # The run method to call for starting the job
 sub dance { 
     my $class = shift;
+
+    # read options on the command line and set 
+    # settings accordingly
+    Dancer::GetOpt->process_args();
+
     my $ipaddr = setting 'server';
     my $port   = setting 'port';
 
-    print ">> Listening on $ipaddr:$port\n";
-    my $pid = $class->new($port)->run();
+    if (setting('daemon')) {
+        my $pid = $class->new($port)->background();
+        print ">> Process $pid listening on $ipaddr:$port\n";
+    }
+    else {
+        print ">> Listening on $ipaddr:$port\n";
+        $class->new($port)->run();
+    }
 }
 
 # HTTP server overload comes here
