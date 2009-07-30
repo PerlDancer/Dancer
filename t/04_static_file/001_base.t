@@ -1,22 +1,21 @@
 use strict;
 use warnings;
 
+use lib 't';
+use TestUtils;
 use Test::More tests => 6, import => ['!pass'];
 
 BEGIN {
     use_ok 'Dancer';
     use_ok 'Dancer::Config', 'setting';
 }
-use CGI;
 
 set public => path(dirname(__FILE__), 'static');
 my $public = setting('public');
 
 ok((defined($public) && (-d $public)), 'public dir is set');
 
-my $request = CGI->new;
-$request->path_info('/hello.txt');
-$request->request_method('GET');
+my $request = TestUtils::fake_request('GET' => '/hello.txt');
 my $path = $request->path_info;
 
 Dancer::SharedData->cgi($request);
