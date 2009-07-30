@@ -30,7 +30,7 @@ foreach my $test (@tests) {
     my $cgi = TestUtils::fake_request($test->{method} => $test->{path});
 
     Dancer::SharedData->cgi($cgi);
-    my $response = Dancer::Renderer::get_action_response($test->{method} => $test->{path});
+    my $response = Dancer::Renderer::get_action_response();
 
     ok(defined $response, "route handler found for path `".$test->{path}."'");
     is($response->{body}, $test->{expected}, "matching param looks good: ".$response->{body});
