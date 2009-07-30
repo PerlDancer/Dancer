@@ -79,7 +79,8 @@ sub dance {
 
     if (setting('daemon')) {
         my $pid = $class->new($port)->background();
-        print ">> Process $pid listening on $ipaddr:$port\n";
+        print ">> Process $pid listening on $ipaddr:$port\n" if setting('access_log');
+        return $pid;
     }
     else {
         print ">> Listening on $ipaddr:$port\n";
@@ -99,7 +100,9 @@ sub handle_request {
 }
 
 sub print_banner {
-    print "== Entering the dance floor ...\n";
+    if (setting('access_log')) {
+        print "== Entering the dance floor ...\n";
+    }
 }
 
 # When importing the package, strict and warnings pragma are loaded, 
