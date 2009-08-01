@@ -2,6 +2,9 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
+use lib 't';
+use TestUtils;
+
 use Dancer;
 use Dancer::Route; 
 
@@ -27,9 +30,7 @@ foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
     
-    my $cgi = CGI->new;
-    $cgi->request_method('GET');
-    $cgi->path_info($path);
+    my $cgi = fake_request(GET => $path);
 
     Dancer::SharedData->cgi($cgi);
     my $response = Dancer::Renderer::get_action_response();

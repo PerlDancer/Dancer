@@ -36,6 +36,7 @@ setting( port         => '1915'); # sinatra's birth year ;)
 setting( content_type => 'text/html');
 setting( charset      => 'UTF-8');
 setting( access_log   => 1);
+setting( daemon       => 0);
 
 'Dancer::Config';
 __END__

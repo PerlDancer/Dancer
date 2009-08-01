@@ -3,6 +3,8 @@ use warnings;
 
 use Test::More 'no_plan', import => ['!pass'];
 use Dancer;
+use lib 't';
+use TestUtils;
 
 ok(before(sub { 
     params->{number} = 42;
@@ -17,9 +19,7 @@ ok(get('/' => sub {
 }), 'index route is defined');
 
 my $path = '/somewhere';
-my $cgi = CGI->new;
-$cgi->request_method('GET');
-$cgi->path_info($path);
+my $cgi = fake_request(GET => $path);
 
 Dancer::SharedData->cgi($cgi);
 my $response = Dancer::Renderer::get_action_response();

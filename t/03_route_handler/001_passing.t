@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 use Test::More tests => 19, import => ['!pass'];
+use lib 't';
+use TestUtils;
 
 BEGIN { 
     use_ok 'Dancer';
@@ -43,11 +45,9 @@ foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
  
-    my $cgi = CGI->new;
-    $cgi->request_method('GET');
-    $cgi->path_info($path);
-
+    my $cgi = fake_request(GET => $path);
     Dancer::SharedData->cgi($cgi);
+
     my $response = Dancer::Renderer::get_action_response();
        
     ok( defined($response), "route found for path `$path'");

@@ -1,7 +1,8 @@
 use Test::More import => ['!pass'];
 
 use Dancer;
-use CGI;
+use lib 't';
+use TestUtils;
 
 my @tests = (
     { path => '/solo',
@@ -31,9 +32,7 @@ SKIP: {
         my $path = $test->{path};
         my $expected = $test->{expected};
 
-        my $request = CGI->new;
-        $request->path_info($path);
-        $request->request_method('GET');
+        my $request = fake_request(GET => $path);
 
         Dancer::SharedData->cgi($request);
         my $resp = Dancer::Renderer::get_action_response();
