@@ -79,7 +79,8 @@ sub dance {
 
     if (setting('daemon')) {
         my $pid = $class->new($port)->background();
-        print ">> Process $pid listening on $ipaddr:$port\n";
+        print ">> Process $pid listening on $ipaddr:$port\n" if setting('access_log');
+        return $pid;
     }
     else {
         print ">> Listening on $ipaddr:$port\n";
@@ -99,7 +100,9 @@ sub handle_request {
 }
 
 sub print_banner {
-    print "== Entering the dance floor ...\n";
+    if (setting('access_log')) {
+        print "== Entering the dance floor ...\n";
+    }
 }
 
 # When importing the package, strict and warnings pragma are loaded, 
@@ -140,11 +143,9 @@ project, Dancer is what you need.
 
 =head1 USAGE
 
-As soon as Dancer is imported to a script, that script becomes a webapp.
-
-All the script has to do is to declare a list of B<routes>.
-    
-A route handler is composed by an HTTP method, a path pattern and a code block.
+As soon as Dancer is imported to a script, that script becomes a webapp.  All
+the script has to do is to declare a list of B<routes>.  A route handler is
+composed by an HTTP method, a path pattern and a code block.
 
 The code block given to the route handler has to return a string which will be
 used as the content to render to the client.
@@ -207,6 +208,21 @@ be defined explicitly with the keyword 'r', like the following:
         my ($name) = splat;
         return "Hello $name";
     };
+
+=head2 RUNNING THE WEBSERVER
+
+Once the script is ready, you can run the webserver just by running the
+script. The following options are supported:
+
+=over 8
+
+=item B<--port=XXXX>    set the port to listen to (default is 1915)
+
+=item B<--daemon>       run the webserver in the background
+
+=item B<--help>         display a detailed help message
+
+=back
 
 =head1 ACTION SKIPPING
 

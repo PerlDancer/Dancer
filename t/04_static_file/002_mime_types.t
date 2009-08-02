@@ -1,15 +1,9 @@
 use strict;
 use warnings;
 
+use lib 't';
+use TestUtils;
 use Test::More tests => 9, import => ['!pass'];
-
-sub build_request {
-    my ($path) = @_;
-    my $request = CGI->new;
-    $request->path_info($path);
-    $request->request_method('GET');
-    return $request;
-}
 
 BEGIN {
     use_ok 'Dancer';
@@ -20,7 +14,7 @@ set public => path(dirname(__FILE__), 'static');
 my $public = setting('public');
 
 my $path = '/hello.foo';
-my $request = build_request($path);
+my $request = fake_request(GET => $path);
 
 Dancer::SharedData->cgi($request);
 my $resp = Dancer::Renderer::get_file_response();
@@ -39,7 +33,7 @@ is_deeply($resp->{head},
     "$path is sent as text/foo");
 
 $path = '/hello.txt';
-$request = build_request($path);
+$request = fake_request(GET => $path);
 
 Dancer::SharedData->cgi($request);
 $resp = Dancer::Renderer::get_file_response();

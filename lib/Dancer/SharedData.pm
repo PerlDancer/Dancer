@@ -25,7 +25,7 @@ sub cgi { (@_ == 2) ? $cgi = $_[1] : $cgi }
 sub reset_all {
     $params = {};
     $vars = {};
-    $cgi = undef;
+#    $cgi = undef;
 }
 
 'Dancer::SharedData';

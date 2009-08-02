@@ -106,6 +106,7 @@ sub call($$) {
         }
     }
     else {
+
         Dancer::SharedData->reset_all();
         return {
             head => $response, 
