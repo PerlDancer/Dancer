@@ -47,4 +47,5 @@ Dancer depends on the following modules
     - File::MimeInfo
     - File::Spec
     - File::Basename
+    - Template
 

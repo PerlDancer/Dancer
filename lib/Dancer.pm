@@ -470,6 +470,8 @@ Dancer depends on the following modules:
 
 =item L<File::Basename>
 
+=item L<Template>
+
 =back
 
 =head1 LICENSE

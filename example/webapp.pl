@@ -15,8 +15,8 @@ get '/foo/*' => sub {
     
     use Data::Dumper;
 
-    "note: '".vars->{note}."'\n".
-    "match: $match\n".
+    "note: '".vars->{note}."'\n<BR>".
+    "match: $match\n<BR>".
     "request: ".Dumper(request);
 };
 
