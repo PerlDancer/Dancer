@@ -305,6 +305,36 @@ that will be accessible in the action blocks with the keyword 'var'.
 The request keyword returns the current CGI object representing the incoming request.
 See the documentation of the L<CGI> module for details.
 
+=head1 CONFIGURATION AND ENVIRONMENTS
+
+Configuring a Dancer application can be done in many ways. The easiest one (and
+maybe the the dirtiest) is to put all your settings statements at the top of
+your script, before calling the dance() method.
+
+Other ways are possible, you can write all your setting calls in the file
+`appdir/config.pl'. That's better than the first option, but it's still not
+perfect as you can't switch easily from an environment to another without
+rewriting the config.pl file.
+
+The better way is to have one config.pl file that just set the environment
+setting:
+
+    # appdir/config.pl
+    set environment => 'development';
+
+And then write as many environment file as you like in appdir/environements.
+That way, you just have to change the value of appdir/config.pl to switch to
+another environment.
+
+Note that you can also overide the config.pl enviroment value by using the
+--environment commandline switch.
+
+If the setting `environment' is set, Dancer will try to load the corresponding 
+environment file (appdir/environments/$environment.pl).
+
+If the setting `environment' is not defined, no environment file will be
+loaded.
+
 =head1 USING TEMPLATES
 
 =head1 VIEWS 
@@ -464,7 +494,9 @@ L<http://github.com/sukria/Dancer>
 
 Dancer depends on the following modules:
 
-=over 4
+The following modules are mandatory (Dancer cannot run without them)
+
+=over 8
 
 =item L<HTTP::Server::Simple>
 
@@ -475,6 +507,16 @@ Dancer depends on the following modules:
 =item L<File::Spec>
 
 =item L<File::Basename>
+
+=back
+
+The following modules are optional 
+
+=over 8
+
+=item L<Template>           needed for the views rendering system
+
+=item L<Logger::Syslog>     needed for logging information to syslog
 
 =back
 
