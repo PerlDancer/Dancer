@@ -6,9 +6,6 @@ use Carp 'confess';
 use Dancer::FileUtils 'path';
 use Dancer::Config 'setting';
 
-sub set { setting(@_) }
-sub end { 1 }
-
 sub load {
     my ($class, $env) = @_;
     return 1 if not defined $env;
