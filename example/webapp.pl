@@ -4,6 +4,7 @@ use Dancer;
 use Template;
 
 layout 'main';
+set environment => 'devel';
 
 before sub {
     var note => "I ARE IN TEH BEFOR FILTERZ";
