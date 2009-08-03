@@ -40,6 +40,7 @@ $VERSION = '0.9901';
     true
     var
     vars
+    dance
 );
 
 # Dancer's syntax 
@@ -68,8 +69,6 @@ sub vars         { Dancer::SharedData->vars }
 
 # The run method to call for starting the job
 sub dance { 
-    my $class = shift;
-
     # read options on the command line and set 
     # settings accordingly
     Dancer::GetOpt->process_args();
@@ -78,13 +77,13 @@ sub dance {
     my $port   = setting 'port';
 
     if (setting('daemon')) {
-        my $pid = $class->new($port)->background();
+        my $pid = Dancer->new($port)->background();
         print ">> Process $pid listening on $ipaddr:$port\n" if setting('access_log');
         return $pid;
     }
     else {
         print ">> Listening on $ipaddr:$port\n";
-        $class->new($port)->run();
+        Dancer->new($port)->run();
     }
 }
 
