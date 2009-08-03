@@ -3,17 +3,16 @@
 use Dancer;
 use Template;
 
-layout 'main';
-set environment => 'devel';
-
 before sub {
     var note => "I ARE IN TEH BEFOR FILTERZ";
+    debug "in the before filter";
 #    request->path_info('/foo/oversee')
 };
 
 get '/foo/*' => sub {
     my ($match) = splat; # ('bar/baz')
-    
+    debug "je suis dans /foo";
+   
     use Data::Dumper;
 
     "note: '".vars->{note}."'\n".
@@ -27,6 +26,7 @@ get '/error' => sub {
 };
 
 get '/' => sub {
+    debug "welcome to the home";
     template 'index', {note => vars->{note}};
 };
 

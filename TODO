@@ -118,23 +118,6 @@
     The `end' keyword just returns true, it's sugar for configuration
     files. 
 
-* Logger
-
-    we should provide the option to use a logger, like
-    Logger::Syslog. Can be defined with a setting:
-
-    set log => debug;
-
-    or 
-
-    set log => warning;
-
-    A wrapper, Dancer::Logger would then provide the following
-    methods: debug, warning and error.
-
-    If the log setting is at least the level requested, it logs the
-    message, otherwise, it drops it out.
-
 
 * Session support
 

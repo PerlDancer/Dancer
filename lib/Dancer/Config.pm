@@ -41,15 +41,6 @@ setting( charset      => 'UTF-8');
 setting( access_log   => 1);
 setting( daemon       => 0);
 
-sub set { setting @_ }
-
-sub load_default {
-    my $conf = path(setting('appdir'), 'config.pl');
-    if (-e $conf && -r $conf) {
-        do $conf or confess "Unable to load configuration file `$conf': $@";
-    }
-}
-
 'Dancer::Config';
 __END__
 =pod

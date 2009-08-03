@@ -2,6 +2,7 @@ package Dancer;
 
 use strict;
 use warnings;
+use Carp 'confess';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
@@ -9,6 +10,7 @@ use Dancer::Environment;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Helpers;
+use Dancer::Logger;
 use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::Route;
@@ -23,10 +25,13 @@ $VERSION = '0.9902';
     before
     content_type
     dance
+    debug
     dirname
+    error
     false
     get 
     layout
+    logger
     mime_type
     params
     pass
@@ -42,16 +47,20 @@ $VERSION = '0.9902';
     true
     var
     vars
+    warning
 );
 
 # Dancer's syntax 
 
 sub before       { Dancer::Route->before_filter(@_) }
 sub content_type { Dancer::Response::content_type(@_) }
+sub debug        { Dancer::Logger->debug(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
+sub error        { Dancer::Logger->error(@_) }
 sub false        { 0 }
 sub get          { Dancer::Route->add('get', @_) }
 sub layout       { set(layout => shift) }
+sub logger       { set(logger => @_) && Dancer::Logger->init }
 sub mime_type    { Dancer::Config::mime_types(@_) }
 sub params       { Dancer::SharedData->params  }
 sub pass         { Dancer::Response::pass() }
@@ -67,6 +76,7 @@ sub template     { Dancer::Helpers::template(@_) }
 sub true         { 1 }
 sub var          { Dancer::SharedData->var(@_) }
 sub vars         { Dancer::SharedData->vars }
+sub warning      { Dancer::Logger->warning(@_) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -75,7 +85,7 @@ sub dance {
     Dancer::GetOpt->process_args();
 
     # Load default config
-    Dancer::Config->load_default;
+    load_default_config();
 
     # Load environment
     Dancer::Environment->load(setting('environment'));
@@ -91,6 +101,15 @@ sub dance {
     else {
         print ">> Listening on $ipaddr:$port\n";
         Dancer->new($port)->run();
+    }
+}
+
+# This has to be in Dancer.pm so all the syntax sugar is possible in 
+# the config file.
+sub load_default_config {
+    my $conf = path(setting('appdir'), 'config.pl');
+    if (-e $conf && -r $conf) {
+        do $conf or confess "Unable to load configuration file `$conf': $@";
     }
 }
 
@@ -334,6 +353,28 @@ environment file (appdir/environments/$environment.pl).
 
 If the setting `environment' is not defined, no environment file will be
 loaded.
+
+=head1 LOGGING
+
+It's possible to log messages sent by the application. In the current version,
+only one method is possible for logging messages but it may come in future
+releases new methods.
+
+In order to enable the logging system for your application, you first have to
+start the logger engine in your config.pl (or directly within your application
+code), do:
+
+    logger => 'file'; 
+
+Then you can choose which kind of messages you want to actually log:
+
+    set log => 'debug';     # will log debug, warning and errors
+    set log => 'warning';   # will log warning and errors
+    set log => 'error';     # will log only errors
+
+A directory appdir/logs will be created and will host one logfile per
+environment. The log message contains the time it was written, the PID of the
+current process, the message and the caller information (file and line).
 
 =head1 USING TEMPLATES
 
