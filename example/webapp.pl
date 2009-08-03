@@ -68,4 +68,4 @@ get r('/(.*)') => sub {
     "got to trash: $trash";
 };
 
-Dancer->dance;
+dance;
