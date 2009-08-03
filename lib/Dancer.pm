@@ -74,6 +74,9 @@ sub dance {
     # settings accordingly
     Dancer::GetOpt->process_args();
 
+    # Load default config
+    Dancer::Config->load_default;
+
     # Load environment
     Dancer::Environment->load(setting('environment'));
 

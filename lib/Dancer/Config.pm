@@ -5,6 +5,9 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
+use Dancer::FileUtils 'path';
+use Carp 'confess';
+
 @EXPORT_OK = qw(setting mime_types);
 
 # singleton for storing settings
@@ -37,6 +40,15 @@ setting( content_type => 'text/html');
 setting( charset      => 'UTF-8');
 setting( access_log   => 1);
 setting( daemon       => 0);
+
+sub set { setting @_ }
+
+sub load_default {
+    my $conf = path(setting('appdir'), 'config.pl');
+    if (-e $conf && -r $conf) {
+        do $conf or confess "Unable to load configuration file `$conf': $@";
+    }
+}
 
 'Dancer::Config';
 __END__
