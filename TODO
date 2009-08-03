@@ -136,3 +136,43 @@
     message, otherwise, it drops it out.
 
 
+* Session support
+
+    We need a way to support web session in the easiest way possible.
+
+    Maybe something like that:
+
+    set session => true; # enable the session engine
+
+    get '/login' => sub {
+       template 'login' 
+    };
+
+    post '/login' => sub {
+        my $user = User->authenticate(params->{login}, params->{password});
+
+        if ($user) {
+            session user_id => $user->id;
+        }
+        else {
+            var error => "Bad credentials";
+            pass;
+        }
+    };
+
+    Then the key 'user_id' should be accessible in other requests:
+
+    before => sub {
+        if (not session->{user_id}) {
+            var error => "Must be authenticated";
+            request->path_info('/error');
+        }
+        else {
+            var user => User->find(session->{user_id});
+        }
+    };
+
+    get '/home' => sub {
+        "Hello ".vars->{user}->name
+    };
+
