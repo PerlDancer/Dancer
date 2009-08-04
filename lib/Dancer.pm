@@ -345,28 +345,39 @@ maybe the the dirtiest) is to put all your settings statements at the top of
 your script, before calling the dance() method.
 
 Other ways are possible, you can write all your setting calls in the file
-`appdir/config.pl'. That's better than the first option, but it's still not
+`appdir/config.yml'. For this, you must have installed the YAML module, and of
+course, write the conffile in YAML. 
+
+That's better than the first option, but it's still not
 perfect as you can't switch easily from an environment to another without
-rewriting the config.pl file.
+rewriting the config.yml file.
 
-The better way is to have one config.pl file that just set the environment
-setting:
+The better way is to have one config.yml file with default global settings,
+like the following:
 
-    # appdir/config.pl
-    set environment => 'development';
+    # appdir/config.yml
+    logger: 'file'
+    layout: 'main'
 
 And then write as many environment file as you like in appdir/environements.
-That way, you just have to change the value of appdir/config.pl to switch to
-another environment.
+That way, the good environment config file will be loaded according to the
+running environment (if none specified, it will be 'development').
 
-Note that you can also overide the config.pl enviroment value by using the
---environment commandline switch.
+Note that you can change the running environment using the --environment
+commandline switch.
 
-If the setting `environment' is set, Dancer will try to load the corresponding 
-environment file (appdir/environments/$environment.pl).
+Typically, you'll want to set the following values in a development config
+file:
 
-If the setting `environment' is not defined, no environment file will be
-loaded.
+    # appdir/environments/development.yml
+    log: 'debug'
+    access_log: 1
+
+And in a production one:
+
+    # appdir/environments/production.yml
+    log: 'warning'
+    access_log: 0
 
 =head1 LOGGING
 

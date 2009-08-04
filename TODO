@@ -4,13 +4,6 @@
             This is the roadmap of upcoming developments
 
 
-* Support for HEAD requests
-
-    Any GET method defined should also honour a HEAD method by just sending the
-    response header, without the body.
-
-    Currently, Dancer rejects HEAD requests with the default 404 error.
-
 * Route caching support
 
     When a path is firstly resolved through the route tree, we should
@@ -26,11 +19,6 @@
     get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
         ...
     };
-
-* Use YAML for configuration files
-
-    Using pseudo Perl script for configuration is bad. YAML is the perfect
-    choice for an effortless framework.
 
 * Helper script
 
@@ -89,45 +77,6 @@
     or
 
     set errors => hidden;
-
-
-* Environment support
-
-    It should be possible to run a Dancer server with a specific
-    environment, like development or production.
-
-    This could be done like the following:
-
-    $ ./my-dancer-app.pl --environment production
-
-    Then the script appdir/environments/development.pl would be
-    loaded.
-
-    Content for environments/development.pl
-
-        set access_log => true;
-        set verbosity => true;
-        set errors => detailed;
-        set port => 3000;
-
-        end;
-    
-    Content for environments/production.pl
-
-        set access_log => true;
-        set verbosity => false;
-        set errors => hidden;
-        set port => 3000;
-
-        end;
-
-    The environments files are pure Perl files, they are loaded with
-    the require mechanism, so the can be written with the Dancer
-    syntax.
-
-    The `end' keyword just returns true, it's sugar for configuration
-    files. 
-
 
 * Session support
 
