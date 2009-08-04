@@ -4,8 +4,7 @@ use base 'Exporter';
 use vars '@EXPORT';
 use Test::MockObject;
 
-@EXPORT = ('fake_request');
-
+@EXPORT = ('fake_request', 'http_request');
 
 my $path = undef;
 sub path {
@@ -31,6 +30,14 @@ sub fake_request($$) {
 	$req->request_method($method);
 	$req->path_info($path);
 	return $req;
+}
+
+sub http_request {
+    my ($port, $method, $path) = @_;
+    my $url = "http://localhost:${port}${path}";
+    my $lwp = LWP::UserAgent->new;
+    my $req = HTTP::Request->new($method => $url);
+    return $lwp->request($req);
 }
 
 'TestUtils';
