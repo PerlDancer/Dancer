@@ -4,6 +4,13 @@
             This is the roadmap of upcoming developments
 
 
+* Support for HEAD requests
+
+    Any GET method defined should also honour a HEAD method by just sending the
+    response header, without the body.
+
+    Currently, Dancer rejects HEAD requests with the default 404 error.
+
 * Route caching support
 
     When a path is firstly resolved through the route tree, we should
@@ -19,6 +26,11 @@
     get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
         ...
     };
+
+* Use YAML for configuration files
+
+    Using pseudo Perl script for configuration is bad. YAML is the perfect
+    choice for an effortless framework.
 
 * Helper script
 
@@ -38,8 +50,6 @@
 
     --template     create a views directory and make sure
                    Template is installed.
-    --logger       make sure Logger::Syslog is installed and
-                   enable the logger in the app.
     
     Here is the output of the command:
 

@@ -62,5 +62,8 @@ Dancer depends on the following modules
 Dancer may also depend on other modules if optional features are used:
 
     - Tempalte          needed for views rendering
-    - Logger::Syslog    needed for logging to syslog
 
+=== WEBSITE ===
+
+For more details about the project, checkout the official website:
+http://dancer.sukria.net
