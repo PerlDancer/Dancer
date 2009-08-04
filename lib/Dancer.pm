@@ -58,7 +58,8 @@ sub debug        { Dancer::Logger->debug(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub error        { Dancer::Logger->error(@_) }
 sub false        { 0 }
-sub get          { Dancer::Route->add('get', @_) }
+sub get          { Dancer::Route->add('head', @_); 
+                   Dancer::Route->add('get', @_);}
 sub layout       { set(layout => shift) }
 sub logger       { set(logger => @_) && Dancer::Logger->init }
 sub mime_type    { Dancer::Config::mime_types(@_) }

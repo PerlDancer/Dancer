@@ -11,7 +11,7 @@ my $REG = { routes => {}, before_filters => [] };
 sub add {
     my ($class, $method, $route, $code) = @_;
     $REG->{routes}{$method} ||= [];
-    push @{ $REG->{routes}{$method} }, {route => $route, code => $code};
+    push @{ $REG->{routes}{$method} }, {method => $method, route => $route, code => $code};
 }
 
 # return the first route that matches the path
@@ -106,6 +106,8 @@ sub call($$) {
         }
     }
     else {
+        # drop the content if this is a HEAD request
+        $content = '' if $handler->{method} eq 'head';
 
         Dancer::SharedData->reset_all();
         return {
