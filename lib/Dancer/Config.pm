@@ -13,9 +13,28 @@ use Carp 'confess';
 # singleton for storing settings
 my $SETTINGS = {};
 
+my $setters = {
+    logger => sub {
+        my ($key, $value)  = @_;
+        if (@_ == 2) {
+            $SETTINGS->{logger} = $value;
+            Dancer::Logger->init;
+        }
+        else {
+            $SETTINGS->{logger};
+        }
+    },
+};
+
 # public accessor for get/set
 sub setting {
     my ($setting, $value) = @_;
+
+    # specific setter/getter
+    return $setters->{$setting}->(@_) 
+        if defined $setters->{$setting};
+
+    # generic setter/getter
     (@_ == 2) 
         ? $SETTINGS->{$setting} = $value
         : $SETTINGS->{$setting} ;
@@ -80,7 +99,7 @@ sub load_default_settings {
 }
 load_default_settings();
 
-'Dancer::Config';
+1;
 __END__
 =pod
 
