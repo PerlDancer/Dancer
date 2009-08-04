@@ -31,15 +31,53 @@ sub mime_types {
         : $SETTINGS->{mime_types}{$ext};
 }
 
+sub conffile { path(setting('appdir'), 'config.yml') }
 
-# load default settings
+sub environment_file {
+    my $env = setting('environment');
+    return path(setting('appdir'), 'environments', "$env.yml");
+}
 
-setting( server       => '127.0.0.1');
-setting( port         => '1915'); # sinatra's birth year ;)
-setting( content_type => 'text/html');
-setting( charset      => 'UTF-8');
-setting( access_log   => 1);
-setting( daemon       => 0);
+sub load { 
+    # look for the conffile
+    return 1 unless -f conffile;
+
+    # load YAML
+    eval "use YAML";
+    confess "Configuration file found but YAML is not installed" if $@;
+    YAML->import;
+
+    load_default_settings();
+    load_settings_from_yaml(conffile);
+
+    my $env = environment_file;
+    load_settings_from_yaml($env) if -f $env;
+
+    return 1;
+}
+
+sub load_settings_from_yaml {
+    my ($file) = @_;
+
+    my $config = YAML::LoadFile($file) or 
+        confess "Unable to parse the configuration file: $file";
+
+    foreach my $key (keys %$config) {
+        # set values for new settings
+        setting($key => $config->{$key});
+    }
+    return scalar(keys %$config);
+}
+
+sub load_default_settings {
+    $SETTINGS->{server}       ||= '127.0.0.1';
+    $SETTINGS->{port}         ||= '3000';
+    $SETTINGS->{content_type} ||= 'text/html';
+    $SETTINGS->{charset}      ||= 'UTF-8';
+    $SETTINGS->{access_log}   ||= 1;
+    $SETTINGS->{daemon}       ||= 0;
+    $SETTINGS->{environment}  ||= 'development';
+}
 
 'Dancer::Config';
 __END__

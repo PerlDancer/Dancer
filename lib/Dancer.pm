@@ -6,7 +6,6 @@ use Carp 'confess';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
-use Dancer::Environment;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Helpers;
@@ -87,11 +86,8 @@ sub dance {
     # settings accordingly
     Dancer::GetOpt->process_args();
 
-    # Load default config
-    load_default_config();
-
-    # Load environment
-    Dancer::Environment->load(setting('environment'));
+    # load config.yml if found
+    Dancer::Config->load;
 
     my $ipaddr = setting 'server';
     my $port   = setting 'port';
@@ -104,15 +100,6 @@ sub dance {
     else {
         print ">> Listening on $ipaddr:$port\n";
         Dancer->new($port)->run();
-    }
-}
-
-# This has to be in Dancer.pm so all the syntax sugar is possible in 
-# the config file.
-sub load_default_config {
-    my $conf = path(setting('appdir'), 'config.pl');
-    if (-e $conf && -r $conf) {
-        do $conf or confess "Unable to load configuration file `$conf': $@";
     }
 }
 

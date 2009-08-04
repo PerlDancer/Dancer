@@ -4,7 +4,7 @@ use base 'Exporter';
 use vars '@EXPORT';
 use Test::MockObject;
 
-@EXPORT = ('fake_request', 'http_request');
+@EXPORT = qw(fake_request http_request write_file);
 
 my $path = undef;
 sub path {
@@ -38,6 +38,14 @@ sub http_request {
     my $lwp = LWP::UserAgent->new;
     my $req = HTTP::Request->new($method => $url);
     return $lwp->request($req);
+}
+
+sub write_file {
+    my ($file, $content) = @_;
+
+    open CONF, '>', $file or die "cannot write file $file : $!";
+    print CONF $content;
+    close CONF;
 }
 
 'TestUtils';
