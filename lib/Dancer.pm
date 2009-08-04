@@ -37,6 +37,7 @@ $VERSION = '0.9902';
     pass
     path
     post 
+    put
     r
     request
     send_file
@@ -67,6 +68,7 @@ sub params       { Dancer::SharedData->params  }
 sub pass         { Dancer::Response::pass() }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
+sub put          { Dancer::Route->add('put', @_) }
 sub r            { {regexp => $_[0]} }
 sub request      { Dancer::SharedData->cgi }
 sub send_file    { Dancer::Helpers::send_file(@_) }
@@ -176,7 +178,7 @@ composed by an HTTP method, a path pattern and a code block.
 The code block given to the route handler has to return a string which will be
 used as the content to render to the client.
 
-Routes are defined for a given HTTP method (get or post). For each method
+Routes are defined for a given HTTP method. For each method
 supported, a keyword is exported by the module. 
 
 Here is an example of a route definition:
@@ -189,6 +191,29 @@ Here is an example of a route definition:
 
 The route is defined for the method 'get', so only GET requests will be honoured
 by that route.
+
+=head2 HTTP METHODS
+
+All existing HTTP methods are defined in the RFC 2616
+L<http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html>. 
+
+Here are the ones you can use to define your route handlers.
+
+=over 8
+
+=item B<GET>        The GET method retrieves information (when defining a route
+                    handler for the GET method, Dancer automatically defines a 
+                    route handler for the HEAD method, in order to honour HEAD
+                    requests for each of your GET route handlers).
+
+=item B<POST>       The POST method is used to create a ressource on the
+                    server.
+
+=item B<PUT>        The PUT method is used to update an existing ressource.
+
+=back
+
+=head2 ROUTE HANDLERS
 
 The route action is the code reference declared, it can access parameters through 
 the `params' keyword, which returns an hashref.
