@@ -116,7 +116,8 @@ sub handle_request {
 
 sub print_banner {
     if (setting('access_log')) {
-        print "== Entering the dance floor ...\n";
+        my $env = setting('environment');
+        print "== Entering the $env dance floor ...\n";
     }
 }
 
