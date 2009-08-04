@@ -386,16 +386,15 @@ only one method is possible for logging messages but it may come in future
 releases new methods.
 
 In order to enable the logging system for your application, you first have to
-start the logger engine in your config.pl (or directly within your application
-code), do:
+start the logger engine in your config.yml
 
-    logger => 'file'; 
+    log: 'file'
 
 Then you can choose which kind of messages you want to actually log:
 
-    set log => 'debug';     # will log debug, warning and errors
-    set log => 'warning';   # will log warning and errors
-    set log => 'error';     # will log only errors
+    log: 'debug'     # will log debug, warning and errors
+    log: 'warning'   # will log warning and errors
+    log: 'error'     # will log only errors
 
 A directory appdir/logs will be created and will host one logfile per
 environment. The log message contains the time it was written, the PID of the
