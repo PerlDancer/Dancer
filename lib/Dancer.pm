@@ -254,7 +254,7 @@ script. The following options are supported:
 
 =over 8
 
-=item B<--port=XXXX>    set the port to listen to (default is 1915)
+=item B<--port=XXXX>    set the port to listen to (default is 3000)
 
 =item B<--daemon>       run the webserver in the background
 

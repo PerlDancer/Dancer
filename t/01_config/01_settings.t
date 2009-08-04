@@ -9,7 +9,7 @@ BEGIN {
 }
 
 # testing default values
-is(setting('port'), '1915', "default value for 'port' is OK"); 
+is(setting('port'), '3000', "default value for 'port' is OK"); 
 is(setting('content_type'), 'text/html', "default value for 'content_type' is OK"); 
 
 # testing new settings

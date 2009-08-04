@@ -78,6 +78,7 @@ sub load_default_settings {
     $SETTINGS->{daemon}       ||= 0;
     $SETTINGS->{environment}  ||= 'development';
 }
+load_default_settings();
 
 'Dancer::Config';
 __END__
@@ -113,7 +114,7 @@ This setting is not yet implemented.
 
 The port Dancer will listen to.
 
-Default value is 1915.
+Default value is 3000.
 
 =head2 content_type 
 

@@ -20,7 +20,6 @@ use Test::More import => ['!pass'];
 plan tests => 16;
 
 use Dancer;
-use Dancer::FileUtils 'path';
 
 BEGIN { use_ok 'Dancer::Config', 'setting'; }
 

@@ -17,7 +17,7 @@ ok(error($message), "error sent");
 my $logdir = path(setting('appdir'), 'logs');
 ok((-d $logdir), "log directory exists");
 
-my $logfile = path($logdir, "default.log");
+my $logfile = path($logdir, "development.log");
 ok((-r $logfile), "logfile exists");
 
 open LOGFILE, '<', $logfile;

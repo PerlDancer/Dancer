@@ -20,7 +20,7 @@ sub init {
             or die "log directory $logdir doen't exist, unable to create";
     }
 
-    $logfile = setting('environment') || 'default';    
+    $logfile = setting('environment');
     $logfile = path($logdir, "$logfile.log");
 
     unless (open(LOGFILE, '>>', $logfile)) {
