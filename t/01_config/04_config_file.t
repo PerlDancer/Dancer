@@ -16,8 +16,7 @@
 use strict;
 use warnings;
 
-use Test::More import => ['!pass'];
-plan tests => 16;
+use Test::More tests => 17, import => ['!pass'];
 
 use Dancer;
 
