@@ -19,7 +19,7 @@ use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION = '0.9902';
+$VERSION = '0.9903';
 @EXPORT = qw(
     before
     content_type
@@ -94,7 +94,7 @@ sub dance {
 
     if (setting('daemon')) {
         my $pid = Dancer->new($port)->background();
-        print ">> Process $pid listening on $ipaddr:$port\n" if setting('access_log');
+        print ">> Dancer $pid listening on $port\n";
         return $pid;
     }
     else {
