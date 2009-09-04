@@ -87,6 +87,7 @@ sub print_response($$) {
     if (setting('access_log')) {
         print STDERR "== $method $path $st";
     }
+    return 1;
 }
 
 # private

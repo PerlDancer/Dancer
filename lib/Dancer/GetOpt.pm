@@ -36,7 +36,7 @@ print <<EOF
 
  Options:
    --daemon             Run in background (false)
-   --port=XXXX          Port number to bind to (1915)
+   --port=XXXX          Port number to bind to (3000)
    --environment=ENV    Environement to use (development)
    --help               Display usage information
 
@@ -51,7 +51,7 @@ during the development phase.
 --port=XXXX
 
 This lets you change the port number to use when running the process. By
-default, the port 1915 will be used.
+default, the port 3000 will be used.
 
 --environment=ENV
 
