@@ -1,4 +1,4 @@
-package Dancer::PlackAdapter;
+package Plack::Adapter::Dancer;
 use strict;
 
 sub new {

@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+package webapp;
 
 use Dancer;
 use Template;

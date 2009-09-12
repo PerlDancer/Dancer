@@ -17,14 +17,18 @@ sub render_file {
     if ($response) {
         return response($response, $request);
     }
+    return undef;
 }
 
 sub render_action {
+    use Data::Dumper;
     my $request = Dancer::SharedData->cgi;
     my $response = get_action_response();
     if ($response) {
+        Dancer::Logger::debug(1, "response: ".Dumper($response));
         return response($response, $request);
     }
+    return undef;
 }
 
 sub render_error {
@@ -32,7 +36,6 @@ sub render_error {
     my $path = $request->path_info;
     my $method = $request->request_method;
 
-    #print STDERR "== $method $path 404 Not found\n" if setting('access_log');
     return [
         404,
         [ 'Content-Type' => 'text/html' ],
@@ -63,7 +66,6 @@ sub get_file_response() {
     my $path = $request->path_info;
     my $static_file = path(setting('public'), $path);
     
-    
     if (-f $static_file) {
         open my $fh, "<", $static_file;
         return [
@@ -76,20 +78,12 @@ sub get_file_response() {
 }
 
 sub response($$) {
-    my ($resp, $request) = @_;
+    my ($r, $request) = @_;
     my $path = $request->path_info;
     my $method = $request->request_method;
 
-    my $ct = $resp->{head}{content_type} || setting('content_type');
-    my $st = Dancer::HTTP::status($resp->{head}{status}) || Dancer::HTTP::status('ok');
-
-    if (setting('access_log')) {
-        print STDERR "== $method $path $st";
-    }
-
-    return [ $st,
-             [ 'Content-Type' => $ct ],
-             [ $resp->{body} ] ];
+    return $r if ref($r) eq 'ARRAY';
+    die "BAD RESPONSE for $method $path";
 }
 
 # private

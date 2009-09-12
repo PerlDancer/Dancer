@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp 'confess';
 
+use Dancer::Config 'setting';
 use Dancer::HTTP;
 
 # a singleton to store current response being built
@@ -29,5 +30,13 @@ sub set          { $CURRENT = shift }
 sub status       { assert_route_context and $CURRENT->{status} = shift }
 sub content_type { assert_route_context and $CURRENT->{content_type} = shift }
 sub pass         { assert_route_context $CURRENT->{pass} = 1 }
+
+# the Plack way
+sub make_response {
+    my ($status, $headers, $content) = @_;
+    $status ||= 200;
+    $headers ||= {'Content-Type' => setting('content_type')};
+    return [ $status, [ %$headers ], [ $content ] ];
+}
 
 'Dancer::Response';
