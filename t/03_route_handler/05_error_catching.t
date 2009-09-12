@@ -10,14 +10,22 @@ get '/error' => sub {
 };
 
 get '/warning' => sub {
-	my $bar = 1 + "hello";
+	my $bar;
+    return "hello $bar";
+};
+
+get '/clean' => sub {
+    "working"
 };
 
 my @tests = (
+    { path => '/clean', expected => qr/working/ },
 	{ path => '/error', 
-	  expected => qr/Can't locate object method "new" via package "Template"/m}, 
+	  expected => qr/Runtime Error: Can't locate object method "new" via package "Template"/m}, 
+    { path => '/clean', expected => qr/working/ },
 	{ path => '/warning', 
-	  expected => qr/Argument "hello" isn't numeric in addition/},
+	  expected => qr/Runtime Warning: Use of uninitialized value .*in concatenation/},
+    { path => '/clean', expected => qr/working/ },
 );
 
 plan tests => scalar(@tests);

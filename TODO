@@ -38,8 +38,6 @@
 
     --template     create a views directory and make sure
                    Template is installed.
-    --logger       make sure Logger::Syslog is installed and
-                   enable the logger in the app.
     
     Here is the output of the command:
 
@@ -80,59 +78,43 @@
 
     set errors => hidden;
 
+* Session support
 
-* Environment support
+    We need a way to support web session in the easiest way possible.
 
-    It should be possible to run a Dancer server with a specific
-    environment, like development or production.
+    Maybe something like that:
 
-    This could be done like the following:
+    set session => true; # enable the session engine
 
-    $ ./my-dancer-app.pl --environment production
+    get '/login' => sub {
+       template 'login' 
+    };
 
-    Then the script appdir/environments/development.pl would be
-    loaded.
+    post '/login' => sub {
+        my $user = User->authenticate(params->{login}, params->{password});
 
-    Content for environments/development.pl
+        if ($user) {
+            session user_id => $user->id;
+        }
+        else {
+            var error => "Bad credentials";
+            pass;
+        }
+    };
 
-        set access_log => true;
-        set verbosity => true;
-        set errors => detailed;
-        set port => 3000;
+    Then the key 'user_id' should be accessible in other requests:
 
-        end;
-    
-    Content for environments/production.pl
+    before => sub {
+        if (not session->{user_id}) {
+            var error => "Must be authenticated";
+            request->path_info('/error');
+        }
+        else {
+            var user => User->find(session->{user_id});
+        }
+    };
 
-        set access_log => true;
-        set verbosity => false;
-        set errors => hidden;
-        set port => 3000;
-
-        end;
-
-    The environments files are pure Perl files, they are loaded with
-    the require mechanism, so the can be written with the Dancer
-    syntax.
-
-    The `end' keyword just returns true, it's sugar for configuration
-    files. 
-
-* Logger
-
-    we should provide the option to use a logger, like
-    Logger::Syslog. Can be defined with a setting:
-
-    set log => debug;
-
-    or 
-
-    set log => warning;
-
-    A wrapper, Dancer::Logger would then provide the following
-    methods: debug, warning and error.
-
-    If the log setting is at least the level requested, it logs the
-    message, otherwise, it drops it out.
-
+    get '/home' => sub {
+        "Hello ".vars->{user}->name
+    };
 

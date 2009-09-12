@@ -1,9 +1,17 @@
-Dancer
+                                    Dancer
+
+                  The easiest way to write a webapp with Perl                                    
+
+
+=== ABOUT ===
 
 That project intends to become a port of Ruby's Sinatra framework: a framework
 for building web application with minimal-effort in mind.
 
 The user should be able to define a webapp with very few lines of codes.
+
+
+=== EXAMPLE ===
 
 Here is an example of a webapp built with Dancer:
 
@@ -41,6 +49,9 @@ Then it's possible to access any route defined in the script:
 Feel free to fork that project if you like the idea and want to add some
 features.
 
+
+=== DEPENDENCIES ===
+
 Dancer depends on the following modules
 
     - HTTP::Server::Simple
@@ -48,3 +59,11 @@ Dancer depends on the following modules
     - File::Spec
     - File::Basename
 
+Dancer may also depend on other modules if optional features are used:
+
+    - Tempalte          needed for views rendering
+
+=== WEBSITE ===
+
+For more details about the project, checkout the official website:
+http://dancer.sukria.net

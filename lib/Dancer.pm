@@ -2,13 +2,14 @@ package Dancer;
 
 use strict;
 use warnings;
+use Carp 'confess';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
-use Dancer::Environment;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Helpers;
+use Dancer::Logger;
 use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::Route;
@@ -18,20 +19,24 @@ use HTTP::Server::Simple::CGI;
 use base 'Exporter', 'HTTP::Server::Simple::CGI';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION = '0.9902';
+$VERSION = '0.9903';
 @EXPORT = qw(
     before
     content_type
     dance
+    debug
     dirname
+    error
     false
     get 
     layout
+    logger
     mime_type
     params
     pass
     path
     post 
+    put
     r
     request
     send_file
@@ -42,21 +47,27 @@ $VERSION = '0.9902';
     true
     var
     vars
+    warning
 );
 
 # Dancer's syntax 
 
 sub before       { Dancer::Route->before_filter(@_) }
 sub content_type { Dancer::Response::content_type(@_) }
+sub debug        { Dancer::Logger->debug(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
+sub error        { Dancer::Logger->error(@_) }
 sub false        { 0 }
-sub get          { Dancer::Route->add('get', @_) }
+sub get          { Dancer::Route->add('head', @_); 
+                   Dancer::Route->add('get', @_);}
 sub layout       { set(layout => shift) }
+sub logger       { set(logger => @_) && Dancer::Logger->init }
 sub mime_type    { Dancer::Config::mime_types(@_) }
 sub params       { Dancer::SharedData->params  }
 sub pass         { Dancer::Response::pass() }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
+sub put          { Dancer::Route->add('put', @_) }
 sub r            { {regexp => $_[0]} }
 sub request      { Dancer::SharedData->cgi }
 sub send_file    { Dancer::Helpers::send_file(@_) }
@@ -67,6 +78,7 @@ sub template     { Dancer::Helpers::template(@_) }
 sub true         { 1 }
 sub var          { Dancer::SharedData->var(@_) }
 sub vars         { Dancer::SharedData->vars }
+sub warning      { Dancer::Logger->warning(@_) }
 
 # The run method to call for starting the job
 sub dance { 
@@ -74,18 +86,15 @@ sub dance {
     # settings accordingly
     Dancer::GetOpt->process_args();
 
-    # Load default config
-    Dancer::Config->load_default;
-
-    # Load environment
-    Dancer::Environment->load(setting('environment'));
+    # load config.yml if found
+    Dancer::Config->load;
 
     my $ipaddr = setting 'server';
     my $port   = setting 'port';
 
     if (setting('daemon')) {
         my $pid = Dancer->new($port)->background();
-        print ">> Process $pid listening on $ipaddr:$port\n" if setting('access_log');
+        print ">> Dancer $pid listening on $port\n";
         return $pid;
     }
     else {
@@ -107,7 +116,8 @@ sub handle_request {
 
 sub print_banner {
     if (setting('access_log')) {
-        print "== Entering the dance floor ...\n";
+        my $env = setting('environment');
+        print "== Entering the $env dance floor ...\n";
     }
 }
 
@@ -156,7 +166,7 @@ composed by an HTTP method, a path pattern and a code block.
 The code block given to the route handler has to return a string which will be
 used as the content to render to the client.
 
-Routes are defined for a given HTTP method (get or post). For each method
+Routes are defined for a given HTTP method. For each method
 supported, a keyword is exported by the module. 
 
 Here is an example of a route definition:
@@ -169,6 +179,29 @@ Here is an example of a route definition:
 
 The route is defined for the method 'get', so only GET requests will be honoured
 by that route.
+
+=head2 HTTP METHODS
+
+All existing HTTP methods are defined in the RFC 2616
+L<http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html>. 
+
+Here are the ones you can use to define your route handlers.
+
+=over 8
+
+=item B<GET>        The GET method retrieves information (when defining a route
+                    handler for the GET method, Dancer automatically defines a 
+                    route handler for the HEAD method, in order to honour HEAD
+                    requests for each of your GET route handlers).
+
+=item B<POST>       The POST method is used to create a ressource on the
+                    server.
+
+=item B<PUT>        The PUT method is used to update an existing ressource.
+
+=back
+
+=head2 ROUTE HANDLERS
 
 The route action is the code reference declared, it can access parameters through 
 the `params' keyword, which returns an hashref.
@@ -222,7 +255,7 @@ script. The following options are supported:
 
 =over 8
 
-=item B<--port=XXXX>    set the port to listen to (default is 1915)
+=item B<--port=XXXX>    set the port to listen to (default is 3000)
 
 =item B<--daemon>       run the webserver in the background
 
@@ -304,6 +337,68 @@ that will be accessible in the action blocks with the keyword 'var'.
 
 The request keyword returns the current CGI object representing the incoming request.
 See the documentation of the L<CGI> module for details.
+
+=head1 CONFIGURATION AND ENVIRONMENTS
+
+Configuring a Dancer application can be done in many ways. The easiest one (and
+maybe the the dirtiest) is to put all your settings statements at the top of
+your script, before calling the dance() method.
+
+Other ways are possible, you can write all your setting calls in the file
+`appdir/config.yml'. For this, you must have installed the YAML module, and of
+course, write the conffile in YAML. 
+
+That's better than the first option, but it's still not
+perfect as you can't switch easily from an environment to another without
+rewriting the config.yml file.
+
+The better way is to have one config.yml file with default global settings,
+like the following:
+
+    # appdir/config.yml
+    logger: 'file'
+    layout: 'main'
+
+And then write as many environment file as you like in appdir/environements.
+That way, the good environment config file will be loaded according to the
+running environment (if none specified, it will be 'development').
+
+Note that you can change the running environment using the --environment
+commandline switch.
+
+Typically, you'll want to set the following values in a development config
+file:
+
+    # appdir/environments/development.yml
+    log: 'debug'
+    access_log: 1
+
+And in a production one:
+
+    # appdir/environments/production.yml
+    log: 'warning'
+    access_log: 0
+
+=head1 LOGGING
+
+It's possible to log messages sent by the application. In the current version,
+only one method is possible for logging messages but it may come in future
+releases new methods.
+
+In order to enable the logging system for your application, you first have to
+start the logger engine in your config.yml
+
+    log: 'file'
+
+Then you can choose which kind of messages you want to actually log:
+
+    log: 'debug'     # will log debug, warning and errors
+    log: 'warning'   # will log warning and errors
+    log: 'error'     # will log only errors
+
+A directory appdir/logs will be created and will host one logfile per
+environment. The log message contains the time it was written, the PID of the
+current process, the message and the caller information (file and line).
 
 =head1 USING TEMPLATES
 
@@ -464,7 +559,9 @@ L<http://github.com/sukria/Dancer>
 
 Dancer depends on the following modules:
 
-=over 4
+The following modules are mandatory (Dancer cannot run without them)
+
+=over 8
 
 =item L<HTTP::Server::Simple>
 
@@ -475,6 +572,16 @@ Dancer depends on the following modules:
 =item L<File::Spec>
 
 =item L<File::Basename>
+
+=back
+
+The following modules are optional 
+
+=over 8
+
+=item L<Template>           needed for the views rendering system
+
+=item L<Logger::Syslog>     needed for logging information to syslog
 
 =back
 

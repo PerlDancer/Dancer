@@ -1,0 +1,6 @@
+Release 0.9003
+
+    * Detect differently compilation-time warnings and runtime warnings
+      closes bug #48440 (Thanks to Enric Joffrion for the report, and to
+      Vincent Pit for the diagnosis)
+

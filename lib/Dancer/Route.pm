@@ -11,7 +11,7 @@ my $REG = { routes => {}, before_filters => [] };
 sub add {
     my ($class, $method, $route, $code) = @_;
     $REG->{routes}{$method} ||= [];
-    push @{ $REG->{routes}{$method} }, {route => $route, code => $code};
+    push @{ $REG->{routes}{$method} }, {method => $method, route => $route, code => $code};
 }
 
 # return the first route that matches the path
@@ -65,6 +65,15 @@ sub build_params {
     };
 }
 
+# We catch compilation-time warnings here
+my $COMPILATION_WARNING;
+sub warning { 
+    (@_ == 1) 
+        ? $COMPILATION_WARNING = $_[0] 
+        : $COMPILATION_WARNING;
+}
+BEGIN { $SIG{'__WARN__'} = sub { warning($_[0]) } }
+
 # Recursive call of actions through the matching tree
 sub call($$) {
     my ($class, $handler) = @_;
@@ -74,20 +83,24 @@ sub call($$) {
     Dancer::SharedData->params($params);
 
     my $content;
-    
-    # catch warnings
-    my $warn;
-    local $SIG{__WARN__} = sub { $warn = $_[0] };
-
-    # eval the route handler
+    my $warning; # reset any previous warning seen
+    local $SIG{__WARN__} = sub { $warning = $_[0] };
     eval { $content = $handler->{code}->() };
+    my $compilation_warning = warning;
 
     # trap errors
-    if ($@ || $warn) {
+    if ($@ || $warning || $compilation_warning) {
+
+        my $message = "Route Handler Error\n\n";
+        $message .= "Compilation warning: $compilation_warning\n" 
+            if $compilation_warning;
+        $message .= "Runtime Warning: $warning\n" if $warning;
+        $message .= "Runtime Error: $@\n" if $@;
+
         Dancer::SharedData->reset_all();
         return {
             head => {status => 'error', content_type => 'text/plain'},
-            body => "Route Handler Error\n\n$warn\n$@",
+                 body => $message,
         };
     }
 
@@ -106,6 +119,8 @@ sub call($$) {
         }
     }
     else {
+        # drop the content if this is a HEAD request
+        $content = '' if $handler->{method} eq 'head';
 
         Dancer::SharedData->reset_all();
         return {
