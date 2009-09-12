@@ -15,7 +15,7 @@ sub render_file {
     my $request = Dancer::SharedData->cgi;
     my $response = get_file_response();
     if ($response) {
-        print_response($response, $request);
+        return response($response, $request);
     }
 }
 
@@ -23,7 +23,7 @@ sub render_action {
     my $request = Dancer::SharedData->cgi;
     my $response = get_action_response();
     if ($response) {
-        print_response($response, $request);
+        return response($response, $request);
     }
 }
 
@@ -32,18 +32,19 @@ sub render_error {
     my $path = $request->path_info;
     my $method = $request->request_method;
 
-    print Dancer::HTTP::status('not_found');
-    print $request->header,
-          $request->start_html('Not found'),
+    #print STDERR "== $method $path 404 Not found\n" if setting('access_log');
+    return [
+        404,
+        [ 'Content-Type' => 'text/html' ],
+        [ $request->start_html('Not found'),
           $request->h1('Not found'),
-          "<p>No route matched your request `$path'.</p>\n".
-          "<p>".
-          "appdir is <code>".setting('appdir')."</code><br>\n".
-          "public is <code>".setting('public')."</code>".
+          "<p>No route matched your request `$path'.</p>\n",
+          "<p>",
+          "appdir is <code>".setting('appdir')."</code><br>\n",
+          "public is <code>".setting('public')."</code>",
           "</p>",
-          $request->end_html;
-
-    print STDERR "== $method $path 404 Not found\n" if setting('access_log');
+          $request->end_html ],
+    ];
 }
 
 sub get_action_response() {
@@ -64,15 +65,17 @@ sub get_file_response() {
     
     
     if (-f $static_file) {
-        return {
-            head => {content_type => get_mime_type($static_file)},
-            body => read_file_content($static_file),
-        };
+        open my $fh, "<", $static_file;
+        return [
+            200,
+            [ 'Content-Type' => get_mime_type($static_file) ],
+            $fh,
+        ];
     }
     return undef;
 }
 
-sub print_response($$) {
+sub response($$) {
     my ($resp, $request) = @_;
     my $path = $request->path_info;
     my $method = $request->request_method;
@@ -80,14 +83,13 @@ sub print_response($$) {
     my $ct = $resp->{head}{content_type} || setting('content_type');
     my $st = Dancer::HTTP::status($resp->{head}{status}) || Dancer::HTTP::status('ok');
 
-    print $st;
-    print $request->header($ct);
-    print $resp->{body};
-    
     if (setting('access_log')) {
         print STDERR "== $method $path $st";
     }
-    return 1;
+
+    return [ $st,
+             [ 'Content-Type' => $ct ],
+             [ $resp->{body} ] ];
 }
 
 # private

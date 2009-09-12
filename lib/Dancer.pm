@@ -15,8 +15,7 @@ use Dancer::Response;
 use Dancer::Route;
 use Dancer::SharedData;
 
-use HTTP::Server::Simple::CGI;
-use base 'Exporter', 'HTTP::Server::Simple::CGI';
+use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
 $VERSION = '0.9903';
@@ -35,6 +34,7 @@ $VERSION = '0.9903';
     params
     pass
     path
+    plack_adapter
     post 
     put
     r
@@ -68,6 +68,7 @@ sub pass         { Dancer::Response::pass() }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
 sub put          { Dancer::Route->add('put', @_) }
+sub plack_adapter { '+Dancer::PlackAdapter' }
 sub r            { {regexp => $_[0]} }
 sub request      { Dancer::SharedData->cgi }
 sub send_file    { Dancer::Helpers::send_file(@_) }
@@ -89,18 +90,11 @@ sub dance {
     # load config.yml if found
     Dancer::Config->load;
 
-    my $ipaddr = setting 'server';
-    my $port   = setting 'port';
+}
 
-    if (setting('daemon')) {
-        my $pid = Dancer->new($port)->background();
-        print ">> Dancer $pid listening on $port\n";
-        return $pid;
-    }
-    else {
-        print ">> Listening on $ipaddr:$port\n";
-        Dancer->new($port)->run();
-    }
+sub run {
+    my $self = shift;
+    $self->handle_request(@_);
 }
 
 # HTTP server overload comes here
