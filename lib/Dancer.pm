@@ -14,6 +14,7 @@ use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::Route;
 use Dancer::SharedData;
+use Dancer::Handler;
 
 use base 'Exporter';
 
@@ -81,40 +82,6 @@ sub var          { Dancer::SharedData->var(@_) }
 sub vars         { Dancer::SharedData->vars }
 sub warning      { Dancer::Logger->warning(@_) }
 
-# The run method to call for starting the job
-sub dance { 
-    # read options on the command line and set 
-    # settings accordingly
-    Dancer::GetOpt->process_args();
-
-    # load config.yml if found
-    Dancer::Config->load;
-
-}
-
-sub run {
-    my $self = shift;
-    $self->handle_request(@_);
-}
-
-# HTTP server overload comes here
-sub handle_request {
-    my ($self, $cgi) = @_;
-    
-    Dancer::SharedData->cgi($cgi);
-
-    return Dancer::Renderer->render_file
-        || Dancer::Renderer->render_action
-        || Dancer::Renderer->render_error;
-}
-
-sub print_banner {
-    if (setting('access_log')) {
-        my $env = setting('environment');
-        print "== Entering the $env dance floor ...\n";
-    }
-}
-
 # When importing the package, strict and warnings pragma are loaded, 
 # and the appdir detection is performed.
 sub import {
@@ -128,6 +95,11 @@ sub import {
 
     Dancer->export_to_level(1, @_);
 }
+
+# Middleware 
+my  $apphandler = Dancer::Handler->get_handler();
+sub dance       { $apphandler->dance }
+sub run         { $apphandler->run(@_) }
 
 'Dancer';
 __END__
