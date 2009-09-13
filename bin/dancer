@@ -156,14 +156,24 @@ my $error_code={404 => 'Not Found',
 
 #DEB Main program-----------------------#
 if ( ! -d $app_dir ) {
-    mkdir $app_dir or die "mkdir $app_dir error : $!\n";
-    moonwalk($app_dir,\&build_dancefloor,@directorytree);
-    write_app($app_engine);
-    build_yaml_configfile($main_yaml_config,$main_config_options);
-    build_yaml_configfile($dev_yaml_config,$dev_config_options);
-    build_css_file($main_css_file);
-    build_index($static_index,$app_name);
-    build_error_page($error_code);
+    if ($template) {
+        eval "use Template32";
+        if ($@) {
+            print "Missing Template module !! \n";
+            print "Install Template module or don't use --template option \n";
+            exit;
+        }
+        else {
+            mkdir $app_dir or die "mkdir $app_dir error : $!\n";
+            moonwalk($app_dir,\&build_dancefloor,@directorytree);
+            write_app($app_engine);
+            build_yaml_configfile($main_yaml_config,$main_config_options);
+            build_yaml_configfile($dev_yaml_config,$dev_config_options);
+            build_css_file($main_css_file);
+            build_index($static_index,$app_name);
+            build_error_page($error_code);
+        }
+    }
 }
 else {
     print "Directory already used !! \n";
