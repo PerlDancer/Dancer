@@ -2,41 +2,41 @@ package Dancer::Response;
 
 use strict;
 use warnings;
-use Carp 'confess';
 
 use Dancer::Config 'setting';
 use Dancer::HTTP;
 
-# a singleton to store current response being built
-my $CURRENT = {};
+# constructor
+sub new {
+    my ($class, %args) = @_;
+    my $self = {
+        status => 200,
+        headers => {
+            'Content-Type' => setting('content_type')},
+        content => "",
+        pass => 0,
+        %args,
+    };
+    bless $self, $class;
+    return $self;
+}
 
-# the accessor returns a copy of the singleton after having purged it.
+# a singleton to store the current response
+my $CURRENT = Dancer::Response->new();
+
+# the accessor returns a copy of the singleton 
+# after having purged it.
 sub current { 
     my $cp = $CURRENT; 
-    $CURRENT = {}; 
+    $CURRENT = Dancer::Response->new(); 
     return $cp; 
 }
 
-sub assert_route_context {
-# FIXME : we have to find the way to detect that correctly
-    return 1;
-    my ($caller) = caller(0);
-    if ($caller !~ /^Dancer::/) {
-        confess "Cannot call this method outside a route handler ($caller), maybe you want to set someting?";
-    }
-}
-
+# helpers for the route handlers
 sub set          { $CURRENT = shift }
-sub status       { assert_route_context and $CURRENT->{status} = shift }
-sub content_type { assert_route_context and $CURRENT->{content_type} = shift }
-sub pass         { assert_route_context $CURRENT->{pass} = 1 }
+sub status       { $CURRENT->{status} = shift }
+sub content_type { $CURRENT->{content_type} = shift }
+sub pass         { $CURRENT->{pass} = 1 }
 
-# the PSGI way
-sub make_response {
-    my ($status, $headers, $content) = @_;
-    $status ||= 200;
-    $headers ||= {'Content-Type' => setting('content_type')};
-    return [ $status, [ %$headers ], [ $content ] ];
-}
 
 'Dancer::Response';

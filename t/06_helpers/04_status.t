@@ -14,9 +14,9 @@ get '/failed' => sub {
 };
 
 my @tests = (
-    { path => '/', expected => undef},
+    { path => '/', expected => 200},
     { path => '/failed', expected => 'not_found'},
-    { path => '/', expected => undef},
+    { path => '/', expected => 200},
     { path => '/failed', expected => 'not_found'},
 );
 
@@ -28,7 +28,7 @@ foreach my $test (@tests) {
     my $response = Dancer::Renderer::get_action_response();
 
     ok(defined($response), "route handler found for ".$test->{path});
-    is($response->{head}{status}, 
+    is($response->{status}, 
         $test->{expected}, 
         "status looks good for ".$test->{path}); 
 }

@@ -26,10 +26,10 @@ sub render_error {
     my $path = $request->path_info;
     my $method = $request->request_method;
 
-    return Dancer::Response::make_response(
-        404,
-        { 'Content-Type' => 'text/html' },
-        $request->start_html('Not found').
+    return Dancer::Response->new(
+        status => 404,
+        headers => { 'Content-Type' => 'text/html' },
+        content => $request->start_html('Not found').
         $request->h1('Not found').
         "<p>No route matched your request `$path'.</p>\n".
         "<p>".
@@ -57,8 +57,10 @@ sub get_file_response() {
     
     if (-f $static_file) {
         open my $fh, "<", $static_file;
-        return Dancer::Response::make_response(200,
-            { 'Content-Type' => get_mime_type($static_file) }, $fh);
+        return Dancer::Response->new(
+            status => 200,
+            headers => { 'Content-Type' => get_mime_type($static_file) }, 
+            content => $fh);
     }
     return undef;
 }

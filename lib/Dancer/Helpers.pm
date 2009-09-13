@@ -22,8 +22,8 @@ sub send_file {
     Dancer::SharedData->cgi($request);
     my $resp = Dancer::Renderer::get_file_response();
     if ($resp) {
-        Dancer::Response::set($resp->{head});
-        return $resp->{body};
+        Dancer::Response::set($resp);
+        return $resp->{content};
     }
     else {
         Dancer::Response::status('error');

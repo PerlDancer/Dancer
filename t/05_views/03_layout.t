@@ -37,6 +37,6 @@ SKIP: {
         Dancer::SharedData->cgi($request);
         my $resp = Dancer::Renderer::get_action_response();
     
-        is($resp->{body}, $expected, "content rendered looks good for $path");
+        is($resp->{content}, $expected, "content rendered looks good for $path");
     }
 }; 

@@ -3,8 +3,9 @@ use Test::More import => ['!pass'];
 use lib 't';
 use TestUtils;
 use Dancer;
+use Dancer::FileUtils 'read_glob_content';
 
-plan tests => 3;
+plan tests => 4;
 
 ok(get('/cat/:file', sub {
     send_file(params->{file});
@@ -16,4 +17,7 @@ Dancer::SharedData->cgi($req);
 my $resp = Dancer::Renderer->get_action_response();
 
 ok(defined($resp), "route handler found for /cat/file.txt");
-is_deeply( [split(/\n/, $resp->{body})], [1,2,3], 'send_file worked as expected');
+is(ref($resp->{content}), 'GLOB', "content is a File handle");
+
+my $content = read_glob_content($resp->{content});
+is_deeply( [split(/\n/, $content)], [1,2,3], 'send_file worked as expected');

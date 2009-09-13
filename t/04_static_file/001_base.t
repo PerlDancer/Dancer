@@ -22,5 +22,5 @@ Dancer::SharedData->cgi($request);
 my $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
 
-is_deeply($resp->{head}, {content_type => 'text/plain'}, "response header looks good for $path");
-is($resp->{body}, "hello there\n", "response content looks good for $path");
+is_deeply($resp->{headers}, {'Content-Type' => 'text/plain'}, "response header looks good for $path");
+is(ref($resp->{content}), 'GLOB', "response content looks good for $path");

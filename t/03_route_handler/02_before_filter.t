@@ -24,4 +24,4 @@ my $cgi = fake_request(GET => $path);
 Dancer::SharedData->cgi($cgi);
 my $response = Dancer::Renderer::get_action_response();
 ok(defined($response), "route handler found for $path");
-is($response->{body}, 'index', "$path got redirected to /");
+is($response->{content}, 'index', "$path got redirected to /");

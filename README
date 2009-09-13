@@ -11,9 +11,9 @@ WARNING
 
     It will be merged in the master branch when:
     [X] all the response built are made by Dancer::Response
-    [ ] the Plack mode becomes optional
-    [ ] the plain old standalone version is still provided
-    [ ] the user can choose to run with or without Plack with
+    [X] the Plack mode becomes optional
+    [X] the plain old standalone version is still provided
+    [X] the user can choose to run with or without Plack with
         a config attribute (like `plack: on' in a config file).
 
     See example/webapp.pm for the proof of concept

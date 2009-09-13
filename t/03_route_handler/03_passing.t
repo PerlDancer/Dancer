@@ -52,6 +52,6 @@ foreach my $test (@tests) {
        
     ok( defined($response), "route found for path `$path'");
     is_deeply(
-        $response->{body}, $expected, 
+        $response->{content}, $expected, 
         "match data for path `$path' looks good");
 }

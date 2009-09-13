@@ -99,10 +99,10 @@ sub call($$) {
         $message .= "Runtime Error: $@\n" if $@;
 
         Dancer::SharedData->reset_all();
-        return Dancer::Response::make_response(
-            500,
-            {'Content-Type' => 'text/plain'},
-            $message);
+        return Dancer::Response->new(
+            status  => 500,
+            headers => {'Content-Type' => 'text/plain'},
+            content => $message);
     }
 
     my $response = Dancer::Response->current;
@@ -113,10 +113,10 @@ sub call($$) {
         }
         else {
             Dancer::SharedData->reset_all();
-            return Dancer::Response::make_response(
-                404,
-                {'Content-Type' => 'text/plain'},
-                "route passed, but unable to find another matching route");
+            return Dancer::Response->new(
+                status  => 404,
+                headers => {'Content-Type' => 'text/plain'},
+                content => "route passed, but unable to find another matching route");
         }
     }
     else {
@@ -126,8 +126,10 @@ sub call($$) {
         my $st = $response->{status} || 200;
         Dancer::SharedData->reset_all();
 
-        return Dancer::Response::make_response($st,
-            { 'Content-Type' => $ct }, $content);
+        return Dancer::Response->new(
+            status  => $st,
+            headers => { 'Content-Type' => $ct }, 
+            content => $content);
     }
 }
 

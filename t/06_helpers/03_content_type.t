@@ -2,6 +2,7 @@ use Test::More import => ['!pass'];
 use lib 't';
 use TestUtils;
 use Dancer;
+use Dancer::Config 'setting';
 
 get '/' => sub {
     "hello"
@@ -13,9 +14,9 @@ get '/text' => sub {
 };
 
 my @tests = (
-    { path => '/', expected => undef},
+    { path => '/', expected => setting('content_type')},
     { path => '/text', expected => 'text/plain'},
-    { path => '/', expected => undef},
+    { path => '/', expected => setting('content_type')},
     { path => '/text', expected => 'text/plain'},
 );
 
@@ -27,7 +28,7 @@ foreach my $test (@tests) {
     my $response = Dancer::Renderer::get_action_response();
 
     ok(defined($response), "route handler found for ".$test->{path});
-    is($response->{head}{content_type}, 
+    is($response->{headers}{'Content-Type'}, 
         $test->{expected}, 
         "content_type looks good for ".$test->{path}); 
 }
