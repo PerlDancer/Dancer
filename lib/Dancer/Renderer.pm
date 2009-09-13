@@ -13,22 +13,12 @@ use Dancer::SharedData;
 
 sub render_file {
     my $request = Dancer::SharedData->cgi;
-    my $response = get_file_response();
-    if ($response) {
-        return response($response, $request);
-    }
-    return undef;
+    return get_file_response();
 }
 
 sub render_action {
-    use Data::Dumper;
     my $request = Dancer::SharedData->cgi;
-    my $response = get_action_response();
-    if ($response) {
-        Dancer::Logger::debug(1, "response: ".Dumper($response));
-        return response($response, $request);
-    }
-    return undef;
+    return get_action_response();
 }
 
 sub render_error {
@@ -36,18 +26,17 @@ sub render_error {
     my $path = $request->path_info;
     my $method = $request->request_method;
 
-    return [
+    return Dancer::Response::make_response(
         404,
-        [ 'Content-Type' => 'text/html' ],
-        [ $request->start_html('Not found'),
-          $request->h1('Not found'),
-          "<p>No route matched your request `$path'.</p>\n",
-          "<p>",
-          "appdir is <code>".setting('appdir')."</code><br>\n",
-          "public is <code>".setting('public')."</code>",
-          "</p>",
-          $request->end_html ],
-    ];
+        { 'Content-Type' => 'text/html' },
+        $request->start_html('Not found').
+        $request->h1('Not found').
+        "<p>No route matched your request `$path'.</p>\n".
+        "<p>".
+        "appdir is <code>".setting('appdir')."</code><br>\n".
+        "public is <code>".setting('public')."</code>".
+        "</p>".
+        $request->end_html);
 }
 
 sub get_action_response() {
@@ -68,22 +57,10 @@ sub get_file_response() {
     
     if (-f $static_file) {
         open my $fh, "<", $static_file;
-        return [
-            200,
-            [ 'Content-Type' => get_mime_type($static_file) ],
-            $fh,
-        ];
+        return Dancer::Response::make_response(200,
+            { 'Content-Type' => get_mime_type($static_file) }, $fh);
     }
     return undef;
-}
-
-sub response($$) {
-    my ($r, $request) = @_;
-    my $path = $request->path_info;
-    my $method = $request->request_method;
-
-    return $r if ref($r) eq 'ARRAY';
-    die "BAD RESPONSE for $method $path";
 }
 
 # private

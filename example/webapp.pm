@@ -7,7 +7,6 @@ use Template;
 before sub {
     var note => "I ARE IN TEH BEFOR FILTERZ";
     debug "in the before filter";
-#    request->path_info('/foo/oversee')
 };
 
 get '/foo/*' => sub {
@@ -46,6 +45,7 @@ post '/new' => sub {
 };
 
 get '/say/:word' => sub {
+    content_type "text/plain";
     if (params->{word} =~ /^\d+$/) {
         pass and return false;
     }
