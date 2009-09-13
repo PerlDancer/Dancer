@@ -157,7 +157,7 @@ my $error_code={404 => 'Not Found',
 #DEB Main program-----------------------#
 if ( ! -d $app_dir ) {
     if ($template) {
-        eval "use Template32";
+        eval "use Template";
         if ($@) {
             print "Missing Template module !! \n";
             print "Install Template module or don't use --template option \n";
