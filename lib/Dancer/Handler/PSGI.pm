@@ -1,4 +1,4 @@
-package Dancer::Handler::Plack;
+package Dancer::Handler::PSGI;
 
 use strict;
 use warnings;

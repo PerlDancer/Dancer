@@ -5,13 +5,13 @@ use warnings;
 
 use Dancer::SharedData;
 use Dancer::Renderer;
-use Dancer::Handler::Plack;
+use Dancer::Handler::PSGI;
 use Dancer::Handler::Standalone;
 
 # This is where we chose which application handler to return
 sub get_handler {
     # TODO
-    return Dancer::Handler::Plack->new;
+    return Dancer::Handler::PSGI->new;
 }
 
 # virtual interface for any Dancer handler

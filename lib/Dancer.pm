@@ -35,7 +35,6 @@ $VERSION = '0.9903';
     params
     pass
     path
-    plack_adapter
     post 
     put
     r
@@ -69,7 +68,6 @@ sub pass         { Dancer::Response::pass() }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
 sub put          { Dancer::Route->add('put', @_) }
-sub plack_adapter { '+Dancer::PlackAdapter' }
 sub r            { {regexp => $_[0]} }
 sub request      { Dancer::SharedData->cgi }
 sub send_file    { Dancer::Helpers::send_file(@_) }
