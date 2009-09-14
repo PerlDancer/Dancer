@@ -2,27 +2,6 @@
 
                   The easiest way to write a webapp with Perl                                    
 
-WARNING
-
-    This branch is a work in progress to get Dancer 
-    work with PSGI/Plack as well as a standalone version.
-
-    The testsuite does not pass yet.
-
-    It will be merged in the master branch when:
-    [X] all the response built are made by Dancer::Response
-    [X] the Plack mode becomes optional
-    [X] the plain old standalone version is still provided
-    [X] the user can choose to run with or without Plack with
-        a config attribute (like `plack: on' in a config file).
-
-    See example/webapp.pm for the proof of concept
-
-    -> You need the CGI.pm patched version from http://github.com/miyagawa/CGI.pm 
-
-    perl -I./lib -I../CGI.pm/lib -I./example plackup -c example/app.psgi 
-
-WARNING
 
 === ABOUT ===
 
@@ -83,6 +62,14 @@ Dancer depends on the following modules
 Dancer may also depend on other modules if optional features are used:
 
     - Tempalte          needed for views rendering
+
+=== PRODUCTION MATTERS ===
+
+This is a work in progress.
+
+Dancer supports PSGI/Plack, to run a Dancer app with PSGI/Plack
+just create a file 'app.psgi' in your appdir (like the one in example)
+
 
 === WEBSITE ===
 
