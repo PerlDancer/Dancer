@@ -24,10 +24,14 @@ sub run {
 
 sub render_response {
     my ($self, $response) = @_;
+    
+    my $content = $response->{content};
+    $content = [ $content ] unless (ref($content) eq 'GLOB');
+
     return [ 
         $response->{status},
         [ %{ $response->{headers} } ],
-        [ $response->{content} ] 
+        $content
     ];
 }
 

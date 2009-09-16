@@ -73,7 +73,7 @@ sub warning {
         ? $COMPILATION_WARNING = $_[0] 
         : $COMPILATION_WARNING;
 }
-BEGIN { $SIG{'__WARN__'} = sub { warning($_[0]) } }
+#BEGIN { $SIG{'__WARN__'} = sub { warning($_[0]) } }
 
 # Recursive call of actions through the matching tree
 sub call($$) {

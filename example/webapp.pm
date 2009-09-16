@@ -1,8 +1,9 @@
-#!/usr/bin/perl
 package webapp;
 
 use Dancer;
 use Template;
+
+set middleware => 'PSGI';
 
 before sub {
     var note => "I ARE IN TEH BEFOR FILTERZ";

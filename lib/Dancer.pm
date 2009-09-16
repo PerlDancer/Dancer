@@ -96,7 +96,7 @@ sub import {
 
 # Middleware 
 my  $apphandler = Dancer::Handler->get_handler();
-sub dance       { $apphandler->dance }
+sub dance       { warn "app is $apphandler"; $apphandler->dance; }
 sub run         { $apphandler->run(@_) }
 
 'Dancer';
