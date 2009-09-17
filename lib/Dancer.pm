@@ -95,8 +95,11 @@ sub import {
 }
 
 # Start/Run the application with the chosen apphandler
-sub dance { Dancer::Handler->get_handler()->dance() }
-sub run   { Dancer::Handler->get_handler()->run(@_) }
+sub dance { 
+    my ($class, $cgi) = @_;
+    Dancer::Config->load;
+    Dancer::Handler->get_handler()->dance($cgi);
+}
 
 1;
 __END__

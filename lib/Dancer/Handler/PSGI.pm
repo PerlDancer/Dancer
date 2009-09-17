@@ -6,19 +6,18 @@ use base 'Dancer::Handler';
 
 use Dancer::GetOpt;
 use Dancer::Config;
+use Dancer::SharedData;
 
 sub new {
     my $class = shift;
-    bless {}, $class;
+    my $self = {};
+    bless $self, $class;
+    return $self;
 }
 
 sub dance {
-    Dancer::GetOpt->process_args();
-    Dancer::Config->load;
-}
-
-sub run {
-    my ($self, $class, $cgi) = @_;
+    my ($self, $cgi) = @_;
+    Dancer::SharedData->cgi($cgi);
     $self->handle_request($cgi);
 }
 

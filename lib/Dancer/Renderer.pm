@@ -21,10 +21,27 @@ sub render_action {
     return get_action_response();
 }
 
+# Here comes the gruick code for web server compat :(
+sub get_path {
+    my ($req) = @_;
+    my $path = "";
+
+    if (defined $ENV{'SCRIPT_NAME'}) {
+        $path = $ENV{'SCRIPT_NAME'};
+        $path .= $ENV{'PATH_INFO'} if $ENV{'PATH_INFO'};
+    }
+    else {
+        $path = $req->path_info;
+    }
+    return $path;
+}
+
+sub get_request_method { $ENV{REQUEST_METHOD} || $_[0]->request_method }
+
 sub render_error {
     my $request = Dancer::SharedData->cgi;
-    my $path = $request->path_info;
-    my $method = $request->request_method;
+    my $path = get_path($request, \%ENV);
+    my $method = get_request_method($request);
 
     return Dancer::Response->new(
         status => 404,
@@ -43,8 +60,8 @@ sub get_action_response() {
     Dancer::Route->run_before_filters;
 
     my $request = Dancer::SharedData->cgi;
-    my $path = $request->path_info;
-    my $method = $request->request_method;
+    my $path = get_path($request);
+    my $method = get_request_method($request);
     
     my $handler = Dancer::Route->find($path, $method);
     Dancer::Route->call($handler) if $handler;
@@ -52,7 +69,7 @@ sub get_action_response() {
 
 sub get_file_response() {
     my $request = Dancer::SharedData->cgi;
-    my $path = $request->path_info;
+    my $path = get_path($request);
     my $static_file = path(setting('public'), $path);
     
     if (-f $static_file) {
