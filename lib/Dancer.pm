@@ -94,12 +94,11 @@ sub import {
     Dancer->export_to_level(1, @_);
 }
 
-# Middleware 
-my  $apphandler = Dancer::Handler->get_handler();
-sub dance       { warn "app is $apphandler"; $apphandler->dance; }
-sub run         { $apphandler->run(@_) }
+# Start/Run the application with the chosen apphandler
+sub dance { Dancer::Handler->get_handler()->dance() }
+sub run   { Dancer::Handler->get_handler()->run(@_) }
 
-'Dancer';
+1;
 __END__
 
 =pod 
