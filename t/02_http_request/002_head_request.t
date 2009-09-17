@@ -29,6 +29,7 @@ my $PORT = 5000;
 set daemon => true;
 set port => $PORT;
 set access_log => false;
+
 my $pid = dance;
 ok(defined($pid), "Dancer launched as a daemon ($pid)");
 

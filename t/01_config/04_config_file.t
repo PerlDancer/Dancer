@@ -16,7 +16,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 17, import => ['!pass'];
+use Test::More tests => 18, import => ['!pass'];
 
 use Dancer;
 
@@ -47,6 +47,8 @@ is(setting('access_log'), 0,
     'setting access_log looks good');
 is(setting('logger'), 'file',
     'setting logger looks good');
+
+ok(defined(Dancer::Logger->logger), 'logger is defined');
 
 my $test_env = '
 log: debug
