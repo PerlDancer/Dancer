@@ -4,6 +4,7 @@ use lib 't';
 use TestUtils;
 
 use Dancer;
+set warnings => 1;
 
 get '/error' => sub {
 	template('error');
