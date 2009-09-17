@@ -13,12 +13,10 @@ use Dancer::Handler::Standalone;
 
 # This is where we choose which application handler to return
 sub get_handler {
-    if (setting('middleware') eq 'PSGI') {
-        warn "USING PSGI";
+    if (setting('apphandler') eq 'PSGI') {
         return Dancer::Handler::PSGI->new;
     }
     else {
-        warn "USING Standalone because middleware=".setting('middleware');
         return Dancer::Handler::Standalone->new;
     }
 }
