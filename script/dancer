@@ -1,7 +1,7 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
-#    dancer.pl is an helper script for the great module Dancer.
-#    Copyright (C) 2009  Sébastien Deseille (sebastien.deseille@gmail.com)
+#    dancer.pl is a helper script for bootstraping a Dancer application.
+#    Copyright (C) 2009: see the AUTHORS file.
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 use strict;
 use warnings;
+
 use File::Spec::Functions;
 use Getopt::Long;
 use CGI qw/:standard/;
@@ -44,10 +45,7 @@ GetOptions("h|help"       => \$help,
            "template"     => \$template
            );
 
-# Before make anything read this help
-if ($help) {
-    help();
-}
+help if $help;
 
 # It's good to check if application name is defined
 if (!defined $app_name) {
