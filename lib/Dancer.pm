@@ -19,7 +19,7 @@ use Dancer::Handler;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION = '0.9903';
+$VERSION = '0.9904';
 @EXPORT = qw(
     before
     content_type
@@ -94,12 +94,14 @@ sub import {
     Dancer->export_to_level(1, @_);
 }
 
-# Middleware 
-my  $apphandler = Dancer::Handler->get_handler();
-sub dance       { $apphandler->dance }
-sub run         { $apphandler->run(@_) }
+# Start/Run the application with the chosen apphandler
+sub dance { 
+    my ($class, $cgi) = @_;
+    Dancer::Config->load;
+    Dancer::Handler->get_handler()->dance($cgi);
+}
 
-'Dancer';
+1;
 __END__
 
 =pod 
@@ -536,6 +538,8 @@ The following modules are mandatory (Dancer cannot run without them)
 =item L<File::Spec>
 
 =item L<File::Basename>
+
+=item L<Template>
 
 =back
 

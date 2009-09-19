@@ -3,6 +3,7 @@ package Dancer::Handler;
 use strict;
 use warnings;
 
+use Dancer::GetOpt;
 use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
@@ -11,9 +12,14 @@ use Dancer::Config 'setting';
 use Dancer::Handler::PSGI;
 use Dancer::Handler::Standalone;
 
+sub init { 
+    Dancer::GetOpt->process_args();
+    Dancer::Config->load;
+}
+
 # This is where we choose which application handler to return
 sub get_handler {
-    if (setting('middleware') eq 'PSGI') {
+    if (setting('apphandler') eq 'PSGI') {
         return Dancer::Handler::PSGI->new;
     }
     else {

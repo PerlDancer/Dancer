@@ -24,8 +24,9 @@ sub init {
     }
 }
 
-sub debug       { $logger->debug($_[1]) }
-sub warning     { $logger->warning($_[1]) }
-sub error       { $logger->error($_[1]) }
+sub logger  { $logger }
+sub debug   { $logger->debug($_[1]) }
+sub warning { $logger->warning($_[1]) }
+sub error   { $logger->error($_[1]) }
 
 'Dancer::Logger';

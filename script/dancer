@@ -1,0 +1,281 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Template;
+use CGI qw/:standard/;
+use File::Basename 'basename', 'dirname';
+use File::Spec::Functions;
+use Getopt::Long;
+use constant FILE => 1;
+
+# options
+my $help = 0;
+my $name = 'webapp';
+my $path = '.';
+
+sub templates($);
+sub app_tree($$);
+sub create_node($);
+
+GetOptions(
+    "h|help"          => \$help,
+    "a|application=s" => \$name,
+    "p|path=s"        => \$path,
+);
+
+# main 
+usage() and exit(0) if $help;
+usage() if not defined $name;
+usage() unless -d $path && -w $path;
+
+my $DO_OVERWRITE_ALL = 0;
+my $DANCER_APP_DIR = catfile($path, $name);
+
+create_node( { 
+    $DANCER_APP_DIR => app_tree($name => $DANCER_APP_DIR) 
+});
+
+# subs
+
+sub usage {
+    print <<'ENDUSAGE';
+Dancer Helper - bootstrap a Dancer application
+
+Usage:
+    dancer [options] -a <appname>
+    
+    options are following :
+    -h, --help            : display this help message
+    -a, --application     : name of the application to create
+    -p, --path            : existing path where to create the application tree
+                            (current directory if not specified, must be writable)
+                            
+ENDUSAGE
+    exit 0;
+}
+
+sub create_node($);
+sub create_node($) {
+    my ($node) = @_;
+    
+    while ( my ($path, $content) = each %$node ) {
+        if (ref($content) eq 'HASH') {
+            safe_mkdir($path); 
+            create_node($content);
+        }
+        else {
+            my $file = basename($path);
+            my $dir  = dirname($path);
+            my $ex = ($file =~ s/^\+//); # look for '+' flag (executable)
+            my $template = templates($name)->{$file};
+
+            $path = catfile($dir, $file); # rebuild the path without the '+' flag
+            write_file($path, $template, {appdir => File::Spec->rel2abs($DANCER_APP_DIR)});
+            chmod 0755, $path if $ex;
+        }
+    }
+}
+
+sub app_tree($$)  {
+    my ($appname, $approot) = @_;
+
+    return {
+        catfile($approot, 'app.psgi') => FILE,
+        catfile($approot, "+$appname.pl") => FILE,
+        catfile($approot, "$appname.pm") => FILE,
+        catfile($approot, 'config.yml') => FILE,
+        catfile($approot, 'environments') => {
+            catfile($approot, 'environments', 'development.yml') => FILE,
+            catfile($approot, 'environments', 'production.yml') => FILE,
+        },
+        catfile($approot, 'views') => {
+            catfile($approot, 'views', 'layouts') => {
+                catfile($approot, 'views', 'layouts', 'main.tt') => FILE,
+            },
+            catfile($approot, 'views', 'index.tt') => FILE,
+        },
+    };
+}
+
+sub safe_mkdir {
+    my ($dir) = @_;
+    if (not -d $dir) {
+        print "+ [D] $dir\n";
+        mkdir $dir;
+    }
+    else {
+        print "  [D] $dir\n";
+    }
+}
+
+sub write_file {
+    my ($path, $template, $vars) = @_;
+    die "no template found for $path" unless defined $template;
+
+    # if file already exists, ask for confirmation
+    if (-f $path && (not $DO_OVERWRITE_ALL)) {
+        print "! $path exists, overwrite? [N/y/a]: ";
+        my $res = <STDIN>; chomp($res);
+        $DO_OVERWRITE_ALL = 1 if $res eq 'a';
+        return 0 unless $res eq 'y';
+    }
+
+    my $fh;
+    my $content = process_template($template, $vars);
+    print "+ [F] $path\n";
+    open $fh, '>', $path or die "unable to open file `$path' for writing: $!";
+    print $fh $content;
+    close $fh;
+}
+
+sub process_template {
+    my ($template, $tokens) = @_;
+    my $tt = Template->new; 
+    my $result = "";
+    $tt->process(\$template, $tokens, \$result);
+    return $result;
+}
+
+sub templates($) {
+    my $appname = shift;
+    return {
+
+'app.psgi'  => 
+
+"# This is a PSGI application file for Apache+Plack support
+use lib '[% appdir %]';
+use $appname;
+
+use Dancer::Config 'setting';
+setting apphandler  => 'PSGI';
+setting environment => 'production';
+Dancer::Config->load;
+
+my \$handler = sub {
+    my \$env = shift;
+    local *ENV = \$env;
+    my \$cgi = CGI->new();
+    Dancer->dance(\$cgi);
+};
+",
+'index.tt'  => '<h1>It Works!</h1>',
+'main.tt'   => start_html(
+                    -title => $appname, 
+                    -style => '/css/style.css')
+             . h1($appname)
+             . "<div id=\"content\"><% content %></div>"
+             . end_html(),
+
+"$appname.pl" => 
+
+"#!/usr/bin/perl
+use Dancer;
+use $appname;
+dance;
+",
+
+"$appname.pm" => 
+
+"package $appname;
+use Dancer;
+use Template;
+
+get '/' => sub {
+    template 'index';
+};
+
+true;
+",
+
+'style.css' => 
+
+'body {
+    font-family: Lucida,sans-serif;   
+}',
+
+'config.yml' => 
+
+'layout: "main"
+logger: "file"
+
+',
+
+'development.yml' => 
+'log: "debug"
+
+',
+
+'production.yml' => 
+'log: "warning"
+
+',
+    };
+}
+__END__
+
+=pod 
+
+=head1 NAME
+
+dancer
+
+=head1 DESCRIPTION
+
+Helper script for providing a bootstraping method for 
+creating new Dancer applications.
+
+=head1 USAGE
+
+dancer [options] -a <appname>
+
+=over
+
+=item -h, --help            : print what you are currently reading
+=item -a, --application     : the name of your application
+=item -p, --path            : the path where to create your application
+                              (current directory if not specified)
+
+=back
+
+=head1 EXAMPLE
+
+Here is an application create with dancer:
+
+    $ dancer -a mywebapp
+    + [D] mywebapp 
+    + [F] mywebapp/config.yml
+    + [D] mywebapp/views
+    + [D] mywebapp/views/layouts
+    + [F] mywebapp/views/layouts/main.tt
+    + [F] mywebapp/views/index.tt
+    + [D] mywebapp/environments
+    + [F] mywebapp/environments/production.yml
+    + [F] mywebapp/environments/development.yml
+    + [F] mywebapp/mywebapp.pm
+    + [F] mywebapp/mywebapp.pl
+    + [F] mywebapp/app.psgi
+
+The application is ready to serve:
+
+    $ cd mywebapp
+    $ ./mywebapp.pl
+    >> Listening on 127.0.0.1:3000
+    == Entering the development dance floor ...
+
+=head1 AUTHOR
+
+This script has been written by Sebastien Deseille
+<sebastien.deseille@gmail.com> and Alexis Sukrieh 
+<sukria@cpan.org>.
+
+=head1 SOURCE CODE
+
+See L<Dancer> for more information.
+
+=head1 LICENSE
+
+This module is free software and is published under the same
+terms as Perl itself.
+
+=cut

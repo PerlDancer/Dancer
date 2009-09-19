@@ -1,8 +1,8 @@
-#!/usr/bin/perl
 package webapp;
 
 use Dancer;
 use Template;
+set apphandler => 'PSGI';
 
 before sub {
     var note => "I ARE IN TEH BEFOR FILTERZ";
@@ -70,3 +70,5 @@ get r('/(.*)') => sub {
 };
 
 dance;
+
+1;

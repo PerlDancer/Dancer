@@ -6,28 +6,31 @@ use base 'Dancer::Handler';
 
 use Dancer::GetOpt;
 use Dancer::Config;
+use Dancer::SharedData;
 
 sub new {
     my $class = shift;
-    bless {}, $class;
+    my $self = {};
+    bless $self, $class;
+    return $self;
 }
 
 sub dance {
-    Dancer::GetOpt->process_args();
-    Dancer::Config->load;
-}
-
-sub run {
-    my ($self, $class, $cgi) = @_;
+    my ($self, $cgi) = @_;
+    Dancer::SharedData->cgi($cgi);
     $self->handle_request($cgi);
 }
 
 sub render_response {
     my ($self, $response) = @_;
+    
+    my $content = $response->{content};
+    $content = [ $content ] unless (ref($content) eq 'GLOB');
+
     return [ 
         $response->{status},
         [ %{ $response->{headers} } ],
-        [ $response->{content} ] 
+        $content
     ];
 }
 

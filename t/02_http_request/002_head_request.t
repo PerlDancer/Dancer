@@ -25,14 +25,16 @@ get '/' => sub {
 };
 
 # start the Dancer in background
+my $PORT = 5000;
 set daemon => true;
-set port => 3000;
+set port => $PORT;
 set access_log => false;
+
 my $pid = dance;
 ok(defined($pid), "Dancer launched as a daemon ($pid)");
 
 foreach my $t (@tests) {
-    my $res = http_request(3000, $t->{method}, $t->{path});
+    my $res = http_request($PORT, $t->{method}, $t->{path});
     ok( $res->is_success, 
     "request ".$t->{method}." ".$t->{path}." is a success");
     is($res->status_line, $t->{expected}{status}, "status looks good");

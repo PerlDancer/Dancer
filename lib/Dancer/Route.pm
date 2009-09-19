@@ -90,7 +90,8 @@ sub call($$) {
     my $compilation_warning = warning;
 
     # trap errors
-    if ($@ || $warning || $compilation_warning) {
+    if ( $@ || 
+        (setting('warnings') && ($warning || $compilation_warning))) {
 
         my $message = "Route Handler Error\n\n";
         $message .= "Compilation warning: $compilation_warning\n" 
