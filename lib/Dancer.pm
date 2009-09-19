@@ -539,6 +539,8 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =item L<File::Basename>
 
+=item L<Template>
+
 =back
 
 The following modules are optional 
