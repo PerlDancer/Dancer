@@ -12,6 +12,18 @@ The user should be able to define a webapp with very few lines of codes.
 
 === EXAMPLE ===
 
+To create a new Dancer application, use the helper script "dancer" provided
+with this distribution:
+
+    $ dancer -a mywebapp
+    + [D] mywebapp 
+    + [F] mywebapp/config.yml
+    + [D] mywebapp/views
+    + [D] mywebapp/views/layouts
+    [...]
+
+You have then a new Dancer application in 'mywebapp'.
+
 Here is an example of a webapp built with Dancer:
 
     # webapp.pl
@@ -55,13 +67,7 @@ Dancer depends on the following modules
 
     - HTTP::Server::Simple
     - File::MimeInfo
-    - File::Spec
-    - File::Basename
     - Template
-
-Dancer may also depend on other modules if optional features are used:
-
-    - Tempalte          needed for views rendering
 
 === WEBSITE ===
 
