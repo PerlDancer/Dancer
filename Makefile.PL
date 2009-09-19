@@ -13,6 +13,7 @@ WriteMakefile(
         'File::MimeInfo'       => '0',
         'Template'             => '0',
     },
+    EXE_FILES => ['script/dancer'],
     ABSTRACT => "A minimal-effort oriented web application framework",
     test => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},
 );
