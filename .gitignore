@@ -4,5 +4,5 @@ blib
 pm_to_blib
 cover_db
 example/logs
-t/01_config/logs
-t/07_apphandlers/logs/
+t/*/logs
+logs
