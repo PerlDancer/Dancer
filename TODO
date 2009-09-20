@@ -20,46 +20,6 @@
         ...
     };
 
-* Helper script
-
-    We need an helper script for providing a bootstraping method for 
-    creating new applications.
-
-    The helper script should be named dancer, and would be usable
-    like the following:
-
-    $ dancer --help
-    dancer - helper script for bootstraping Dancer web applications
-
-    Usage: dancer [options] <appname>
-    Create the directory `appname' according to the given options.
-
-    Options:
-
-    --template     create a views directory and make sure
-                   Template is installed.
-    
-    Here is the output of the command:
-
-    $ dancer --template /srv/webapps/myblog
-    + creating /srv/webapps/myblog
-    + creating /srv/webapps/myblog/public
-    + creating /srv/webapps/myblog/public/errors
-    + creating /srv/webapps/myblog/public/errors/500.html
-    + creating /srv/webapps/myblog/public/errors/404.html
-    + creating /srv/webapps/myblog/public/errors/503.html
-    + creating /srv/webapps/myblog/public/css
-    + creating /srv/webapps/myblog/public/css/style.css
-    + creating /srv/webapps/myblog/views
-    + creating /srv/webapps/myblog/views/layouts
-    + creating /srv/webapps/myblog/views/layouts/main.tt
-    + creating /srv/webapps/myblog/myblog-server.pl
-    + creating /srv/webapps/myblog/environment.pl
-    + creating /srv/webapps/myblog/environments/
-    + creating /srv/webapps/myblog/environments/production.pl
-    + creating /srv/webapps/myblog/environments/development.pl
-
-
 * Error handler support
 
     It should be possible to handle errors in two different ways.
