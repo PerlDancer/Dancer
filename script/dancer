@@ -16,7 +16,7 @@ my $path = '.';
 
 sub templates($);
 sub app_tree($);
-sub create_node($);
+sub create_node($;$);
 
 GetOptions(
     "h|help"          => \$help,
@@ -30,12 +30,10 @@ usage() if not defined $name;
 usage() unless -d $path && -w $path;
 
 my $DO_OVERWRITE_ALL = 0;
-my $DANCER_APP_ROOT = $path;
 my $DANCER_APP_DIR  = catfile($path, $name);
 
-create_node( { 
-    $name => app_tree($name) 
-});
+safe_mkdir($DANCER_APP_DIR);
+create_node( app_tree($name), $DANCER_APP_DIR );
 
 # subs
 
@@ -56,16 +54,16 @@ ENDUSAGE
     exit 0;
 }
 
-sub create_node($);
-sub create_node($) {
-    my ($node) = @_;
+sub create_node($;$) {
+    my ($node, $root) = @_;
+    $root ||= '.';
     
     while ( my ($path, $content) = each %$node ) {
-        $path = catfile($DANCER_APP_ROOT, $path);
+        $path = catfile($root, $path);
 
         if (ref($content) eq 'HASH') {
             safe_mkdir($path); 
-            create_node($content);
+            create_node($content, $path);
         }
         else {
             my $file = basename($path);
@@ -84,24 +82,24 @@ sub app_tree($)  {
     my ($appname) = @_;
 
     return {
-        catfile($appname, 'app.psgi') => FILE,
-        catfile($appname, "+$appname.pl") => FILE,
-        catfile($appname, "$appname.pm") => FILE,
-        catfile($appname, 'config.yml') => FILE,
-        catfile($appname, 'environments') => {
-            catfile($appname, 'environments', 'development.yml') => FILE,
-            catfile($appname, 'environments', 'production.yml') => FILE,
+        "app.psgi"      => FILE,
+        "+$appname.pl"  => FILE,
+        "$appname.pm"   => FILE,
+        "config.yml"    => FILE,
+        "environments"  => {
+            "development.yml" => FILE,
+            "production.yml"  => FILE,
         },
-        catfile($appname, 'views') => {
-            catfile($appname, 'views', 'layouts') => {
-                catfile($appname, 'views', 'layouts', 'main.tt') => FILE,
+        "views" => {
+            "layouts" => {
+                "main.tt" => FILE,
             },
-            catfile($appname, 'views', 'index.tt') => FILE,
+            "index.tt" => FILE,
         },
-        catfile($appname, 'public') => {
-            catfile($appname, 'public', 'css') => { 
-                catfile($appname, 'public', 'css', 'style.css') => FILE },
-            catfile($appname, 'public', 'images') => { },
+        "public" => {
+            "css" => { 
+                "style.css" => FILE },
+            "images" => { },
         },
     };
 }
