@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Dancer::SharedData;
 use Dancer::Config 'setting';
+use Dancer::Error;
 
 # singleton for stroing the routes defined
 my $REG = { routes => {}, before_filters => [] };
@@ -108,17 +109,8 @@ sub call($$) {
         $message .= "</pre>";
 
         Dancer::SharedData->reset_all();
-
-        if (setting('show_errors')) {
-            return Dancer::Response->new(
-                status  => 500,
-                headers => {'Content-Type' => 'text/html'},
-                content => Dancer::Renderer->html_page("Error 500", $message)
-            );
-        }
-        else {
-            return Dancer::Renderer->render_error(500);
-        }
+        my $error = Dancer::Error->new(code => 500, message => $message);
+        return $error->render;
     }
 
     my $response = Dancer::Response->current;
@@ -129,10 +121,11 @@ sub call($$) {
         }
         else {
             Dancer::SharedData->reset_all();
-            return Dancer::Response->new(
-                status  => 404,
-                headers => {'Content-Type' => 'text/plain'},
-                content => "route passed, but unable to find another matching route");
+            my $error = Dancer::Error->new(code => 404, 
+                message => "<h2>Route Resolution Failed</h2>"
+                         . "<p>Last matching route passed, "
+                         . "but no other route left.</p>");
+            return $error->render;
         }
     }
     else {

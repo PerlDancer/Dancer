@@ -12,6 +12,7 @@ use Carp 'confess';
 
 # singleton for storing settings
 my $SETTINGS = {};
+sub settings { $SETTINGS }
 
 my $setters = {
     logger => sub {

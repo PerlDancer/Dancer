@@ -206,6 +206,14 @@ true;
     background-color: #1f1b1a;
 }
 
+#content {
+    color: #000;
+    background-color: #eee;
+    padding: 1em;
+    margin: 1em;
+    padding-top: 0.5em;
+}
+
 a { 
     color: #a5ec02;
 }
@@ -214,13 +222,6 @@ h1 {
     color: #a5ec02;
 }
 
-h2, h3 { 
-    color: #fff;
-}
-
-p {
-    color: #aba29c;
-}
 
 #footer {
     border-top: 1px solid #aba29c;

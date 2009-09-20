@@ -42,14 +42,7 @@ sub render_error {
         content => Dancer::Renderer->html_page(
             "Error $error_code" =>
             "<h2>Unable to process your query</h2>".
-            ( setting('show_errors') ? 
-            ( "<p>Error $error_code</p>\n".
-              "<pre>".
-              "method  : $method\n".
-              "path    : $path\n".
-              "appdir  : ".setting('appdir')."\n".
-              "public  : ".setting('public')."\n".
-              "</pre>") : "The page you requested is not available")));
+            "The page you requested is not available"));
 }
 
 sub html_page {
