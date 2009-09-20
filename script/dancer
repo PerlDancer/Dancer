@@ -15,7 +15,7 @@ my $name = 'webapp';
 my $path = '.';
 
 sub templates($);
-sub app_tree($$);
+sub app_tree($);
 sub create_node($);
 
 GetOptions(
@@ -30,10 +30,11 @@ usage() if not defined $name;
 usage() unless -d $path && -w $path;
 
 my $DO_OVERWRITE_ALL = 0;
-my $DANCER_APP_DIR = catfile($path, $name);
+my $DANCER_APP_ROOT = $path;
+my $DANCER_APP_DIR  = catfile($path, $name);
 
 create_node( { 
-    $DANCER_APP_DIR => app_tree($name => $DANCER_APP_DIR) 
+    $name => app_tree($name) 
 });
 
 # subs
@@ -60,6 +61,8 @@ sub create_node($) {
     my ($node) = @_;
     
     while ( my ($path, $content) = each %$node ) {
+        $path = catfile($DANCER_APP_ROOT, $path);
+
         if (ref($content) eq 'HASH') {
             safe_mkdir($path); 
             create_node($content);
@@ -77,23 +80,28 @@ sub create_node($) {
     }
 }
 
-sub app_tree($$)  {
-    my ($appname, $approot) = @_;
+sub app_tree($)  {
+    my ($appname) = @_;
 
     return {
-        catfile($approot, 'app.psgi') => FILE,
-        catfile($approot, "+$appname.pl") => FILE,
-        catfile($approot, "$appname.pm") => FILE,
-        catfile($approot, 'config.yml') => FILE,
-        catfile($approot, 'environments') => {
-            catfile($approot, 'environments', 'development.yml') => FILE,
-            catfile($approot, 'environments', 'production.yml') => FILE,
+        catfile($appname, 'app.psgi') => FILE,
+        catfile($appname, "+$appname.pl") => FILE,
+        catfile($appname, "$appname.pm") => FILE,
+        catfile($appname, 'config.yml') => FILE,
+        catfile($appname, 'environments') => {
+            catfile($appname, 'environments', 'development.yml') => FILE,
+            catfile($appname, 'environments', 'production.yml') => FILE,
         },
-        catfile($approot, 'views') => {
-            catfile($approot, 'views', 'layouts') => {
-                catfile($approot, 'views', 'layouts', 'main.tt') => FILE,
+        catfile($appname, 'views') => {
+            catfile($appname, 'views', 'layouts') => {
+                catfile($appname, 'views', 'layouts', 'main.tt') => FILE,
             },
-            catfile($approot, 'views', 'index.tt') => FILE,
+            catfile($appname, 'views', 'index.tt') => FILE,
+        },
+        catfile($appname, 'public') => {
+            catfile($appname, 'public', 'css') => { 
+                catfile($appname, 'public', 'css', 'style.css') => FILE },
+            catfile($appname, 'public', 'images') => { },
         },
     };
 }
@@ -101,11 +109,11 @@ sub app_tree($$)  {
 sub safe_mkdir {
     my ($dir) = @_;
     if (not -d $dir) {
-        print "+ [D] $dir\n";
+        print "+ $dir\n";
         mkdir $dir;
     }
     else {
-        print "  [D] $dir\n";
+        print "  $dir\n";
     }
 }
 
@@ -118,12 +126,12 @@ sub write_file {
         print "! $path exists, overwrite? [N/y/a]: ";
         my $res = <STDIN>; chomp($res);
         $DO_OVERWRITE_ALL = 1 if $res eq 'a';
-        return 0 unless $res eq 'y';
+        return 0 unless ($res eq 'y') or ($res eq 'a');
     }
 
     my $fh;
     my $content = process_template($template, $vars);
-    print "+ [F] $path\n";
+    print "+ $path\n";
     open $fh, '>', $path or die "unable to open file `$path' for writing: $!";
     print $fh $content;
     close $fh;
