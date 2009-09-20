@@ -15,11 +15,12 @@ use Dancer::SharedData;
 sub send_file { 
     my ($path) = @_;
 
+    # Fake the CGI request with /path/to/file
     my $request = CGI->new;
     $request->path_info($path);
     $request->request_method('GET');
-
     Dancer::SharedData->cgi($request);
+
     my $resp = Dancer::Renderer::get_file_response();
     if ($resp) {
         Dancer::Response::set($resp);
