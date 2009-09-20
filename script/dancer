@@ -100,7 +100,9 @@ sub app_tree($)  {
             "404.html" => FILE,
             "500.html" => FILE,
             "css" => { 
-                "style.css" => FILE },
+                "style.css" => FILE,
+                "error.css" => FILE,
+            },
             "images" => { },
         },
     };
@@ -222,7 +224,6 @@ h1 {
     color: #a5ec02;
 }
 
-
 #footer {
     border-top: 1px solid #aba29c;
     margin-top: 2em;
@@ -237,16 +238,54 @@ pre {
 
 ',
 
+"error.css" => 
+
+"body {
+    font-family: Lucida,sans-serif;
+}
+
+h1 {
+    color: #AA0000;
+    border-bottom: 1px solid #444;
+}
+
+h2 { color: #444; }
+
+pre {
+    font-family: monospace;
+    font-size: 14px;
+    border-left: 2px solid #777;
+    padding-left: 1em;
+}
+
+#footer {
+    font-size: 10px;
+}
+
+span.key { 
+    color: #449;
+    font-weight: bold;
+    width: 120px;
+    display: inline;
+}
+
+span.value {
+    color: #494;
+}
+",
+
 "404.html" => 
     Dancer::Renderer->html_page( 
         "Error 404", 
-        '<h2>Page Not Found</h2><p>Sorry, this is the void.</p>'),
+        '<h2>Page Not Found</h2><p>Sorry, this is the void.</p>',
+        'error'),
 
 "500.html" => 
     Dancer::Renderer->html_page( 
         "Error 500", 
         '<h2>Internal Server Error</h2>'
-                 . '<p>Wooops, something went wrong</p>'),
+                 . '<p>Wooops, something went wrong</p>',
+        'error'),
 
 'config.yml' => 
 

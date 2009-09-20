@@ -46,11 +46,13 @@ sub render_error {
 }
 
 sub html_page {
-    my ($class, $title, $content) = @_;
+    my ($class, $title, $content, $style) = @_;
+    $style ||= 'style';
+
     my $cgi = CGI->new;
     return start_html(
         -title => $title, 
-        -style => '/css/style.css')
+        -style => "/css/$style.css")
              . h1($title)
              . "<div id=\"content\">"
              . "<p>$content</p>"
