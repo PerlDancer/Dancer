@@ -89,6 +89,13 @@ sub call($$) {
     eval { $content = $handler->{code}->() };
     my $compilation_warning = warning;
 
+    # Log warnings
+    if ($warning || $compilation_warning) {
+        Dancer::Logger->warning($compilation_warning) 
+            if $compilation_warning;
+        Dancer::Logger->warning($warning) if $warning;
+    }
+
     # trap errors
     if ( $@ || 
         (setting('warnings') && ($warning || $compilation_warning))) {
