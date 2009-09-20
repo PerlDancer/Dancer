@@ -19,7 +19,7 @@ use Dancer::Handler;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION = '0.9904';
+$VERSION = '0.9905';
 @EXPORT = qw(
     before
     content_type

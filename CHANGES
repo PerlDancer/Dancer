@@ -1,3 +1,13 @@
+Release 0.9005
+
+    * Support for configurable error handling
+    * New design for the starting app built with script/dancer
+
+Release 0.9004
+
+    * Support for PSGI/Plack environment
+    * script/dancer helper script for bootstraping a new app
+
 Release 0.9003
 
     * Detect differently compilation-time warnings and runtime warnings
