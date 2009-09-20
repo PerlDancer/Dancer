@@ -5,7 +5,7 @@ use TestUtils;
 use Dancer;
 use Dancer::FileUtils 'read_glob_content';
 
-plan tests => 4;
+plan tests => 5;
 
 ok(get('/cat/:file', sub {
     send_file(params->{file});
@@ -16,7 +16,9 @@ my $req = fake_request(GET => '/cat/file.txt');
 Dancer::SharedData->cgi($req);
 my $resp = Dancer::Renderer->get_action_response();
 
+
 ok(defined($resp), "route handler found for /cat/file.txt");
+is($resp->{headers}{'Content-Type'}, 'text/plain', 'mime_type is kept');
 is(ref($resp->{content}), 'GLOB', "content is a File handle");
 
 my $content = read_glob_content($resp->{content});

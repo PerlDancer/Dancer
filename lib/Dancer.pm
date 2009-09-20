@@ -8,6 +8,7 @@ use vars qw($VERSION $AUTHORITY @EXPORT);
 use Dancer::Config 'setting';
 use Dancer::FileUtils;
 use Dancer::GetOpt;
+use Dancer::Error;
 use Dancer::Helpers;
 use Dancer::Logger;
 use Dancer::Renderer;
@@ -40,6 +41,7 @@ $VERSION = '0.9905';
     r
     request
     send_file
+    send_error
     set
     splat
     status
@@ -57,6 +59,7 @@ sub content_type { Dancer::Response::content_type(@_) }
 sub debug        { Dancer::Logger->debug(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub error        { Dancer::Logger->error(@_) }
+sub send_error   { Dancer::Helpers->error(@_) }
 sub false        { 0 }
 sub get          { Dancer::Route->add('head', @_); 
                    Dancer::Route->add('get', @_);}
