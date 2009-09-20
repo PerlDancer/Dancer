@@ -3,10 +3,10 @@
 use strict;
 use warnings;
 use Template;
-use CGI qw/:standard/;
 use File::Basename 'basename', 'dirname';
 use File::Spec::Functions;
 use Getopt::Long;
+use Dancer::Renderer;
 use constant FILE => 1;
 
 # options
@@ -97,6 +97,8 @@ sub app_tree($)  {
             "index.tt" => FILE,
         },
         "public" => {
+            "404.html" => FILE,
+            "500.html" => FILE,
             "css" => { 
                 "style.css" => FILE },
             "images" => { },
@@ -165,13 +167,15 @@ my \$handler = sub {
     Dancer->dance(\$cgi);
 };
 ",
-'index.tt'  => '<h1>It Works!</h1>',
-'main.tt'   => start_html(
-                    -title => $appname, 
-                    -style => '/css/style.css')
-             . h1($appname)
-             . "<div id=\"content\"><% content %></div>"
-             . end_html(),
+'index.tt'  => '<h2>It Works!</h2>
+
+<p>
+I\'m in <code>[% appdir %]/views/index.tt</code>
+</p>
+',
+
+'main.tt'   => 
+    Dancer::Renderer->html_page($appname, '<% content %>'),
 
 "$appname.pl" => 
 
@@ -198,7 +202,50 @@ true;
 
 'body {
     font-family: Lucida,sans-serif;   
-}',
+    color: #eee;
+    background-color: #1f1b1a;
+}
+
+a { 
+    color: #a5ec02;
+}
+
+h1 { 
+    color: #a5ec02;
+}
+
+h2, h3 { 
+    color: #fff;
+}
+
+p {
+    color: #aba29c;
+}
+
+#footer {
+    border-top: 1px solid #aba29c;
+    margin-top: 2em;
+    padding-top: 1em;
+    font-size: 10px;
+    color: #ddd;
+}
+
+pre {
+    font-family: monospace;
+}
+
+',
+
+"404.html" => 
+    Dancer::Renderer->html_page( 
+        "Error 404", 
+        '<h2>Page Not Found</h2><p>Sorry, this is the void.</p>'),
+
+"500.html" => 
+    Dancer::Renderer->html_page( 
+        "Error 500", 
+        '<h2>Internal Server Error</h2>'
+                 . '<p>Wooops, something went wrong</p>'),
 
 'config.yml' => 
 
@@ -209,11 +256,15 @@ logger: "file"
 
 'development.yml' => 
 'log: "debug"
+warnings: 1
+show_errors: 1
 
 ',
 
 'production.yml' => 
 'log: "warning"
+warnings: 0
+show_errors: 0
 
 ',
     };
@@ -249,18 +300,18 @@ dancer [options] -a <appname>
 Here is an application create with dancer:
 
     $ dancer -a mywebapp
-    + [D] mywebapp 
-    + [F] mywebapp/config.yml
-    + [D] mywebapp/views
-    + [D] mywebapp/views/layouts
-    + [F] mywebapp/views/layouts/main.tt
-    + [F] mywebapp/views/index.tt
-    + [D] mywebapp/environments
-    + [F] mywebapp/environments/production.yml
-    + [F] mywebapp/environments/development.yml
-    + [F] mywebapp/mywebapp.pm
-    + [F] mywebapp/mywebapp.pl
-    + [F] mywebapp/app.psgi
+    + mywebapp 
+    + mywebapp/config.yml
+    + mywebapp/views
+    + mywebapp/views/layouts
+    + mywebapp/views/layouts/main.tt
+    + mywebapp/views/index.tt
+    + mywebapp/environments
+    + mywebapp/environments/production.yml
+    + mywebapp/environments/development.yml
+    + mywebapp/mywebapp.pm
+    + mywebapp/mywebapp.pl
+    + mywebapp/app.psgi
 
 The application is ready to serve:
 

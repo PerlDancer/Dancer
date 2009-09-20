@@ -20,24 +20,6 @@
         ...
     };
 
-* Error handler support
-
-    It should be possible to handle errors in two different ways.
-    - detailed: when an error occurs, Dancer renders a page with as
-      many details as it can concerning the error
-    - hidden: when an error occurs, a generic page is sent to the
-      user describing the kind of error. This is done with a
-      send_file statement, using views/error/ERRCODE.html
-
-    These error rendering modes should be set through the
-    'errors' setting :
-
-    set errors => detailed;
-
-    or
-
-    set errors => hidden;
-
 * Session support
 
     We need a way to support web session in the easiest way possible.

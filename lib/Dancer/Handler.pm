@@ -40,7 +40,7 @@ sub handle_request {
     
     my $response = Dancer::Renderer->render_file
         || Dancer::Renderer->render_action
-        || Dancer::Renderer->render_error;
+        || Dancer::Renderer->render_error(404);
     
     return $self->render_response($response);
 }

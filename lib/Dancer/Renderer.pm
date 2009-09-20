@@ -3,6 +3,7 @@ package Dancer::Renderer;
 use strict;
 use warnings;
 
+use CGI qw/:standard/;
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Request;
@@ -23,22 +24,48 @@ sub render_action {
 }
 
 sub render_error {
+    my ($class, $error_code) = @_;
+
     my $request = Dancer::Request->new;
-    my $path = $request->path;
-    my $method = $request->method;
-    my $cgi = $request->cgi;
+    my $path    = $request->path;
+    my $method  = $request->method;
+    my $cgi     = $request->{_cgi};
+
+    my $static_file = path(setting('public'), "$error_code.html");
+    my $response = Dancer::Renderer->get_file_response_for_path(
+        $static_file => $error_code);
+    return $response if $response;
 
     return Dancer::Response->new(
-        status => 404,
+        status => $error_code,
         headers => { 'Content-Type' => 'text/html' },
-        content => $cgi->start_html('Not found').
-        $cgi->h1('Not found').
-        "<p>No route matched your request `$path'.</p>\n".
-        "<p>".
-        "appdir is <code>".setting('appdir')."</code><br>\n".
-        "public is <code>".setting('public')."</code>".
-        "</p>".
-        $cgi->end_html);
+        content => Dancer::Renderer->html_page(
+            "Error $error_code" =>
+            "<h2>Unable to process your query</h2>".
+            ( setting('show_errors') ? 
+            ( "<p>Error $error_code</p>\n".
+              "<pre>".
+              "method  : $method\n".
+              "path    : $path\n".
+              "appdir  : ".setting('appdir')."\n".
+              "public  : ".setting('public')."\n".
+              "</pre>") : "The page you requested is not available")));
+}
+
+sub html_page {
+    my ($class, $title, $content) = @_;
+    my $cgi = CGI->new;
+    return start_html(
+        -title => $title, 
+        -style => '/css/style.css')
+             . h1($title)
+             . "<div id=\"content\">"
+             . "<p>$content</p>"
+             . "</div>"
+             . '<div id="footer">'
+             . 'Powered by <a href="http://dancer.sukria.net">Dancer</a>'
+             . '</div>'
+             . end_html();
 }
 
 sub get_action_response() {
@@ -56,11 +83,17 @@ sub get_file_response() {
     my $request = Dancer::Request->new;
     my $path = $request->path;
     my $static_file = path(setting('public'), $path);
-    
+    return Dancer::Renderer->get_file_response_for_path($static_file);
+}
+
+sub get_file_response_for_path {
+    my ($class, $static_file, $status) = @_;
+    $status ||= 200;
+
     if (-f $static_file) {
         open my $fh, "<", $static_file;
         return Dancer::Response->new(
-            status => 200,
+            status => $status,
             headers => { 'Content-Type' => get_mime_type($static_file) }, 
             content => $fh);
     }

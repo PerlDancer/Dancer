@@ -100,17 +100,25 @@ sub call($$) {
     if ( $@ || 
         (setting('warnings') && ($warning || $compilation_warning))) {
 
-        my $message = "Route Handler Error\n\n";
+        my $message = "<h2>Route Handler Error</h2>\n<pre>";
         $message .= "Compilation warning: $compilation_warning\n" 
             if $compilation_warning;
         $message .= "Runtime Warning: $warning\n" if $warning;
         $message .= "Runtime Error: $@\n" if $@;
+        $message .= "</pre>";
 
         Dancer::SharedData->reset_all();
-        return Dancer::Response->new(
-            status  => 500,
-            headers => {'Content-Type' => 'text/plain'},
-            content => $message);
+
+        if (setting('show_errors')) {
+            return Dancer::Response->new(
+                status  => 500,
+                headers => {'Content-Type' => 'text/html'},
+                content => Dancer::Renderer->html_page("Error 500", $message)
+            );
+        }
+        else {
+            return Dancer::Renderer->render_error(500);
+        }
     }
 
     my $response = Dancer::Response->current;
