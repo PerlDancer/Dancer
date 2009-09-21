@@ -100,16 +100,30 @@ sub call($$) {
     # trap errors
     if ( $@ || 
         (setting('warnings') && ($warning || $compilation_warning))) {
-
-        my $message = "<h2>Route Handler Error</h2>\n<pre>";
-        $message .= "Compilation warning: $compilation_warning\n" 
-            if $compilation_warning;
-        $message .= "Runtime Warning: $warning\n" if $warning;
-        $message .= "Runtime Error: $@\n" if $@;
-        $message .= "</pre>";
-
+        
         Dancer::SharedData->reset_all();
-        my $error = Dancer::Error->new(code => 500, message => $message);
+
+        my $error;
+        if ($@) {
+            $error = Dancer::Error->new(code => 500, 
+                title   => 'Route Handler Error',
+                type    => 'Execution failed',
+                message => $@);
+
+        }
+        elsif ($warning) {
+            $error = Dancer::Error->new(code => 500, 
+                title   => 'Route Handler Error',
+                type    => 'Runtime Warning',
+                message => $warning);
+
+        }
+        else {
+            $error = Dancer::Error->new(code => 500, 
+                title   => 'Route Handler Error',
+                type    => 'Compilation Warning',
+                message => $compilation_warning);
+        }
         return $error->render;
     }
 

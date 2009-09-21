@@ -272,6 +272,30 @@ span.key {
 span.value {
     color: #494;
 }
+
+div#error {
+    background-color: #ddd;
+    margin: 0;
+    padding: 1em;
+    font-family: monospace;
+    font-size: 14px;
+    border: 1px solid #444;
+}
+
+pre.sourcecode {
+    background-color: #000;
+    color: #eee;
+    padding: 1em;
+    margin: 0;
+    border: 1px solid #fff;
+    border-top: 0;
+}
+
+pre.sourcecode span.nu {
+    color: #AAA;
+    margin-right: 10px;
+}
+
 ",
 
 "404.html" => 

@@ -6,6 +6,7 @@ use warnings;
 use Dancer::Response;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
+use Dancer::Logger;
 
 sub new {
     my ($class, %params) = @_;
@@ -13,15 +14,49 @@ sub new {
     bless $self, $class;
 
     $self->{title}   ||= "Error ".$self->code;
-    $self->{message} ||= "<h2>Unknown Error</h2>";
-    $self->{message} .= $self->environment;
+    
+    my $html_output = "<h2>".$self->{type}."</h2>";
+    $html_output .= $self->backtrace;
+    $html_output .= $self->environment;
 
+    $self->{message} = $html_output;
     return $self;
 }
 
 sub code    { $_[0]->{code}    }
 sub title   { $_[0]->{title}   }
 sub message { $_[0]->{message} }
+
+sub backtrace {
+    my ($self) = @_;
+   
+    my $message = $self->{message};
+    my ($file, $line) = ($message =~ /at (\S+) line (\d+)/);
+    
+    my $fh;
+    open $fh, '<', $file or die "cannot open file $file : $!";
+    my @lines = <$fh>;
+    close $fh;
+
+    $line--;
+    my $start = (($line - 3) >= 0) ? ($line - 3) : 0;
+    my $stop  = (($line + 3) < scalar(@lines)) ? ($line + 3) : scalar(@lines);
+
+    my $backtrace = "<div id=\"error\">$message</div>";
+    $backtrace .= "<pre class=\"sourcecode\">";
+    for (my $l=$start; $l<=$stop; $l++) {
+        chomp $lines[$l];
+        if ($l == $line) {
+            $backtrace .= "<span class=\"nu\">".($l + 1)."</span> <font color=\"red\">".$lines[$l]."</font>\n";
+        }
+        else {
+            $backtrace .= "<span class=\"nu\">".($l + 1)."</span> ".$lines[$l]."\n";
+        }
+    }
+    $backtrace .= "</pre>";
+
+    return $backtrace;
+}
 
 sub dumper {
     my $obj = shift;
