@@ -32,9 +32,10 @@ sub backtrace {
    
     my $message = $self->{message};
     my ($file, $line) = ($message =~ /at (\S+) line (\d+)/);
-    
+    return $message unless ($file and $line);
+
     my $fh;
-    open $fh, '<', $file or die "cannot open file $file : $!";
+    open $fh, '<', $file or return $message;
     my @lines = <$fh>;
     close $fh;
 
