@@ -9,6 +9,10 @@ for building web application with minimal-effort in mind.
 
 The user should be able to define a webapp with very few lines of codes.
 
+=== NEWS === 
+
+Dancer's development moves very fast, to stay tuned follow 
+sukria on Twitter: http://twitter.com/sukria
 
 === EXAMPLE ===
 
@@ -16,11 +20,11 @@ To create a new Dancer application, use the helper script "dancer" provided
 with this distribution:
 
     $ dancer -a mywebapp
-    + [D] mywebapp 
-    + [F] mywebapp/config.yml
-    + [D] mywebapp/views
-    + [D] mywebapp/views/layouts
-    [...]
+    + mywebapp 
+    + mywebapp/config.yml
+    + mywebapp/views
+    + mywebapp/views/layouts
+    [..]
 
 You have then a new Dancer application in 'mywebapp'.
 
@@ -74,10 +78,11 @@ Dancer depends on the following modules
 This is a work in progress.
 
 Dancer supports PSGI/Plack, to run a Dancer app with PSGI/Plack
-just create a file 'app.psgi' in your appdir (like the one in example)
-
+See
+http://www.sukria.net/fr/archives/2009/09/20/mounting-a-dancer-app-into-apache-psgiplack/
 
 === WEBSITE ===
 
 For more details about the project, checkout the official website:
 http://dancer.sukria.net
+
