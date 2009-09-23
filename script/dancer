@@ -273,27 +273,40 @@ span.value {
     color: #494;
 }
 
-div#error {
-    background-color: #ddd;
-    margin: 0;
-    padding: 1em;
-    font-family: monospace;
-    font-size: 14px;
-    border: 1px solid #444;
-}
+/* these are for the message boxes */
 
-pre.sourcecode {
-    background-color: #000;
-    color: #eee;
+pre.content {
+    background-color: #eee;
+    color: #000;
     padding: 1em;
     margin: 0;
-    border: 1px solid #fff;
+    border: 1px solid #aaa;
     border-top: 0;
+    margin-bottom: 1em;
 }
 
-pre.sourcecode span.nu {
-    color: #AAA;
+div.title {
+    font-family: monospace;
+    background-color: #aaa;
+    color: #444;
+    font-weight: bold;
+    padding: 3px;
+    padding-left: 10px;
+}
+
+pre.content span.nu {
+    color: #889;
     margin-right: 10px;
+}
+
+pre.error {
+    background: #334;
+    color: #ccd;
+    padding: 1em;
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
 }
 
 ",

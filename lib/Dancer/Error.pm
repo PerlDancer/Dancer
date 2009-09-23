@@ -30,33 +30,63 @@ sub message { $_[0]->{message} }
 sub backtrace {
     my ($self) = @_;
    
-    my $message = $self->{message};
+    my $message = "<pre class=\"error\">".$self->{message}."</pre>";
+
+    # the default perl warning/error pattern
     my ($file, $line) = ($message =~ /at (\S+) line (\d+)/);
+    
+    # the Devel::SimpleTrace pattern
+    my ($file, $line) = ($message =~ /at.*\((\S+):(\d+)\)/) 
+        unless $file and $line;
+    
+    # no file/line found, cannot open a file for context
     return $message unless ($file and $line);
 
+    # file and line are located, let's read the source Luke!
     my $fh;
     open $fh, '<', $file or return $message;
     my @lines = <$fh>;
     close $fh;
 
+
+    my $backtrace = $message;
+    
+    $backtrace .= "<div class=\"title\">"
+                . "$file around line $line"
+                . "</div>";
+
+    $backtrace .= "<pre class=\"content\">";
+
     $line--;
     my $start = (($line - 3) >= 0) ? ($line - 3) : 0;
     my $stop  = (($line + 3) < scalar(@lines)) ? ($line + 3) : scalar(@lines);
 
-    my $backtrace = "<div id=\"error\"><pre>$message</pre></div>";
-    $backtrace .= "<pre class=\"sourcecode\">";
     for (my $l=$start; $l<=$stop; $l++) {
         chomp $lines[$l];
         if ($l == $line) {
-            $backtrace .= "<span class=\"nu\">".($l + 1)."</span> <font color=\"red\">".$lines[$l]."</font>\n";
+            $backtrace .= "<span class=\"nu\">"
+                        . tabulate($l + 1, $stop)
+                        . "</span> <font color=\"red\">"
+                        . $lines[$l]."</font>\n";
         }
         else {
-            $backtrace .= "<span class=\"nu\">".($l + 1)."</span> ".$lines[$l]."\n";
+            $backtrace .= "<span class=\"nu\">"
+                        . tabulate($l + 1, $stop)
+                        . "</span> "
+                        . $lines[$l]."\n";
         }
     }
     $backtrace .= "</pre>";
 
+
     return $backtrace;
+}
+
+sub tabulate {
+    my ($number, $max) = @_;
+    my $len = length($max);
+    return $number if length($number) == $len;
+    return " $number";
 }
 
 sub dumper {
@@ -84,9 +114,9 @@ sub render {
 sub environment {
     my ($self) = @_;
 
-    my $env = "<h3>Environment</h3><pre>".dumper(\%ENV)."</pre>";
-    my $settings = "<h3>Settings</h3><pre>".dumper(Dancer::Config->settings)."</pre>";
-    my $source = "<h3>Stack</h3><pre>".$self->get_caller."</pre>";
+    my $env = "<div class=\"title\">Environment</div><pre class=\"content\">".dumper(\%ENV)."</pre>";
+    my $settings = "<div class=\"title\">Settings</div><pre class=\"content\">".dumper(Dancer::Config->settings)."</pre>";
+    my $source = "<div class=\"title\">Stack</div><pre class=\"content\">".$self->get_caller."</pre>";
     return "$source $settings $env";
 }
 
