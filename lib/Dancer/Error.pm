@@ -43,7 +43,7 @@ sub backtrace {
     my $start = (($line - 3) >= 0) ? ($line - 3) : 0;
     my $stop  = (($line + 3) < scalar(@lines)) ? ($line + 3) : scalar(@lines);
 
-    my $backtrace = "<div id=\"error\">$message</div>";
+    my $backtrace = "<div id=\"error\"><pre>$message</pre></div>";
     $backtrace .= "<pre class=\"sourcecode\">";
     for (my $l=$start; $l<=$stop; $l++) {
         chomp $lines[$l];
