@@ -36,7 +36,7 @@ sub backtrace {
     my ($file, $line) = ($message =~ /at (\S+) line (\d+)/);
     
     # the Devel::SimpleTrace pattern
-    my ($file, $line) = ($message =~ /at.*\((\S+):(\d+)\)/) 
+    ($file, $line) = ($message =~ /at.*\((\S+):(\d+)\)/) 
         unless $file and $line;
     
     # no file/line found, cannot open a file for context
@@ -65,13 +65,13 @@ sub backtrace {
         chomp $lines[$l];
         if ($l == $line) {
             $backtrace .= "<span class=\"nu\">"
-                        . tabulate($l + 1, $stop)
+                        . tabulate($l + 1, $stop + 1)
                         . "</span> <font color=\"red\">"
                         . $lines[$l]."</font>\n";
         }
         else {
             $backtrace .= "<span class=\"nu\">"
-                        . tabulate($l + 1, $stop)
+                        . tabulate($l + 1, $stop + 1)
                         . "</span> "
                         . $lines[$l]."\n";
         }
