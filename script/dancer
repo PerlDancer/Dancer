@@ -233,7 +233,7 @@ h1 {
 }
 
 pre {
-    font-family: monospace;
+    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
 }
 
 ',
@@ -252,8 +252,8 @@ h1 {
 h2 { color: #444; }
 
 pre {
-    font-family: monospace;
-    font-size: 14px;
+    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
+    font-size: 12px;
     border-left: 2px solid #777;
     padding-left: 1em;
 }
@@ -286,7 +286,8 @@ pre.content {
 }
 
 div.title {
-    font-family: monospace;
+    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
+    font-size: 12px;
     background-color: #aaa;
     color: #444;
     font-weight: bold;
