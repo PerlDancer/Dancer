@@ -1,5 +1,6 @@
 Release 0.9005
 
+    * Source code extract on error catching
     * Support for configurable error handling
     * New design for the starting app built with script/dancer
 
