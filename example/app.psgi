@@ -3,6 +3,5 @@ use webapp;
 
 sub {
     my $env = shift;
-    local *ENV = $env;
-    Dancer->run(CGI->new);
+    Dancer->run(CGI::PSGI->new($env));
 };
