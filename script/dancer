@@ -154,6 +154,7 @@ sub templates($) {
 'app.psgi'  => 
 
 "# This is a PSGI application file for Apache+Plack support
+use CGI::PSGI;
 use lib '[% appdir %]';
 use $appname;
 
@@ -164,9 +165,7 @@ Dancer::Config->load;
 
 my \$handler = sub {
     my \$env = shift;
-    local *ENV = \$env;
-    my \$cgi = CGI->new();
-    Dancer->dance(\$cgi);
+    Dancer->dance(CGI::PSGI->new(\$env));
 };
 ",
 'index.tt'  => '<h2>It Works!</h2>
