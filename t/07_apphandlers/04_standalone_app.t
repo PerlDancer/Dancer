@@ -1,22 +1,15 @@
 use Dancer::Config 'setting';
 use Test::More;
-use Test::Requires qw(Plack::Loader LWP::UserAgent);
+use Test::Requires qw(LWP::UserAgent);
 use Test::TCP;
  
-my $app = sub {
-    my $env = shift;
-    local *ENV = $env;
-    my $cgi = CGI->new();
-    Dancer->dance($cgi);
-};
-
 test_tcp(
     client => sub {
         my $port = shift;
         my $ua = LWP::UserAgent->new;
         
         my $res = $ua->get("http://127.0.0.1:$port/env");
-        like $res->content, qr/psgi\.version/;
+        like $res->content, qr/PATH_INFO/;
         
         $res = $ua->get("http://127.0.0.1:$port/name/bar");
         like $res->content, qr/Your name: bar/;
@@ -32,12 +25,11 @@ test_tcp(
 
         use lib "t/lib";
         use TestApp;
-
-        setting apphandler  => 'PSGI';
-        setting environment => 'production';
         Dancer::Config->load;
 
-        Plack::Loader->auto(port => $port)->run($app);
+        setting environment => 'production';
+        setting port => $port;
+        Dancer->dance();
     },
 );
  
