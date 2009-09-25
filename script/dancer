@@ -154,6 +154,7 @@ sub templates($) {
 'app.psgi'  => 
 
 "# This is a PSGI application file for Apache+Plack support
+use CGI::PSGI;
 use lib '[% appdir %]';
 use $appname;
 
@@ -164,9 +165,7 @@ Dancer::Config->load;
 
 my \$handler = sub {
     my \$env = shift;
-    local *ENV = \$env;
-    my \$cgi = CGI->new();
-    Dancer->dance(\$cgi);
+    Dancer->dance(CGI::PSGI->new(\$env));
 };
 ",
 'index.tt'  => '<h2>It Works!</h2>
@@ -233,7 +232,7 @@ h1 {
 }
 
 pre {
-    font-family: monospace;
+    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
 }
 
 ',
@@ -252,8 +251,8 @@ h1 {
 h2 { color: #444; }
 
 pre {
-    font-family: monospace;
-    font-size: 14px;
+    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
+    font-size: 12px;
     border-left: 2px solid #777;
     padding-left: 1em;
 }
@@ -273,27 +272,41 @@ span.value {
     color: #494;
 }
 
-div#error {
-    background-color: #ddd;
-    margin: 0;
-    padding: 1em;
-    font-family: monospace;
-    font-size: 14px;
-    border: 1px solid #444;
-}
+/* these are for the message boxes */
 
-pre.sourcecode {
-    background-color: #000;
-    color: #eee;
+pre.content {
+    background-color: #eee;
+    color: #000;
     padding: 1em;
     margin: 0;
-    border: 1px solid #fff;
+    border: 1px solid #aaa;
     border-top: 0;
+    margin-bottom: 1em;
 }
 
-pre.sourcecode span.nu {
-    color: #AAA;
+div.title {
+    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
+    font-size: 12px;
+    background-color: #aaa;
+    color: #444;
+    font-weight: bold;
+    padding: 3px;
+    padding-left: 10px;
+}
+
+pre.content span.nu {
+    color: #889;
     margin-right: 10px;
+}
+
+pre.error {
+    background: #334;
+    color: #ccd;
+    padding: 1em;
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #eee;
 }
 
 ",
