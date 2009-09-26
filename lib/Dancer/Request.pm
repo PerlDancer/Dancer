@@ -41,7 +41,7 @@ sub build_path {
         $path .= $ENV{'PATH_INFO'} if $ENV{'PATH_INFO'};
     }
     else {
-        $path = $req->path_info;
+        $path = $req->script_name . $req->path_info;
     }
 
     $self->{path} = $path;
