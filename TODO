@@ -3,6 +3,16 @@
             
             This is the roadmap of upcoming developments
 
+* Request headers accessor
+
+    Could be great to have a common accessor for all HTTP_* variables 
+    in %ENV.
+
+    get '/' => sub {
+        headers->user_agent;     # ENV{HTTP_USER_AGENT}
+        headers->accept_language # ENV{HTTP_ACCEPT_LANGUAGE}
+        ...
+    };
 
 * Route caching support
 
