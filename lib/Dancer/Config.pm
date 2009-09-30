@@ -6,12 +6,16 @@ use base 'Exporter';
 use vars '@EXPORT_OK';
 
 use Dancer::FileUtils 'path';
+use Dancer::Util;
 use Carp 'confess';
 
 @EXPORT_OK = qw(setting mime_types);
 
 # singleton for storing settings
-my $SETTINGS = {};
+my $SETTINGS = {
+	# default mime_types
+	mime_types => Dancer::Util->mime_types,
+};
 sub settings { $SETTINGS }
 
 my $setters = {
