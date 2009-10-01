@@ -25,6 +25,7 @@ sub fake_request($$) {
 	my $req = Test::MockObject->new;
 	$req->mock('request_method', sub { method(@_) });
 	$req->mock('path_info', sub { path(@_) });
+    $req->mock('script_name', sub { undef });
 	$req->mock('Vars', sub { {} });
 	
 	$req->request_method($method);

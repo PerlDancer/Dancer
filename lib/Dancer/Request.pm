@@ -41,9 +41,14 @@ sub build_path {
         $path .= $ENV{'PATH_INFO'} if $ENV{'PATH_INFO'};
     }
     else {
-        $path = $req->path_info;
+        # look for script name
+        my $script_name = "";
+        eval { $script_name = $req->script_name }; 
+        $path .= $script_name if defined $script_name;
+        $path .= $req->path_info if defined $req->path_info;
     }
 
+    die "Cannot resolve path" if not $path;
     $self->{path} = $path;
 }
 
