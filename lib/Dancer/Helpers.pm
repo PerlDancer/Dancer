@@ -67,4 +67,13 @@ sub error {
     Dancer::Response::set($error->render);
 }
 
+sub redirect {
+	my($destination, $status) = @_;
+
+	Dancer::Response::set({
+		status => $status || 302,
+		headers => { 'Location' => $destination },
+	});
+}
+
 'Dancer::Helpers';

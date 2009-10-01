@@ -39,6 +39,7 @@ $VERSION = '0.9905';
     post 
     put
     r
+    redirect
     request
     send_file
     send_error
@@ -72,6 +73,7 @@ sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
 sub put          { Dancer::Route->add('put', @_) }
 sub r            { {regexp => $_[0]} }
+sub redirect     { Dancer::Helpers::redirect(@_) }
 sub request      { Dancer::SharedData->cgi }
 sub send_file    { Dancer::Helpers::send_file(@_) }
 sub set          { setting(@_) }

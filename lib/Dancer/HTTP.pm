@@ -9,6 +9,7 @@ use vars '@EXPORT_OK';
 
 my $HTTP_CODES = {
     200 => '200 OK',
+    302 => '302 Found',
     404 => '404 Not found',
     500 => '500 Internal Server Error',
     503 => '503 Forbidden',
@@ -16,6 +17,7 @@ my $HTTP_CODES = {
 
 # aliases
 $HTTP_CODES->{ok} = $HTTP_CODES->{200};
+$HTTP_CODES->{found} = $HTTP_CODES->{302};
 $HTTP_CODES->{not_found} = $HTTP_CODES->{404};
 $HTTP_CODES->{error} = $HTTP_CODES->{500};
 $HTTP_CODES->{forbidden} = $HTTP_CODES->{503};
