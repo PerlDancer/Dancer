@@ -12,6 +12,7 @@ WriteMakefile(
         'File::Spec'           => '0',
         'File::MimeInfo'       => '0',
         'Template'             => '0',
+        'Test::Require'        => '0',
     },
     EXE_FILES => ['script/dancer'],
     ABSTRACT => "A minimal-effort oriented web application framework",
