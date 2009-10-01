@@ -3,6 +3,7 @@
             
             This is the roadmap of upcoming developments
 
+* Reload route handlers when running in development environment
 
 * Route caching support
 
