@@ -15,6 +15,7 @@ use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::Route;
 use Dancer::SharedData;
+use Dancer::Util;
 use Dancer::Handler;
 
 use base 'Exporter';

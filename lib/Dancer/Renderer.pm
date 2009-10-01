@@ -10,7 +10,7 @@ use Dancer::Request;
 use Dancer::Response;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname read_file_content);
-use File::MimeInfo;
+use File::MimeInfo::Simple;
 use Dancer::SharedData;
 
 sub render_file {
