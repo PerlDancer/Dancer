@@ -1,3 +1,8 @@
+Release 0.9906
+    
+    * move from File::MimeInfo to File::MimeInfo::Simple for 
+      smooth run on Mac OSX and Win32 systems.
+
 Release 0.9005
 
     * Source code extract on error catching

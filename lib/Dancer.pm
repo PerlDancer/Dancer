@@ -15,7 +15,6 @@ use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::Route;
 use Dancer::SharedData;
-use Dancer::Util;
 use Dancer::Handler;
 
 use base 'Exporter';
@@ -563,7 +562,7 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =item L<CGI>
 
-=item L<File::MimeInfo>
+=item L<File::MimeInfo::Simple>
 
 =item L<File::Spec>
 
