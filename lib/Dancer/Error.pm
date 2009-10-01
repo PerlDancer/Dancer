@@ -14,6 +14,7 @@ sub new {
     bless $self, $class;
 
     $self->{title}   ||= "Error ".$self->code;
+    $self->{type}    ||= "runtime error";
     
     my $html_output = "<h2>".$self->{type}."</h2>";
     $html_output .= $self->backtrace;
