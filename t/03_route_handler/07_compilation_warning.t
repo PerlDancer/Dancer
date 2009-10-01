@@ -7,7 +7,7 @@ use Dancer;
 # Perl 5.10 does not detect constant folding warnings
 # in the compilation phase
 sub perl_has_constant_folding_bug {
-    foreach my $v qw(5.01000) {
+    foreach my $v qw(5.01000 5.01010) {
         return 1 if $] == $v;
     }
     return 0;
