@@ -8,20 +8,20 @@ use vars '@EXPORT_OK';
 @EXPORT_OK = 'status';
 
 my $HTTP_CODES = {
-    200 => '200 OK',
+    200 => 'OK',
     
     # redirections
-    301 => '301 Moved Permanently',
-    302 => '302 Found',
+    301 => 'Moved Permanently',
+    302 => 'Found',
     # 303 => '303 See Other', # only on HTTP 1.1
-    304 => '304 Not Modified',
+    304 => 'Not Modified',
     # 305 => '305 Use Proxy', # only on HTTP 1.1
-    306 => '306 Switch Proxy',
+    306 => 'Switch Proxy',
     # 307 => '307 Temporary Redirect', # on HTTP 1.1
 
-    404 => '404 Not found',
-    500 => '500 Internal Server Error',
-    503 => '503 Forbidden',
+    404 => 'Not found',
+    500 => 'Internal Server Error',
+    503 => 'Forbidden',
 };
 
 # aliases
