@@ -13,7 +13,6 @@ my $port = 8888;
 set port => $port;
 set access_log => false;
 
-
 get '/' => sub { "been here" };
 get '/error' => sub { send_error "foo" };
 

@@ -21,7 +21,7 @@ foreach my $test (@tests) {
     Dancer::SharedData->cgi($cgi);
     my $response = Dancer::Renderer::get_action_response();
 
-    is(Dancer::HTTP::status($response->{status}), "HTTP/1.0 $expected", 
+    is(Dancer::HTTP::status($response->{status}), "HTTP/1.0 $expected\r\n", 
         "status looks good for $method $path");
 }
 

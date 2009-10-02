@@ -27,8 +27,9 @@ my $HTTP_CODES = {
 # aliases
 for my $code ( keys %$HTTP_CODES ) {
 	my $alias = lc join '_', split /\W/, $HTTP_CODES->{$code};
-    $alias =~ s/^\d+_//;
-	$HTTP_CODES->{$alias} = $code . ' ' . $HTTP_CODES->{$code};
+    my $status_line = $code . ' ' . $HTTP_CODES->{$code};
+	$HTTP_CODES->{$alias} = $status_line;
+    $HTTP_CODES->{$code} = $status_line;
 }
 
 # own aliases
@@ -36,7 +37,7 @@ $HTTP_CODES->{error} = $HTTP_CODES->{internal_server_error};
 
 sub status { 
     my $name = shift;
-    return undef unless exists $HTTP_CODES->{$name};
+    die "unknown HTTP status code: $name" unless exists $HTTP_CODES->{$name};
     return "HTTP/1.0 " . $HTTP_CODES->{$name} . "\r\n";
 }
 
