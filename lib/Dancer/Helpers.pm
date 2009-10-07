@@ -11,6 +11,7 @@ use CGI;
 use Dancer::Response;
 use Dancer::Config 'setting';
 use Dancer::SharedData;
+use Dancer::Exceptions;
 
 sub send_file { 
     my ($path) = @_;
@@ -74,6 +75,8 @@ sub redirect {
 		status => $status || 302,
 		headers => { 'Location' => $destination },
 	});
+
+	halt; # w00t!
 }
 
 'Dancer::Helpers';

@@ -13,6 +13,7 @@ WriteMakefile(
         'Test::Requires'         => '0',
         'Test::More'             => '0',
         'Test::MockObject'       => '0',
+        'Exception::Class'       => '0',
     },
     EXE_FILES => ['script/dancer'],
     ABSTRACT => "A minimal-effort oriented web application framework",
