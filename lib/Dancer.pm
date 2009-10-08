@@ -9,6 +9,7 @@ use Dancer::Config 'setting';
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
+use Dancer::Exceptions;
 use Dancer::Helpers;
 use Dancer::Logger;
 use Dancer::Renderer;
@@ -39,6 +40,7 @@ $VERSION = '0.9905';
     post 
     put
     r
+    redirect
     request
     send_file
     send_error
@@ -67,11 +69,13 @@ sub layout       { set(layout => shift) }
 sub logger       { set(logger => @_) && Dancer::Logger->init }
 sub mime_type    { Dancer::Config::mime_types(@_) }
 sub params       { Dancer::SharedData->params  }
-sub pass         { Dancer::Response::pass() }
+# sub pass         { Dancer::Response::pass() }
+sub pass         { pass_exception }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
 sub put          { Dancer::Route->add('put', @_) }
 sub r            { {regexp => $_[0]} }
+sub redirect     { Dancer::Helpers::redirect(@_) }
 sub request      { Dancer::SharedData->cgi }
 sub send_file    { Dancer::Helpers::send_file(@_) }
 sub set          { setting(@_) }

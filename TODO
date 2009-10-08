@@ -14,6 +14,18 @@
         ...
     };
 
+* Autoreload route handlers 
+
+    When developing a Dancer app, it's pretty annoying to have to
+    restart the webserver anytime a route handler is changed.
+
+    Would be great to use Module::Refresh (if present) to
+    automagically reload the route handlers when they are touched.
+
+    This should be ideally be configurable with a setting, say
+    "auto_reload" which would defaults to 1 in development.yml and to
+    0 in production/test envs.
+
 * Route caching support
 
     When a path is firstly resolved through the route tree, we should

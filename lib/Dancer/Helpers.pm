@@ -11,6 +11,7 @@ use CGI;
 use Dancer::Response;
 use Dancer::Config 'setting';
 use Dancer::SharedData;
+use Dancer::Exceptions;
 
 sub send_file { 
     my ($path) = @_;
@@ -65,6 +66,17 @@ sub error {
 
     my $error = Dancer::Error->new(code => $status, message => $content);
     Dancer::Response::set($error->render);
+}
+
+sub redirect {
+	my($destination, $status) = @_;
+
+	Dancer::Response::set({
+		status => $status || 302,
+		headers => { 'Location' => $destination },
+	});
+
+	halt; # w00t!
 }
 
 'Dancer::Helpers';

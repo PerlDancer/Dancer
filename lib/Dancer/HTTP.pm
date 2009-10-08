@@ -8,22 +8,37 @@ use vars '@EXPORT_OK';
 @EXPORT_OK = 'status';
 
 my $HTTP_CODES = {
-    200 => '200 OK',
-    404 => '404 Not found',
-    500 => '500 Internal Server Error',
-    503 => '503 Forbidden',
+    200 => 'OK',
+    
+    # redirections
+    301 => 'Moved Permanently',
+    302 => 'Found',
+    # 303 => '303 See Other', # only on HTTP 1.1
+    304 => 'Not Modified',
+    # 305 => '305 Use Proxy', # only on HTTP 1.1
+    306 => 'Switch Proxy',
+    # 307 => '307 Temporary Redirect', # on HTTP 1.1
+
+    404 => 'Not found',
+    500 => 'Internal Server Error',
+    503 => 'Forbidden',
 };
 
 # aliases
-$HTTP_CODES->{ok} = $HTTP_CODES->{200};
-$HTTP_CODES->{not_found} = $HTTP_CODES->{404};
-$HTTP_CODES->{error} = $HTTP_CODES->{500};
-$HTTP_CODES->{forbidden} = $HTTP_CODES->{503};
+for my $code ( keys %$HTTP_CODES ) {
+	my $alias = lc join '_', split /\W/, $HTTP_CODES->{$code};
+    my $status_line = $code . ' ' . $HTTP_CODES->{$code};
+	$HTTP_CODES->{$alias} = $status_line;
+    $HTTP_CODES->{$code} = $status_line;
+}
+
+# own aliases
+$HTTP_CODES->{error} = $HTTP_CODES->{internal_server_error};
 
 sub status { 
     my $name = shift;
-    return undef unless exists $HTTP_CODES->{lc($name)};
-    return "HTTP/1.0 " . $HTTP_CODES->{lc($name)} . "\r\n";
+    die "unknown HTTP status code: $name" unless exists $HTTP_CODES->{$name};
+    return "HTTP/1.0 " . $HTTP_CODES->{$name} . "\r\n";
 }
 
 'Dancer::HTTP';
