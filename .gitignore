@@ -6,3 +6,4 @@ cover_db
 example/logs
 t/*/logs
 logs
+TestApp
