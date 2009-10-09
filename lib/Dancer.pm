@@ -31,6 +31,7 @@ $VERSION = '0.9905';
     false
     get 
     layout
+    load
     logger
     mime_type
     params
@@ -66,6 +67,7 @@ sub get          { Dancer::Route->add('head', @_);
                    Dancer::Route->add('get', @_);}
 sub layout       { set(layout => shift) }
 sub logger       { set(logger => @_) && Dancer::Logger->init }
+sub load         { require $_ for @_ }
 sub mime_type    { Dancer::Config::mime_types(@_) }
 sub params       { Dancer::SharedData->params  }
 sub pass         { Dancer::Response::pass() }
