@@ -23,7 +23,8 @@ sub registry          { $REG }
 sub set_registry      { $REG = $_[1] }
 sub registry_is_empty { scalar(keys(%{$REG->{routes}})) == 0 }
 
-sub find_new_route  { 
+# look for a route in the given array
+sub find_route  { 
     my ($r, $reg) = @_;
     foreach my $route (@$reg) {
         return $route if ($r->{route} eq $route->{route});
@@ -33,25 +34,49 @@ sub find_new_route  {
 
 sub merge_registry    { 
     my ($class, $orig_reg, $new_reg) = @_;
-    
     my $merged_reg = init_registry();
-    foreach my $method (keys(%{$new_reg->{routes}})) {
-        my $new_routes = []; # will be the merge
-        my $orig_routes = $orig_reg->{routes}{$method};
+
+    # walking through all the routes, using the newest when exists
+    foreach my $method (
+        keys(%{$new_reg->{routes}}), 
+        keys(%{$orig_reg->{routes}})
+    ) {
+        # don't work out a mehtod if already done
+        next if exists $merged_reg->{routes}{$method};
+
+        my $merged_routes = [];
+        my $orig_routes   = $orig_reg->{routes}{$method};
+        my $new_routes    = $new_reg->{routes}{$method};
+
+        # walk through all the orig elements, if we have a new version,
+        # overwrite it, else, keep the old one.
         foreach my $route (@$orig_routes) {
-            my $new = find_new_route($route, $new_reg->{routes}{$method});
+            my $new = find_route($route, $new_routes);
             if (defined $new) {
-                push @$new_routes, $new;
+                push @$merged_routes, $new;
             }
             else {
-                push @$new_routes, $route;
+                push @$merged_routes, $route;
             }
         }
-        $merged_reg->{routes}{$method} = $new_routes;
+        
+        # now, walk through all the new elements, looking for a new route
+        foreach my $route (@$new_routes) {
+            push @$merged_routes, $route 
+                unless find_route($route, $merged_routes);
+        }
+
+        $merged_reg->{routes}{$method} = $merged_routes;
     }
-    
-    # FIXME : before_filters are droped
-    $REG = $merged_reg;
+   
+    # NOTE: we have to warn the user about mixing before_filters in different
+    # files, that's not supported. Only the last before_filters block is used.
+    $merged_reg->{before_filters} = 
+        (scalar(@{ $new_reg->{before_filters} }) > 0) 
+        ? $new_reg->{before_filters}
+        : $orig_reg->{before_filters};
+
+    Dancer::Route->set_registry($merged_reg);
 }
 
 # return the first route that matches the path
@@ -61,12 +86,14 @@ sub find {
     $method ||= 'get';
     $method = lc($method);
     
+    my $registry = Dancer::Route->registry;
+
     # browse all matching routes, and return the first one with 
     # a copy of the next matches, so we can call the next route if the 
     # action chooses to pass.
     my $prev;
     my $first_match;
-    foreach my $r (@{$REG->{routes}{$method}}) {
+    foreach my $r (@{$registry->{routes}{$method}}) {
         my $params = match($path, $r->{route});
         if ($params) {
             $r->{params} = $params;
@@ -84,8 +111,9 @@ sub find {
 
 sub before_filter {
     my ($class, $filter) = @_; 
-    $REG->{before_filters} ||= [];
-    push @{$REG->{before_filters}}, $filter;
+    my $registry = Dancer::Route->registry;
+    $registry->{before_filters} ||= [];
+    push @{$registry->{before_filters}}, $filter;
 }
 
 sub before_filters { @{$REG->{before_filters}} }
@@ -228,6 +256,7 @@ sub make_regexp_from_route {
     my ($route) = @_;
     my @params;
     my $pattern = $route;
+    my $registry = Dancer::Route->registry;
 
     if (ref($route) eq 'HASH' && $route->{regexp}) {
         $pattern = $route->{regexp};
@@ -236,7 +265,7 @@ sub make_regexp_from_route {
         # look for route with params (/hello/:foo)
         @params = $pattern =~ /:([^\/]+)/g;
         if (@params) {
-            $REG->{route_params}{$route} = \@params;
+            $registry->{route_params}{$route} = \@params;
             $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
         }
         

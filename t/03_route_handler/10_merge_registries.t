@@ -1,4 +1,4 @@
-use Test::More tests => 5, import => ['!pass'];
+use Test::More tests => 8, import => ['!pass'];
 
 # This test simulates the behaviour of the auto_reload feature,
 # when a random route tree is refreshed.
@@ -41,6 +41,17 @@ my $second_reg = Dancer::Route->registry;
 $expected_patterns = ['/one', '/two'];
 $expected_results  = [1, "two"];
 @routes = @{ $second_reg->{routes}{get} };
+is_deeply([map { $_->{route} } @routes ], $expected_patterns, 
+    "route patterns look OK");
+is_deeply([map {$_->{code}->() } @routes], $expected_results, 
+    "route actions look OK");
+
+# make sure a merge with an empty tree keeps the original one
+my $third_reg = Dancer::Route->init_registry;
+ok(Dancer::Route->merge_registry($second_reg, $third_reg),
+    "merge with an empty tree (unchanged route trees)"); 
+my $reg = Dancer::Route->registry;
+@routes = @{ $reg->{routes}{get} };
 is_deeply([map { $_->{route} } @routes ], $expected_patterns, 
     "route patterns look OK");
 is_deeply([map {$_->{code}->() } @routes], $expected_results, 
