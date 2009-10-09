@@ -129,20 +129,28 @@ You can change a setting with the keyword B<set>, like the following:
     set content_type => 'text/plain';
     set access_log => 0;
 
-Here is the list of all supported settings.
+A better way of defining settings exists: using YAML file. For this to be
+possible, you have to install the L<YAML> module. If a file named B<config.yml>
+exists in the application directory, it will be loaded, as a setting group.
 
-=head2 server (UNSUPPORTED)
+The same is done for the environment file located in the B<environments>
+directory.
 
-The IP address or servername to bind to.
-This setting is not yet implemented.
+=head1 SUPPORTED SETTINGS
 
-=head2 port 
+=head2 port (int)
 
 The port Dancer will listen to.
 
-Default value is 3000.
+Default value is 3000. This setting can be changed on the command-line with the
+B<--port> switch.
 
-=head2 content_type 
+=head2 daemon (boolean)
+
+If set to true, runs the standalone webserver in the background.
+This setting can be changed on the command-line with the B<--daemon> flag.
+
+=head2 content_type (string)
 
 The default content type of outgoing content.
 Default value is 'text/html'.
@@ -150,13 +158,9 @@ Default value is 'text/html'.
 =head2 charset
 
 The default charset of outgoing content.
-Default value is 'UTF-8'.
+Default value is 'UTF-8'. (not implemented yet)
 
-=head2 access_log
-
-If set to 1 (default), Dancer will print on STDEER one line per hit received.
-
-=head2 public 
+=head2 public (string)
 
 This is the path of the public directory, where static files are stored. Any
 existing file in that directory will be served as a static file, before
@@ -165,9 +169,49 @@ mathcing any route.
 By default, it points to APPDIR/public where APPDIR is the directory that 
 contains your Dancer script.
 
+=head2 layout (string)
+
+name of the layout to use when rendering view. Dancer will look for 
+a matching template in the directory $appdir/views/layout.
+
+=head2 warnings (boolean)
+
+If set to true, tells Dancer to consider all warnings as blocking errors.
+
+=head2 log (enum)
+
+Tells which log messages should be actullay logged. Possible values are
+B<debug>, B<warning> or B<error>.
+
+=over 4
+
+=item B<debug> : all messages are logged
+
+=item B<warning> : only warning and error messages are logged
+
+=item B<error> : only error messages are logged
+
+=back
+
+=head2 show_errors (boolean)
+
+If set to true, Dancer will render a detailed debug screen whenever an error is
+catched. If set to false, Dancer will render the default error page, using
+$public/$error_code.html if it exists.
+
+=head2 auto_reload (boolean)
+
+If set to true, Dancer will reload the route handlers whenever the file where
+they are defined is changed. This is very useful in development environment but
+should not be enabled in production.
+
+When this flag is set, you don't have to restart your webserver whenever you
+make a change in a route handler.
+
 =head1 AUTHOR
 
-This module has been written by Alexis Sukrieh <sukria@cpan.org>
+This module has been written by Alexis Sukrieh <sukria@cpan.org> and others,
+see the AUTHORS file that comes with this distribution for details.
 
 =head1 LICENSE
 

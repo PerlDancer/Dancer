@@ -545,7 +545,8 @@ This is a possible webapp created with Dancer :
 
 =head1 AUTHOR
 
-This module has been written by Alexis Sukrieh <sukria@cpan.org>
+This module has been written by Alexis Sukrieh <sukria@cpan.org> and others,
+see the AUTHORS file that comes with this distribution for details.
 
 =head1 SOURCE CODE
 
@@ -566,10 +567,6 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =item L<File::MimeInfo::Simple>
 
-=item L<File::Spec>
-
-=item L<File::Basename>
-
 =item L<Template>
 
 =back
@@ -578,9 +575,7 @@ The following modules are optional
 
 =over 8
 
-=item L<Template>           needed for the views rendering system
-
-=item L<Logger::Syslog>     needed for logging information to syslog
+=item L<YAML> : needed for configuration file support
 
 =back
 
