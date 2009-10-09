@@ -163,60 +163,69 @@ sub call($$) {
         Dancer::Logger->warning($warning) if $warning;
     }
 
-    # trap errors
-    if ( $@ || 
-        (setting('warnings') && ($warning || $compilation_warning))) {
+	# maybe a not retarded way to listen for the exceptions
+	# would be good here :)
+	# Halt: just stall everything and return the Response singleton
+	# useful for the redirect helper
+	if(Dancer::Exception::Halt->caught) {
+		return Dancer::Response->current;
+	} elsif
+	# Pass: pass to the next route if available. otherwise, 404.
+		(Dancer::Exception::Pass->caught) {
+			if ($handler->{'next'}) {
+	            return Dancer::Route->call($handler->{'next'});
+	        }
+	        else {
+	            Dancer::SharedData->reset_all();
+	            my $error = Dancer::Error->new(code => 404,
+	                message => "<h2>Route Resolution Failed</h2>"
+	                         . "<p>Last matching route passed, "
+	                         . "but no other route left.</p>");
+	            return $error->render;
+	        }
+	# no exceptions? continue the old way, although this
+	# mechanism should be dropped in favor of exceptions in the
+	# future
+	} else {
+        # trap errors
+	    if ( $@ ||
+	        (setting('warnings') && ($warning || $compilation_warning))) {
         
-        Dancer::SharedData->reset_all();
+	        Dancer::SharedData->reset_all();
 
-        my $error;
-        if ($@) {
-            $error = Dancer::Error->new(code => 500, 
-                title   => 'Route Handler Error',
-                type    => 'Execution failed',
-                message => $@);
+	        my $error;
+	        if ($@) {
+	            $error = Dancer::Error->new(code => 500,
+	                title   => 'Route Handler Error',
+	                type    => 'Execution failed',
+	                message => $@);
 
-        }
-        elsif ($warning) {
-            $error = Dancer::Error->new(code => 500, 
-                title   => 'Route Handler Error',
-                type    => 'Runtime Warning',
-                message => $warning);
+	        }
+	        elsif ($warning) {
+	            $error = Dancer::Error->new(code => 500,
+	                title   => 'Route Handler Error',
+	                type    => 'Runtime Warning',
+	                message => $warning);
 
-        }
-        else {
-            $error = Dancer::Error->new(code => 500, 
-                title   => 'Route Handler Error',
-                type    => 'Compilation Warning',
-                message => $compilation_warning);
-        }
-        return $error->render;
-    }
+	        }
+	        else {
+	            $error = Dancer::Error->new(code => 500,
+	                title   => 'Route Handler Error',
+	                type    => 'Compilation Warning',
+	                message => $compilation_warning);
+	        }
+	        return $error->render;
+	    }
 
-    my $response = Dancer::Response->current;
-
-    if ($response->{pass}) {
-        if ($handler->{'next'}) {
-            return Dancer::Route->call($handler->{'next'});
-        }
-        else {
-            Dancer::SharedData->reset_all();
-            my $error = Dancer::Error->new(code => 404, 
-                message => "<h2>Route Resolution Failed</h2>"
-                         . "<p>Last matching route passed, "
-                         . "but no other route left.</p>");
-            return $error->render;
-        }
-    }
-    else {
+	    my $response = Dancer::Response->current;
 
         # drop the content if this is a HEAD request
         $content = '' if $handler->{method} eq 'head';
         my $ct = $response->{content_type} || setting('content_type');
         my $st = $response->{status} || 200;
-        
+
         Dancer::SharedData->reset_all();
-        
+
         return $content if ref($content) eq 'Dancer::Response';
         return Dancer::Response->new(
             status  => $st,

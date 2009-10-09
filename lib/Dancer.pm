@@ -9,6 +9,7 @@ use Dancer::Config 'setting';
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
+use Dancer::Exceptions;
 use Dancer::Helpers;
 use Dancer::Logger;
 use Dancer::Renderer;
@@ -70,7 +71,8 @@ sub logger       { set(logger => @_) && Dancer::Logger->init }
 sub load         { require $_ for @_ }
 sub mime_type    { Dancer::Config::mime_types(@_) }
 sub params       { Dancer::SharedData->params  }
-sub pass         { Dancer::Response::pass() }
+# sub pass         { Dancer::Response::pass() }
+sub pass         { pass_exception }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
 sub put          { Dancer::Route->add('put', @_) }

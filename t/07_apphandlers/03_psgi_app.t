@@ -1,5 +1,5 @@
 use Dancer::Config 'setting';
-use Test::More;
+use Test::More 'no_plan';
 use Test::Requires qw(Plack::Loader LWP::UserAgent);
 use Test::TCP;
  
