@@ -102,6 +102,7 @@ sub load_default_settings {
     $SETTINGS->{environment}  ||= 'development';
     $SETTINGS->{apphandler}   ||= 'standalone';
     $SETTINGS->{warnings}     ||= 0;
+    $SETTINGS->{auto_reload}  ||= 0;
 }
 load_default_settings();
 

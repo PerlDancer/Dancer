@@ -7,7 +7,7 @@ use Dancer::Config 'setting';
 use Dancer::Error;
 
 # singleton for stroing the routes defined
-my $REG = { routes => {}, before_filters => [] };
+my $REG = init_registry();
 
 # accessor for setting up a new route
 sub add {
@@ -15,6 +15,13 @@ sub add {
     $REG->{routes}{$method} ||= [];
     push @{ $REG->{routes}{$method} }, {method => $method, route => $route, code => $code};
 }
+
+# helpers needed by the auto_reload feature
+sub init_registry     { {routes => {}, before_filters => [] } }
+sub purge_all         { $REG = init_registry() }
+sub registry          { $REG }
+sub set_registry      { $REG = $_[1] }
+sub registry_is_empty { scalar(keys(%{$REG->{routes}})) == 0 }
 
 # return the first route that matches the path
 # TODO: later we'll have to cache this browsing for every path seen

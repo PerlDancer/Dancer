@@ -86,9 +86,6 @@ sub get_file_response_for_path {
     $status ||= 200;
 
     if (-f $static_file) {
-        Dancer::Logger->debug("mime for $static_file is :
-        ".get_mime_type($static_file));
-
         open my $fh, "<", $static_file;
         return Dancer::Response->new(
             status => $status,
