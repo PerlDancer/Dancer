@@ -50,8 +50,7 @@ sub handle_request {
             Dancer::Route->purge_all;
             Module::Refresh->refresh;
             my $new_reg = Dancer::Route->registry;
-            Dancer::Route->set_registry($orig_reg) 
-                if Dancer::Route->registry_is_empty;
+            Dancer::Route->merge_registry($orig_reg, $new_reg); 
         }
     }
 

@@ -23,6 +23,37 @@ sub registry          { $REG }
 sub set_registry      { $REG = $_[1] }
 sub registry_is_empty { scalar(keys(%{$REG->{routes}})) == 0 }
 
+sub find_new_route  { 
+    my ($r, $reg) = @_;
+    foreach my $route (@$reg) {
+        return $route if ($r->{route} eq $route->{route});
+    }
+    return undef;
+}
+
+sub merge_registry    { 
+    my ($class, $orig_reg, $new_reg) = @_;
+    
+    my $merged_reg = init_registry();
+    foreach my $method (keys(%{$new_reg->{routes}})) {
+        my $new_routes = []; # will be the merge
+        my $orig_routes = $orig_reg->{routes}{$method};
+        foreach my $route (@$orig_routes) {
+            my $new = find_new_route($route, $new_reg->{routes}{$method});
+            if (defined $new) {
+                push @$new_routes, $new;
+            }
+            else {
+                push @$new_routes, $route;
+            }
+        }
+        $merged_reg->{routes}{$method} = $new_routes;
+    }
+    
+    # FIXME : before_filters are droped
+    $REG = $merged_reg;
+}
+
 # return the first route that matches the path
 # TODO: later we'll have to cache this browsing for every path seen
 sub find {
