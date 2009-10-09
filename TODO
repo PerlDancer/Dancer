@@ -3,8 +3,6 @@
             
             This is the roadmap of upcoming developments
 
-* Reload route handlers when running in development environment
-
 * Route caching support
 
     When a path is firstly resolved through the route tree, we should
