@@ -263,6 +263,22 @@ take care to your return value.
 In order to change the default behaviour of the rendering of an action, you can
 use the following keywords.
 
+=head2 redirect
+
+The redirect action is a helper and shortcut to a common HTTP response code (302).
+You can either redirect to a complete different site or you can also do it
+within the application:
+
+    get '/twitter', sub {
+	    redirect 'http://twitter.com/me';
+    };
+
+You can also force Dancer to return an specific 300-ish HTTP response code:
+
+    get '/old/:resouce', sub {
+        redirect '/new/'.params->{resource}, 301;
+    };
+
 =head2 status
 
 By default, an action will produce an 'HTTP 200 OK' status code, meaning
@@ -379,6 +395,26 @@ And in a production one:
     # appdir/environments/production.yml
     log: 'warning'
     access_log: 0
+
+=head2 load
+
+You can use the load method to include additional routes into your application:
+
+    get '/go/:value', sub {
+        # foo
+    };
+
+    load 'more_routes.pl';
+
+    # then, in the file more_routes.pl:
+    get '/yes', sub {
+        'orly?';
+    };
+
+B<load> is just a wrapper for B<require>, but you can also specify a list of
+routes files:
+
+    load 'login_routes.pl', 'session_routes.pl', 'misc_routes.pl';
 
 =head1 LOGGING
 
