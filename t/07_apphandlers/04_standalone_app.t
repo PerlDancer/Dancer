@@ -1,8 +1,11 @@
 use Dancer::Config 'setting';
 use Test::More;
-use Test::Requires qw(LWP::UserAgent);
-use Test::TCP;
+
+eval "use Test::Requires ('LWP::UserAgent')";
+eval "use Test::TCP";
+plan skip_all => "Test::Requires and Test::TCP are needed for this test" if $@;
  
+plan tests => 4;
 test_tcp(
     client => sub {
         my $port = shift;

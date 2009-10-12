@@ -1,8 +1,11 @@
 use Dancer::Config 'setting';
-use Test::More 'no_plan';
-use Test::Requires qw(Plack::Loader LWP::UserAgent);
-use Test::TCP;
- 
+use Test::More;
+
+eval "use Test::Requires ('Plack::Loader', 'LWP::UserAgent')";
+eval "use Test::TCP";
+plan skip_all => "Test::Requires and Test::TCP are needed for this test" if $@;
+
+
 my $app = sub {
     my $env = shift;
     local *ENV = $env;
@@ -10,6 +13,7 @@ my $app = sub {
     Dancer->dance($cgi);
 };
 
+plan tests => 4;
 test_tcp(
     client => sub {
         my $port = shift;

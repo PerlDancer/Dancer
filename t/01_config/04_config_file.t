@@ -1,27 +1,13 @@
-#===============================================================================
-#
-#         FILE:  04_config_file.t
-#
-#  DESCRIPTION:  Make sure config.yml is correctly loaded
-#
-#        FILES:  self
-#         BUGS:  ---
-#        NOTES:  ---
-#       AUTHOR:  Alexis Sukrieh, sukria@sukria.net
-#      COMPANY:  
-#      VERSION:  1.0
-#      CREATED:  04/08/2009 22:37:21
-#===============================================================================
-
 use strict;
 use warnings;
+use Test::More import => ['!pass'];
 
-use Test::More tests => 18, import => ['!pass'];
+eval "use YAML";
+plan skip_all => "YAML is not installed" if $@;
+plan tests => 18;
 
 use Dancer;
-
-BEGIN { use_ok 'Dancer::Config', 'setting'; }
-
+use Dancer::Config 'setting'; 
 use lib 't';
 use TestUtils;
 
