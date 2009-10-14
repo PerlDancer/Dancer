@@ -24,6 +24,7 @@ $AUTHORITY = 'SUKRIA';
 $VERSION = '0.9905';
 @EXPORT = qw(
     before
+    cookies
     content_type
     dance
     debug
@@ -59,6 +60,7 @@ $VERSION = '0.9905';
 # Dancer's syntax 
 
 sub before       { Dancer::Route->before_filter(@_) }
+sub cookies      { Dancer::Cookies->cookies }
 sub content_type { Dancer::Response::content_type(@_) }
 sub debug        { Dancer::Logger->debug(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }

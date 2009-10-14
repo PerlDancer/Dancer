@@ -34,12 +34,17 @@ sub dance {
 sub render_response {
     my ($self, $response) = @_;
 
+    # status
     print Dancer::HTTP::status($response->{status});
-    foreach my $header (keys %{ $response->{headers} }) {
-        print "${header}: ".$response->{headers}{$header}."\r\n";
+
+    # headers
+    my %headers = @{$response->{headers}};
+    foreach my $header (keys %headers) {
+        print "${header}: ".$headers{$header}."\r\n";
     }
     print "\r\n";
 
+    # content
     if (ref($response->{content}) eq 'GLOB') {
         print read_glob_content($response->{content});
     }

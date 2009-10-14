@@ -18,7 +18,8 @@ my $resp = Dancer::Renderer->get_action_response();
 
 
 ok(defined($resp), "route handler found for /cat/file.txt");
-is($resp->{headers}{'Content-Type'}, 'text/plain', 'mime_type is kept');
+my %headers = @{$resp->{headers}};
+is($headers{'Content-Type'}, 'text/plain', 'mime_type is kept');
 is(ref($resp->{content}), 'GLOB', "content is a File handle");
 
 my $content = read_glob_content($resp->{content});

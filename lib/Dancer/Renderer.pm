@@ -6,6 +6,8 @@ use warnings;
 use CGI qw/:standard/;
 use Dancer::Route;
 use Dancer::HTTP;
+use Dancer::Cookie;
+use Dancer::Cookies;
 use Dancer::Request;
 use Dancer::Response;
 use Dancer::Config 'setting';
@@ -20,7 +22,8 @@ sub render_file {
 
 sub render_action {
     my $request = Dancer::SharedData->cgi;
-    return get_action_response();
+    my $resp = get_action_response();
+    return response_with_headers($resp);
 }
 
 sub render_error {
@@ -38,11 +41,25 @@ sub render_error {
 
     return Dancer::Response->new(
         status => $error_code,
-        headers => { 'Content-Type' => 'text/html' },
+        headers => [ 'Content-Type' => 'text/html' ],
         content => Dancer::Renderer->html_page(
             "Error $error_code" =>
             "<h2>Unable to process your query</h2>".
             "The page you requested is not available"));
+}
+
+# Takes a response object and add default headers
+sub response_with_headers {
+    my $response = shift;
+    # add cookies
+    foreach my $c (keys %{ Dancer::Cookies->cookies }) {
+        my $cookie = Dancer::Cookie->new(
+            name  => $c,
+            value => Dancer::Cookies->cookies->{$c}
+        );
+        push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
+    }
+    return $response;
 }
 
 sub html_page {
@@ -89,7 +106,7 @@ sub get_file_response_for_path {
         open my $fh, "<", $static_file;
         return Dancer::Response->new(
             status => $status,
-            headers => { 'Content-Type' => get_mime_type($static_file) }, 
+            headers => [ 'Content-Type' => get_mime_type($static_file) ], 
             content => $fh);
     }
     return undef;

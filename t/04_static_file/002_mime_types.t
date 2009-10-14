@@ -19,7 +19,9 @@ my $request = fake_request(GET => $path);
 Dancer::SharedData->cgi($request);
 my $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
-like($resp->{headers}{'Content-Type'}, qr/text\/plain/, 
+
+my %headers = @{$resp->{headers}};
+like($headers{'Content-Type'}, qr/text\/plain/, 
     "$path is sent as text/plain");
 
 ok(mime_type(foo => 'text/foo'), 'mime type foo is set as text/foo');
@@ -27,7 +29,9 @@ ok(mime_type(foo => 'text/foo'), 'mime type foo is set as text/foo');
 Dancer::SharedData->cgi($request);
 $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
-is_deeply($resp->{headers}, 
+
+%headers = @{$resp->{headers}};
+is_deeply(\%headers, 
     {'Content-Type' => 'text/foo'}, 
     "$path is sent as text/foo");
 
@@ -37,6 +41,7 @@ $request = fake_request(GET => $path);
 Dancer::SharedData->cgi($request);
 $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
-is_deeply($resp->{headers}, 
+%headers = @{$resp->{headers}};
+is_deeply(\%headers, 
     {'Content-Type' => 'text/plain'}, 
     "$path is sent as text/plain");

@@ -28,7 +28,8 @@ foreach my $test (@tests) {
     my $response = Dancer::Renderer::get_action_response();
 
     ok(defined($response), "route handler found for ".$test->{path});
-    is($response->{headers}{'Content-Type'}, 
+    my %headers = @{$response->{headers}};
+    is($headers{'Content-Type'}, 
         $test->{expected}, 
         "content_type looks good for ".$test->{path}); 
 }

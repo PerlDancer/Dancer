@@ -4,7 +4,7 @@ use Test::More import => ['!pass'];
 
 eval "use YAML";
 plan skip_all => "YAML is not installed" if $@;
-plan tests => 18;
+plan tests => 17;
 
 use Dancer;
 use Dancer::Config 'setting'; 

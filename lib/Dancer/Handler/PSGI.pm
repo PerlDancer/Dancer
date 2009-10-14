@@ -29,7 +29,7 @@ sub render_response {
 
     return [ 
         $response->{status},
-        [ %{ $response->{headers} } ],
+        $response->{headers},
         $content
     ];
 }

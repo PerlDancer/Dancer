@@ -1,6 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 2, import => ['!pass'];
+use Test::More import => ['!pass'];
+
+plan skip_all => "Session is a work in progres...";
+
 use Dancer;
 
 use lib 't/lib';

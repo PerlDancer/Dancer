@@ -49,4 +49,11 @@ sub write_file {
     close CONF;
 }
 
+sub get_response_for_request {
+    my ($method, $path) = @_;
+    my $cgi = fake_request($method => $path);
+    Dancer::SharedData->cgi($cgi);
+    Dancer::Renderer::get_action_response();
+}
+
 'TestUtils';

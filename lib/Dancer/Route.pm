@@ -229,7 +229,7 @@ sub call($$) {
         return $content if ref($content) eq 'Dancer::Response';
         return Dancer::Response->new(
             status  => $st,
-            headers => { 'Content-Type' => $ct }, 
+            headers => [ 'Content-Type' => $ct ], 
             content => $content);
     }
 }

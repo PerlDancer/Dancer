@@ -73,7 +73,7 @@ sub redirect {
 
 	Dancer::Response::set({
 		status => $status || 302,
-		headers => { 'Location' => $destination },
+		headers => [ 'Location' => $destination ],
 	});
 
 	halt; # w00t!
