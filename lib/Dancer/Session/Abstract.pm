@@ -5,6 +5,15 @@ use warnings;
 use Dancer::Cookies;
 use File::Spec;
 
+sub new {
+    my ($class) = @_;
+    my $self = {
+        id => build_id(),
+    };
+    bless $self, $class;
+    return $self;
+}
+
 # it's a constant, maybe a setting in the future
 my $SESSION_NAME = 'dancer.session';
 
@@ -31,8 +40,9 @@ sub read_session_id {
     Dancer::Cookies->cookies->{$SESSION_NAME};
 }
 
-sub write_session_id($) {
-    Dancer::Cookies->cookies->{$SESSION_NAME} = $_[0];
+sub write_session_id {
+    my ($class, $id) = @_;
+    Dancer::Cookies->cookies->{$SESSION_NAME} = $id;
 }
 
 sub retreive {

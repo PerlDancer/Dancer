@@ -28,6 +28,16 @@ my $setters = {
             $SETTINGS->{logger};
         }
     },
+    session => sub {
+        my ($key, $value)  = @_;
+        if (@_ == 2) {
+            $SETTINGS->{session} = $value;
+            Dancer::Session->init;
+        }
+        else {
+            $SETTINGS->{session};
+        }
+    },
 };
 
 # public accessor for get/set

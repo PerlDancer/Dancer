@@ -15,6 +15,7 @@ use Dancer::Logger;
 use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::Route;
+use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
 

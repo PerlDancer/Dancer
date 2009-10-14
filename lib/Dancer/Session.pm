@@ -3,14 +3,57 @@ package Dancer::Session;
 use strict;
 use warnings;
 
+use Dancer::Cookies;
+use Dancer::Config 'setting';
+use Dancer::ModuleLoader;
+
+my $ENGINE = undef;
+
+sub init {
+#    if (setting('session_engine') eq 'yaml') {
+        die "YAML is needed for the YAML session engine" 
+            unless Dancer::ModuleLoader->load('YAML');
+        eval "use Dancer::Session::YAML";
+        $ENGINE = 'Dancer::Session::YAML';
+#    }
+}
+
+# retreive or create a session for the client
+sub get_current_session {
+    my $sid = $ENGINE->read_session_id;
+    my $session;
+
+    if ($sid) {
+        Dancer::Logger->debug("sid found: '$sid'");
+        $session = $ENGINE->retreive($sid);
+    }
+    else {
+        $session = $ENGINE->create();
+        Dancer::Logger->debug("new session created => ".$session->{id});
+        $ENGINE->write_session_id($session->{id});
+    }
+    return $session;
+}
+
+sub read {
+    my ($class, $key) = @_;
+    my $session = get_current_session();
+    return $session->{$key};
+}
+
+sub write {
+    my ($class, $key, $value) = @_;
+    my $session = get_current_session();
+    $session->{$key} = $value;
+    
+    # TODO : should be moved as an "after" filter
+    $session->flush;
+    return $value;
+}
+
 1;
 __END__
 =pod
-
-=head1 DISCLAIMER
-
-This is a work in progress, don't expect it to work as expected yet.
-See L<http://github.com/sukria/Dancer> for last changes
 
 =head1 NAME
 
@@ -69,7 +112,8 @@ C</home> actions using the session engine.
 
 =head1 DEPENDENCY
 
-Dancer::Session depends on L<CGI::Session>.
+Dancer::Session may depends on third-party modules, depending on the session
+engine used. See the session engine module for details.
 
 =head1 AUTHORS
 
