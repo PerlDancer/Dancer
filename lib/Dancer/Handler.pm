@@ -39,6 +39,9 @@ sub handle_request {
     my ($self, $cgi) = @_;
     Dancer::SharedData->cgi($cgi);
     
+    # read cookies from client
+    Dancer::Cookies->init;
+
     if (setting('auto_reload')) {
         eval "use Module::Refresh";
         if ($@) {

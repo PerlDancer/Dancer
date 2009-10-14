@@ -20,8 +20,8 @@ sub new {
 sub attributes { 
     my $self = shift;
     map { 
-        defined($self->{attributes}{$_}) ? ($_, $self->{attributes}{$_}) : () 
-    } keys %$self; 
+        defined($self->{attributes}{$_}) ? ($_."=".$self->{attributes}{$_}) : ()
+    } keys %{$self->{attributes}}; 
 }
 
 sub to_header {

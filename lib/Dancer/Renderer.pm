@@ -57,7 +57,10 @@ sub response_with_headers {
             name  => $c,
             value => Dancer::Cookies->cookies->{$c}
         );
-        push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
+        if (Dancer::Cookies->has_changed($cookie)) {
+            Dancer::Logger->debug("has_changed: ".$cookie->{name});
+            push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
+        }
     }
     return $response;
 }
