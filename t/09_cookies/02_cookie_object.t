@@ -11,6 +11,6 @@ my $c = Dancer::Cookie->new(
 is(ref($c), 'Dancer::Cookie', 
     "object of class Dancer::Cookie");
 
-is($c->to_header, 'dancer.slot=42; ',
+is($c->to_header, 'dancer.slot=42; path=/',
     "simple cookie header looks good");
 
