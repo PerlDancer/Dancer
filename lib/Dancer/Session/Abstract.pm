@@ -2,6 +2,49 @@ package Dancer::Session::Abstract;
 use strict;
 use warnings;
 
+use File::Spec;
+
+# we try to make the best random number
+# with native Perl 5 code.
+# to rebuild a session id, an attacker should know:
+# - the running PID of the server
+# - the current timestamp of the time it was built
+# - the path of the installation directory
+# - guess the correct number between 0 and 1000000000
+# - should be able to reproduce that 3 times
+sub build_id {
+    my $session_id = "";
+    foreach my $seed (rand(1000), rand(1000), rand(1000)) {
+        my $c = 0;
+        $c += ord($_) for (split //, File::Spec->rel2abs(File::Spec->curdir));
+        my $current = int($seed * 1000000000) + time + $$ + $c;
+        $session_id .= $current;
+    }
+    return $session_id;
+}
+
+sub read_session_id {
+}
+
+sub write_session_id {
+}
+
+sub retreive {
+    die "retreive not implemented"
+}
+
+sub create {
+    die "create not implemented"
+}
+
+sub flush {
+    die "flush not implemented"
+}
+
+sub destroy {
+    die "destroy not implemented"
+}
+
 1;
 __END__
 =pod
