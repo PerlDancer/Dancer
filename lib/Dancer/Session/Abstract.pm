@@ -2,7 +2,11 @@ package Dancer::Session::Abstract;
 use strict;
 use warnings;
 
+use Dancer::Cookies;
 use File::Spec;
+
+# it's a constant, maybe a setting in the future
+my $SESSION_NAME = 'dancer.session';
 
 # we try to make the best random number
 # with native Perl 5 code.
@@ -24,9 +28,11 @@ sub build_id {
 }
 
 sub read_session_id {
+    Dancer::Cookies->cookies->{$SESSION_NAME};
 }
 
-sub write_session_id {
+sub write_session_id($) {
+    Dancer::Cookies->cookies->{$SESSION_NAME} = $_[0];
 }
 
 sub retreive {
