@@ -38,9 +38,10 @@ sub render_response {
     print Dancer::HTTP::status($response->{status});
 
     # headers
-    my %headers = @{$response->{headers}};
-    foreach my $header (keys %headers) {
-        print "${header}: ".$headers{$header}."\r\n";
+    my @headers = @{$response->{headers}};
+    for (my $i=0; $i<scalar(@headers); $i+=2) {
+        my ($header, $value) = ($headers[$i], $headers[$i+1]);
+        print "${header}: $value\r\n";
     }
     print "\r\n";
 
