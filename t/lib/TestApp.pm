@@ -13,4 +13,11 @@ post '/name' => sub {
 
 get '/env' => sub { Dumper(\%ENV) };
 
+get '/cookies' => sub { Dumper(cookies()) };
+
+get '/set_cookie/*/*' => sub {
+    my ($name, $value) = splat;
+    cookies->{$name} = $value;
+};
+
 true;
