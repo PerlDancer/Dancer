@@ -11,7 +11,7 @@ sub new {
     my ($class, %args) = @_;
     my $self = {
         status  => 200,
-        headers => ['Content-Type' => setting('content_type')],
+        headers => [],
         content => "",
         pass    => 0,
         %args,
