@@ -2,10 +2,9 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-plan skip_all => "Session is a work in progres...";
+plan tests => 3;
 
 use Dancer;
-
 use lib 't/lib';
 use EasyMocker;
 
@@ -15,14 +14,19 @@ mock 'Dancer::ModuleLoader'
     => method 'load' 
     => should sub { $mock_loads->{$_[1]}};
 
-# when CGI::Session is not here, session cannot be set
-$mock_loads->{'CGI::Session'} = 0;
-eval { set(session => 1) };
-like($@, qr/The session engine needs CGI::Session to be installed/, 
-    "the session engine depends on CGI::Session");
+# when YAML is not here...
+$mock_loads->{'YAML'} = 0;
+eval { set(session => 'yaml') };
+like($@, qr/YAML is needed for the YAML session engine/, 
+    "the YAML session engine depends on YAML");
 
-# when present, it can be
-$mock_loads->{'CGI::Session'} = 1;
-eval { set(session => 1) };
+# when present, I CAN HAZ
+$mock_loads->{'YAML'} = 1;
+eval { set(session => 'yaml') };
 is($@, '', "the session engine can be set with CGI::Session");
+
+# load an unknown session engine
+eval { set(session => 'galactica') };
+like $@, qr/unsupported session engine: `galactica'/, 
+    "Unknown session engine is refused";
 

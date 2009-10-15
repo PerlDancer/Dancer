@@ -20,4 +20,13 @@ get '/set_cookie/*/*' => sub {
     cookies->{$name} = $value;
 };
 
+get '/set_session/*' => sub {
+    my ($name) = splat;
+    session name => $name;
+};
+
+get '/read_session' => sub {
+    "name='".session('name')."'"
+};
+
 true;
