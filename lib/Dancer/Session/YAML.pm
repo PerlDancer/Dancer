@@ -7,20 +7,22 @@ use base 'Dancer::Session::Abstract';
 use Dancer::Config 'setting';
 use Dancer::FileUtils 'path';
 
-my $SESSION_DIR = undef;
-
 # static
 
 sub init {
     my ($class) = @_;
+
+    # default value for session_dir
     setting('session_dir' => path(setting('appdir'), 'sessions'))
         if not defined setting('session_dir');
-    $SESSION_DIR = setting('session_dir');
-    if (! -d $SESSION_DIR) {
-        mkdir $SESSION_DIR 
-            or die "session_dir $SESSION_DIR cannot be created";
+    
+    # make sure session_dir exists
+    my $session_dir = setting('session_dir');
+    if (! -d $session_dir) {
+        mkdir $session_dir 
+            or die "session_dir $session_dir cannot be created";
     }
-    Dancer::Logger->debug("session_dir : $SESSION_DIR");
+    Dancer::Logger->debug("session_dir : $session_dir");
 }
 
 # create a new session and return the newborn object
@@ -37,19 +39,25 @@ sub create {
 sub retreive($$) {
     my ($class, $id) = @_;
 
-    my $session = path($SESSION_DIR, "$id.yml");
-    return undef unless -f $session;
-    return YAML::LoadFile($session);
+    return undef unless -f $self->yaml_file;
+    return YAML::LoadFile($self->yaml_file);
 }
 
 # instance 
+
+sub yaml_file {
+    my ($self) = @_;
+    return path(setting('session_dir'), $self->id.'.yml');
+}
+
 sub destroy {
-    die 'TODO';
+    my ($self) = @_;
+    unlink $self->yaml_file if -f $self->yaml_file;
 }
 
 sub flush {
     my $self = shift;
-    open SESSION, '>', path($SESSION_DIR, $self->{id}.".yml") or die $!;
+    open SESSION, '>', $self->yaml_file or die $!;
     print SESSION YAML::Dump($self);
     close SESSION;
     return $self;

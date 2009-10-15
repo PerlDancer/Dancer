@@ -9,8 +9,11 @@ use Dancer::ModuleLoader;
 
 my $ENGINE = undef;
 
+# This wrapper look for the session engine and try to load it.
 sub init {
     my ($class, $setting) = @_;
+
+    # YAML
     if ($setting eq 'yaml') {
         die "YAML is needed for the YAML session engine" 
             unless Dancer::ModuleLoader->load('YAML');
@@ -18,6 +21,7 @@ sub init {
         $ENGINE = 'Dancer::Session::YAML';
         $ENGINE->init();
     }
+
     else {
         die "unsupported session engine: `$setting'";
     }
@@ -35,8 +39,8 @@ sub get_current_session {
 
     if (not defined $session) {
         $session = $ENGINE->create();
-        Dancer::Logger->debug("new session created => ".$session->{id});
-        $ENGINE->write_session_id($session->{id});
+        Dancer::Logger->debug("new session created => ".$session->id);
+        $ENGINE->write_session_id($session->id);
     }
     return $session;
 }

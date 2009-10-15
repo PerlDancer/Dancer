@@ -53,6 +53,16 @@ sub new {
     return $self;
 }
 
+sub id {
+    my ($self, $value) = @_;
+    if (@_ == 1) {
+        return $self->{id};
+    }
+    else {
+        return $self->{id} = $value;
+    }
+}
+
 # it's a constant, maybe a setting in the future
 my $SESSION_NAME = 'dancer.session';
 
