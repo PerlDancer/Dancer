@@ -64,9 +64,8 @@ sub load {
     return 1 unless -f conffile;
 
     # load YAML
-    eval "use YAML";
-    confess "Configuration file found but YAML is not installed" if $@;
-    YAML->import;
+    confess "Configuration file found but YAML is not installed"
+      unless Dancer::ModuleLoader->load('YAML');
 
     load_default_settings();
     load_settings_from_yaml(conffile);
