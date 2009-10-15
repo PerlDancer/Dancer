@@ -39,25 +39,25 @@ sub create {
 sub retreive($$) {
     my ($class, $id) = @_;
 
-    return undef unless -f $self->yaml_file;
-    return YAML::LoadFile($self->yaml_file);
+    return undef unless -f yaml_file($id);
+    return YAML::LoadFile(yaml_file($id));
 }
 
 # instance 
 
 sub yaml_file {
-    my ($self) = @_;
-    return path(setting('session_dir'), $self->id.'.yml');
+    my ($id) = @_;
+    return path(setting('session_dir'), "$id.yml");
 }
 
 sub destroy {
     my ($self) = @_;
-    unlink $self->yaml_file if -f $self->yaml_file;
+    unlink yaml_file($self->id) if -f yaml_file($self->id);
 }
 
 sub flush {
     my $self = shift;
-    open SESSION, '>', $self->yaml_file or die $!;
+    open SESSION, '>', yaml_file($self->id) or die $!;
     print SESSION YAML::Dump($self);
     close SESSION;
     return $self;

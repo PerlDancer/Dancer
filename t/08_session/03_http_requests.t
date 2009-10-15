@@ -8,9 +8,16 @@ plan skip_all => "YAML, Test::Requires and Test::TCP are needed for this test" i
  
 my @clients = qw(one two three);
 my @engines = qw(yaml);
-plan tests => 3 * scalar(@clients) * scalar(@engines);
+
+if ($ENV{DANCER_TEST_MEMCACHED}) {
+    push @engines, "memcached";
+    setting(memcached_servers => '127.0.0.1:11211');
+}
+
+plan tests => 3 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
 foreach my $engine (@engines) {
+
 test_tcp(
     client => sub {
         my $port = shift;
@@ -38,8 +45,8 @@ test_tcp(
         use TestApp;
         Dancer::Config->load;
 
+        ok(setting(session => $engine), "using engine $engine");
         setting show_errors => 1;
-        setting session => $engine;
         setting environment => 'production';
         setting port => $port;
         Dancer->dance();

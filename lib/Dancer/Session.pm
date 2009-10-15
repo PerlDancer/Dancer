@@ -22,6 +22,13 @@ sub init {
         $ENGINE->init();
     }
 
+    # Memcached
+    elsif ($setting eq 'memcached') {
+        $ENGINE = 'Dancer::Session::Memcached';
+        eval "use $ENGINE";
+        $ENGINE->init();
+    }
+
     else {
         die "unsupported session engine: `$setting'";
     }
@@ -32,10 +39,7 @@ sub get_current_session {
     my $sid = $ENGINE->read_session_id;
     my $session = undef;
 
-    if ($sid) {
-        Dancer::Logger->debug("looking for session: `$sid'");
-        $session = $ENGINE->retreive($sid);
-    }
+    $session = $ENGINE->retreive($sid) if $sid;
 
     if (not defined $session) {
         $session = $ENGINE->create();
