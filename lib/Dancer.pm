@@ -71,7 +71,7 @@ sub false        { 0 }
 sub get          { Dancer::Route->add('head', @_); 
                    Dancer::Route->add('get', @_);}
 sub layout       { set(layout => shift) }
-sub logger       { set(logger => @_) && Dancer::Logger->init }
+sub logger       { set(logger => @_) }
 sub load         { require $_ for @_ }
 sub mime_type    { Dancer::Config::mime_types(@_) }
 sub params       { Dancer::SharedData->params  }

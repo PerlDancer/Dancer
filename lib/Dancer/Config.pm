@@ -19,36 +19,24 @@ sub settings { $SETTINGS }
 
 my $setters = {
     logger => sub {
-        my ($key, $value)  = @_;
-        if (@_ == 2) {
-            $SETTINGS->{logger} = $value;
-            Dancer::Logger->init;
-        }
-        else {
-            $SETTINGS->{logger};
-        }
+        my ($setting, $value) = @_;
+        Dancer::Logger->init($value);
     },
     session => sub {
-        my ($key, $value)  = @_;
-        if (@_ == 2) {
-            $SETTINGS->{session} = $value;
-            Dancer::Session->init;
-        }
-        else {
-            $SETTINGS->{session};
-        }
+        my ($setting, $value) = @_;
+        Dancer::Session->init($value);
     },
 };
 
 # public accessor for get/set
 sub setting {
     my ($setting, $value) = @_;
+    
+    # run the hook if setter
+    $setters->{$setting}->(@_) 
+        if (@_ == 2) && defined $setters->{$setting};
 
-    # specific setter/getter
-    return $setters->{$setting}->(@_) 
-        if defined $setters->{$setting};
-
-    # generic setter/getter
+    # setter/getter
     (@_ == 2) 
         ? $SETTINGS->{$setting} = $value
         : $SETTINGS->{$setting} ;

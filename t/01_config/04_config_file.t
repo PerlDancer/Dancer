@@ -4,7 +4,7 @@ use Test::More import => ['!pass'];
 
 eval "use YAML";
 plan skip_all => "YAML is not installed" if $@;
-plan tests => 17;
+plan tests => 16;
 
 use Dancer;
 use Dancer::Config 'setting'; 
@@ -13,7 +13,6 @@ use TestUtils;
 
 my $conffile = Dancer::Config->conffile;
 ok(defined($conffile), 'default conffile is defined');
-ok((! -f $conffile), 'conffile does not exist');
 
 ok(Dancer::Config->load, 'Config load works without conffile');
 

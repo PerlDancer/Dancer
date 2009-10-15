@@ -10,12 +10,16 @@ use Dancer::ModuleLoader;
 my $ENGINE = undef;
 
 sub init {
-#    if (setting('session_engine') eq 'yaml') {
+    my ($class, $setting) = @_;
+    if ($setting eq 'yaml') {
         die "YAML is needed for the YAML session engine" 
             unless Dancer::ModuleLoader->load('YAML');
         eval "use Dancer::Session::YAML";
         $ENGINE = 'Dancer::Session::YAML';
-#    }
+    }
+    else {
+        die "unsupported session engine: `$setting'";
+    }
 }
 
 # retreive or create a session for the client

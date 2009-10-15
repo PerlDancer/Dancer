@@ -15,12 +15,13 @@ sub new {
 }
 
 sub init {
-    if (setting('logger') eq 'file') {
+    my ($class, $setting) = @_;
+    if ($setting eq 'file') {
         $logger = Dancer::Logger::File->new;
         $logger->init;
     }
     else {
-        die "unknown logger";
+        die "unknown logger '$setting'";
     }
 }
 
