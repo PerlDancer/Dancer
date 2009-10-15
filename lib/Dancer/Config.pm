@@ -205,6 +205,14 @@ should not be enabled in production.
 When this flag is set, you don't have to restart your webserver whenever you
 make a change in a route handler.
 
+=head2 session (enum)
+
+This setting lets you enable a session engine for your web application. Be
+default, sessions are disabled in Dancer, you must choose a session engine to
+use them.
+
+See L<Dancer::Session> for supported engines and their respective configuration.
+
 =head1 AUTHOR
 
 This module has been written by Alexis Sukrieh <sukria@cpan.org> and others,

@@ -5,6 +5,45 @@ use warnings;
 use Dancer::Cookies;
 use File::Spec;
 
+# args: ($class)
+# Overload this method in your session engine if you have some init stuff to do,
+# such as a database connection or making sure a directory exists...
+# It will be called once the session engine is loaded.
+sub init {
+    return 1;
+}
+
+# args: ($class, $id)
+# receives a session id and should return a session object if found, or undef
+# otherwise.
+sub retreive {
+    die "retreive not implemented"
+}
+
+# args: ($class)
+# create a new empty session, flush it and return it. 
+sub create {
+    die "create not implemented"
+}
+
+# args: ($self)
+# write the (serialized) current session to the session storage
+sub flush {
+    die "flush not implemented"
+}
+
+# args: ($self)
+# remove the session from the session storage
+sub destroy {
+    die "destroy not implemented"
+}
+
+
+# Methods below this this line should not be overloaded.
+
+# This is the default constructor for the session object, the only mandatory
+# attribute is 'id'. The whole object should be serialized by the session
+# engine.
 sub new {
     my ($class) = @_;
     my $self = {
@@ -45,22 +84,6 @@ sub write_session_id {
     Dancer::Cookies->cookies->{$SESSION_NAME} = $id;
 }
 
-sub retreive {
-    die "retreive not implemented"
-}
-
-sub create {
-    die "create not implemented"
-}
-
-sub flush {
-    die "flush not implemented"
-}
-
-sub destroy {
-    die "destroy not implemented"
-}
-
 1;
 __END__
 =pod
@@ -84,10 +107,10 @@ The session id will be written to a cookie, named C<dancer.session>, it is
 assumed that a client must accept cookies to be able to use a session-aware 
 Dancer webapp.
 
-=item B<stroage engine>
+=item B<storage engine>
 
 When the session engine is enabled, a I<before> filter takes care to initialize
-the good Dancer::Session::Engine (according to the setting C<session_engine>).
+the good Dancer::Session::Engine (according to the setting C<session>).
 
 Then, the filter looks for a cookie named C<dancer.session> in order to
 I<retreive> the current session object. If not found, a new session object is
@@ -100,61 +123,15 @@ After terminating the request, a I<flush> is made to the session object.
 
 =back
 
-=head1 SESSION ENGINES
-
-The following engines are supported
-
-=over 4
-
-=item L<Dancer::Session::YAML> (C<session_engine: yaml>)
-
-This engine stores sessions in YAML files located in the directory pointed by
-the setting C<session_dir>, which default value is C<appdir/sessions>. 
-
-This engine is not supposed to be used in production
-environment but is very convinient for development purposes. As a matter of
-fact, it's pretty handy for exploring a session to be able to just cat a file.
-
-=item L<Dancer::Session::Binary> (C<session_engine: binary>)
-
-This engine stores sessions in binary files located in the directory pointed by
-the setting C<session_dir>, which default value is C<appdir/sessions>. 
-
-Files are written with the Storable module. It's efficient and less 
-space-consuming then the YAML engine.
-
-=item L<Dancer::Session::Memcache> (C<session_engine: memcache>)
-
-This engines stores session in memecache, it needs more settings to be work
-correctly:
-
-    session: 1
-    session_engine: memcache
-    session_engine_memcache_server: X.X.X.X
-    session_engine_memcache_port: XXXX
-
-=back
-
-=item L<Dancer::Session::Mysql> (C<session_engine: mysql>)
-
-This engine stores session in a MySQL database. The table for storing session
-will be named C<dancer_sessions>.
-
-    session: 1
-    session_engine: mysql
-    session_engine_mysql_server: 
-    session_engine_mysql_port: 
-    session_engine_mysql_username: 
-    session_engine_mysql_password: 
-
 =head1 DESCRIPTION
 
 This virtual class describes how to build a session engine for Dancer. This is
 done in order to allow multiple session storage with a common interface.
 
-=head2 Abstract Methods 
+Any session engine must inherits from Dancer::Session::Abstract and implement
+the following abstract methods.
 
-The following methods must be implemented by any Dancer::Session class.
+=head2 Abstract Methods 
 
 =over 4 
 

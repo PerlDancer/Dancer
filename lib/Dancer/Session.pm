@@ -16,6 +16,7 @@ sub init {
             unless Dancer::ModuleLoader->load('YAML');
         eval "use Dancer::Session::YAML";
         $ENGINE = 'Dancer::Session::YAML';
+        $ENGINE->init();
     }
     else {
         die "unsupported session engine: `$setting'";
@@ -25,13 +26,14 @@ sub init {
 # retreive or create a session for the client
 sub get_current_session {
     my $sid = $ENGINE->read_session_id;
-    my $session;
+    my $session = undef;
 
     if ($sid) {
-        Dancer::Logger->debug("sid found: '$sid'");
+        Dancer::Logger->debug("looking for session: `$sid'");
         $session = $ENGINE->retreive($sid);
     }
-    else {
+
+    if (not defined $session) {
         $session = $ENGINE->create();
         Dancer::Logger->debug("new session created => ".$session->{id});
         $ENGINE->write_session_id($session->{id});
@@ -78,12 +80,12 @@ be done like the following:
 
 In the application code:
 
-    # myapp.pm
-    set session => true;
+    # enabling the YAML-file-based session engine
+    set session => 'yaml';
 
 Or in config.yml or environments/$env.yml
 
-    session: 1
+    session: "yaml"
 
 By default session are disabled, you must enable them before using it. If the
 session engine is disabled, any Dancer::Session call will throw an exception.
@@ -109,15 +111,33 @@ C</home> actions using the session engine.
     get '/home' => {
         # if a user is present in the session, let him go, otherwise redirect to
         # /login
-        if (not session->{user_id}) {
+        if (not session('user_id')) {
             redirect '/login';
         }
     };
+
+=head1 SUPPORTED ENGINES
+
+Dancer has a modular session engine that makes implementing new session backends
+pretty easy. If you'd like to write your own, feel free to take a
+look at L<Dancer::Session::Abstract>.
+
+The following engines are supported:
+
+=over 4
+
+=item L<Dancer::Session::YAML>
+
+A YAML file-based session backend, pretty convininent for development purposes,
+but maybe not the best for production needs.
+
+=back
 
 =head1 DEPENDENCY
 
 Dancer::Session may depends on third-party modules, depending on the session
 engine used. See the session engine module for details.
+
 
 =head1 AUTHORS
 
