@@ -17,7 +17,7 @@ mock 'Dancer::ModuleLoader'
 # when YAML is not here...
 $mock_loads->{'YAML'} = 0;
 eval { set(session => 'yaml') };
-like($@, qr/YAML is needed for the YAML session engine/, 
+like($@, qr/YAML is needed and is not installed/, 
     "the YAML session engine depends on YAML");
 
 # when present, I CAN HAZ

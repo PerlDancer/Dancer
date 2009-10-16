@@ -5,6 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
+use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 use Carp 'confess';
 

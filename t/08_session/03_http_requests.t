@@ -2,9 +2,11 @@ use Test::More;
 
 use Dancer::Config 'setting';
 eval "use Test::Requires ('LWP::UserAgent')";
+plan skip_all => "Test::Requires needed for this test" if $@;
 eval "use Test::TCP";
+plan skip_all => "Test::TCP needed for this test" if $@;
 eval "use YAML";
-plan skip_all => "YAML, Test::Requires and Test::TCP are needed for this test" if $@;
+plan skip_all => "YAML needed for this test" if $@;
  
 my @clients = qw(one two three);
 my @engines = qw(yaml);

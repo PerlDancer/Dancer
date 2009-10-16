@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Dancer::Session::Abstract';
 
+use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils 'path';
 
@@ -11,6 +12,9 @@ use Dancer::FileUtils 'path';
 
 sub init {
     my ($class) = @_;
+
+    die "YAML is needed and is not installed"
+        unless Dancer::ModuleLoader->load('YAML');
 
     # default value for session_dir
     setting('session_dir' => path(setting('appdir'), 'sessions'))

@@ -5,46 +5,45 @@ use warnings;
 
 use Dancer::Cookies;
 use Dancer::Config 'setting';
-use Dancer::ModuleLoader;
 
+# Table to map supported engines with their module
+my $ENGINES = {
+    yaml      => 'Dancer::Session::YAML',
+    memcached => 'Dancer::Session::Memcached',
+};
+
+# Singleton representing the session engine class to use
 my $ENGINE = undef;
+sub engine {$ENGINE}
+
+sub set_engine {
+    my ($engine) = @_;
+    $ENGINE = $engine;
+    eval "use $ENGINE";
+    die "Unable to load session engine `$ENGINE': $@" if $@;
+    engine->init();
+}
 
 # This wrapper look for the session engine and try to load it.
 sub init {
     my ($class, $setting) = @_;
 
-    # YAML
-    if ($setting eq 'yaml') {
-        die "YAML is needed for the YAML session engine" 
-            unless Dancer::ModuleLoader->load('YAML');
-        eval "use Dancer::Session::YAML";
-        $ENGINE = 'Dancer::Session::YAML';
-        $ENGINE->init();
-    }
-
-    # Memcached
-    elsif ($setting eq 'memcached') {
-        $ENGINE = 'Dancer::Session::Memcached';
-        eval "use $ENGINE";
-        $ENGINE->init();
-    }
-
-    else {
-        die "unsupported session engine: `$setting'";
-    }
+    (exists $ENGINES->{$setting}) 
+        ? set_engine($ENGINES->{$setting})
+        : die "unsupported session engine: `$setting'";
 }
 
 # retreive or create a session for the client
 sub get_current_session {
-    my $sid = $ENGINE->read_session_id;
+    my $sid = engine->read_session_id;
     my $session = undef;
 
-    $session = $ENGINE->retreive($sid) if $sid;
+    $session = engine->retreive($sid) if $sid;
 
     if (not defined $session) {
-        $session = $ENGINE->create();
+        $session = engine->create();
         Dancer::Logger->debug("new session created => ".$session->id);
-        $ENGINE->write_session_id($session->id);
+        engine->write_session_id($session->id);
     }
     return $session;
 }
