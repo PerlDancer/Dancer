@@ -49,7 +49,9 @@ sub render_response {
     if (ref($response->{content}) eq 'GLOB') {
         print read_glob_content($response->{content});
     }
-    else {
+    
+    # print content if any
+    elsif (defined $response->{content}) {
         print $response->{content};
     }
 }

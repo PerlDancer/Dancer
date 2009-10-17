@@ -4,7 +4,7 @@ use base 'Exporter';
 use vars '@EXPORT';
 use Test::MockObject;
 
-@EXPORT = qw(fake_request http_request write_file);
+@EXPORT = qw(fake_request http_request write_file get_response_for_request);
 
 my $path = undef;
 sub path {

@@ -37,5 +37,4 @@ sub status       { $CURRENT->{status} = shift }
 sub content_type { $CURRENT->{content_type} = shift }
 sub pass         { $CURRENT->{pass} = 1 }
 
-
-'Dancer::Response';
+1;
