@@ -1,7 +1,7 @@
                             Features Needed For 1.0
 
 [X] Errors handling
-[ ] Session support
+[X] Session support
 [ ] Cookies Support
 [X] YAML configuration files
 [X] Bootstrap helper script
