@@ -19,44 +19,28 @@
         ...
     };
 
-* Session support
+* Prefix support
 
-    We need a way to support web session in the easiest way possible.
+	Could be great to be able to define a prefix path for each 
+	route hanlder defined then.
 
-    Maybe something like that:
+	Would work like the following:
 
-    set session => true; # enable the session engine
+	prefix '/home';
 
-    get '/login' => sub {
-       template 'login' 
-    };
+	# any route handler and before filter is applied to /home/*
 
-    post '/login' => sub {
-        my $user = User->authenticate(params->{login}, params->{password});
+	get '/page1' => sub { }; # will match '/home/page1';
 
-        if ($user) {
-            session user_id => $user->id;
-        }
-        else {
-            var error => "Bad credentials";
-            pass;
-        }
-    };
+	prefix undef;
+	# no more prefix
 
-    Then the key 'user_id' should be accessible in other requests:
+	get '/page1' => sub { }; # will match /page1
 
-    before => sub {
-        if (not session->{user_id}) {
-            var error => "Must be authenticated";
-            request->path_info('/error');
-        }
-        else {
-            var user => User->find(session->{user_id});
-        }
-    };
+	And that should also work for before filters:
 
-    get '/home' => sub {
-        "Hello ".vars->{user}->name
-    };
+	prefix '/home';
+	before sub { must_be_authenticated }; # this filter only applies to /home/* paths
+
 
 
