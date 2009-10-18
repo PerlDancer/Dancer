@@ -16,8 +16,10 @@ my $logfile;
 sub init {
     my $logdir = path(setting('appdir'), 'logs');
     if (! -d $logdir) {
-        mkdir $logdir 
-            or die "log directory $logdir doen't exist, unable to create";
+        if (not mkdir $logdir) {
+            warn "log directory $logdir doen't exist, unable to create";
+            return undef $logfile;
+        }
     }
 
     $logfile = setting('environment');

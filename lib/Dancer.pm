@@ -85,9 +85,16 @@ sub redirect     { Dancer::Helpers::redirect(@_) }
 sub request      { Dancer::SharedData->cgi }
 sub send_file    { Dancer::Helpers::send_file(@_) }
 sub set          { setting(@_) }
-sub session      { (@_ == 1) 
-                   ? Dancer::Session->read(@_) 
-                   : Dancer::Session->write(@_) }
+sub session      { 
+    if (@_ == 0) {
+        return Dancer::Session->get;
+    }
+    else {
+        return (@_ == 1) 
+            ? Dancer::Session->read(@_) 
+            : Dancer::Session->write(@_) 
+    }
+}
 sub splat        { @{ Dancer::SharedData->params->{splat} } }
 sub status       { Dancer::Response::status(@_) }
 sub template     { Dancer::Helpers::template(@_) }

@@ -24,6 +24,8 @@ sub set_engine {
     engine->init();
 }
 
+sub get { get_current_session() }
+
 # This wrapper look for the session engine and try to load it.
 sub init {
     my ($class, $setting) = @_;
