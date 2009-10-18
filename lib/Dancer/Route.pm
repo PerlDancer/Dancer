@@ -21,7 +21,6 @@ sub init_registry     { {routes => {}, before_filters => [] } }
 sub purge_all         { $REG = init_registry() }
 sub registry          { $REG }
 sub set_registry      { $REG = $_[1] }
-sub registry_is_empty { scalar(keys(%{$REG->{routes}})) == 0 }
 
 # look for a route in the given array
 sub find_route  { 
