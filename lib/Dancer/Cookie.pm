@@ -15,6 +15,40 @@ sub new {
         %attrs,
     };
     bless $self, $class;
+    $self->init();
+
+    return $self;
+}
+
+sub init {
+    my $self = shift;
+    if ($self->expires) {
+        $self->expires(epoch_to_gmtstring($self->expires))
+            if $self->expires =~ /^\d+$/;
+    }
+}
+
+sub expires { 
+    my ($self, $value) = @_;
+    if (@_ == 1) {
+        return $self->{attributes}{expires};
+    }
+    else {
+        return $self->{attributes}{expires} = $value;
+    }
+}
+
+sub epoch_to_gmtstring {
+    my ($epoch) = @_;
+    
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday) = gmtime($epoch);
+    my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+    my @days   = qw(- Mon Tue Wed Thu Fri Sat Sun);
+
+    return $days[$wday].", "
+         . $mday."-".$months[$mon]
+         . "-".($year + 1900)
+         . " ${hour}:${min}:${sec} GMT";
 }
 
 sub attributes { 
