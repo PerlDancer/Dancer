@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Template;
+use Dancer::Template::Simple;
 use File::Basename 'basename', 'dirname';
 use File::Spec::Functions;
 use Getopt::Long;
@@ -141,10 +141,8 @@ sub write_file {
 
 sub process_template {
     my ($template, $tokens) = @_;
-    my $tt = Template->new; 
-    my $result = "";
-    $tt->process(\$template, $tokens, \$result);
-    return $result;
+    my $engine = Dancer::Template::Simple->new;
+    return $engine->render(\$template, $tokens);
 }
 
 sub templates($) {
@@ -155,7 +153,7 @@ sub templates($) {
 
 "# This is a PSGI application file for Apache+Plack support
 use CGI::PSGI;
-use lib '[% appdir %]';
+use lib '<% appdir %>';
 use $appname;
 
 use Dancer::Config 'setting';
@@ -171,7 +169,7 @@ my \$handler = sub {
 'index.tt'  => '<h2>It Works!</h2>
 
 <p>
-I\'m in <code>[% appdir %]/views/index.tt</code>
+I\'m in <code><% appdir %>/views/index.tt</code>
 </p>
 ',
 
