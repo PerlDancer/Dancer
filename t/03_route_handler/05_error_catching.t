@@ -2,11 +2,10 @@ use Test::More import => ['!pass'];
 
 use lib 't';
 use TestUtils;
-
 use Dancer;
 
 get '/error' => sub {
-	template('error');
+    Foo->bar;
 };
 
 get '/warning' => sub {
@@ -33,7 +32,7 @@ my @hidden_errors = (
 my @visible_errors = (
     { path => '/clean', expected => qr/working/ },
 	{ path => '/error', 
-	  expected => qr/Can't locate object method "new" via package "Template"/m}, 
+	  expected => qr/Can't locate object method "bar" via package "Foo"/m}, 
     { path => '/clean', expected => qr/working/ },
 	{ path => '/warning', 
 	  expected => qr/Use of uninitialized value .*in concatenation/},

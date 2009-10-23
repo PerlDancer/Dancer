@@ -20,11 +20,14 @@ my $result = $engine->render(
 my $expected = 'this is var1="1" and var2=2'."\n\nanother line\n\n one two three\n";
 is $result, $expected, "template got processed successfully";
 
-$expected = "one=1, two=2, three=3";
-$template = "one=<% one %>, two=<% two %>, three=<% three %>";
+$expected = "one=1, two=2, three=3 - 77";
+$template = "one=<% one %>, two=<% two %>, three=<% three %> - <% hash.key %>";
 
 eval { $engine->render($template, { one => 1, two => 2, three => 3}) }; 
 like $@, qr/is not a regular file/, "prorotype failure detected";
 
-$result = $engine->render(\$template, { one => 1, two => 2, three => 3});
+$result = $engine->render(\$template, { 
+    one => 1, two => 2, three => 3, 
+    hash => { key => 77 },
+});
 is $result, $expected, "processed a template given as a scalar ref";

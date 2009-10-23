@@ -5,6 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
+use Dancer::Template;
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 use Carp 'confess';
@@ -26,6 +27,10 @@ my $setters = {
     session => sub {
         my ($setting, $value) = @_;
         Dancer::Session->init($value);
+    },
+    template => sub {
+        my ($setting, $value) = @_;
+        Dancer::Template->init($value);
     },
 };
 
@@ -101,6 +106,8 @@ sub load_default_settings {
     $SETTINGS->{apphandler}   ||= 'standalone';
     $SETTINGS->{warnings}     ||= 0;
     $SETTINGS->{auto_reload}  ||= 0;
+
+    setting template => 'simple';
 }
 load_default_settings();
 

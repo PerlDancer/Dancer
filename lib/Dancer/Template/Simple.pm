@@ -20,7 +20,31 @@ sub render($$$) {
             if not defined $content;
     }
 
-    $content =~ s/<%\s*(\S+)\s*%>/$$tokens{$1}/g;
+    # we process each token and we support the dot noation:
+    # <% foo.key %> is interpolated with $tokens->{foo}{key} if $tokens->{foo}
+    # is a HASHREF, if it's an object, $tokens->{foo}->key will be called.
+    while ($content =~ /<%\s*(\S+)\s*%>/) {
+        my $value    = undef;
+        my $key      = $1;
+        my @elements = split /\./, $key;
+        foreach my $e (@elements) {
+            if (not defined $value) {
+                $value = $tokens->{$e};
+            }
+            elsif (ref($value) eq 'HASH') {
+                $value = $value->{$e};
+            }
+            elsif (ref($value)) {
+                local $@;
+                eval { $value = $value->$e };
+                $value = "" if $@;
+            }
+            else {
+                $value = "";
+            }
+        }
+        $content =~ s/<%\s*(\S+)\s*%>/$value/;
+    }
     return $content;
 }
 

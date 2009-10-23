@@ -10,8 +10,10 @@ use warnings;
 use CGI;
 use Dancer::Response;
 use Dancer::Config 'setting';
+use Dancer::FileUtils 'path';
 use Dancer::SharedData;
 use Dancer::Exceptions;
+use Dancer::Template;
 
 sub send_file { 
     my ($path) = @_;
@@ -33,30 +35,23 @@ sub send_file {
 
 sub template {
     my ($view, $tokens) = @_;
-    $view .= ".tt" if $view !~ /\.tt$/;
+    my $layout = setting('layout');
 
-    my $tt_config = {
-        START_TAG => '<%',
-        END_TAG => '%>',
-        ANYCASE => 1,
-    };
+    $view .= ".tt" if $view !~ /\.tt$/;
+    $view = path(setting('views'), $view);
 
     $tokens ||= {};
     $tokens->{params} = Dancer::SharedData::params();
     $tokens->{request} = Dancer::SharedData->cgi;
     
-    my $layout = setting('layout');
-    my $content = '';
-    my $tt = Template->new(INCLUDE_PATH => setting('views'), %{$tt_config});
-    $tt->process($view, $tokens, \$content);
+    my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
  
     $layout .= '.tt' if $layout !~ /\.tt/;
-    $tt = Template->new(
-        INCLUDE_PATH => File::Spec->catdir(setting('views'), 'layouts'),
-        %{$tt_config});
-    my $full_content = '';
-    $tt->process($layout, {%$tokens, content => $content}, \$full_content) or die "layout: $layout -> $!";
+    $layout = path(setting('views'), 'layouts', $layout);
+    my $full_content = Dancer::Template->engine->render(
+        $layout, {%$tokens, content => $content});
+
     return $full_content;
 }
 
@@ -79,4 +74,4 @@ sub redirect {
 	halt; # w00t!
 }
 
-'Dancer::Helpers';
+1;

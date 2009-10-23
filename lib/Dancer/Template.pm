@@ -2,7 +2,6 @@ package Dancer::Template;
 
 use strict;
 use warnings;
-use Dancer::Config 'setting';
 
 # supported template engines
 use Dancer::Template::Simple;
@@ -14,15 +13,15 @@ sub engine { $engine }
 
 # init the engine according to the settings
 sub init {
-    my $t = setting('template');
-    if ((not defined $t) or ($t eq 'simple')) {
+    my ($self, $setting) = @_;
+    if ((not defined $setting) or ($setting eq 'simple')) {
         return $engine = Dancer::Template::Simple->new;
     }
-    elsif ($t eq 'template_toolkit') {
+    elsif ($setting eq 'template_toolkit') {
         return $engine = Dancer::Template::TemplateToolkit->new;
     }
     else {
-        die "unknown template engine '$t'";
+        die "unknown template engine '$setting'";
     }
 }
 
