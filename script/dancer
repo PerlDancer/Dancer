@@ -142,6 +142,8 @@ sub write_file {
 sub process_template {
     my ($template, $tokens) = @_;
     my $engine = Dancer::Template::Simple->new;
+    $engine->{start_tag} = '__';
+    $engine->{stop_tag} = '__';
     return $engine->render(\$template, $tokens);
 }
 
@@ -153,12 +155,11 @@ sub templates($) {
 
 "# This is a PSGI application file for Apache+Plack support
 use CGI::PSGI;
-use lib '<% appdir %>';
+use lib '__appdir__';
 use $appname;
 
 use Dancer::Config 'setting';
 setting apphandler  => 'PSGI';
-setting environment => 'production';
 Dancer::Config->load;
 
 my \$handler = sub {
@@ -169,7 +170,7 @@ my \$handler = sub {
 'index.tt'  => '<h2>It Works!</h2>
 
 <p>
-I\'m in <code><% appdir %>/views/index.tt</code>
+I\'m in <code>__appdir__/views/index.tt</code>
 </p>
 ',
 

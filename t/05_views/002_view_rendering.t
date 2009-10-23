@@ -1,10 +1,14 @@
 use Test::More import => ['!pass'];
+use strict;
+use warnings;
 
 use Dancer;
 use lib 't';
 use TestUtils;
 
 my $time = time();
+
+set show_errors => 1;
 
 my @tests = (
     { path => '/',

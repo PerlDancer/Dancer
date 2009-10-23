@@ -5,6 +5,12 @@ use warnings;
 use base 'Dancer::Template::Abstract';
 use Dancer::FileUtils 'read_file_content';
 
+sub init {
+    my $self = shift;
+    $self->{start_tag} ||= '<%';
+    $self->{stop_tag} ||= '%>';
+}
+
 sub render($$$) {
     my ($self, $template, $tokens) = @_;
     my $content;
@@ -20,10 +26,12 @@ sub render($$$) {
             if not defined $content;
     }
 
+    my ($start, $stop) = ($self->{start_tag}, $self->{stop_tag});
+
     # we process each token and we support the dot noation:
     # <% foo.key %> is interpolated with $tokens->{foo}{key} if $tokens->{foo}
     # is a HASHREF, if it's an object, $tokens->{foo}->key will be called.
-    while ($content =~ /<%\s*(\S+)\s*%>/) {
+    while ($content =~ /${start}\s*(\S+)\s*${stop}/) {
         my $value    = undef;
         my $key      = $1;
         my @elements = split /\./, $key;
@@ -43,7 +51,7 @@ sub render($$$) {
                 $value = "";
             }
         }
-        $content =~ s/<%\s*(\S+)\s*%>/$value/;
+        $content =~ s/${start}\s*(\S+)\s*${stop}/$value/;
     }
     return $content;
 }
