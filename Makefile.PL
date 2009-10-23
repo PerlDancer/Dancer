@@ -9,7 +9,6 @@ WriteMakefile(
         'Exception::Class'       => '0',
         'File::Basename'         => '0',
         'File::Spec'             => '0',
-        'File::MimeInfo::Simple' => '0',
         'Template'               => '0',
         'Test::More'             => '0',
         'Test::MockObject'       => '0',

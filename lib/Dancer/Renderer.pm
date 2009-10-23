@@ -12,7 +12,6 @@ use Dancer::Request;
 use Dancer::Response;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname read_file_content);
-use File::MimeInfo::Simple;
 use Dancer::SharedData;
 
 sub render_file {
@@ -123,9 +122,16 @@ sub get_mime_type {
     my $ext = $tokens[0];
     
     my $mime = Dancer::Config::mime_types($ext);
-    return (defined $mime) 
-        ? $mime
-        : mimetype($filename);
+    return $mime if defined $mime;
+
+    if (Dancer::ModuleLoader->load('File::MimeInfo::Simple')) {
+        return File::MimeInfo::Simple::mimetype($filename);
+    }
+    else {
+        die "unknown mime_type for '$filename', "
+          . "register it with 'mime_type' or install "
+          . "'File::MimeInfo::Simple'";
+    }
 }
 
-'Dancer::Renderer';
+1;

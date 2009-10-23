@@ -619,8 +619,6 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =item L<CGI>
 
-=item L<File::MimeInfo::Simple>
-
 =item L<Template>
 
 =back
@@ -630,6 +628,8 @@ The following modules are optional
 =over 8
 
 =item L<YAML> : needed for configuration file support
+
+=item L<File::MimeInfo::Simple>
 
 =back
 
