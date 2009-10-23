@@ -22,6 +22,7 @@ my $MOCKS = {};
 sub mock {
     { 
         no strict 'refs'; 
+        no warnings 'redefine', 'prototype';
         if (@_ == 3) {
             my ($class, $method, $sub) = @_;
 
