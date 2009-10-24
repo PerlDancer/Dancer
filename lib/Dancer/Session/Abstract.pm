@@ -74,12 +74,17 @@ sub build_id {
 }
 
 sub read_session_id {
-    Dancer::Cookies->cookies->{$SESSION_NAME};
+    my $c = Dancer::Cookies->cookies->{$SESSION_NAME};
+    return (defined $c) ? $c->value : undef;
 }
 
 sub write_session_id {
     my ($class, $id) = @_;
-    Dancer::Cookies->cookies->{$SESSION_NAME} = $id;
+    Dancer::Cookies->cookies->{$SESSION_NAME} = Dancer::Cookie->new(
+        name  => $SESSION_NAME,
+        value => $id,
+        # no expires: will expire when the browser is closed
+    );
 }
 
 1;

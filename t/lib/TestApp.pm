@@ -17,7 +17,7 @@ get '/cookies' => sub { Dumper(cookies()) };
 
 get '/set_cookie/*/*' => sub {
     my ($name, $value) = splat;
-    cookies->{$name} = $value;
+    set_cookie $name => $value;
 };
 
 get '/set_session/*' => sub {

@@ -4,26 +4,17 @@ use lib 't';
 use TestUtils;
 use Dancer;
 
-# Perl 5.10 does not detect constant folding warnings
-# in the compilation phase
-sub perl_has_constant_folding_bug {
-    foreach my $v qw(5.01000 5.01010 5.010001) {
-        return 1 if $] == $v;
-    }
-    return 0;
-}
+set warnings => 1;
+set show_errors => 1;
 
 get '/warning' => sub {
-	my $bar = 1 + "hello";
+    my $bar;
+	"$bar foo";
 };
-
-# Perl 5.10.0 is buggy there, so don't break the test suite if ran under it
-plan skip_all => "test cannot run under Perl $]" 
-    if perl_has_constant_folding_bug;
 
 my @tests = (
     { path => '/warning', 
-	  expected => qr/Compilation warning: Argument "hello" isn't numeric in addition/},
+	  expected => qr/Use of uninitialized value \$bar in concatenation/},
 );
 
 plan tests => scalar(@tests);

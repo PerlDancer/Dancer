@@ -2,8 +2,9 @@ use Dancer::Config 'setting';
 use Test::More;
 
 eval "use Test::Requires ('LWP::UserAgent')";
+plan skip_all => "Test::Requires needed for this test" if $@;
 eval "use Test::TCP";
-plan skip_all => "Test::Requires and Test::TCP are needed for this test" if $@;
+plan skip_all => "Test::TCP needed for this test" if $@;
  
 plan tests => 9;
 test_tcp(
@@ -22,7 +23,7 @@ test_tcp(
             ok($res->is_success, "set_cookie for client $client");
 
             $res = $ua->get("http://127.0.0.1:$port/cookies");
-            like $res->content, qr/'$client' => '42'/, 
+            like $res->content, qr/'name' => '$client'/, 
             "cookie looks good for client $client"; 
         }
     },

@@ -61,6 +61,7 @@ sub error {
 
     my $error = Dancer::Error->new(code => $status, message => $content);
     Dancer::Response::set($error->render);
+    halt;
 }
 
 sub redirect {
@@ -72,6 +73,17 @@ sub redirect {
 	});
 
 	halt; # w00t!
+}
+
+#
+# set_cookie name => value,
+#     expires => time() + 3600, domain => '.foo.com'
+sub set_cookie {
+    my ($name, $value, %options) = @_;
+    Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
+        name  => $name,
+        value => $value,
+        %options);
 }
 
 1;

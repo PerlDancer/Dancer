@@ -52,12 +52,8 @@ sub response_with_headers {
     my $response = shift;
     # add cookies
     foreach my $c (keys %{ Dancer::Cookies->cookies }) {
-        my $cookie = Dancer::Cookie->new(
-            name  => $c,
-            value => Dancer::Cookies->cookies->{$c}
-        );
+        my $cookie = Dancer::Cookies->cookies->{$c};
         if (Dancer::Cookies->has_changed($cookie)) {
-            Dancer::Logger->debug("has_changed: ".$cookie->{name});
             push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
         }
     }

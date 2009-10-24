@@ -48,6 +48,7 @@ $VERSION = '0.9905';
     send_file
     send_error
     set
+    set_cookie
     session
     splat
     status
@@ -85,6 +86,7 @@ sub redirect     { Dancer::Helpers::redirect(@_) }
 sub request      { Dancer::SharedData->cgi }
 sub send_file    { Dancer::Helpers::send_file(@_) }
 sub set          { setting(@_) }
+sub set_cookie   { Dancer::Helpers::set_cookie(@_) }
 sub session      { 
     if (@_ == 0) {
         return Dancer::Session->get;
