@@ -4,7 +4,9 @@ package Dancer::Logger;
 use strict;
 use warnings;
 use Dancer::Config 'setting';
+
 use Dancer::Logger::File;
+use Dancer::Logger::Syslog;
 
 # singleton used for logging messages
 my $logger;
@@ -14,6 +16,9 @@ sub init {
     my ($class, $setting) = @_;
     if ($setting eq 'file') {
         $logger = Dancer::Logger::File->new;
+    }
+    elsif ($setting eq 'syslog') {
+        $logger = Dancer::Logger::Syslog->new;
     }
     else {
         die "unknown logger '$setting'";
