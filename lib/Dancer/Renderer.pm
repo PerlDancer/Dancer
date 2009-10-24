@@ -57,6 +57,7 @@ sub response_with_headers {
             push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
         }
     }
+    push @{$response->{headers}}, ('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
     return $response;
 }
 
