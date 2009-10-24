@@ -3,8 +3,6 @@ use Test::More tests => 15, import => ['!pass'];
 use Dancer::Config 'setting';
 use Dancer;
 
-
-
 eval { logger 'foobar'};
 like($@, qr/unknown logger/, 'invalid logger detected');
 

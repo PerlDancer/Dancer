@@ -1,5 +1,5 @@
 package Dancer::Logger;
-# virtual class for Dancer logger.
+# Factory for logger engines
 
 use strict;
 use warnings;
@@ -8,26 +8,20 @@ use Dancer::Logger::File;
 
 # singleton used for logging messages
 my $logger;
-
-sub new {
-    my ($class) = @_;
-    bless {}, $class;
-}
+sub logger  { $logger }
 
 sub init {
     my ($class, $setting) = @_;
     if ($setting eq 'file') {
         $logger = Dancer::Logger::File->new;
-        $logger->init;
     }
     else {
         die "unknown logger '$setting'";
     }
 }
 
-sub logger  { $logger }
 sub debug   { $logger->debug($_[1]) }
 sub warning { $logger->warning($_[1]) }
 sub error   { $logger->error($_[1]) }
 
-'Dancer::Logger';
+1;

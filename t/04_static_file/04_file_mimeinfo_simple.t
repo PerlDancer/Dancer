@@ -25,8 +25,8 @@ close TESTFILE;
 
 my $mt;
 eval { $mt = Dancer::Renderer::get_mime_type($test_file) };
-is $@, '', "unknown mime_type is detected";
-is $mt, 'text/plain', "mime_type is text/plain";
+is $@, '', "unknown mime_type is detected with File::MimeInfo::Simple";
+like $mt, qr/text\/plain/, "mime_type is text/plain";
 
 unlink $test_file;
 

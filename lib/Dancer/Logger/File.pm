@@ -1,20 +1,23 @@
 package Dancer::Logger::File;
 use strict;
 use warnings;
-use base 'Dancer::Logger';
+use base 'Dancer::Logger::Abstract';
 
+use File::Spec;
 use Dancer::Config 'setting';
 use Dancer::FileUtils 'path';
 
-my $levels = {
-    debug => 1,
-    warning => 2,
-    error => 3,
-};
-
 my $logfile;
+
+sub logdir {
+    my $appdir = setting('appdir');
+    my $logroot = $appdir || File::Spec->tmpdir();
+    return path($logroot, 'logs');
+}
+
 sub init {
-    my $logdir = path(setting('appdir'), 'logs');
+    my $logdir = logdir();
+
     if (! -d $logdir) {
         if (not mkdir $logdir) {
             warn "log directory $logdir doen't exist, unable to create";
@@ -29,26 +32,29 @@ sub init {
         warn "Unable to open $logfile for writing, unable to log";
         undef $logfile;
     }
+    close LOGFILE;
 }
 
-sub debug   { _log('debug', $_[1]) }
-sub warning { _log('warning', $_[1]) }
-sub error   { _log('error', $_[1]) }
+sub _format {
+    my ($level, $message) = @_;
+    my ($package, $file, $line) = caller(3);
+    $package ||= '-';
+    $file ||= '-';
+    $line ||= '-';
+
+    my $time = localtime;
+    chomp $message;
+    return "$time [$$] ($level) $message in $file l. $line\n";
+}
 
 sub _log {
-    my ($msg_level, $msg_content) = @_;
+    my ($self, $level, $message) = @_;
     return unless defined $logfile;
 
-    my $log_level = setting('log') || 'debug';
-
-    if (($levels->{$log_level} <= $levels->{$msg_level}) && 
-        open(LOGFILE, '>>', $logfile)) {
-        my ($package, $file, $line) = caller(3);
-        my $time = localtime;
-        chomp $msg_content;
-        print LOGFILE "$time [$$] ($msg_level) $msg_content in $file l. $line\n";
+    if (open(LOGFILE, '>>', $logfile)) {
+        print LOGFILE _format($level => $message);
         close LOGFILE;
     }
 }
 
-'Dancer::Logger::File';
+1;
