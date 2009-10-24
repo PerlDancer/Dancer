@@ -22,7 +22,9 @@ sub render_file {
 sub render_action {
     my $request = Dancer::SharedData->cgi;
     my $resp = get_action_response();
-    return response_with_headers($resp);
+    return (defined $resp) 
+        ? response_with_headers($resp) 
+        : undef;
 }
 
 sub render_error {
@@ -50,6 +52,11 @@ sub render_error {
 # Takes a response object and add default headers
 sub response_with_headers {
     my $response = shift;
+
+    $response->{headers} ||= [];
+    push @{$response->{headers}}, 
+        ('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+
     # add cookies
     foreach my $c (keys %{ Dancer::Cookies->cookies }) {
         my $cookie = Dancer::Cookies->cookies->{$c};
@@ -57,7 +64,6 @@ sub response_with_headers {
             push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
         }
     }
-    push @{$response->{headers}}, ('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
     return $response;
 }
 
