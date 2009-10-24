@@ -51,6 +51,7 @@ sub render($$$) {
                 $value = "";
             }
         }
+        $value = "" if not defined $value;
         $content =~ s/${start}\s*(\S+)\s*${stop}/$value/;
     }
     return $content;
