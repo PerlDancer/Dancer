@@ -2,17 +2,7 @@ package Dancer::Template::Abstract;
 
 use strict;
 use warnings;
-
-sub new { 
-    my ($class) = @_;
-    my $self = {};
-    bless $self, $class;
-    $self->init;
-    return $self;
-}
-
-# init stuff for the template engine
-sub init { 1 }
+use base 'Dancer::Object';
 
 # Overloads this method to implement the rendering
 # args:   $self, $template, $tokens

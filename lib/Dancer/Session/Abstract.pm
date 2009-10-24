@@ -5,13 +5,14 @@ use warnings;
 use Dancer::Cookies;
 use File::Spec;
 
+use base 'Dancer::Object';
+__PACKAGE__->attributes('id');
+
 # args: ($class)
 # Overload this method in your session engine if you have some init stuff to do,
 # such as a database connection or making sure a directory exists...
 # It will be called once the session engine is loaded.
-sub init {
-    return 1;
-}
+# sub init { return 1; }
 
 # args: ($class, $id)
 # receives a session id and should return a session object if found, or undef
@@ -45,22 +46,9 @@ sub destroy {
 # attribute is 'id'. The whole object should be serialized by the session
 # engine.
 sub new {
-    my ($class) = @_;
-    my $self = {
-        id => build_id(),
-    };
-    bless $self, $class;
+    my $self = Dancer::Object::new(@_); 
+    $self->id(build_id());
     return $self;
-}
-
-sub id {
-    my ($self, $value) = @_;
-    if (@_ == 1) {
-        return $self->{id};
-    }
-    else {
-        return $self->{id} = $value;
-    }
 }
 
 # it's a constant, maybe a setting in the future
