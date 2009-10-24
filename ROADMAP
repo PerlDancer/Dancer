@@ -2,6 +2,6 @@
 
 [X] Errors handling
 [X] Session support
-[ ] Cookies Support
+[X] Cookies Support
 [X] YAML configuration files
 [X] Bootstrap helper script
