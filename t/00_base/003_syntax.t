@@ -25,6 +25,7 @@ my @keywords = qw(
     send_file
     send_error
     set
+    set_cookie
     session
     splat
     status
