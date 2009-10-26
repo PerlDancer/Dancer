@@ -3,12 +3,13 @@ use strict;
 use warnings;
 
 use base 'Dancer::Template::Abstract';
+Dancer::Template::Simple->attributes('start_tag', 'stop_tag');
 use Dancer::FileUtils 'read_file_content';
 
 sub init {
     my $self = shift;
-    $self->{start_tag} ||= '<%';
-    $self->{stop_tag} ||= '%>';
+    $self->start_tag('<%') unless defined $self->start_tag;
+    $self->stop_tag('%>') unless defined $self->stop_tag;
 }
 
 sub render($$$) {
@@ -26,35 +27,59 @@ sub render($$$) {
             if not defined $content;
     }
 
-    my ($start, $stop) = ($self->{start_tag}, $self->{stop_tag});
+    $content = $self->interpolate($content, $tokens); 
+    return $content;
+}
 
-    # we process each token and we support the dot noation:
-    # <% foo.key %> is interpolated with $tokens->{foo}{key} if $tokens->{foo}
-    # is a HASHREF, if it's an object, $tokens->{foo}->key will be called.
+sub interpolate {
+    my ($self, $content, $tokens) = @_;
+    my ($start, $stop) = ($self->start_tag, $self->stop_tag);
+    
     while ($content =~ /${start}\s*(\S+)\s*${stop}/) {
-        my $value    = undef;
-        my $key      = $1;
-        my @elements = split /\./, $key;
-        foreach my $e (@elements) {
-            if (not defined $value) {
-                $value = $tokens->{$e};
-            }
-            elsif (ref($value) eq 'HASH') {
-                $value = $value->{$e};
-            }
-            elsif (ref($value)) {
-                local $@;
-                eval { $value = $value->$e };
-                $value = "" if $@;
-            }
-            else {
-                $value = "";
-            }
-        }
-        $value = "" if not defined $value;
-        $content =~ s/${start}\s*(\S+)\s*${stop}/$value/;
+        my $key = $1;
+        my $value = _find_value_from_token_name($key, $tokens);
+        $value    = _interpolate_value($value); 
+        $content  =~ s/${start}\s*(\S+)\s*${stop}/$value/;
     }
     return $content;
+}
+
+# private
+
+sub _find_value_from_token_name {
+    my ($key, $tokens) = @_;
+    my $value = undef;
+
+    my @elements = split /\./, $key;
+    foreach my $e (@elements) {
+        if (not defined $value) {
+            $value = $tokens->{$e};
+        }
+        elsif (ref($value) eq 'HASH') {
+            $value = $value->{$e};
+        }
+        elsif (ref($value)) {
+            local $@;
+            eval { $value = $value->$e };
+            $value = "" if $@;
+        }
+    }
+    return $value;
+}
+
+sub _interpolate_value($) {
+    my ($value) = @_;
+    if (ref($value) eq 'CODE') {
+        local $@;
+        eval { $value = $value->() };
+        $value = "" if $@;
+    }
+    elsif (ref($value) eq 'ARRAY') {
+        $value = "@{$value}";
+    }
+
+    $value = "" if not defined $value;
+    return $value;
 }
 
 1;
