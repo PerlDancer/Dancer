@@ -15,22 +15,76 @@ sub init {
 sub render($$$) {
     my ($self, $template, $tokens) = @_;
     my $content;
+    
+    $content = _read_content_from_template($template);
+    $content = $self->parse_branches($content, $tokens);
 
-    if (ref($template)) {
-        $content = $$template;
-    }
-    else {
-        die "'$template' is not a regular file"
-            unless -f $template;
-        $content = read_file_content($template);
-        die "unable to read content for file $template" 
-            if not defined $content;
-    }
-
-    $content = $self->interpolate($content, $tokens); 
     return $content;
 }
 
+sub parse_branches {
+    my ($self, $content, $tokens) = @_;
+    my ($start, $stop) = ($self->start_tag, $self->stop_tag);
+
+    my @buffer;
+    my $prefix = "";
+    my $should_bufferize = 1;
+    my $opened_tag = 0;
+    my $bufferize_if_token = 0;
+    $content =~ s/${start}(\S)/${start} $1/sg; 
+    $content =~ s/(\S)${stop}/$1 ${stop}/sg; 
+    
+    foreach my $word (split / /, $content) {
+        if ($word =~ /(.*)$start/s) {
+            my $junk = $1;
+            $opened_tag = 1;
+            if (defined($junk) && length($junk)) {
+                $prefix = $junk;
+            }
+        }
+        elsif ($word =~ /$stop(.*)/s) {
+            my $junk = $1;
+            if (defined($junk) && length($junk)) {
+                if (@buffer) {
+                    $buffer[$#buffer] .= $junk;
+                }
+                else {
+                    push @buffer, $junk;
+                }
+            }
+            $opened_tag = 0;
+        }
+        elsif ($word eq 'if' && $opened_tag ) {
+            $bufferize_if_token = 1;
+            next;
+        }
+        elsif ($word eq 'else' && $opened_tag ) {
+            $should_bufferize = !$should_bufferize;
+            next;
+        }
+        elsif ($word eq 'end' && $opened_tag) {
+            $should_bufferize = 1;
+        }
+        elsif ($bufferize_if_token) {
+            my $bool = _find_value_from_token_name($word, $tokens);
+            $should_bufferize = _interpolate_value($bool) ? 1 : 0;
+            $bufferize_if_token = 0;
+            next;
+        }
+        elsif ($opened_tag) {
+            push @buffer, ($prefix . _interpolate_value( _find_value_from_token_name($word, $tokens)));
+            $prefix = "";
+        }
+        elsif($should_bufferize) {
+            push @buffer, $prefix.$word;
+            $prefix = "";
+        }
+    }
+
+    return join " ", @buffer;
+}
+
+# this is pure variable interpolation, without branch conditions
 sub interpolate {
     my ($self, $content, $tokens) = @_;
     my ($start, $stop) = ($self->start_tag, $self->stop_tag);
@@ -45,6 +99,23 @@ sub interpolate {
 }
 
 # private
+
+sub _read_content_from_template {
+    my ($template) = @_;
+    my $content = undef;
+
+    if (ref($template)) {
+        $content = $$template;
+    }
+    else {
+        die "'$template' is not a regular file"
+            unless -f $template;
+        $content = read_file_content($template);
+        die "unable to read content for file $template" 
+            if not defined $content;
+    }
+    return $content;
+}
 
 sub _find_value_from_token_name {
     my ($key, $tokens) = @_;
