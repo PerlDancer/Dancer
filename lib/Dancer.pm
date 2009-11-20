@@ -22,7 +22,7 @@ use Dancer::Handler;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION = '0.9905';
+$VERSION = '1.000';
 @EXPORT = qw(
     before
     cookies
