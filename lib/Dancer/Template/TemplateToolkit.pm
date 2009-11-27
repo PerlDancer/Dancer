@@ -15,6 +15,7 @@ sub init {
         START_TAG => '<%',
         END_TAG => '%>',
         ANYCASE => 1,
+        ABSOLUTE => 1,
     };
     $_engine = Template->new(%$tt_config);
 }
