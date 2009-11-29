@@ -84,20 +84,6 @@ sub parse_branches {
     return join " ", @buffer;
 }
 
-# this is pure variable interpolation, without branch conditions
-sub interpolate {
-    my ($self, $content, $tokens) = @_;
-    my ($start, $stop) = ($self->start_tag, $self->stop_tag);
-    
-    while ($content =~ /${start}\s*(\S+)\s*${stop}/) {
-        my $key = $1;
-        my $value = _find_value_from_token_name($key, $tokens);
-        $value    = _interpolate_value($value); 
-        $content  =~ s/${start}\s*(\S+)\s*${stop}/$value/;
-    }
-    return $content;
-}
-
 # private
 
 sub _read_content_from_template {
