@@ -26,7 +26,7 @@ sub render($$$) {
         if !ref($template) && (! -f $template);
 
     my $content = "";
-    $_engine->process($template, $tokens, \$content);
+    $_engine->process($template, $tokens, \$content) or die $_engine->error;
     return $content;
 }
 
