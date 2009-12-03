@@ -1,3 +1,11 @@
+Release 1.000
+
+	* Support for Syslog logger (Dancer::Logger::Syslog)
+	* Basic template engine so Template is no more a hard deps.
+	* Memcache Session support (Dancer::Session::Memcache)
+	* YAML file-based session support (Dancer::Session::YAML)
+	* Lots of tests (more than 80% of the code is covered)
+
 Release 0.9906
     
     * move from File::MimeInfo to File::MimeInfo::Simple for 

@@ -15,6 +15,7 @@ sub init {
         START_TAG => '<%',
         END_TAG => '%>',
         ANYCASE => 1,
+        ABSOLUTE => 1,
     };
     $_engine = Template->new(%$tt_config);
 }
@@ -25,7 +26,7 @@ sub render($$$) {
         if !ref($template) && (! -f $template);
 
     my $content = "";
-    $_engine->process($template, $tokens, \$content);
+    $_engine->process($template, $tokens, \$content) or die $_engine->error;
     return $content;
 }
 
