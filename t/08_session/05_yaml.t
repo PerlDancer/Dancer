@@ -1,4 +1,4 @@
-use Test::More;
+use Test::More import => ['!pass'];
 
 use strict;
 use warnings;

@@ -1,9 +1,14 @@
 use strict;
 use warnings;
 
+use Dancer::ModuleLoader;
 use lib 't';
 use TestUtils;
-use Test::More tests => 9, import => ['!pass'];
+use Test::More import => ['!pass'];
+
+plan skip_all => "File::MimeInfo::Simple needed" 
+    unless Dancer::ModuleLoader->load('File::MimeInfo::Simple');
+plan tests => 9;
 
 BEGIN {
     use_ok 'Dancer';
