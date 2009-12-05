@@ -23,6 +23,7 @@ sub init {
 
     $tt_config->{INCLUDE_PATH} = path($self->{settings}{'appdir'}, 'views') 
         if $self->{settings} && $self->{settings}{'appdir'};
+
     $_engine = Template->new(%$tt_config);
 }
 

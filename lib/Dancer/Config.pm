@@ -21,16 +21,16 @@ sub settings { $SETTINGS }
 
 my $setters = {
     logger => sub {
-        my ($setting, $value, $SETTINGS) = @_;
-        Dancer::Logger->init($value);
+        my ($setting, $value) = @_;
+        Dancer::Logger->init($value, settings());
     },
     session => sub {
-        my ($setting, $value, $SETTINGS) = @_;
-        Dancer::Session->init($value);
+        my ($setting, $value) = @_;
+        Dancer::Session->init($value, settings());
     },
     template => sub {
-        my ($setting, $value, $SETTINGS) = @_;
-        Dancer::Template->init($value, $SETTINGS);
+        my ($setting, $value) = @_;
+        Dancer::Template->init($value, settings());
     },
 };
 
