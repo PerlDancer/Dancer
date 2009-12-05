@@ -34,8 +34,10 @@ sub send_file {
 }
 
 sub template {
-    my ($view, $tokens) = @_;
+    my ($view, $tokens, $options) = @_;
+    $options ||= {layout => 1};
     my $layout = setting('layout');
+    undef $layout unless $options->{layout};
 
     $view .= ".tt" if $view !~ /\.tt$/;
     $view = path(setting('views'), $view);
