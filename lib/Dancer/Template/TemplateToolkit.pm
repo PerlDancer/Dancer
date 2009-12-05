@@ -3,12 +3,15 @@ package Dancer::Template::TemplateToolkit;
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
+use Dancer::FileUtils 'path';
 
 use base 'Dancer::Template::Abstract';
 
 my $_engine;
 
 sub init {
+    my ($self) = @_;
+
     die "Template is needed by Dancer::Template::TemplateToolkit"
         unless Dancer::ModuleLoader->load('Template');
     my $tt_config = {
@@ -17,6 +20,9 @@ sub init {
         ANYCASE => 1,
         ABSOLUTE => 1,
     };
+
+    $tt_config->{INCLUDE_PATH} = path($self->{settings}{'appdir'}, 'views') 
+        if $self->{settings} && $self->{settings}{'appdir'};
     $_engine = Template->new(%$tt_config);
 }
 

@@ -6,11 +6,12 @@ use Dancer;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 
-BEGIN { use_ok 'Dancer::Session::YAML' }
-
-plan skip_all => "need YAML" 
-    unless Dancer::ModuleLoader->load('YAML');
-plan tests => 12;
+BEGIN { 
+    plan skip_all => "need YAML" 
+        unless Dancer::ModuleLoader->load('YAML');
+    plan tests => 12;
+    use_ok 'Dancer::Session::YAML' 
+}
 
 use lib 't/lib';
 use EasyMocker;

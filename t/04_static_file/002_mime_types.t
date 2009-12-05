@@ -1,19 +1,17 @@
 use strict;
 use warnings;
 
+use Dancer;
+use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
+
 use lib 't';
 use TestUtils;
 use Test::More import => ['!pass'];
 
 plan skip_all => "File::MimeInfo::Simple needed" 
     unless Dancer::ModuleLoader->load('File::MimeInfo::Simple');
-plan tests => 9;
-
-BEGIN {
-    use_ok 'Dancer';
-    use_ok 'Dancer::Config', 'setting';
-}
+plan tests => 7;
 
 set public => path(dirname(__FILE__), 'static');
 my $public = setting('public');

@@ -13,12 +13,12 @@ sub engine { $engine }
 
 # init the engine according to the settings
 sub init {
-    my ($self, $setting) = @_;
+    my ($self, $setting, $config) = @_;
     if ((not defined $setting) or ($setting eq 'simple')) {
         return $engine = Dancer::Template::Simple->new;
     }
     elsif ($setting eq 'template_toolkit') {
-        return $engine = Dancer::Template::TemplateToolkit->new;
+        return $engine = Dancer::Template::TemplateToolkit->new(settings => $config);
     }
     else {
         die "unknown template engine '$setting'";
