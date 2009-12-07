@@ -29,6 +29,7 @@ $VERSION = '1.000';
     content_type
     dance
     debug
+    del
     dirname
     error
     false
@@ -80,6 +81,7 @@ sub params       { Dancer::SharedData->params  }
 sub pass         { pass_exception }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
+sub del          { Dancer::Route->add('delete', @_) }
 sub put          { Dancer::Route->add('put', @_) }
 sub r            { {regexp => $_[0]} }
 sub redirect     { Dancer::Helpers::redirect(@_) }
