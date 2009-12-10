@@ -29,7 +29,7 @@ is($res->status_line, '200 OK',
 
 $res = http_request($port, 'POST' => '/');
 ok(!$res->is_success, "POST / is not served");
-is($res->status_line, '404 Not found', 
+is($res->status_line, '404 Not Found', 
     'status line looks good for POST /');
 
 $res = http_request($port, 'GET' => '/error');
