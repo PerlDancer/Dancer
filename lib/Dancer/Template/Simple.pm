@@ -31,18 +31,18 @@ sub parse_branches {
     my $should_bufferize = 1;
     my $opened_tag = 0;
     my $bufferize_if_token = 0;
-    $content =~ s/${start}(\S)/${start} $1/sg; 
-    $content =~ s/(\S)${stop}/$1 ${stop}/sg; 
+    $content =~ s/\Q${start}\E(\S)/${start} $1/sg; 
+    $content =~ s/(\S)\Q${stop}\E/$1 ${stop}/sg; 
     
     foreach my $word (split / /, $content) {
-        if ($word =~ /(.*)$start/s) {
+        if ($word =~ /(.*)\Q$start\E/s) {
             my $junk = $1;
             $opened_tag = 1;
             if (defined($junk) && length($junk)) {
                 $prefix = $junk;
             }
         }
-        elsif ($word =~ /$stop(.*)/s) {
+        elsif ($word =~ /\Q$stop\E(.*)/s) {
             my $junk = $1;
             if (defined($junk) && length($junk)) {
                 if (@buffer) {
