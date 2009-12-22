@@ -11,7 +11,7 @@ use constant FILE => 1;
 
 # options
 my $help = 0;
-my $name = 'webapp';
+my $name = undef;
 my $path = '.';
 
 sub templates($);
