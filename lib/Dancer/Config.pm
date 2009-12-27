@@ -79,6 +79,10 @@ sub load {
     my $env = environment_file;
     load_settings_from_yaml($env) if -f $env;
 
+    foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
+        $setters->{$key}->($key, $SETTINGS->{$key});
+    }
+
     return 1;
 }
 
@@ -88,10 +92,7 @@ sub load_settings_from_yaml {
     my $config = YAML::LoadFile($file) or 
         confess "Unable to parse the configuration file: $file";
 
-    foreach my $key (keys %$config) {
-        # set values for new settings
-        setting($key => $config->{$key});
-    }
+    @{$SETTINGS}{keys %$config} = values %$config;
     return scalar(keys %$config);
 }
 
