@@ -26,7 +26,7 @@ sub dance {
         return $pid;
     }
     else {
-        print ">> Listening on $ipaddr:$port\n";
+        print ">> Listening on http://$ipaddr:$port\n";
         Dancer::Handler::Standalone->new($port)->run();
     }
 }
