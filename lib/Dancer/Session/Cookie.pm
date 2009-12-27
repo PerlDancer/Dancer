@@ -106,3 +106,59 @@ sub _decrypt {
 }
 
 1;
+__END__
+=pod
+
+=head1 NAME
+
+Dancer::Session::Cookie - Encrypted cookie-based session backend for Dancer
+
+=head1 DESCRIPTION
+
+This module implements a session engine for sessions stored entirely
+inside cookies. Usually only Q<session id> is stored in cookies and
+the session data itself is saved in some external storage like
+database. This module allows us to avoid using external storage at
+all.
+
+Since we cannot trust any data provided by client in cookies, we use
+cryptography to ensure secrecy and integrity.
+
+=head1 CONFIGURATION
+
+The setting B<session> should be set to C<cookie> in order to use this session
+engine in a Dancer application.
+
+A mandatory setting is needed as well: B<session_cookie_key>, which should
+contain a random string of at least 16 characters (shorter keys are
+not cryptographically strong using AES in CBC mode).
+
+Here is an example configuration that uses this session engine:
+
+    session: "cookie"
+    session_cookie_key: "kjsdf07234hjf0sdkflj12*&(@*jk"
+
+=head1 DEPENDENCY
+
+This module depends on L<Crypt::CBC>, L<Crypt::Rijndael>,
+L<String::CRC32>, L<Storable> and L<MIME::Base64>.
+
+=head1 AUTHOR
+
+This module has been written by Alex Kapranoff, see the AUTHORS file for
+details.
+
+=head1 SEE ALSO
+
+See L<Dancer::Session> for details about session usage in route handlers.
+
+=head1 COPYRIGHT
+
+This module is copyright (c) 2009 Alex Kapranoff <kappa@cpan.org>.
+
+=head1 LICENSE
+
+This module is free software and is released under the same terms as Perl
+itself.
+
+=cut
