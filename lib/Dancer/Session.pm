@@ -35,12 +35,12 @@ sub init {
         : die "unsupported session engine: `$setting'";
 }
 
-# retreive or create a session for the client
+# retrieve or create a session for the client
 sub get_current_session {
     my $sid = engine->read_session_id;
     my $session = undef;
 
-    $session = engine->retreive($sid) if $sid;
+    $session = engine->retrieve($sid) if $sid;
 
     if (not defined $session) {
         $session = engine->create();

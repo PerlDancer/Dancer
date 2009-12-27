@@ -40,7 +40,7 @@ sub create {
 }
 
 # Return the session object corresponding to the given id
-sub retreive($$) {
+sub retrieve($$) {
     my ($class, $id) = @_;
 
     return undef unless -f yaml_file($id);

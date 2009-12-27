@@ -15,7 +15,7 @@ mock 'Dancer::Session::YAML'
 mock 'Dancer::Session::YAML'
     => method 'create' => should sub { $fake_session };
 mock 'Dancer::Session::YAML'
-    => method 'retreive' => should sub { $fake_session };
+    => method 'retrieve' => should sub { $fake_session };
 mock 'Dancer::Session::YAML'
     => method 'flush' => should sub { $fake_session };
 mock 'Dancer::Session::YAML'

@@ -17,8 +17,8 @@ __PACKAGE__->attributes('id');
 # args: ($class, $id)
 # receives a session id and should return a session object if found, or undef
 # otherwise.
-sub retreive {
-    die "retreive not implemented"
+sub retrieve {
+    die "retrieve not implemented"
 }
 
 # args: ($class)
@@ -116,7 +116,7 @@ When the session engine is enabled, a I<before> filter takes care to initialize
 the good Dancer::Session::Engine (according to the setting C<session>).
 
 Then, the filter looks for a cookie named C<dancer.session> in order to
-I<retreive> the current session object. If not found, a new session object is
+I<retrieve> the current session object. If not found, a new session object is
 I<created> and its id written to the cookie.
 
 Whenever a session call is made within a route handler, the singleton
@@ -138,7 +138,7 @@ the following abstract methods.
 
 =over 4 
 
-=item B<retreive($id)>
+=item B<retrieve($id)>
 
 Look for a session with the given id, return the session object if found, undef
 if not.
