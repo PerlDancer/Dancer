@@ -10,6 +10,7 @@ use Dancer::Config 'setting';
 my $ENGINES = {
     yaml      => 'Dancer::Session::YAML',
     memcached => 'Dancer::Session::Memcached',
+    cookie    => 'Dancer::Session::Cookie',
 };
 
 # Singleton representing the session engine class to use
