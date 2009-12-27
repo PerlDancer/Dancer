@@ -6,7 +6,8 @@ use base 'Dancer::Session::Abstract';
 
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
-use Storable;
+use Storable ();
+use MIME::Base64 ();
 
 # crydec
 my $CIPHER = undef;
@@ -22,9 +23,6 @@ sub init {
 
     Dancer::ModuleLoader->load('Crypt::Rijndael')   # XXX fallback to DES
         or die "Crypt::Rijndael is needed and is not installed";
-
-    #die "SES: " . setting("memcached_servers");
-    #die Dumper(Dancer::Config::settings);
 
     my $key = setting("session_cookie_key")     # XXX default to smth with warning
         or die "The setting session_cookie_key must be defined";
@@ -45,37 +43,30 @@ sub new {
 sub retrieve {
     my ($class, $id) = @_;
 
-    Dancer::Logger->debug("Cookie session retrieve $id");
+    my $ses = 
+        eval {
+            # 1. decrypt and deserialize $id
+            my $plain_text = _decrypt($id);
 
-    # 1. decrypt and deserialize $id
-    my $plain_text = _decrypt($id);
-
-    # 2. deserialize
-    my $ses = $class->new($plain_text && thaw($plain_text));
-
-    use Data::Dumper;
-    Dancer::Logger->debug("Cookie session retrieved: " .
-        Dumper($ses));
+            # 2. deserialize
+            $plain_text && Storable::thaw($plain_text);
+        }
+    || $class->new();
 
     return $ses;
 }
 
 sub create {
     my $class = shift;
-    Dancer::Logger->debug('Cookie session created');
     return $class->new(id => 'empty session');
 }
 
 sub flush {
     my $self = shift;
-    use Data::Dumper;
-    Dancer::Logger->debug('Cookie session flushed ' . Dumper($self));
 
     # 1. serialize and encrypt session
     delete $self->{id};
-    my $cipher_text = _encrypt(freeze $self);
-
-    Dancer::Logger->debug("Cookie session serialized into: $cipher_text");
+    my $cipher_text = _encrypt(Storable::freeze($self));
 
     my $SESSION_NAME = 'dancer.session';
     Dancer::Cookies->cookies->{$SESSION_NAME} = Dancer::Cookie->new(
@@ -86,8 +77,6 @@ sub flush {
 }
 
 sub destroy {
-    Dancer::Logger->debug('Cookie session deleted');
-
     my $SESSION_NAME = 'dancer.session';
     delete Dancer::Cookies->cookies->{$SESSION_NAME};
 
@@ -99,7 +88,9 @@ sub _encrypt {
 
     my $crc32 = String::CRC32::crc32($plain_text);
 
-    my $res = MIME::Base64::encode($CIPHER->encrypt(pack('L', $crc32) . $plain_text));
+    # XXX should gzip data if it grows too big. CRC32 won't be needed
+    # then.
+    my $res = MIME::Base64::encode($CIPHER->encrypt(pack('La*', $crc32, $plain_text)), q{});
     $res =~ tr{=+/}{_*-};   # cookie-safe Base64
 
     return $res;
@@ -109,9 +100,8 @@ sub _decrypt {
     my $cookie = shift;
 
     $cookie =~ tr{_*-}{=+/};
-    my ($crc32, $cipher_text) = unpack "La*", MIME::Base64::decode($cookie);
 
-    my $plain_text = $CIPHER->decrypt($cipher_text);
+    my ($crc32, $plain_text) = unpack "La*", $CIPHER->decrypt(MIME::Base64::decode($cookie));
     return $crc32 == String::CRC32::crc32($plain_text) ? $plain_text : undef;
 }
 
