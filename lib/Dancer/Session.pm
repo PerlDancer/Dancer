@@ -141,6 +141,16 @@ The following engines are supported:
 A YAML file-based session backend, pretty convininent for development purposes,
 but maybe not the best for production needs.
 
+=item L<Dancer::Session::Memcached>
+
+Session are stored in Memcached servers. This is good for production matters
+and is a good way to use a distributed session storage.
+
+=item L<Dancer::Session::Cookie>
+
+This module implements a session engine for sessions stored entirely
+inside encrypted cookies (this engine doesn't use a server-side storage).
+
 =back
 
 =head1 DEPENDENCY
