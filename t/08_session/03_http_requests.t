@@ -15,6 +15,11 @@ if ($ENV{DANCER_TEST_MEMCACHED}) {
     push @engines, "memcached";
     setting(memcached_servers => '127.0.0.1:11211');
 }
+if ($ENV{DANCER_TEST_COOKIE}) {
+    push @engines, "cookie";
+    setting(session_cookie_key => "secret/foo*@!");
+}
+
 
 plan tests => 3 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
@@ -38,6 +43,7 @@ test_tcp(
             $res = $ua->get("http://127.0.0.1:$port/read_session");
             like $res->content, qr/name='$client'/, 
             "session looks good for client $client"; 
+
         }
     },
     server => sub {

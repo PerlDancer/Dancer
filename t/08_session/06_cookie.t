@@ -13,7 +13,7 @@ BEGIN {
         unless Dancer::ModuleLoader->load('String::CRC32');
     plan skip_all => "need Crypt::Rijndael" 
         unless Dancer::ModuleLoader->load('Crypt::Rijndael');
-    plan tests => 12;
+    plan tests => 7;
     use_ok 'Dancer::Session::Cookie' 
 }
 
@@ -46,20 +46,4 @@ is $@, '', "Cookie session created";
 isa_ok $session, 'Dancer::Session::Cookie';
 can_ok $session, qw(init create retrieve destroy flush);
 
-
-ok defined($session->id), 'session id is defined';
-
-my $s = Dancer::Session::Cookie->retrieve('XXX');
-is $s, undef, "unknown session is not found";
-
-my $s = Dancer::Session::Cookie->retrieve($session->id);
-is_deeply $s, $session, "session is retrieved";
-
-$s->{foo} = 42;
-$s->flush;
-$session = Dancer::Session::Cookie->retrieve($session->id);
-is_deeply $s, $session, "session is changed on flush";
-
-$s->destroy;
-$session = Dancer::Session::Cookie->retrieve($session->id);
-is $session, undef, 'destroy removes the session';
+# see ./03_http_requests.t for a full functional test
