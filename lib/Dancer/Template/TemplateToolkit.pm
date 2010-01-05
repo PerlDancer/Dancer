@@ -53,6 +53,13 @@ and the L<Template> module.
 This template engine is recomended for production purproses, but depends on the
 Template module.
 
+In order to use this engine, set the following setting as the following:
+
+    template: template_toolkit
+
+This can be done in your config.yml file or directly in your app code with the
+B<set> keyword.
+
 =head1 SEE ALSO
 
 L<Dancer>, L<Template>

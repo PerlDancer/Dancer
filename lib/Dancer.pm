@@ -187,11 +187,18 @@ Here are the ones you can use to define your route handlers.
                     handler for the GET method, Dancer automatically defines a 
                     route handler for the HEAD method, in order to honour HEAD
                     requests for each of your GET route handlers).
+                    To define a GET action, use the B<get> keyword.
 
 =item B<POST>       The POST method is used to create a ressource on the
                     server.
+                    To define a POST action, use the B<post> keyword.
 
 =item B<PUT>        The PUT method is used to update an existing ressource.
+                    To define a PUT action, use the B<put> keyword.
+
+=item B<DELETE>     The DELETE method requests that the origin server delete
+                    the resource identified by the Request-URI.
+                    To define a DELETE action, use the B<del> keyword.
 
 =back
 
@@ -467,9 +474,13 @@ your templates are located in the 'templates' directory, do the following:
 
     set views => path(dirname(__FILE__), 'templates');
 
-A view should have a '.tt' extension and is rendered with the
-L<Template> module. You have to import the `Template' module in your script if
-you want to render views within your actions.
+By default, the internal template engine is used (L<Dancer::Template::Simple)
+but you may want to upgrade to Template::Toolkit. If you do so, you have to
+enable this engine in your settings as explained in
+L<Dancer::Template::TemplateToolkit>. If you do so, you'll also have to import
+the L<Template> module in your application code.
+
+Note that a view should have a '.tt', this may change in the future.
 
 In order to render a view, just call the 'template' keyword at the end of the
 action by giving the view name and the HASHREF of tokens to interpolate in the
