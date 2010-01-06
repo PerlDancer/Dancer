@@ -1,35 +1,36 @@
 use ExtUtils::MakeMaker;
 
 WriteMakefile1(
-    LICENSE => 'perl',
+    NAME         => 'Dancer',
+    ABSTRACT     => "A minimal-effort oriented web application framework",
+    LICENSE      => 'perl',
+    VERSION_FROM => 'lib/Dancer.pm',
+    EXE_FILES    => ['script/dancer'],
+    
     META_MERGE => {
         resources => {
             repository => 'http://github.com/sukria/Dancer',
         },
     },
-    #BUILD_REQUIRES => {
-    #},
 
-    NAME => 'Dancer',
-    VERSION_FROM => 'lib/Dancer.pm',
+    BUILD_REQUIRES => {
+        'Test::TCP'              => '0',
+        'LWP'                    => '0',
+        'Test::More'             => '0',
+        'Test::MockObject'       => '0',
+    },
+
     PREREQ_PM => {
         'CGI'                    => '0',
         'HTTP::Server::Simple'   => '0.34',
         'Exception::Class'       => '0',
         'File::Basename'         => '0',
         'File::Spec'             => '0',
-        'Test::More'             => '0',
-        'Test::MockObject'       => '0',
-
-# The following modules are needed by a few tests 
-# but are not mandatory
-#        'Test::Requires'         => '0',
-#        'YAML'                   => '0',
-#        'LWP'                    => '0',
     },
-    EXE_FILES => ['script/dancer'],
-    ABSTRACT => "A minimal-effort oriented web application framework",
-    test => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},
+
+    test      => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},
+    clean     => {FILES => "t/lib/sessions/*.yml logs/*.log t/*/logs/*" }
+
 );
 
 sub WriteMakefile1 {  #Written by Alexandr Ciornii, version 0.21. Added by eumm-upgrade.
