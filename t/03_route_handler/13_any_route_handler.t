@@ -1,18 +1,32 @@
-use Test::More tests => 16, import => ['!pass'];
+use strict;
+use warnings;
+use Test::More tests => 17, import => ['!pass'];
 use lib 't';
 use TestUtils;
 
 use Dancer;
 
-ok( any(['get', 'delete'] => '/any_1' => sub { 
-    "any_1"
-}), 
-"route defined for 'get' and 'delete' methods for /any_1" );
+eval {
+    any ['get', 'delete'] => '/any_1' => sub { 
+        "any_1"
+    };
+};
+is $@, '', "route defined for methods get and delete; for path /any_1";
 
-ok( any('/any_2' => sub { 
-    "any_2"
-}), 
-"route defined for any methods for /any_2" );
+eval {
+    any '/any_2' => sub { 
+        "any_2"
+    };
+};
+is $@, '', "route defined for any method; for path /any_1";
+
+eval {
+    any 'get' => '/any_1' => sub { 
+        "any_1"
+    };
+};
+like $@, qr/Syntax error, methods should be provided as an ARRAY ref/, 
+    "syntax error caught";
 
 my @routes = (
     {

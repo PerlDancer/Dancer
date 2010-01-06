@@ -1,6 +1,7 @@
 use Test::More import => ['!pass'];
 
 my @keywords = qw(
+    any
     before
     cookies
     content_type
