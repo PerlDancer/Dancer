@@ -1,3 +1,16 @@
+Rlease 1.100
+
+    * Support for multiple method routes at once with 'any'
+    * Templates engines
+		+ Bug fixes in Dancer::Template::Simple (Jury Gorky)
+		+ Refactoring of the factory
+		+ option for disabling the layout in the template helper.
+	* New session engine based on encrypted cookies (Alex Kapranof)
+	* More HTTP codes supported for a better REST compat (Nate Jones)
+	* Documentation updates 
+	* script/dancer now requires an appname
+	* New Makefile.PL with better metadata (CPAN Service)
+
 Release 1.000
 
 	* Support for Syslog logger (Dancer::Logger::Syslog)
