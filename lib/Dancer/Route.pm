@@ -16,6 +16,30 @@ sub add {
     push @{ $REG->{routes}{$method} }, {method => $method, route => $route, code => $code};
 }
 
+# sugar for defining multiple routes at once
+sub add_any {
+    my ($class, $methods, $route, $code);
+    
+    # syntax: any ['get', 'post'] => '/route' => sub {};
+    if (@_ == 4) {
+        ($class, $methods, $route, $code) = @_;
+        die "Syntax error, methods should be provided as an ARRAY ref." 
+            unless ref($methods) eq 'ARRAY';
+    }
+    
+    # syntax: any '/route' => sub {};
+    elsif (@_ == 3) {
+        ($class, $route, $code) = @_;
+        $methods = [qw(get post delete put)];
+    }
+    else {
+        die "syntax error: see perldoc Dancer for 'any' usage."
+    }
+
+    $class->add($_, $route, $code) for @$methods;
+    return scalar(@$methods);
+}
+
 # helpers needed by the auto_reload feature
 sub init_registry     { {routes => {}, before_filters => [] } }
 sub purge_all         { $REG = init_registry() }

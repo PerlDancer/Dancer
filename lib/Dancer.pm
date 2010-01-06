@@ -24,6 +24,7 @@ use base 'Exporter';
 $AUTHORITY = 'SUKRIA';
 $VERSION = '1.000';
 @EXPORT = qw(
+    any
     before
     cookies
     content_type
@@ -62,6 +63,7 @@ $VERSION = '1.000';
 
 # Dancer's syntax 
 
+sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
 sub cookies      { Dancer::Cookies->cookies }
 sub content_type { Dancer::Response::content_type(@_) }
@@ -201,6 +203,21 @@ Here are the ones you can use to define your route handlers.
                     To define a DELETE action, use the B<del> keyword.
 
 =back
+
+You can also use the special keyword B<any> to define a route for multiple
+methods at once. For instance, you may want to define a route for both GET and
+POST methods, this is done like the following:
+
+    any ['get', 'post'] => '/myaction' => sub {
+        # code
+    };
+
+Or even, a route handler that would match any HTTP methods:
+
+    any '/myaction' => sub {
+        # code
+    };
+
 
 =head2 ROUTE HANDLERS
 
