@@ -1,23 +1,28 @@
+Release 1.110
+
+    * Fix test script `t/11_logger/04_syslog.t'
+    * Fix test script `t/10_template/05_template_toolkit.t'
+
 Rlease 1.100
 
     * Support for multiple method routes at once with 'any'
     * Templates engines
-		+ Bug fixes in Dancer::Template::Simple (Jury Gorky)
-		+ Refactoring of the factory
-		+ option for disabling the layout in the template helper.
-	* New session engine based on encrypted cookies (Alex Kapranof)
-	* More HTTP codes supported for a better REST compat (Nate Jones)
-	* Documentation updates 
-	* script/dancer now requires an appname
-	* New Makefile.PL with better metadata (CPAN Service)
+        + Bug fixes in Dancer::Template::Simple (Jury Gorky)
+        + Refactoring of the factory
+        + option for disabling the layout in the template helper.
+    * New session engine based on encrypted cookies (Alex Kapranof)
+    * More HTTP codes supported for a better REST compat (Nate Jones)
+    * Documentation updates 
+    * script/dancer now requires an appname
+    * New Makefile.PL with better metadata (CPAN Service)
 
 Release 1.000
 
-	* Support for Syslog logger (Dancer::Logger::Syslog)
-	* Basic template engine so Template is no more a hard deps.
-	* Memcache Session support (Dancer::Session::Memcache)
-	* YAML file-based session support (Dancer::Session::YAML)
-	* Lots of tests (more than 80% of the code is covered)
+    * Support for Syslog logger (Dancer::Logger::Syslog)
+    * Basic template engine so Template is no more a hard deps.
+    * Memcache Session support (Dancer::Session::Memcache)
+    * YAML file-based session support (Dancer::Session::YAML)
+    * Lots of tests (more than 80% of the code is covered)
 
 Release 0.9906
     
