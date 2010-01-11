@@ -1,14 +1,37 @@
-use Test::More tests => 4;
+use Test::More;
+
 
 use strict;
 use warnings;
+use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 
-BEGIN { use_ok 'Dancer::Template::TemplateToolkit' };
+use lib 't/lib';
+use EasyMocker;
 
-my $engine = Dancer::Template::TemplateToolkit->new;
+BEGIN { 
+    plan skip_all => "need Template to run this test" 
+        unless Dancer::ModuleLoader->load('Template');
+    plan tests => 6;
+    use_ok 'Dancer::Template::TemplateToolkit';
+};
+
+my $mock = { 'Template' => 0 };
+mock 'Dancer::ModuleLoader'
+    => method 'load'
+    => should sub { $mock->{ $_[1] } };
+
+my $engine;
+eval { $engine = Dancer::Template::TemplateToolkit->new };
+like $@, qr/Template is needed by Dancer::Template::TemplateToolkit/, 
+    "Template dependency caught at init time";
+
+$mock->{Template} = 1;
+eval { $engine = Dancer::Template::TemplateToolkit->new };
+is $@, '', 
+    "Template dependency is not triggered if Template is there";
+
 my $template = path('t', '10_template', 'index.txt');
-
 my $result = $engine->render(
     $template, 
     { var1 => 1, 
