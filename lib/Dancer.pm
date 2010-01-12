@@ -124,6 +124,12 @@ sub import {
     Dancer->export_to_level(1, @_);
 }
 
+sub import_clean {
+    strict->import;
+    warnings->import;
+    Dancer->export_to_level( 1, @_ );
+}
+
 # Start/Run the application with the chosen apphandler
 sub dance { 
     my ($class, $cgi) = @_;
@@ -457,6 +463,21 @@ B<load> is just a wrapper for B<require>, but you can also specify a list of
 routes files:
 
     load 'login_routes.pl', 'session_routes.pl', 'misc_routes.pl';
+
+=head1 import_clean
+
+The import_clean method allows you to use more complex files hierarchies without changing the app settings.
+
+    package App;
+
+    use App::User::Routes; # more user routes
+
+Then in App/User/Routes.pm:
+
+    BEGIN {
+        use Dancer ();
+        Dancer->import_clean;
+    }
 
 =head1 LOGGING
 
