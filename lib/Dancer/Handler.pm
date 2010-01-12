@@ -38,6 +38,7 @@ sub render_response { die "render_response() must be implemented by handler" }
 sub handle_request {
     my ($self, $cgi) = @_;
     Dancer::SharedData->cgi($cgi);
+    Dancer::Logger->debug("[dancer.core] handle_request ".$cgi->path_info);
     
     # read cookies from client
     Dancer::Cookies->init;
@@ -61,6 +62,8 @@ sub handle_request {
         || Dancer::Renderer->render_action
         || Dancer::Renderer->render_error(404);
     
+    Dancer::Logger->debug("[dancer.core] handle_request got response: ".$response->{status})
+        if defined $response;
     return $self->render_response($response);
 }
 

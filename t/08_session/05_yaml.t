@@ -42,7 +42,7 @@ ok defined($session->id), 'session id is defined';
 my $s = Dancer::Session::YAML->retrieve('XXX');
 is $s, undef, "unknown session is not found";
 
-my $s = Dancer::Session::YAML->retrieve($session->id);
+$s = Dancer::Session::YAML->retrieve($session->id);
 is_deeply $s, $session, "session is retrieved";
 
 ok defined($s->yaml_file), 'yaml_file is found';

@@ -31,6 +31,7 @@ sub message { $_[0]->{message} }
 sub backtrace {
     my ($self) = @_;
    
+    $self->{message} ||= "";
     my $message = "<pre class=\"error\">".$self->{message}."</pre>";
 
     # the default perl warning/error pattern
