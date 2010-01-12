@@ -1,17 +1,5 @@
 AUTHORS
 CHANGES
-example/app.psgi
-example/config.yml
-example/environments/development.yml
-example/public/css/style.css
-example/public/images/dancers.jpg
-example/public/index.html
-example/README
-example/views/hello.tt
-example/views/index.tt
-example/views/layouts/main.tt
-example/webapp.pl
-example/webapp.pm
 lib/Dancer/Config.pm
 lib/Dancer/Cookie.pm
 lib/Dancer/Cookies.pm
