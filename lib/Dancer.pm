@@ -116,18 +116,17 @@ sub import {
     strict->import;
     warnings->import;
 
+    Dancer->export_to_level(1, @_);
+
+    # if :syntax option exists, don't change settings
+    if ( $#_ == 2 && $_[1] eq ':syntax' ) {
+        return;
+    }
+
     setting appdir => dirname(File::Spec->rel2abs($script));
     setting public => path(setting('appdir'), 'public');
     setting views  => path(setting('appdir'), 'views');
     setting logger => 'file';
-
-    Dancer->export_to_level(1, @_);
-}
-
-sub import_clean {
-    strict->import;
-    warnings->import;
-    Dancer->export_to_level( 1, @_ );
 }
 
 # Start/Run the application with the chosen apphandler
@@ -464,20 +463,22 @@ routes files:
 
     load 'login_routes.pl', 'session_routes.pl', 'misc_routes.pl';
 
-=head1 import_clean
+=head1 importing just the syntax
 
-The import_clean method allows you to use more complex files hierarchies without changing the app settings.
+If you want to use more complex files hierarchies, you can import just the syntax of Dancer.
 
     package App;
 
-    use App::User::Routes; # more user routes
+    use Dancer;            # App may contain generic routes
+    use App::User::Routes; # user-related routes
 
 Then in App/User/Routes.pm:
 
-    BEGIN {
-        use Dancer ();
-        Dancer->import_clean;
-    }
+    use Dancer ':syntax';
+
+    get '/user/view/:id' => sub {
+        ...
+    };
 
 =head1 LOGGING
 
