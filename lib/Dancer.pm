@@ -112,6 +112,7 @@ sub warning      { Dancer::Logger->warning(@_) }
 # When importing the package, strict and warnings pragma are loaded, 
 # and the appdir detection is performed.
 sub import {
+    my ($class, $symbol) = @_;
     my ($package, $script) = caller;
     strict->import;
     warnings->import;
@@ -119,7 +120,7 @@ sub import {
     Dancer->export_to_level( 1, @EXPORT );
 
     # if :syntax option exists, don't change settings
-    if ( scalar @_ == 2 && $_[1] eq ':syntax' ) {
+    if ( $symbol && $symbol eq ':syntax' ) {
         return;
     }
 
