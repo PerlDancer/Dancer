@@ -119,7 +119,7 @@ sub import {
     Dancer->export_to_level( 1, @EXPORT );
 
     # if :syntax option exists, don't change settings
-    if ( $#_ == 2 && $_[1] eq ':syntax' ) {
+    if ( scalar @_ == 2 && $_[1] eq ':syntax' ) {
         return;
     }
 
