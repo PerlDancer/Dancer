@@ -116,7 +116,7 @@ sub import {
     strict->import;
     warnings->import;
 
-    Dancer->export_to_level(1, @_);
+    Dancer->export_to_level( 1, @EXPORTS );
 
     # if :syntax option exists, don't change settings
     if ( $#_ == 2 && $_[1] eq ':syntax' ) {
