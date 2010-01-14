@@ -44,3 +44,21 @@ sub _format {
 }
 
 1;
+
+__END__
+
+=head1 NAME Dancer::Log::LogHandler
+
+=head1 SYNOPSIS
+
+  logger: 'log_handler'
+  log_handler:
+    file:
+      filename: debug.log
+      maxlevel: debug
+      minlevel: warning
+    screen:
+      log_to: "STDERR"
+      maxlevel: debug
+      minlevel: warning
+
