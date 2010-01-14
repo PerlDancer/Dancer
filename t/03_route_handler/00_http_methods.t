@@ -2,8 +2,8 @@ use Test::More import => ['!pass'];
 use lib 't';
 use TestUtils;
 
-my @methods = qw(get head put post delete);
-plan tests => scalar(@methods) + 4;
+my @methods = qw(get head put post delete options);
+plan tests => scalar(@methods) + 5;
 
 use Dancer;
 
@@ -11,6 +11,7 @@ ok(get('/', sub { 'get' }), "GET / defined ");
 ok(post('/', sub { 'post' }), "POST / defined ");
 ok(put('/', sub { 'put' }), "PUT / defined ");
 ok(del('/', sub { 'delete' }), "DELETE / defined ");
+ok(options('/', sub { 'options' }), "OPTIONS / defined ");
 
 foreach my $m (@methods) {
     my $cgi = TestUtils::fake_request($m => '/');

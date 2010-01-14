@@ -39,6 +39,7 @@ $VERSION = '1.110';
     load
     logger
     mime_type
+    options
     params
     pass
     path
@@ -84,6 +85,7 @@ sub pass         { pass_exception }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
 sub del          { Dancer::Route->add('delete', @_) }
+sub options      { Dancer::Route->add('options', @_) }
 sub put          { Dancer::Route->add('put', @_) }
 sub r            { {regexp => $_[0]} }
 sub redirect     { Dancer::Helpers::redirect(@_) }
