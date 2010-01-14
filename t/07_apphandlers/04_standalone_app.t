@@ -2,8 +2,10 @@ use Dancer::Config 'setting';
 use Test::More;
 
 eval "use Test::Requires ('LWP::UserAgent')";
+plan skip_all => 'Test::Requires and LWP::UserAgent needed' if $@;
+
 eval "use Test::TCP";
-plan skip_all => "Test::Requires and Test::TCP are needed for this test" if $@;
+plan skip_all => "Test::TCP needed for this test" if $@;
  
 plan tests => 4;
 test_tcp(

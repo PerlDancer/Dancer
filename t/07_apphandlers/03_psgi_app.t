@@ -2,9 +2,11 @@ use Dancer::Config 'setting';
 use Test::More;
 
 eval "use Test::Requires ('Plack::Loader', 'LWP::UserAgent')";
-eval "use Test::TCP";
-plan skip_all => "Test::Requires and Test::TCP are needed for this test" if $@;
+plan skip_all => 'Test::Requires, Plack::Loader and LWP::UserAgent needed'
+    if $@;
 
+eval "use Test::TCP";
+plan skip_all => "Test::TCP needed for this test" if $@;
 
 my $app = sub {
     my $env = shift;
