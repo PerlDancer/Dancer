@@ -1,12 +1,16 @@
-use Dancer::Config 'setting';
 use Test::More;
+use strict;
+use warnings;
+use Dancer::ModuleLoader;
+use Dancer::Config 'setting';
 
-eval "use Test::Requires ('LWP::UserAgent')";
-eval "use Test::TCP";
-plan skip_all => "Test::Requires and Test::TCP are needed for this test" if $@;
- 
+plan skip_all => "LWP is needed for this test" 
+    unless Dancer::ModuleLoader->load('LWP::UserAgent');
+plan skip_all => "Test::TCP is needed for this test"
+    unless Dancer::ModuleLoader->load("Test::TCP");
+
 plan tests => 4;
-test_tcp(
+Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua = LWP::UserAgent->new;

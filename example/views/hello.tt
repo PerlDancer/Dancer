@@ -1,3 +1,0 @@
-<h1>Hello <% params.name %>!</h1>
-
-Welcome to the hello action <% params.name %>
