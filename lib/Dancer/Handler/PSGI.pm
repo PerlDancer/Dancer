@@ -16,9 +16,9 @@ sub new {
 }
 
 sub dance {
-    my ($self, $cgi) = @_;
-    Dancer::SharedData->cgi($cgi);
-    $self->handle_request($cgi);
+    my ($self, $request) = @_;
+    Dancer::SharedData->request($request);
+    $self->handle_request($request);
 }
 
 sub render_response {

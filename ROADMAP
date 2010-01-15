@@ -1,4 +1,21 @@
-                            Features Needed For 1.0
+
+Dancer 1.300
+
+[ ] Make Dancer a "core" distribution and 
+    extract optional modules to separate 
+	distributions (such as template engines, 
+	session engines, ...)
+
+[ ] Documentation review/refresh/rewrite
+
+Dancer 1.200
+
+[X] Remove the CGI.pm dependency
+[ ] Support for file uploads
+[ ] Provide a default dispatcher in 
+    scaffolded applications.
+
+Dancer 1.000
 
 [X] Errors handling
 [X] Session support

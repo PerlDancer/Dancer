@@ -44,8 +44,8 @@ my @routes = (
 # making sure response are OK
 foreach my $route (@routes) {
     foreach my $method (@{ $route->{methods} }) {
-        my $cgi = TestUtils::fake_request($method => $route->{path});
-        Dancer::SharedData->cgi($cgi);
+        my $request = TestUtils::fake_request($method => $route->{path});
+        Dancer::SharedData->request($request);
         my $response = Dancer::Renderer::get_action_response();
         ok(defined($response), 
             "route handler found for method $method, path ".$route->{path});
@@ -63,8 +63,8 @@ my @failed = (
 
 foreach my $route (@failed) {
     foreach my $method (@{ $route->{methods} }) {
-        my $cgi = TestUtils::fake_request($method => $route->{path});
-        Dancer::SharedData->cgi($cgi);
+        my $request = TestUtils::fake_request($method => $route->{path});
+        Dancer::SharedData->request($request);
         my $response = Dancer::Renderer::get_action_response();
         ok(!defined($response), 
             "route handler not found for method $method, path ".$route->{path});

@@ -2,35 +2,13 @@ package TestUtils;
 
 use base 'Exporter';
 use vars '@EXPORT';
-use Test::MockObject;
 
+use Dancer::Request;
 @EXPORT = qw(fake_request http_request write_file get_response_for_request);
-
-my $path = undef;
-sub path {
-	my ($self, $value) = @_;
-	return $path if @_ == 1;
-	return $path = $value;
-}
-
-my $method = 'GET';
-sub method {
-	my ($self, $value) = @_;
-	return $method if @_ == 1;
-	return $method = $value;
-}
 
 sub fake_request($$) {
 	my ($method, $path) = @_;
-	my $req = Test::MockObject->new;
-	$req->mock('request_method', sub { method(@_) });
-	$req->mock('path_info', sub { path(@_) });
-    $req->mock('script_name', sub { undef });
-	$req->mock('Vars', sub { {} });
-	
-	$req->request_method($method);
-	$req->path_info($path);
-	return $req;
+    return Dancer::Request->new_for_request($method => $path);
 }
 
 sub http_request {
@@ -51,8 +29,8 @@ sub write_file {
 
 sub get_response_for_request {
     my ($method, $path) = @_;
-    my $cgi = fake_request($method => $path);
-    Dancer::SharedData->cgi($cgi);
+    my $request = fake_request($method => $path);
+    Dancer::SharedData->request($request);
     Dancer::Renderer::get_action_response();
 }
 

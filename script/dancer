@@ -153,8 +153,7 @@ sub templates($) {
 
 'app.psgi'  => 
 
-"# This is a PSGI application file for Apache+Plack support
-use CGI::PSGI;
+"# PSGI application bootstraper for Dancer
 use lib '[%appdir%]';
 use $appname;
 
@@ -164,7 +163,8 @@ Dancer::Config->load;
 
 my \$handler = sub {
     my \$env = shift;
-    Dancer->dance(CGI::PSGI->new(\$env));
+    my \$request = Dancer::Request->new(\$env);
+    Dancer->dance(\$request);
 };
 ",
 'index.tt'  => '<h2>It Works!</h2>

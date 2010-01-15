@@ -13,7 +13,7 @@ ok(get('/cat/:file', sub {
 
 my $req = fake_request(GET => '/cat/file.txt');
 
-Dancer::SharedData->cgi($req);
+Dancer::SharedData->request($req);
 my $resp = Dancer::Renderer->get_action_response();
 
 

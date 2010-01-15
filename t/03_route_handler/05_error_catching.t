@@ -44,7 +44,7 @@ plan tests => scalar(@hidden_errors) + scalar(@visible_errors);
 set show_errors => 0;
 foreach my $test (@hidden_errors) {
 	my $req = fake_request(GET => $test->{path});
-	Dancer::SharedData->cgi($req);
+	Dancer::SharedData->request($req);
 
 	my $response = Dancer::Renderer::get_action_response();
 	like($response->{content}, 
@@ -55,7 +55,7 @@ foreach my $test (@hidden_errors) {
 set show_errors => 1;
 foreach my $test (@visible_errors) {
 	my $req = fake_request(GET => $test->{path});
-	Dancer::SharedData->cgi($req);
+	Dancer::SharedData->request($req);
 
 	my $response = Dancer::Renderer::get_action_response();
 	like($response->{content}, 

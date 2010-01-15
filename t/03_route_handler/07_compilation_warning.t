@@ -21,7 +21,7 @@ plan tests => scalar(@tests);
 
 foreach my $test (@tests) {
 	my $req = fake_request(GET => $test->{path});
-	Dancer::SharedData->cgi($req);
+	Dancer::SharedData->request($req);
 
 	my $response = Dancer::Renderer::get_action_response();
 	like($response->{content}, 

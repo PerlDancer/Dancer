@@ -15,12 +15,10 @@ use Dancer::FileUtils qw(path dirname read_file_content);
 use Dancer::SharedData;
 
 sub render_file {
-    my $request = Dancer::SharedData->cgi;
     return get_file_response();
 }
 
 sub render_action {
-    my $request = Dancer::SharedData->cgi;
     my $resp = get_action_response();
     return (defined $resp) 
         ? response_with_headers($resp) 
@@ -29,11 +27,6 @@ sub render_action {
 
 sub render_error {
     my ($class, $error_code) = @_;
-
-    my $request = Dancer::Request->new;
-    my $path    = $request->path;
-    my $method  = $request->method;
-    my $cgi     = $request->{_cgi};
 
     my $static_file = path(setting('public'), "$error_code.html");
     my $response = Dancer::Renderer->get_file_response_for_path(
@@ -71,7 +64,7 @@ sub html_page {
     my ($class, $title, $content, $style) = @_;
     $style ||= 'style';
 
-    my $cgi = CGI->new;
+    # TODO build the HTML with Dancer::Template::Simple
     return start_html(
         -title => $title, 
         -style => "/css/$style.css")
@@ -88,9 +81,9 @@ sub html_page {
 sub get_action_response() {
     Dancer::Route->run_before_filters;
 
-    my $request = Dancer::Request->new;
-    my $path = $request->path;
-    my $method = $request->method;
+    my $request = Dancer::SharedData->request || Dancer::Request->new;
+    my $path    = $request->path;
+    my $method  = $request->method;
     
     my $handler = Dancer::Route->find($path, $method);
     Dancer::Route->call($handler) if $handler;

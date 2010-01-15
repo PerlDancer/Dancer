@@ -19,13 +19,12 @@ sub params {
     return $params;
 }
 
-my $cgi;
-sub cgi { (@_ == 2) ? $cgi = $_[1] : $cgi }
+my $request;
+sub request { (@_ == 2) ? $request = $_[1] : $request }
 
 sub reset_all {
     $params = {};
     $vars = {};
-#    $cgi = undef;
 }
 
 'Dancer::SharedData';

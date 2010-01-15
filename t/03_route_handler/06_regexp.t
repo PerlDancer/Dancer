@@ -30,9 +30,9 @@ foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
  
-    my $cgi = fake_request(GET => $path);
+    my $request = fake_request(GET => $path);
 
-    Dancer::SharedData->cgi($cgi);
+    Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();
        
     ok( defined($response), "route handler found for path `$path'");
