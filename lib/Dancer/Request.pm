@@ -9,11 +9,11 @@ use warnings;
 use Dancer::SharedData;
 
 sub new {
-    my ($class, $cgi) = @_;
+    my ($class, $request) = @_;
     my $self = {
-        path => undef,
-        method => undef,
-        _cgi => $cgi || Dancer::SharedData->cgi,
+        path    => undef,
+        method  => undef,
+        request => $request || Dancer::SharedData->request,
     };
     bless $self, $class;
     $self->init();
@@ -21,27 +21,29 @@ sub new {
 }
 
 # public interface (read-only)
+# use new to build a new request (may change)
 sub path   { $_[0]->{path}   }
 sub method { $_[0]->{method} }
+sub request_method { shift->method }
+sub path_info { shift->path }
 
 # private
 sub init {
     my ($self) = @_;
-    $self->build_path();
-    $self->build_method();
+    $self->build_path() unless $self->path;
+    $self->build_method() unless $self->method;
 }
 
 sub build_path {
     my ($self) = @_;
 
     my $path = "";
-    my $req = $self->{_cgi};
+    my $req = $self->{request};
     if (defined $ENV{'SCRIPT_NAME'}) {
         $path = $ENV{'SCRIPT_NAME'};
         $path .= $ENV{'PATH_INFO'} if $ENV{'PATH_INFO'};
     }
-    else {
-        # look for script name
+    elsif (defined($req)) {
         my $script_name = "";
         eval { $script_name = $req->script_name }; 
         $path .= $script_name if defined $script_name;
@@ -54,7 +56,7 @@ sub build_path {
 
 sub build_method {
     my ($self) = @_;
-    $self->{method} = $ENV{REQUEST_METHOD} || $self->{_cgi}->request_method();
+    $self->{method} = $ENV{REQUEST_METHOD} || $self->{request}->request_method();
 }
 
 1;

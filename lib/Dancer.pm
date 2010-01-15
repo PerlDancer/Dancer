@@ -89,7 +89,7 @@ sub options      { Dancer::Route->add('options', @_) }
 sub put          { Dancer::Route->add('put', @_) }
 sub r            { {regexp => $_[0]} }
 sub redirect     { Dancer::Helpers::redirect(@_) }
-sub request      { Dancer::SharedData->cgi }
+sub request      { Dancer::SharedData->request }
 sub send_file    { Dancer::Helpers::send_file(@_) }
 sub set          { setting(@_) }
 sub set_cookie   { Dancer::Helpers::set_cookie(@_) }
@@ -134,9 +134,9 @@ sub import {
 
 # Start/Run the application with the chosen apphandler
 sub dance { 
-    my ($class, $cgi) = @_;
+    my ($class, $request) = @_;
     Dancer::Config->load;
-    Dancer::Handler->get_handler()->dance($cgi);
+    Dancer::Handler->get_handler()->dance($request);
 }
 
 1;

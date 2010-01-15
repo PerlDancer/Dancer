@@ -19,10 +19,8 @@ sub send_file {
     my ($path) = @_;
 
     # Fake the CGI request with /path/to/file
-    my $request = CGI->new;
-    $request->path_info($path);
-    $request->request_method('GET');
-    Dancer::SharedData->cgi($request);
+    my $request = Dancer::Request->new(method => 'GET', path => $path);
+    Dancer::SharedData->request($request);
 
     my $resp = Dancer::Renderer::get_file_response();
     return $resp if $resp;
@@ -44,7 +42,7 @@ sub template {
 
     $tokens ||= {};
     $tokens->{params} = Dancer::SharedData::params();
-    $tokens->{request} = Dancer::SharedData->cgi;
+    $tokens->{request} = Dancer::SharedData->request;
     
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
