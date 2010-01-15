@@ -47,6 +47,23 @@ sub new_for_request {
     return $req;
 }
 
+sub normalize {
+    my ($class, $request) = @_;
+
+    if (ref($request) eq 'CGI') {
+        return $class->new_for_request(
+            $request->request_method,
+            $request->path_info,
+            scalar($request->Vars));
+    }
+    elsif (ref($request) eq $class ) {
+        return $request;
+    }
+    else {
+        die "Invalid request, unable to process the query (".ref($request).")"
+    }
+}
+
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
 sub path_info      { path(@_)   }
@@ -130,8 +147,8 @@ sub _parse_get_params {
 
 sub _parse_post_params {
     my ($self, $r_params) = @_;
-    my $body = $self->_read_to_end();
 
+    my $body = $self->_read_to_end();
     $self->_parse_params($r_params, $body);
 }
 
@@ -165,7 +182,6 @@ sub _read_to_end {
 sub _has_something_to_read {
     my ($self) = @_;
     return 0 unless defined $self->input_handle;
-    return $self->input_handle->can('read') ? 1 : 0;
 }
 
 # taken from Miyagawa's Plack::Request::BodyParser
@@ -178,9 +194,14 @@ sub _read {
  
     my $readlen = ($remaining > $maxlength) ? $maxlength : $remaining;
     my $buffer;
+    my $rc;
 
-    my $rc = $self->input_handle->read($buffer, $readlen);
- 
+    # FIXME I didn't find a better way to check that... :/
+    # if we got that error below, it's because there's nothing to read at all
+    local $@;
+    eval { $rc = $self->input_handle->read($buffer, $readlen) };
+    return if $@;
+
     if (defined $rc) {
         $self->{_read_position} += $rc;
         return $buffer;
