@@ -1,12 +1,15 @@
-use Dancer::Config 'setting';
 use Test::More;
+use strict;
+use warnings;
+use Dancer::Config 'setting';
+use Dancer::ModuleLoader;
 
-eval "use Test::Requires ('Plack::Loader', 'LWP::UserAgent')";
-plan skip_all => 'Test::Requires, Plack::Loader and LWP::UserAgent needed'
-    if $@;
-
-eval "use Test::TCP";
-plan skip_all => "Test::TCP needed for this test" if $@;
+plan skip_all => "Plack is needed to run this test"
+    unless Dancer::ModuleLoader->load('Plack::Loader');
+plan skip_all => "LWP is needed to run this test"
+    unless Dancer::ModuleLoader->load('LWP::UserAgent');
+plan skip_all => "Test::TCP is needed to run this test"
+    unless Dancer::ModuleLoader->load('Test::TCP');
 
 my $app = sub {
     my $env = shift;
@@ -16,7 +19,7 @@ my $app = sub {
 };
 
 plan tests => 3;
-test_tcp(
+Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua = LWP::UserAgent->new;
@@ -29,10 +32,6 @@ test_tcp(
 
         $res = $ua->get("http://127.0.0.1:$port/name/baz");
         like $res->content, qr/Your name: baz/;
-
-# FIXME this blocks for some random reason, don't know why
-#        $res = $ua->post("http://127.0.0.1:$port/name", { name => "xxx" });
-#        like $res->content, qr/Your name: xxx/;
     },
     server => sub {
         my $port = shift;
