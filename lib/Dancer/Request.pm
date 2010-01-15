@@ -6,10 +6,14 @@ package Dancer::Request;
 
 use strict;
 use warnings;
+use Dancer::Object;
 use Dancer::SharedData;
 
+use base 'Dancer::Object';
+Dancer::Request->attributes('path', 'method');
+
 sub new {
-    my ($class) = @_;
+    my ($class, $env) = @_;
     my $self = {
         path   => undef,
         method => undef,
@@ -21,6 +25,9 @@ sub new {
         _content_length => $ENV{CONTENT_LENGTH},
     };
     bless $self, $class;
+
+    $self->_init_env($env) if defined $env;
+
     $self->_init();
     return $self;
 }
@@ -29,21 +36,21 @@ sub new {
 sub new_for_request {
     my ($class, $method, $path, $params) = @_;
     $params ||= {};
+    $method = uc($method);
 
+    $ENV{PATH_INFO} = $path;
+    $ENV{REQUEST_METHOD} = $method;
+    
     my $req = $class->new;
-    $req->{path}   = $path;
-    $req->{method} = $method;
     $req->{params} = { %{$req->{params}}, %{$params} };
 
     return $req;
 }
 
-# public interface (read-only)
-# use new to build a new request (may change)
-sub path           { $_[0]->{path}   }
-sub method         { $_[0]->{method} }
-sub request_method { shift->method }
-sub path_info      { shift->path }
+# public interface compat with CGI.pm objects
+sub request_method { method(@_) }
+sub path_info      { path(@_)   }
+sub Vars           { params(@_) }
 sub input_handle   { shift->{_input} }
 
 sub params {
@@ -54,6 +61,13 @@ sub params {
 }
 
 # private
+
+sub _init_env {
+    my ($self, $env) = @_;
+    die "Cannot init env without a HASHREF"
+        unless ref($env) eq 'HASH';
+    %ENV = (%ENV, %$env);    
+}
 
 sub _init {
     my ($self) = @_;
