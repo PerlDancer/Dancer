@@ -1,30 +1,28 @@
-use Test::More tests => 6;
+use Test::More tests => 5;
 
 use strict;
 use warnings FATAL => 'all';
 use Dancer::Request;
-use Dancer::FileUtils 'path', 'dirname';
-use IO::File;
 
-$ENV{REQUEST_METHOD} = 'POST';
-$ENV{PATH_INFO} = '/';
+my $body = 'foo=bar&name=john&';
+open my $in, '<', \$body;
 
-my $fixture_input = path(dirname(__FILE__), 'input.data');
-my $fixture_fh = IO::File->new($fixture_input, "r", O_BINARY) 
-    or die "couldnot open fixture input : $!";
-
-$ENV{'psgi.input'} = $fixture_fh;
-$ENV{CONTENT_LENGTH} = 34;
+my $env = {
+        CONTENT_LENGTH => length($body),
+        CONTENT_TYPE   => 'application/x-www-form-urlencoded',
+        REQUEST_METHOD => 'POST',
+        SCRIPT_NAME    => '/',
+        'psgi.input'   => $in,
+};
 
 my $expected_params = {
     name => 'john',
-    email => "johonny\@gmail.com\n",
+    foo  => 'bar',
 };
 
-my $req = Dancer::Request->new;
+my $req = Dancer::Request->new($env);
 is $req->path, '/', 'path is set';
 is $req->method, 'POST', 'method is set';
-is_deeply $req->input_handle, $fixture_fh, 'input handle is ok';
 
 is_deeply scalar($req->params), $expected_params, 'params are OK';
 is $req->params->{'name'}, 'john', 'params accessor works';

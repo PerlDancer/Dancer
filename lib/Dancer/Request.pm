@@ -8,26 +8,31 @@ use strict;
 use warnings;
 use Dancer::Object;
 use Dancer::SharedData;
+use HTTP::Body;
 
 use base 'Dancer::Object';
-Dancer::Request->attributes('path', 'method');
+Dancer::Request->attributes('path', 'method', 'content_type', 'content_length');
 
 sub new {
     my ($class, $env) = @_;
+
+    # init the ENV 
+    $env ||= {};
+    %ENV = (%ENV, %$env);    
+
     my $self = {
         path   => undef,
         method => undef,
         params => {},
+        content_length => $ENV{CONTENT_LENGTH} || 0,
+        content_type => $ENV{CONTENT_TYPE} || '',
         _input => undef,
         _chunk_size => 4096,
         _raw_body => '',
         _read_position => 0,
-        _content_length => $ENV{CONTENT_LENGTH},
     };
+    
     bless $self, $class;
-
-    $self->_init_env($env) if defined $env;
-
     $self->_init();
     return $self;
 }
@@ -79,12 +84,6 @@ sub params {
 
 # private
 
-sub _init_env {
-    my ($self, $env) = @_;
-    die "Cannot init env without a HASHREF"
-        unless ref($env) eq 'HASH';
-    %ENV = (%ENV, %$env);    
-}
 
 sub _init {
     my ($self) = @_;
@@ -94,6 +93,8 @@ sub _init {
     # input for POST/PUT data are taken from PSGI if present, 
     # fallback to STDIN
     $self->{_input} = $ENV{'psgi.input'} ? $ENV{'psgi.input'} : *STDIN;
+    $self->{_http_body} = HTTP::Body->new(
+        $self->content_type, $self->content_length);
     $self->_build_params();
 }
 
@@ -149,7 +150,8 @@ sub _parse_post_params {
     my ($self, $r_params) = @_;
 
     my $body = $self->_read_to_end();
-    $self->_parse_params($r_params, $body);
+    my $body_params = $self->{_http_body}->param;
+    $$r_params = {%{$$r_params}, %$body_params};
 }
 
 sub _parse_params {
@@ -168,12 +170,13 @@ sub _parse_params {
 sub _read_to_end {
     my ($self) = @_;
     
-    my $content_length = $ENV{CONTENT_LENGTH} || 0;
+    my $content_length = $self->content_length;
     return unless $self->_has_something_to_read();
  
     if ($content_length > 0) {
         while (my $buffer = $self->_read() ) {
             $self->{_raw_body} .= $buffer;
+            $self->{_http_body}->add($buffer);
         }
     }
     return $self->{_raw_body};

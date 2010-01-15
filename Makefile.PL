@@ -17,11 +17,10 @@ WriteMakefile1(
         'Test::TCP'              => '0',
         'LWP'                    => '0',
         'Test::More'             => '0',
-        'Test::MockObject'       => '0',
     },
 
     PREREQ_PM => {
-        'CGI'                    => '0',
+        'HTTP::Body'             => '0',
         'HTTP::Server::Simple'   => '0.34',
         'Exception::Class'       => '0',
         'File::Basename'         => '0',

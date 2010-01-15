@@ -1,3 +1,8 @@
+Dancer 1.121
+
+	* Fix for POST data parsing (was broken in 1.120)
+	  now Dancer depends on HTTP::Body for that.
+
 Dancer 1.120
 
     * ROADMAP updated 
