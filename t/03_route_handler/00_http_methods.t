@@ -14,8 +14,8 @@ ok(del('/', sub { 'delete' }), "DELETE / defined ");
 ok(options('/', sub { 'options' }), "OPTIONS / defined ");
 
 foreach my $m (@methods) {
-    my $cgi = TestUtils::fake_request($m => '/');
-    Dancer::SharedData->cgi($cgi);
+    my $request = TestUtils::fake_request($m => '/');
+    Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();
     ok(defined($response), "route handler found for method $m");
 }

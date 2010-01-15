@@ -19,7 +19,7 @@ my $public = setting('public');
 my $path = '/hello.foo';
 my $request = fake_request(GET => $path);
 
-Dancer::SharedData->cgi($request);
+Dancer::SharedData->request($request);
 my $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
 
@@ -29,7 +29,7 @@ like($headers{'Content-Type'}, qr/text\/plain/,
 
 ok(mime_type(foo => 'text/foo'), 'mime type foo is set as text/foo');
 
-Dancer::SharedData->cgi($request);
+Dancer::SharedData->request($request);
 $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
 
@@ -41,7 +41,7 @@ is_deeply(\%headers,
 $path = '/hello.txt';
 $request = fake_request(GET => $path);
 
-Dancer::SharedData->cgi($request);
+Dancer::SharedData->request($request);
 $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
 %headers = @{$resp->{headers}};

@@ -23,8 +23,8 @@ my @tests = (
 plan tests => scalar(@tests) * 2;
 
 foreach my $test (@tests) {
-    my $cgi = fake_request(GET => $test->{path});
-    Dancer::SharedData->cgi($cgi);
+    my $request = fake_request(GET => $test->{path});
+    Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();
 
     ok(defined($response), "route handler found for ".$test->{path});

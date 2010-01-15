@@ -34,7 +34,7 @@ SKIP: {
 
         my $request = fake_request(GET => $path);
 
-        Dancer::SharedData->cgi($request);
+        Dancer::SharedData->request($request);
         my $resp = Dancer::Renderer::get_action_response();
     
         is($resp->{content}, $expected, "content rendered looks good for $path");

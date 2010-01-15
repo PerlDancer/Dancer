@@ -1,6 +1,10 @@
 # simulate an Apache2 + Plack environment
+use strict;
+use warnings;
+
 use Test::More 'no_plan', import => ['!pass'];
 use File::Spec;
+use Dancer::Request;
 
 my $request = {};
 my $env = {};
@@ -13,16 +17,7 @@ my $server_addr = '127.0.0.1';
 my $host_name = 'app.localdomain.com';
 
 # a / request 
-$request->{'/'} = bless( {
-                    '.parameters' => [],
-                    'use_tempfile' => 1,
-                    '.path_info' => '',
-                    '.charset' => 'ISO-8859-1',
-                    '.fieldnames' => {},
-                    'param' => {},
-                    '.iterator' => 1,
-                    'escape' => 1
-                  }, 'CGI' );
+$request->{'/'} = Dancer::Request->new_for_request(GET => '/');
 
 $env->{'/'}  = {
                  'psgi.multiprocess' => 1,
