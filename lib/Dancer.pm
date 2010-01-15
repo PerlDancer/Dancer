@@ -514,13 +514,15 @@ your templates are located in the 'templates' directory, do the following:
 
     set views => path(dirname(__FILE__), 'templates');
 
-By default, the internal template engine is used (L<Dancer::Template::Simple)
+By default, the internal template engine is used (L<Dancer::Template::Simple>)
 but you may want to upgrade to Template::Toolkit. If you do so, you have to
 enable this engine in your settings as explained in
 L<Dancer::Template::TemplateToolkit>. If you do so, you'll also have to import
-the L<Template> module in your application code.
+the L<Template> module in your application code. Note that Dancer configures
+the Template::Toolkit engine to use <% %> brackets instead of the its default
+[% %] brackets.
 
-Note that a view should have a '.tt', this may change in the future.
+All views should have a '.tt' extension. This may change in the future.
 
 In order to render a view, just call the 'template' keyword at the end of the
 action by giving the view name and the HASHREF of tokens to interpolate in the
