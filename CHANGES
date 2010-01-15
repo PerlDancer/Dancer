@@ -1,9 +1,21 @@
-Release 1.110
+Dancer 1.120
+
+    * ROADMAP updated 
+    * Dancer is now compliant with Plack::Server::Apache2
+    * Remove the CGI.pm dependency, huge refactoring
+    * POD typo fixes (Naveed)
+    * Support for syntax-only importation (Sawyer X)
+    * Remove the example/ directory, useless and deprecated 
+    * New logger engine: Log::Handler (franck cuny)
+    * New template engine Text::Microtemplate (franck cuny)
+    * Remove compilation-time warnings catching (issue #14)
+
+Dancer 1.110
 
     * Fix test script `t/11_logger/04_syslog.t'
     * Fix test script `t/10_template/05_template_toolkit.t'
 
-Rlease 1.100
+Dancer 1.100
 
     * Support for multiple method routes at once with 'any'
     * Templates engines
@@ -16,7 +28,7 @@ Rlease 1.100
     * script/dancer now requires an appname
     * New Makefile.PL with better metadata (CPAN Service)
 
-Release 1.000
+Dancer 1.000
 
     * Support for Syslog logger (Dancer::Logger::Syslog)
     * Basic template engine so Template is no more a hard deps.
@@ -24,23 +36,23 @@ Release 1.000
     * YAML file-based session support (Dancer::Session::YAML)
     * Lots of tests (more than 80% of the code is covered)
 
-Release 0.9906
+Dancer 0.9906
     
     * move from File::MimeInfo to File::MimeInfo::Simple for 
       smooth run on Mac OSX and Win32 systems.
 
-Release 0.9005
+Dancer 0.9005
 
     * Source code extract on error catching
     * Support for configurable error handling
     * New design for the starting app built with script/dancer
 
-Release 0.9004
+Dancer 0.9004
 
     * Support for PSGI/Plack environment
     * script/dancer helper script for bootstraping a new app
 
-Release 0.9003
+Dancer 0.9003
 
     * Detect differently compilation-time warnings and runtime warnings
       closes bug #48440 (Thanks to Enric Joffrion for the report, and to
