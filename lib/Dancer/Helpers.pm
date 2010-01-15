@@ -7,7 +7,6 @@ package Dancer::Helpers;
 use strict;
 use warnings;
 
-use CGI;
 use Dancer::Response;
 use Dancer::Config 'setting';
 use Dancer::FileUtils 'path';
@@ -18,8 +17,7 @@ use Dancer::Template;
 sub send_file { 
     my ($path) = @_;
 
-    # Fake the CGI request with /path/to/file
-    my $request = Dancer::Request->new(method => 'GET', path => $path);
+    my $request = Dancer::Request->new_for_request('GET' => $path);
     Dancer::SharedData->request($request);
 
     my $resp = Dancer::Renderer::get_file_response();
