@@ -71,7 +71,8 @@ sub _build_params {
     my $params = {};
 
     $self->_parse_get_params(\$params);
-    $self->_parse_post_params(\$params);
+    $self->_parse_post_params(\$params) 
+        if defined $self->input_handle;
     $self->{params} = $params;
 }
 
@@ -133,10 +134,11 @@ sub _parse_params {
     return $r_params;
 }
 
-# taken from Miyagawa's Plack::Request::BodyParser
 sub _read_to_end {
     my ($self) = @_;
-    my $content_length = $ENV{CONTENT_LENGTH};
+    
+    my $content_length = $ENV{CONTENT_LENGTH} || 0;
+    return unless $self->_has_something_to_read();
  
     if ($content_length > 0) {
         while (my $buffer = $self->_read() ) {
@@ -146,6 +148,13 @@ sub _read_to_end {
     return $self->{_raw_body};
 }
  
+sub _has_something_to_read {
+    my ($self) = @_;
+    return 0 unless defined $self->input_handle;
+    return $self->input_handle->can('read') ? 1 : 0;
+}
+
+# taken from Miyagawa's Plack::Request::BodyParser
 sub _read {
     my ($self, ) = @_;
     my $remaining = $ENV{CONTENT_LENGTH} - $self->{_read_position};
