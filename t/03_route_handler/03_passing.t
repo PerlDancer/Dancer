@@ -45,8 +45,8 @@ foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
  
-    my $cgi = fake_request(GET => $path);
-    Dancer::SharedData->cgi($cgi);
+    my $request = fake_request(GET => $path);
+    Dancer::SharedData->request($request);
 
     my $response = Dancer::Renderer::get_action_response();
        

@@ -3,10 +3,6 @@ package Dancer::Logger;
 
 use strict;
 use warnings;
-use Dancer::Config 'setting';
-
-use Dancer::Logger::File;
-use Dancer::Logger::Syslog;
 
 # singleton used for logging messages
 my $logger;
@@ -15,10 +11,16 @@ sub logger  { $logger }
 sub init {
     my ($class, $setting) = @_;
     if ($setting eq 'file') {
+        require Dancer::Logger::File;
         $logger = Dancer::Logger::File->new;
     }
     elsif ($setting eq 'syslog') {
+        require Dancer::Logger::Syslog;
         $logger = Dancer::Logger::Syslog->new;
+    }
+    elsif ($setting eq 'log_handler') {
+        require Dancer::Logger::LogHandler;
+        $logger = Dancer::Logger::LogHandler->new;
     }
     else {
         die "unknown logger '$setting'";

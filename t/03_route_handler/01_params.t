@@ -27,9 +27,9 @@ my @tests = (
 
 
 foreach my $test (@tests) {
-    my $cgi = TestUtils::fake_request($test->{method} => $test->{path});
+    my $request = TestUtils::fake_request($test->{method} => $test->{path});
 
-    Dancer::SharedData->cgi($cgi);
+    Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();
 
     ok( defined $response, 

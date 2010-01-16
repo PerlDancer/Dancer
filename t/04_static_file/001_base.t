@@ -18,7 +18,7 @@ ok((defined($public) && (-d $public)), 'public dir is set');
 my $request = TestUtils::fake_request('GET' => '/hello.txt');
 my $path = $request->path_info;
 
-Dancer::SharedData->cgi($request);
+Dancer::SharedData->request($request);
 my $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
 

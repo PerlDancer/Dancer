@@ -17,8 +17,8 @@ plan tests => scalar(@tests);
 foreach my $test (@tests) {
     my ($method, $path, $expected) = @$test;
  
-    my $cgi = fake_request($method => $path);
-    Dancer::SharedData->cgi($cgi);
+    my $request = fake_request($method => $path);
+    Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();
 
     is(Dancer::HTTP::status($response->{status}), "HTTP/1.0 $expected\r\n", 

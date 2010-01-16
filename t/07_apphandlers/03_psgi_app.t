@@ -13,9 +13,8 @@ plan skip_all => "Test::TCP is needed to run this test"
 
 my $app = sub {
     my $env = shift;
-    local *ENV = $env;
-    my $cgi = CGI->new();
-    Dancer->dance($cgi);
+    my $request = Dancer::Request->new($env);
+    Dancer->dance($request);
 };
 
 plan tests => 3;
@@ -25,13 +24,16 @@ Test::TCP::test_tcp(
         my $ua = LWP::UserAgent->new;
         
         my $res = $ua->get("http://127.0.0.1:$port/env");
-        like $res->content, qr/psgi\.version/;
+        like $res->content, qr/psgi\.version/, 
+            'content looks good for /env';
         
         $res = $ua->get("http://127.0.0.1:$port/name/bar");
-        like $res->content, qr/Your name: bar/;
+        like $res->content, qr/Your name: bar/,
+            'content looks good for /name/bar';
 
         $res = $ua->get("http://127.0.0.1:$port/name/baz");
-        like $res->content, qr/Your name: baz/;
+        like $res->content, qr/Your name: baz/,
+            'content looks good for /name/baz';
     },
     server => sub {
         my $port = shift;

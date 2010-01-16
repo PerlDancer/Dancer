@@ -146,7 +146,7 @@ sub build_params {
     my ($handler, $request) = @_;
     
     my $current_params = Dancer::SharedData->params || {};
-    my $request_params = scalar($request->Vars) || {};
+    my $request_params = scalar($request->params) || {};
     my $route_params = $handler->{params} || {};
 
     return { 
@@ -160,8 +160,8 @@ sub build_params {
 sub call($$) {
     my ($class, $handler) = @_;
     
-    my $cgi = Dancer::SharedData->cgi;
-    my $params = build_params($handler, $cgi);
+    my $request = Dancer::SharedData->request;
+    my $params = build_params($handler, $request);
     Dancer::SharedData->params($params);
 
     my $content;
