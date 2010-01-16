@@ -31,7 +31,7 @@ sub new {
         _raw_body => '',
         _read_position => 0,
     };
-    
+
     bless $self, $class;
     $self->_init();
     return $self;
@@ -55,7 +55,10 @@ sub new_for_request {
 sub normalize {
     my ($class, $request) = @_;
 
-    if (ref($request) eq 'CGI') {
+    if (ref $class) {
+        die "normalize() must be called as a class method\n";
+    }
+    elsif (ref($request) eq 'CGI') {
         return $class->new_for_request(
             $request->request_method,
             $request->path_info,
