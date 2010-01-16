@@ -165,7 +165,22 @@ sub _parse_params {
         my ($key, $val) = split(/=/, $token);
         $key = $self->_url_decode($key);
         $val = $self->_url_decode($val);
-        $$r_params->{$key} = $val;
+        
+        # looking for multi-value params
+        if (exists $$r_params->{$key}) {
+            my $prev_val = $$r_params->{$key};
+            if (ref($prev_val) && ref($prev_val) eq 'ARRAY') {
+                push @{$$r_params->{$key}}, $val;
+            }
+            else {
+                $$r_params->{$key} = [$prev_val, $val];
+            }
+        }
+        
+        # simple value param (first time we see it)
+        else {
+            $$r_params->{$key} = $val;
+        }
     }
     return $r_params;
 }

@@ -22,5 +22,5 @@ $ENV{QUERY_STRING} = 'key1=val1';
     my $r = Dancer::Request->new();
     Dancer::Request->normalize($q);
     my $p = $r->params;
-    is($p->{'key2'}, ['val1','val2'], "normalize() and params(): multi-valued params are supported.");
+    is_deeply($p->{'key2'}, ['val1','val2'], "normalize() and params(): multi-valued params are supported.");
 }
