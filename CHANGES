@@ -1,3 +1,12 @@
+Dancer 1.122
+
+	* Security Fix: protection from CRLF injection in 
+	  response headers (thanks to Mark Stosberg for the report).
+	* Support for multi-valued params in GET/POST data (thanks to
+	  Mark Stosberg for the report).
+	* Backward compatibility with old app.psgi files, don't die 
+	  when a request is initialized with a CGI::PSGI object.
+
 Dancer 1.121
 
 	* Fix for POST data parsing (was broken in 1.120)
