@@ -4,7 +4,7 @@ use strict;
 use warnings FATAL => 'all';
 use Dancer::Request;
 
-my $body = 'foo=bar&name=john&';
+my $body = 'foo=bar&name=john&hash=2&hash=4&hash=6&';
 open my $in, '<', \$body;
 
 my $env = {
@@ -18,6 +18,7 @@ my $env = {
 my $expected_params = {
     name => 'john',
     foo  => 'bar',
+    hash => [2, 4, 6],
 };
 
 my $req = Dancer::Request->new($env);

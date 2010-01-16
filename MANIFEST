@@ -57,7 +57,7 @@ t/02_request/03_post_params.t
 t/02_request/04_custom.t
 t/02_request/05_cgi_pm_compat.t
 t/02_request/06_init_env.t
-t/02_request/input.data
+t/02_request/07_normalize.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
@@ -118,6 +118,7 @@ t/11_logger/01_abstract.t
 t/11_logger/02_factory.t
 t/11_logger/03_file.t
 t/11_logger/04_syslog.t
+t/12_response/01_CRLF_injection.t
 t/lib/EasyMocker.pm
 t/lib/TestApp.pm
 TODO
