@@ -60,7 +60,7 @@ sub normalize {
     my $req_class = ref($request);
     return $request if $req_class eq $class;
 
-    if ($req_class eq 'CGI') {
+    if (($req_class eq 'CGI') || ($req_class eq 'CGI::PSGI')) {
         return $class->new_for_request(
             $request->request_method,
             $request->path_info,
