@@ -17,6 +17,8 @@ sub new {
         %args,
     };
     bless $self, $class;
+
+    $self->sanitize_headers();
     return $self;
 }
 
@@ -36,5 +38,16 @@ sub set          { $CURRENT = shift }
 sub status       { $CURRENT->{status} = shift }
 sub content_type { $CURRENT->{content_type} = shift }
 sub pass         { $CURRENT->{pass} = 1 }
+
+sub sanitize_headers {
+    my ($self) = @_;
+    my %headers = @{ $self->{headers} };
+    
+    # sanitize Location, protection from CRLF injections
+    if ($headers{Location}) {
+        $headers{Location} =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
+    }
+    $self->{headers} = [ %headers ];
+}
 
 1;

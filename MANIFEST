@@ -118,6 +118,7 @@ t/11_logger/01_abstract.t
 t/11_logger/02_factory.t
 t/11_logger/03_file.t
 t/11_logger/04_syslog.t
+t/12_response/01_CRLF_injection.t
 t/lib/EasyMocker.pm
 t/lib/TestApp.pm
 TODO
