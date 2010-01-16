@@ -54,22 +54,20 @@ sub new_for_request {
 
 sub normalize {
     my ($class, $request) = @_;
+    die "normalize() must be called as a class method"
+        if (ref $class);
 
-    if (ref $class) {
-        die "normalize() must be called as a class method\n";
-    }
-    elsif (ref($request) eq 'CGI') {
+    my $req_class = ref($request);
+    return $request if $req_class eq $class;
+
+    if ($req_class eq 'CGI') {
         return $class->new_for_request(
             $request->request_method,
             $request->path_info,
             scalar($request->Vars));
     }
-    elsif (ref($request) eq $class ) {
-        return $request;
-    }
-    else {
-        die "Invalid request, unable to process the query (".ref($request).")"
-    }
+    
+    die "Invalid request, unable to process the query ($req_class)";
 }
 
 # public interface compat with CGI.pm objects
