@@ -140,7 +140,6 @@ sub find {
         if ($params) {
             $r->{params} = $params;
 
-            my $next;
             if ( $r->{options} ) {
                 foreach my $opt ( keys %$VALID_OPTIONS ) {
                     my $re = $r->{options}->{$opt};
