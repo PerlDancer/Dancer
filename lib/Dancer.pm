@@ -34,7 +34,7 @@ $VERSION = '1.122';
     dirname
     error
     false
-    get 
+    get
     layout
     load
     logger
@@ -43,7 +43,7 @@ $VERSION = '1.122';
     params
     pass
     path
-    post 
+    post
     put
     r
     redirect
@@ -62,7 +62,7 @@ $VERSION = '1.122';
     warning
 );
 
-# Dancer's syntax 
+# Dancer's syntax
 
 sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
@@ -73,7 +73,7 @@ sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub error        { Dancer::Logger->error(@_) }
 sub send_error   { Dancer::Helpers->error(@_) }
 sub false        { 0 }
-sub get          { Dancer::Route->add('head', @_); 
+sub get          { Dancer::Route->add('head', @_);
                    Dancer::Route->add('get', @_);}
 sub layout       { set(layout => shift) }
 sub logger       { set(logger => @_) }
@@ -93,14 +93,14 @@ sub request      { Dancer::SharedData->request }
 sub send_file    { Dancer::Helpers::send_file(@_) }
 sub set          { setting(@_) }
 sub set_cookie   { Dancer::Helpers::set_cookie(@_) }
-sub session      { 
+sub session      {
     if (@_ == 0) {
         return Dancer::Session->get;
     }
     else {
-        return (@_ == 1) 
-            ? Dancer::Session->read(@_) 
-            : Dancer::Session->write(@_) 
+        return (@_ == 1)
+            ? Dancer::Session->read(@_)
+            : Dancer::Session->write(@_)
     }
 }
 sub splat        { @{ Dancer::SharedData->params->{splat} } }
@@ -111,7 +111,7 @@ sub var          { Dancer::SharedData->var(@_) }
 sub vars         { Dancer::SharedData->vars }
 sub warning      { Dancer::Logger->warning(@_) }
 
-# When importing the package, strict and warnings pragma are loaded, 
+# When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
     my ($class, $symbol) = @_;
@@ -133,7 +133,7 @@ sub import {
 }
 
 # Start/Run the application with the chosen apphandler
-sub dance { 
+sub dance {
     my ($class, $request) = @_;
     Dancer::Config->load;
     Dancer::Handler->get_handler()->dance($request);
@@ -142,11 +142,11 @@ sub dance {
 1;
 __END__
 
-=pod 
+=pod
 
 =head1 NAME
 
-Dancer 
+Dancer
 
 =head1 DESCRIPTION
 
@@ -171,13 +171,13 @@ The code block given to the route handler has to return a string which will be
 used as the content to render to the client.
 
 Routes are defined for a given HTTP method. For each method
-supported, a keyword is exported by the module. 
+supported, a keyword is exported by the module.
 
 Here is an example of a route definition:
 
     get '/hello/:name' => sub {
         # do something important here
-        
+
         return "Hello ".params->{name};
     };
 
@@ -187,14 +187,14 @@ by that route.
 =head2 HTTP METHODS
 
 All existing HTTP methods are defined in the RFC 2616
-L<http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html>. 
+L<http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html>.
 
 Here are the ones you can use to define your route handlers.
 
 =over 8
 
 =item B<GET>        The GET method retrieves information (when defining a route
-                    handler for the GET method, Dancer automatically defines a 
+                    handler for the GET method, Dancer automatically defines a
                     route handler for the HEAD method, in order to honour HEAD
                     requests for each of your GET route handlers).
                     To define a GET action, use the B<get> keyword.
@@ -229,13 +229,23 @@ Or even, a route handler that would match any HTTP methods:
 
 =head2 ROUTE HANDLERS
 
-The route action is the code reference declared, it can access parameters through 
+The route action is the code reference declared, it can access parameters through
 the `params' keyword, which returns an hashref.
 This hashref is a merge of the route pattern matches and the request params.
 
 Below are all the possible ways to define a route, note that it is not
 possible to mix them up. Don't expect to have a working application if you mix
 different kinds of route!
+
+Routes may include some matching conditions (on the useragent and the hostname at the moment):
+
+    get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
+      'foo method for songbird'
+    }
+
+    get '/foo' => sub {
+      'all browsers except songbird'
+    }
 
 =head2 NAMED MATCHING
 
@@ -248,7 +258,7 @@ be set in the params hashref.
         "Hey ".params->{name}.", welcome here!";
     };
 
-=head2 WILDCARDS MATCHING 
+=head2 WILDCARDS MATCHING
 
 A route can contain a wildcard (represented by a '*'). Each wildcard match will
 be returned in an arrayref, accessible via the `splat' keyword.
@@ -268,7 +278,7 @@ For instance, don't do '\/hello\/(.+)' but rather: '/hello/(.+)'
 
 In order to tell Dancer to consider the route as a real regexp, the route must
 be defined explicitly with the keyword 'r', like the following:
-    
+
     get r( '/hello/([\w]+)' ) => sub {
         my ($name) = splat;
         return "Hello $name";
@@ -295,7 +305,7 @@ An action can choose not to serve the current request and ask Dancer to process
 the request with the next matching route.
 
 This is done with the B<pass> keyword, like in the following example
-    
+
     get '/say/:word' => sub {
         pass if (params->{word} =~ /^\d+$/);
         "I say a word: ".params->{word};
@@ -389,14 +399,14 @@ as errors when the setting B<warnings> is set to 1.
 =head2 Before filters
 
 Before filters are evaluated before each request within the context of the
-request and can modify the request and response. It's possible to define variable 
+request and can modify the request and response. It's possible to define variable
 that will be accessible in the action blocks with the keyword 'var'.
 
     before sub {
         var note => 'Hi there';
         request->path_info('/foo/oversee')
     };
-    
+
     get '/foo/*' => sub {
         my ($match) = splat; # 'oversee';
         vars->{note}; # 'Hi there'
@@ -413,7 +423,7 @@ your script, before calling the dance() method.
 
 Other ways are possible, you can write all your setting calls in the file
 `appdir/config.yml'. For this, you must have installed the YAML module, and of
-course, write the conffile in YAML. 
+course, write the conffile in YAML.
 
 That's better than the first option, but it's still not
 perfect as you can't switch easily from an environment to another without
@@ -506,10 +516,10 @@ current process, the message and the caller information (file and line).
 
 =head1 USING TEMPLATES
 
-=head1 VIEWS 
+=head1 VIEWS
 
 It's possible to render the action's content with a template, this is called a
-view. The `appdir/views' directory is the place where views are located. 
+view. The `appdir/views' directory is the place where views are located.
 
 You can change this location by changing the setting 'views', for instance if
 your templates are located in the 'templates' directory, do the following:
@@ -551,7 +561,7 @@ And the appdir/views/hello.tt view can contain the following code:
 A layout is a special view, located in the 'layouts' directory (inside the
 views directory) which must have a token named `content'. That token marks the
 place where to render the action view. This lets you define a global layout for
-your actions. 
+your actions.
 
 Here is an example of a layout: views/layouts/main.tt :
 
@@ -572,7 +582,7 @@ Here is an example of a layout: views/layouts/main.tt :
 This layout can be used like the following:
 
     use Dancer;
-    use Template; 
+    use Template;
 
     layout 'main';
 
@@ -590,11 +600,11 @@ different location by setting the 'public' option:
     set public => path(dirname(__FILE__), 'static');
 
 Note that the public directory name is not included in the URL. A file
-./public/css/style.css is made available as example.com/css/style.css. 
+./public/css/style.css is made available as example.com/css/style.css.
 
 =head2 MIME-TYPES CONFIGURATION
 
-By default, Dancer will automatically detect the mime-types to use for 
+By default, Dancer will automatically detect the mime-types to use for
 the static files accessed.
 
 It's possible to choose specific mime-type per file extensions. For instance,
@@ -640,12 +650,12 @@ See L<Dancer::Config> for complete details about supported settings.
 This is a possible webapp created with Dancer :
 
     #!/usr/bin/perl
-    
+
     # make this script a webapp
     use Dancer;
 
     # declare routes/actions
-    get '/' => sub { 
+    get '/' => sub {
         "Hello World";
     };
 
@@ -682,7 +692,7 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =back
 
-The following modules are optional 
+The following modules are optional
 
 =over 8
 
@@ -699,7 +709,7 @@ terms as Perl itself.
 
 =head1 SEE ALSO
 
-The concept behind this module comes from the Sinatra ruby project, 
+The concept behind this module comes from the Sinatra ruby project,
 see L<http://www.sinatrarb.com> for details.
 
 =cut
