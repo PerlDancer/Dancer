@@ -11,15 +11,14 @@ BEGIN {
 };
 
 {
-    ok( get( '/', { agent => 'foo' } => sub {'index'} ),
+    ok( get( '/', { agent => 'foo' } => sub {'agent foo'} ),
         'first route with options set' );
-    ok( get( '/fail', { agent => 'foo' } => sub {'index'} ),
-        'second route with options set' );
+    ok( get( '/', sub {'all agents'} ), 'second route with options set' );
 }
 
 my @tests = (
-    {method => 'GET', path => '/', expected => 'index', agent => 'foo'},
-    {method => 'GET', path => '/fail', expected => '403', agent => 'bar'},
+    {method => 'GET', path => '/', expected => 'agent foo', agent => 'foo'},
+    {method => 'GET', path => '/', expected => 'all agents', agent => 'bar'},
 );
 
 foreach my $test (@tests) {
@@ -33,7 +32,7 @@ foreach my $test (@tests) {
         "route handler found for path `".$test->{path}."'");
 
     my $expected = $test->{expected};
-    like( $response->{content}, qr/$expected/, "matching response looks good: ");
+    is( $response->{content}, $expected, "matching response looks good: ");
 }
 
 done_testing();
