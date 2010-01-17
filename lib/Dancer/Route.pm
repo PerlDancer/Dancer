@@ -8,8 +8,11 @@ use Dancer::Error;
 
 # singleton for stroing the routes defined
 my $REG = init_registry();
+
 my $VALID_OPTIONS = {
     agent => 'user_agent',
+    host  => 'hostname',
+    # TODO maybe referer ?
 };
 
 # accessor for setting up a new route
@@ -121,7 +124,7 @@ sub merge_registry    {
 # return the first route that matches the path
 # TODO: later we'll have to cache this browsing for every path seen
 sub find {
-    my ($class, $path, $method) = @_;
+    my ($class, $path, $method, $request) = @_;
     $method ||= 'get';
     $method = lc($method);
 
@@ -136,6 +139,16 @@ sub find {
         my $params = match($path, $r->{route});
         if ($params) {
             $r->{params} = $params;
+
+            my $next;
+            if ( $r->{options} ) {
+                foreach my $opt ( keys %$VALID_OPTIONS ) {
+                    my $re = $r->{options}->{$opt};
+                    next if !$re;
+                    $next = 1 if ( $request->{ $VALID_OPTIONS->{$opt} } !~ $re );
+                }
+            }
+            next if $next;
             $first_match = $r unless defined $first_match;
             $prev->{'next'} = $r if defined $prev;
             $prev = $r;
@@ -179,20 +192,6 @@ sub call($$) {
     my $request = Dancer::SharedData->request;
     my $params = build_params($handler, $request);
     Dancer::SharedData->params($params);
-
-    if ( $handler->{options} ) {
-        foreach my $opt ( keys %$VALID_OPTIONS ) {
-            my $re = $handler->{options}->{$opt};
-            if ( $request->{ $VALID_OPTIONS->{$opt} } !~ $re ) {
-                Dancer::SharedData->reset_all();
-                my $error = Dancer::Error->new(
-                    code  => 403,
-                    title => 'Route Forbiden'
-                );
-                return $error->render;
-            }
-        }
-    }
 
     my $content;
     my $warning; # reset any previous warning seen
