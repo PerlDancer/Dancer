@@ -11,7 +11,7 @@ my $REG = init_registry();
 
 my $VALID_OPTIONS = {
     agent => 'user_agent',
-    host  => 'hostname',
+    host  => 'host',
     # TODO maybe referer ?
 };
 
@@ -24,10 +24,12 @@ sub add {
         $options = $code;
         foreach my $opt ( keys %$options ) {
             if ( !exists $VALID_OPTIONS->{$opt} ) {
-                # TODO warn
+                Dancer::Logger->warning( $opt . " is not a known option" );
             }
-            my $val = $options->{$opt};
-            $options->{$opt} = qr/$val/;
+            else {
+                my $val = $options->{$opt};
+                $options->{$opt} = qr/$val/;
+            }
         }
         $code = $rest;
     }
