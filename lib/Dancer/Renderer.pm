@@ -20,8 +20,8 @@ sub render_file {
 
 sub render_action {
     my $resp = get_action_response();
-    return (defined $resp) 
-        ? response_with_headers($resp) 
+    return (defined $resp)
+        ? response_with_headers($resp)
         : undef;
 }
 
@@ -47,7 +47,7 @@ sub response_with_headers {
     my $response = shift;
 
     $response->{headers} ||= [];
-    push @{$response->{headers}}, 
+    push @{$response->{headers}},
         ('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
 
     # add cookies
@@ -66,7 +66,7 @@ sub html_page {
 
     # TODO build the HTML with Dancer::Template::Simple
     return start_html(
-        -title => $title, 
+        -title => $title,
         -style => "/css/$style.css")
              . h1($title)
              . "<div id=\"content\">"
@@ -84,8 +84,8 @@ sub get_action_response() {
     my $request = Dancer::SharedData->request || Dancer::Request->new;
     my $path    = $request->path;
     my $method  = $request->method;
-    
-    my $handler = Dancer::Route->find($path, $method);
+
+    my $handler = Dancer::Route->find($path, $method, $request);
     Dancer::Route->call($handler) if $handler;
 }
 
@@ -104,7 +104,7 @@ sub get_file_response_for_path {
         open my $fh, "<", $static_file;
         return Dancer::Response->new(
             status => $status,
-            headers => [ 'Content-Type' => get_mime_type($static_file) ], 
+            headers => [ 'Content-Type' => get_mime_type($static_file) ],
             content => $fh);
     }
     return undef;
@@ -116,7 +116,7 @@ sub get_mime_type {
     my ($filename) = @_;
     my @tokens = reverse(split(/\./, $filename));
     my $ext = $tokens[0];
-    
+
     my $mime = Dancer::Config::mime_types($ext);
     return $mime if defined $mime;
 
