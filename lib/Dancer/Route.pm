@@ -135,7 +135,7 @@ sub find {
     # action chooses to pass.
     my $prev;
     my $first_match;
-    foreach my $r (@{$registry->{routes}{$method}}) {
+    FIND: foreach my $r (@{$registry->{routes}{$method}}) {
         my $params = match($path, $r->{route});
         if ($params) {
             $r->{params} = $params;
@@ -145,10 +145,9 @@ sub find {
                 foreach my $opt ( keys %$VALID_OPTIONS ) {
                     my $re = $r->{options}->{$opt};
                     next if !$re;
-                    $next = 1 if ( $request->{ $VALID_OPTIONS->{$opt} } !~ $re );
+                    next FIND if ( $request->{ $VALID_OPTIONS->{$opt} } !~ $re );
                 }
             }
-            next if $next;
             $first_match = $r unless defined $first_match;
             $prev->{'next'} = $r if defined $prev;
             $prev = $r;
