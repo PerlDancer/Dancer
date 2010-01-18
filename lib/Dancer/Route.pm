@@ -9,6 +9,8 @@ use Dancer::Error;
 # singleton for stroing the routes defined
 my $REG = init_registry();
 
+# Supported options for conditional matching
+# The matching will be done against the request object
 my $VALID_OPTIONS = {
     agent => 'user_agent',
     host  => 'host',
@@ -23,8 +25,8 @@ sub add {
     if ($rest) {
         $options = $code;
         foreach my $opt ( keys %$options ) {
-            if ( !exists $VALID_OPTIONS->{$opt} ) {
-                Dancer::Logger->warning( $opt . " is not a known option" );
+            if (not exists $VALID_OPTIONS->{$opt}) {
+                die "Not a valid option for route matching: `$opt'.";
             }
             else {
                 my $val = $options->{$opt};
@@ -34,7 +36,11 @@ sub add {
         $code = $rest;
     }
 
-    push @{ $REG->{routes}{$method} }, {method => $method, route => $route, code => $code, options => $options};
+    push @{ $REG->{routes}{$method} }, {
+        method  => $method, 
+        route   => $route, 
+        code    => $code, 
+        options => $options};
 }
 
 # sugar for defining multiple routes at once
@@ -143,10 +149,10 @@ sub find {
             $r->{params} = $params;
 
             if ( $r->{options} ) {
-                foreach my $opt ( keys %$VALID_OPTIONS ) {
-                    my $re = $r->{options}->{$opt};
-                    next if !$re;
-                    next FIND if ( $request->{ $VALID_OPTIONS->{$opt} } !~ $re );
+                foreach my $opt ( keys %{$r->{options}} ) {
+                    my $re = $r->{options}{$opt};
+                    my $http_name = $VALID_OPTIONS->{$opt};
+                    next FIND if (! $request->$http_name) || ($request->$http_name !~ $re);
                 }
             }
             $first_match = $r unless defined $first_match;
