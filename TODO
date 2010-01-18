@@ -43,4 +43,19 @@
 	before sub { must_be_authenticated }; # this filter only applies to /home/* paths
 
 
+* Headers modifier helper
+
+	A route handler should be able to alter any response
+	header by hand.
+
+	get '/' => sub {
+		...
+
+		# a user-defined header
+		header 'X-User-Header1' => 'Some Random Value';
+	};
+
+	Those inputs will go through the
+	Dancer::Response::sanitize() method in order not to let
+	go an invalid response.
 
