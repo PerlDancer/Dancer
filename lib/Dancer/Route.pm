@@ -9,24 +9,51 @@ use Dancer::Error;
 # singleton for stroing the routes defined
 my $REG = init_registry();
 
+# Supported options for conditional matching
+# The matching will be done against the request object
+my $VALID_OPTIONS = {
+    agent => 'user_agent',
+    host  => 'host',
+    # TODO maybe referer ?
+};
+
 # accessor for setting up a new route
 sub add {
-    my ($class, $method, $route, $code) = @_;
+    my ($class, $method, $route, $code, $rest) = @_;
     $REG->{routes}{$method} ||= [];
-    push @{ $REG->{routes}{$method} }, {method => $method, route => $route, code => $code};
+    my $options;
+    if ($rest) {
+        $options = $code;
+        foreach my $opt ( keys %$options ) {
+            if (not exists $VALID_OPTIONS->{$opt}) {
+                die "Not a valid option for route matching: `$opt'.";
+            }
+            else {
+                my $val = $options->{$opt};
+                $options->{$opt} = qr/$val/;
+            }
+        }
+        $code = $rest;
+    }
+
+    push @{ $REG->{routes}{$method} }, {
+        method  => $method, 
+        route   => $route, 
+        code    => $code, 
+        options => $options};
 }
 
 # sugar for defining multiple routes at once
 sub add_any {
     my ($class, $methods, $route, $code);
-    
+
     # syntax: any ['get', 'post'] => '/route' => sub {};
     if (@_ == 4) {
         ($class, $methods, $route, $code) = @_;
-        die "Syntax error, methods should be provided as an ARRAY ref." 
+        die "Syntax error, methods should be provided as an ARRAY ref."
             unless ref($methods) eq 'ARRAY';
     }
-    
+
     # syntax: any '/route' => sub {};
     elsif (@_ == 3) {
         ($class, $route, $code) = @_;
@@ -47,7 +74,7 @@ sub registry          { $REG }
 sub set_registry      { $REG = $_[1] }
 
 # look for a route in the given array
-sub find_route  { 
+sub find_route  {
     my ($r, $reg) = @_;
     foreach my $route (@$reg) {
         return $route if ($r->{route} eq $route->{route});
@@ -55,13 +82,13 @@ sub find_route  {
     return undef;
 }
 
-sub merge_registry    { 
+sub merge_registry    {
     my ($class, $orig_reg, $new_reg) = @_;
     my $merged_reg = init_registry();
 
     # walking through all the routes, using the newest when exists
     foreach my $method (
-        keys(%{$new_reg->{routes}}), 
+        keys(%{$new_reg->{routes}}),
         keys(%{$orig_reg->{routes}})
     ) {
         # don't work out a mehtod if already done
@@ -82,20 +109,20 @@ sub merge_registry    {
                 push @$merged_routes, $route;
             }
         }
-        
+
         # now, walk through all the new elements, looking for a new route
         foreach my $route (@$new_routes) {
-            push @$merged_routes, $route 
+            push @$merged_routes, $route
                 unless find_route($route, $merged_routes);
         }
 
         $merged_reg->{routes}{$method} = $merged_routes;
     }
-   
+
     # NOTE: we have to warn the user about mixing before_filters in different
     # files, that's not supported. Only the last before_filters block is used.
-    $merged_reg->{before_filters} = 
-        (scalar(@{ $new_reg->{before_filters} }) > 0) 
+    $merged_reg->{before_filters} =
+        (scalar(@{ $new_reg->{before_filters} }) > 0)
         ? $new_reg->{before_filters}
         : $orig_reg->{before_filters};
 
@@ -105,21 +132,29 @@ sub merge_registry    {
 # return the first route that matches the path
 # TODO: later we'll have to cache this browsing for every path seen
 sub find {
-    my ($class, $path, $method) = @_;
+    my ($class, $path, $method, $request) = @_;
     $method ||= 'get';
     $method = lc($method);
-    
+
     my $registry = Dancer::Route->registry;
 
-    # browse all matching routes, and return the first one with 
-    # a copy of the next matches, so we can call the next route if the 
+    # browse all matching routes, and return the first one with
+    # a copy of the next matches, so we can call the next route if the
     # action chooses to pass.
     my $prev;
     my $first_match;
-    foreach my $r (@{$registry->{routes}{$method}}) {
+    FIND: foreach my $r (@{$registry->{routes}{$method}}) {
         my $params = match($path, $r->{route});
         if ($params) {
             $r->{params} = $params;
+
+            if ( $r->{options} ) {
+                foreach my $opt ( keys %{$r->{options}} ) {
+                    my $re = $r->{options}{$opt};
+                    my $http_name = $VALID_OPTIONS->{$opt};
+                    next FIND if (! $request->$http_name) || ($request->$http_name !~ $re);
+                }
+            }
             $first_match = $r unless defined $first_match;
             $prev->{'next'} = $r if defined $prev;
             $prev = $r;
@@ -133,7 +168,7 @@ sub find {
 }
 
 sub before_filter {
-    my ($class, $filter) = @_; 
+    my ($class, $filter) = @_;
     my $registry = Dancer::Route->registry;
     $registry->{before_filters} ||= [];
     push @{$registry->{before_filters}}, $filter;
@@ -144,14 +179,14 @@ sub run_before_filters { $_->() for before_filters }
 
 sub build_params {
     my ($handler, $request) = @_;
-    
+
     my $current_params = Dancer::SharedData->params || {};
     my $request_params = scalar($request->params) || {};
     my $route_params = $handler->{params} || {};
 
-    return { 
-        %{$request_params}, 
-        %{$route_params}, 
+    return {
+        %{$request_params},
+        %{$route_params},
         %{$current_params},
     };
 }
@@ -159,7 +194,7 @@ sub build_params {
 # Recursive call of actions through the matching tree
 sub call($$) {
     my ($class, $handler) = @_;
-    
+
     my $request = Dancer::SharedData->request;
     my $params = build_params($handler, $request);
     Dancer::SharedData->params($params);
@@ -198,7 +233,7 @@ sub call($$) {
 	} else {
         # trap errors
 	    if ( $@ || (setting('warnings') && $warning)) {
-        
+
 	        Dancer::SharedData->reset_all();
 
 	        my $error;
@@ -231,7 +266,7 @@ sub call($$) {
         return $content if ref($content) eq 'Dancer::Response';
         return Dancer::Response->new(
             status  => $st,
-            headers => [ 'Content-Type' => $ct ], 
+            headers => [ 'Content-Type' => $ct ],
             content => $content);
     }
 }
@@ -239,13 +274,13 @@ sub call($$) {
 sub match {
     my ($path, $route) = @_;
     my ($regexp, @variables) = make_regexp_from_route($route);
-    
+
     # first, try the match, and save potential values
     my @values = $path =~ $regexp;
-    
+
     # if no values found, do not match!
     return 0 unless @values;
-    
+
     # Hmm, I can has a match?
     my %params;
 
@@ -256,12 +291,12 @@ sub match {
         }
         return \%params;
     }
-    
+
     # else, we have a unnamed matches, store them in params->{splat}
     return { splat => \@values };
 }
 
-# replace any ':foo' by '(.+)' and stores all the named 
+# replace any ':foo' by '(.+)' and stores all the named
 # matches defined in $REG->{route_params}{$route}
 sub make_regexp_from_route {
     my ($route) = @_;
@@ -279,7 +314,7 @@ sub make_regexp_from_route {
             $registry->{route_params}{$route} = \@params;
             $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
         }
-        
+
         # parse wildcards
         $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
 

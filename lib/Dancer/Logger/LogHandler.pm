@@ -47,11 +47,21 @@ sub _format {
 
 __END__
 
-=head1 NAME Dancer::Log::LogHandler
+=head1 NAME Dancer::Log::LogHandler - Log::Handler wrapper for Dancer
 
-=head1 SYNOPSIS
+=head1 DESCRIPTION
+
+This class is an interface between Dancer's logging engine abstraction layer and the L<Log::Handler> module.
+
+In order to use this engine, set the following setting as follow:
 
   logger: 'log_handler'
+
+This can be done in your config.yml file or directly in your app code with the
+B<set> keyword
+
+The default configuration of this module is to write log message on STDERR. You can change this behavior by adding a similar configuration:
+
   log_handler:
     file:
       filename: debug.log
@@ -62,3 +72,17 @@ __END__
       maxlevel: debug
       minlevel: warning
 
+=head1 SEE ALSO
+
+L<Dancer>, L<Log::Handler>
+
+=head1 AUTHOR
+
+This module has been written by Franck Cuny
+
+=head1 LICENSE
+
+This module is free software and is released under the same terms as Perl
+itself.
+
+=cut

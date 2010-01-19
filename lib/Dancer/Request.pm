@@ -11,7 +11,17 @@ use Dancer::SharedData;
 use HTTP::Body;
 
 use base 'Dancer::Object';
-Dancer::Request->attributes('path', 'method', 'content_type', 'content_length');
+Dancer::Request->attributes(
+    # query
+    'path', 'method', 
+    'content_type', 'content_length',
+
+    # http env 
+    'user_agent', 'host',
+    'accept_language', 'accept_charset', 
+    'accept_encoding', 'keep_alive',
+    'connection', 'accept',
+    );
 
 sub new {
     my ($class, $env) = @_;
@@ -90,6 +100,7 @@ sub _init {
     my ($self) = @_;
     $self->_build_path() unless $self->path;
     $self->_build_method() unless $self->method;
+    $self->_build_request_env();
     
     # input for POST/PUT data are taken from PSGI if present, 
     # fallback to STDIN
@@ -97,6 +108,15 @@ sub _init {
     $self->{_http_body} = HTTP::Body->new(
         $self->content_type, $self->content_length);
     $self->_build_params();
+}
+
+sub _build_request_env {
+    my ($self) = @_;
+    foreach my $http_env (grep /^HTTP_/, keys %ENV) {
+        my $key = lc $http_env;
+        $key =~ s/^http_//;
+        $self->{$key} = $ENV{$http_env};
+    }
 }
 
 sub _build_params {

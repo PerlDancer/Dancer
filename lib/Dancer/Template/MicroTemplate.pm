@@ -61,7 +61,7 @@ B<set> keyword.
 
 =head1 SEE ALSO
 
-L<Dancer>, L<Template>
+L<Dancer>, L<Text::MicroTemplate>
 
 =head1 AUTHOR
 

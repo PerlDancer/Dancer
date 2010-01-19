@@ -4,10 +4,10 @@
 
 === ABOUT ===
 
-That project intends to become a port of Ruby's Sinatra framework: a framework
-for building web application with minimal-effort in mind.
-
-The user should be able to define a webapp with very few lines of codes.
+That project intends to become a port of Ruby's Sinatra
+framework: a framework for building web application with
+minimal-effort in mind. The user should be able to define a
+webapp with very few lines of codes.
 
 === NEWS === 
 
@@ -52,17 +52,13 @@ Here is an example of a webapp built with Dancer:
 When running this script, a webserver is running and ready to serve:    
 
     $ perl ./webapp.pl
-    >> Listening on 127.0.0.1:1915
-    == Entering the dance floor ...
+    >> Listening on 127.0.0.1:3000
+    == Entering the development dance floor ...
 
 Then it's possible to access any route defined in the script:
 
-    $ curl http://localhost:1915/
+    $ curl http://localhost:3000/
     Hello There!
-
-
-Feel free to fork that project if you like the idea and want to add some
-features.
 
 
 === DEPENDENCIES ===
@@ -70,19 +66,43 @@ features.
 Dancer depends on the following modules
 
     - HTTP::Server::Simple
-    - File::MimeInfo
-    - Template
+    - HTTP::Body
+    - Exception::Class
+
+Optional modules may be needed if you want to use soem
+features (but are not required for a basic usage). 
+Dependency-checks are performed at runtime.
+
+Most common modules you may want are:
+
+	- Template (for Template::Toolkit support)
+	- YAML (for configuration files)
+	- Plack (if you want to deploy your application with
+	  PSGI)
 
 === PRODUCTION MATTERS ===
 
 This is a work in progress.
 
 Dancer supports PSGI/Plack, to run a Dancer app with PSGI/Plack
-See
-http://www.sukria.net/fr/archives/2009/09/20/mounting-a-dancer-app-into-apache-psgiplack/
+just bootstrap your application with the helper script
+`dancer' like the following:
+
+	$ dancer -a MyWebApp
+
+You'll find a file in there called `app.psgi', use this file
+to configure your PSGI environment, as explained in the
+revelant documentation of your PSGI server.
+
 
 === WEBSITE ===
 
 For more details about the project, checkout the official website:
-http://dancer.sukria.net
+http://dancer.sukria.net or checkout the documentation at
+http://search.cpan.org/dist/Dancer/
+
+=== CONTACT ===
+
+You can reach the development team on IRC: irc.perl.org,
+chan #dancer
 

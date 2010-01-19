@@ -14,15 +14,16 @@ WriteMakefile1(
     },
 
     BUILD_REQUIRES => {
-        'Test::TCP'              => '0',
-        'LWP'                    => '0',
         'Test::More'             => '0',
     },
 
     PREREQ_PM => {
+        # non-core
         'HTTP::Body'             => '0',
         'HTTP::Server::Simple'   => '0.34',
         'Exception::Class'       => '0',
+        
+        # core
         'File::Basename'         => '0',
         'File::Spec'             => '0',
     },
