@@ -1,5 +1,6 @@
 Dancer 1.122
 
+	* Fix the test suite under Perl 5.8.x
 	* Security Fix: protection from CRLF injection in 
 	  response headers (thanks to Mark Stosberg for the report).
 	* Support for multi-valued params in GET/POST data (thanks to

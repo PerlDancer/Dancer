@@ -14,6 +14,8 @@ Dancer 1.200
 [ ] Support for file uploads
 [ ] Provide a default dispatcher in 
     scaffolded applications.
+[ ] Support for the 'header' helper in syntax
+    for altering response headers from a route handler.
 
 Dancer 1.000
 
