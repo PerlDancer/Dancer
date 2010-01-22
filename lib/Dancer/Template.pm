@@ -2,6 +2,7 @@ package Dancer::Template;
 
 use strict;
 use warnings;
+use Dancer::ModuleLoader;
 
 # singleton for the current template engine
 my $engine;
@@ -20,23 +21,15 @@ sub init {
     }
 
     # trying to load the engine
-    my $engine_class = _build_template_engine_from_setting($setting);
-    eval "require $engine_class";
-    die "unknown template engine '$setting'" if $@;
+    my $engine_class = Dancer::ModuleLoader->class_from_setting(
+        'Dancer::Template' => $setting);
+    
+    die "unknown template engine '$setting'" 
+        unless Dancer::ModuleLoader->require($engine_class);
 
     # creating the engine
     $engine = $engine_class->new(settings => $config);
 }
-
-sub _build_template_engine_from_setting {
-    my ($setting) = @_;
-    my $module = "";
-    for my $token (split /_/, $setting) {
-        $module .= ucfirst($token);
-    }
-    return "Dancer::Template::${module}";
-}
-
 
 1;
 
