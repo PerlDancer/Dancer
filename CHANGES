@@ -1,3 +1,8 @@
+Dancer 1.123~
+	* Fix a memory leak that could occur between two 
+	  requests under mod_perl (Thanks to Nicolas Rennert for 
+	  the report and diagnosis).
+	  
 Dancer 1.122
 
 	* Fix the test suite under Perl 5.8.x
