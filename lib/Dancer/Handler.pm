@@ -42,8 +42,11 @@ sub handle_request {
     # we don't want to remain like that after this point.
     $request = Dancer::Request->normalize($request);
 
+    # clean the request singleton first
+    Dancer::SharedData->reset_all();
+
+    # initialize the request singleton
     Dancer::SharedData->request($request);
-    Dancer::Logger->debug("[dancer.core] handle_request ".$request->path);
     
     # read cookies from client
     Dancer::Cookies->init;

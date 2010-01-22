@@ -192,6 +192,8 @@ sub build_params {
 }
 
 # Recursive call of actions through the matching tree
+# FIXME : too many reset_all() around, we need a wrapper to
+# call that method and making sure we do reset the shared data first 
 sub call($$) {
     my ($class, $handler) = @_;
 
@@ -212,19 +214,21 @@ sub call($$) {
 	# Halt: just stall everything and return the Response singleton
 	# useful for the redirect helper
 	if(Dancer::Exception::Halt->caught) {
+        Dancer::SharedData->reset_all();
 		return Dancer::Response->current;
 	} elsif
 	# Pass: pass to the next route if available. otherwise, 404.
 		(Dancer::Exception::Pass->caught) {
 			if ($handler->{'next'}) {
+                Dancer::SharedData->reset_all();
 	            return Dancer::Route->call($handler->{'next'});
 	        }
 	        else {
-	            Dancer::SharedData->reset_all();
 	            my $error = Dancer::Error->new(code => 404,
 	                message => "<h2>Route Resolution Failed</h2>"
 	                         . "<p>Last matching route passed, "
 	                         . "but no other route left.</p>");
+                Dancer::SharedData->reset_all();
 	            return $error->render;
 	        }
 	# no exceptions? continue the old way, although this
@@ -233,9 +237,6 @@ sub call($$) {
 	} else {
         # trap errors
 	    if ( $@ || (setting('warnings') && $warning)) {
-
-	        Dancer::SharedData->reset_all();
-
 	        my $error;
 	        if ($@) {
 	            $error = Dancer::Error->new(code => 500,
@@ -251,6 +252,7 @@ sub call($$) {
 	                message => $warning);
 
 	        }
+            Dancer::SharedData->reset_all();
 	        return $error->render;
 	    }
 
@@ -261,8 +263,8 @@ sub call($$) {
         my $ct = $response->{content_type} || setting('content_type');
         my $st = $response->{status} || 200;
 
-        Dancer::SharedData->reset_all();
 
+        Dancer::SharedData->reset_all();
         return $content if ref($content) eq 'Dancer::Response';
         return Dancer::Response->new(
             status  => $st,
