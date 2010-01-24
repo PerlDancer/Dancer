@@ -375,7 +375,7 @@ keyword B<content_type>
 
 =head2 header(s)
 
-It is possible to add custom headers to responses with the B<header> (or B<headers)
+It is possible to add custom headers to responses with the B<header> (or B<headers>)
 keyword:
 
     get '/send/header', sub {
@@ -388,7 +388,7 @@ or...
         headers 'X-Foo' => 'bar', X-Bar => 'foo';
     }
 
-You can use both undistinctly, they do exactly what you expect it to do.
+You can use both undistinctly, they do exactly what you expect them to do.
 
 =head1 ERROR HANDLING
 
