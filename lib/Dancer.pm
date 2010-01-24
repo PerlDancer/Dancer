@@ -46,6 +46,7 @@ $VERSION = '1.123';
     pass
     path
     post
+    prefix
     put
     r
     redirect
@@ -88,6 +89,7 @@ sub params       { Dancer::SharedData->params  }
 sub pass         { pass_exception }
 sub path         { Dancer::FileUtils::path(@_) }
 sub post         { Dancer::Route->add('post', @_) }
+sub prefix       { Dancer::Route->prefix(@_) }
 sub del          { Dancer::Route->add('delete', @_) }
 sub options      { Dancer::Route->add('options', @_) }
 sub put          { Dancer::Route->add('put', @_) }
@@ -250,6 +252,21 @@ Routes may include some matching conditions (on the useragent and the hostname a
     get '/foo' => sub {
       'all browsers except songbird'
     }
+
+=head2 PREFIX
+
+A prefix can be defined for each route handler, like this:
+
+    prefix '/home';
+
+From here, any route handler is defined to /home/*
+
+    get '/page1' => sub {}; # will match '/home/page1'
+
+You can unset the prefix value
+
+    prefix undef;
+    get '/page1' => sub {}; will match /page1
 
 =head2 NAMED MATCHING
 
