@@ -17,6 +17,20 @@ my $VALID_OPTIONS = {
     # TODO maybe referer ?
 };
 
+my $PREFIX;
+
+sub prefix {
+    my ( $class, $prefix ) = @_;
+    if ($prefix) {
+        die "Not a valid prefix, must begins with '/'"
+            unless $prefix =~ m!^/!;
+        $PREFIX = $prefix;
+    }else{
+        $PREFIX = undef;
+    }
+    1;
+}
+
 # accessor for setting up a new route
 sub add {
     my ($class, $method, $route, $code, $rest) = @_;
@@ -36,10 +50,22 @@ sub add {
         $code = $rest;
     }
 
+    if ($PREFIX) {
+        if ( ref($route) eq 'HASH' && $route->{regexp} ) {
+            if ( $method eq 'get' and $route->{regexp} !~ /^$PREFIX/ ) {
+                $route->{regexp} = $PREFIX . $route->{regexp};
+            }
+        }
+        else {
+            $route = $PREFIX . $route;
+        }
+
+    }
+
     push @{ $REG->{routes}{$method} }, {
-        method  => $method, 
-        route   => $route, 
-        code    => $code, 
+        method  => $method,
+        route   => $route,
+        code    => $code,
         options => $options};
 }
 
@@ -193,7 +219,7 @@ sub build_params {
 
 # Recursive call of actions through the matching tree
 # FIXME : too many reset_all() around, we need a wrapper to
-# call that method and making sure we do reset the shared data first 
+# call that method and making sure we do reset the shared data first
 sub call($$) {
     my ($class, $handler) = @_;
 
