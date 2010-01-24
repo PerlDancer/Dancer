@@ -35,6 +35,8 @@ $VERSION = '1.123';
     error
     false
     get
+    header
+    headers
     layout
     load
     logger
@@ -76,6 +78,8 @@ sub send_error   { Dancer::Helpers->error(@_) }
 sub false        { 0 }
 sub get          { Dancer::Route->add('head', @_);
                    Dancer::Route->add('get', @_);}
+sub headers      { Dancer::Response::headers(@_); }
+sub header       { goto &headers; } # goto ftw!
 sub layout       { set(layout => shift) }
 sub logger       { set(logger => @_) }
 sub load         { require $_ for @_ }
@@ -385,6 +389,23 @@ keyword B<content_type>
 
         # here we can dump the contents of params->{txtfile}
     };
+
+=head2 header(s)
+
+It is possible to add custom headers to responses with the B<header> (or B<headers>)
+keyword:
+
+    get '/send/header', sub {
+	    header 'X-My-Header' => 'shazam!';
+    }
+
+or...
+
+    get '/send/headers', sub {
+        headers 'X-Foo' => 'bar', X-Bar => 'foo';
+    }
+
+You can use both undistinctly, they do exactly what you expect them to do.
 
 =head1 ERROR HANDLING
 

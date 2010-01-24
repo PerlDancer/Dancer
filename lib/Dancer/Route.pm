@@ -288,13 +288,14 @@ sub call($$) {
         $content = '' if $handler->{method} eq 'head';
         my $ct = $response->{content_type} || setting('content_type');
         my $st = $response->{status} || 200;
-
+        my $headers = [];
+        push @$headers, @{ $response->{headers} }, 'Content-Type' => $ct;
 
         Dancer::SharedData->reset_all();
         return $content if ref($content) eq 'Dancer::Response';
         return Dancer::Response->new(
             status  => $st,
-            headers => [ 'Content-Type' => $ct ],
+            headers => $headers,
             content => $content);
     }
 }
