@@ -27,6 +27,10 @@ get '/headers/content_type', sub {
 	headers 'Content-Type' => 'text/css';
 };
 
+get '/headers/multiple' => sub {
+    headers 'foo' => 1, 'foo' => 2, 'bar' => 3, 'foo' => 4;
+};
+
 plan tests => 8;
 
 # /header
@@ -64,3 +68,17 @@ Dancer::SharedData->request($req);
 $res = Dancer::Renderer::get_action_response();
 %headers = @{$res->{headers}};
 is($headers{'Content-Type'}, 'text/xml', "Content-Type looks good for /headers/content_type");
+
+
+# /headers/multiple
+$req = fake_request(GET => '/headers/multiple');
+Dancer::SharedData->request($req);
+$res = Dancer::Renderer::get_action_response();
+is_deeply $res->{headers}, [
+    foo => 1, 
+    foo => 2, 
+    bar => 3, 
+    foo => 4,
+    'Content-Type' => 'text/html'
+], 'multiple headers are kept';
+

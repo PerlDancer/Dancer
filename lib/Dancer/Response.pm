@@ -45,13 +45,19 @@ sub headers {
 
 sub sanitize_headers {
     my ($self) = @_;
-    my %headers = @{ $self->{headers} };
 
-    # sanitize Location, protection from CRLF injections
-    if ($headers{Location}) {
-        $headers{Location} =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
+    my @headers = @{ $self->{headers} };
+    my @sanitized = ();
+    for (my $i=0; $i<scalar(@headers); $i+=2) {
+        my ($key, $value) = ($headers[$i], $headers[$i+1]);
+
+        # sanitize Location, protection from CRLF injections
+        if ($key eq 'Location') {
+            $value =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
+        }
+        push @sanitized, ($key => $value);
     }
-    $self->{headers} = [ %headers ];
+    $self->{headers} = \@sanitized;
 }
 
 1;
