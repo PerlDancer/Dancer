@@ -13,32 +13,3 @@
         1 - GET / -> first call, so browse the route tree
         2 - GET / -> second call, return cache('/');
 
-* Conditions support for route matching: 
-
-    get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
-        ...
-    };
-
-* Prefix support
-
-	Could be great to be able to define a prefix path for each 
-	route hanlder defined then.
-
-	Would work like the following:
-
-	prefix '/home';
-
-	# any route handler and before filter is applied to /home/*
-
-	get '/page1' => sub { }; # will match '/home/page1';
-
-	prefix undef;
-	# no more prefix
-
-	get '/page1' => sub { }; # will match /page1
-
-	And that should also work for before filters:
-
-	prefix '/home';
-	before sub { must_be_authenticated }; # this filter only applies to /home/* paths
-
