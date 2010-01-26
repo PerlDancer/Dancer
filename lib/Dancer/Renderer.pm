@@ -21,8 +21,8 @@ sub render_file {
 sub render_action {
     my $resp = get_action_response();
     return (defined $resp)
-        ? response_with_headers($resp)
-        : undef;
+      ? response_with_headers($resp)
+      : undef;
 }
 
 sub render_error {
@@ -34,12 +34,13 @@ sub render_error {
     return $response if $response;
 
     return Dancer::Response->new(
-        status => $error_code,
-        headers => [ 'Content-Type' => 'text/html' ],
+        status  => $error_code,
+        headers => ['Content-Type' => 'text/html'],
         content => Dancer::Renderer->html_page(
-            "Error $error_code" =>
-            "<h2>Unable to process your query</h2>".
-            "The page you requested is not available"));
+                "Error $error_code" => "<h2>Unable to process your query</h2>"
+              . "The page you requested is not available"
+        )
+    );
 }
 
 # Takes a response object and add default headers
@@ -48,10 +49,10 @@ sub response_with_headers {
 
     $response->{headers} ||= [];
     push @{$response->{headers}},
-        ('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+      ('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
 
     # add cookies
-    foreach my $c (keys %{ Dancer::Cookies->cookies }) {
+    foreach my $c (keys %{Dancer::Cookies->cookies}) {
         my $cookie = Dancer::Cookies->cookies->{$c};
         if (Dancer::Cookies->has_changed($cookie)) {
             push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
@@ -67,15 +68,16 @@ sub html_page {
     # TODO build the HTML with Dancer::Template::Simple
     return start_html(
         -title => $title,
-        -style => "/css/$style.css")
-             . h1($title)
-             . "<div id=\"content\">"
-             . "<p>$content</p>"
-             . "</div>"
-             . '<div id="footer">'
-             . 'Powered by <a href="http://dancer.sukria.net">Dancer</a>'
-             . '</div>'
-             . end_html();
+        -style => "/css/$style.css"
+      )
+      . h1($title)
+      . "<div id=\"content\">"
+      . "<p>$content</p>"
+      . "</div>"
+      . '<div id="footer">'
+      . 'Powered by <a href="http://dancer.sukria.net">Dancer</a>'
+      . '</div>'
+      . end_html();
 }
 
 sub get_action_response() {
@@ -90,8 +92,8 @@ sub get_action_response() {
 }
 
 sub get_file_response() {
-    my $request = Dancer::Request->new;
-    my $path = $request->path;
+    my $request     = Dancer::Request->new;
+    my $path        = $request->path;
     my $static_file = path(setting('public'), $path);
     return Dancer::Renderer->get_file_response_for_path($static_file);
 }
@@ -103,9 +105,10 @@ sub get_file_response_for_path {
     if (-f $static_file) {
         open my $fh, "<", $static_file;
         return Dancer::Response->new(
-            status => $status,
-            headers => [ 'Content-Type' => get_mime_type($static_file) ],
-            content => $fh);
+            status  => $status,
+            headers => ['Content-Type' => get_mime_type($static_file)],
+            content => $fh
+        );
     }
     return undef;
 }

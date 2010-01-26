@@ -8,6 +8,7 @@ use vars '@EXPORT_OK';
 @EXPORT_OK = 'status';
 
 my $HTTP_CODES = {
+
     # informational
     # 100 => 'Continue', # only on HTTP 1.1
     # 101 => 'Switching Protocols', # only on HTTP 1.1
@@ -16,18 +17,22 @@ my $HTTP_CODES = {
     200 => 'OK',
     201 => 'Created',
     202 => 'Accepted',
+
     # 203 => 'Non-Authoritative Information', # only on HTTP 1.1
     204 => 'No Content',
     205 => 'Reset Content',
     206 => 'Partial Content',
-    
+
     # redirections
     301 => 'Moved Permanently',
     302 => 'Found',
+
     # 303 => '303 See Other', # only on HTTP 1.1
     304 => 'Not Modified',
+
     # 305 => '305 Use Proxy', # only on HTTP 1.1
     306 => 'Switch Proxy',
+
     # 307 => '307 Temporary Redirect', # on HTTP 1.1
 
     # problems with request
@@ -60,17 +65,17 @@ my $HTTP_CODES = {
 };
 
 # aliases
-for my $code ( keys %$HTTP_CODES ) {
-	my $alias = lc join '_', split /\W/, $HTTP_CODES->{$code};
+for my $code (keys %$HTTP_CODES) {
+    my $alias = lc join '_', split /\W/, $HTTP_CODES->{$code};
     my $status_line = $code . ' ' . $HTTP_CODES->{$code};
-	$HTTP_CODES->{$alias} = $status_line;
-    $HTTP_CODES->{$code} = $status_line;
+    $HTTP_CODES->{$alias} = $status_line;
+    $HTTP_CODES->{$code}  = $status_line;
 }
 
 # own aliases
 $HTTP_CODES->{error} = $HTTP_CODES->{internal_server_error};
 
-sub status { 
+sub status {
     my $name = shift;
     die "unknown HTTP status code: $name" unless exists $HTTP_CODES->{$name};
     return "HTTP/1.0 " . $HTTP_CODES->{$name} . "\r\n";
@@ -78,6 +83,7 @@ sub status {
 
 'Dancer::HTTP';
 __END__
+
 =pod
 
 =head1 NAME

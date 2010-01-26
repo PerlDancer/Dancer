@@ -22,47 +22,47 @@ use Dancer::Handler;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION = '1.123';
-@EXPORT = qw(
-    any
-    before
-    cookies
-    content_type
-    dance
-    debug
-    del
-    dirname
-    error
-    false
-    get
-    header
-    headers
-    layout
-    load
-    logger
-    mime_type
-    options
-    params
-    pass
-    path
-    post
-    prefix
-    put
-    r
-    redirect
-    request
-    send_file
-    send_error
-    set
-    set_cookie
-    session
-    splat
-    status
-    template
-    true
-    var
-    vars
-    warning
+$VERSION   = '1.123';
+@EXPORT    = qw(
+  any
+  before
+  cookies
+  content_type
+  dance
+  debug
+  del
+  dirname
+  error
+  false
+  get
+  header
+  headers
+  layout
+  load
+  logger
+  mime_type
+  options
+  params
+  pass
+  path
+  post
+  prefix
+  put
+  r
+  redirect
+  request
+  send_file
+  send_error
+  set
+  set_cookie
+  session
+  splat
+  status
+  template
+  true
+  var
+  vars
+  warning
 );
 
 # Dancer's syntax
@@ -75,60 +75,65 @@ sub debug        { Dancer::Logger->debug(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub error        { Dancer::Logger->error(@_) }
 sub send_error   { Dancer::Helpers->error(@_) }
-sub false        { 0 }
-sub get          { Dancer::Route->add('head', @_);
-                   Dancer::Route->add('get', @_);}
-sub headers      { Dancer::Response::headers(@_); }
-sub header       { goto &headers; } # goto ftw!
-sub layout       { set(layout => shift) }
-sub logger       { set(logger => @_) }
-sub load         { require $_ for @_ }
-sub mime_type    { Dancer::Config::mime_types(@_) }
-sub params       { Dancer::SharedData->params  }
+sub false        {0}
+
+sub get {
+    Dancer::Route->add('head', @_);
+    Dancer::Route->add('get',  @_);
+}
+sub headers   { Dancer::Response::headers(@_); }
+sub header    { goto &headers; }                   # goto ftw!
+sub layout    { set(layout => shift) }
+sub logger    { set(logger => @_) }
+sub load      { require $_ for @_ }
+sub mime_type { Dancer::Config::mime_types(@_) }
+sub params    { Dancer::SharedData->params }
+
 # sub pass         { Dancer::Response::pass() }
-sub pass         { pass_exception }
-sub path         { Dancer::FileUtils::path(@_) }
-sub post         { Dancer::Route->add('post', @_) }
-sub prefix       { Dancer::Route->prefix(@_) }
-sub del          { Dancer::Route->add('delete', @_) }
-sub options      { Dancer::Route->add('options', @_) }
-sub put          { Dancer::Route->add('put', @_) }
-sub r            { {regexp => $_[0]} }
-sub redirect     { Dancer::Helpers::redirect(@_) }
-sub request      { Dancer::SharedData->request }
-sub send_file    { Dancer::Helpers::send_file(@_) }
-sub set          { setting(@_) }
-sub set_cookie   { Dancer::Helpers::set_cookie(@_) }
-sub session      {
+sub pass       {pass_exception}
+sub path       { Dancer::FileUtils::path(@_) }
+sub post       { Dancer::Route->add('post', @_) }
+sub prefix     { Dancer::Route->prefix(@_) }
+sub del        { Dancer::Route->add('delete', @_) }
+sub options    { Dancer::Route->add('options', @_) }
+sub put        { Dancer::Route->add('put', @_) }
+sub r          { {regexp => $_[0]} }
+sub redirect   { Dancer::Helpers::redirect(@_) }
+sub request    { Dancer::SharedData->request }
+sub send_file  { Dancer::Helpers::send_file(@_) }
+sub set        { setting(@_) }
+sub set_cookie { Dancer::Helpers::set_cookie(@_) }
+
+sub session {
     if (@_ == 0) {
         return Dancer::Session->get;
     }
     else {
         return (@_ == 1)
-            ? Dancer::Session->read(@_)
-            : Dancer::Session->write(@_)
+          ? Dancer::Session->read(@_)
+          : Dancer::Session->write(@_);
     }
 }
-sub splat        { @{ Dancer::SharedData->params->{splat} } }
-sub status       { Dancer::Response::status(@_) }
-sub template     { Dancer::Helpers::template(@_) }
-sub true         { 1 }
-sub var          { Dancer::SharedData->var(@_) }
-sub vars         { Dancer::SharedData->vars }
-sub warning      { Dancer::Logger->warning(@_) }
+sub splat    { @{Dancer::SharedData->params->{splat}} }
+sub status   { Dancer::Response::status(@_) }
+sub template { Dancer::Helpers::template(@_) }
+sub true     {1}
+sub var      { Dancer::SharedData->var(@_) }
+sub vars     { Dancer::SharedData->vars }
+sub warning  { Dancer::Logger->warning(@_) }
 
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
-    my ($class, $symbol) = @_;
+    my ($class,   $symbol) = @_;
     my ($package, $script) = caller;
     strict->import;
     warnings->import;
 
-    $class->export_to_level( 1, $class, @EXPORT );
+    $class->export_to_level(1, $class, @EXPORT);
 
     # if :syntax option exists, don't change settings
-    if ( $symbol && $symbol eq ':syntax' ) {
+    if ($symbol && $symbol eq ':syntax') {
         return;
     }
 

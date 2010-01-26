@@ -1,4 +1,5 @@
 package Dancer::ModuleLoader;
+
 # Abstraction layer for dynamic module loading
 
 use strict;

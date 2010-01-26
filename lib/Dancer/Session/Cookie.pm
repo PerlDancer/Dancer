@@ -6,7 +6,7 @@ use base 'Dancer::Session::Abstract';
 
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
-use Storable ();
+use Storable     ();
 use MIME::Base64 ();
 
 # crydec
@@ -16,16 +16,16 @@ sub init {
     my ($class) = @_;
 
     Dancer::ModuleLoader->load('Crypt::CBC')
-        or die "Crypt::CBC is needed and is not installed";
+      or die "Crypt::CBC is needed and is not installed";
 
     Dancer::ModuleLoader->load('String::CRC32')
-        or die "String::CRC32 is needed and is not installed";
+      or die "String::CRC32 is needed and is not installed";
 
-    Dancer::ModuleLoader->load('Crypt::Rijndael')   # XXX fallback to DES
-        or die "Crypt::Rijndael is needed and is not installed";
+    Dancer::ModuleLoader->load('Crypt::Rijndael')    # XXX fallback to DES
+      or die "Crypt::Rijndael is needed and is not installed";
 
-    my $key = setting("session_cookie_key")     # XXX default to smth with warning
-        or die "The setting session_cookie_key must be defined";
+    my $key = setting("session_cookie_key")  # XXX default to smth with warning
+      or die "The setting session_cookie_key must be defined";
 
     $CIPHER = Crypt::CBC->new(
         -key    => $key,
@@ -34,7 +34,8 @@ sub init {
 }
 
 sub new {
-    my $self = Dancer::Object::new(@_); 
+    my $self = Dancer::Object::new(@_);
+
     # id is not needed here because the whole serialized session is
     # the "id"
     return $self;
@@ -43,15 +44,15 @@ sub new {
 sub retrieve {
     my ($class, $id) = @_;
 
-    my $ses = 
-        eval {
-            # 1. decrypt and deserialize $id
-            my $plain_text = _decrypt($id);
+    my $ses = eval {
 
-            # 2. deserialize
-            $plain_text && Storable::thaw($plain_text);
-        }
-    || $class->new();
+        # 1. decrypt and deserialize $id
+        my $plain_text = _decrypt($id);
+
+        # 2. deserialize
+        $plain_text && Storable::thaw($plain_text);
+    }
+      || $class->new();
 
     return $ses;
 }
@@ -90,8 +91,10 @@ sub _encrypt {
 
     # XXX should gzip data if it grows too big. CRC32 won't be needed
     # then.
-    my $res = MIME::Base64::encode($CIPHER->encrypt(pack('La*', $crc32, $plain_text)), q{});
-    $res =~ tr{=+/}{_*-};   # cookie-safe Base64
+    my $res =
+      MIME::Base64::encode($CIPHER->encrypt(pack('La*', $crc32, $plain_text)),
+        q{});
+    $res =~ tr{=+/}{_*-};    # cookie-safe Base64
 
     return $res;
 }
@@ -101,12 +104,14 @@ sub _decrypt {
 
     $cookie =~ tr{_*-}{=+/};
 
-    my ($crc32, $plain_text) = unpack "La*", $CIPHER->decrypt(MIME::Base64::decode($cookie));
+    my ($crc32, $plain_text) = unpack "La*",
+      $CIPHER->decrypt(MIME::Base64::decode($cookie));
     return $crc32 == String::CRC32::crc32($plain_text) ? $plain_text : undef;
 }
 
 1;
 __END__
+
 =pod
 
 =head1 NAME

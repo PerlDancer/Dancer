@@ -5,10 +5,10 @@ use warnings;
 
 # singleton for the current template engine
 my $engine;
-sub engine { $engine }
+sub engine {$engine}
 
 # init the engine according to the settings
-# the template engine module will take from the 
+# the template engine module will take from the
 # setting name.
 sub init {
     my ($self, $setting, $config) = @_;
@@ -41,6 +41,7 @@ sub _build_template_engine_from_setting {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME

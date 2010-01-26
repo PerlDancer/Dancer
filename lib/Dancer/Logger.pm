@@ -1,4 +1,5 @@
 package Dancer::Logger;
+
 # Factory for logger engines
 
 use strict;
@@ -6,7 +7,7 @@ use warnings;
 
 # singleton used for logging messages
 my $logger;
-sub logger  { $logger }
+sub logger {$logger}
 
 sub init {
     my ($class, $setting) = @_;

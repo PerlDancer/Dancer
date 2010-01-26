@@ -31,21 +31,21 @@ sub get { get_current_session() }
 sub init {
     my ($class, $setting) = @_;
 
-    (exists $ENGINES->{$setting}) 
-        ? set_engine($ENGINES->{$setting})
-        : die "unsupported session engine: `$setting'";
+    (exists $ENGINES->{$setting})
+      ? set_engine($ENGINES->{$setting})
+      : die "unsupported session engine: `$setting'";
 }
 
 # retrieve or create a session for the client
 sub get_current_session {
-    my $sid = engine->read_session_id;
+    my $sid     = engine->read_session_id;
     my $session = undef;
 
     $session = engine->retrieve($sid) if $sid;
 
     if (not defined $session) {
         $session = engine->create();
-        Dancer::Logger->debug("new session created => ".$session->id);
+        Dancer::Logger->debug("new session created => " . $session->id);
         engine->write_session_id($session->id);
     }
     return $session;
@@ -61,7 +61,7 @@ sub write {
     my ($class, $key, $value) = @_;
     my $session = get_current_session();
     $session->{$key} = $value;
-    
+
     # TODO : should be moved as an "after" filter
     $session->flush;
     return $value;
@@ -69,6 +69,7 @@ sub write {
 
 1;
 __END__
+
 =pod
 
 =head1 NAME

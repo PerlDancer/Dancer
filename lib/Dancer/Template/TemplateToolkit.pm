@@ -13,24 +13,24 @@ sub init {
     my ($self) = @_;
 
     die "Template is needed by Dancer::Template::TemplateToolkit"
-        unless Dancer::ModuleLoader->load('Template');
+      unless Dancer::ModuleLoader->load('Template');
     my $tt_config = {
         START_TAG => '<%',
-        END_TAG => '%>',
-        ANYCASE => 1,
-        ABSOLUTE => 1,
+        END_TAG   => '%>',
+        ANYCASE   => 1,
+        ABSOLUTE  => 1,
     };
 
-    $tt_config->{INCLUDE_PATH} = path($self->{settings}{'appdir'}, 'views') 
-        if $self->{settings} && $self->{settings}{'appdir'};
+    $tt_config->{INCLUDE_PATH} = path($self->{settings}{'appdir'}, 'views')
+      if $self->{settings} && $self->{settings}{'appdir'};
 
     $_engine = Template->new(%$tt_config);
 }
 
 sub render($$$) {
     my ($self, $template, $tokens) = @_;
-    die "'$template' is not a regular file" 
-        if !ref($template) && (! -f $template);
+    die "'$template' is not a regular file"
+      if !ref($template) && (!-f $template);
 
     my $content = "";
     $_engine->process($template, $tokens, \$content) or die $_engine->error;
@@ -39,6 +39,7 @@ sub render($$$) {
 
 1;
 __END__
+
 =pod
 
 =head1 NAME

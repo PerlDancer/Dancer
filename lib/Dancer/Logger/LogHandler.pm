@@ -36,8 +36,8 @@ sub _format {
     my $message = shift;
     my ($package, $file, $line) = caller(4);
     $package ||= '-';
-    $file ||= '-';
-    $line ||= '-';
+    $file    ||= '-';
+    $line    ||= '-';
 
     chomp $message;
     return "$message in $file l. $line\n";
