@@ -22,7 +22,7 @@ mock 'Dancer::Session::YAML'
 mock 'Dancer::Session::YAML'
     => method 'destroy' => should sub { $fake_session };
 
-ok(set(session => 'yaml'), "set session engine to 'yaml'");
+ok(set(session => 'YAML'), "set session engine to 'YAML'");
 
 is session('foo'), 42, 'session reader works';
 ok session('foo' => 54), 'session writer works';

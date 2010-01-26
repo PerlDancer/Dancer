@@ -9,7 +9,7 @@ eval "use YAML";
 plan skip_all => "YAML needed for this test" if $@;
  
 my @clients = qw(one two three);
-my @engines = qw(yaml);
+my @engines = qw(YAML);
 
 if ($ENV{DANCER_TEST_MEMCACHED}) {
     push @engines, "memcached";

@@ -89,7 +89,7 @@ It's not recommended to use this session engine in production environements.
 
 =head1 CONFIGURATION
 
-The setting B<session> should be set to C<yaml> in order to use this session
+The setting B<session> should be set to C<YAML> in order to use this session
 engine in a Dancer application.
 
 Files will be stored to the value of the setting C<session_dir>, which default value is
@@ -98,7 +98,7 @@ C<appdir/sessions>.
 Here is an example configuration that use this session engine and stores session
 files in /tmp/dancer-sessions
 
-    session: "yaml"
+    session: "YAML"
     session_dir: "/tmp/dancer-sessions"
 
 =head1 DEPENDENCY

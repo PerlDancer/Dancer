@@ -15,7 +15,6 @@ lib/Dancer/HTTP.pm
 lib/Dancer/Logger/Abstract.pm
 lib/Dancer/Logger/File.pm
 lib/Dancer/Logger.pm
-lib/Dancer/Logger/Syslog.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
 lib/Dancer.pm
@@ -24,8 +23,6 @@ lib/Dancer/Request.pm
 lib/Dancer/Response.pm
 lib/Dancer/Route.pm
 lib/Dancer/Session/Abstract.pm
-lib/Dancer/Session/Cookie.pm
-lib/Dancer/Session/Memcached.pm
 lib/Dancer/Session.pm
 lib/Dancer/Session/YAML.pm
 lib/Dancer/SharedData.pm
@@ -103,7 +100,6 @@ t/08_session/02_dependency_check.t
 t/08_session/03_http_requests.t
 t/08_session/04_api.t
 t/08_session/05_yaml.t
-t/08_session/06_cookie.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t
@@ -117,7 +113,6 @@ t/10_template/index.txt
 t/11_logger/01_abstract.t
 t/11_logger/02_factory.t
 t/11_logger/03_file.t
-t/11_logger/04_syslog.t
 t/12_response/01_CRLF_injection.t
 t/lib/EasyMocker.pm
 t/lib/TestApp.pm
