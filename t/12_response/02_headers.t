@@ -31,7 +31,7 @@ get '/headers/multiple' => sub {
     headers 'foo' => 1, 'foo' => 2, 'bar' => 3, 'foo' => 4;
 };
 
-plan tests => 8;
+plan tests => 9;
 
 # /header
 my $req = fake_request(GET => '/header');
