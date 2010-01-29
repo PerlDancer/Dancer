@@ -21,7 +21,7 @@ sub require {
 
 sub class_from_setting {
     my ($self, $namespace, $setting) = @_;
-    
+
     my $class = "";
     for my $token (split /_/, $setting) {
         $class .= ucfirst($token);

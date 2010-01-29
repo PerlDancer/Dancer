@@ -12,12 +12,12 @@ sub logger {$logger}
 
 sub init {
     my ($class, $setting) = @_;
-    
-    my $engine_class = Dancer::ModuleLoader->class_from_setting(
-        'Dancer::Logger' => $setting);
 
-    die "unknown logger '$setting'" 
-        unless Dancer::ModuleLoader->require($engine_class);
+    my $engine_class =
+      Dancer::ModuleLoader->class_from_setting('Dancer::Logger' => $setting);
+
+    die "unknown logger '$setting'"
+      unless Dancer::ModuleLoader->require($engine_class);
 
     $logger = $engine_class->new;
 }
@@ -29,6 +29,7 @@ sub error   { $logger->error($_[1]) }
 1;
 
 __END__
+
 =pod
 
 =head1 NAME

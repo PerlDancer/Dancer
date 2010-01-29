@@ -21,11 +21,11 @@ sub init {
     }
 
     # trying to load the engine
-    my $engine_class = Dancer::ModuleLoader->class_from_setting(
-        'Dancer::Template' => $setting);
-    
-    die "unknown template engine '$setting'" 
-        unless Dancer::ModuleLoader->require($engine_class);
+    my $engine_class =
+      Dancer::ModuleLoader->class_from_setting('Dancer::Template' => $setting);
+
+    die "unknown template engine '$setting'"
+      unless Dancer::ModuleLoader->require($engine_class);
 
     # creating the engine
     $engine = $engine_class->new(settings => $config);

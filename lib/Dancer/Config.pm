@@ -99,7 +99,6 @@ sub load_settings_from_yaml {
 }
 
 
-
 sub load_default_settings {
     $SETTINGS->{server}       ||= '127.0.0.1';
     $SETTINGS->{port}         ||= '3000';

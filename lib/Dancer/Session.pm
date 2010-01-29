@@ -14,11 +14,11 @@ sub engine {$ENGINE}
 sub init {
     my ($class, $setting) = @_;
 
-    $ENGINE = Dancer::ModuleLoader->class_from_setting(
-        'Dancer::Session' => $setting);
+    $ENGINE =
+      Dancer::ModuleLoader->class_from_setting('Dancer::Session' => $setting);
 
     die "unsupported session engine: `$setting'"
-        unless Dancer::ModuleLoader->require($ENGINE);
+      unless Dancer::ModuleLoader->require($ENGINE);
 
     $ENGINE->init();
 }
