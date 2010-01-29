@@ -122,4 +122,5 @@ t/12_response/02_headers.t
 t/lib/EasyMocker.pm
 t/lib/TestApp.pm
 t/TestUtils.pm
+t/pod.t
 TODO
