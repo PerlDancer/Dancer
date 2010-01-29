@@ -1,7 +1,20 @@
-Dancer 1.123~
+Dancer 1.130
 	* Fix a memory leak that could occur between two 
 	  requests under mod_perl (Thanks to Nicolas Rennert for 
 	  the report and diagnosis).
+	* remove all optional modules from the core, they are now 
+	  shipped as separate CPAN distributions:
+	  - Dancer::Template::MicroTemplate
+	  - Dancer::Session::Cookie
+	  - Dancer::Session::Memcached
+	  - Dancer::Logger::LogHandler
+	  - Dancer::Logger::Syslog
+	* support for the `header' keyword in Dancer's syntax.
+	  The user is now able to alter response-headers in route 
+	  handlers.
+	* support for `prefix' keyword in Dancer's syntax.
+	  A prefix can be set by the user before defining routes handlers.
+	  All route defined then will be automatically prefixed accordingly.
 	  
 Dancer 1.122
 
