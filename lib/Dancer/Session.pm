@@ -10,16 +10,6 @@ use Dancer::Config 'setting';
 my $ENGINE = undef;
 sub engine {$ENGINE}
 
-sub set_engine {
-    my ($engine) = @_;
-    $ENGINE = $engine;
-    eval "use $ENGINE";
-    die "Unable to load session engine `$ENGINE': $@" if $@;
-    engine->init();
-}
-
-sub get { get_current_session() }
-
 # This wrapper look for the session engine and try to load it.
 sub init {
     my ($class, $setting) = @_;
@@ -47,6 +37,8 @@ sub get_current_session {
     }
     return $session;
 }
+
+sub get { get_current_session() }
 
 sub read {
     my ($class, $key) = @_;
