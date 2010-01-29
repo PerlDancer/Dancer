@@ -79,8 +79,8 @@ itself.
 
 See L<Dancer> for details about the complete framework.
 
-You can also search the CPAN for existing engines in the Dancer::Template
-namespace : L<http://search.cpan.org/search?query=Dancer%3A%3ATemplate>.
+You can also search the CPAN for existing engines in the Dancer::Logger
+namespace : L<http://search.cpan.org/search?query=Dancer%3A%3ALogger>.
 
 =cut
 1;
