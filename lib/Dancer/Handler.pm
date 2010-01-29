@@ -13,7 +13,7 @@ use Dancer::Config 'setting';
 use Dancer::Handler::PSGI;
 use Dancer::Handler::Standalone;
 
-sub init { 
+sub init {
     Dancer::GetOpt->process_args();
     Dancer::Config->load;
 }
@@ -31,44 +31,49 @@ sub get_handler {
 # virtual interface for any Dancer handler
 # a dancer handler is class that can "run" Dancer apps.
 
-sub dance { die "dance() must be implemented by handler" }
+sub dance           { die "dance() must be implemented by handler" }
 sub render_response { die "render_response() must be implemented by handler" }
 
 # default handle_request method, should work for each handler
 sub handle_request {
     my ($self, $request) = @_;
 
-    # we may enter here with a CGI object in $request, but 
+    # we may enter here with a CGI object in $request, but
     # we don't want to remain like that after this point.
     $request = Dancer::Request->normalize($request);
 
+    # clean the request singleton first
+    Dancer::SharedData->reset_all();
+
+    # initialize the request singleton
     Dancer::SharedData->request($request);
-    Dancer::Logger->debug("[dancer.core] handle_request ".$request->path);
-    
+
     # read cookies from client
     Dancer::Cookies->init;
 
     if (setting('auto_reload')) {
         eval "use Module::Refresh";
         if ($@) {
-            Dancer::Logger->warning("auto_reload is set, ".
-                "but Module::Refresh is not installed");
+            Dancer::Logger->warning("auto_reload is set, "
+                  . "but Module::Refresh is not installed");
         }
         else {
             my $orig_reg = Dancer::Route->registry;
             Dancer::Route->purge_all;
             Module::Refresh->refresh;
             my $new_reg = Dancer::Route->registry;
-            Dancer::Route->merge_registry($orig_reg, $new_reg); 
+            Dancer::Route->merge_registry($orig_reg, $new_reg);
         }
     }
 
-    my $response = Dancer::Renderer->render_file
-        || Dancer::Renderer->render_action
-        || Dancer::Renderer->render_error(404);
-    
-    Dancer::Logger->debug("[dancer.core] handle_request got response: ".$response->{status})
-        if defined $response;
+    my $response =
+         Dancer::Renderer->render_file
+      || Dancer::Renderer->render_action
+      || Dancer::Renderer->render_error(404);
+
+    Dancer::Logger->debug(
+        "[dancer.core] handle_request got response: " . $response->{status})
+      if defined $response;
     return $self->render_response($response);
 }
 

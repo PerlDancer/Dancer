@@ -10,7 +10,7 @@ use Dancer::SharedData;
 
 sub new {
     my $class = shift;
-    my $self = {};
+    my $self  = {};
     bless $self, $class;
     return $self;
 }
@@ -23,15 +23,11 @@ sub dance {
 
 sub render_response {
     my ($self, $response) = @_;
-    
-    my $content = $response->{content};
-    $content = [ $content ] unless (ref($content) eq 'GLOB');
 
-    return [ 
-        $response->{status},
-        $response->{headers},
-        $content
-    ];
+    my $content = $response->{content};
+    $content = [$content] unless (ref($content) eq 'GLOB');
+
+    return [$response->{status}, $response->{headers}, $content];
 }
 
 1;

@@ -14,7 +14,7 @@ use Dancer::SharedData;
 use Dancer::Exceptions;
 use Dancer::Template;
 
-sub send_file { 
+sub send_file {
     my ($path) = @_;
 
     my $request = Dancer::Request->new_for_request('GET' => $path);
@@ -24,8 +24,9 @@ sub send_file {
     return $resp if $resp;
 
     my $error = Dancer::Error->new(
-        code    => 404, 
-        message => "No such file: `$path'");
+        code    => 404,
+        message => "No such file: `$path'"
+    );
     Dancer::Response::set($error->render);
 }
 
@@ -39,16 +40,17 @@ sub template {
     $view = path(setting('views'), $view);
 
     $tokens ||= {};
-    $tokens->{params} = Dancer::SharedData::params();
+    $tokens->{params}  = Dancer::SharedData::params();
     $tokens->{request} = Dancer::SharedData->request;
-    
+
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
- 
+
     $layout .= '.tt' if $layout !~ /\.tt/;
     $layout = path(setting('views'), 'layouts', $layout);
-    my $full_content = Dancer::Template->engine->render(
-        $layout, {%$tokens, content => $content});
+    my $full_content =
+      Dancer::Template->engine->render($layout,
+        {%$tokens, content => $content});
 
     return $full_content;
 }
@@ -63,14 +65,15 @@ sub error {
 }
 
 sub redirect {
-	my($destination, $status) = @_;
+    my ($destination, $status) = @_;
 
-	Dancer::Response::set({
-		status => $status || 302,
-		headers => [ 'Location' => $destination ],
-	});
+    Dancer::Response::set(
+        {   status => $status || 302,
+            headers => ['Location' => $destination],
+        }
+    );
 
-	halt; # w00t!
+    halt;    # w00t!
 }
 
 #
@@ -81,7 +84,8 @@ sub set_cookie {
     Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
         name  => $name,
         value => $value,
-        %options);
+        %options
+    );
 }
 
 1;

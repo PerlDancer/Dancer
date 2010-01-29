@@ -9,13 +9,13 @@ use Dancer::FileUtils 'read_file_content';
 sub init {
     my $self = shift;
     $self->start_tag('<%') unless defined $self->start_tag;
-    $self->stop_tag('%>') unless defined $self->stop_tag;
+    $self->stop_tag('%>')  unless defined $self->stop_tag;
 }
 
 sub render($$$) {
     my ($self, $template, $tokens) = @_;
     my $content;
-    
+
     $content = _read_content_from_template($template);
     $content = $self->parse_branches($content, $tokens);
 
@@ -27,13 +27,13 @@ sub parse_branches {
     my ($start, $stop) = ($self->start_tag, $self->stop_tag);
 
     my @buffer;
-    my $prefix = "";
-    my $should_bufferize = 1;
-    my $opened_tag = 0;
+    my $prefix             = "";
+    my $should_bufferize   = 1;
+    my $opened_tag         = 0;
     my $bufferize_if_token = 0;
-    $content =~ s/\Q${start}\E(\S)/${start} $1/sg; 
-    $content =~ s/(\S)\Q${stop}\E/$1 ${stop}/sg; 
-    
+    $content =~ s/\Q${start}\E(\S)/${start} $1/sg;
+    $content =~ s/(\S)\Q${stop}\E/$1 ${stop}/sg;
+
     foreach my $word (split / /, $content) {
         if ($word =~ /(.*)\Q$start\E/s) {
             my $junk = $1;
@@ -54,11 +54,11 @@ sub parse_branches {
             }
             $opened_tag = 0;
         }
-        elsif ($word eq 'if' && $opened_tag ) {
+        elsif ($word eq 'if' && $opened_tag) {
             $bufferize_if_token = 1;
             next;
         }
-        elsif ($word eq 'else' && $opened_tag ) {
+        elsif ($word eq 'else' && $opened_tag) {
             $should_bufferize = !$should_bufferize;
             next;
         }
@@ -72,11 +72,16 @@ sub parse_branches {
             next;
         }
         elsif ($opened_tag) {
-            push @buffer, ($prefix . _interpolate_value( _find_value_from_token_name($word, $tokens)));
+            push @buffer,
+              ( $prefix
+                  . _interpolate_value(
+                    _find_value_from_token_name($word, $tokens)
+                  )
+              );
             $prefix = "";
         }
-        elsif($should_bufferize) {
-            push @buffer, $prefix.$word;
+        elsif ($should_bufferize) {
+            push @buffer, $prefix . $word;
             $prefix = "";
         }
     }
@@ -95,10 +100,10 @@ sub _read_content_from_template {
     }
     else {
         die "'$template' is not a regular file"
-            unless -f $template;
+          unless -f $template;
         $content = read_file_content($template);
-        die "unable to read content for file $template" 
-            if not defined $content;
+        die "unable to read content for file $template"
+          if not defined $content;
     }
     return $content;
 }

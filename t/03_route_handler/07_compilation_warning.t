@@ -4,8 +4,8 @@ use lib 't';
 use TestUtils;
 use Dancer;
 
-# Perl 5.8.x won't catch the warning
-plan skip_all => 'Need Perl > 5.8' if $] < 5.010;
+# perl <= 5.8.x won't catch the warning
+plan skip_all => 'Need perl >= 5.10' if $] < 5.010;
 
 set warnings => 1;
 set show_errors => 1;

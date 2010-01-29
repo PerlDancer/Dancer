@@ -14,17 +14,17 @@ sub init {
     my ($class) = @_;
 
     die "YAML is needed and is not installed"
-        unless Dancer::ModuleLoader->load('YAML');
+      unless Dancer::ModuleLoader->load('YAML');
 
     # default value for session_dir
     setting('session_dir' => path(setting('appdir'), 'sessions'))
-        if not defined setting('session_dir');
-    
+      if not defined setting('session_dir');
+
     # make sure session_dir exists
     my $session_dir = setting('session_dir');
-    if (! -d $session_dir) {
-        mkdir $session_dir 
-            or die "session_dir $session_dir cannot be created";
+    if (!-d $session_dir) {
+        mkdir $session_dir
+          or die "session_dir $session_dir cannot be created";
     }
     Dancer::Logger->debug("session_dir : $session_dir");
 }
@@ -47,7 +47,7 @@ sub retrieve {
     return YAML::LoadFile(yaml_file($id));
 }
 
-# instance 
+# instance
 
 sub yaml_file {
     my ($id) = @_;
@@ -69,6 +69,7 @@ sub flush {
 
 1;
 __END__
+
 =pod
 
 =head1 NAME

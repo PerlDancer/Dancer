@@ -18,7 +18,7 @@ sub logdir {
 sub init {
     my $logdir = logdir();
 
-    if (! -d $logdir) {
+    if (!-d $logdir) {
         if (not mkdir $logdir) {
             warn "log directory $logdir doen't exist, unable to create";
             return undef $logfile;
@@ -39,8 +39,8 @@ sub _format {
     my ($level, $message) = @_;
     my ($package, $file, $line) = caller(3);
     $package ||= '-';
-    $file ||= '-';
-    $line ||= '-';
+    $file    ||= '-';
+    $line    ||= '-';
 
     my $time = localtime;
     chomp $message;

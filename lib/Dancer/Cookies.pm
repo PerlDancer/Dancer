@@ -6,7 +6,7 @@ use Dancer::Cookie;
 # all cookies defined by the application are store in that singleton
 # this is a hashref the represent all key/value pairs to store as cookies
 my $COOKIES = {};
-sub cookies { $COOKIES }
+sub cookies {$COOKIES}
 
 sub parse_cookie_from_env {
     my $env_str = $ENV{COOKIE} || $ENV{HTTP_COOKIE};
@@ -15,7 +15,8 @@ sub parse_cookie_from_env {
     my $cookies = {};
     foreach my $cookie (split('; ', $env_str)) {
         my ($name, $value) = split('=', $cookie);
-        $cookies->{$name} = Dancer::Cookie->new(name => $name, value => $value);
+        $cookies->{$name} =
+          Dancer::Cookie->new(name => $name, value => $value);
     }
     return $cookies;
 }
@@ -30,7 +31,7 @@ sub has_changed {
     my ($name, $value) = ($cookie->{name}, $cookie->{value});
 
     my $client_cookies = parse_cookie_from_env();
-    my $search = $client_cookies->{$name};
+    my $search         = $client_cookies->{$name};
     return 1 unless defined $search;
     return $search->value ne $value;
 }

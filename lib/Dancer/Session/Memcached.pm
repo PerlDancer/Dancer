@@ -14,9 +14,9 @@ my $MEMCACHED = undef;
 
 sub init {
     my ($class) = @_;
-    
+
     die "Cache::Memcached is needed and is not installed"
-        unless Dancer::ModuleLoader->load('Cache::Memcached');
+      unless Dancer::ModuleLoader->load('Cache::Memcached');
 
     my $servers = setting("memcached_servers");
     die "The setting memcached_servers must be defined"
@@ -29,8 +29,8 @@ sub init {
             die "server `$s' is invalid; port is missing, use `server:port'";
         }
     }
-    
-    Dancer::Logger->debug("memcached servers set to ".join(", ", @$servers));
+
+    Dancer::Logger->debug("memcached servers set to " . join(", ", @$servers));
     $MEMCACHED = Cache::Memcached->new(servers => $servers);
 }
 
@@ -49,7 +49,7 @@ sub retrieve($$) {
     return $MEMCACHED->get($id);
 }
 
-# instance 
+# instance
 
 sub destroy {
     my ($self) = @_;
@@ -64,6 +64,7 @@ sub flush {
 
 1;
 __END__
+
 =pod
 
 =head1 NAME
