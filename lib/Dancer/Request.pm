@@ -55,7 +55,7 @@ sub new_for_request {
     $params ||= {};
     $method = uc($method);
 
-    my $req = $class->new({ PATH_INFO => $path, REQUEST_METHOD => $method });
+    my $req = $class->new({ %ENV, PATH_INFO => $path, REQUEST_METHOD => $method });
     $req->{params} = {%{$req->{params}}, %{$params}};
 
     return $req;
