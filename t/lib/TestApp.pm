@@ -11,7 +11,7 @@ post '/name' => sub {
     "Your name: ".params->{name}
 };
 
-get '/env' => sub { Dumper(\%ENV) };
+get '/env' => sub { Dumper(Dancer::SharedData->request) };
 
 get '/cookies' => sub { Dumper(cookies()) };
 
