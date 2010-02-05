@@ -66,7 +66,6 @@ Dancer::Config->load;
 get '/' => sub { '/' };
 get '/foo' => sub { '/foo' };
 
-local *ENV = $env->{'/'};
 my $req = $request->{'/'};
 my $handler = Dancer::Handler::PSGI->new;
 my $resp = $handler->handle_request($req);

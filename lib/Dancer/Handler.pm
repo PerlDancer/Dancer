@@ -31,11 +31,6 @@ sub get_handler {
 # handle an incoming request, process it and return a response
 sub handle_request {
     my ($self, $request) = @_;
-
-    # clean the request singleton first
-    Dancer::SharedData->reset_all();
-
-    # initialize the request singleton
     Dancer::SharedData->request($request);
 
     # read cookies from client
@@ -61,9 +56,7 @@ sub handle_request {
       || Dancer::Renderer->render_action
       || Dancer::Renderer->render_error(404);
 
-    Dancer::Logger->debug(
-        "[dancer.core] handle_request got response: " . $response->{status})
-      if defined $response;
+    Dancer::SharedData->reset_all();
     return $self->render_response($response);
 }
 

@@ -19,7 +19,6 @@ sub dance { process(@_) }
 
 sub process {
     my ($self, $request) = @_;
-    Dancer::SharedData->request($request);
     $self->handle_request($request);
 }
 

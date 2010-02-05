@@ -23,7 +23,6 @@ sub start {
     my $app = sub {
         my $env = shift;
         my $req = Dancer::Request->new($env);
-        Dancer::SharedData->request($req);
         $dancer->handle_request($req);
     };
 
