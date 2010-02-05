@@ -32,10 +32,6 @@ sub get_handler {
 sub handle_request {
     my ($self, $request) = @_;
 
-    # we may enter here with a CGI object in $request, but
-    # we don't want to remain like that after this point.
-    $request = Dancer::Request->normalize($request);
-
     # clean the request singleton first
     Dancer::SharedData->reset_all();
 

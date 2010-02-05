@@ -83,7 +83,7 @@ sub html_page {
 sub get_action_response() {
     Dancer::Route->run_before_filters;
 
-    my $request = Dancer::SharedData->request || Dancer::Request->new;
+    my $request = Dancer::SharedData->request;
     my $path    = $request->path;
     my $method  = $request->method;
 
@@ -92,7 +92,7 @@ sub get_action_response() {
 }
 
 sub get_file_response() {
-    my $request     = Dancer::Request->new;
+    my $request     = Dancer::SharedData->request;
     my $path        = $request->path;
     my $static_file = path(setting('public'), $path);
     return Dancer::Renderer->get_file_response_for_path($static_file);
