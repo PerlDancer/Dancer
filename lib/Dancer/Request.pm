@@ -102,8 +102,6 @@ sub _init {
     $self->_build_method() unless $self->method;
     $self->_build_request_env();
 
-    warn "psgi.input is : ".$ENV{'psgi.input'};
-
     # input for POST/PUT data are taken from PSGI if present,
     # fallback to STDIN
     $self->{_input} = $ENV{'psgi.input'} ? $ENV{'psgi.input'} : *STDIN;
