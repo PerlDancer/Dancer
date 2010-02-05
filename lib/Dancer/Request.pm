@@ -2,7 +2,7 @@ package Dancer::Request;
 
 # webservers handling is a hell
 # this class is the common gateway interface
-# for getting infoirmation about the current
+# for getting information about the current
 # request, whatever the underlying webserver.
 
 use strict;
@@ -101,6 +101,8 @@ sub _init {
     $self->_build_path()   unless $self->path;
     $self->_build_method() unless $self->method;
     $self->_build_request_env();
+
+    warn "psgi.input is : ".$ENV{'psgi.input'};
 
     # input for POST/PUT data are taken from PSGI if present,
     # fallback to STDIN
