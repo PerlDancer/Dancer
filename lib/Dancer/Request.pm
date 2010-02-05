@@ -2,7 +2,7 @@ package Dancer::Request;
 
 # webservers handling is a hell
 # this class is the common gateway interface
-# for getting infoirmation about the current
+# for getting information about the current
 # request, whatever the underlying webserver.
 
 use strict;
