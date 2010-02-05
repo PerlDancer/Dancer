@@ -4,16 +4,17 @@ use strict;
 use warnings;
 
 my $params = {};
-my $vars = {};
+my $vars   = {};
 
-sub vars { $vars }
-sub var { 
+sub vars {$vars}
+
+sub var {
     my ($class, $key, $value) = @_;
     $vars->{$key} = $value if (@_ == 3);
     return $vars->{$key};
 }
 
-sub params { 
+sub params {
     my ($class, $value) = @_;
     $params = $value if (@_ == 2);
     return $params;
@@ -24,7 +25,7 @@ sub request { (@_ == 2) ? $request = $_[1] : $request }
 
 sub reset_all {
     $params = {};
-    $vars = {};
+    $vars   = {};
 }
 
 'Dancer::SharedData';

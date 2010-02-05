@@ -11,7 +11,7 @@ use Dancer::GetOpt;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(read_glob_content);
 
-# in standalone mode, this method initializes the process 
+# in standalone mode, this method initializes the process
 # and start an HTTP server
 sub dance {
     Dancer::GetOpt->process_args();
@@ -39,8 +39,8 @@ sub render_response {
 
     # headers
     my @headers = @{$response->{headers}};
-    for (my $i=0; $i<scalar(@headers); $i+=2) {
-        my ($header, $value) = ($headers[$i], $headers[$i+1]);
+    for (my $i = 0; $i < scalar(@headers); $i += 2) {
+        my ($header, $value) = ($headers[$i], $headers[$i + 1]);
         print "${header}: $value\r\n";
     }
     print "\r\n";
@@ -49,7 +49,7 @@ sub render_response {
     if (ref($response->{content}) eq 'GLOB') {
         print read_glob_content($response->{content});
     }
-    
+
     # print content if any
     elsif (defined $response->{content}) {
         print $response->{content};

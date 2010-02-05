@@ -18,25 +18,25 @@ __PACKAGE__->attributes('id');
 # receives a session id and should return a session object if found, or undef
 # otherwise.
 sub retrieve {
-    die "retrieve not implemented"
+    die "retrieve not implemented";
 }
 
 # args: ($class)
-# create a new empty session, flush it and return it. 
+# create a new empty session, flush it and return it.
 sub create {
-    die "create not implemented"
+    die "create not implemented";
 }
 
 # args: ($self)
 # write the (serialized) current session to the session storage
 sub flush {
-    die "flush not implemented"
+    die "flush not implemented";
 }
 
 # args: ($self)
 # remove the session from the session storage
 sub destroy {
-    die "destroy not implemented"
+    die "destroy not implemented";
 }
 
 
@@ -46,7 +46,7 @@ sub destroy {
 # attribute is 'id'. The whole object should be serialized by the session
 # engine.
 sub new {
-    my $self = Dancer::Object::new(@_); 
+    my $self = Dancer::Object::new(@_);
     $self->id(build_id());
     return $self;
 }
@@ -83,12 +83,14 @@ sub write_session_id {
     Dancer::Cookies->cookies->{$SESSION_NAME} = Dancer::Cookie->new(
         name  => $SESSION_NAME,
         value => $id,
+
         # no expires: will expire when the browser is closed
     );
 }
 
 1;
 __END__
+
 =pod
 
 =head1 NAME

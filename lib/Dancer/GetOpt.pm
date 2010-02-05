@@ -7,8 +7,8 @@ use Dancer::Config 'setting';
 use Getopt::Long;
 
 my $options = {
-    port => setting('port'),
-    daemon => setting('daemon'),
+    port        => setting('port'),
+    daemon      => setting('daemon'),
     environment => 'development',
 };
 
@@ -19,7 +19,7 @@ sub arg_to_setting {
 
 sub process_args {
     my $help = 0;
-    GetOptions( 
+    GetOptions(
         'help'          => \$help,
         'port=i'        => sub { arg_to_setting(@_) },
         'daemon'        => sub { arg_to_setting(@_) },
@@ -30,8 +30,9 @@ sub process_args {
 }
 
 sub usage_and_exit { print_usage() && exit(0) }
+
 sub print_usage {
-print <<EOF
+    print <<EOF
 \$ ./yourdancerapp.pl [options]
 
  Options:

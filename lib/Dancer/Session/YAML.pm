@@ -14,17 +14,17 @@ sub init {
     my ($class) = @_;
 
     die "YAML is needed and is not installed"
-        unless Dancer::ModuleLoader->load('YAML');
+      unless Dancer::ModuleLoader->load('YAML');
 
     # default value for session_dir
     setting('session_dir' => path(setting('appdir'), 'sessions'))
-        if not defined setting('session_dir');
-    
+      if not defined setting('session_dir');
+
     # make sure session_dir exists
     my $session_dir = setting('session_dir');
-    if (! -d $session_dir) {
-        mkdir $session_dir 
-            or die "session_dir $session_dir cannot be created";
+    if (!-d $session_dir) {
+        mkdir $session_dir
+          or die "session_dir $session_dir cannot be created";
     }
     Dancer::Logger->debug("session_dir : $session_dir");
 }
@@ -47,7 +47,7 @@ sub retrieve {
     return YAML::LoadFile(yaml_file($id));
 }
 
-# instance 
+# instance
 
 sub yaml_file {
     my ($id) = @_;
@@ -69,6 +69,7 @@ sub flush {
 
 1;
 __END__
+
 =pod
 
 =head1 NAME
@@ -88,7 +89,7 @@ It's not recommended to use this session engine in production environements.
 
 =head1 CONFIGURATION
 
-The setting B<session> should be set to C<yaml> in order to use this session
+The setting B<session> should be set to C<YAML> in order to use this session
 engine in a Dancer application.
 
 Files will be stored to the value of the setting C<session_dir>, which default value is
@@ -97,7 +98,7 @@ C<appdir/sessions>.
 Here is an example configuration that use this session engine and stores session
 files in /tmp/dancer-sessions
 
-    session: "yaml"
+    session: "YAML"
     session_dir: "/tmp/dancer-sessions"
 
 =head1 DEPENDENCY

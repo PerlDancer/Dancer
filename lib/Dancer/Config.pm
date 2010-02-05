@@ -14,10 +14,11 @@ use Carp 'confess';
 
 # singleton for storing settings
 my $SETTINGS = {
-	# default mime_types
-	mime_types => Dancer::FileUtils->mime_types,
+
+    # default mime_types
+    mime_types => Dancer::FileUtils->mime_types,
 };
-sub settings { $SETTINGS }
+sub settings {$SETTINGS}
 
 my $setters = {
     logger => sub {
@@ -37,15 +38,15 @@ my $setters = {
 # public accessor for get/set
 sub setting {
     my ($setting, $value) = @_;
-    
+
     # run the hook if setter
-    $setters->{$setting}->(@_) 
-        if (@_ == 2) && defined $setters->{$setting};
+    $setters->{$setting}->(@_)
+      if (@_ == 2) && defined $setters->{$setting};
 
     # setter/getter
-    (@_ == 2) 
-        ? $SETTINGS->{$setting} = $value
-        : $SETTINGS->{$setting} ;
+    (@_ == 2)
+      ? $SETTINGS->{$setting} = $value
+      : $SETTINGS->{$setting};
 }
 
 sub mime_types {
@@ -53,9 +54,9 @@ sub mime_types {
     $SETTINGS->{mime_types} ||= {};
     return $SETTINGS->{mime_types} if @_ == 0;
 
-    return (@_ == 2) 
-        ? $SETTINGS->{mime_types}{$ext} = $content_type
-        : $SETTINGS->{mime_types}{$ext};
+    return (@_ == 2)
+      ? $SETTINGS->{mime_types}{$ext} = $content_type
+      : $SETTINGS->{mime_types}{$ext};
 }
 
 sub conffile { path(setting('appdir'), 'config.yml') }
@@ -65,7 +66,8 @@ sub environment_file {
     return path(setting('appdir'), 'environments', "$env.yml");
 }
 
-sub load { 
+sub load {
+
     # look for the conffile
     return 1 unless -f conffile;
 
@@ -89,12 +91,13 @@ sub load {
 sub load_settings_from_yaml {
     my ($file) = @_;
 
-    my $config = YAML::LoadFile($file) or 
-        confess "Unable to parse the configuration file: $file";
+    my $config = YAML::LoadFile($file)
+      or confess "Unable to parse the configuration file: $file";
 
     @{$SETTINGS}{keys %$config} = values %$config;
     return scalar(keys %$config);
 }
+
 
 sub load_default_settings {
     $SETTINGS->{server}       ||= '127.0.0.1';
@@ -114,6 +117,7 @@ load_default_settings();
 
 1;
 __END__
+
 =pod
 
 =head1 NAME

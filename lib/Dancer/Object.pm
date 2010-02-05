@@ -16,14 +16,14 @@ sub new {
 }
 
 # initializer
-sub init { 1 }
+sub init {1}
 
 # accessors builder
 sub attributes {
     my ($class, @attributes) = @_;
 
     foreach my $attr (@attributes) {
-        my $code = sub { 
+        my $code = sub {
             my ($self, $value) = @_;
             if (@_ == 1) {
                 return $self->{$attr};
@@ -31,7 +31,7 @@ sub attributes {
             else {
                 return $self->{$attr} = $value;
             }
-        }; 
+        };
         my $method = "${class}::${attr}";
         { no strict 'refs'; *$method = $code; }
     }
