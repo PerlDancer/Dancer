@@ -215,6 +215,8 @@ sub build_params {
     my $current_params = Dancer::SharedData->params || {};
     my $request_params = scalar($request->params)   || {};
     my $route_params   = $handler->{params}         || {};
+    $request->{_route_params} = $route_params;
+
 
     return {%{$request_params}, %{$route_params}, %{$current_params},};
 }
@@ -227,7 +229,7 @@ sub call($$) {
 
     my $request = Dancer::SharedData->request;
     my $params = build_params($handler, $request);
-    Dancer::SharedData->params($params);
+    Dancer::SharedData->set_params($params);
 
     my $content;
     my $warning;    # reset any previous warning seen

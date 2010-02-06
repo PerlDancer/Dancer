@@ -14,7 +14,7 @@ sub var {
     return $vars->{$key};
 }
 
-sub params {
+sub set_params {
     my ($class, $value) = @_;
     $params = $value if (@_ == 2);
     return $params;
@@ -22,6 +22,9 @@ sub params {
 
 my $request;
 sub request { (@_ == 2) ? $request = $_[1] : $request }
+sub params { 
+    return @_ == 1 ? $params : (shift && $request->params(@_))
+}
 
 sub reset_all {
     $params = {};
