@@ -1,10 +1,5 @@
 package Dancer::Request;
 
-# webservers handling is a hell
-# this class is the common gateway interface
-# for getting information about the current
-# request, whatever the underlying webserver.
-
 use strict;
 use warnings;
 use Dancer::Object;
@@ -15,9 +10,9 @@ use base 'Dancer::Object';
 Dancer::Request->attributes(
 
     # query
-    'path',         'method',
+    'env', 'path',  'method',
     'content_type', 'content_length',
-    'body',
+    'body', 
 
     # http env
     'user_agent',      'host',
@@ -41,6 +36,9 @@ sub new {
         env            => $env,
         _chunk_size    => 4096,
         _read_position => 0,
+        _body_params  => {},
+        _query_params => {},
+        _route_params => {},
     };
 
     bless $self, $class;
@@ -48,9 +46,8 @@ sub new {
     return $self;
 }
 
-sub env { $_[0]->{env} }
-
-# this is the way to ask for a hand-cooked request
+# helper for building a request object by hand
+# with forced method, path and params.
 sub new_for_request {
     my ($class, $method, $path, $params) = @_;
     $params ||= {};
@@ -70,12 +67,27 @@ sub Vars           { params(@_) }
 sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 
 sub params {
-    my ($self, $name) = @_;
+    my ($self, $source) = @_;
     return %{$self->{params}} if wantarray && @_ == 1;
     return $self->{params} if @_ == 1;
-    return $self->{params}{$name};
-}
+    
 
+    if ($source eq 'query') {
+        return %{$self->{_query_params}} if wantarray;
+        return $self->{_query_params};
+    }
+    elsif ($source eq 'body') {
+        return %{$self->{_body_params}} if wantarray;
+        return $self->{_body_params};
+    }
+    if ($source eq 'route') {
+        return %{$self->{_route_params}} if wantarray;
+        return $self->{_route_params};
+    }
+    else {
+        die "Unknown source params \"$source\".";
+    }
+}
 
 # private
 
@@ -101,12 +113,14 @@ sub _build_request_env {
 
 sub _build_params {
     my ($self) = @_;
-    my $params = {};
-
-    $self->_parse_get_params(\$params);
-    $self->_parse_post_params(\$params)
-      if defined $self->input_handle;
-    $self->{params} = $params;
+    
+    $self->_parse_get_params();
+    $self->_parse_post_params();
+    
+    $self->{params} = { 
+        %{ $self->{_query_params} }, 
+        %{ $self->{_body_params}  }, 
+    };
 }
 
 # Written from PSGI specs:
@@ -143,22 +157,15 @@ sub _url_decode {
     return $clean;
 }
 
-sub _parse_get_params {
-    my ($self, $r_params) = @_;
-    $self->_parse_params($r_params, $self->env->{QUERY_STRING});
-}
-
 sub _parse_post_params {
-    my ($self, $r_params) = @_;
-
-    my $body        = $self->_read_to_end();
-    my $body_params = $self->{_http_body}->param;
-    $$r_params = {%{$$r_params}, %$body_params};
+    my ($self) = @_;
+    my $body = $self->_read_to_end();
+    $self->{_body_params} = $self->{_http_body}->param;
 }
 
-sub _parse_params {
-    my ($self, $r_params, $source) = @_;
-    return unless $source;
+sub _parse_get_params {
+    my ($self) = @_;
+    my $source = $self->{env}{QUERY_STRING} || '';
 
     foreach my $token (split /&/, $source) {
         my ($key, $val) = split(/=/, $token);
@@ -166,22 +173,22 @@ sub _parse_params {
         $val = $self->_url_decode($val);
 
         # looking for multi-value params
-        if (exists $$r_params->{$key}) {
-            my $prev_val = $$r_params->{$key};
+        if (exists $self->{_query_params}{$key}) {
+            my $prev_val = $self->{_query_params}{$key};
             if (ref($prev_val) && ref($prev_val) eq 'ARRAY') {
-                push @{$$r_params->{$key}}, $val;
+                push @{ $self->{_query_params}{$key} }, $val;
             }
             else {
-                $$r_params->{$key} = [$prev_val, $val];
+                $self->{_query_params}{$key} = [$prev_val, $val];
             }
         }
 
         # simple value param (first time we see it)
         else {
-            $$r_params->{$key} = $val;
+            $self->{_query_params}{$key} = $val;
         }
     }
-    return $r_params;
+    return $self->{_query_params};
 }
 
 sub _read_to_end {
@@ -233,3 +240,122 @@ sub _read {
 }
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+Dancer::Request 
+
+=head1 DESCRIPTION
+
+This class implements a common interface for accessing incoming requests in 
+a Dancer application.
+
+In a route handler, the current request object can be accessed by the C<request>
+method, like in the following example:
+
+    get '/foo' => sub {
+        request->params; # request, params parsed as a hash ref
+        request->body; # returns the request body, unparsed
+        request->path; # the path requested by the client
+        # ...
+    };
+
+A route handler should not read the environment by itslef, but should instead
+use the current request object.
+
+=head1 PUBLIC INTERFACE
+
+=head2 method()
+
+Return the HTTP method used by the client to access the application.
+
+=head2 path()
+
+Return the path requested by the client.
+
+=head2 params($source)
+
+If no source given, return a mixed hashref containing all the parameters that
+have been parsed. 
+Be aware it's a mixed structure, so if you use multiple
+variables with the same name in your route pattern, query string or request
+body, you can't know for sure which value you'll get there.
+
+If you need to use the same name for different sources of input, use the
+C<$source> option, like the following:
+
+If source equals C<route>, then only params parsed from route pattern 
+are returned.
+
+If source equals C<query>, then only params parsed from the query string are
+returned.
+
+If source equals C<body>, then only params sent in the request body will be
+returned.
+
+If another value is given for C<$source>, then an exception is triggered.
+
+=head2 content_type()
+
+Return the content type of the request.
+
+=head2 content_length()
+
+Return the content length of the request.
+
+=head2 body()
+
+Return the raw body of the request, unparsed.
+
+If you need to access the body of the request, you have to use this accessor and
+should not try to read C<psgi.input> by hand. C<Dancer::Request> already did it for you
+and kept the raw body untouched in there.
+
+=head2 env()
+
+Return the current environement (C<%ENV>), as a hashref.
+
+=head2 HTTP environment variables
+
+All HTTP environement variables that are in %ENV will be provided in the
+Dancer::Request object through specific accessors, here are those supported:
+
+=over 4
+
+=item C<user_agent>
+
+=item C<host>
+
+=item C<accept_language>
+
+=item C<accept_charset>
+
+=item C<accept_encoding>
+
+=item C<keep_alive>
+
+=item C<connection>
+
+=item C<accept>
+
+=back
+
+=head1 AUTHORS
+
+This module has been written by Alexis Sukrieh and was mostly 
+inspired by L<Plack::Request>, written by Tatsuiko Miyagawa. 
+
+Tatsuiko Miyagawa also gave a hand for the PSGI interface.
+
+=head1 LICENCE
+
+This module is released under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<Dancer>
+
+=cut
