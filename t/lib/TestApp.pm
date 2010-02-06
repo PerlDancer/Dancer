@@ -7,6 +7,15 @@ get '/name/:name' => sub {
     "Your name: ".params->{name}
 };
 
+post '/params/:var' => sub {
+    Dumper({
+        params => scalar(params),
+        route  => { params('route') },
+        query  => { params('query') },
+        body   => { params('body') }
+    });
+};
+
 post '/name' => sub {
     "Your name: ".params->{name}
 };
