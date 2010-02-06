@@ -81,13 +81,13 @@ sub get {
     Dancer::Route->add('head', @_);
     Dancer::Route->add('get',  @_);
 }
-sub headers   { Dancer::Response::headers(@_); }
-sub header    { goto &headers; }                   # goto ftw!
-sub layout    { set(layout => shift) }
-sub logger    { set(logger => @_) }
-sub load      { require $_ for @_ }
-sub mime_type { Dancer::Config::mime_types(@_) }
-sub params    { Dancer::SharedData->params(@_) }
+sub headers    { Dancer::Response::headers(@_); }
+sub header     { goto &headers; }                      # goto ftw!
+sub layout     { set(layout => shift) }
+sub logger     { set(logger => @_) }
+sub load       { require $_ for @_ }
+sub mime_type  { Dancer::Config::mime_types(@_) }
+sub params     { Dancer::SharedData->params(@_) }
 sub pass       {pass_exception}
 sub path       { Dancer::FileUtils::path(@_) }
 sub post       { Dancer::Route->add('post', @_) }

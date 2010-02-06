@@ -22,8 +22,9 @@ sub set_params {
 
 my $request;
 sub request { (@_ == 2) ? $request = $_[1] : $request }
-sub params { 
-    return @_ == 1 ? $params : (shift && $request->params(@_))
+
+sub params {
+    return @_ == 1 ? $params : (shift && $request->params(@_));
 }
 
 sub reset_all {

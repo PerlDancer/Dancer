@@ -10,9 +10,9 @@ use base 'Dancer::Object';
 Dancer::Request->attributes(
 
     # query
-    'env', 'path',  'method',
+    'env',          'path', 'method',
     'content_type', 'content_length',
-    'body', 
+    'body',
 
     # http env
     'user_agent',      'host',
@@ -36,9 +36,9 @@ sub new {
         env            => $env,
         _chunk_size    => 4096,
         _read_position => 0,
-        _body_params  => {},
-        _query_params => {},
-        _route_params => {},
+        _body_params   => {},
+        _query_params  => {},
+        _route_params  => {},
     };
 
     bless $self, $class;
@@ -70,7 +70,7 @@ sub params {
     my ($self, $source) = @_;
     return %{$self->{params}} if wantarray && @_ == 1;
     return $self->{params} if @_ == 1;
-    
+
 
     if ($source eq 'query') {
         return %{$self->{_query_params}} if wantarray;
@@ -113,14 +113,11 @@ sub _build_request_env {
 
 sub _build_params {
     my ($self) = @_;
-    
+
     $self->_parse_get_params();
     $self->_parse_post_params();
-    
-    $self->{params} = { 
-        %{ $self->{_query_params} }, 
-        %{ $self->{_body_params}  }, 
-    };
+
+    $self->{params} = {%{$self->{_query_params}}, %{$self->{_body_params}},};
 }
 
 # Written from PSGI specs:
@@ -176,7 +173,7 @@ sub _parse_get_params {
         if (exists $self->{_query_params}{$key}) {
             my $prev_val = $self->{_query_params}{$key};
             if (ref($prev_val) && ref($prev_val) eq 'ARRAY') {
-                push @{ $self->{_query_params}{$key} }, $val;
+                push @{$self->{_query_params}{$key}}, $val;
             }
             else {
                 $self->{_query_params}{$key} = [$prev_val, $val];
@@ -242,6 +239,7 @@ sub _read {
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
