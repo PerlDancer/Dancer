@@ -727,17 +727,19 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =over 8
 
-=item L<HTTP::Server::Simple>
+=item L<HTTP::Server::Simple::PSGI>
 
-=item L<CGI>
+=item L<Exception::Class>
 
-=item L<Template>
+=item L<HTTP::Body>
 
 =back
 
 The following modules are optional
 
 =over 8
+
+=item L<Template> : In order to use TT for rendering views
 
 =item L<YAML> : needed for configuration file support
 
