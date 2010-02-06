@@ -29,4 +29,8 @@ get '/read_session' => sub {
     "name='".session('name')."'"
 };
 
+put '/jsondata' => sub {
+    request->body;
+};
+
 true;

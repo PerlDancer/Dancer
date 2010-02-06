@@ -17,6 +17,7 @@ Dancer::Request->attributes(
     # query
     'path',         'method',
     'content_type', 'content_length',
+    'body',
 
     # http env
     'user_agent',      'host',
@@ -34,11 +35,11 @@ sub new {
         path           => undef,
         method         => undef,
         params         => {},
+        body           => '',
         content_length => $env->{CONTENT_LENGTH} || 0,
         content_type   => $env->{CONTENT_TYPE} || '',
         env            => $env,
         _chunk_size    => 4096,
-        _raw_body      => '',
         _read_position => 0,
     };
 
@@ -55,7 +56,8 @@ sub new_for_request {
     $params ||= {};
     $method = uc($method);
 
-    my $req = $class->new({ %ENV, PATH_INFO => $path, REQUEST_METHOD => $method });
+    my $req =
+      $class->new({%ENV, PATH_INFO => $path, REQUEST_METHOD => $method});
     $req->{params} = {%{$req->{params}}, %{$params}};
 
     return $req;
@@ -74,8 +76,8 @@ sub params {
     return $self->{params}{$name};
 }
 
-# private
 
+# private
 
 sub _init {
     my ($self) = @_;
@@ -190,11 +192,12 @@ sub _read_to_end {
 
     if ($content_length > 0) {
         while (my $buffer = $self->_read()) {
-            $self->{_raw_body} .= $buffer;
+            $self->{body} .= $buffer;
             $self->{_http_body}->add($buffer);
         }
     }
-    return $self->{_raw_body};
+
+    return $self->{body};
 }
 
 sub _has_something_to_read {

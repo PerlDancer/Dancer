@@ -30,7 +30,8 @@ sub start {
 
     if (setting('daemon')) {
         my $pid = $dancer->background();
-        print STDERR ">> Dancer server $pid listening on http://$ipaddr:$port\n";
+        print STDERR
+          ">> Dancer server $pid listening on http://$ipaddr:$port\n";
         return $pid;
     }
     else {
