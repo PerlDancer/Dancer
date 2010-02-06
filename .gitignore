@@ -1,4 +1,5 @@
 Makefile
+MANIFEST.bak
 *.old
 blib
 pm_to_blib
