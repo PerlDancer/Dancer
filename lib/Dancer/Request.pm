@@ -61,7 +61,8 @@ sub new_for_request {
     return $req;
 }
 
-# public interface compat with CGI.pm objects
+# public interface compat with CGI.pm objects (FIXME do Dancer's users really
+# need that compat layer? ) Not sure...
 sub request_method { method(@_) }
 sub path_info      { path(@_) }
 sub Vars           { params(@_) }
