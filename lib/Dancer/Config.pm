@@ -100,7 +100,7 @@ sub load_settings_from_yaml {
 
 
 sub load_default_settings {
-    $SETTINGS->{server}       ||= '127.0.0.1';
+    $SETTINGS->{server}       ||= '0.0.0.0';
     $SETTINGS->{port}         ||= '3000';
     $SETTINGS->{content_type} ||= 'text/html';
     $SETTINGS->{charset}      ||= 'UTF-8';
