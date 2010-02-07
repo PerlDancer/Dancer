@@ -82,7 +82,7 @@ sub html_page {
 
 sub get_action_response() {
     Dancer::Route->run_before_filters;
-
+    
     my $request = Dancer::SharedData->request;
     my $path    = $request->path;
     my $method  = $request->method;

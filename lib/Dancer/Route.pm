@@ -211,29 +211,22 @@ sub run_before_filters { $_->() for before_filters }
 
 sub build_params {
     my ($handler, $request) = @_;
-
-    my $current_params = Dancer::SharedData->params || {};
-    my $request_params = scalar($request->params)   || {};
-    my $route_params   = $handler->{params}         || {};
-    $request->{_route_params} = $route_params;
-
-
-    return {%{$request_params}, %{$route_params}, %{$current_params},};
+    $request->_set_route_params($handler->{params} || {});
+    return scalar($request->params);
 }
 
 # Recursive call of actions through the matching tree
-# FIXME : too many reset_all() around, we need a wrapper to
-# call that method and making sure we do reset the shared data first
 sub call($$) {
     my ($class, $handler) = @_;
 
     my $request = Dancer::SharedData->request;
     my $params = build_params($handler, $request);
-    Dancer::SharedData->set_params($params);
 
     my $content;
     my $warning;    # reset any previous warning seen
+
     local $SIG{__WARN__} = sub { $warning = $_[0] };
+
     eval { $content = $handler->{code}->() };
 
     # Log warnings
@@ -244,7 +237,6 @@ sub call($$) {
     # Halt: just stall everything and return the Response singleton
     # useful for the redirect helper
     if (Dancer::Exception::Halt->caught) {
-        Dancer::SharedData->reset_all();
         return Dancer::Response->current;
     }
     elsif
@@ -252,7 +244,6 @@ sub call($$) {
       # Pass: pass to the next route if available. otherwise, 404.
       (Dancer::Exception::Pass->caught) {
         if ($handler->{'next'}) {
-            Dancer::SharedData->reset_all();
             return Dancer::Route->call($handler->{'next'});
         }
         else {
@@ -262,7 +253,6 @@ sub call($$) {
                   . "<p>Last matching route passed, "
                   . "but no other route left.</p>"
             );
-            Dancer::SharedData->reset_all();
             return $error->render;
         }
 
@@ -293,7 +283,6 @@ sub call($$) {
                 );
 
             }
-            Dancer::SharedData->reset_all();
             return $error->render;
         }
 
@@ -306,7 +295,6 @@ sub call($$) {
         my $headers = [];
         push @$headers, @{$response->{headers}}, 'Content-Type' => $ct;
 
-        Dancer::SharedData->reset_all();
         return $content if ref($content) eq 'Dancer::Response';
         return Dancer::Response->new(
             status  => $st,

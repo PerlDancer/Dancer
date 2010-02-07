@@ -36,13 +36,14 @@ sub new {
         env            => $env,
         _chunk_size    => 4096,
         _read_position => 0,
-        _body_params   => {},
-        _query_params  => {},
+        _body_params   => undef,
+        _query_params  => undef,
         _route_params  => {},
     };
 
     bless $self, $class;
     $self->_init();
+
     return $self;
 }
 
@@ -71,7 +72,6 @@ sub params {
     return %{$self->{params}} if wantarray && @_ == 1;
     return $self->{params} if @_ == 1;
 
-
     if ($source eq 'query') {
         return %{$self->{_query_params}} if wantarray;
         return $self->{_query_params};
@@ -93,12 +93,19 @@ sub params {
 
 sub _init {
     my ($self) = @_;
+
     $self->_build_path()   unless $self->path;
     $self->_build_method() unless $self->method;
     $self->_build_request_env();
 
     $self->{_http_body} =
       HTTP::Body->new($self->content_type, $self->content_length);
+    $self->_build_params();
+}
+
+sub _set_route_params {
+    my ($self, $params) = @_;
+    $self->{_route_params} = $params;
     $self->_build_params();
 }
 
@@ -114,10 +121,21 @@ sub _build_request_env {
 sub _build_params {
     my ($self) = @_;
 
+    # params may have been populated by before filters
+    # _before_ we get there, so we have to save it first
+    my $previous = $self->params;
+
+    # now parse environement params...
     $self->_parse_get_params();
     $self->_parse_post_params();
 
-    $self->{params} = {%{$self->{_query_params}}, %{$self->{_body_params}},};
+    # and merge everything
+    $self->{params} = {
+        %$previous,
+        %{$self->{_query_params}}, 
+        %{$self->{_route_params}}, 
+        %{$self->{_body_params}},
+    };
 }
 
 # Written from PSGI specs:
@@ -156,14 +174,18 @@ sub _url_decode {
 
 sub _parse_post_params {
     my ($self) = @_;
+    return $self->{_body_params} if defined $self->{_body_params}; 
+
     my $body = $self->_read_to_end();
     $self->{_body_params} = $self->{_http_body}->param;
 }
 
 sub _parse_get_params {
     my ($self) = @_;
-    my $source = $self->{env}{QUERY_STRING} || '';
+    return $self->{_query_params} if defined $self->{_query_params};
+    $self->{_query_params} = {};
 
+    my $source = $self->{env}{QUERY_STRING} || '';
     foreach my $token (split /&/, $source) {
         my ($key, $val) = split(/=/, $token);
         $key = $self->_url_decode($key);
@@ -221,11 +243,7 @@ sub _read {
     my $buffer;
     my $rc;
 
-    # FIXME I didn't find a better way to check that... :/
-    # if we got that error below, it's because there's nothing to read at all
-    local $@;
-    eval { $rc = $self->input_handle->read($buffer, $readlen) };
-    return if $@;
+    $rc = $self->input_handle->read($buffer, $readlen);
 
     if (defined $rc) {
         $self->{_read_position} += $rc;

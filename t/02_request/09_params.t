@@ -25,7 +25,7 @@ Test::TCP::test_tcp(
         my $expected = {
                 params => {
                     a => 1, b => 2, 
-                    var => 'route',
+                    var => 'post',
                 },
                 body => {
                     var => 'post',

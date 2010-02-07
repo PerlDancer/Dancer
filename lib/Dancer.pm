@@ -87,7 +87,7 @@ sub layout     { set(layout => shift) }
 sub logger     { set(logger => @_) }
 sub load       { require $_ for @_ }
 sub mime_type  { Dancer::Config::mime_types(@_) }
-sub params     { Dancer::SharedData->params(@_) }
+sub params     { Dancer::SharedData->request->params(@_) }
 sub pass       {pass_exception}
 sub path       { Dancer::FileUtils::path(@_) }
 sub post       { Dancer::Route->add('post', @_) }
@@ -112,7 +112,7 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
-sub splat    { @{Dancer::SharedData->params->{splat}} }
+sub splat    { @{Dancer::SharedData->request->params->{splat}} }
 sub status   { Dancer::Response::status(@_) }
 sub template { Dancer::Helpers::template(@_) }
 sub true     {1}
