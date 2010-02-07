@@ -239,37 +239,11 @@ Or even, a route handler that would match any HTTP methods:
 =head2 ROUTE HANDLERS
 
 The route action is the code reference declared, it can access parameters through
-the `params' keyword, which returns an hashref.
+the `params' keyword, which returns a hashref.
 This hashref is a merge of the route pattern matches and the request params.
 
-Below are all the possible ways to define a route, note that it is not
-possible to mix them up. Don't expect to have a working application if you mix
-different kinds of route!
-
-Routes may include some matching conditions (on the useragent and the hostname at the moment):
-
-    get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
-      'foo method for songbird'
-    }
-
-    get '/foo' => sub {
-      'all browsers except songbird'
-    }
-
-=head2 PREFIX
-
-A prefix can be defined for each route handler, like this:
-
-    prefix '/home';
-
-From here, any route handler is defined to /home/*
-
-    get '/page1' => sub {}; # will match '/home/page1'
-
-You can unset the prefix value
-
-    prefix undef;
-    get '/page1' => sub {}; will match /page1
+You can have more details about how params are built and how to access them in
+the L<Dancer::Request> documentation.
 
 =head2 NAMED MATCHING
 
@@ -307,6 +281,34 @@ be defined explicitly with the keyword 'r', like the following:
         my ($name) = splat;
         return "Hello $name";
     };
+
+=head2 CONDITIONAL MATCHING
+
+Routes may include some matching conditions (on the useragent and the hostname at the moment):
+
+    get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
+      'foo method for songbird'
+    }
+
+    get '/foo' => sub {
+      'all browsers except songbird'
+    }
+
+=head2 PREFIX
+
+A prefix can be defined for each route handler, like this:
+
+    prefix '/home';
+
+From here, any route handler is defined to /home/*
+
+    get '/page1' => sub {}; # will match '/home/page1'
+
+You can unset the prefix value
+
+    prefix undef;
+    get '/page1' => sub {}; will match /page1
+
 
 =head2 RUNNING THE WEBSERVER
 
@@ -445,7 +447,7 @@ that will be accessible in the action blocks with the keyword 'var'.
 
     before sub {
         var note => 'Hi there';
-        request->path_info('/foo/oversee')
+        request->path('/foo/oversee')
     };
 
     get '/foo/*' => sub {
@@ -453,8 +455,8 @@ that will be accessible in the action blocks with the keyword 'var'.
         vars->{note}; # 'Hi there'
     };
 
-The request keyword returns the current CGI object representing the incoming request.
-See the documentation of the L<CGI> module for details.
+The request keyword returns the current Dancer::Request object representing the
+incoming request. See the documentation of the L<Dancer::Request> module for details.
 
 =head1 CONFIGURATION AND ENVIRONMENTS
 
