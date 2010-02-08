@@ -19,11 +19,15 @@ Dancer::Request->attributes(
     'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive',
     'connection',      'accept',
+    'referer',
 );
 
 # aliases
-sub agent   { $_[0]->user_agent }
-sub referer { $_[0]->env->{'X_FORWARDED_FOR'} || $_[0]->env->{'REMOTE_ADDR'} }
+sub agent { $_[0]->user_agent }
+
+sub remote_address {
+    $_[0]->env->{'X_FORWARDED_FOR'} || $_[0]->env->{'REMOTE_ADDR'};
+}
 
 sub new {
     my ($class, $env) = @_;
