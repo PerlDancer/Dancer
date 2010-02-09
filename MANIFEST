@@ -32,9 +32,7 @@ lib/Dancer/Template.pm
 lib/Dancer/Template/Abstract.pm
 lib/Dancer/Template/Simple.pm
 lib/Dancer/Template/TemplateToolkit.pm
-Makefile
-Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 MANIFEST.SKIP
 README
 ROADMAP
@@ -58,7 +56,6 @@ t/02_request/03_post_params.t
 t/02_request/04_custom.t
 t/02_request/05_cgi_pm_compat.t
 t/02_request/06_init_env.t
-t/02_request/07_normalize.t
 t/02_request/07_raw_data.t
 t/02_request/08_params.t
 t/02_request/09_params.t
@@ -128,17 +125,4 @@ t/lib/EasyMocker.pm
 t/lib/TestApp.pm
 t/pod.t
 t/TestUtils.pm
-TestApp/app.psgi
-TestApp/config.yml
-TestApp/environments/development.yml
-TestApp/environments/production.yml
-TestApp/Foo.pm
-TestApp/public/404.html
-TestApp/public/500.html
-TestApp/public/css/error.css
-TestApp/public/css/style.css
-TestApp/TestApp.pl
-TestApp/TestApp.pm
-TestApp/views/index.tt
-TestApp/views/layouts/main.tt
 TODO
