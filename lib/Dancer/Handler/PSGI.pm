@@ -15,19 +15,11 @@ sub new {
     return $self;
 }
 
-sub dance {
+sub dance { process(@_) }
+
+sub process {
     my ($self, $request) = @_;
-    Dancer::SharedData->request($request);
     $self->handle_request($request);
-}
-
-sub render_response {
-    my ($self, $response) = @_;
-
-    my $content = $response->{content};
-    $content = [$content] unless (ref($content) eq 'GLOB');
-
-    return [$response->{status}, $response->{headers}, $content];
 }
 
 1;

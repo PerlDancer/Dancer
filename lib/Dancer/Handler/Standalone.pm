@@ -3,57 +3,42 @@ package Dancer::Handler::Standalone;
 use strict;
 use warnings;
 
-use HTTP::Server::Simple::CGI;
-use base 'Dancer::Handler', 'HTTP::Server::Simple::CGI';
+use HTTP::Server::Simple::PSGI;
+use base 'Dancer::Handler', 'HTTP::Server::Simple::PSGI';
 
 use Dancer::HTTP;
 use Dancer::GetOpt;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(read_glob_content);
 
+
 # in standalone mode, this method initializes the process
 # and start an HTTP server
-sub dance {
-    Dancer::GetOpt->process_args();
-    Dancer::Config->load;
-
+sub start {
     my $ipaddr = setting('server');
     my $port   = setting('port');
+    my $dancer = Dancer::Handler::Standalone->new($port);
+    $dancer->host($ipaddr);
+
+    my $app = sub {
+        my $env = shift;
+        my $req = Dancer::Request->new($env);
+        $dancer->handle_request($req);
+    };
+
+    $dancer->app($app);
 
     if (setting('daemon')) {
-        my $pid = Dancer::Handler::Standalone->new($port)->background();
-        print ">> Dancer $pid listening on $port\n";
+        my $pid = $dancer->background();
+        print STDERR
+          ">> Dancer server $pid listening on http://$ipaddr:$port\n";
         return $pid;
     }
     else {
-        print ">> Listening on http://$ipaddr:$port\n";
-        Dancer::Handler::Standalone->new($port)->run();
+        print STDERR ">> Dancer server $$ listening on http://$ipaddr:$port\n";
+        $dancer->run();
     }
 }
 
-sub render_response {
-    my ($self, $response) = @_;
-
-    # status
-    print Dancer::HTTP::status($response->{status});
-
-    # headers
-    my @headers = @{$response->{headers}};
-    for (my $i = 0; $i < scalar(@headers); $i += 2) {
-        my ($header, $value) = ($headers[$i], $headers[$i + 1]);
-        print "${header}: $value\r\n";
-    }
-    print "\r\n";
-
-    # content
-    if (ref($response->{content}) eq 'GLOB') {
-        print read_glob_content($response->{content});
-    }
-
-    # print content if any
-    elsif (defined $response->{content}) {
-        print $response->{content};
-    }
-}
-
+sub dance { start(@_) }
 1;

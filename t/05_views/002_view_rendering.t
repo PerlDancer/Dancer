@@ -26,9 +26,11 @@ get '/' => sub {
     template 'index';
 };
 
+use Data::Dumper;
+
 # test params.foo in view
 get '/number/:number' => sub {
-    template 'index';
+    template 'index'
 };
 
 # test token interpolation

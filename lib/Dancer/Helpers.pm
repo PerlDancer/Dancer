@@ -40,8 +40,8 @@ sub template {
     $view = path(setting('views'), $view);
 
     $tokens ||= {};
-    $tokens->{params}  = Dancer::SharedData::params();
     $tokens->{request} = Dancer::SharedData->request;
+    $tokens->{params}  = Dancer::SharedData->request->params;
 
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;

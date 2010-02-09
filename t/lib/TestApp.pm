@@ -7,11 +7,20 @@ get '/name/:name' => sub {
     "Your name: ".params->{name}
 };
 
+post '/params/:var' => sub {
+    Dumper({
+        params => scalar(params),
+        route  => { params('route') },
+        query  => { params('query') },
+        body   => { params('body') }
+    });
+};
+
 post '/name' => sub {
     "Your name: ".params->{name}
 };
 
-get '/env' => sub { Dumper(\%ENV) };
+get '/env' => sub { Dumper(Dancer::SharedData->request) };
 
 get '/cookies' => sub { Dumper(cookies()) };
 
@@ -27,6 +36,10 @@ get '/set_session/*' => sub {
 
 get '/read_session' => sub {
     "name='".session('name')."'"
+};
+
+put '/jsondata' => sub {
+    request->body;
 };
 
 true;

@@ -6,30 +6,20 @@ use Dancer::SharedData;
 use Dancer::Config 'setting';
 use Dancer::Error;
 
-# singleton for stroing the routes defined
+my @supported_conditions = qw(agent user_agent host hostname referer);
+
+# routes defined
 my $REG = init_registry();
-
-# Supported options for conditional matching
-# The matching will be done against the request object
-my $VALID_OPTIONS = {
-    agent => 'user_agent',
-    host  => 'host',
-
-    # TODO maybe referer ?
-};
-
+# current prefix
 my $PREFIX;
 
 sub prefix {
     my ($class, $prefix) = @_;
-    if ($prefix) {
-        die "Not a valid prefix, must begins with '/'"
-          unless $prefix =~ m!^/!;
-        $PREFIX = $prefix;
-    }
-    else {
-        $PREFIX = undef;
-    }
+    return $PREFIX if @_ < 2;
+
+    die "Not a valid prefix, must begins with '/'"
+      if defined $prefix && ($prefix !~ /^\//);
+    $PREFIX = $prefix;
     1;
 }
 
@@ -37,33 +27,18 @@ sub prefix {
 sub add {
     my ($class, $method, $route, $code, $rest) = @_;
     $REG->{routes}{$method} ||= [];
+
+    # look for route matching conditions
     my $options;
     if ($rest) {
-        $options = $code;
-        foreach my $opt (keys %$options) {
-            if (not exists $VALID_OPTIONS->{$opt}) {
-                die "Not a valid option for route matching: `$opt'.";
-            }
-            else {
-                my $val = $options->{$opt};
-                $options->{$opt} = qr/$val/;
-            }
-        }
+        die "Invalid route definition" unless ref($code) eq 'HASH';
+        $options = $class->_build_condition_regexp($code);
         $code = $rest;
     }
 
-    if ($PREFIX) {
-        if (ref($route) eq 'HASH' && $route->{regexp}) {
-            if ($method eq 'get' and $route->{regexp} !~ /^$PREFIX/) {
-                $route->{regexp} = $PREFIX . $route->{regexp};
-            }
-        }
-        else {
-            $route = $PREFIX . $route;
-        }
-
-    }
-
+    # is there a prefix set?
+    $route = $class->_add_prefix_if_needed($route);
+    
     push @{$REG->{routes}{$method}},
       { method  => $method,
         route   => $route,
@@ -74,25 +49,25 @@ sub add {
 
 # sugar for defining multiple routes at once
 sub add_any {
-    my ($class, $methods, $route, $code);
+    my ($class, $methods, $route, $code, $rest);
 
     # syntax: any ['get', 'post'] => '/route' => sub {};
     if (@_ == 4) {
-        ($class, $methods, $route, $code) = @_;
+        ($class, $methods, $route, $code, $rest) = @_;
         die "Syntax error, methods should be provided as an ARRAY ref."
           unless ref($methods) eq 'ARRAY';
     }
 
     # syntax: any '/route' => sub {};
     elsif (@_ == 3) {
-        ($class, $route, $code) = @_;
+        ($class, $route, $code, $rest) = @_;
         $methods = [qw(get post delete put)];
     }
     else {
         die "syntax error: see perldoc Dancer for 'any' usage.";
     }
 
-    $class->add($_, $route, $code) for @$methods;
+    $class->add($_, $route, $code, $rest) for @$methods;
     return scalar(@$methods);
 }
 
@@ -173,19 +148,20 @@ sub find {
     my $prev;
     my $first_match;
   FIND: foreach my $r (@{$registry->{routes}{$method}}) {
+
         my $params = match($path, $r->{route});
         if ($params) {
             $r->{params} = $params;
 
             if ($r->{options}) {
                 foreach my $opt (keys %{$r->{options}}) {
-                    my $re        = $r->{options}{$opt};
-                    my $http_name = $VALID_OPTIONS->{$opt};
+                    my $re = $r->{options}{$opt};
                     next FIND
-                      if (!$request->$http_name)
-                      || ($request->$http_name !~ $re);
+                      if (!$request->$opt)
+                      || ($request->$opt !~ $re);
                 }
             }
+
             $first_match = $r unless defined $first_match;
             $prev->{'next'} = $r if defined $prev;
             $prev = $r;
@@ -211,27 +187,22 @@ sub run_before_filters { $_->() for before_filters }
 
 sub build_params {
     my ($handler, $request) = @_;
-
-    my $current_params = Dancer::SharedData->params || {};
-    my $request_params = scalar($request->params)   || {};
-    my $route_params   = $handler->{params}         || {};
-
-    return {%{$request_params}, %{$route_params}, %{$current_params},};
+    $request->_set_route_params($handler->{params} || {});
+    return scalar($request->params);
 }
 
 # Recursive call of actions through the matching tree
-# FIXME : too many reset_all() around, we need a wrapper to
-# call that method and making sure we do reset the shared data first
 sub call($$) {
     my ($class, $handler) = @_;
 
     my $request = Dancer::SharedData->request;
     my $params = build_params($handler, $request);
-    Dancer::SharedData->params($params);
 
     my $content;
     my $warning;    # reset any previous warning seen
+
     local $SIG{__WARN__} = sub { $warning = $_[0] };
+
     eval { $content = $handler->{code}->() };
 
     # Log warnings
@@ -242,7 +213,6 @@ sub call($$) {
     # Halt: just stall everything and return the Response singleton
     # useful for the redirect helper
     if (Dancer::Exception::Halt->caught) {
-        Dancer::SharedData->reset_all();
         return Dancer::Response->current;
     }
     elsif
@@ -250,7 +220,6 @@ sub call($$) {
       # Pass: pass to the next route if available. otherwise, 404.
       (Dancer::Exception::Pass->caught) {
         if ($handler->{'next'}) {
-            Dancer::SharedData->reset_all();
             return Dancer::Route->call($handler->{'next'});
         }
         else {
@@ -260,7 +229,6 @@ sub call($$) {
                   . "<p>Last matching route passed, "
                   . "but no other route left.</p>"
             );
-            Dancer::SharedData->reset_all();
             return $error->render;
         }
 
@@ -291,7 +259,6 @@ sub call($$) {
                 );
 
             }
-            Dancer::SharedData->reset_all();
             return $error->render;
         }
 
@@ -304,7 +271,6 @@ sub call($$) {
         my $headers = [];
         push @$headers, @{$response->{headers}}, 'Content-Type' => $ct;
 
-        Dancer::SharedData->reset_all();
         return $content if ref($content) eq 'Dancer::Response';
         return Dancer::Response->new(
             status  => $st,
@@ -336,6 +302,7 @@ sub match {
     }
 
     # else, we have a unnamed matches, store them in params->{splat}
+
     return {splat => \@values};
 }
 
@@ -351,7 +318,6 @@ sub make_regexp_from_route {
         $pattern = $route->{regexp};
     }
     else {
-
         # look for route with params (/hello/:foo)
         @params = $pattern =~ /:([^\/]+)/g;
         if (@params) {
@@ -370,8 +336,33 @@ sub make_regexp_from_route {
     $pattern =~ s/\//\\\//g;
 
     # return the final regexp
-    # warn "regexp made is '/$pattern\$'";
     return '^' . $pattern . '$', @params;
 }
 
-'Dancer::Route';
+sub _build_condition_regexp {
+    my ($class, $conditions) = @_;
+    foreach my $cond (keys %$conditions) {
+        die "Not a valid option for route matching: `$cond'" unless grep /^$cond$/, @supported_conditions;
+        my $val = $conditions->{$cond};
+        $conditions->{$cond} = qr/$val/;
+    }
+    return $conditions;
+}
+
+sub _add_prefix_if_needed {
+    my ($class, $route) = @_;
+    my $prefix = $class->prefix;
+    return $route unless defined $prefix;
+
+    if (ref($route) eq 'HASH' && $route->{regexp}) {
+        if ($route->{regexp} !~ /^$prefix/) {
+            $route->{regexp} = $prefix . $route->{regexp};
+        }
+    }
+    else {
+        $route = $class->prefix . $route;
+    }
+    return $route;
+}
+
+1;

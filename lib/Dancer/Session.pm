@@ -6,34 +6,21 @@ use warnings;
 use Dancer::Cookies;
 use Dancer::Config 'setting';
 
-# Table to map supported engines with their module
-my $ENGINES = {
-    yaml      => 'Dancer::Session::YAML',
-    memcached => 'Dancer::Session::Memcached',
-    cookie    => 'Dancer::Session::Cookie',
-};
-
 # Singleton representing the session engine class to use
 my $ENGINE = undef;
 sub engine {$ENGINE}
-
-sub set_engine {
-    my ($engine) = @_;
-    $ENGINE = $engine;
-    eval "use $ENGINE";
-    die "Unable to load session engine `$ENGINE': $@" if $@;
-    engine->init();
-}
-
-sub get { get_current_session() }
 
 # This wrapper look for the session engine and try to load it.
 sub init {
     my ($class, $setting) = @_;
 
-    (exists $ENGINES->{$setting})
-      ? set_engine($ENGINES->{$setting})
-      : die "unsupported session engine: `$setting'";
+    $ENGINE =
+      Dancer::ModuleLoader->class_from_setting('Dancer::Session' => $setting);
+
+    die "unsupported session engine: `$setting'"
+      unless Dancer::ModuleLoader->require($ENGINE);
+
+    $ENGINE->init();
 }
 
 # retrieve or create a session for the client
@@ -50,6 +37,8 @@ sub get_current_session {
     }
     return $session;
 }
+
+sub get { get_current_session() }
 
 sub read {
     my ($class, $key) = @_;
@@ -92,11 +81,11 @@ be done like the following:
 In the application code:
 
     # enabling the YAML-file-based session engine
-    set session => 'yaml';
+    set session => 'YAML';
 
 Or in config.yml or environments/$env.yml
 
-    session: "yaml"
+    session: "YAML"
 
 By default session are disabled, you must enable them before using it. If the
 session engine is disabled, any Dancer::Session call will throw an exception.

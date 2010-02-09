@@ -2,7 +2,7 @@
 -i=4    # Indent level is 4 cols
 -ci=4   # Continuation indent is 4 cols
 
--st     # Output to STDOUT
+-b 
 -se     # Errors to STDERR
 -vt=2   # Maximal vertical tightness
 -cti=0  # No extra indentation for closing brackets

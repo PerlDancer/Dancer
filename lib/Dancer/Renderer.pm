@@ -3,7 +3,6 @@ package Dancer::Renderer;
 use strict;
 use warnings;
 
-use CGI qw/:standard/;
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Cookie;
@@ -65,25 +64,23 @@ sub html_page {
     my ($class, $title, $content, $style) = @_;
     $style ||= 'style';
 
-    # TODO build the HTML with Dancer::Template::Simple
-    return start_html(
-        -title => $title,
-        -style => "/css/$style.css"
-      )
-      . h1($title)
-      . "<div id=\"content\">"
-      . "<p>$content</p>"
-      . "</div>"
-      . '<div id="footer">'
-      . 'Powered by <a href="http://dancer.sukria.net">Dancer</a>'
-      . '</div>'
-      . end_html();
+    my $template = $class->templates->{'default'};
+    my $ts       = Dancer::Template::Simple->new;
+
+    return $ts->render(
+        \$template,
+        {   title   => $title,
+            style   => $style,
+            version => $Dancer::VERSION,
+            content => $content
+        }
+    );
 }
 
 sub get_action_response() {
     Dancer::Route->run_before_filters;
-
-    my $request = Dancer::SharedData->request || Dancer::Request->new;
+    
+    my $request = Dancer::SharedData->request;
     my $path    = $request->path;
     my $method  = $request->method;
 
@@ -92,7 +89,7 @@ sub get_action_response() {
 }
 
 sub get_file_response() {
-    my $request     = Dancer::Request->new;
+    my $request     = Dancer::SharedData->request;
     my $path        = $request->path;
     my $static_file = path(setting('public'), $path);
     return Dancer::Renderer->get_file_response_for_path($static_file);
@@ -132,5 +129,29 @@ sub get_mime_type {
           . "'File::MimeInfo::Simple'";
     }
 }
+
+# set of builtin templates needed by Dancer when rendering HTML pages
+sub templates {
+    {   default =>
+          '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<head>
+<title><% title %></title>
+<link rel="stylesheet" type="text/css" href="/css/<% style %>.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1><% title %></h1>
+<div id="content">
+<p><% content %></p>
+</div>
+<div id="footer">
+Powered by <a href="http://dancer.sukria.net">Dancer</a> <% version %>
+</div>
+</body>
+</html>',
+    }
+}
+
 
 1;

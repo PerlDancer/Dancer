@@ -11,14 +11,10 @@ my $r = Dancer::Response->new(
 );
 
 {
-    my $out;
-    close STDOUT;
-    open STDOUT, '>', \$out or die "Can't open STDOUT: $!";
-    Dancer::Handler::Standalone->render_response($r),
-
-is( 
-    $out,
-"HTTP/1.0 200 OK\r\nLocation: http://good.com\r\n Location: http://evil.com\r\n\r\n" ,
-"CRLF injections are not allowed... a space is added to make the second line an RFC-compliant continuation line."); 
+    my $res = Dancer::Handler::Standalone->render_response($r);
+    is_deeply($res->[1], [
+            'Location' => "http://good.com\r\n Location: http://evil.com",
+    ],
+    "CRLF injections are not allowed... a space is added to make the second line an RFC-compliant continuation line."); 
 }
 

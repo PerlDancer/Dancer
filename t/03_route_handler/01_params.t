@@ -9,6 +9,7 @@ BEGIN {
     use_ok 'Dancer';
     use_ok 'Dancer::Route';
 }
+use Data::Dumper;
 
 {
     ok(get('/' => sub { 'index' }), 'first route set');
@@ -25,7 +26,6 @@ my @tests = (
 
 );
 
-
 foreach my $test (@tests) {
     my $request = TestUtils::fake_request($test->{method} => $test->{path});
 
@@ -34,6 +34,7 @@ foreach my $test (@tests) {
 
     ok( defined $response, 
         "route handler found for path `".$test->{path}."'");
+
 
     is( $response->{content}, $test->{expected}, 
         "matching param looks good: ".$response->{content});

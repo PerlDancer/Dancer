@@ -28,24 +28,9 @@ sub get_handler {
     }
 }
 
-# virtual interface for any Dancer handler
-# a dancer handler is class that can "run" Dancer apps.
-
-sub dance           { die "dance() must be implemented by handler" }
-sub render_response { die "render_response() must be implemented by handler" }
-
-# default handle_request method, should work for each handler
+# handle an incoming request, process it and return a response
 sub handle_request {
     my ($self, $request) = @_;
-
-    # we may enter here with a CGI object in $request, but
-    # we don't want to remain like that after this point.
-    $request = Dancer::Request->normalize($request);
-
-    # clean the request singleton first
-    Dancer::SharedData->reset_all();
-
-    # initialize the request singleton
     Dancer::SharedData->request($request);
 
     # read cookies from client
@@ -71,12 +56,22 @@ sub handle_request {
       || Dancer::Renderer->render_action
       || Dancer::Renderer->render_error(404);
 
-    Dancer::Logger->debug(
-        "[dancer.core] handle_request got response: " . $response->{status})
-      if defined $response;
+    Dancer::SharedData->reset_all();
     return $self->render_response($response);
 }
 
+# render a PSGI-formated response from a response built by
+# handle_request()
+sub render_response {
+    my ($self, $response) = @_;
+
+    my $content = $response->{content};
+    $content = [$content] unless (ref($content) eq 'GLOB');
+
+    return [$response->{status}, $response->{headers}, $content];
+}
+
+# Fancy banner to print on startup
 sub print_banner {
     if (setting('access_log')) {
         my $env = setting('environment');

@@ -12,7 +12,8 @@ webapp with very few lines of codes.
 === NEWS === 
 
 Dancer's development moves very fast, to stay tuned follow 
-sukria on Twitter: http://twitter.com/sukria
+sukria on Twitter: http://twitter.com/sukria or his blog
+http://sukria.net/fr/tag/Dancer
 
 === EXAMPLE ===
 
@@ -65,7 +66,7 @@ Then it's possible to access any route defined in the script:
 
 Dancer depends on the following modules
 
-    - HTTP::Server::Simple
+    - HTTP::Server::Simple::PSGI
     - HTTP::Body
     - Exception::Class
 
@@ -94,6 +95,9 @@ You'll find a file in there called `app.psgi', use this file
 to configure your PSGI environment, as explained in the
 revelant documentation of your PSGI server.
 
+For instance, with plackup, just do the following:
+
+	$ plackup -a app.psgi
 
 === WEBSITE ===
 

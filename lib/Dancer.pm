@@ -22,7 +22,7 @@ use Dancer::Handler;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.123';
+$VERSION   = '1.140';
 @EXPORT    = qw(
   any
   before
@@ -81,15 +81,13 @@ sub get {
     Dancer::Route->add('head', @_);
     Dancer::Route->add('get',  @_);
 }
-sub headers   { Dancer::Response::headers(@_); }
-sub header    { goto &headers; }                   # goto ftw!
-sub layout    { set(layout => shift) }
-sub logger    { set(logger => @_) }
-sub load      { require $_ for @_ }
-sub mime_type { Dancer::Config::mime_types(@_) }
-sub params    { Dancer::SharedData->params }
-
-# sub pass         { Dancer::Response::pass() }
+sub headers    { Dancer::Response::headers(@_); }
+sub header     { goto &headers; }                      # goto ftw!
+sub layout     { set(layout => shift) }
+sub logger     { set(logger => @_) }
+sub load       { require $_ for @_ }
+sub mime_type  { Dancer::Config::mime_types(@_) }
+sub params     { Dancer::SharedData->request->params(@_) }
 sub pass       {pass_exception}
 sub path       { Dancer::FileUtils::path(@_) }
 sub post       { Dancer::Route->add('post', @_) }
@@ -114,7 +112,7 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
-sub splat    { @{Dancer::SharedData->params->{splat}} }
+sub splat    { @{Dancer::SharedData->request->params->{splat}} }
 sub status   { Dancer::Response::status(@_) }
 sub template { Dancer::Helpers::template(@_) }
 sub true     {1}
@@ -241,37 +239,11 @@ Or even, a route handler that would match any HTTP methods:
 =head2 ROUTE HANDLERS
 
 The route action is the code reference declared, it can access parameters through
-the `params' keyword, which returns an hashref.
+the `params' keyword, which returns a hashref.
 This hashref is a merge of the route pattern matches and the request params.
 
-Below are all the possible ways to define a route, note that it is not
-possible to mix them up. Don't expect to have a working application if you mix
-different kinds of route!
-
-Routes may include some matching conditions (on the useragent and the hostname at the moment):
-
-    get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
-      'foo method for songbird'
-    }
-
-    get '/foo' => sub {
-      'all browsers except songbird'
-    }
-
-=head2 PREFIX
-
-A prefix can be defined for each route handler, like this:
-
-    prefix '/home';
-
-From here, any route handler is defined to /home/*
-
-    get '/page1' => sub {}; # will match '/home/page1'
-
-You can unset the prefix value
-
-    prefix undef;
-    get '/page1' => sub {}; will match /page1
+You can have more details about how params are built and how to access them in
+the L<Dancer::Request> documentation.
 
 =head2 NAMED MATCHING
 
@@ -309,6 +281,34 @@ be defined explicitly with the keyword 'r', like the following:
         my ($name) = splat;
         return "Hello $name";
     };
+
+=head2 CONDITIONAL MATCHING
+
+Routes may include some matching conditions (on the useragent and the hostname at the moment):
+
+    get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
+      'foo method for songbird'
+    }
+
+    get '/foo' => sub {
+      'all browsers except songbird'
+    }
+
+=head2 PREFIX
+
+A prefix can be defined for each route handler, like this:
+
+    prefix '/home';
+
+From here, any route handler is defined to /home/*
+
+    get '/page1' => sub {}; # will match '/home/page1'
+
+You can unset the prefix value
+
+    prefix undef;
+    get '/page1' => sub {}; will match /page1
+
 
 =head2 RUNNING THE WEBSERVER
 
@@ -447,7 +447,7 @@ that will be accessible in the action blocks with the keyword 'var'.
 
     before sub {
         var note => 'Hi there';
-        request->path_info('/foo/oversee')
+        request->path('/foo/oversee')
     };
 
     get '/foo/*' => sub {
@@ -455,8 +455,8 @@ that will be accessible in the action blocks with the keyword 'var'.
         vars->{note}; # 'Hi there'
     };
 
-The request keyword returns the current CGI object representing the incoming request.
-See the documentation of the L<CGI> module for details.
+The request keyword returns the current Dancer::Request object representing the
+incoming request. See the documentation of the L<Dancer::Request> module for details.
 
 =head1 CONFIGURATION AND ENVIRONMENTS
 
@@ -727,17 +727,19 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =over 8
 
-=item L<HTTP::Server::Simple>
+=item L<HTTP::Server::Simple::PSGI>
 
-=item L<CGI>
+=item L<Exception::Class>
 
-=item L<Template>
+=item L<HTTP::Body>
 
 =back
 
 The following modules are optional
 
 =over 8
+
+=item L<Template> : In order to use TT for rendering views
 
 =item L<YAML> : needed for configuration file support
 
