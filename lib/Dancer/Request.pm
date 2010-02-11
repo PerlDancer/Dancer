@@ -23,11 +23,9 @@ Dancer::Request->attributes(
 );
 
 # aliases
-sub agent { $_[0]->user_agent }
-
-sub remote_address {
-    $_[0]->env->{'X_FORWARDED_FOR'} || $_[0]->env->{'REMOTE_ADDR'};
-}
+sub agent                 { $_[0]->user_agent }
+sub remote_address        { $_[0]->env->{'REMOTE_ADDR'} }
+sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
 
 sub new {
     my ($class, $env) = @_;
