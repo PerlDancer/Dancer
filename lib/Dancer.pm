@@ -162,13 +162,19 @@ Dancer - Lightweight yet powerful web application framework
 Dancer is a web application framework designed to be as effortless as possible
 for the developer.
 
-Dancer is here to provide the simpliest way for writing a web application.
+Dancer is here to provide the simplest way for writing a web application.
 
 It can be use to write light-weight web services or small standalone web
 applications.
 
-If you don't want to write a CGI by hand and find Catalyst too big for your
-project, Dancer is what you need.
+If you don't want to write CGI scripts by hand, and find Catalyst too big or
+cumbersome for your project, Dancer is what you need.
+
+Dancer has few pre-requisites, so your Dancer webapps will be easy to deploy.
+
+Dancer apps can be used with a an embedded web server (great for easy testing),
+and can run under PSGI/Plack for easy deployment in a variety of webserver
+environments.
 
 =head1 USAGE
 
