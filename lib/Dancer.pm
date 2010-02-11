@@ -498,9 +498,9 @@ like the following:
     logger: 'file'
     layout: 'main'
 
-And then write as many environment file as you like in appdir/environements.
-That way, the good environment config file will be loaded according to the
-running environment (if none specified, it will be 'development').
+And then write as many environment files as you like in appdir/environements.
+That way, the appropriate  environment config file will be loaded according to
+the running environment (if none is specified, it will be 'development').
 
 Note that you can change the running environment using the --environment
 commandline switch.
@@ -575,6 +575,11 @@ Then you can choose which kind of messages you want to actually log:
 A directory appdir/logs will be created and will host one logfile per
 environment. The log message contains the time it was written, the PID of the
 current process, the message and the caller information (file and line).
+
+To log messages, use the debug, warning and error methods, for instance:
+
+    debug "This is a debug message";
+
 
 =head1 USING TEMPLATES
 
