@@ -498,7 +498,7 @@ like the following:
     logger: 'file'
     layout: 'main'
 
-And then write as many environment files as you like in appdir/environements.
+And then write as many environment files as you like in appdir/environments.
 That way, the appropriate  environment config file will be loaded according to
 the running environment (if none is specified, it will be 'development').
 
@@ -605,13 +605,14 @@ All views must have a '.tt' extension. This may change in the future.
 
 In order to render a view, just call the 'template' keyword at the end of the
 action by giving the view name and the HASHREF of tokens to interpolate in the
-view (note that all the route params are accessible in the view):
+view (note that the request, session and route params are automatically 
+accessible in the view, named request, session and params):
 
     use Dancer;
     use Template;
 
     get '/hello/:name' => sub {
-        template 'hello' => {var => 42};
+        template 'hello' => { number => 42 };
     };
 
 And the appdir/views/hello.tt view can contain the following code:
@@ -620,6 +621,11 @@ And the appdir/views/hello.tt view can contain the following code:
     <head></head>
     <body>
         <h1>Hello <% params.name %></h1>
+        <p>Your lucky number is <% number %></p>
+        <p>You are using <% request.user_agent %></p>
+        <% IF session.user %>
+            <p>You're logged in as <% session.user %></p>
+        <% END %>
     </body>
    </html>
 
