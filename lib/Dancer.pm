@@ -448,8 +448,8 @@ as errors when the setting B<warnings> is set to 1.
 =head2 Before filters
 
 Before filters are evaluated before each request within the context of the
-request and can modify the request and response. It's possible to define variable
-that will be accessible in the action blocks with the keyword 'var'.
+request and can modify the request and response. It's possible to define
+variables which will be accessible in the action blocks with the keyword 'var'.
 
     before sub {
         var note => 'Hi there';
@@ -460,6 +460,19 @@ that will be accessible in the action blocks with the keyword 'var'.
         my ($match) = splat; # 'oversee';
         vars->{note}; # 'Hi there'
     };
+
+
+For another example, this can be used along with session support to easily
+give non-logged-in users a login page:
+
+    before sub {
+        if (!session('user') && request->path_info !~ m{^/login}) {
+            # Pass the original path requested along to the handler:
+            var requested_path => request->path_info;
+            request->path_info('/login');
+        }
+    };
+
 
 The request keyword returns the current Dancer::Request object representing the
 incoming request. See the documentation of the L<Dancer::Request> module for details.
