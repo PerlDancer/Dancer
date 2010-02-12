@@ -244,7 +244,7 @@ Or even, a route handler that would match any HTTP methods:
 
 =head2 ROUTE HANDLERS
 
-The route action is the code reference declared, it can access parameters through
+The route action is the code reference declared. It can access parameters through
 the `params' keyword, which returns a hashref.
 This hashref is a merge of the route pattern matches and the request params.
 
@@ -585,7 +585,7 @@ To log messages, use the debug, warning and error methods, for instance:
 
 =head1 VIEWS
 
-It's possible to render the action's content with a template, this is called a
+It's possible to render the action's content with a template; this is called a
 view. The `appdir/views' directory is the place where views are located.
 
 You can change this location by changing the setting 'views', for instance if
