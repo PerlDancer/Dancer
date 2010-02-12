@@ -26,6 +26,7 @@ WriteMakefile1(
         # core
         'File::Basename'         => '0',
         'File::Spec'             => '0',
+        'MIME::Types'            => '0',
     },
 
     test      => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},

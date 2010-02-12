@@ -12,6 +12,7 @@ use Dancer::Response;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname read_file_content);
 use Dancer::SharedData;
+use MIME::Types;
 
 sub render_file {
     return get_file_response();
@@ -117,17 +118,15 @@ sub get_mime_type {
     my @tokens = reverse(split(/\./, $filename));
     my $ext = $tokens[0];
 
+    # first check user configured mime types
     my $mime = Dancer::Config::mime_types($ext);
     return $mime if defined $mime;
 
-    if (Dancer::ModuleLoader->load('File::MimeInfo::Simple')) {
-        return File::MimeInfo::Simple::mimetype($filename);
-    }
-    else {
-        die "unknown mime_type for '$filename', "
-          . "register it with 'mime_type' or install "
-          . "'File::MimeInfo::Simple'";
-    }
+    # user has not specified a mime type, so ask MIME::Types
+    $mime = MIME::Types->new(only_complete => 1)->mimeTypeOf($ext);
+
+    # default to text/plain
+    return defined($mime) ? $mime : 'text/plain';
 }
 
 # set of builtin templates needed by Dancer when rendering HTML pages

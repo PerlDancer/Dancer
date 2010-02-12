@@ -15,8 +15,8 @@ use Carp 'confess';
 # singleton for storing settings
 my $SETTINGS = {
 
-    # default mime_types
-    mime_types => Dancer::FileUtils->mime_types,
+    # user defined mime types
+    mime_types => {},
 };
 sub settings {$SETTINGS}
 
