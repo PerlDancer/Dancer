@@ -691,8 +691,7 @@ This configures the 'text/foo' content type for any file matching '*.foo'.
 
 =head2 STATIC FILE FROM A ROUTE HANDLER
 
-It's possible for a route handler to pass the baton to a static file, like
-the following.
+It's possible for a route handler to send a static file, as follows:
 
     get '/download/*' => sub {
         my $params = shift;
