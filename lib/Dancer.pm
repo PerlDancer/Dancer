@@ -214,11 +214,11 @@ Here are the ones you can use to define your route handlers.
                     requests for each of your GET route handlers).
                     To define a GET action, use the B<get> keyword.
 
-=item B<POST>       The POST method is used to create a ressource on the
+=item B<POST>       The POST method is used to create a resource on the
                     server.
                     To define a POST action, use the B<post> keyword.
 
-=item B<PUT>        The PUT method is used to update an existing ressource.
+=item B<PUT>        The PUT method is used to update an existing resource.
                     To define a PUT action, use the B<put> keyword.
 
 =item B<DELETE>     The DELETE method requests that the origin server delete
@@ -244,7 +244,7 @@ Or even, a route handler that would match any HTTP methods:
 
 =head2 ROUTE HANDLERS
 
-The route action is the code reference declared, it can access parameters through
+The route action is the code reference declared. It can access parameters through
 the `params' keyword, which returns a hashref.
 This hashref is a merge of the route pattern matches and the request params.
 
@@ -585,7 +585,7 @@ To log messages, use the debug, warning and error methods, for instance:
 
 =head1 VIEWS
 
-It's possible to render the action's content with a template, this is called a
+It's possible to render the action's content with a template; this is called a
 view. The `appdir/views' directory is the place where views are located.
 
 You can change this location by changing the setting 'views', for instance if
@@ -681,7 +681,7 @@ By default, Dancer will automatically detect the mime-types to use for
 the static files accessed.
 
 It's possible to choose specific mime-type per file extensions. For instance,
-we can imagine you want to sever *.foo as a text/foo content, instead of
+we can imagine you want to serve *.foo as a text/foo content, instead of
 text/plain (which would be the content type detected by Dancer if *.foo are
 text files).
 
@@ -691,8 +691,7 @@ This configures the 'text/foo' content type for any file matching '*.foo'.
 
 =head2 STATIC FILE FROM A ROUTE HANDLER
 
-It's possible for a route handler to pass the batton to a static file, like
-the following.
+It's possible for a route handler to send a static file, as follows:
 
     get '/download/*' => sub {
         my $params = shift;
@@ -785,6 +784,6 @@ terms as Perl itself.
 =head1 SEE ALSO
 
 The concept behind this module comes from the Sinatra ruby project,
-see L<http://www.sinatrarb.com> for details.
+see L<http://www.sinatrarb.com/> for details.
 
 =cut
