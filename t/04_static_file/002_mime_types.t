@@ -9,8 +9,6 @@ use lib 't';
 use TestUtils;
 use Test::More import => ['!pass'];
 
-plan skip_all => "File::MimeInfo::Simple needed" 
-    unless Dancer::ModuleLoader->load('File::MimeInfo::Simple');
 plan tests => 7;
 
 set public => path(dirname(__FILE__), 'static');
