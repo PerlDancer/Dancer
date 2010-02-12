@@ -8,8 +8,13 @@ use Dancer::FileUtils 'read_file_content';
 
 sub init {
     my $self = shift;
-    $self->start_tag('<%') unless defined $self->start_tag;
-    $self->stop_tag('%>')  unless defined $self->stop_tag;
+    my $settings = $self->config;
+
+    my $start = $settings->{'start_tag'} || '<%';
+    my $stop  = $settings->{'stop_tag'}  || '%>';
+
+    $self->start_tag($start) unless defined $self->start_tag;
+    $self->stop_tag($stop)   unless defined $self->stop_tag;
 }
 
 sub render($$$) {
