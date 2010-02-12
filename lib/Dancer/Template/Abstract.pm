@@ -2,7 +2,7 @@ package Dancer::Template::Abstract;
 
 use strict;
 use warnings;
-use base 'Dancer::Object';
+use base 'Dancer::Engine';
 
 # Overloads this method to implement the rendering
 # args:   $self, $template, $tokens

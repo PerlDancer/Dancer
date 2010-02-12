@@ -12,23 +12,26 @@ sub engine {$engine}
 # the template engine module will take from the
 # setting name.
 sub init {
-    my ($self, $setting, $config) = @_;
+    my ($self, $name, $config) = @_;
+    my $engine_class;
+    $name   ||= 'simple';
+    $config ||= {engines => {}};
 
     # the default engine if no setting
-    if ((not defined $setting) or ($setting eq 'simple')) {
-        require Dancer::Template::Simple;
-        return $engine = Dancer::Template::Simple->new;
-    }
+    $engine_class = 'Dancer::Template::Simple' if $name eq 'simple';
 
     # trying to load the engine
-    my $engine_class =
-      Dancer::ModuleLoader->class_from_setting('Dancer::Template' => $setting);
+    $engine_class =
+      Dancer::ModuleLoader->class_from_setting('Dancer::Template' => $name);
 
-    die "unknown template engine '$setting'"
+    die "unknown template engine '$name'"
       unless Dancer::ModuleLoader->require($engine_class);
 
     # creating the engine
-    $engine = $engine_class->new(settings => $config);
+    $engine = $engine_class->new(
+        name     => $name,
+        settings => $config->{engines}{$name} || {},
+    );
 }
 
 1;
