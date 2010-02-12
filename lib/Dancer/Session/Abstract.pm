@@ -2,10 +2,11 @@ package Dancer::Session::Abstract;
 use strict;
 use warnings;
 
+use base 'Dancer::Engine';
+
 use Dancer::Cookies;
 use File::Spec;
 
-use base 'Dancer::Object';
 __PACKAGE__->attributes('id');
 
 # args: ($class)
