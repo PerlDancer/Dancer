@@ -5,6 +5,7 @@ use warnings;
 
 use Dancer::Cookies;
 use Dancer::Config 'setting';
+use Dancer::Engine;
 
 # Singleton representing the session engine class to use
 my $ENGINE = undef;
@@ -12,15 +13,9 @@ sub engine {$ENGINE}
 
 # This wrapper look for the session engine and try to load it.
 sub init {
-    my ($class, $setting) = @_;
-
-    $ENGINE =
-      Dancer::ModuleLoader->class_from_setting('Dancer::Session' => $setting);
-
-    die "unsupported session engine: `$setting'"
-      unless Dancer::ModuleLoader->require($ENGINE);
-
-    $ENGINE->init();
+    my ($class, $name, $config) = @_;
+    $ENGINE = Dancer::Engine->build(session => $name, $config);
+    #$ENGINE->init(); already done 
 }
 
 # retrieve or create a session for the client
