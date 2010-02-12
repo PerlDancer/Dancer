@@ -14,12 +14,19 @@ sub init {
 
     die "Template is needed by Dancer::Template::TemplateToolkit"
       unless Dancer::ModuleLoader->load('Template');
+
     my $tt_config = {
-        START_TAG => '<%',
-        END_TAG   => '%>',
         ANYCASE   => 1,
         ABSOLUTE  => 1,
     };
+
+    my $start_tag = $self->config->{start_tag} || '<%';
+    my $stop_tag  = $self->config->{stop_tag}  || '%>';
+
+    # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
+    # so I only change them if their value is different
+    $tt_config->{START_TAG} = $start_tag if $start_tag ne '[%';
+    $tt_config->{END_TAG}   = $stop_tag  if $stop_tag  ne '%]';
 
     $tt_config->{INCLUDE_PATH} = path($self->{settings}{'appdir'}, 'views')
       if $self->{settings} && $self->{settings}{'appdir'};
