@@ -681,7 +681,7 @@ By default, Dancer will automatically detect the mime-types to use for
 the static files accessed.
 
 It's possible to choose specific mime-type per file extensions. For instance,
-we can imagine you want to sever *.foo as a text/foo content, instead of
+we can imagine you want to serve *.foo as a text/foo content, instead of
 text/plain (which would be the content type detected by Dancer if *.foo are
 text files).
 
