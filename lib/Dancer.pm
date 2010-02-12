@@ -214,11 +214,11 @@ Here are the ones you can use to define your route handlers.
                     requests for each of your GET route handlers).
                     To define a GET action, use the B<get> keyword.
 
-=item B<POST>       The POST method is used to create a ressource on the
+=item B<POST>       The POST method is used to create a resource on the
                     server.
                     To define a POST action, use the B<post> keyword.
 
-=item B<PUT>        The PUT method is used to update an existing ressource.
+=item B<PUT>        The PUT method is used to update an existing resource.
                     To define a PUT action, use the B<put> keyword.
 
 =item B<DELETE>     The DELETE method requests that the origin server delete
