@@ -784,6 +784,6 @@ terms as Perl itself.
 =head1 SEE ALSO
 
 The concept behind this module comes from the Sinatra ruby project,
-see L<http://www.sinatrarb.com> for details.
+see L<http://www.sinatrarb.com/> for details.
 
 =cut
