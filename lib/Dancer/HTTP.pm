@@ -96,8 +96,8 @@ Helper for rendering HTTP status codes for Dancer
 
 =head1 HTTP CODES 
 
-The following codes/aliases are understood by the any satus() call made from a
-Dancer script.
+The following codes/aliases are understood by any status() call made
+from a Dancer script.
 
 =head2 200
 
