@@ -17,7 +17,6 @@ with, let's make an incredibly simple "Hello World" example:
 
     #!/usr/bin/perl
 
-    use strict;
     use Dancer;
 
     get '/hello/:name' => sub {
@@ -33,7 +32,8 @@ it's not your local system), and it will say hello.  The C<:name> part is a
 named parameter within the route specification, whose value is made available
 through C<params> - more on that later.
 
-
+Note that you don't need to use the C<strict> and C<warnings> pragma, they are
+already loaded by Dancer.
 
 =head2 Starting a Dancer project
 
