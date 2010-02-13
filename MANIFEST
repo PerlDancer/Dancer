@@ -4,8 +4,10 @@ AUTHORS
 CHANGES
 lib/Dancer.pm
 lib/Dancer/Config.pm
+lib/Dancer/Cookbook.pod
 lib/Dancer/Cookie.pm
 lib/Dancer/Cookies.pm
+lib/Dancer/Engine.pm
 lib/Dancer/Error.pm
 lib/Dancer/Exceptions.pm
 lib/Dancer/FileUtils.pm
@@ -32,7 +34,6 @@ lib/Dancer/Template.pm
 lib/Dancer/Template/Abstract.pm
 lib/Dancer/Template/Simple.pm
 lib/Dancer/Template/TemplateToolkit.pm
-lib/Dancer/Cookbook.pod
 MANIFEST			This list of files
 MANIFEST.SKIP
 README
@@ -60,6 +61,8 @@ t/02_request/06_init_env.t
 t/02_request/07_raw_data.t
 t/02_request/08_params.t
 t/02_request/09_params.t
+t/02_request/10_mixed_params.t
+t/02_request/11_accessors.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
@@ -121,6 +124,8 @@ t/11_logger/02_factory.t
 t/11_logger/03_file.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t
+t/13_engines/00_load.t
+t/13_engines/02_template_init.t
 t/lib/EasyMocker.pm
 t/lib/TestApp.pm
 t/pod.t
