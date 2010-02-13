@@ -511,12 +511,14 @@ file:
     # appdir/environments/development.yml
     log: 'debug'
     access_log: 1
+    show_errors: 1
 
 And in a production one:
 
     # appdir/environments/production.yml
     log: 'warning'
     access_log: 0
+    show_errors: 0
 
 =head2 load
 
