@@ -27,6 +27,6 @@ is($@, '', "the session engine can be set with CGI::Session");
 
 # load an unknown session engine
 eval { set(session => 'galactica') };
-like $@, qr/unsupported session engine: `galactica'/, 
+like $@, qr/unknown session engine 'galactica'/, 
     "Unknown session engine is refused";
 

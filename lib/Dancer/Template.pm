@@ -3,6 +3,7 @@ package Dancer::Template;
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
+use Dancer::Engine;
 
 # singleton for the current template engine
 my $engine;
@@ -11,28 +12,13 @@ sub engine {$engine}
 # init the engine according to the settings
 # the template engine module will take from the
 # setting name.
-sub init {
-    my ($self, $setting, $config) = @_;
-
-    # the default engine if no setting
-    if ((not defined $setting) or ($setting eq 'simple')) {
-        require Dancer::Template::Simple;
-        return $engine = Dancer::Template::Simple->new;
-    }
-
-    # trying to load the engine
-    my $engine_class =
-      Dancer::ModuleLoader->class_from_setting('Dancer::Template' => $setting);
-
-    die "unknown template engine '$setting'"
-      unless Dancer::ModuleLoader->require($engine_class);
-
-    # creating the engine
-    $engine = $engine_class->new(settings => $config);
+sub init { 
+    my ($class, $name, $config) = @_;
+    $name ||= 'simple';
+    $engine = Dancer::Engine->build(template => $name, $config);
 }
 
 1;
-
 __END__
 
 =pod

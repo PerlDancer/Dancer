@@ -18,11 +18,13 @@ WriteMakefile1(
     },
 
     PREREQ_PM => {
+
         # non-core
         'HTTP::Body'                 => '0',
         'HTTP::Server::Simple::PSGI' => '0.11',
         'Exception::Class'           => '0',
-        
+        'MIME::Types'                => '0',
+
         # core
         'File::Basename'         => '0',
         'File::Spec'             => '0',

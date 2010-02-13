@@ -155,20 +155,26 @@ __END__
 
 =head1 NAME
 
-Dancer
+Dancer - Lightweight yet powerful web application framework
 
 =head1 DESCRIPTION
 
 Dancer is a web application framework designed to be as effortless as possible
 for the developer.
 
-Dancer is here to provide the simpliest way for writing a web application.
+Dancer is here to provide the simplest way for writing a web application.
 
 It can be use to write light-weight web services or small standalone web
 applications.
 
-If you don't want to write a CGI by hand and find Catalyst too big for your
-project, Dancer is what you need.
+If you don't want to write CGI scripts by hand, and find Catalyst too big or
+cumbersome for your project, Dancer is what you need.
+
+Dancer has few pre-requisites, so your Dancer webapps will be easy to deploy.
+
+Dancer apps can be used with a an embedded web server (great for easy testing),
+and can run under PSGI/Plack for easy deployment in a variety of webserver
+environments.
 
 =head1 USAGE
 
@@ -208,11 +214,11 @@ Here are the ones you can use to define your route handlers.
                     requests for each of your GET route handlers).
                     To define a GET action, use the B<get> keyword.
 
-=item B<POST>       The POST method is used to create a ressource on the
+=item B<POST>       The POST method is used to create a resource on the
                     server.
                     To define a POST action, use the B<post> keyword.
 
-=item B<PUT>        The PUT method is used to update an existing ressource.
+=item B<PUT>        The PUT method is used to update an existing resource.
                     To define a PUT action, use the B<put> keyword.
 
 =item B<DELETE>     The DELETE method requests that the origin server delete
@@ -238,7 +244,7 @@ Or even, a route handler that would match any HTTP methods:
 
 =head2 ROUTE HANDLERS
 
-The route action is the code reference declared, it can access parameters through
+The route action is the code reference declared. It can access parameters through
 the `params' keyword, which returns a hashref.
 This hashref is a merge of the route pattern matches and the request params.
 
@@ -442,8 +448,8 @@ as errors when the setting B<warnings> is set to 1.
 =head2 Before filters
 
 Before filters are evaluated before each request within the context of the
-request and can modify the request and response. It's possible to define variable
-that will be accessible in the action blocks with the keyword 'var'.
+request and can modify the request and response. It's possible to define
+variables which will be accessible in the action blocks with the keyword 'var'.
 
     before sub {
         var note => 'Hi there';
@@ -454,6 +460,19 @@ that will be accessible in the action blocks with the keyword 'var'.
         my ($match) = splat; # 'oversee';
         vars->{note}; # 'Hi there'
     };
+
+
+For another example, this can be used along with session support to easily
+give non-logged-in users a login page:
+
+    before sub {
+        if (!session('user') && request->path_info !~ m{^/login}) {
+            # Pass the original path requested along to the handler:
+            var requested_path => request->path_info;
+            request->path_info('/login');
+        }
+    };
+
 
 The request keyword returns the current Dancer::Request object representing the
 incoming request. See the documentation of the L<Dancer::Request> module for details.
@@ -479,9 +498,9 @@ like the following:
     logger: 'file'
     layout: 'main'
 
-And then write as many environment file as you like in appdir/environements.
-That way, the good environment config file will be loaded according to the
-running environment (if none specified, it will be 'development').
+And then write as many environment files as you like in appdir/environments.
+That way, the appropriate  environment config file will be loaded according to
+the running environment (if none is specified, it will be 'development').
 
 Note that you can change the running environment using the --environment
 commandline switch.
@@ -557,11 +576,16 @@ A directory appdir/logs will be created and will host one logfile per
 environment. The log message contains the time it was written, the PID of the
 current process, the message and the caller information (file and line).
 
+To log messages, use the debug, warning and error methods, for instance:
+
+    debug "This is a debug message";
+
+
 =head1 USING TEMPLATES
 
 =head1 VIEWS
 
-It's possible to render the action's content with a template, this is called a
+It's possible to render the action's content with a template; this is called a
 view. The `appdir/views' directory is the place where views are located.
 
 You can change this location by changing the setting 'views', for instance if
@@ -581,13 +605,14 @@ All views must have a '.tt' extension. This may change in the future.
 
 In order to render a view, just call the 'template' keyword at the end of the
 action by giving the view name and the HASHREF of tokens to interpolate in the
-view (note that all the route params are accessible in the view):
+view (note that the request, session and route params are automatically 
+accessible in the view, named request, session and params):
 
     use Dancer;
     use Template;
 
     get '/hello/:name' => sub {
-        template 'hello' => {var => 42};
+        template 'hello' => { number => 42 };
     };
 
 And the appdir/views/hello.tt view can contain the following code:
@@ -596,6 +621,11 @@ And the appdir/views/hello.tt view can contain the following code:
     <head></head>
     <body>
         <h1>Hello <% params.name %></h1>
+        <p>Your lucky number is <% number %></p>
+        <p>You are using <% request.user_agent %></p>
+        <% IF session.user %>
+            <p>You're logged in as <% session.user %></p>
+        <% END %>
     </body>
    </html>
 
@@ -651,7 +681,7 @@ By default, Dancer will automatically detect the mime-types to use for
 the static files accessed.
 
 It's possible to choose specific mime-type per file extensions. For instance,
-we can imagine you want to sever *.foo as a text/foo content, instead of
+we can imagine you want to serve *.foo as a text/foo content, instead of
 text/plain (which would be the content type detected by Dancer if *.foo are
 text files).
 
@@ -661,8 +691,7 @@ This configures the 'text/foo' content type for any file matching '*.foo'.
 
 =head2 STATIC FILE FROM A ROUTE HANDLER
 
-It's possible for a route handler to pass the batton to a static file, like
-the following.
+It's possible for a route handler to send a static file, as follows:
 
     get '/download/*' => sub {
         my $params = shift;
@@ -755,6 +784,6 @@ terms as Perl itself.
 =head1 SEE ALSO
 
 The concept behind this module comes from the Sinatra ruby project,
-see L<http://www.sinatrarb.com> for details.
+see L<http://www.sinatrarb.com/> for details.
 
 =cut

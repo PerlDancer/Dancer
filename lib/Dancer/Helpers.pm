@@ -10,6 +10,7 @@ use warnings;
 use Dancer::Response;
 use Dancer::Config 'setting';
 use Dancer::FileUtils 'path';
+use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Exceptions;
 use Dancer::Template;
@@ -42,6 +43,9 @@ sub template {
     $tokens ||= {};
     $tokens->{request} = Dancer::SharedData->request;
     $tokens->{params}  = Dancer::SharedData->request->params;
+    if (setting('session')) {
+        $tokens->{session} = Dancer::Session->get;
+    }
 
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;

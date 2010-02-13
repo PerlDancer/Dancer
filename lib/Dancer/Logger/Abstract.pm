@@ -2,9 +2,9 @@ package Dancer::Logger::Abstract;
 
 use strict;
 use warnings;
+use base 'Dancer::Engine';
 
 use Dancer::Config 'setting';
-use base 'Dancer::Object';
 
 # This is the only method to implement if logger engines.
 # It receives the following arguments:

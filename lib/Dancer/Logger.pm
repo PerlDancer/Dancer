@@ -4,22 +4,15 @@ package Dancer::Logger;
 
 use strict;
 use warnings;
-use Dancer::ModuleLoader;
+use Dancer::Engine;
 
 # singleton used for logging messages
 my $logger;
 sub logger {$logger}
 
 sub init {
-    my ($class, $setting) = @_;
-
-    my $engine_class =
-      Dancer::ModuleLoader->class_from_setting('Dancer::Logger' => $setting);
-
-    die "unknown logger '$setting'"
-      unless Dancer::ModuleLoader->require($engine_class);
-
-    $logger = $engine_class->new;
+    my ($class, $name, $config) = @_;
+    $logger = Dancer::Engine->build(logger => $name, $config);
 }
 
 sub debug   { $logger->debug($_[1]) }
