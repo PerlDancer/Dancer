@@ -3,6 +3,9 @@ use Test::More tests => 9;
 use strict;
 use warnings;
 
+use Dancer::Config 'setting';
+setting appdir => 't/lib';
+
 use_ok 'Dancer::Logger::File';
 
 my $l = Dancer::Logger::File->new;
@@ -12,7 +15,7 @@ isa_ok $l, 'Dancer::Logger::File';
 can_ok $l, qw(init _log debug warning error);
 
 my $format = Dancer::Logger::File::_format('debug', 'test');
-like $format, qr/\[$$\] \(debug\) test in/, 
+like $format, qr/\[$$\] \(debug\) test in/,
     "format looks good";
 
 ok($l->_log(debug => "Perl Dancer test message"), "_log works");
