@@ -156,7 +156,7 @@ sub process_template {
 sub write_favicon {
     my $path = shift;
     open(my $fh, '>', $path)
-        or warn "Failed to write favicon to $path - $!" and return;
+      or warn "Failed to write favicon to $path - $!" and return;
     my $data = do { local $/; <DATA> };
     print {$fh} unpack 'u*', $data;
     close $fh;
