@@ -111,6 +111,12 @@ C</home> actions using the session engine.
         }
     };
 
+Of course, you probably don't want to have to duplicate the code to check
+whether the user is logged in for each route handler; there's an example in the
+L<Dancer::Cookbook> showing how to use a before filter to check whether the user
+is logged in before all requests, and redirect to a login page if not.
+
+
 =head1 SUPPORTED ENGINES
 
 Dancer has a modular session engine that makes implementing new session backends
