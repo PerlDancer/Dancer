@@ -157,6 +157,23 @@ __END__
 
 Dancer - Lightweight yet powerful web application framework
 
+
+=head1 SYNOPSIS
+
+    #!/usr/bin/perl
+    use Dancer;
+
+    get '/hello/:name' => sub {
+        return "Why, hello there " . params->{name};
+    };
+
+    dance;
+
+The above is a basic but functional web app created with Dancer.  If you want to
+see more examples and get up and running quickly, check out the
+L<Dancer::Cookbook>.
+
+
 =head1 DESCRIPTION
 
 Dancer is a web application framework designed to be as effortless as possible
