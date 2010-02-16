@@ -296,7 +296,7 @@ sub match {
     # Hmm, I can has a match?
     my %params;
 
-    # if named variables where found, return params accordingly
+    # if named variables were found, return params accordingly
     if (@variables) {
         for (my $i = 0; $i < ~~ @variables; $i++) {
             $params{$variables[$i]} = $values[$i];
@@ -304,8 +304,7 @@ sub match {
         return \%params;
     }
 
-    # else, we have a unnamed matches, store them in params->{splat}
-
+    # else, we have unnamed matches, store them in params->{splat}
     return {splat => \@values};
 }
 
