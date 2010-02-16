@@ -27,6 +27,7 @@ $VERSION   = '1.150';
   any
   before
   cookies
+  config
   content_type
   dance
   debug
@@ -70,6 +71,7 @@ $VERSION   = '1.150';
 sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
 sub cookies      { Dancer::Cookies->cookies }
+sub config       { Dancer::Config::settings() }
 sub content_type { Dancer::Response::content_type(@_) }
 sub debug        { Dancer::Logger->debug(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
