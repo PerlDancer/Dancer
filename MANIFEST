@@ -63,6 +63,7 @@ t/02_request/08_params.t
 t/02_request/09_params.t
 t/02_request/10_mixed_params.t
 t/02_request/11_accessors.t
+t/02_request/12_base.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t

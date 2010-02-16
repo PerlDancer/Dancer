@@ -118,6 +118,7 @@ sub splat    { @{Dancer::SharedData->request->params->{splat}} }
 sub status   { Dancer::Response::status(@_) }
 sub template { Dancer::Helpers::template(@_) }
 sub true     {1}
+sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
 sub var      { Dancer::SharedData->var(@_) }
 sub vars     { Dancer::SharedData->vars }
 sub warning  { Dancer::Logger->warning(@_) }

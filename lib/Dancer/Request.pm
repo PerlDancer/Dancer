@@ -5,6 +5,7 @@ use warnings;
 use Dancer::Object;
 use Dancer::SharedData;
 use HTTP::Body;
+use URI;
 
 use base 'Dancer::Object';
 Dancer::Request->attributes(
@@ -12,7 +13,7 @@ Dancer::Request->attributes(
     # query
     'env',          'path', 'method',
     'content_type', 'content_length',
-    'body',
+    'body',         'path_info',
 
     # http env
     'user_agent',      'host',
@@ -67,10 +68,38 @@ sub new_for_request {
     return $req;
 }
 
+sub base {
+    my $self = shift;
+
+    my @env_names = qw(
+        SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
+    );
+
+    my ($server, $host, $port, $path, $scheme) = @{$self->env}{@env_names};
+
+    my $uri = URI->new;
+    my $auth = $host || $server;
+    $uri->scheme($scheme);
+    $uri->authority("$auth:$port");
+    $uri->path($path || '/');
+
+    return $uri->canonical;
+}
+
+sub uri_for {
+    my ($self, $path, $params) = @_;
+    my $uri = $self->base;
+    if ($path !~ qr(^/)) {
+        $path = "/$path";
+    }
+    $uri->path($uri->path . $path);
+    $uri->query_form($params) if $params;
+    return $uri->canonical;
+}
+
 # public interface compat with CGI.pm objects (FIXME do Dancer's users really
 # need that compat layer? ) Not sure...
 sub request_method { method(@_) }
-sub path_info      { path(@_) }
 sub Vars           { params(@_) }
 sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 
@@ -101,8 +130,9 @@ sub params {
 sub _init {
     my ($self) = @_;
 
-    $self->_build_path()   unless $self->path;
-    $self->_build_method() unless $self->method;
+    $self->_build_path()      unless $self->path;
+    $self->_build_method()    unless $self->method;
+    $self->_build_path_info() unless $self->path_info;
     $self->_build_request_env();
 
     $self->{_http_body} =
@@ -163,6 +193,11 @@ sub _build_path {
 
     die "Cannot resolve path" if not $path;
     $self->{path} = $path;
+}
+
+sub _build_path_info {
+    my ($self) = @_;
+    $self->{path_info} = $self->env->{'PATH_INFO'} || $self->path;
 }
 
 sub _build_method {
@@ -298,6 +333,17 @@ Return the HTTP method used by the client to access the application.
 =head2 path()
 
 Return the path requested by the client.
+
+=head2 base()
+
+Returns an absolute URI for the base of the application
+
+=head2 uri_for(path, params)
+
+Constructs a URI from the base and the passed path.  If params (hashref) is
+supplied, these are added to the query string of the uri.  If the base is
+C<http://localhost:5000/foo>, C<< request->uri_for('/bar', { baz => 'baz' }) >>
+would return C<http://localhost:5000/foo/bar?baz=baz>.
 
 =head2 params($source)
 
