@@ -61,6 +61,7 @@ $VERSION   = '1.150';
   status
   template
   true
+  uri_for
   var
   vars
   warning
