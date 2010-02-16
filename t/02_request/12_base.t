@@ -2,14 +2,15 @@ use Test::More;
 use Dancer::Request;
 
 my $env = {
-    REQUEST_METHOD  => 'GET',
-    SCRIPT_NAME     => '/foo',
-    PATH_INFO       => '/bar/baz',
-    REQUEST_URI     => '/foo/bar/baz',
-    QUERY_STRING    => '',
-    SERVER_NAME     => 'localhost',
-    SERVER_PORT     => 5000,
-    SERVER_PROTOCOL => 'HTTP/1.1',
+    'psgi.url_scheme' => 'http',
+    REQUEST_METHOD    => 'GET',
+    SCRIPT_NAME       => '/foo',
+    PATH_INFO         => '/bar/baz',
+    REQUEST_URI       => '/foo/bar/baz',
+    QUERY_STRING      => '',
+    SERVER_NAME       => 'localhost',
+    SERVER_PORT       => 5000,
+    SERVER_PROTOCOL   => 'HTTP/1.1',
 };
 
 my $req = Dancer::Request->new($env);

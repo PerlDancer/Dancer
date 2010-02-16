@@ -70,11 +70,17 @@ sub new_for_request {
 
 sub base {
     my $self = shift;
-    my @env_names = qw(SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME);
-    my ($server, $host, $port, $path) = @{$self->env}{@env_names};
 
+    my @env_names = qw(
+        SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
+    );
+
+    my ($server, $host, $port, $path, $scheme) = @{$self->env}{@env_names};
+
+    my $uri = URI->new;
     my $auth = $host || $server;
-    my $uri = URI->new("http://$auth:$port");
+    $uri->scheme($scheme);
+    $uri->authority("$auth:$port");
     $uri->path($path || '/');
 
     return $uri->canonical;
