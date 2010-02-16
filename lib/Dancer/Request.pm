@@ -12,7 +12,7 @@ Dancer::Request->attributes(
     # query
     'env',          'path', 'method',
     'content_type', 'content_length',
-    'body',
+    'body',         'path_info',
 
     # http env
     'user_agent',      'host',
@@ -70,7 +70,6 @@ sub new_for_request {
 # public interface compat with CGI.pm objects (FIXME do Dancer's users really
 # need that compat layer? ) Not sure...
 sub request_method { method(@_) }
-sub path_info      { path(@_) }
 sub Vars           { params(@_) }
 sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 
@@ -101,8 +100,9 @@ sub params {
 sub _init {
     my ($self) = @_;
 
-    $self->_build_path()   unless $self->path;
-    $self->_build_method() unless $self->method;
+    $self->_build_path()      unless $self->path;
+    $self->_build_method()    unless $self->method;
+    $self->_build_path_info() unless $self->path_info;
     $self->_build_request_env();
 
     $self->{_http_body} =
@@ -163,6 +163,11 @@ sub _build_path {
 
     die "Cannot resolve path" if not $path;
     $self->{path} = $path;
+}
+
+sub _build_path_info {
+    my ($self) = @_;
+    $self->{path_info} = $self->env->{'PATH_INFO'} || $self->path;
 }
 
 sub _build_method {
