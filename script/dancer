@@ -367,12 +367,12 @@ auto_reload: 0
 
 =head1 NAME
 
-dancer
+dancer - helper script to create new Dancer applications
 
 =head1 DESCRIPTION
 
-Helper script for providing a bootstraping method for 
-creating new Dancer applications.
+Helper script for providing a bootstrapping method to quickly and easily create
+the framework for a new Dancer application.
 
 =head1 USAGE
 
@@ -389,7 +389,7 @@ dancer [options] -a <appname>
 
 =head1 EXAMPLE
 
-Here is an application create with dancer:
+Here is an application created with dancer:
 
     $ dancer -a mywebapp
     + mywebapp 
@@ -404,6 +404,7 @@ Here is an application create with dancer:
     + mywebapp/mywebapp.pm
     + mywebapp/mywebapp.pl
     + mywebapp/app.psgi
+    + mywebapp/favicon.ico
 
 The application is ready to serve:
 
