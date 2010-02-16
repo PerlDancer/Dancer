@@ -1,4 +1,33 @@
+Dancer 1.150
+
+	[ Alexis Sukrieh ]
+	* Refactored all core engines with Dancer::Engine
+	* Support for engine configuration via config files
+	* Each core template engine now uses start_tag/stop_tag from the
+	  configuration instead of harcoding '<%' and '%>'.
+	
+	[ David Precious ]
+	* Lots of documentation cleaning and fixes.
+	* Make the session available to the views, if possible.
+	* Added Dancer::Cookbook to provide lots of concrete examples for
+	  newcomers.
+	* Helper script `dancer' now provides a default favicon.ico in the
+	  application public directory.
+
+	[ Anirvan Chatterjee ]
+	* Various documentation typo fixes
+
+	[ Danijel Tasov ]
+	* FIX for issue #24
+	  Dancer now depends on MIME::Types rather than using
+	  File::MimeInfo::Simple which uses a fork().
+
+	[ Paul Driver ]
+	* Support for virtual location.
+	  It's now possible to mount a Dancer app under a user-defined prefix.
+
 Dancer 1.140
+
 	* Dancer now depends on HTTP::Server::Simple::PSGI in
 	  order to rely on a PSGI environement even when running
 	  the app with the standalone server 
