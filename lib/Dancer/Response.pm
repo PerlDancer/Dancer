@@ -34,17 +34,7 @@ sub current {
 }
 
 # helpers for the route handlers
-sub set {
-    $CURRENT = shift;
-    #my $new_headers = shift;
-    #foreach my $keys (keys %$new_headers){
-        #next if $keys eq 'headers';
-    #}
-    #$CURRENT->{headers} = {%{$new_headers->{headers}}, %{$CURRENT->{headers}}};
-    #use YAML::Syck;
-    #print Dump $CURRENT;
-    #$CURRENT;
-}
+sub set          { $CURRENT                 = shift; }
 sub status       { $CURRENT->{status}       = shift }
 sub content_type { $CURRENT->{content_type} = shift }
 sub pass         { $CURRENT->{pass}         = 1 }
