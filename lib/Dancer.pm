@@ -562,6 +562,16 @@ routes files:
 
     load 'login_routes.pl', 'session_routes.pl', 'misc_routes.pl';
 
+=head2 Accessing configuration data
+
+A Dancer application can access the information from its config file easily with
+the config keyword:
+
+    get '/appname' => sub {
+        return "This is " . config->{appname};
+    };
+
+
 =head1 importing just the syntax
 
 If you want to use more complex files hierarchies, you can import just the syntax of Dancer.

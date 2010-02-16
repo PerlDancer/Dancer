@@ -358,6 +358,18 @@ And in a production one:
     show_errors: 0
 
 
+=head2 Accessing configuration information from your app
+
+A Dancer application can use the 'config' keyword to easily access the settings
+within its config file, for instance:
+
+    get '/appname' => sub {
+        return "This is " . config->{appname};
+    };
+
+This makes keeping your application's settings all in one place simple and easy
+- you shouldn't need to worry about implementing all that yourself :)
+
 
 =head2 Logging
 

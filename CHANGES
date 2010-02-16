@@ -13,6 +13,7 @@ Dancer 1.150
 	  newcomers.
 	* Helper script `dancer' now provides a default favicon.ico in the
 	  application public directory.
+        * Added 'config' method to provide easy access to app config
 
 	[ Anirvan Chatterjee ]
 	* Various documentation typo fixes
