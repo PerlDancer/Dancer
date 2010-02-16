@@ -78,9 +78,8 @@ sub base {
     my ($server, $host, $port, $path, $scheme) = @{$self->env}{@env_names};
 
     my $uri = URI->new;
-    my $auth = $host || $server;
     $uri->scheme($scheme);
-    $uri->authority("$auth:$port");
+    $uri->authority($host || "$server:$port");
     $uri->path($path || '/');
 
     return $uri->canonical;
