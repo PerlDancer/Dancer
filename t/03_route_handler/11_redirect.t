@@ -28,8 +28,11 @@ is($res->{content}, "home",
 
 get '/redirect' => sub { header 'X-Foo' => 'foo'; redirect '/'; };
 
+$ENV{HTTP_HOST} = 'localhost';
+$ENV{'psgi.url_scheme'} = 'http';
 $res = get_response_for_request(GET => '/redirect');
 my %headers = @{$res->{headers}};
 is $headers{'X-Foo'},    'foo', 'header x-foo is set';
-is $headers{'Location'}, '/',   'location is set to /';
+is $headers{'Location'},
+  'http://localhost/', 'location is set to http://localhost/';
 clean_tmp_files();
