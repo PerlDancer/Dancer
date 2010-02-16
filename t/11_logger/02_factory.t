@@ -8,6 +8,9 @@ use TestUtils;
 use Dancer::Config 'setting';
 setting appdir => 't/lib';
 
+use Dancer::Config 'setting';
+setting appdir => 't/lib';
+
 use_ok 'Dancer::Logger';
 
 my $engine = Dancer::Logger->logger;
