@@ -199,7 +199,15 @@ sub _build_path {
 
 sub _build_path_info {
     my ($self) = @_;
-    $self->{path_info} = $self->env->{'PATH_INFO'} || $self->path;
+    my $info = $self->env->{'PATH_INFO'};
+    if (defined $info) {
+        # Empty path info will be interpreted as "root".
+        $info ||= '/';
+    }
+    else {
+        $info = $self->path;
+    }
+    $self->{path_info} = $info;
 }
 
 sub _build_method {
