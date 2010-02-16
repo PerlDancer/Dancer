@@ -1,3 +1,21 @@
+Dancer 1.140
+	* Dancer now depends on HTTP::Server::Simple::PSGI in
+	  order to rely on a PSGI environement even when running
+	  the app with the standalone server 
+	  (Thanks to Tatsuiko Miyagawa).
+	* Dancer::Request object enhancements:
+		+ Dancer::Request now provide an accesor to the raw body
+	      of the request.
+        + FIX for issue #13
+		  The params helper now provides accessors to route
+		  params, query string params and body params so the
+		  user can chose from which source they want to access
+		  params instead of dealing with a mixed structure.
+		+ Added accessors to referer and remote_address 
+	* The Standalone server now uses the setting 'server' to 
+	  bind itself to the IP address given by the setting.
+	  Default value is 0.0.0.0
+
 Dancer 1.130
 	* Fix a memory leak that could occur between two 
 	  requests under mod_perl (Thanks to Nicolas Rennert for 
