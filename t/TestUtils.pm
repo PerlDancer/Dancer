@@ -3,7 +3,7 @@ package TestUtils;
 use base 'Exporter';
 use vars '@EXPORT';
 
-use File::Path qw(make_path remove_tree);
+use File::Path qw(mkpath rmtree);
 use Dancer::Request;
 use Dancer::Config 'setting';
 
@@ -39,12 +39,12 @@ sub get_response_for_request {
 }
 
 sub clean_tmp_files {
-    my $appdir = setting appdir || File::Spec->tmpdir();
+    my $appdir = setting('appdir') || File::Spec->tmpdir();
     my $logs_dir = File::Spec->catdir($appdir, 'logs');
-    remove_tree($logs_dir) if -d $logs_dir;
+    rmtree($logs_dir) if -d $logs_dir;
 
     my $sessions = setting session_dir;
-    remove_tree($sessions) if -d $sessions;
+    rmtree($sessions) if $sessions && -d $sessions;
 }
 
 'TestUtils';
