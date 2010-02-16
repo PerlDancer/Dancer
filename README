@@ -5,7 +5,7 @@
 === ABOUT ===
 
 This project is inspired by  Ruby's Sinatra framework: a framework for building
-eb applications with minimal-effort, allowing a simple webapp to be created with
+web applications with minimal-effort, allowing a simple webapp to be created with
 very few lines of code, but allowing the flexibility to scale to much more
 complex applications.
 
