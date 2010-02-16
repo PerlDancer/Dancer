@@ -284,6 +284,9 @@ sub match {
     my ($path,   $route)     = @_;
     my ($regexp, @variables) = make_regexp_from_route($route);
 
+    # If there's no regexp or no path, don't even try to match:
+    return if (!$regexp || !$path)
+
     # first, try the match, and save potential values
     my @values = $path =~ $regexp;
 
