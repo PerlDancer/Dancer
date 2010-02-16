@@ -25,6 +25,11 @@ is $req->path, '/foo/bar/baz';
 is $req->path_info, '/bar/baz';
 
 {
+    local $env->{SCRIPT_NAME} = '';
+    is $req->uri_for('/foo'), 'http://localhost:5000/foo';
+}
+
+{
     local $env->{SERVER_NAME} = 0;
     is $req->base, 'http://0:5000/foo';
     local $env->{HTTP_HOST} = 'oddhostname:5000';

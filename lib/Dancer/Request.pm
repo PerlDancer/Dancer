@@ -86,12 +86,15 @@ sub base {
 }
 
 sub uri_for {
-    my ($self, $path, $params) = @_;
+    my ($self, $part, $params) = @_;
     my $uri = $self->base;
-    if ($path !~ qr(^/)) {
-        $path = "/$path";
-    }
-    $uri->path($uri->path . $path);
+
+    # Make sure there's exactly one slash between the base and the new part
+    my $base = $uri->path;
+    $base =~ s|/$||;
+    $part =~ s|^/||;
+    $uri->path("$base/$part");
+
     $uri->query_form($params) if $params;
     return $uri->canonical;
 }
