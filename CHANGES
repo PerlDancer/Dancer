@@ -28,6 +28,13 @@ Dancer 1.150
 	* Support for virtual location.
 	  It's now possible to mount a Dancer app under a user-defined prefix.
 
+	[ Franck Cuny ]
+	* Test scripts cleanup:
+	  + Cleanup is performed in test scripts when necessary
+	    (all temp files are removed at the end of the script).
+	  + FIX for issue #23
+	    Test scripts that try to write logfiles set the appdir.
+
 Dancer 1.140
 
 	* Dancer now depends on HTTP::Server::Simple::PSGI in
