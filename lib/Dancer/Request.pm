@@ -5,6 +5,7 @@ use warnings;
 use Dancer::Object;
 use Dancer::SharedData;
 use HTTP::Body;
+use URI;
 
 use base 'Dancer::Object';
 Dancer::Request->attributes(
@@ -65,6 +66,29 @@ sub new_for_request {
     $req->{params} = {%{$req->{params}}, %{$params}};
 
     return $req;
+}
+
+sub base {
+    my $self = shift;
+    my @env_names = qw(SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME);
+    my ($server, $host, $port, $path) = @{$self->env}{@env_names};
+
+    my $auth = $host || $server;
+    my $uri = URI->new("http://$auth:$port");
+    $uri->path($path || '/');
+
+    return $uri->canonical;
+}
+
+sub uri_for {
+    my ($self, $path, $params) = @_;
+    my $uri = $self->base;
+    if ($path !~ qr(^/)) {
+        $path = "/$path";
+    }
+    $uri->path($uri->path . $path);
+    $uri->query_form($params) if $params;
+    return $uri->canonical;
 }
 
 # public interface compat with CGI.pm objects (FIXME do Dancer's users really
@@ -303,6 +327,17 @@ Return the HTTP method used by the client to access the application.
 =head2 path()
 
 Return the path requested by the client.
+
+=head2 base()
+
+Returns an absolute URI for the base of the application
+
+=head2 uri_for(path, params)
+
+Constructs a URI from the base and the passed path.  If params (hashref) is
+supplied, these are added to the query string of the uri.  If the base is
+C<http://localhost:5000/foo>, C<< request->uri_for('/bar', { baz => 'baz' }) >>
+would return C<http://localhost:5000/foo/bar?baz=baz>.
 
 =head2 params($source)
 
