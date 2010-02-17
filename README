@@ -75,6 +75,8 @@ Dancer depends on the following modules
     - HTTP::Server::Simple::PSGI
     - HTTP::Body
     - Exception::Class
+	- MIME::Types
+	- URI
 
 Optional modules may be needed if you want to use some features (but are not 
 required for a basic usage). 

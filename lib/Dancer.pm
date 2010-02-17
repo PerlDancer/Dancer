@@ -797,6 +797,10 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =item L<HTTP::Body>
 
+=item L<MIME::Types>
+
+=item L<URI>
+
 =back
 
 The following modules are optional
