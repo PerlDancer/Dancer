@@ -119,9 +119,13 @@ sub render {
 sub environment {
     my ($self) = @_;
 
+    my $request = Dancer::SharedData->request;
+    my $r_env = {};
+    $r_env = $request->env if defined $request;
+
     my $env =
         "<div class=\"title\">Environment</div><pre class=\"content\">"
-      . dumper(\%ENV)
+      . dumper($r_env)
       . "</pre>";
     my $settings =
         "<div class=\"title\">Settings</div><pre class=\"content\">"
