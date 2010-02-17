@@ -1,0 +1,408 @@
+=head1 NAME
+
+Dancer::Cookbook - a quick-start guide to the Dancer web framework
+
+=head1 DESCRIPTION
+
+A quick-start guide with examples to get you up and running with the Dancer web
+framework.
+
+=head1 RECIPES
+
+=head2 Your first Dancer web app
+
+Dancer has been designed to be easy to work with - it's trivial to write a
+simple web app, but still has the power to work with larger projects.  To start
+with, let's make an incredibly simple "Hello World" example:
+
+    #!/usr/bin/perl
+
+    use Dancer;
+
+    get '/hello/:name' => sub {
+        return "Why, hello there " . params->{name};
+    };
+
+    dance;
+
+Yes - the above is a fully-functioning web app; running that script will launch
+a webserver listening on the default port (3000); you can point your browser at
+http://localhost:3000/hello/Bob (or the name of the machine you ran it on, if
+it's not your local system), and it will say hello.  The C<:name> part is a
+named parameter within the route specification, whose value is made available
+through C<params> - more on that later.
+
+Note that you don't need to use the C<strict> and C<warnings> pragma, they are
+already loaded by Dancer.
+
+=head2 Starting a Dancer project
+
+The first simple example is fine for trivial projects, but for anything more
+complex, you'll want a more maintainable solution - enter the C<dancer> helper
+script, which will build the framework of your application with a single
+command:
+
+    $ dancer -a mywebapp
+    + [D] mywebapp 
+    + [F] mywebapp/config.yml
+    + [D] mywebapp/views
+    + [D] mywebapp/views/layouts
+    + [F] mywebapp/views/layouts/main.tt
+    + [F] mywebapp/views/index.tt
+    + [D] mywebapp/environments
+    + [F] mywebapp/environments/production.yml
+    + [F] mywebapp/environments/development.yml
+    + [F] mywebapp/mywebapp.pm
+    + [F] mywebapp/mywebapp.pl
+    + [F] mywebapp/app.psgi
+
+
+As you can see, it creates a directory named after the name of the app, along
+with a configuration file, a views directory (where your templates and layouts
+will live), an environments directory (where environment-specific settings
+live), a module containing the actual guts of your application, a script to
+start it, and an app.psgi file - this will only be of interest if you're running
+your web app via Plack/PSGI - more on that later.
+
+
+=head2 Declaring routes
+
+To control what happens when a web request is received by your webapp, you'll
+need to declare C<routes>.  A route declaration indicates which HTTP method(s)
+it is valid for, the path it matches (e.g. /foo/bar), and a coderef to execute,
+which returns the response.
+
+    get '/hello/:name' => sub {
+        return "Hi there " . params->{name};
+    };
+
+The above route specifies that, for GET requests to '/hello/...', the code block
+provided should be executed.  
+
+=head2 Handling multiple HTTP request methods
+
+Routes can use C<any> to match all, or a specified list of HTTP methods.
+
+The following will match any HTTP request to the path /myaction:
+
+    any '/myaction' => sub {
+        # code
+    }
+
+The following will match GET or POST requests to /myaction:
+
+    any ['get', 'post'] => '/myaction' => sub {
+        # code
+    };
+
+For convenience, any route which matches GET requests will also match HEAD
+requests.
+
+
+
+=head2 Retrieving request parameters
+
+The C<params> method returns a hashref of request parameters; these will be 
+parameters supplied on the query string, within the path itself (with named
+placeholders), and, for HTTTP POST requests, the content of the POST body.
+
+
+=head2 Named parameters in route path declarations
+
+As seen above, you can use C<:somename> in a route's path to capture part of the
+path; this will become available by calling C<params>.
+
+So, for a web app where you want to display information on a company, you might
+use something like:
+
+    get '/company/view/:companyid' => sub {
+        my $company_id = params->{companyid};
+        # Look up the company and return appropriate page
+    };
+
+
+=head2 Wildcard path matching and splat
+
+You can also declare wildcards in a path, and retrieve the values they matched
+with C<splat>:
+
+    get '/*/*' => sub {
+        my ($action, $id) = splat;
+        if (my $action eq 'view') {
+            return display_item($id);
+        } elsif ($action eq 'delete') {
+            return delete_item($id);
+        } else {
+            status 'not_found';
+            return "What?";
+        }
+    };
+
+
+=head2 Before filters - processed before a request
+
+A C<before> filter declares code which should be handled before a request is
+passed to the appropriate route.
+
+    before sub {
+        var note => 'Hi there';
+        request->path('/foo/oversee')
+    };
+
+    get '/foo/*' => sub {
+        my ($match) = splat; # 'oversee';
+        vars->{note}; # 'Hi there'
+    };
+
+The above declares a before filter which uses C<var> to set a variable which
+will later be available within the route handler, then amends the path of the
+request to C</foo/oversee>; this means that, whatever path was requested, it
+will be treated as though the path requested was C</foo/oversee>.
+
+
+=head2 Handling sessions
+
+It's common to want to use sessions to give your web applications state; for
+instance, allowing a user to log in, creating a session, and checking that
+session on subsequent requests.
+
+To make use of sessions, you must first enable the session engine - in your
+config file, add:
+
+    session: "YAML"
+
+Or, to enable it from within your code,
+
+    set session => 'YAML';
+
+(Controlling settings is best done from your config file, though).  'YAML' in
+the example is the session backend to use; this is shorthand for
+L<Dancer::Session::YAML>.  There are other session backends you may wish to use,
+for instance L<Dancer::Session::Memcache>, but the YAML backend is a simple and
+easy to use example which stores session data in a YAML file in sessions/.
+
+
+=head3 Storing data in the session
+
+Storing data in the session is as easy as:
+
+    session varname => 'value';
+
+
+=head3 Retrieving data from the session
+
+Retrieving data from the session is as easy as:
+
+    session('varname')
+
+Or, alternatively,
+
+    session->{varname}
+
+
+
+=head2 Sessions and logging in
+
+A common requirement is to check the user is logged in, and, if not, require
+them to log in before continuing.
+
+This can easily be handled with a before filter to check their session:
+
+    before sub {
+
+        if (! session('user') && request->path_info !~ m{^/login}) {
+            var requested_path => request->path_info;
+            request->path_info('/login');
+        }
+    };
+
+    get '/login' => sub {
+        # Display a login page; the original URL they requested is available as
+        # vars->{requested_path}, so could be put in a hidden field in the form
+    };
+
+    post '/login' => sub {
+        # Validate the username and password they supplied
+        if ($params->{user} eq 'bob' && params->{pass} eq 'letmein) {
+            session user => $params->{user};
+            redirect params->{path} || '/';
+        } else {
+            redirect '/login?failed=1';
+        }
+    };
+
+
+
+=head2 Using templates - views and layouts
+
+Returning plain content is all well and good for examples or trivial apps, but
+soon you'll want to use templates to maintain separation between your code and
+your content.  Dancer makes this easy.
+
+=head3 Views
+
+It's possible to render the action's content with a template, this is called a
+view. The `appdir/views' directory is the place where views are located.
+
+You can change this location by changing the setting 'views'.
+
+By default, the internal template engine is used L<Dancer::Template::Simple> 
+but you may want to upgrade to Template::Toolkit. If you do so, you have to 
+enable this engine in your settings as explained in
+L<Dancer::Template::TemplateToolkit>.  If you do so, you'll also have to 
+import the L<Template> module in your application code. 
+
+Note that, by default, Dancer configures the Template::Toolkit engine to use 
+C<<% %>> brackets instead of its default C<[% %]> brackets.  You can change this
+by using the following in your config file:
+
+    template: template_toolkit
+    
+    engines:
+        template_toolkit:
+            start_tag: '[%'
+            stop_tag: '%]'
+
+All views must have a '.tt' extension. This may change in the future.
+
+In order to render a view, just call the C<template> keyword at the end of the
+action by giving the view name and the HASHREF of tokens to interpolate in the
+view (note that for convenience, the request, session and route params are 
+automatically accessible in the view, named request, session and params) - for
+example:
+
+    get '/hello/:name' => sub {
+        my $name = params->{name};
+        my $browser = request->{user_agent};
+        template 'hello.tt', { name => $name, $browser => $browser };
+    };
+
+The template 'hello.tt' could contain, for example:
+
+    <p>Hi there, <% name %>!</p>
+    <p>You're using <% request.user_agent %></p>
+    <% IF session.username %>
+        <p>You're logged in as <% session.username %>
+    <% END %>
+
+=head3 Layouts
+
+A layout is a special view, located in the 'layouts' directory (inside the views
+directory) which must have a token named 'content'. That token marks the place
+where to render the action view. This lets you define a global layout for your
+actions, and have each individual view contain only the specific content.  This
+is a good thing to avoid lots of needless duplication of HTML :)
+
+Here is an example of a layout: C<views/layouts/main.tt> :
+
+    <html>
+        <head>...</head>
+        <body>
+        <div id="header">
+        ...
+        </div>
+
+        <div id="content">
+        <% content %>
+        </div>
+
+        </body>
+    </html>
+
+You can tell your app which layout to use with C<layout: name> in the config
+file, or within your code:
+
+    layout 'main';
+
+
+=head2 Configuration and environments
+
+Configuring a Dancer application can be done in many ways. The easiest one (and
+maybe the the dirtiest) is to put all your settings statements at the top of
+your script, before calling the dance() method.
+
+Other ways are possible, you can define all your settings in the file
+`appdir/config.yml'. For this, you must have installed the YAML module, and of
+course, write the config file in YAML.
+
+That's better than the first option, but it's still not perfect as you can't
+switch easily from an environment to another without rewriting the config.yml
+file.
+
+The better way is to have one config.yml file with default global settings,
+like the following:
+
+    # appdir/config.yml
+    logger: 'file'
+    layout: 'main'
+
+And then write as many environment files as you like in C<appdir/environments>.
+That way, the appropriate environment config file will be loaded according to 
+the running environment (if none is specified, it will be 'development').
+
+Note that you can change the running environment using the C<--environment> 
+commandline switch.
+
+Typically, you'll want to set the following values in a development config file:
+
+    # appdir/environments/development.yml
+    log: 'debug'
+    access_log: 1
+    show_errors: 1
+
+And in a production one:
+
+    # appdir/environments/production.yml
+    log: 'warning'
+    access_log: 0
+    show_errors: 0
+
+
+=head2 Accessing configuration information from your app
+
+A Dancer application can use the 'config' keyword to easily access the settings
+within its config file, for instance:
+
+    get '/appname' => sub {
+        return "This is " . config->{appname};
+    };
+
+This makes keeping your application's settings all in one place simple and easy
+- you shouldn't need to worry about implementing all that yourself :)
+
+
+=head2 Logging
+
+=head3 Configuring logging
+
+It's possible to log messages sent by the application. In the current version,
+only logging to a simple file is available, but later versions may provide
+additional logging options.
+
+In order to enable the logging system for your application, you first have to
+start the logger engine in your config.yml
+
+    log: 'file'
+
+Then you can choose which kind of messages you want to actually log:
+
+    log: 'debug'     # will log debug, warning and errors
+    log: 'warning'   # will log warning and errors
+    log: 'error'     # will log only errors
+
+A directory appdir/logs will be created and will host one logfile per
+environment. The log message contains the time it was written, the PID of the
+current process, the message and the caller information (file and line).
+
+=head3 Logging your own messages
+
+Just call  C<debug>, C<warning> or C<error> with your message:
+
+    debug "This is a debug message from my app.";
+
+
+=head1 AUTHORS
+
+Dancer contributors - see AUTHORS file.
+
+

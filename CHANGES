@@ -1,35 +1,94 @@
+Dancer 1.150
+
+    [ Alexis Sukrieh ]
+    * Refactored all core engines with Dancer::Engine
+    * Support for engine configuration via config files
+    * Each core template engine now uses start_tag/stop_tag from the
+      configuration instead of harcoding '<%' and '%>'.
+	* FIX for issue #34
+	  Cookies can now be used when the application is ran under a Plack 
+	  server.
+    
+    [ David Precious ]
+    * Lots of documentation cleaning and fixes.
+    * Make the session available to the views, if possible.
+    * Added Dancer::Cookbook to provide lots of concrete examples for
+      newcomers.
+    * Helper script `dancer' now provides a default favicon.ico in the
+      application public directory.
+    * FIX for issue #30
+      Added 'config' method to provide easy access to app config
+
+    [ Anirvan Chatterjee ]
+    * Various documentation typo fixes
+
+    [ Danijel Tasov ]
+    * FIX for issue #24
+      Dancer now depends on MIME::Types rather than using
+      File::MimeInfo::Simple which uses a fork().
+
+    [ Paul Driver ]
+    * Support for virtual location.
+      It's now possible to mount a Dancer app under a user-defined prefix.
+
+    [ Franck Cuny ]
+    * Test scripts cleanup:
+      + Cleanup is performed in test scripts when necessary
+        (all temp files are removed at the end of the script).
+      + FIX for issue #23
+        Test scripts that try to write logfiles set the appdir.
+
+Dancer 1.140
+
+    * Dancer now depends on HTTP::Server::Simple::PSGI in
+      order to rely on a PSGI environement even when running
+      the app with the standalone server 
+      (Thanks to Tatsuiko Miyagawa).
+    * Dancer::Request object enhancements:
+        + Dancer::Request now provide an accesor to the raw body
+          of the request.
+        + FIX for issue #13
+          The params helper now provides accessors to route
+          params, query string params and body params so the
+          user can chose from which source they want to access
+          params instead of dealing with a mixed structure.
+        + Added accessors to referer and remote_address 
+    * The Standalone server now uses the setting 'server' to 
+      bind itself to the IP address given by the setting.
+      Default value is 0.0.0.0
+
 Dancer 1.130
-	* Fix a memory leak that could occur between two 
-	  requests under mod_perl (Thanks to Nicolas Rennert for 
-	  the report and diagnosis).
-	* remove all optional modules from the core, they are now 
-	  shipped as separate CPAN distributions:
-	  - Dancer::Template::MicroTemplate
-	  - Dancer::Session::Cookie
-	  - Dancer::Session::Memcached
-	  - Dancer::Logger::LogHandler
-	  - Dancer::Logger::Syslog
-	* support for the `header' keyword in Dancer's syntax.
-	  The user is now able to alter response-headers in route 
-	  handlers.
-	* support for `prefix' keyword in Dancer's syntax.
-	  A prefix can be set by the user before defining routes handlers.
-	  All route defined then will be automatically prefixed accordingly.
-	  
+    * Fix a memory leak that could occur between two 
+      requests under mod_perl (Thanks to Nicolas Rennert for 
+      the report and diagnosis).
+    * remove all optional modules from the core, they are now 
+      shipped as separate CPAN distributions:
+      - Dancer::Template::MicroTemplate
+      - Dancer::Session::Cookie
+      - Dancer::Session::Memcached
+      - Dancer::Logger::LogHandler
+      - Dancer::Logger::Syslog
+    * support for the `header' keyword in Dancer's syntax.
+      The user is now able to alter response-headers in route 
+      handlers.
+    * support for `prefix' keyword in Dancer's syntax.
+      A prefix can be set by the user before defining routes handlers.
+      All route defined then will be automatically prefixed accordingly.
+      
 Dancer 1.122
 
-	* Fix the test suite under Perl 5.8.x
-	* Security Fix: protection from CRLF injection in 
-	  response headers (thanks to Mark Stosberg for the report).
-	* Support for multi-valued params in GET/POST data (thanks to
-	  Mark Stosberg for the report).
-	* Backward compatibility with old app.psgi files, don't die 
-	  when a request is initialized with a CGI::PSGI object.
+    * Fix the test suite under Perl 5.8.x
+    * Security Fix: protection from CRLF injection in 
+      response headers (thanks to Mark Stosberg for the report).
+    * Support for multi-valued params in GET/POST data (thanks to
+      Mark Stosberg for the report).
+    * Backward compatibility with old app.psgi files, don't die 
+      when a request is initialized with a CGI::PSGI object.
 
 Dancer 1.121
 
-	* Fix for POST data parsing (was broken in 1.120)
-	  now Dancer depends on HTTP::Body for that.
+    * Fix for POST data parsing (was broken in 1.120)
+      now Dancer depends on HTTP::Body for that.
 
 Dancer 1.120
 

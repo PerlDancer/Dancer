@@ -6,15 +6,16 @@ use Dancer;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 
+use lib ('t', 't/lib');
+use TestUtils;
+use EasyMocker;
+
 BEGIN { 
     plan skip_all => "need YAML" 
         unless Dancer::ModuleLoader->load('YAML');
     plan tests => 12;
     use_ok 'Dancer::Session::YAML' 
 }
-
-use lib 't/lib';
-use EasyMocker;
 
 mock 'Dancer::ModuleLoader' 
     => method 'load' => should sub { 0 };
@@ -54,3 +55,5 @@ is_deeply $s, $session, "session is changed on flush";
 $s->destroy;
 $session = Dancer::Session::YAML->retrieve($session->id);
 is $session, undef, 'destroy removes the session';
+
+clean_tmp_files();

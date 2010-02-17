@@ -1,5 +1,5 @@
 ^\.git\/
-Makefile
+Makefile$
 ^blib
 ^pm_to_blib
 ^.*.bak

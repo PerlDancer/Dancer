@@ -62,9 +62,9 @@ Dancer::Session - session engine for the Dancer framework
 
 =head1 DESCRIPTION
 
-This module provides support for server-side session for the Dancer micro
+This module provides support for server-side sessions for the L<Dancer> web
 framework. The session is accessible to the user via an abstraction layer
-implemented by the Dancer::Session class.
+implemented by the L<Dancer::Session> class.
 
 =head1 USAGE
 
@@ -110,6 +110,12 @@ C</home> actions using the session engine.
             redirect '/login';
         }
     };
+
+Of course, you probably don't want to have to duplicate the code to check
+whether the user is logged in for each route handler; there's an example in the
+L<Dancer::Cookbook> showing how to use a before filter to check whether the user
+is logged in before all requests, and redirect to a login page if not.
+
 
 =head1 SUPPORTED ENGINES
 

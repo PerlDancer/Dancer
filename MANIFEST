@@ -4,8 +4,10 @@ AUTHORS
 CHANGES
 lib/Dancer.pm
 lib/Dancer/Config.pm
+lib/Dancer/Cookbook.pod
 lib/Dancer/Cookie.pm
 lib/Dancer/Cookies.pm
+lib/Dancer/Engine.pm
 lib/Dancer/Error.pm
 lib/Dancer/Exceptions.pm
 lib/Dancer/FileUtils.pm
@@ -32,10 +34,10 @@ lib/Dancer/Template.pm
 lib/Dancer/Template/Abstract.pm
 lib/Dancer/Template/Simple.pm
 lib/Dancer/Template/TemplateToolkit.pm
+Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 README
-ROADMAP
 script/dancer
 t/00_base/001_load.t
 t/00_base/002_strict_and_warnings.t
@@ -58,7 +60,9 @@ t/02_request/05_cgi_pm_compat.t
 t/02_request/06_init_env.t
 t/02_request/07_raw_data.t
 t/02_request/08_params.t
-t/02_request/09_params.t
+t/02_request/10_mixed_params.t
+t/02_request/11_accessors.t
+t/02_request/12_base.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
@@ -78,7 +82,6 @@ t/03_route_handler/15_prefix.t
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
 t/04_static_file/03_get_mime_type.t
-t/04_static_file/04_file_mimeinfo_simple.t
 t/04_static_file/static/hello.foo
 t/04_static_file/static/hello.txt
 t/05_views/001_settings.t
@@ -121,6 +124,8 @@ t/11_logger/02_factory.t
 t/11_logger/03_file.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t
+t/13_engines/00_load.t
+t/13_engines/02_template_init.t
 t/lib/EasyMocker.pm
 t/lib/TestApp.pm
 t/pod.t

@@ -284,6 +284,9 @@ sub match {
     my ($path,   $route)     = @_;
     my ($regexp, @variables) = make_regexp_from_route($route);
 
+    # If there's no regexp or no path, don't even try to match:
+    return if (!$regexp || !$path);
+
     # first, try the match, and save potential values
     my @values = $path =~ $regexp;
 
@@ -293,7 +296,7 @@ sub match {
     # Hmm, I can has a match?
     my %params;
 
-    # if named variables where found, return params accordingly
+    # if named variables were found, return params accordingly
     if (@variables) {
         for (my $i = 0; $i < ~~ @variables; $i++) {
             $params{$variables[$i]} = $values[$i];
@@ -301,8 +304,7 @@ sub match {
         return \%params;
     }
 
-    # else, we have a unnamed matches, store them in params->{splat}
-
+    # else, we have unnamed matches, store them in params->{splat}
     return {splat => \@values};
 }
 

@@ -4,16 +4,21 @@
 
 === ABOUT ===
 
-That project intends to become a port of Ruby's Sinatra
-framework: a framework for building web application with
-minimal-effort in mind. The user should be able to define a
-webapp with very few lines of codes.
+This project is inspired by  Ruby's Sinatra framework: a framework for building
+web applications with minimal-effort, allowing a simple webapp to be created with
+very few lines of code, but allowing the flexibility to scale to much more
+complex applications.
+
 
 === NEWS === 
 
 Dancer's development moves very fast, to stay tuned follow 
 sukria on Twitter: http://twitter.com/sukria or his blog
 http://sukria.net/fr/tag/Dancer
+
+See also the project on Github for the latest changes:
+
+http://github.com/sukria/Dancer
 
 === EXAMPLE ===
 
@@ -27,7 +32,8 @@ with this distribution:
     + mywebapp/views/layouts
     [..]
 
-You have then a new Dancer application in 'mywebapp'.
+You then have a new Dancer application in 'mywebapp', which is already a
+functioning "Hello World" application, ready for you to work upon.
 
 Here is an example of a webapp built with Dancer:
 
@@ -53,7 +59,7 @@ Here is an example of a webapp built with Dancer:
 When running this script, a webserver is running and ready to serve:    
 
     $ perl ./webapp.pl
-    >> Listening on 127.0.0.1:3000
+    >> Listening on 0.0.0.0:3000
     == Entering the development dance floor ...
 
 Then it's possible to access any route defined in the script:
@@ -69,44 +75,61 @@ Dancer depends on the following modules
     - HTTP::Server::Simple::PSGI
     - HTTP::Body
     - Exception::Class
+	- MIME::Types
+	- URI
 
-Optional modules may be needed if you want to use soem
-features (but are not required for a basic usage). 
-Dependency-checks are performed at runtime.
+Optional modules may be needed if you want to use some features (but are not 
+required for a basic usage). 
+
+Dependency-checks for additional features are performed at runtime.
 
 Most common modules you may want are:
 
-	- Template (for Template::Toolkit support)
-	- YAML (for configuration files)
-	- Plack (if you want to deploy your application with
-	  PSGI)
+    - Template (for Template::Toolkit support)
+    - YAML (for configuration files)
+    - Plack (if you want to deploy your application with PSGI)
+
 
 === PRODUCTION MATTERS ===
 
 This is a work in progress.
 
-Dancer supports PSGI/Plack, to run a Dancer app with PSGI/Plack
-just bootstrap your application with the helper script
-`dancer' like the following:
+Dancer supports PSGI/Plack, to run a Dancer app with PSGI/Plack just bootstrap
+your application with the helper script `dancer' like the following:
 
 	$ dancer -a MyWebApp
 
-You'll find a file in there called `app.psgi', use this file
-to configure your PSGI environment, as explained in the
-revelant documentation of your PSGI server.
+You'll find a file in there called `app.psgi', use this file to configure your
+PSGI environment, as explained in the revelant documentation of your PSGI
+server.
 
 For instance, with plackup, just do the following:
 
 	$ plackup -a app.psgi
 
+
 === WEBSITE ===
 
 For more details about the project, checkout the official website:
-http://dancer.sukria.net or checkout the documentation at
+http://dancer.sukria.net/ or checkout the documentation at
 http://search.cpan.org/dist/Dancer/
+
+See also the Github project page: http://github.com/sukria/Dancer for the latest
+changes.
+
+
+=== REPORTING BUGS ===
+
+Bug reports are appreciated and will receive prompt attention - the preferred
+method is to raise them using Github's basic issue tracking system:
+
+http://github.com/sukria/Dancer/issues
+
+
 
 === CONTACT ===
 
-You can reach the development team on IRC: irc.perl.org,
-chan #dancer
+You can reach the development team on IRC: irc://irc.perl.org/#dancer
+
+
 

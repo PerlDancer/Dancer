@@ -22,11 +22,12 @@ use Dancer::Handler;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.140';
+$VERSION   = '1.150';
 @EXPORT    = qw(
   any
   before
   cookies
+  config
   content_type
   dance
   debug
@@ -60,6 +61,7 @@ $VERSION   = '1.140';
   status
   template
   true
+  uri_for
   var
   vars
   warning
@@ -70,6 +72,7 @@ $VERSION   = '1.140';
 sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
 sub cookies      { Dancer::Cookies->cookies }
+sub config       { Dancer::Config::settings() }
 sub content_type { Dancer::Response::content_type(@_) }
 sub debug        { Dancer::Logger->debug(@_) }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
@@ -116,6 +119,7 @@ sub splat    { @{Dancer::SharedData->request->params->{splat}} }
 sub status   { Dancer::Response::status(@_) }
 sub template { Dancer::Helpers::template(@_) }
 sub true     {1}
+sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
 sub var      { Dancer::SharedData->var(@_) }
 sub vars     { Dancer::SharedData->vars }
 sub warning  { Dancer::Logger->warning(@_) }
@@ -157,15 +161,34 @@ __END__
 
 Dancer - Lightweight yet powerful web application framework
 
+
+=head1 SYNOPSIS
+
+    #!/usr/bin/perl
+    use Dancer;
+
+    get '/hello/:name' => sub {
+        return "Why, hello there " . params->{name};
+    };
+
+    dance;
+
+The above is a basic but functional web app created with Dancer.  If you want to
+see more examples and get up and running quickly, check out the
+L<Dancer::Cookbook>.
+
+
 =head1 DESCRIPTION
 
 Dancer is a web application framework designed to be as effortless as possible
-for the developer.
+for the developer, taking care of the boring bits as easily as possible, yet
+staying out of your way and letting you get on with writing your code.
 
-Dancer is here to provide the simplest way for writing a web application.
-
-It can be use to write light-weight web services or small standalone web
-applications.
+Dancer aims to provide the simplest way for writing web applications, and
+offers the flexibility to scale between a very simple lightweight web service
+consisting of a few lines of code in a single file, all the way up to a more
+complex fully-fledged web application with session support, templates for views
+and layouts, etc.
 
 If you don't want to write CGI scripts by hand, and find Catalyst too big or
 cumbersome for your project, Dancer is what you need.
@@ -511,12 +534,14 @@ file:
     # appdir/environments/development.yml
     log: 'debug'
     access_log: 1
+    show_errors: 1
 
 And in a production one:
 
     # appdir/environments/production.yml
     log: 'warning'
     access_log: 0
+    show_errors: 0
 
 =head2 load
 
@@ -537,6 +562,16 @@ B<load> is just a wrapper for B<require>, but you can also specify a list of
 routes files:
 
     load 'login_routes.pl', 'session_routes.pl', 'misc_routes.pl';
+
+=head2 Accessing configuration data
+
+A Dancer application can access the information from its config file easily with
+the config keyword:
+
+    get '/appname' => sub {
+        return "This is " . config->{appname};
+    };
+
 
 =head1 importing just the syntax
 
@@ -761,6 +796,10 @@ The following modules are mandatory (Dancer cannot run without them)
 =item L<Exception::Class>
 
 =item L<HTTP::Body>
+
+=item L<MIME::Types>
+
+=item L<URI>
 
 =back
 

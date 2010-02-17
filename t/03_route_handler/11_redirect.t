@@ -15,6 +15,7 @@ is($res->{content}, "home",
     "response content for / looks good");
 
 $res = get_response_for_request(GET => '/bounce');
+
 ok(defined($res), "got response for /bounce");
 is($res->{status}, 302, 
     "response status is 302 for /bounce");
@@ -25,3 +26,10 @@ is($res->{content}, "home",
     "response content for / looks good after a redirect");
 
 
+get '/redirect' => sub { header 'X-Foo' => 'foo'; redirect '/'; };
+
+$res = get_response_for_request(GET => '/redirect');
+my %headers = @{$res->{headers}};
+is $headers{'X-Foo'},    'foo', 'header x-foo is set';
+is $headers{'Location'}, '/',   'location is set to /';
+clean_tmp_files();

@@ -1,7 +1,19 @@
 use Test::More tests => 4, import => ['!pass'];
+use strict;
+use warnings;
+use Dancer::Request;
+use Dancer::SharedData;
 
-$ENV{COOKIE} = "test_cookie=42";
+# the request with a cookie string
+my $env = {
+    REQUEST_METHOD => 'GET',
+    SCRIPT_NAME => '/',
+    COOKIE => 'test_cookie=42',
+};
+my $request = Dancer::Request->new($env);
+Dancer::SharedData->request($request);
 
+# testing
 use Dancer::Cookies;
 ok(Dancer::Cookies->init, "Dancer::Cookies->init");
 

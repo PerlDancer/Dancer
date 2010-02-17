@@ -12,7 +12,7 @@ use base 'Dancer::Object';
 # constructor arguments:
 #      name     => $name_of_the_engine
 #      settings => $hash_of_engine_settings
-Dancer::Engine->attributes(qw(name tyoe));
+Dancer::Engine->attributes(qw(name type));
 
 # Accessor to the config hash, it may not be initialized if someone 
 # creates a new engine without giving the appropriate arguments.

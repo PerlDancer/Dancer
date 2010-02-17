@@ -64,8 +64,11 @@ sub create_node($;$) {
         if (ref($content) eq 'HASH') {
             safe_mkdir($path); 
             create_node($content, $path);
-        }
-        else {
+        } elsif (ref($content) eq 'CODE') {
+            # The content is a coderef, which, given the path to the file it
+            # should create, will do the appropriate thing:
+            $content->($path);
+       } else {
             my $file = basename($path);
             my $dir  = dirname($path);
             my $ex = ($file =~ s/^\+//); # look for '+' flag (executable)
@@ -104,6 +107,7 @@ sub app_tree($)  {
                 "error.css" => FILE,
             },
             "images" => { },
+            "favicon.ico" => \&write_favicon,
         },
     };
 }
@@ -145,6 +149,17 @@ sub process_template {
     $engine->{start_tag} = '[%';
     $engine->{stop_tag} = '%]';
     return $engine->render(\$template, $tokens);
+}
+
+# Given a path, get the favicon.ico file content from the __DATA__ section and
+# write it to that file.
+sub write_favicon {
+    my $path = shift;
+    open(my $fh, '>', $path)
+      or warn "Failed to write favicon to $path - $!" and return;
+    my $data = do { local $/; <DATA> };
+    print {$fh} unpack 'u*', $data;
+    close $fh;
 }
 
 sub templates($) {
@@ -189,7 +204,6 @@ dance;
 
 "package $appname;
 use Dancer;
-use Template;
 
 get '/' => sub {
     template 'index';
@@ -347,18 +361,17 @@ auto_reload: 0
 ',
     };
 }
-__END__
 
 =pod 
 
 =head1 NAME
 
-dancer
+dancer - helper script to create new Dancer applications
 
 =head1 DESCRIPTION
 
-Helper script for providing a bootstraping method for 
-creating new Dancer applications.
+Helper script for providing a bootstrapping method to quickly and easily create
+the framework for a new Dancer application.
 
 =head1 USAGE
 
@@ -375,7 +388,7 @@ dancer [options] -a <appname>
 
 =head1 EXAMPLE
 
-Here is an application create with dancer:
+Here is an application created with dancer:
 
     $ dancer -a mywebapp
     + mywebapp 
@@ -390,6 +403,7 @@ Here is an application create with dancer:
     + mywebapp/mywebapp.pm
     + mywebapp/mywebapp.pl
     + mywebapp/app.psgi
+    + mywebapp/favicon.ico
 
 The application is ready to serve:
 
@@ -414,3 +428,39 @@ This module is free software and is published under the same
 terms as Perl itself.
 
 =cut
+
+# The following ugly data is the default favicon.ico file to write; uuencoded
+# using pack 'u*'.
+__DATA__
+M```!``$`$!````$`"`!H!0``%@```"@````0````(`````$`"```````````
+M``````````````````````!D12\`:4LV`&I,-P!K3CD`;$XY`&Q/.@!M3SH`
+M;5`Z`&U0.P!N4#L`;5`\`&U1.P!N43L`;E$\`&Y1/0!N4CT`;U(]`&]2/@!O
+M4SX`<E9!`')60@!S6$0`=UQ(`'E>2@!Y8$P`>F!-`'QB3@!]8U``?611`(!G
+M5`"`:%4`A&M:`(9M7`"+=&,`C79E`)!Z:0"2?6P`KIZ2`+"AE0"\L*8`P[>M
+M`,S"NP#/Q[\`T\O$`-7-QP#P[^L`]_;U`/K[^0#]_OT`____````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````````````````````````````````````````````````````````
+M````````#0T-#0T-#0T-#0T-#0T-#0T-#0T-#0T-#0T-#0T-#0T-#0T-#0T-
+M"`T-#0T-#0T-#0T-#0T2&@@-#0T-#0T-#0T-#0T!#QD(#0T-#0T-#0T("`<`
+M)08-#0T-#0T(#0@-#1$F(04-"`T-#0T-#0,-#0T-%AL7"@P-#0T-#0<=$`T0
+M(B0>%!`+"0T-#0T(%0@-!"`L+B\H#@@(#0T-"`T(#0T(!0@8,"LC'PT(#0T-
+M#0T-#0T("`,G,2T'"`@-#0T-#0T-#0T-`API*@T-#0T-#0T-#0T-#0T)"`(3
+M"`T-#0T-#0T-#0T-#0@-"`T-#0T-#0T-#0T-#0T-#0T-#0T-#0``````````
+M````````````````````````````````````````````````````````````
++````````````````

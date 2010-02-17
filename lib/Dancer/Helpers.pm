@@ -71,11 +71,8 @@ sub error {
 sub redirect {
     my ($destination, $status) = @_;
 
-    Dancer::Response::set(
-        {   status => $status || 302,
-            headers => ['Location' => $destination],
-        }
-    );
+    Dancer::Response::status($status || 302);
+    Dancer::Response::headers('Location' => $destination);
 
     halt;    # w00t!
 }
