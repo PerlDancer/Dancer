@@ -38,7 +38,6 @@ Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 README
-ROADMAP
 script/dancer
 t/00_base/001_load.t
 t/00_base/002_strict_and_warnings.t
@@ -61,7 +60,6 @@ t/02_request/05_cgi_pm_compat.t
 t/02_request/06_init_env.t
 t/02_request/07_raw_data.t
 t/02_request/08_params.t
-t/02_request/09_params.t
 t/02_request/10_mixed_params.t
 t/02_request/11_accessors.t
 t/02_request/12_base.t
