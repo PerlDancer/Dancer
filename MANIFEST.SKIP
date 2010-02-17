@@ -7,3 +7,4 @@ Makefile$
 ^t.*sessions
 ^cover_db
 ^.*\.log
+^run_perltidy.sh$
