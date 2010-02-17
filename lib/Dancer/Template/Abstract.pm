@@ -20,8 +20,8 @@ Dancer::Template::Abstract - abstract class for Dancer's template engines
 
 =head1 DESCRIPTION
 
-This class is provided as a mother class for each template engine. Any template
-engine must inherits from it and have to provide a set of methods.
+This class is provided as a base class for each template engine. Any template
+engine must inherit from it and provide a set of methods described below.
 
 =head1 INTERFACE
 
@@ -32,22 +32,19 @@ engine must inherits from it and have to provide a set of methods.
 The template engine can overload this method if some initialization stuff has to
 be done before the template engine is used.
 
-The mother class provide a dumb init() method that returns true and do nothing.
+The base class provides a plain init() method that only returns true.
 
 =item B<render($self, $template, $tokens)>
 
 This method must be implemented by the template engine. Given a template and a
-tokens set, it returns a processed string.
+set of tokens, it returns a processed string.
 
-If $template is a reference, it's assumed it's a reference to a string that
-contains the template itself. If it's not a reference, it's assumed that the
-string is a path to template file. The render method will then have to open it a
-read its content (Dancer::FileUtils::read_file_content does that job).
+If C<$template> is a reference, it's assumed to be a reference to a string that contains the template itself. If it's not a reference, it's assumed to be the path to template file, as a string. The render method will then have to open it and read its content (Dancer::FileUtils::read_file_content does that job).
 
 This method's return value must be a string which is the result of the
-interpolation of $tokens in $template.
+interpolation of C<$tokens> in C<$template>.
 
-If an error occur, the method should trigger an exception with die.
+If an error occurs, the method should trigger an exception with C<die()>.
 
 Examples :
 
