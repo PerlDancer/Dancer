@@ -43,7 +43,8 @@ sub build {
     my $engine_class =
       Dancer::ModuleLoader->class_from_setting($namespace => $name);
 
-    die "unknown $type engine '$name'"
+    die "unknown $type engine '$name', " .
+        "perhaps you need to install $engine_class?"
       unless Dancer::ModuleLoader->require($engine_class);
 
     # creating the engine
