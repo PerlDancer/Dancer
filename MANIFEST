@@ -28,6 +28,7 @@ lib/Dancer/Response.pm
 lib/Dancer/Route.pm
 lib/Dancer/Session.pm
 lib/Dancer/Session/Abstract.pm
+lib/Dancer/Session/Simple.pm
 lib/Dancer/Session/YAML.pm
 lib/Dancer/SharedData.pm
 lib/Dancer/Template.pm
