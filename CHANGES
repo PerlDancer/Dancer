@@ -1,3 +1,10 @@
+Dancer 1.160
+
+    [ David Precious ]
+    * Added session backend Dancer::Sesssion::Simple
+
+
+
 Dancer 1.150
 
     [ Alexis Sukrieh ]
