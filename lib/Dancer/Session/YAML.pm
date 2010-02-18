@@ -85,7 +85,7 @@ transparent session storage for the developer.
 This backend is intended to be used in development environments, when looking
 inside a session can be useful.
 
-It's not recommended to use this session engine in production environements.
+It's not recommended to use this session engine in production environments.
 
 =head1 CONFIGURATION
 
