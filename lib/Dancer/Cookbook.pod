@@ -179,7 +179,7 @@ Or, to enable it from within your code,
 the example is the session backend to use; this is shorthand for
 L<Dancer::Session::YAML>.  There are other session backends you may wish to use,
 for instance L<Dancer::Session::Memcache>, but the YAML backend is a simple and
-easy to use example which stores session data in a YAML file in sessions/.
+easy to use example which stores session data in a YAML file in sessions).
 
 
 =head3 Storing data in the session
@@ -223,7 +223,7 @@ This can easily be handled with a before filter to check their session:
 
     post '/login' => sub {
         # Validate the username and password they supplied
-        if ($params->{user} eq 'bob' && params->{pass} eq 'letmein) {
+        if ($params->{user} eq 'bob' && params->{pass} eq 'letmein') {
             session user => $params->{user};
             redirect params->{path} || '/';
         } else {
@@ -246,7 +246,7 @@ view. The `appdir/views' directory is the place where views are located.
 
 You can change this location by changing the setting 'views'.
 
-By default, the internal template engine is used L<Dancer::Template::Simple> 
+By default, the internal template engine L<Dancer::Template::Simple> is used,
 but you may want to upgrade to Template::Toolkit. If you do so, you have to 
 enable this engine in your settings as explained in
 L<Dancer::Template::TemplateToolkit>.  If you do so, you'll also have to 
