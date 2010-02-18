@@ -39,7 +39,10 @@ The base class provides a plain init() method that only returns true.
 This method must be implemented by the template engine. Given a template and a
 set of tokens, it returns a processed string.
 
-If C<$template> is a reference, it's assumed to be a reference to a string that contains the template itself. If it's not a reference, it's assumed to be the path to template file, as a string. The render method will then have to open it and read its content (Dancer::FileUtils::read_file_content does that job).
+If C<$template> is a reference, it's assumed to be a reference to a string that
+contains the template itself. If it's not a reference, it's assumed to be the
+path to template file, as a string. The render method will then have to open it
+and read its content (Dancer::FileUtils::read_file_content does that job).
 
 This method's return value must be a string which is the result of the
 interpolation of C<$tokens> in C<$template>.
