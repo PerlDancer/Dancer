@@ -166,12 +166,23 @@ It's common to want to use sessions to give your web applications state; for
 instance, allowing a user to log in, creating a session, and checking that
 session on subsequent requests.
 
-To make use of sessions, you must first enable the session engine - in your
+To make use of sessions, you must first enable the session engine - pick the
+session engine you want to use, then declare it in your config file:
 config file, add:
 
-    session: "YAML"
+    session: Simple
 
-Or, to enable it from within your code,
+The L<Dancer::Session::Simple> backend implements very simple in-memory session
+storage.  This will be fast and useful for testing, but sessions do not persist
+between restarts of your app.
+
+You can also use the L<Dancer::Session::YAML> backend included with Dancer,
+which stores session data on disc in YAML files (since YAML is a nice
+human-readable format, it makes inspecting the contents of sessions a breeze):
+
+    session: YAML
+
+Or, to enable session support from within your code,
 
     set session => 'YAML';
 
@@ -198,6 +209,22 @@ Retrieving data from the session is as easy as:
 Or, alternatively,
 
     session->{varname}
+
+
+=head3 Controlling where sessions are stored
+
+For disc-based session back ends like L<Dancer::Session::YAML>,
+L<Dancer::Session::Storable> etc, session files are written to the session dir
+specified by the C<session_dir> setting, which defaults to C<appdir/sessions> if
+not specifically set.
+
+If you need to control where session files are created, you can do so quickly
+and easily within your config file, for example:
+
+    session_dir: /tmp/dancer-sessions
+
+If the directory you specify does not exist, Dancer will attempt to create it
+for you.
 
 
 
