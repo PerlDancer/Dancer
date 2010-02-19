@@ -194,7 +194,7 @@ I\'m in <code>[%appdir%]/views/index.tt</code>
 
 "$appname.pl" => 
 
-"#!/usr/bin/perl
+"#!$^X
 use Dancer;
 use $appname;
 dance;
