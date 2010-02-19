@@ -3,6 +3,9 @@ Dancer 1.160
     [ David Precious ]
     * Added session backend Dancer::Sesssion::Simple
 
+	[ Alexis Sukrieh ]
+	* Dancer helper propagates its perl executable into the generated
+	  $appname.pl script (FIX for RT #54759).
 
 
 Dancer 1.150
