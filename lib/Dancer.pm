@@ -143,6 +143,7 @@ sub import {
     setting public => path(setting('appdir'), 'public');
     setting views  => path(setting('appdir'), 'views');
     setting logger => 'file';
+    setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
 }
 
 # Start/Run the application with the chosen apphandler

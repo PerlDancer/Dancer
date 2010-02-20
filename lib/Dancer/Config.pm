@@ -59,14 +59,20 @@ sub mime_types {
       : $SETTINGS->{mime_types}{$ext};
 }
 
-sub conffile { path(setting('appdir'), 'config.yml') }
+sub conffile { path(setting('confdir') || setting('appdir'), 'config.yml') }
 
 sub environment_file {
     my $env = setting('environment');
     return path(setting('appdir'), 'environments', "$env.yml");
 }
 
+sub init_confdir {
+    return setting('confdir') if setting('confdir');
+    setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
+}
+
 sub load {
+    init_confdir(); 
 
     # look for the conffile
     return 1 unless -f conffile;
@@ -110,7 +116,7 @@ sub load_default_settings {
     $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER} || 'standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS} || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD} || 0;
-
+    
     setting template => 'simple';
 }
 load_default_settings();
