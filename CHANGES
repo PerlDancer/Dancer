@@ -6,8 +6,18 @@ Dancer 1.160
     [ Alexis Sukrieh ]
     * Dancer helper propagates its perl executable into the generated
       $appname.pl script (FIX for RT #54759).
-    * No more warnings undeer Win32 for tests script that needs a tempdir
-      FIX for issue #34
+    * FIX for issue #34
+      No more warnings undeer Win32 for tests script that needs a tempdir
+    * FIX (unknown bug)
+      The standalone server now parses commandline options (was broken
+      since 1.140).
+    * FIX for issue #37
+      A new setting "confdir" is provided for making Dancer
+      read the application configuration files from an
+      alternate location.
+    * Core settings can be initialized via environment
+      variables, prefixed with "DANCER_" (e.g.  "DANCER_DAEMON"
+      for the setting "daemon").
 
 
 Dancer 1.150
