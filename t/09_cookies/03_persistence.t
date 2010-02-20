@@ -1,8 +1,15 @@
-use Dancer::Config 'setting';
+use strict;
+use warnings;
 use Test::More;
 
-eval "use Test::Requires ('LWP::UserAgent')";
-plan skip_all => "Test::Requires needed for this test" if $@;
+use Dancer::Config 'setting';
+
+use File::Spec;
+use File::Temp 'tempdir';
+my $tempdir = tempdir('Dancer.XXXXXX', DIR => File::Spec->curdir, CLEANUP => 1);
+
+eval "use LWP::UserAgent";
+plan skip_all => "LWP needed for this test" if $@;
 eval "use Test::TCP";
 plan skip_all => "Test::TCP needed for this test" if $@;
  
@@ -13,7 +20,7 @@ test_tcp(
 
         foreach my $client qw(one two three) {
             my $ua = LWP::UserAgent->new;
-            $ua->cookie_jar({ file => "$ENV{HOME}/.cookies.txt" });
+            $ua->cookie_jar({ file => "$tempdir/.cookies.txt" });
 
             my $res = $ua->get("http://127.0.0.1:$port/cookies");
             like $res->content, qr/\$VAR1 = \{\}/, 

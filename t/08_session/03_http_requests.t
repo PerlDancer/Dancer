@@ -1,4 +1,10 @@
 use Test::More;
+use strict;
+use warnings;
+
+use File::Spec;
+use File::Temp 'tempdir';
+my $tempdir = tempdir('Dancer.XXXXXX', DIR => File::Spec->curdir, CLEANUP => 1);
 
 use Dancer::Config 'setting';
 eval "use Test::Requires ('LWP::UserAgent')";
@@ -31,7 +37,7 @@ test_tcp(
 
         foreach my $client (@clients) {
             my $ua = LWP::UserAgent->new;
-            $ua->cookie_jar({ file => "$ENV{HOME}/.cookies.txt" });
+            $ua->cookie_jar({ file => "$tempdir/.cookies.txt" });
 
             my $res = $ua->get("http://127.0.0.1:$port/read_session");
             like $res->content, qr/name=''/, 
