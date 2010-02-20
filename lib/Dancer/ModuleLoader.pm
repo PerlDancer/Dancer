@@ -48,11 +48,19 @@ Taken directly from Dancer::Template::TemplateToolkit (which is core):
 
 =head1 DESCRIPTION
 
-Sometimes in Dancer core we need to use modules, but we don't want to declare them all in advance in compile-time. These could be because the specific modules provide extra features which depend on code that isn't (and shouldn't) be in core, or perhaps because we only want these components loaded in lazy style, saving loading time a bit. For example, why load L<Template> (which isn't required by L<Dancer>) when you don't use L<Dancer::Template::TemplateToolkit>?
+Sometimes in Dancer core we need to use modules, but we don't want to declare
+them all in advance in compile-time. These could be because the specific modules
+provide extra features which depend on code that isn't (and shouldn't) be in
+core, or perhaps because we only want these components loaded in lazy style,
+saving loading time a bit. For example, why load L<Template> (which isn't
+required by L<Dancer>) when you don't use L<Dancer::Template::TemplateToolkit>?
 
-To do such things takes a bit of code for localizing C<$@> and C<eval>ing. That code has been refactored into this module to help Dancer core developers.
+To do such things takes a bit of code for localizing C<$@> and C<eval>ing. That
+code has been refactored into this module to help Dancer core developers.
 
-B<Please only use this for Dancer core modules>. If you're writing an external Dancer module (L<Dancer::Template::Tiny>, L<Dancer::Session::Cookie>, etc.), please simply "C<use ModuleYouNeed>" in your code and don't use this module.
+B<Please only use this for Dancer core modules>. If you're writing an external
+Dancer module (L<Dancer::Template::Tiny>, L<Dancer::Session::Cookie>, etc.),
+please simply "C<use ModuleYouNeed>" in your code and don't use this module.
 
 =head1 METHODS/SUBROUTINES
 
@@ -76,7 +84,8 @@ Runs a "C<require ModuleYouNeed>".
     Dancer::ModuleLoader->require('Something')
         or die "Couldn't require Something\n";
 
-If you are unsure what you need (C<require> or C<load>), learn the differences between C<require> and C<use>.
+If you are unsure what you need (C<require> or C<load>), learn the differences
+between C<require> and C<use>.
 
 Returns 1 if successful, 0 if not.
 
