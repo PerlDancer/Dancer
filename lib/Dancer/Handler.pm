@@ -20,6 +20,7 @@ sub init {
 
 # This is where we choose which application handler to return
 sub get_handler {
+    init();
     if (setting('apphandler') eq 'PSGI') {
         return Dancer::Handler::PSGI->new;
     }

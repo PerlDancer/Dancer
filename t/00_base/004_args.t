@@ -18,6 +18,9 @@ my @tests = (
 
     { args => ['--environment=production'], 
       expected => sub { setting('environment') eq 'production' } },
+
+    { args => ['--confdir=/tmp/foo'],
+      expected => sub { setting('confdir') eq '/tmp/foo'} },
 );
 
 plan tests => scalar(@tests);
