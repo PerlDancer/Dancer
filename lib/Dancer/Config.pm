@@ -33,6 +33,10 @@ my $setters = {
         my ($setting, $value) = @_;
         Dancer::Template->init($value, settings());
     },
+    cache   => sub {
+        my ($setting, $value) = @_;
+        Dancer::Route->init_cache();
+    },
 };
 
 # public accessor for get/set
