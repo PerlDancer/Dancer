@@ -12,6 +12,20 @@ my @supported_conditions = qw(agent user_agent host hostname referer);
 my $REG = init_registry();
 # current prefix
 my $PREFIX;
+my $CACHE;
+
+sub init_cache {
+    my %extra = ();
+    if ( my $size_limit = setting('cache_size_limit') ) {
+        $extra{'size_limit'} = $size_limit;
+    }
+
+    if ( my $path_limit = setting('cache_size_limit') ) {
+        $extra{'path_limit'} = $path_limit;
+    }
+
+    $CACHE = Dancer::Route::Cache->new(%extra);
+};
 
 sub prefix {
     my ($class, $prefix) = @_;
@@ -76,6 +90,7 @@ sub init_registry { {routes => {}, before_filters => []} }
 sub purge_all    { $REG = init_registry() }
 sub registry     {$REG}
 sub set_registry { $REG = $_[1] }
+sub cache        {$CACHE}
 
 # look for a route in the given array
 sub find_route {
@@ -142,6 +157,15 @@ sub find {
 
     my $registry = Dancer::Route->registry;
 
+    # if cache is enabled, we check if we handled this path before
+    if ( setting('cache') ) {
+        # if so, return the cached result
+        my $route = Dancer::Route->cache->route_from_path( $method, $path );
+        if ($route) {
+            return $route;
+        }
+    }
+
     # browse all matching routes, and return the first one with
     # a copy of the next matches, so we can call the next route if the
     # action chooses to pass.
@@ -170,6 +194,11 @@ sub find {
 
     # if zero matches, zero biatches
     return undef unless defined $first_match;
+
+    # if we have a cache, store the result
+    if ( setting('cache') ) {
+        Dancer::Route->cache->store_route( $method, $path => $first_match );
+    }
 
     # return the first matching route, with a copy of the next ones
     return $first_match;
