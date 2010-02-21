@@ -2,9 +2,12 @@ package Dancer::Route::Cache;
 
 use strict;
 use warnings;
-use Dancer::SharedData;
+use vars '$VERSION';
+
 use Dancer::Config 'setting';
 use Dancer::Error;
+
+$VERSION = '0.01';
 
 sub new {
     my ( $class, @args ) = @_;
