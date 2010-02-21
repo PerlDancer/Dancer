@@ -66,12 +66,21 @@ sub parse_size {
 }
 
 sub route_from_path {
-    my ( $self, $path ) = @_;
-    return $self->{$path} || undef;
+    my ( $self, $method, $path ) = @_;
+
+    $method && $path
+        or die "Missing method or path";
+
+    return $self->{'cache'}{$method}{$path} || undef;
 }
 
 sub store_route {
-    my ( $self, $path, $route ) = @_;
+    my ( $self, $method, $path, $route ) = @_;
+
+    $method && $path && $route
+        or die "Missing method, path or route";
+
+    $self->{'cache'}{$method}{$path} = $route;
 }
 
 1;
