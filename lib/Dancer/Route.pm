@@ -5,6 +5,7 @@ use warnings;
 use Dancer::SharedData;
 use Dancer::Config 'setting';
 use Dancer::Error;
+use Dancer::Route::Cache;
 
 my @supported_conditions = qw(agent user_agent host hostname referer);
 
