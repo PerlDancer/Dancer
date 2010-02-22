@@ -4,32 +4,21 @@ use strict;
 use warnings;
 use vars '$VERSION';
 
+use Dancer::Object;
 use Dancer::Config 'setting';
 use Dancer::Error;
 
 $VERSION = '0.01';
+use base 'Dancer::Object';
+Dancer::Route::Cache->attributes('size_limit', 'path_limit');
 
-sub new {
-    my ( $class, %args ) = @_;
-
-    my $self = bless {}, $class;
-
-    if (%args) {
-        foreach my $arg ( keys %args ) {
-            if ( $arg eq 'size_limit' ) {
-                $self->size_limit( $args{$arg} );
-            } elsif ( $arg eq 'path_limit' ) {
-                $self->path_limit( $args{$arg} );
-            } else {
-                die "Unknown key: $arg\n";
-            }
-        }
-    }
-
-    return $self;
+sub init { 
+    my ($self, %args) = @_;
+    $self->build_size_limit($args{size_limit}) if defined $args{size_limit};
+    $self->build_path_limit($args{path_limit}) if defined $args{path_limit};
 }
 
-sub path_limit {
+sub build_path_limit {
     my ( $self, $limit ) = @_;
     if ($limit) {
         $self->{'path_limit'} = $limit;
@@ -38,7 +27,7 @@ sub path_limit {
     return $self->{'path_limit'};
 }
 
-sub size_limit {
+sub build_size_limit {
     my ( $self, $limit ) = @_;
     if ($limit) {
         $self->{'size_limit'} = $self->parse_size($limit);
