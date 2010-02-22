@@ -100,6 +100,7 @@ sub app_tree($)  {
             "index.tt" => FILE,
         },
         "public" => {
+            "+dispatch.cgi" => FILE,
             "404.html" => FILE,
             "500.html" => FILE,
             "css" => { 
@@ -191,6 +192,12 @@ I\'m in <code>[%appdir%]/views/index.tt</code>
 
 'main.tt'   => 
     Dancer::Renderer->html_page($appname, '<% content %>'),
+
+"dispatch.cgi" => 
+"#!$^X
+use Plack::Runner;
+Plack::Runner->run('[% appdir %]/app.psgi');
+",
 
 "$appname.pl" => 
 
