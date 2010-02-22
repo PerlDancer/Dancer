@@ -10,24 +10,18 @@ use Dancer::Error;
 $VERSION = '0.01';
 
 sub new {
-    my ( $class, @args ) = @_;
+    my ( $class, %args ) = @_;
 
     my $self = bless {}, $class;
 
-    if (@args) {
-        scalar @args % 2 == 0 or die "Illegal number of options\n";
-
-        foreach my $idx ( 0, 2 ) {
-            $args[$idx] || last;
-            my $arg = $args[$idx];
-            my $val = $args[ $idx + 1 ];
-
+    if (%args) {
+        foreach my $arg ( keys %args ) {
             if ( $arg eq 'size_limit' ) {
-                $self->size_limit($val);
+                $self->size_limit( $args{$arg} );
             } elsif ( $arg eq 'path_limit' ) {
-                $self->path_limit($val);
+                $self->path_limit( $args{$arg} );
             } else {
-                die "Incorrect key: $arg\n";
+                die "Unknown key: $arg\n";
             }
         }
     }
