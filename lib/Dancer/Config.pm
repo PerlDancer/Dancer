@@ -116,10 +116,13 @@ sub load_default_settings {
     $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET} || 'UTF-8';
     $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG} || 1;
     $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON} || 0;
-    $SETTINGS->{environment}  ||= $ENV{DANCER_ENVIRONMENT} || 'development';
     $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER} || 'standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS} || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD} || 0;
+    $SETTINGS->{environment}
+      ||= $ENV{DANCER_ENVIRONMENT}
+      || $ENV{PLACK_ENV}
+      || 'development';
     
     setting template => 'simple';
 }
