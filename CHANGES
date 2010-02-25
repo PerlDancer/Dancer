@@ -22,6 +22,9 @@ Dancer 1.160
       rather than when the handler is initialized. This allow the user to define
       route handlers depending on config-state.
 
+    [ Daniel Tasov ]
+    * Plack environment is propagated to Dancer if none specified.
+
 
 Dancer 1.150
 
