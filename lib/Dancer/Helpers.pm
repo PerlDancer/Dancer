@@ -70,6 +70,11 @@ sub error {
 
 sub redirect {
     my ($destination, $status) = @_;
+    if($destination =~ m!^/!) {
+        # no absolute uri here, build one, RFC 2616 forces us to do so
+        my $request = Dancer::SharedData->request;
+        $destination = $request->uri_for($destination);
+    }
 
     Dancer::Response::status($status || 302);
     Dancer::Response::headers('Location' => $destination);
