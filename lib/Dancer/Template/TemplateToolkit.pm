@@ -18,6 +18,7 @@ sub init {
     my $tt_config = {
         ANYCASE   => 1,
         ABSOLUTE  => 1,
+        %{$self->config},
     };
 
     my $start_tag = $self->config->{start_tag} || '<%';
