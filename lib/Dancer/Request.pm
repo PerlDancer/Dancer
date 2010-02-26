@@ -8,19 +8,20 @@ use HTTP::Body;
 use URI;
 
 use base 'Dancer::Object';
-Dancer::Request->attributes(
-
-    # query
-    'env',          'path', 'method',
-    'content_type', 'content_length',
-    'body',         'path_info',
-
-    # http env
+my @http_env_keys = (
     'user_agent',      'host',
     'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive',
     'connection',      'accept',
     'referer',
+);
+
+Dancer::Request->attributes(
+    # query
+    'env',          'path', 'method',
+    'content_type', 'content_length',
+    'body',         'path_info',
+    @http_env_keys,
 );
 
 # aliases
@@ -150,10 +151,8 @@ sub _set_route_params {
 
 sub _build_request_env {
     my ($self) = @_;
-    foreach my $http_env (grep /^HTTP_/, keys %{$self->env}) {
-        my $key = lc $http_env;
-        $key =~ s/^http_//;
-        $self->{$key} = $self->env->{$http_env};
+    foreach my $key (@http_env_keys) {
+        $self->{$key} = $self->env->{uc("http_${key}")};
     }
 }
 
