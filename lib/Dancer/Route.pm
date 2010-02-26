@@ -156,8 +156,6 @@ sub find {
     $method ||= 'get';
     $method = lc($method);
 
-    my $registry = Dancer::Route->registry;
-
     # if cache is enabled, we check if we handled this path before
     if ( setting('cache') ) {
         # if so, return the cached result
@@ -172,7 +170,7 @@ sub find {
     # action chooses to pass.
     my $prev;
     my $first_match;
-  FIND: foreach my $r (@{$registry->{routes}{$method}}) {
+  FIND: foreach my $r (@{$REG->{routes}{$method}}) {
 
         my $params = match($path, $r->{route});
         if ($params) {
@@ -228,27 +226,19 @@ sub call($$) {
     my $request = Dancer::SharedData->request;
     my $params = build_params($handler, $request);
 
+    # eval the route handler, and copy the response object
     my $content;
-    my $warning;    # reset any previous warning seen
-
+    my $warning; 
     local $SIG{__WARN__} = sub { $warning = $_[0] };
-
     eval { $content = $handler->{code}->() };
+    my $response_error = $@;
+    my $response = Dancer::Response->current;
 
     # Log warnings
     Dancer::Logger->warning($warning) if $warning;
 
-    # maybe a not retarded way to listen for the exceptions
-    # would be good here :)
-    # Halt: just stall everything and return the Response singleton
-    # useful for the redirect helper
-    if (Dancer::Exception::Halt->caught) {
-        return Dancer::Response->current;
-    }
-    elsif
-
-      # Pass: pass to the next route if available. otherwise, 404.
-      (Dancer::Exception::Pass->caught) {
+    # Pass: pass to the next route if available. otherwise, 404.
+    if ($response->{pass}) {
         if ($handler->{'next'}) {
             return Dancer::Route->call($handler->{'next'});
         }
@@ -261,22 +251,20 @@ sub call($$) {
             );
             return $error->render;
         }
-
-        # no exceptions? continue the old way, although this
-        # mechanism should be dropped in favor of exceptions in the
-        # future
     }
+
+    # Process the response
     else {
 
         # trap errors
-        if ($@ || (setting('warnings') && $warning)) {
+        if ($response_error || (setting('warnings') && $warning)) {
             my $error;
-            if ($@) {
+            if ($response_error) {
                 $error = Dancer::Error->new(
                     code    => 500,
                     title   => 'Route Handler Error',
                     type    => 'Execution failed',
-                    message => $@
+                    message => $response_error
                 );
 
             }
@@ -291,8 +279,6 @@ sub call($$) {
             }
             return $error->render;
         }
-
-        my $response = Dancer::Response->current;
 
         # drop the content if this is a HEAD request
         $content = '' if $handler->{method} eq 'head';
@@ -344,24 +330,25 @@ sub make_regexp_from_route {
     my ($route) = @_;
     my @params;
     my $pattern  = $route;
-    my $registry = Dancer::Route->registry;
 
     if (ref($route) eq 'HASH' && $route->{regexp}) {
         $pattern = $route->{regexp};
     }
     else {
         # look for route with params (/hello/:foo)
-        @params = $pattern =~ /:([^\/]+)/g;
-        if (@params) {
-            $registry->{route_params}{$route} = \@params;
-            $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
+        if ($pattern =~ /:/) {
+            @params = $pattern =~ /:([^\/]+)/g;
+            if (@params) {
+                $REG->{route_params}{$route} = \@params;
+                $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
+            }
         }
 
         # parse wildcards
-        $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
+        $pattern =~ s/\*/\(\[\^\/\]\+\)/g if $pattern =~ /\*/;
 
         # escape dots
-        $pattern =~ s/\./\\\./g;
+        $pattern =~ s/\./\\\./g if $pattern =~ /\./;
     }
 
     # escape slashes
