@@ -102,16 +102,24 @@ sub dumper {
 
     # Take a copy of the data, so we can mask sensitive-looking stuff:
     my %data = %$obj;
-    
+    my $hid;    
     for my $key (keys %data) {
-        $data{$key} = 'Hidden (looks potentially sensitive)'
-            if $key =~ /(pass|card?num|pan|secret)/i;
+        $data{$key} = 'Hidden (looks potentially sensitive)' and $hid++
+        if ($key =~ /(pass|card?num|pan|secret)/i) {
+            $data{$key} = 'Hidden (looks potentially sensitive)';
+            $hid++;
+        }
     }
     
     #use Data::Dumper;
     my $dd = Data::Dumper->new([\%data]);
-    $dd->Terse(1)->Quotekeys(0);
-    return $dd->Dump();
+    $dd->Terse(1)->Quotekeys(0)->Indent(1);
+    my $content = $dd->Dump();
+    $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =>}g;
+    if ($hid) {
+        $content .= "\n\nNote: Values of $hid sensitive-looking keys hidden\n";
+    }
+    return $content;
 }
 
 sub render {
