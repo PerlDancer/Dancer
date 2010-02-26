@@ -7,6 +7,7 @@ use Dancer::Response;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::Logger;
+use Dancer::Session;
 
 sub new {
     my ($class, %params) = @_;
@@ -139,7 +140,14 @@ sub environment {
         "<div class=\"title\">Stack</div><pre class=\"content\">"
       . $self->get_caller
       . "</pre>";
-    return "$source $settings $env";
+    my $session;
+    if (setting('session')) {
+        $session = 
+            qq[<div class="title">Session</div><pre class="content">]
+            . dumper( Dancer::Session->get )
+            . "</pre>";
+    }
+    return "$source $settings $session $env";
 }
 
 sub get_caller {
