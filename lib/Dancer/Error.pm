@@ -98,8 +98,12 @@ sub dumper {
 
     my $content = "";
     while (my ($k, $v) = each %$obj) {
+        my $val = $v;  # we don't want to modify the original!
+        if ($k =~ /(pass|card_num|pan|secret)/i) {
+            $val = 'Hidden (looks potentially sensitive)';
+        }
         $content
-          .= "<span class=\"key\">$k</span> : <span class=\"value\">$v</span>\n";
+          .= "<span class=\"key\">$k</span> : <span class=\"value\">$val</span>\n";
     }
     return $content;
 }
