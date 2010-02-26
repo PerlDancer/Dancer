@@ -9,7 +9,6 @@ use Dancer::Config 'setting';
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
-use Dancer::Exceptions;
 use Dancer::Helpers;
 use Dancer::Logger;
 use Dancer::Renderer;
@@ -91,7 +90,7 @@ sub logger     { set(logger => @_) }
 sub load       { require $_ for @_ }
 sub mime_type  { Dancer::Config::mime_types(@_) }
 sub params     { Dancer::SharedData->request->params(@_) }
-sub pass       {pass_exception}
+sub pass       { Dancer::Response->pass }
 sub path       { Dancer::FileUtils::path(@_) }
 sub post       { Dancer::Route->add('post', @_) }
 sub prefix     { Dancer::Route->prefix(@_) }
@@ -795,8 +794,6 @@ The following modules are mandatory (Dancer cannot run without them)
 =over 8
 
 =item L<HTTP::Server::Simple::PSGI>
-
-=item L<Exception::Class>
 
 =item L<HTTP::Body>
 

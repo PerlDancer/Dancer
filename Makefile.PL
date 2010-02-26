@@ -22,7 +22,6 @@ WriteMakefile1(
         # non-core
         'HTTP::Body'                 => '0',
         'HTTP::Server::Simple::PSGI' => '0.11',
-        'Exception::Class'           => '0',
         'MIME::Types'                => '0',
         'URI'                        => 0,
 
