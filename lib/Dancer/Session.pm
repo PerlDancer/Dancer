@@ -22,12 +22,12 @@ sub init {
 sub get_current_session {
     my $sid     = engine->read_session_id;
     my $session = undef;
+    my $class = ref(engine);
 
-    $session = engine->retrieve($sid) if $sid;
+    $session = $class->retrieve($sid) if $sid;
 
     if (not defined $session) {
-        $session = engine->create();
-        Dancer::Logger->debug("new session created => " . $session->id);
+        $session = $class->create();
         engine->write_session_id($session->id);
     }
     return $session;
