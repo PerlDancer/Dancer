@@ -111,7 +111,7 @@ sub merge_registry {
       my $method (keys(%{$new_reg->{routes}}), keys(%{$orig_reg->{routes}}))
     {
 
-        # don't work out a mehtod if already done
+        # don't work out a method if already done
         next if exists $merged_reg->{routes}{$method};
 
         my $merged_routes = [];
