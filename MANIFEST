@@ -9,7 +9,6 @@ lib/Dancer/Cookie.pm
 lib/Dancer/Cookies.pm
 lib/Dancer/Engine.pm
 lib/Dancer/Error.pm
-lib/Dancer/Exceptions.pm
 lib/Dancer/FileUtils.pm
 lib/Dancer/GetOpt.pm
 lib/Dancer/Handler.pm
@@ -26,6 +25,7 @@ lib/Dancer/Renderer.pm
 lib/Dancer/Request.pm
 lib/Dancer/Response.pm
 lib/Dancer/Route.pm
+lib/Dancer/Route/Cache.pm
 lib/Dancer/Session.pm
 lib/Dancer/Session/Abstract.pm
 lib/Dancer/Session/Simple.pm
@@ -80,6 +80,7 @@ t/03_route_handler/12_response.t
 t/03_route_handler/13_any_route_handler.t
 t/03_route_handler/14_options.t
 t/03_route_handler/15_prefix.t
+t/03_route_handler/16_caching.t
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
 t/04_static_file/03_get_mime_type.t
