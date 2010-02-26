@@ -96,17 +96,22 @@ sub tabulate {
 
 sub dumper {
     my $obj = shift;
+    return "Unavailable without Data::Dumper"
+        unless Dancer::ModuleLoader->load('Data::Dumper');
 
-    my $content = "";
-    while (my ($k, $v) = each %$obj) {
-        my $val = $v;  # we don't want to modify the original!
-        if ($k =~ /(pass|card_num|pan|secret)/i) {
-            $val = 'Hidden (looks potentially sensitive)';
-        }
-        $content
-          .= "<span class=\"key\">$k</span> : <span class=\"value\">$val</span>\n";
+
+    # Take a copy of the data, so we can mask sensitive-looking stuff:
+    my %data = %$obj;
+    
+    for my $key (keys %data) {
+        $data{$key} = 'Hidden (looks potentially sensitive)'
+            if $key =~ /(pass|card?num|pan|secret)/i;
     }
-    return $content;
+    
+    #use Data::Dumper;
+    my $dd = Data::Dumper->new([\%data]);
+    $dd->Terse(1)->Quotekeys(0);
+    return $dd->Dump();
 }
 
 sub render {
@@ -144,7 +149,7 @@ sub environment {
     if (setting('session')) {
         $session = 
             qq[<div class="title">Session</div><pre class="content">]
-            . dumper( Dancer::Session->get )
+            . dumper(  Dancer::Session->get  )
             . "</pre>";
     }
     return "$source $settings $session $env";
