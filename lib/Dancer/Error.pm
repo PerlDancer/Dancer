@@ -104,7 +104,6 @@ sub dumper {
     my %data = %$obj;
     my $hid;    
     for my $key (keys %data) {
-        $data{$key} = 'Hidden (looks potentially sensitive)' and $hid++
         if ($key =~ /(pass|card?num|pan|secret)/i) {
             $data{$key} = 'Hidden (looks potentially sensitive)';
             $hid++;
@@ -153,7 +152,7 @@ sub environment {
         "<div class=\"title\">Stack</div><pre class=\"content\">"
       . $self->get_caller
       . "</pre>";
-    my $session;
+    my $session = "";
     if (setting('session')) {
         $session = 
             qq[<div class="title">Session</div><pre class="content">]
