@@ -14,6 +14,20 @@ my $REG = init_registry();
 # current prefix
 my $PREFIX;
 my $CACHE;
+my $_COMPILED_ROUTES = { _state => 'NEW' };
+sub compiled { $_COMPILED_ROUTES }
+
+use Data::Dumper;
+sub _compile_routes {
+    $_COMPILED_ROUTES->{_state} = 'PENDING';
+    foreach my $method (keys %{ $REG->{routes} }) {
+        foreach my $route (@{$REG->{routes}{$method}}) {
+            my ($regexp, @variables) = make_regexp_from_route($route);
+            set_regexp_for_route($route => $regexp, \@variables);
+        }
+    }
+    $_COMPILED_ROUTES->{_state} = 'DONE';
+}
 
 sub init_cache {
     my %extra = ();
@@ -156,13 +170,14 @@ sub find {
     $method ||= 'get';
     $method = lc($method);
 
+    # First, make sure the routes are compiled, if not compile them now
+    _compile_routes() if ($_COMPILED_ROUTES->{_state} ne 'DONE');
+
     # if cache is enabled, we check if we handled this path before
     if ( setting('cache') ) {
         # if so, return the cached result
         my $route = Dancer::Route->cache->route_from_path( $method, $path );
-        if ($route) {
-            return $route;
-        }
+        return $route if $route;
     }
 
     # browse all matching routes, and return the first one with
@@ -298,7 +313,8 @@ sub call($$) {
 
 sub match {
     my ($path,   $route)     = @_;
-    my ($regexp, @variables) = make_regexp_from_route($route);
+    #my ($regexp, @variables) = make_regexp_from_route($route);
+    my ($regexp, $variables) = @{ get_regexp_from_route($route) };
 
     # If there's no regexp or no path, don't even try to match:
     return if (!$regexp || !$path);
@@ -313,9 +329,9 @@ sub match {
     my %params;
 
     # if named variables were found, return params accordingly
-    if (@variables) {
-        for (my $i = 0; $i < ~~ @variables; $i++) {
-            $params{$variables[$i]} = $values[$i];
+    if (@$variables) {
+        for (my $i = 0; $i < ~~ @$variables; $i++) {
+            $params{$variables->[$i]} = $values[$i];
         }
         return \%params;
     }
@@ -329,10 +345,10 @@ sub match {
 sub make_regexp_from_route {
     my ($route) = @_;
     my @params;
-    my $pattern  = $route;
+    my $pattern  = $route->{route};
 
-    if (ref($route) eq 'HASH' && $route->{regexp}) {
-        $pattern = $route->{regexp};
+    if (ref($pattern) && $pattern->{regexp}) {
+        $pattern = $pattern->{regexp};
     }
     else {
         # look for route with params (/hello/:foo)
@@ -356,6 +372,27 @@ sub make_regexp_from_route {
 
     # return the final regexp
     return '^' . $pattern . '$', @params;
+}
+
+sub set_regexp_for_route {
+    my ($route, $regexp, $params) = @_;
+
+    my $key = $route->{'route'};
+    $key = $key->{'regexp'} if ref($key);
+
+    #warn "saving route for $key";
+    $_COMPILED_ROUTES->{$key} = [ $regexp => $params ];
+}
+
+sub get_regexp_from_route {
+    my ($route) = @_;
+    $route = $route->{regexp} if ref($route);
+
+    # the route tree may have changed since the last compilation 
+    if (not defined $_COMPILED_ROUTES->{$route}) {
+        _compile_routes();
+    }
+    return $_COMPILED_ROUTES->{$route};
 }
 
 sub _build_condition_regexp {
