@@ -18,7 +18,7 @@ my $_COMPILED_ROUTES = { _state => 'NEW' };
 sub compiled { $_COMPILED_ROUTES }
 
 use Data::Dumper;
-sub _compile_routes {
+sub compile_routes {
     $_COMPILED_ROUTES->{_state} = 'PENDING';
     foreach my $method (keys %{ $REG->{routes} }) {
         foreach my $route (@{$REG->{routes}{$method}}) {
@@ -171,7 +171,7 @@ sub find {
     $method = lc($method);
 
     # First, make sure the routes are compiled, if not compile them now
-    _compile_routes() if ($_COMPILED_ROUTES->{_state} ne 'DONE');
+    compile_routes() if ($_COMPILED_ROUTES->{_state} ne 'DONE');
 
     # if cache is enabled, we check if we handled this path before
     if ( setting('cache') ) {
@@ -390,7 +390,7 @@ sub get_regexp_from_route {
 
     # the route tree may have changed since the last compilation 
     if (not defined $_COMPILED_ROUTES->{$route}) {
-        _compile_routes();
+        compile_routes();
     }
     return $_COMPILED_ROUTES->{$route};
 }
