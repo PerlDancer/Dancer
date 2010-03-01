@@ -3,7 +3,7 @@ use warnings;
 
 use lib 't';
 use TestUtils;
-use Test::More 'no_plan', import => ['!pass'];
+use Test::More tests => 18, import => ['!pass'];
 
 BEGIN {
     use_ok 'Dancer';
@@ -38,4 +38,7 @@ foreach my $test (@tests) {
 
     is( $response->{content}, $test->{expected}, 
         "matching param looks good: ".$response->{content});
+
+    # splat should not be set
+    ok(!exists(params->{'splat'}), "splat not defined for ".$test->{path});
 }
