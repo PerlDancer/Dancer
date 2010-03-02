@@ -22,8 +22,11 @@ Dancer 1.160
       variables, prefixed with "DANCER_" (e.g.  "DANCER_DAEMON"
       for the setting "daemon").
     * Config and command-line arguments are parsed and loaded at import time,
-      rather than when the handler is initialized. This allow the user to define
-      route handlers depending on config-state.
+      rather than when the handler is initialized.
+	* Routes are compiled at startup instead of being compiled whenever a 
+	  request is handled.  This can increase performances up to 50%.
+	* FIX Params are not polluted anymore by the 'splat' keyword when no capture
+	  is needed by the pattern.
 
     [ Daniel Tasov ]
     * Plack environment is propagated to Dancer if none specified.
