@@ -84,6 +84,50 @@ sub store_route {
         or die "Missing method, path or route";
 
     $self->{'cache'}{$method}{$path} = $route;
+
+    push @{ $self->{'cache_array'} }, [ $method, $path ];
+
+    if ( my $limit = $self->size_limit ) {
+        while ( $self->route_cache_size() > $limit ) {
+            my ( $method, $path ) = @{ shift @{ $self->{'cache_array'} } };
+            delete $self->{'cache'}{$method}{$path};
+        }
+    }
+
+    if ( my $limit = $self->path_limit ) {
+        while ( $self->route_cache_paths() > $limit ) {
+            my ( $method, $path ) = @{ shift @{ $self->{'cache_array'} } };
+            delete $self->{'cache'}{$method}{$path};
+        }
+    }
+}
+
+sub route_cache_size {
+    my $self  = shift;
+    my %cache = %{ $self->{'cache'} };
+    my $size  = 0;
+
+    use bytes;
+
+    foreach my $method ( keys %cache ) {
+        $size += length $method;
+
+        foreach my $path ( keys %{ $cache{$method} } ) {
+            $size += length $path;
+            $size += length $cache{$method}{$path};
+        }
+    }
+
+    no bytes;
+
+    return $size;
+}
+
+sub route_cache_paths {
+    my $self  = shift;
+    my %cache = $self->{'cache'} ? %{ $self->{'cache'} } : ();
+
+    return scalar map { keys %{ $cache{$_} } } keys %cache;
 }
 
 1;

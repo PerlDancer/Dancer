@@ -31,6 +31,13 @@ Dancer 1.160
     [ Daniel Tasov ]
     * Plack environment is propagated to Dancer if none specified.
 
+    [ Sawyer X ]
+    * Route Caching with size and path number limits: Dancer::Route::Cache.
+    * FIX for issue #39.
+    * Dancer::ModuleLoader documentation
+    * Cleaned Dancer::Template::Abstract docs
+    * Cleaner die in Dancer::Engine if can't find engine
+    * Added default route example in Dancer::Cookbook
 
 Dancer 1.150
 

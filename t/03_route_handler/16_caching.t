@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 28, import => ['!pass'];
+use Test::More tests => 105, import => ['!pass'];
 use lib 't';
 use TestUtils;
 
@@ -15,8 +15,9 @@ use Dancer::Config 'setting';
 setting cache => 1;
 
 {
-    use Dancer::Route::Cache;
     # checking the size parsing
+    use Dancer::Route::Cache;
+
     my %sizes = (
         '1G'  => 1073741824,
         '10M' => 10485760,
@@ -32,10 +33,10 @@ setting cache => 1;
     # checking we can start cache correctly
     my $cache = Dancer::Route::Cache->new(
         size_limit => '10M',
-        path_limit => 10
-
+        path_limit => 10,
     );
 
+    isa_ok( $cache, 'Dancer::Route::Cache' );
     cmp_ok( $cache->size_limit, '==', $sizes{'10M'}, 'setting size_limit' );
     cmp_ok( $cache->path_limit, '==', 10,            'setting path_limit' );
 }
@@ -102,11 +103,86 @@ foreach my $path ( '/out', '/err' ) {
     }
 }
 
-# testing path_limit
+# clean up routes
+$cache->{'cache'}       = {};
+$cache->{'cache_array'} = [];
 
-# running two more routes
+{
+    # testing path_limit
+    setting route_cache_path_limit => 10;
 
-# checking to see only one was added to the cache
+    $cache->path_limit(10);
 
-# testing size_limit
+    my @paths = 'a' .. 'z';
+    foreach my $path (@paths) {
+        ok( get( "/$path", sub {1} ), 'Added path' );
+    }
 
+    foreach my $path (@paths) {
+        my $req = TestUtils::fake_request( get => "/$path" );
+        Dancer::SharedData->request($req);
+        my $res = Dancer::Renderer::get_action_response();
+
+        ok( defined $res, "get $path request" );
+    }
+
+    # check that only 10 remained
+    cmp_ok( $cache->route_cache_paths, '==', 10, 'Path limit to 10' );
+
+    # because we use a FIFO method, we know which ones they are
+    my @expected_paths = map { [ 'get', "/$_" ] } 'q' .. 'z';
+
+    is_deeply(
+        $cache->{'cache_array'},
+        \@expected_paths,
+        'Correct paths',
+    );
+}
+
+# clean up routes
+$cache->{'cache'}       = {};
+$cache->{'cache_array'} = [];
+
+SKIP: {
+    # testing size_limit
+    delete $cache->{'path_limit'};
+
+    # doing it manually since parse_size is only in init
+    $cache->size_limit( $cache->parse_size('3K') );
+
+    # creating large routes
+    my @paths = ();
+    foreach my $iter ( 1 .. 10 ) {
+        my $all = '';
+        while ( length $all < 300 ) {
+            $all .= rand 99999;
+        }
+
+        push @paths, "/$all";
+    }
+
+    foreach my $path (@paths) {
+        ok( get( "/$path", sub {1} ), 'Added path' );
+    }
+
+    foreach my $path (@paths) {
+        my $req = TestUtils::fake_request( get => $path );
+        Dancer::SharedData->request($req);
+        my $res = Dancer::Renderer::get_action_response();
+
+        ok( defined $res, 'get request' );
+    }
+
+    # check that only 10 remained
+    cmp_ok( $cache->route_cache_paths, '==', 9, 'Only 9 paths' );
+
+    # because we use a FIFO method, we know which ones they are
+    shift @paths;
+    my @expected_paths = map { [ 'get', $_ ] } @paths;
+
+    is_deeply(
+        $cache->{'cache_array'},
+        \@expected_paths,
+        'Correct paths',
+    );
+}
