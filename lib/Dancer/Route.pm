@@ -14,89 +14,76 @@ use Dancer::Route::Cache;
 my @supported_conditions = qw(agent user_agent host hostname referer);
 
 # main init stuff to setup the route handler
-sub init { 
+sub init {
     compile_routes();
 }
 
-sub compile_routes { 
+sub cache { Dancer::Route::Cache->get() }
+
+sub compile_routes {
     my $routes = Dancer::Route::Registry->routes;
     Dancer::Route::Builder->compile($routes);
 }
 
-# TODO : this init stuff should be done directly in Dancer::Route::Cache
-my $CACHE;
-sub cache {$CACHE}
-sub init_cache {
-my %extra = ();
-if ( my $size_limit = setting('cache_size_limit') ) {
-    $extra{'size_limit'} = $size_limit;
-}
-
-if ( my $path_limit = setting('cache_size_limit') ) {
-    $extra{'path_limit'} = $path_limit;
-}
-
-$CACHE = Dancer::Route::Cache->new(%extra);
-};
-
 # accessor for defining a route prefix
 my $PREFIX;
+
 sub prefix {
-my ($class, $prefix) = @_;
-return $PREFIX if @_ < 2;
+    my ($class, $prefix) = @_;
+    return $PREFIX if @_ < 2;
 
-die "Not a valid prefix, must begins with '/'"
-  if defined $prefix && ($prefix !~ /^\//);
-$PREFIX = $prefix;
+    die "Not a valid prefix, must begins with '/'"
+      if defined $prefix && ($prefix !~ /^\//);
+    $PREFIX = $prefix;
 
-return 1;
+    return 1;
 }
 
 # accessor for setting up a new route
 sub add {
-my ($class, $method, $route, $code, $rest) = @_;
+    my ($class, $method, $route, $code, $rest) = @_;
 
-# look for route matching conditions
-my $options;
-if ($rest) {
-    die "Invalid route definition" unless ref($code) eq 'HASH';
-    $options = $class->_build_condition_regexp($code);
-    $code = $rest;
-}
+    # look for route matching conditions
+    my $options;
+    if ($rest) {
+        die "Invalid route definition" unless ref($code) eq 'HASH';
+        $options = $class->_build_condition_regexp($code);
+        $code    = $rest;
+    }
 
-# is there a prefix set?
-$route = $class->_add_prefix_if_needed($route);
+    # is there a prefix set?
+    $route = $class->_add_prefix_if_needed($route);
 
-Dancer::Route::Registry->add_route(
-    method  => $method,
-    route   => $route,
-    code    => $code,
-    options => $options,
-);
+    Dancer::Route::Registry->add_route(
+        method  => $method,
+        route   => $route,
+        code    => $code,
+        options => $options,
+    );
 }
 
 # sugar for defining multiple routes at once
 sub add_any {
-my ($class, $methods, $route, $code, $rest);
+    my ($class, $methods, $route, $code, $rest);
 
-# syntax: any ['get', 'post'] => '/route' => sub {};
-if (@_ == 4) {
-    ($class, $methods, $route, $code, $rest) = @_;
-    die "Syntax error, methods should be provided as an ARRAY ref."
-      unless ref($methods) eq 'ARRAY';
-}
+    # syntax: any ['get', 'post'] => '/route' => sub {};
+    if (@_ == 4) {
+        ($class, $methods, $route, $code, $rest) = @_;
+        die "Syntax error, methods should be provided as an ARRAY ref."
+          unless ref($methods) eq 'ARRAY';
+    }
 
-# syntax: any '/route' => sub {};
-elsif (@_ == 3) {
-    ($class, $route, $code, $rest) = @_;
-    $methods = [qw(get post delete put)];
-}
-else {
-    die "syntax error: see perldoc Dancer for 'any' usage.";
-}
+    # syntax: any '/route' => sub {};
+    elsif (@_ == 3) {
+        ($class, $route, $code, $rest) = @_;
+        $methods = [qw(get post delete put)];
+    }
+    else {
+        die "syntax error: see perldoc Dancer for 'any' usage.";
+    }
 
-$class->add($_, $route, $code, $rest) for @$methods;
-return scalar(@$methods);
+    $class->add($_, $route, $code, $rest) for @$methods;
+    return scalar(@$methods);
 }
 
 # TODO Registry aliases, maybe we should drop them later
@@ -110,8 +97,8 @@ sub find {
     $method ||= 'get';
     $method = lc($method);
 
-    # First, make sure the routes are compiled, 
-    # should be done yet by the calling handler, 
+    # First, make sure the routes are compiled,
+    # should be done yet by the calling handler,
     # if not, compile them now
     compile_routes() if Dancer::Route::Builder->is_new;
 
@@ -126,7 +113,7 @@ sub find {
     # action chooses to pass.
     my $prev;
     my $first_match;
-  FIND: foreach my $r (@{ Dancer::Route::Registry->routes($method) }) {
+  FIND: foreach my $r (@{Dancer::Route::Registry->routes($method)}) {
 
         my $params = match($path, $r->{route});
         if ($params) {
@@ -151,8 +138,8 @@ sub find {
     return undef unless defined $first_match;
 
     # if we have a cache, store the result
-    if ( setting('cache') ) {
-        Dancer::Route->cache->store_route( $method, $path => $first_match );
+    if (setting('cache')) {
+        Dancer::Route->cache->store_route($method, $path => $first_match);
     }
 
     # return the first matching route, with a copy of the next ones
@@ -181,11 +168,11 @@ sub call($$) {
 
     # eval the route handler, and copy the response object
     my $content;
-    my $warning; 
+    my $warning;
     local $SIG{__WARN__} = sub { $warning = $_[0] };
     eval { $content = $handler->{code}->() };
     my $response_error = $@;
-    my $response = Dancer::Response->current;
+    my $response       = Dancer::Response->current;
 
     # Log warnings
     Dancer::Logger->warning($warning) if $warning;
@@ -285,7 +272,7 @@ sub get_regexp {
     my ($route) = @_;
     $route = $route->{regexp} if ref($route);
 
-    # the route tree may have changed since the last compilation 
+    # the route tree may have changed since the last compilation
     compile_routes() unless Dancer::Route::Builder->is_compiled($route);
 
     return Dancer::Route::Builder->get_regexp($route);
@@ -294,7 +281,8 @@ sub get_regexp {
 sub _build_condition_regexp {
     my ($class, $conditions) = @_;
     foreach my $cond (keys %$conditions) {
-        die "Not a valid option for route matching: `$cond'" unless grep /^$cond$/, @supported_conditions;
+        die "Not a valid option for route matching: `$cond'"
+          unless grep /^$cond$/, @supported_conditions;
         my $val = $conditions->{$cond};
         $conditions->{$cond} = qr/$val/;
     }

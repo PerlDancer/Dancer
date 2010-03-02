@@ -12,6 +12,23 @@ $VERSION = '0.01';
 use base 'Dancer::Object';
 Dancer::Route::Cache->attributes('size_limit', 'path_limit');
 
+# static 
+
+# singleton for the current cache object
+my $_cache;
+
+sub get { $_cache };
+
+sub reset {
+    $_cache = Dancer::Route::Cache->new();
+    $_cache->{size_limit} = setting('size_limit') 
+        if defined setting('size_limit');
+    $_cache->{path_limit} = setting('path_limit') 
+        if defined setting('path_limit');
+}
+
+# instance 
+
 sub init { 
     my ($self, %args) = @_;
     $self->build_size_limit($args{size_limit}) if defined $args{size_limit};
