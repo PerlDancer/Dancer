@@ -47,7 +47,7 @@ is_deeply([map {$_->{code}->() } @routes], $expected_results,
     "route actions look OK");
 
 # make sure a merge with an empty tree keeps the original one
-my $third_reg = Dancer::Route->init_registry;
+my $third_reg = Dancer::Route::Registry->new;
 ok(Dancer::Route->merge_registry($second_reg, $third_reg),
     "merge with an empty tree (unchanged route trees)"); 
 my $reg = Dancer::Route->registry;

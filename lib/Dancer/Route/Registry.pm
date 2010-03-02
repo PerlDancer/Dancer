@@ -2,6 +2,7 @@ package Dancer::Route::Registry;
 use strict;
 use warnings;
 
+# instance 
 use base 'Dancer::Object';
 
 sub init {
@@ -10,15 +11,23 @@ sub init {
     $self->{before_filters} = [];
 }
 
-my $_registry;
+# singleton for the current registry
+my $_registry = Dancer::Route::Registry->new;
 
+
+# static
 sub get    {$_registry}
 sub set    { $_registry = $_[1] }
 sub reset  { $_registry = Dancer::Route::Registry->new }
-sub routes { $_[1] ? $_registry->{routes}{$_[1]} : $_registry->{routes} }
-sub before_filters { @{ $_registry->{before_filters} } }
 
-sub add { 
+sub before_filters { @{ $_registry->{before_filters} } }
+sub add_before_filter {
+    my ($class, $filter) = @_;
+    push @{ $_registry->{before_filters} }, $filter;
+}
+
+sub routes { $_[1] ? $_registry->{routes}{$_[1]} : $_registry->{routes} }
+sub add_route { 
     my ($class, %args) = @_;
     $_registry->{routes}{$args{method}} ||= [];
     push @{ $_registry->{routes}{$args{method}} }, \%args;

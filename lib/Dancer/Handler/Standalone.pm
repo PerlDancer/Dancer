@@ -26,7 +26,7 @@ sub start {
         $dancer->handle_request($req);
     };
 
-    Dancer::Route->compile_routes();
+    Dancer::Route->init();
     $dancer->app($app);
 
     if (setting('daemon')) {

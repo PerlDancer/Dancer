@@ -2,156 +2,107 @@ package Dancer::Route;
 
 use strict;
 use warnings;
+
 use Dancer::SharedData;
 use Dancer::Config 'setting';
 use Dancer::Error;
+
+use Dancer::Route::Registry;
 use Dancer::Route::Builder;
 use Dancer::Route::Cache;
 
 my @supported_conditions = qw(agent user_agent host hostname referer);
 
-my $REG = init_registry();
-my $PREFIX;
-my $CACHE;
+# main init stuff to setup the route handler
+sub init { 
+    compile_routes();
+}
+
+sub compile_routes { 
+    my $routes = Dancer::Route::Registry->routes;
+    Dancer::Route::Builder->compile($routes);
+}
 
 # TODO : this init stuff should be done directly in Dancer::Route::Cache
+my $CACHE;
+sub cache {$CACHE}
 sub init_cache {
-    my %extra = ();
-    if ( my $size_limit = setting('cache_size_limit') ) {
-        $extra{'size_limit'} = $size_limit;
-    }
+my %extra = ();
+if ( my $size_limit = setting('cache_size_limit') ) {
+    $extra{'size_limit'} = $size_limit;
+}
 
-    if ( my $path_limit = setting('cache_size_limit') ) {
-        $extra{'path_limit'} = $path_limit;
-    }
+if ( my $path_limit = setting('cache_size_limit') ) {
+    $extra{'path_limit'} = $path_limit;
+}
 
-    $CACHE = Dancer::Route::Cache->new(%extra);
+$CACHE = Dancer::Route::Cache->new(%extra);
 };
 
 # accessor for defining a route prefix
+my $PREFIX;
 sub prefix {
-    my ($class, $prefix) = @_;
-    return $PREFIX if @_ < 2;
+my ($class, $prefix) = @_;
+return $PREFIX if @_ < 2;
 
-    die "Not a valid prefix, must begins with '/'"
-      if defined $prefix && ($prefix !~ /^\//);
-    $PREFIX = $prefix;
-    
-    return 1;
+die "Not a valid prefix, must begins with '/'"
+  if defined $prefix && ($prefix !~ /^\//);
+$PREFIX = $prefix;
+
+return 1;
 }
 
 # accessor for setting up a new route
 sub add {
-    my ($class, $method, $route, $code, $rest) = @_;
-    $REG->{routes}{$method} ||= [];
+my ($class, $method, $route, $code, $rest) = @_;
 
-    # look for route matching conditions
-    my $options;
-    if ($rest) {
-        die "Invalid route definition" unless ref($code) eq 'HASH';
-        $options = $class->_build_condition_regexp($code);
-        $code = $rest;
-    }
+# look for route matching conditions
+my $options;
+if ($rest) {
+    die "Invalid route definition" unless ref($code) eq 'HASH';
+    $options = $class->_build_condition_regexp($code);
+    $code = $rest;
+}
 
-    # is there a prefix set?
-    $route = $class->_add_prefix_if_needed($route);
-    
-    push @{$REG->{routes}{$method}},
-      { method  => $method,
-        route   => $route,
-        code    => $code,
-        options => $options
-      };
+# is there a prefix set?
+$route = $class->_add_prefix_if_needed($route);
+
+Dancer::Route::Registry->add_route(
+    method  => $method,
+    route   => $route,
+    code    => $code,
+    options => $options,
+);
 }
 
 # sugar for defining multiple routes at once
 sub add_any {
-    my ($class, $methods, $route, $code, $rest);
+my ($class, $methods, $route, $code, $rest);
 
-    # syntax: any ['get', 'post'] => '/route' => sub {};
-    if (@_ == 4) {
-        ($class, $methods, $route, $code, $rest) = @_;
-        die "Syntax error, methods should be provided as an ARRAY ref."
-          unless ref($methods) eq 'ARRAY';
-    }
-
-    # syntax: any '/route' => sub {};
-    elsif (@_ == 3) {
-        ($class, $route, $code, $rest) = @_;
-        $methods = [qw(get post delete put)];
-    }
-    else {
-        die "syntax error: see perldoc Dancer for 'any' usage.";
-    }
-
-    $class->add($_, $route, $code, $rest) for @$methods;
-    return scalar(@$methods);
+# syntax: any ['get', 'post'] => '/route' => sub {};
+if (@_ == 4) {
+    ($class, $methods, $route, $code, $rest) = @_;
+    die "Syntax error, methods should be provided as an ARRAY ref."
+      unless ref($methods) eq 'ARRAY';
 }
 
-# helpers needed by the auto_reload feature
-# TODO : move to Dancer::Route::Reloader
-sub init_registry { {routes => {}, before_filters => []} }
-sub purge_all    { $REG = init_registry() }
-sub registry     {$REG}
-sub set_registry { $REG = $_[1] }
-sub cache        {$CACHE}
-sub find_route {
-    my ($r, $reg) = @_;
-    foreach my $route (@$reg) {
-        return $route if ($r->{route} eq $route->{route});
-    }
-    return undef;
+# syntax: any '/route' => sub {};
+elsif (@_ == 3) {
+    ($class, $route, $code, $rest) = @_;
+    $methods = [qw(get post delete put)];
 }
-sub merge_registry {
-    my ($class, $orig_reg, $new_reg) = @_;
-    my $merged_reg = init_registry();
-
-    # walking through all the routes, using the newest when exists
-    foreach
-      my $method (keys(%{$new_reg->{routes}}), keys(%{$orig_reg->{routes}}))
-    {
-
-        # don't work out a method if already done
-        next if exists $merged_reg->{routes}{$method};
-
-        my $merged_routes = [];
-        my $orig_routes   = $orig_reg->{routes}{$method};
-        my $new_routes    = $new_reg->{routes}{$method};
-
-        # walk through all the orig elements, if we have a new version,
-        # overwrite it, else, keep the old one.
-        foreach my $route (@$orig_routes) {
-            my $new = find_route($route, $new_routes);
-            if (defined $new) {
-                push @$merged_routes, $new;
-            }
-            else {
-                push @$merged_routes, $route;
-            }
-        }
-
-        # now, walk through all the new elements, looking for a new route
-        foreach my $route (@$new_routes) {
-            push @$merged_routes, $route
-              unless find_route($route, $merged_routes);
-        }
-
-        $merged_reg->{routes}{$method} = $merged_routes;
-    }
-
-    # NOTE: we have to warn the user about mixing before_filters in different
-    # files, that's not supported. Only the last before_filters block is used.
-    $merged_reg->{before_filters} =
-      (scalar(@{$new_reg->{before_filters}}) > 0)
-      ? $new_reg->{before_filters}
-      : $orig_reg->{before_filters};
-
-    Dancer::Route->set_registry($merged_reg);
+else {
+    die "syntax error: see perldoc Dancer for 'any' usage.";
 }
 
-sub compile_routes { 
-    Dancer::Route::Builder->compile($REG->{routes})
+$class->add($_, $route, $code, $rest) for @$methods;
+return scalar(@$methods);
 }
+
+# TODO Registry aliases, maybe we should drop them later
+sub registry       { Dancer::Route::Registry->get() }
+sub purge_all      { Dancer::Route::Registry->reset() }
+sub merge_registry { Dancer::Route::Registry::merge(@_) }
 
 # return the first route that matches the path
 sub find {
@@ -175,7 +126,7 @@ sub find {
     # action chooses to pass.
     my $prev;
     my $first_match;
-  FIND: foreach my $r (@{$REG->{routes}{$method}}) {
+  FIND: foreach my $r (@{ Dancer::Route::Registry->routes($method) }) {
 
         my $params = match($path, $r->{route});
         if ($params) {
@@ -210,12 +161,9 @@ sub find {
 
 sub before_filter {
     my ($class, $filter) = @_;
-    my $registry = Dancer::Route->registry;
-    $registry->{before_filters} ||= [];
-    push @{$registry->{before_filters}}, $filter;
+    Dancer::Route::Registry->add_before_filter($filter);
 }
-
-sub before_filters { @{$REG->{before_filters}} }
+sub before_filters { Dancer::Route::Registry->before_filters }
 sub run_before_filters { $_->() for before_filters }
 
 sub build_params {
