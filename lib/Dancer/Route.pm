@@ -5,30 +5,16 @@ use warnings;
 use Dancer::SharedData;
 use Dancer::Config 'setting';
 use Dancer::Error;
+use Dancer::Route::Builder;
 use Dancer::Route::Cache;
 
 my @supported_conditions = qw(agent user_agent host hostname referer);
 
-# routes defined
 my $REG = init_registry();
-# current prefix
 my $PREFIX;
 my $CACHE;
-my $_COMPILED_ROUTES = { _state => 'NEW' };
-sub compiled { $_COMPILED_ROUTES }
 
-use Data::Dumper;
-sub compile_routes {
-    $_COMPILED_ROUTES->{_state} = 'PENDING';
-    foreach my $method (keys %{ $REG->{routes} }) {
-        foreach my $route (@{$REG->{routes}{$method}}) {
-            my ($regexp, @variables) = make_regexp_from_route($route);
-            set_regexp_for_route($route => $regexp, \@variables);
-        }
-    }
-    $_COMPILED_ROUTES->{_state} = 'DONE';
-}
-
+# TODO : this init stuff should be done directly in Dancer::Route::Cache
 sub init_cache {
     my %extra = ();
     if ( my $size_limit = setting('cache_size_limit') ) {
@@ -42,6 +28,7 @@ sub init_cache {
     $CACHE = Dancer::Route::Cache->new(%extra);
 };
 
+# accessor for defining a route prefix
 sub prefix {
     my ($class, $prefix) = @_;
     return $PREFIX if @_ < 2;
@@ -49,7 +36,8 @@ sub prefix {
     die "Not a valid prefix, must begins with '/'"
       if defined $prefix && ($prefix !~ /^\//);
     $PREFIX = $prefix;
-    1;
+    
+    return 1;
 }
 
 # accessor for setting up a new route
@@ -101,13 +89,12 @@ sub add_any {
 }
 
 # helpers needed by the auto_reload feature
+# TODO : move to Dancer::Route::Reloader
 sub init_registry { {routes => {}, before_filters => []} }
 sub purge_all    { $REG = init_registry() }
 sub registry     {$REG}
 sub set_registry { $REG = $_[1] }
 sub cache        {$CACHE}
-
-# look for a route in the given array
 sub find_route {
     my ($r, $reg) = @_;
     foreach my $route (@$reg) {
@@ -115,7 +102,6 @@ sub find_route {
     }
     return undef;
 }
-
 sub merge_registry {
     my ($class, $orig_reg, $new_reg) = @_;
     my $merged_reg = init_registry();
@@ -163,20 +149,24 @@ sub merge_registry {
     Dancer::Route->set_registry($merged_reg);
 }
 
+sub compile_routes { 
+    Dancer::Route::Builder->compile($REG->{routes})
+}
+
 # return the first route that matches the path
-# TODO: later we'll have to cache this browsing for every path seen
 sub find {
     my ($class, $path, $method, $request) = @_;
     $method ||= 'get';
     $method = lc($method);
 
-    # First, make sure the routes are compiled, if not compile them now
-    compile_routes() if ($_COMPILED_ROUTES->{_state} ne 'DONE');
+    # First, make sure the routes are compiled, 
+    # should be done yet by the calling handler, 
+    # if not, compile them now
+    compile_routes() if Dancer::Route::Builder->is_new;
 
     # if cache is enabled, we check if we handled this path before
-    if ( setting('cache') ) {
-        # if so, return the cached result
-        my $route = Dancer::Route->cache->route_from_path( $method, $path );
+    if (setting('cache')) {
+        my $route = Dancer::Route->cache->route_from_path($method, $path);
         return $route if $route;
     }
 
@@ -312,9 +302,10 @@ sub call($$) {
 }
 
 sub match {
-    my ($path,   $route)     = @_;
-    #my ($regexp, @variables) = make_regexp_from_route($route);
-    my ($regexp, $variables) = @{ get_regexp_from_route($route) };
+    my ($path, $route) = @_;
+
+    my $compiled = get_regexp($route);
+    my ($regexp, $variables) = ($compiled->[0], $compiled->[1]);
 
     # If there's no regexp or no path, don't even try to match:
     return if (!$regexp || !$path);
@@ -340,59 +331,14 @@ sub match {
     return {splat => \@values};
 }
 
-# replace any ':foo' by '(.+)' and stores all the named
-# matches defined in $REG->{route_params}{$route}
-sub make_regexp_from_route {
-    my ($route) = @_;
-    my @params;
-    my $pattern  = $route->{route};
-
-    if (ref($pattern) && $pattern->{regexp}) {
-        $pattern = $pattern->{regexp};
-    }
-    else {
-        # look for route with params (/hello/:foo)
-        if ($pattern =~ /:/) {
-            @params = $pattern =~ /:([^\/]+)/g;
-            if (@params) {
-                $REG->{route_params}{$route} = \@params;
-                $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
-            }
-        }
-
-        # parse wildcards
-        $pattern =~ s/\*/\(\[\^\/\]\+\)/g if $pattern =~ /\*/;
-
-        # escape dots
-        $pattern =~ s/\./\\\./g if $pattern =~ /\./;
-    }
-
-    # escape slashes
-    $pattern =~ s/\//\\\//g;
-
-    # return the final regexp
-    return '^' . $pattern . '$', @params;
-}
-
-sub set_regexp_for_route {
-    my ($route, $regexp, $params) = @_;
-
-    my $key = $route->{'route'};
-    $key = $key->{'regexp'} if ref($key);
-
-    #warn "saving route for $key";
-    $_COMPILED_ROUTES->{$key} = [ $regexp => $params ];
-}
-
-sub get_regexp_from_route {
+sub get_regexp {
     my ($route) = @_;
     $route = $route->{regexp} if ref($route);
 
     # the route tree may have changed since the last compilation 
-    if (not defined $_COMPILED_ROUTES->{$route}) {
-        compile_routes();
-    }
-    return $_COMPILED_ROUTES->{$route};
+    compile_routes() unless Dancer::Route::Builder->is_compiled($route);
+
+    return Dancer::Route::Builder->get_regexp($route);
 }
 
 sub _build_condition_regexp {
@@ -420,5 +366,4 @@ sub _add_prefix_if_needed {
     }
     return $route;
 }
-
 1;
