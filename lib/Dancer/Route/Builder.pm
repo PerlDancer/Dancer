@@ -13,21 +13,21 @@ sub compile {
     my ($class, $routes) = @_;
     foreach my $method (keys %$routes) {
         foreach my $route (@{$routes->{$method}}) {
-            my ($regexp, @variables) = make_regexp($route);
-            set_regexp($route => $regexp, \@variables);
+            my ($regexp, $variables, $capture) = @{ make_regexp($route) };
+            set_regexp($route => $regexp, $variables, $capture);
         }
     }
     $_COMPILED_ROUTES->{_state} = 'DONE';
 }
 
 sub set_regexp {
-    my ($route, $regexp, $params) = @_;
+    my ($route, $regexp, $params, $capture) = @_;
 
     my $key = $route->{'route'};
     $key = $key->{'regexp'} if ref($key);
 
     #warn "saving route for $key";
-    $_COMPILED_ROUTES->{$key} = [ $regexp => $params ];
+    $_COMPILED_ROUTES->{$key} = [ $regexp => $params, $capture ];
 }
 
 
@@ -35,24 +35,29 @@ sub set_regexp {
 # matches defined in $REG->{route_params}{$route}
 sub make_regexp {
     my ($route) = @_;
+    my $capture = 0;
     my @params;
     my $pattern  = $route->{route};
 
     if (ref($pattern) && $pattern->{regexp}) {
         $pattern = $pattern->{regexp};
+        $capture = 1;
     }
     else {
         # look for route with params (/hello/:foo)
         if ($pattern =~ /:/) {
             @params = $pattern =~ /:([^\/]+)/g;
             if (@params) {
-#                $REG->{route_params}{$route} = \@params;
                 $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
+                $capture = 1;
             }
         }
 
         # parse wildcards
-        $pattern =~ s/\*/\(\[\^\/\]\+\)/g if $pattern =~ /\*/;
+        if ($pattern =~ /\*/) {
+            $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
+            $capture = 1;
+        }
 
         # escape dots
         $pattern =~ s/\./\\\./g if $pattern =~ /\./;
@@ -61,8 +66,8 @@ sub make_regexp {
     # escape slashes
     $pattern =~ s/\//\\\//g;
 
-    # return the final regexp
-    return '^' . $pattern . '$', @params;
+    # return the final regexp, plus meta information
+    return ["^${pattern}\$", \@params, $capture];
 }
 
 1;

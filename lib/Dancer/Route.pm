@@ -305,7 +305,8 @@ sub match {
     my ($path, $route) = @_;
 
     my $compiled = get_regexp($route);
-    my ($regexp, $variables) = ($compiled->[0], $compiled->[1]);
+    my ($regexp, $variables, $capture) =
+      ($compiled->[0], $compiled->[1], $compiled->[2]);
 
     # If there's no regexp or no path, don't even try to match:
     return if (!$regexp || !$path);
@@ -328,7 +329,8 @@ sub match {
     }
 
     # else, we have unnamed matches, store them in params->{splat}
-    return {splat => \@values};
+    # if the route wants capture, if not just return an empty hash
+    return $capture ? {splat => \@values} : {};
 }
 
 sub get_regexp {
