@@ -23,10 +23,10 @@ Dancer 1.160
       for the setting "daemon").
     * Config and command-line arguments are parsed and loaded at import time,
       rather than when the handler is initialized.
-	* Routes are compiled at startup instead of being compiled whenever a 
-	  request is handled.  This can increase performances up to 50%.
-	* FIX Params are not polluted anymore by the 'splat' keyword when no capture
-	  is needed by the pattern.
+    * Routes are compiled at startup instead of being compiled whenever a 
+      request is handled.  This can increase performances up to 50%.
+    * FIX Params are not polluted anymore by the 'splat' keyword when no capture
+      is needed by the pattern.
 
     [ Daniel Tasov ]
     * Plack environment is propagated to Dancer if none specified.
@@ -39,9 +39,9 @@ Dancer 1.150
     * Support for engine configuration via config files
     * Each core template engine now uses start_tag/stop_tag from the
       configuration instead of harcoding '<%' and '%>'.
-	* FIX for issue #34
-	  Cookies can now be used when the application is ran under a Plack 
-	  server.
+    * FIX for issue #34
+      Cookies can now be used when the application is ran under a Plack 
+      server.
     
     [ David Precious ]
     * Lots of documentation cleaning and fixes.
