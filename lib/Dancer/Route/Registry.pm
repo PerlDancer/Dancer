@@ -12,10 +12,72 @@ sub init {
 
 my $_registry;
 
-sub get { $_registry }
-sub set { $_registry = $_[1] }
-sub reset { $_registry = Dancer::Route::Registry->new }
+sub get    {$_registry}
+sub set    { $_registry = $_[1] }
+sub reset  { $_registry = Dancer::Route::Registry->new }
+sub routes { $_[1] ? $_registry->{routes}{$_[1]} : $_registry->{routes} }
+sub before_filters { @{ $_registry->{before_filters} } }
 
+sub add { 
+    my ($class, %args) = @_;
+    $_registry->{routes}{$args{method}} ||= [];
+    push @{ $_registry->{routes}{$args{method}} }, \%args;
+}
 
+# look for a route in the given array
+sub find_route {
+    my ($r, $reg) = @_;
+    foreach my $route (@$reg) {
+        return $route if ($r->{route} eq $route->{route});
+    }
+    return undef;
+}
+
+sub merge {
+    my ($class, $orig_reg, $new_reg) = @_;
+    my $merged_reg = Dancer::Route::Registry->new;
+
+    # walking through all the routes, using the newest when exists
+    foreach
+      my $method (keys(%{$new_reg->{routes}}), keys(%{$orig_reg->{routes}}))
+    {
+
+        # don't work out a method if already done
+        next if exists $merged_reg->{routes}{$method};
+
+        my $merged_routes = [];
+        my $orig_routes   = $orig_reg->{routes}{$method};
+        my $new_routes    = $new_reg->{routes}{$method};
+
+        # walk through all the orig elements, if we have a new version,
+        # overwrite it, else, keep the old one.
+        foreach my $route (@$orig_routes) {
+            my $new = find_route($route, $new_routes);
+            if (defined $new) {
+                push @$merged_routes, $new;
+            }
+            else {
+                push @$merged_routes, $route;
+            }
+        }
+
+        # now, walk through all the new elements, looking for a new route
+        foreach my $route (@$new_routes) {
+            push @$merged_routes, $route
+              unless find_route($route, $merged_routes);
+        }
+
+        $merged_reg->{routes}{$method} = $merged_routes;
+    }
+
+    # NOTE: we have to warn the user about mixing before_filters in different
+    # files, that's not supported. Only the last before_filters block is used.
+    $merged_reg->{before_filters} =
+      (scalar(@{$new_reg->{before_filters}}) > 0)
+      ? $new_reg->{before_filters}
+      : $orig_reg->{before_filters};
+
+    Dancer::Route::Registry->set($merged_reg);
+}
 
 1;
