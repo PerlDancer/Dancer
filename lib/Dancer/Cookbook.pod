@@ -160,6 +160,28 @@ request to C</foo/oversee>; this means that, whatever path was requested, it
 will be treated as though the path requested was C</foo/oversee>.
 
 
+=head2 Default routes
+
+In case you want to avoid a I<404 error>, or handle multiple routes in the same
+way and you don't feel like configuring all of them, you can set up a default
+route handler.
+
+The default route handler will handle any request that doesn't get served by
+any other route.
+
+All you need to do is set up the following route as the B<last> route:
+
+    any r('.*') => sub {
+        my ($match) = splat; # the path
+        template => 'special_404', { path => $match },
+    };
+
+Then you can set up the template as such:
+
+    You tried to reach <% path %>, but it is unavailable at the moment.
+
+    Please try again or contact us at our email at <...>.
+
 =head2 Handling sessions
 
 It's common to want to use sessions to give your web applications state; for
