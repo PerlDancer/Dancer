@@ -31,6 +31,9 @@ Dancer 1.160
     [ Daniel Tasov ]
     * Plack environment is propagated to Dancer if none specified.
 
+    [ Sawyer X ]
+    * Route Caching with size and path number limits: Dancer::Route::Cache.
+    * FIX for issue #39.
 
 Dancer 1.150
 
