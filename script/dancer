@@ -363,6 +363,7 @@ auto_reload: 1
 'log: "warning"
 warnings: 0
 show_errors: 0
+cache: 1
 auto_reload: 0
 
 ',
