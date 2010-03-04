@@ -131,5 +131,29 @@ following:
     </VirtualHost>
 
 
+=head3 Running from Apache via FastCGI
+
+You can run your Dancer app from Apache via FastCGI using the dispatch.fcgi
+script written by the dancer helper script when you create your application
+scaffolding:
+
+    <VirtualHost *:80>
+        ServerName www.example.com
+        DocumentRoot /tmp/TestApp/public
+        AcceptPathInfo On
+
+        <Directory "/tmp/TestApp/public">
+            AllowOverride None
+            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+            Order allow,deny
+            Allow from all
+            AddHandler fastcgi-script .cgi .fcgi
+        </Directory>
+
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ dispatch.fcgi/$1 [QSA,L]
+    </VirtualHost>
+
+
 
 
