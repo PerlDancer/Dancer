@@ -1,0 +1,57 @@
+=head1 NAME
+
+Dancer::Deployment - common ways to put your Dancer app into use
+
+=head1 DESCRIPTION
+
+Dancer has been designed to be flexible, and this flexibility extends to your
+choices when deploying your Dancer app.
+
+
+=head2 Running stand-alone
+
+At the simplest, your Dancer app can run standalone, operating as its own
+webserver using HTTP::Simple::PSGI.
+
+Simply fire up your app:
+
+    $ perl ./mysuperwebapp.pl
+    >> Listening on 0.0.0.0:3000
+    == Entering the dance floor ...
+
+Point your browser at it, and away you go!
+
+This option can be useful for small personal web apps or internal apps, but if
+you want to make your app available to the world, it probably won't suit you.
+
+
+=head3 Running stand-alone behind a proxy / load balancer
+
+Another option would be to run your app stand-alone as described above, but then
+use a proxy or load balancer to accept incoming requests (on the standard port
+80, say) and feed them to your Dancer app.
+
+This could be achieved using various software; examples would include:
+
+=head4 Using Apache's mod_proxy
+
+You could set up a VirtualHost for your web app, and proxy all requests through
+to it:
+
+    <VirtualHost mywebapp.example.com:80>
+    ProxyPass / http://localhost:3000/
+    ProxyPassReverse / http://localhost:3000/
+    </VirtualHost>
+
+Or, if you want your webapp to share an existing VirtualHost, you could have it
+under a specified dir:
+
+    ProxyPass /mywebapp/ http://localhost:3000/
+    ProxyPass /mywebapp/ http://localhost:3000/
+
+
+
+
+
+
+
