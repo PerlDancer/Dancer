@@ -575,9 +575,10 @@ the config keyword:
     };
 
 
-=head1 importing just the syntax
+=head1 Importing just the syntax
 
-If you want to use more complex files hierarchies, you can import just the syntax of Dancer.
+If you want to use more complex files hierarchies, you can import just the
+syntax of Dancer.
 
     package App;
 
@@ -743,6 +744,23 @@ Or even if you want your index page to be a plain old index.html file, just do:
         send_file '/index.html'
     };
 
+=head2 ROUTE CACHING
+
+Dancer automatically supports default caching for routes. What this means is
+that Dancer remembers for each path what route it took, so it doesn't have to
+match it again.
+
+This makes things B<much> faster, especially when dealing with many routes.
+There are default limitations on the size of the cache and the number of
+entries, so it doesn't get out of proportion.
+
+Route caching can turned on using the I<route_cache> option in the
+configuration:
+
+    route_cache = 1
+
+The default limitations are 10M in size or 500 entries in the cache.
+
 =head1 SETTINGS
 
 It's possible to change quite every parameter of the application via the
@@ -756,7 +774,7 @@ See L<Dancer::Config> for complete details about supported settings.
 
 =head1 EXAMPLE
 
-This is a possible webapp created with Dancer :
+This is a possible webapp created with Dancer:
 
     #!/usr/bin/perl
 
