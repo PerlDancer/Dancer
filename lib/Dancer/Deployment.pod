@@ -50,6 +50,67 @@ under a specified dir:
     ProxyPass /mywebapp/ http://localhost:3000/
 
 
+=head4 Using perlbal
+
+C<perlbal> is a single-threaded event-based server written in Perl supporting HTTP load
+balancing, web serving, and a mix of the two, availale from
+L<http://www.danga.com/perlbal/>
+
+It processes hundreds of millions of requests a day just for LiveJournal, Vox
+and TypePad and dozens of other "Web 2.0" applications. 
+
+It can also provide a management interface to let you see various information on
+requests handled etc.
+
+It could easily be used to handle requests for your Dancer apps, too.
+
+It can be easily installed from CPAN:
+
+    perl -MCPAN -e 'install Perlbal'
+
+Once installed, you'll need to write a configuration file.  See the examples
+provided with perlbal, but you'll probably want something like:
+
+    CREATE POOL my_dancers
+    POOL my_dancers ADD 10.0.0.10:3030
+    POOL my_dancers ADD 10.0.0.11:3030
+    POOL my_dancers ADD 10.0.0.12:3030
+    POOL my_dancers ADD 10.0.0.13:3030
+
+    CREATE SERVICE my_webapp
+    SET listen          = 0.0.0.0:80
+    SET role            = reverse_proxy
+    SET pool            = my_dancers
+    SET persist_client  = on
+    SET persist_backend = on
+    SET verify_backend  = on
+    ENABLE balancer
+
+
+
+
+=head4 Using balance
+
+C<balance> is a simple load-balancer from Inlab Software, available from
+L<http://www.inlab.de/balance.html>.
+
+It could be used simply to hand requests to a standalone Dancer app. You could
+even run several instances of your Dancer app, on the same machine or on several
+machines, and use a machine running balance to distribute the requests between
+them, for some serious heavy traffic handling!
+
+To listen on port 80, and send requests to a Dancer app on port 3000:
+
+    balance http localhost:3000
+
+To listen on a specified IP only on port 80, and distribute requests between
+multiple Dancer apps on multiple other machines:
+
+    balance -b 10.0.0.1 80 10.0.0.2:3000 10.0.0.3:3000 10.0.0.4:3000
+
+
+
+    
 
 
 
