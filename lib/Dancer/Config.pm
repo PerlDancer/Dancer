@@ -33,7 +33,7 @@ my $setters = {
         my ($setting, $value) = @_;
         Dancer::Template->init($value, settings());
     },
-    cache   => sub {
+    route_cache => sub {
         my ($setting, $value) = @_;
         Dancer::Route::Cache->reset();
     },

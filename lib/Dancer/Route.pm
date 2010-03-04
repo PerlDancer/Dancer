@@ -18,7 +18,7 @@ sub init {
     compile_routes();
 }
 
-sub cache { Dancer::Route::Cache->get() }
+sub route_cache { Dancer::Route::Cache->get() }
 
 sub compile_routes {
     my $routes = Dancer::Route::Registry->routes;
@@ -102,9 +102,9 @@ sub find {
     # if not, compile them now
     compile_routes() if Dancer::Route::Builder->is_new;
 
-    # if cache is enabled, we check if we handled this path before
-    if (setting('cache')) {
-        my $route = Dancer::Route->cache->route_from_path($method, $path);
+    # if route cache is enabled, we check if we handled this path before
+    if (setting('route_cache')) {
+        my $route = Dancer::Route->route_cache->route_from_path($method, $path);
         return $route if $route;
     }
 
@@ -137,9 +137,9 @@ sub find {
     # if zero matches, zero biatches
     return undef unless defined $first_match;
 
-    # if we have a cache, store the result
-    if (setting('cache')) {
-        Dancer::Route->cache->store_route($method, $path => $first_match);
+    # if we have a route cache, store the result
+    if (setting('route_cache')) {
+        Dancer::Route->route_cache->store_route($method, $path => $first_match);
     }
 
     # return the first matching route, with a copy of the next ones
