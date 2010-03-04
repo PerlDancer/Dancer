@@ -102,23 +102,37 @@ sub dumper {
 
     # Take a copy of the data, so we can mask sensitive-looking stuff:
     my %data = %$obj;
-    my $hid;    
-    for my $key (keys %data) {
-        if ($key =~ /(pass|card?num|pan|secret)/i) {
-            $data{$key} = 'Hidden (looks potentially sensitive)';
-            $hid++;
-        }
-    }
-    
+    my $censored = _censor(\%data); 
+   
     #use Data::Dumper;
     my $dd = Data::Dumper->new([\%data]);
     $dd->Terse(1)->Quotekeys(0)->Indent(1);
     my $content = $dd->Dump();
     $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =>}g;
-    if ($hid) {
-        $content .= "\n\nNote: Values of $hid sensitive-looking keys hidden\n";
+    if ($censored) {
+        $content .= "\n\nNote: Values of $censored sensitive-looking keys hidden\n";
     }
     return $content;
+}
+
+# Given a hashref, censor anything that looks sensitive.  Returns number of
+# items which were "censored".
+sub _censor {
+    my $hash = shift;
+    if (!$hash || ref $hash ne 'HASH') {
+        warn "_censor given incorrect input: $hash";
+        return;
+    }
+    my $censored = 0;
+    for my $key (keys %$hash) {
+        if (ref $hash->{$key} eq 'HASH') {
+            $censored += _censor($hash->{$key});
+        } elsif ($key =~ /(pass|card?num|pan|secret)/i) {
+            $hash->{$key} = "Hidden (looks potentially sensitive)";
+            $censored++;
+        }
+    }
+    return $censored;
 }
 
 sub render {
