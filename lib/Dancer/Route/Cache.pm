@@ -31,8 +31,8 @@ sub reset {
 
 sub init { 
     my ($self, %args) = @_;
-    $self->build_size_limit($args{size_limit}) if defined $args{size_limit};
-    $self->build_path_limit($args{path_limit}) if defined $args{path_limit};
+    $self->build_size_limit( $args{'size_limit'} || '10M' );
+    $self->build_path_limit( $args{'path_limit'} || 600   );
 }
 
 sub build_path_limit {
