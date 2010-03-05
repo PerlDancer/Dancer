@@ -56,7 +56,7 @@ sub build_size_limit {
 sub parse_size {
     my ( $self, $size ) = @_;
 
-    if ( $size =~ /^(\d+)(K|M|G)?$/ ) {
+    if ( $size =~ /^(\d+)(K|M|G)?$/i ) {
         my $base = $1;
         if ( my $ext = $2 ) {
             $ext eq 'K' and return $base * 1024 ** 1;
