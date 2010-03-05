@@ -33,7 +33,7 @@ my $setters = {
         my ($setting, $value) = @_;
         Dancer::Template->init($value, settings());
     },
-    cache   => sub {
+    route_cache => sub {
         my ($setting, $value) = @_;
         Dancer::Route::Cache->reset();
     },
@@ -226,7 +226,8 @@ $public/$error_code.html if it exists.
 
 If set to true, Dancer will reload the route handlers whenever the file where
 they are defined is changed. This is very useful in development environment but
-should not be enabled in production.
+B<should not be enabled in production>. Enabling this flag in production yields
+a major negative effect on performance because of L<Module::Refresh>.
 
 When this flag is set, you don't have to restart your webserver whenever you
 make a change in a route handler.

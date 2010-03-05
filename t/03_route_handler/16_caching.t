@@ -12,7 +12,7 @@ use TestUtils;
 use Dancer;
 use Dancer::Config 'setting';
 
-setting cache => 1;
+setting route_cache => 1;
 
 {
     # checking the size parsing
@@ -62,7 +62,7 @@ foreach my $method ( qw/get post/ ) {
     }
 }
 
-my $cache = Dancer::Route->cache;
+my $cache = Dancer::Route->route_cache;
 isa_ok( $cache, 'Dancer::Route::Cache' );
 
 # checking when path doesn't exist
