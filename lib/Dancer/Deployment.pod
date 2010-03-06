@@ -138,22 +138,21 @@ script written by the dancer helper script when you create your application
 scaffolding:
 
     <VirtualHost *:80>
-        ServerName www.example.com
-        DocumentRoot /tmp/TestApp/public
-        AcceptPathInfo On
+        ServerName localhost
+        DocumentRoot "/tmp/TestApp/public"
 
         <Directory "/tmp/TestApp/public">
             AllowOverride None
             Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
             Order allow,deny
             Allow from all
-            AddHandler fastcgi-script .cgi .fcgi
+            AddHandler fastcgi-script .fcgi
         </Directory>
 
+        RewriteEngine On
         RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^(.*)$ dispatch.fcgi/$1 [QSA,L]
+        RewriteRule ^(.*)$ /dispatch.fcgi [QSA,L]
     </VirtualHost>
-
 
 
 
