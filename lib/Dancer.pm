@@ -602,7 +602,7 @@ releases new methods.
 In order to enable the logging system for your application, you first have to
 start the logger engine in your config.yml
 
-    log: 'file'
+    logger: 'file'
 
 Then you can choose which kind of messages you want to actually log:
 
