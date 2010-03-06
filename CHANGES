@@ -5,6 +5,7 @@ Dancer 1.160
     * Dump session contents on development error page, if session is in use
     * Censor sensitive-looking information on development error page settings /
       session dumps, to help avoid passwords / card details etc being leaked.
+    * Add deployment guide
 
     [ Alexis Sukrieh ]
     * Dancer helper propagates its perl executable into the generated
