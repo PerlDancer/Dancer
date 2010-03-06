@@ -101,6 +101,7 @@ sub app_tree($)  {
         },
         "public" => {
             "+dispatch.cgi" => FILE,
+            "+dispatch.fcgi" => FILE,
             "404.html" => FILE,
             "500.html" => FILE,
             "css" => { 
@@ -197,6 +198,15 @@ I\'m in <code>[%appdir%]/views/index.tt</code>
 "#!$^X
 use Plack::Runner;
 Plack::Runner->run('[% appdir %]/app.psgi');
+",
+
+"dispatch.fcgi" => 
+"#!$^X
+use Plack::Handler::FCGI;
+
+my \$app = do('[% appdir %]/app.psgi');
+my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
+\$server->run(\$app);
 ",
 
 "$appname.pl" => 
