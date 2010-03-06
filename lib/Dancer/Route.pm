@@ -6,6 +6,7 @@ use warnings;
 use Dancer::SharedData;
 use Dancer::Config 'setting';
 use Dancer::Error;
+use Dancer::FileUtils 'path';
 
 use Dancer::Route::Registry;
 use Dancer::Route::Builder;
@@ -131,6 +132,25 @@ sub find {
             $first_match = $r unless defined $first_match;
             $prev->{'next'} = $r if defined $prev;
             $prev = $r;
+        }
+    }
+
+    # OK, if there were no matches, but we're using auto_pages, look for a
+    # matching template to use:
+    if (!defined $first_match and my $auto_pages_dir = setting('auto_pages')) {
+        warn "Looking for matching page in " . setting('auto_pages');
+        my $match_path = $path;
+        $match_path = "/$match_path" unless substr $match_path, 0, 1 eq '/';
+        $match_path .= 'index' if substr $match_path, -1, 1 eq '/';
+        my $template = path(
+            setting('appdir'),  $auto_pages_dir, $match_path . '.tt');
+        warn "Looking for $template";
+        if (-e $template) {
+            warn "OK, found $template";
+            $first_match = sub { 
+                # template $template, {};
+                return "Fake handler inserted";
+            };
         }
     }
 
