@@ -16,8 +16,18 @@ my @supported_conditions = qw(agent user_agent host hostname referer);
 
 # main init stuff to setup the route handler
 sub init {
+    # add the default auto_page route handler if needed
+    if (setting('auto_page')) {
+        Dancer::Route->add('get', '/:page' => sub {
+            my $params = Dancer::SharedData->request->params;
+            Dancer::Helpers::template($params->{'page'});
+        });
+    }
+
+    # compile all the route handlers
     compile_routes();
 }
+
 
 sub route_cache { Dancer::Route::Cache->get() }
 

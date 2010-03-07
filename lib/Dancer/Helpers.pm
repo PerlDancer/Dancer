@@ -39,6 +39,14 @@ sub template {
     $view .= ".tt" if $view !~ /\.tt$/;
     $view = path(setting('views'), $view);
 
+    if (! -r $view) {
+        my $error = Dancer::Error->new(
+            code    => 404,
+            message => "Page not found",
+        );
+        return Dancer::Response::set($error->render);
+    }
+
     $tokens ||= {};
     $tokens->{request} = Dancer::SharedData->request;
     $tokens->{params}  = Dancer::SharedData->request->params;

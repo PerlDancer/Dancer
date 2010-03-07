@@ -28,6 +28,10 @@ Dancer 1.160
       request is handled.  This can increase performances up to 50%.
     * FIX Params are not polluted anymore by the 'splat' keyword when no capture
       is needed by the pattern.
+	* FIX issue #41
+	  New feature 'auto_page' lets the user have automatic route resolution for 
+	  requests that match an existing template in the views dir. Thanks to 
+	  David Precious for the idea and his help.
 
     [ Daniel Tasov ]
     * Plack environment is propagated to Dancer if none specified.
@@ -39,6 +43,7 @@ Dancer 1.160
     * Cleaned Dancer::Template::Abstract docs
     * Cleaner die in Dancer::Engine if can't find engine
     * Added default route example in Dancer::Cookbook
+
 
 Dancer 1.150
 
