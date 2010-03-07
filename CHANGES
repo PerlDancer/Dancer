@@ -1,7 +1,7 @@
 Dancer 1.160
 
     [ David Precious ]
-    * Added session backend Dancer::Sesssion::Simple
+    * Added session backend Dancer::Session::Simple
     * Dump session contents on development error page, if session is in use
     * Censor sensitive-looking information on development error page settings /
       session dumps, to help avoid passwords / card details etc being leaked.
