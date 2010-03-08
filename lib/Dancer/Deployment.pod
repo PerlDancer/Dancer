@@ -47,7 +47,7 @@ Or, if you want your webapp to share an existing VirtualHost, you could have it
 under a specified dir:
 
     ProxyPass /mywebapp/ http://localhost:3000/
-    ProxyPass /mywebapp/ http://localhost:3000/
+    ProxyPassReverse /mywebapp/ http://localhost:3000/
 
 
 =head4 Using perlbal
