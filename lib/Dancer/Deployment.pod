@@ -53,7 +53,7 @@ under a specified dir:
 =head4 Using perlbal
 
 C<perlbal> is a single-threaded event-based server written in Perl supporting HTTP load
-balancing, web serving, and a mix of the two, availale from
+balancing, web serving, and a mix of the two, available from
 L<http://www.danga.com/perlbal/>
 
 It processes hundreds of millions of requests a day just for LiveJournal, Vox
