@@ -37,6 +37,7 @@ $VERSION   = '1.160';
   get
   header
   headers
+  is_ajax
   layout
   load
   logger
@@ -85,6 +86,7 @@ sub get {
 }
 sub headers    { Dancer::Response::headers(@_); }
 sub header     { goto &headers; }                      # goto ftw!
+sub is_ajax    { Dancer::Helpers::is_ajax}
 sub layout     { set(layout => shift) }
 sub logger     { set(logger => @_) }
 sub load       { require $_ for @_ }

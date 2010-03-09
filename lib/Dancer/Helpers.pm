@@ -96,4 +96,12 @@ sub set_cookie {
     );
 }
 
+sub is_ajax {
+    my $req = Dancer::SharedData->request;
+
+    return 0 unless defined $req->{x_requested_with};
+    return 0 if $req->{x_requested_with} ne 'XMLHttpRequest';
+    return 1;
+}
+
 1;

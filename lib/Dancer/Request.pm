@@ -155,15 +155,16 @@ sub _build_request_env {
     # Don't refactor that, it's called whenever a request object is needed, that
     # means at least once per request. If refactored in a loop, this will cost 4
     # times more than the following static map.
-    $self->{user_agent}      = $self->{env}{HTTP_USER_AGENT};
-    $self->{host}            = $self->{env}{HTTP_HOST};
-    $self->{accept_language} = $self->{env}{HTTP_ACCEPT_LANGUAGE};
-    $self->{accept_charset}  = $self->{env}{HTTP_ACCEPT_CHARSET};
-    $self->{accept_encoding} = $self->{env}{HTTP_ACCEPT_ENCODING};
-    $self->{keep_alive}      = $self->{env}{HTTP_KEEP_ALIVE};
-    $self->{connection}      = $self->{env}{HTTP_CONNECTION};
-    $self->{accept}          = $self->{env}{HTTP_ACCEPT};
-    $self->{referer}         = $self->{env}{HTTP_REFERER};
+    $self->{user_agent}         = $self->{env}{HTTP_USER_AGENT};
+    $self->{host}               = $self->{env}{HTTP_HOST};
+    $self->{accept_language}    = $self->{env}{HTTP_ACCEPT_LANGUAGE};
+    $self->{accept_charset}     = $self->{env}{HTTP_ACCEPT_CHARSET};
+    $self->{accept_encoding}    = $self->{env}{HTTP_ACCEPT_ENCODING};
+    $self->{keep_alive}         = $self->{env}{HTTP_KEEP_ALIVE};
+    $self->{connection}         = $self->{env}{HTTP_CONNECTION};
+    $self->{accept}             = $self->{env}{HTTP_ACCEPT};
+    $self->{referer}            = $self->{env}{HTTP_REFERER};
+    $self->{'x_requested_with'} = $self->{env}{'X-REQUESTED-WITH'};
 
 }
 
@@ -181,8 +182,8 @@ sub _build_params {
     # and merge everything
     $self->{params} = {
         %$previous,
-        %{$self->{_query_params}}, 
-        %{$self->{_route_params}}, 
+        %{$self->{_query_params}},
+        %{$self->{_route_params}},
         %{$self->{_body_params}},
     };
 }
@@ -236,7 +237,7 @@ sub _url_decode {
 
 sub _parse_post_params {
     my ($self) = @_;
-    return $self->{_body_params} if defined $self->{_body_params}; 
+    return $self->{_body_params} if defined $self->{_body_params};
 
     my $body = $self->_read_to_end();
     $self->{_body_params} = $self->{_http_body}->param;
@@ -326,11 +327,11 @@ __END__
 
 =head1 NAME
 
-Dancer::Request 
+Dancer::Request
 
 =head1 DESCRIPTION
 
-This class implements a common interface for accessing incoming requests in 
+This class implements a common interface for accessing incoming requests in
 a Dancer application.
 
 In a route handler, the current request object can be accessed by the C<request>
@@ -370,7 +371,7 @@ would return C<http://localhost:5000/foo/bar?baz=baz>.
 =head2 params($source)
 
 If no source given, return a mixed hashref containing all the parameters that
-have been parsed. 
+have been parsed.
 Be aware it's a mixed structure, so if you use multiple
 variables with the same name in your route pattern, query string or request
 body, you can't know for sure which value you'll get there.
@@ -378,7 +379,7 @@ body, you can't know for sure which value you'll get there.
 If you need to use the same name for different sources of input, use the
 C<$source> option, like the following:
 
-If source equals C<route>, then only params parsed from route pattern 
+If source equals C<route>, then only params parsed from route pattern
 are returned.
 
 If source equals C<query>, then only params parsed from the query string are
@@ -436,8 +437,8 @@ Dancer::Request object through specific accessors, here are those supported:
 
 =head1 AUTHORS
 
-This module has been written by Alexis Sukrieh and was mostly 
-inspired by L<Plack::Request>, written by Tatsuiko Miyagawa. 
+This module has been written by Alexis Sukrieh and was mostly
+inspired by L<Plack::Request>, written by Tatsuiko Miyagawa.
 
 Tatsuiko Miyagawa also gave a hand for the PSGI interface.
 
