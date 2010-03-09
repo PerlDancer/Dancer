@@ -1,7 +1,9 @@
 Dancer 1.170
     [ David Precious ]
     * Fixed bug with status keyword not converting aliases (e.g. 'not_found') to
-    * real usable status lines with valid HTTP codes.
+      real usable status lines with valid HTTP codes.
+      Thanks to P Kishor for reporting this on the dancer-users mailing list!
+
 
 
 Dancer 1.160
