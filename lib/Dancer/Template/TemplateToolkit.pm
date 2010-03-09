@@ -69,8 +69,16 @@ In order to use this engine, set the following setting as the following:
 This can be done in your config.yml file or directly in your app code with the
 B<set> keyword.
 
-Note that Dancer configures the Template::Toolkit engine to use <% %> brackets
-instead of its default [% %] brackets.
+Note that by default,  Dancer configures the Template::Toolkit engine to use 
+<% %> brackets instead of its default [% %] brackets.  This can be changed
+within your config file - for example:
+
+    template: template_toolkit
+    engines:
+        template_toolkit:
+            start_tag: '[%'
+            stop_tag: '%]'
+
 
 =head1 SEE ALSO
 
