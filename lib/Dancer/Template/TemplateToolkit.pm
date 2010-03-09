@@ -59,10 +59,10 @@ Dancer::Template::TemplateToolkit - Template Toolkit wrapper for Dancer
 This class is an interface between Dancer's template engine abstraction layer
 and the L<Template> module.
 
-This template engine is recomended for production purproses, but depends on the
+This template engine is recomended for production purposes, but depends on the
 Template module.
 
-In order to use this engine, set the following setting as the following:
+In order to use this engine, use the template setting:
 
     template: template_toolkit
 
