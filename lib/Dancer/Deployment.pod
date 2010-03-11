@@ -158,10 +158,10 @@ scaffolding:
 =head3 Running from Apache under appdir
 
 If you want to deploy multiple applications under the same VirtualHost, using
-one application per directory for example, you can do like the following.
+one application per directory for example, you can do the following.
 
 This example uses the FastCGI dispatcher that comes with Dancer, but you can
-imagine any other way of deployement describe in this guide. The only purpose
+imagine any other way of deployement described in this guide. The only purpose
 of this example is to show how to deploy multiple applications under the same
 base directory/virtualhost.
 
@@ -186,5 +186,5 @@ base directory/virtualhost.
 	</VirtualHost>
 
 Of course, if your Apache configuration allows that, you can put the
-RewriteRules in a .htaccess file directly withtin the application directories,
+RewriteRules in a .htaccess file directly within the application's directory,
 which lets you add a new application without changing the Apache configuration.
