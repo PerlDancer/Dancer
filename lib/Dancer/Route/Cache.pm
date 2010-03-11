@@ -199,6 +199,15 @@ B<NOTICE:> handles bytes, not bits!
     # doesn't need an existing object
     $bytes = Dancer::Route::Cache->parse_size('300G'); # works this way too
 
+=head2 route_cache_size
+
+Returns a rough calculation the size of the cache. This is used to enforce the
+size limit.
+
+=head2 route_cache_paths
+
+Returns all the paths in the cache. This is used to enforce the path limit.
+
 =head1 ATTRIBUTES
 
 =head2 size_limit($limit)
