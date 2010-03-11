@@ -122,7 +122,7 @@ following:
 
         <Location />
             SetHandler perl-script
-            PerlHandler Plack::Server::Apache2
+            PerlHandler Plack::Handler::Apache2
             PerlSetVar psgi_app /websites/myapp.example.com/app.psgi
         </Location>
 
