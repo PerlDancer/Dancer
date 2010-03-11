@@ -149,7 +149,7 @@ sub find {
 
     # if we have a route cache, store the result
     if (setting('route_cache')) {
-        Dancer::Route->route_cache->store_route($method, $path => $first_match);
+        Dancer::Route->route_cache->store_path($method, $path => $first_match);
     }
 
     # return the first matching route, with a copy of the next ones
