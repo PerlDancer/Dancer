@@ -759,7 +759,14 @@ configuration:
 
     route_cache = 1
 
-The default limitations are 10M in size or 600 entries in the cache.
+The default limitations are 10M in size or 600 entries in the cache, however you
+can override these by settings the following settings:
+
+    # limiting the size of the route cache
+    route_cache_size_limit: 50M
+
+    # limiting the number of paths that will be cached
+    route_cache_path_limit: 300
 
 =head1 SETTINGS
 
