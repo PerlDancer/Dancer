@@ -4,6 +4,10 @@ Dancer 1.170
       real usable status lines with valid HTTP codes.
       Thanks to P Kishor for reporting this on the dancer-users mailing list!
 
+    [ Sawyer X]
+    * Route::Cache store_route = store_path, beefed up docs
+    * Changed names of limits in settings
+    * Added documentation for it in Dancer.pm
 
 
 Dancer 1.160
