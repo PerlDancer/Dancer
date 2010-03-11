@@ -160,10 +160,10 @@ scaffolding:
 If you want to deploy multiple applications under the same VirtualHost, using
 one application per directory for example, you can do the following.
 
-This example uses the FastCGI dispatcher that comes with Dancer, but you can
-imagine any other way of deployement described in this guide. The only purpose
-of this example is to show how to deploy multiple applications under the same
-base directory/virtualhost.
+This example uses the FastCGI dispatcher that comes with Dancer, but you should
+be able to adapt this to use any other way of deployment described in this guide. 
+The only purpose of this example is to show how to deploy multiple applications 
+under the same base directory/virtualhost.
 
 	<VirtualHost *:80>
 		ServerName localhost
