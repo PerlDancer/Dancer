@@ -21,10 +21,10 @@ sub get { $_cache };
 
 sub reset {
     $_cache = Dancer::Route::Cache->new();
-    $_cache->{size_limit} = setting('size_limit') 
-        if defined setting('size_limit');
-    $_cache->{path_limit} = setting('path_limit') 
-        if defined setting('path_limit');
+    $_cache->{size_limit} = setting('route_cache_size_limit')
+        if defined setting('route_cache_size_limit');
+    $_cache->{path_limit} = setting('route_cache_path_limit')
+        if defined setting('route_cache_path_limit');
 }
 
 # instance 
