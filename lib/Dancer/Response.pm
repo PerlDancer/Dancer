@@ -35,7 +35,7 @@ sub current {
 
 # helpers for the route handlers
 sub set          { $CURRENT                 = shift; }
-sub status       { $CURRENT->{status}       = Dancer::HTTP::status(shift) }
+sub status       { $CURRENT->{status}       = Dancer::HTTP->status(shift) }
 sub content_type { $CURRENT->{content_type} = shift }
 sub pass         { $CURRENT->{pass}         = 1 }
 

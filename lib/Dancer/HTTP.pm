@@ -5,8 +5,6 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = 'status';
-
 my $HTTP_CODES = {
 
     # informational
@@ -68,20 +66,22 @@ my $HTTP_CODES = {
 for my $code (keys %$HTTP_CODES) {
     my $alias = lc join '_', split /\W/, $HTTP_CODES->{$code};
     my $status_line = $code . ' ' . $HTTP_CODES->{$code};
-    $HTTP_CODES->{$alias} = $status_line;
     $HTTP_CODES->{$code}  = $status_line;
+    $HTTP_CODES->{$alias} = $code;
 }
 
 # own aliases
 $HTTP_CODES->{error} = $HTTP_CODES->{internal_server_error};
 
-sub status {
-    my $name = shift;
-    die "unknown HTTP status code: $name" unless exists $HTTP_CODES->{$name};
-    return "HTTP/1.0 " . $HTTP_CODES->{$name} . "\r\n";
+# always return a numeric status code
+# if alias, return the corresponding code
+sub status { 
+    my ($class, $name) = @_;
+    return $name if $name =~ /^\d+$/;
+    return $HTTP_CODES->{$name};
 }
 
-'Dancer::HTTP';
+1;
 __END__
 
 =pod
