@@ -10,7 +10,7 @@ use TestUtils;
 get '/' => sub { 1 };
 
 my @tests = (
-    [ 'GET', '/', '200 OK'],
+    [ 'GET', '/', '200'],
 );
 plan tests => scalar(@tests);
 
@@ -21,7 +21,7 @@ foreach my $test (@tests) {
     Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();
 
-    is(Dancer::HTTP::status($response->{status}), "HTTP/1.0 $expected\r\n", 
+    is(Dancer::HTTP->status($response->{status}), $expected, 
         "status looks good for $method $path");
 }
 
