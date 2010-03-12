@@ -8,16 +8,17 @@ get '/' => sub {
     "hello"
 };
 
-get '/failed' => sub {
+get '/not_found' => sub {
     status 'not_found';
     "not here";
 };
 
+get '/500' => sub { status 500 };
+
 my @tests = (
     { path => '/', expected => 200},
-    { path => '/failed', expected => 'not_found'},
-    { path => '/', expected => 200},
-    { path => '/failed', expected => 'not_found'},
+    { path => '/not_found', expected => 404},
+    { path => '/500' => expected => 500 },
 );
 
 plan tests => scalar(@tests) * 2;
