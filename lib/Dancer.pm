@@ -810,6 +810,17 @@ see the AUTHORS file that comes with this distribution for details.
 The source code for this module is hosted on GitHub
 L<http://github.com/sukria/Dancer>
 
+
+=head1 GETTING HELP / CONTRIBUTING
+
+The Dancer development team can be found on #dancer on irc.perl.org: 
+L<irc://irc.perl.org/dancer>
+
+There is also a Dancer users mailing list available - subscribe at:
+
+L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
+
+
 =head1 DEPENDENCIES
 
 Dancer depends on the following modules:
