@@ -396,16 +396,6 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
         redirect '/new/'.params->{resource}, 301;
     };
 
-The URL you pass to redirect will be appropriately URL-encoded automatically -
-so don't try to add a query string to it, as the '?' will be encoded.
-
-Instead, you can pass a hashref of params, for instance:
-
-    redirect '/foo', { foo => 'bar' };
-
-The above would redirect to /foo?foo=bar
-
-
 =head2 status
 
 By default, an action will produce an 'HTTP 200 OK' status code, meaning
