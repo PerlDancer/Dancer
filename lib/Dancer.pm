@@ -637,7 +637,7 @@ enable this engine in your settings as explained in
 L<Dancer::Template::TemplateToolkit>. If you do so, you'll also have to import
 the L<Template> module in your application code. Note that Dancer configures
 the Template::Toolkit engine to use <% %> brackets instead of its default
-[% %] brackets.
+[% %] brackets, although you can change this in your config file.
 
 All views must have a '.tt' extension. This may change in the future.
 
