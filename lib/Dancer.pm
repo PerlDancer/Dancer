@@ -596,8 +596,8 @@ Then in App/User/Routes.pm:
 =head1 LOGGING
 
 It's possible to log messages sent by the application. In the current version,
-only one method is possible for logging messages but it may come in future
-releases new methods.
+only one method is possible for logging messages but future releases may add
+additional logging methods, for instance logging to syslog.
 
 In order to enable the logging system for your application, you first have to
 start the logger engine in your config.yml
