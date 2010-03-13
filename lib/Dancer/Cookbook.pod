@@ -343,8 +343,7 @@ example:
 
     get '/hello/:name' => sub {
         my $name = params->{name};
-        my $browser = request->{user_agent};
-        template 'hello.tt', { name => $name, $browser => $browser };
+        template 'hello.tt', { name => $name };
     };
 
 The template 'hello.tt' could contain, for example:
