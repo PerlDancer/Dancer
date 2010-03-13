@@ -390,9 +390,9 @@ within the application:
 	    redirect 'http://twitter.com/me';
     };
 
-You can also force Dancer to return an specific 300-ish HTTP response code:
+You can also force Dancer to return a specific 300-ish HTTP response code:
 
-    get '/old/:resouce', sub {
+    get '/old/:resource', sub {
         redirect '/new/'.params->{resource}, 301;
     };
 
