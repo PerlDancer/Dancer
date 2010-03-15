@@ -8,6 +8,7 @@ Dancer 1.170
     * Route::Cache store_route = store_path, beefed up docs
     * Changed names of limits in settings
     * Added documentation for it in Dancer.pm
+    * Closing issue #48
 
 
 Dancer 1.160
