@@ -35,4 +35,14 @@ my %headers = @{$res->{headers}};
 is $headers{'X-Foo'},    'foo', 'header x-foo is set';
 is $headers{'Location'},
   'http://localhost/', 'location is set to http://localhost/';
+
+get '/redirect_querystring' => sub { redirect '/login?failed=1' };
+
+$res = get_response_for_request( GET => '/redirect_querystring' );
+%headers = @{$res->{headers}};
+
+is $headers{'Location'},
+   'http://localhost/login?failed=1',
+   'location is set to /login?failed=1';
+
 clean_tmp_files();
