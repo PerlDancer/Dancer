@@ -41,8 +41,11 @@ get '/redirect_querystring' => sub { redirect '/login?failed=1' };
 $res = get_response_for_request( GET => '/redirect_querystring' );
 %headers = @{$res->{headers}};
 
-is $headers{'Location'},
-   'http://localhost/login?failed=1',
-   'location is set to /login?failed=1';
+TODO: {
+    local $TODO = 'issue #47';
+    is $headers{'Location'},
+       'http://localhost/login?failed=1',
+       'location is set to /login?failed=1';
+}
 
 clean_tmp_files();
