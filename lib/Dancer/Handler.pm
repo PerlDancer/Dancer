@@ -61,6 +61,13 @@ sub render_response {
     my ($self, $response) = @_;
 
     my $content = $response->{content};
+
+    # if a serializer is set, and the response content is a ref, 
+    # serialize it!
+    if (setting('serializer')) {
+        $content = Dancer::Serializer->engine->serialize($content)
+            if ref($content) && (ref($content) ne 'GLOB');
+    }
     $content = [$content] unless (ref($content) eq 'GLOB');
 
     return [$response->{status}, $response->{headers}, $content];
