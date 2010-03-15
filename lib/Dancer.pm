@@ -293,7 +293,7 @@ be set in the params hashref.
 A route can contain a wildcard (represented by a '*'). Each wildcard match will
 be returned in an arrayref, accessible via the `splat' keyword.
 
-    get '/download/*.* => sub {
+    get '/download/*.*' => sub {
         my ($file, $ext) = splat;
         # do something with $file.$ext here
     };
