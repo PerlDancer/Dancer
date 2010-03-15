@@ -6,13 +6,22 @@ use Dancer::Request;
 
 $ENV{REQUEST_METHOD} = 'GET';
 $ENV{PATH_INFO} = '/';
-$ENV{QUERY_STRING} = 'name=Alexis%20Sukrieh&IRC%20Nickname=sukria&Project=Perl+Dancer&hash=2&hash=4';
+$ENV{QUERY_STRING} = join('&', 
+    ('name=Alexis%20Sukrieh',
+    'IRC%20Nickname=sukria',
+    'Project=Perl+Dancer',
+    'hash=2',
+    'hash=4',
+    'int1=1',
+    'int2=0'));
 
 my $expected_params = {
     'name' => 'Alexis Sukrieh',
     'IRC Nickname' => 'sukria',
     'Project' => 'Perl Dancer',
     'hash' => [2, 4],
+    int1 => 1,
+    int2 => 0,
 };
 
 my $req = Dancer::Request->new(\%ENV);
