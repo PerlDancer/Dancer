@@ -3,24 +3,14 @@ package TestSerializer;
 use Dancer;
 use Dancer::Serializer;
 
-my $engine = Dancer::Serializer->init();
+set serializer => 'JSON';
 
 get '/' => sub {
-    _serialize();
+    { foo => 1 }
 };
 
 post '/' => sub {
-    _deserialize();
+    request->params; 
 };
-
-sub _serialize {
-    $engine->serialize( { foo => 1 } );
-}
-
-sub _deserialize {
-    $engine->deserialize();
-    my $p = Dancer::SharedData->request->params;
-    return $engine->serialize($p);
-}
 
 1;

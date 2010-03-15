@@ -37,6 +37,10 @@ my $setters = {
         my ($setting, $value) = @_;
         Dancer::Route::Cache->reset();
     },
+    serializer => sub {
+        my ($setting, $value) = @_;
+        Dancer::Serializer->init($value);
+    },
 };
 
 # public accessor for get/set
