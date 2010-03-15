@@ -7,6 +7,7 @@ use vars '@EXPORT_OK';
 
 use Dancer::Template;
 use Dancer::ModuleLoader;
+use Dancer::Serializer;
 use Dancer::FileUtils 'path';
 use Carp 'confess';
 

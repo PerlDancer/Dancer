@@ -12,8 +12,8 @@ sub engine {$_engine}
 
 # TODO : change the serializer according to $name
 sub init {
-    my ($class, $name) = @_;
-    $_engine = Dancer::Engine->build('Serializer' => 'Base', {});
+    my ($class, $name, $config) = @_;
+    $_engine = Dancer::Engine->build('serializer' => $name, $config);
 }
 
 1;
