@@ -251,7 +251,7 @@ sub _parse_get_params {
     foreach my $token (split /&/, $source) {
         my ($key, $val) = split(/=/, $token);
         next unless defined $key;
-        $val ||= "";
+        $val = (defined $val) ? $val : '';
         $key = $self->_url_decode($key);
         $val = $self->_url_decode($val);
 
