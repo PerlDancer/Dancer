@@ -7,7 +7,6 @@ use vars '@EXPORT_OK';
 
 use Dancer::Template;
 use Dancer::ModuleLoader;
-use Dancer::Serializer;
 use Dancer::FileUtils 'path';
 use Carp 'confess';
 
@@ -40,6 +39,7 @@ my $setters = {
     },
     serializer => sub {
         my ($setting, $value) = @_;
+        require Dancer::Serializer;
         Dancer::Serializer->init($value);
     },
 };

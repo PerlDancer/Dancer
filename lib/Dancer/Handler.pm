@@ -76,19 +76,12 @@ sub handle_request {
 sub render_response {
     my ($self, $response) = @_;
 
+    # serializing magick occurs here! (only if needed)
+    $response = Dancer::Serializer->sanitize_response($response) 
+        if setting('serializer');
+
     my $content = $response->{content};
-
-    # if a serializer is set, and the response content is a ref,
-    # serialize it!
-    if (setting('serializer')) {
-        if (ref($content) && (ref($content) ne 'GLOB')) {
-            $response->update_headers(
-                'Content-Type' => Dancer::Serializer->engine->content_type);
-            $content = Dancer::Serializer->engine->serialize($content);
-        }
-    }
     $content = [$content] unless (ref($content) eq 'GLOB');
-
     return [$response->{status}, $response->{headers}, $content];
 }
 

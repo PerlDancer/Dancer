@@ -2,7 +2,7 @@ package Dancer::Serializer::YAML;
 
 use strict;
 use warnings;
-use YAML::Syck;
+use YAML;
 use base 'Dancer::Serializer::Abstract';
 
 sub serialize {
