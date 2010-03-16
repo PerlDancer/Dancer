@@ -31,6 +31,22 @@ sub handle_request {
     # read cookies from client
     Dancer::Cookies->init;
 
+    # if a serializer is set, and content is present in the body of the request,
+    # deserialize it
+    if ( setting('serializer') ) {
+        if ( $request->{method} eq 'PUT' || $request->{method} eq 'POST' ) {
+            my $rdata      = $request->{body};
+            my $new_params = Dancer::Serializer->engine->deserialize($rdata);
+            if ( keys %{ $request->{params} } ) {
+                $request->{params}
+                    = { %{ $request->{params} }, %$new_params };
+            }
+            else {
+                $request->{params} = $new_params;
+            }
+        }
+    }
+
     if (setting('auto_reload')) {
         eval "use Module::Refresh";
         if ($@) {
@@ -62,13 +78,13 @@ sub render_response {
 
     my $content = $response->{content};
 
-    # if a serializer is set, and the response content is a ref, 
+    # if a serializer is set, and the response content is a ref,
     # serialize it!
     if (setting('serializer')) {
         if (ref($content) && (ref($content) ne 'GLOB')) {
             $response->update_headers(
                 'Content-Type' => Dancer::Serializer->engine->content_type);
-            $content = Dancer::Serializer->engine->serialize($content)
+            $content = Dancer::Serializer->engine->serialize($content);
         }
     }
     $content = [$content] unless (ref($content) eq 'GLOB');
