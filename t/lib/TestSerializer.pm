@@ -1,7 +1,6 @@
 package TestSerializer;
 
 use Dancer;
-use Dancer::Serializer;
 
 set serializer => 'JSON';
 
