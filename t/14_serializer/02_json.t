@@ -1,40 +1,30 @@
+use Test::More;
 use strict;
 use warnings;
-
-use Test::More;
-use Test::TCP;
-
-use JSON;
-
 use Dancer::Config 'setting';
-use LWP::UserAgent;
 
-my $ua = LWP::UserAgent->new;
+plan skipp_all => "JSON is needed to run this tests"
+    unless Dancer::ModuleLoader->load('JSON');
+plan tests => 8;
 
-test_tcp(
-        client => sub {
-            my $port = shift;
-            my $url  = "http://127.0.0.1:$port/";
-            my $req  = HTTP::Request->new( GET => $url );
-            $req->header('Content-Type' => 'application/json');
-            my $res = $ua->request($req);
-            is_deeply JSON::decode_json $res->content, {foo => 1};
-            is $res->content_type, 'application/json', "content type is OK";
+eval { 
+    setting serializer => 'FooBar';
+};
+like $@, qr/unknown serializer engine 'FooBar', perhaps you need to install Dancer::Serializer::FooBar/,
+    "Foobar is not a valid serializer";
 
-            $req = HTTP::Request->new(POST => $url);
-            $req->header('Content-Type' => 'application/json');
-            $req->content(JSON::encode_json({foo => 1}));
-            $res = $ua->request($req);
-            is_deeply JSON::decode_json $res->content, {foo => 1};
-        },
-        server => sub {
-            my $port = shift;
-            use lib "t/lib";
-            use TestSerializer;
-            Dancer::Config->load;
-            setting port => $port;
-            Dancer->dance();
-        },
-    );
+ok(setting('serializer' => 'JSON'), "serializer JSON loaded");
+my $s = Dancer::Serializer->engine;
 
-done_testing;
+isa_ok($s, $_) for qw(
+    Dancer::Engine
+    Dancer::Serializer::Abstract
+    Dancer::Serializer::JSON);
+can_ok $s, qw(serialize deserialize);
+
+my $data = { foo => 42 };
+my $json = $s->serialize($data);
+is $json, '{"foo":42}', "data is correctly serialized";
+my $data2 = $s->deserialize($json);
+is_deeply $data2, $data, "data is correctly deserialized";
+
