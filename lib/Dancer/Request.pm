@@ -6,6 +6,7 @@ use Dancer::Object;
 use Dancer::SharedData;
 use HTTP::Body;
 use URI;
+use URI::Escape;
 
 use base 'Dancer::Object';
 my @http_env_keys = (
@@ -87,7 +88,7 @@ sub base {
 }
 
 sub uri_for {
-    my ($self, $part, $params) = @_;
+    my ($self, $part, $params, $internal) = @_;
     my $uri = $self->base;
 
     # Make sure there's exactly one slash between the base and the new part
@@ -97,7 +98,7 @@ sub uri_for {
     $uri->path("$base/$part");
 
     $uri->query_form($params) if $params;
-    return $uri->canonical;
+    return $internal ? uri_unescape( $uri->canonical ) : $uri->canonical;
 }
 
 # public interface compat with CGI.pm objects (FIXME do Dancer's users really
