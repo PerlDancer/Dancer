@@ -15,4 +15,8 @@ sub deserialize {
     JSON::decode_json $content;
 }
 
+sub content_type {
+    "application/json"
+}
+
 1;

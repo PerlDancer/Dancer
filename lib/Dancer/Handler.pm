@@ -65,8 +65,11 @@ sub render_response {
     # if a serializer is set, and the response content is a ref, 
     # serialize it!
     if (setting('serializer')) {
-        $content = Dancer::Serializer->engine->serialize($content)
-            if ref($content) && (ref($content) ne 'GLOB');
+        if (ref($content) && (ref($content) ne 'GLOB')) {
+            $response->update_headers(
+                'Content-Type' => Dancer::Serializer->engine->content_type);
+            $content = Dancer::Serializer->engine->serialize($content)
+        }
     }
     $content = [$content] unless (ref($content) eq 'GLOB');
 
