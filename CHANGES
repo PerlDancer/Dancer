@@ -10,6 +10,11 @@ Dancer 1.170
     * Added documentation for it in Dancer.pm
     * Closing issue #48
 
+	[ Alexis Sukrieh ]
+	* FIX for bug #49
+	  Query string params are not droped anymore when their value is 0. thanks
+	  to "Squeeks" for the report.
+
 
 Dancer 1.160
 
