@@ -789,13 +789,35 @@ See L<Dancer::Config> for complete details about supported settings.
 
 =head1 SERIALIZERS
 
-It's possible to define a serializer that will serialize and deserialize every request.
+When writing a webservice, data serialization/deserialization is a common issue
+to deal with. Dancer can automaticall handle that for you, via a serializer.
 
-    setting serializer => 'JSON';
+When setting up a serializer, a new behaviour is authorized for any route
+handler you define: any non-scalar response will be rendered as a serialized
+string, via the current serializer.
 
-If a serializer is define and the content of the response is a Hashref, the response will be serialized. The appropriate B<Content-Type> header is set in the response.
+Here is an example of a route handler that will return a HashRef
 
-List of available serializers:
+    use Dancer;
+    set serializer => 'JSON';
+
+    get '/user/:id'/ => sub {
+        { foo => 42,
+          number => 100234,
+          list => [qw(one two three)],
+        }
+    };
+
+As soon as the content is not a scalar - and a serializer is set, which is not
+the case by default - Dancer renders the response via the current
+serializer.
+
+Hence, with the JSON serializer set, the route handler above would result in a content like the following:
+
+    {"number":100234,"foo":42,"list":["one","two","three"]}
+
+The following serializers are available, be aware they dynamically depend on
+Perl modules you may not have on your system.
 
 =over 4
 
@@ -805,7 +827,7 @@ requires L<JSON>
 
 =item B<YAML>
 
-requires L<YAML::Syck>
+requires L<YAML>
 
 =item B<XML>
 
