@@ -646,7 +646,7 @@ All views must have a '.tt' extension. This may change in the future.
 
 In order to render a view, just call the 'template' keyword at the end of the
 action by giving the view name and the HASHREF of tokens to interpolate in the
-view (note that the request, session and route params are automatically 
+view (note that the request, session and route params are automatically
 accessible in the view, named request, session and params):
 
     use Dancer;
@@ -787,6 +787,36 @@ logging in development).  See the cookbook for examples.
 
 See L<Dancer::Config> for complete details about supported settings.
 
+=head1 SERIALIZERS
+
+It's possible to define a serializer that will serialize and deserialize every request.
+
+    setting serializer => 'JSON';
+
+If a serializer is define and the content of the response is a Hashref, the response will be serialized. The appropriate B<Content-Type> header is set in the response.
+
+List of available serializers:
+
+=over 4
+
+=item B<JSON>
+
+requires L<JSON>
+
+=item B<YAML>
+
+requires L<YAML::Syck>
+
+=item B<XML>
+
+requires L<XML::Simple>
+
+=item B<Mutable>
+
+will try to find the appropriate serializer using the B<Content-Type> and B<Accept-type> header of the request.
+
+=back
+
 =head1 EXAMPLE
 
 This is a possible webapp created with Dancer:
@@ -821,7 +851,7 @@ L<http://github.com/sukria/Dancer>
 
 =head1 GETTING HELP / CONTRIBUTING
 
-The Dancer development team can be found on #dancer on irc.perl.org: 
+The Dancer development team can be found on #dancer on irc.perl.org:
 L<irc://irc.perl.org/dancer>
 
 There is also a Dancer users mailing list available - subscribe at:
