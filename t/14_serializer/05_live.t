@@ -1,11 +1,11 @@
 use strict;
 use warnings;
-
 use Test::More;
-use Test::TCP;
 
-plan skipp_all => "LWP::UserAgent is needed to run this tests"
+plan skip_all => "LWP::UserAgent is needed to run this tests"
     unless Dancer::ModuleLoader->load('LWP::UserAgent');
+plan skip_all => 'Test::TCP is needed to run this test'
+    unless Dancer::ModuleLoader->load('Test::TCP');
 
 use Dancer::Config 'setting';
 
@@ -24,7 +24,7 @@ sub test_json {
     return unless Dancer::ModuleLoader->load('JSON');
     ok( setting( 'serializer' => 'JSON' ), "serializer JSON loaded" );
 
-    test_tcp(
+    Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
             my $url  = "http://127.0.0.1:$port/";
@@ -64,7 +64,7 @@ sub test_yaml {
     return unless Dancer::ModuleLoader->load('YAML::Syck');
 
     ok( setting( 'serializer' => 'YAML' ), "serializer YAML loaded" );
-    test_tcp(
+    Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
             my $url  = "http://127.0.0.1:$port/";
@@ -105,7 +105,7 @@ sub test_mutable {
         unless ( Dancer::ModuleLoader->load('YAML')
         && Dancer::ModuleLoader->load('JSON') );
     ok( setting( 'serializer' => 'mutable' ), "serializer Mutable loaded" );
-    test_tcp(
+    Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
             my $url  = "http://127.0.0.1:$port/";
