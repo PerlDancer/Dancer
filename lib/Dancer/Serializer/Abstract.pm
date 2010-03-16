@@ -13,7 +13,7 @@ sub deserialize {
 }
 
 # should be implemented, fallback to text/plain if not
-sub content_type { 
+sub content_type {
     "text/plain"
 }
 

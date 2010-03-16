@@ -15,4 +15,8 @@ sub deserialize {
     Load $content;
 }
 
+sub content_type {
+    "text/x-yaml";
+}
+
 1;
