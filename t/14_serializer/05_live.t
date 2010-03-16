@@ -61,7 +61,7 @@ sub test_json {
 }
 
 sub test_yaml {
-    return unless Dancer::ModuleLoader->load('YAML::Syck');
+    return unless Dancer::ModuleLoader->load('YAML');
 
     ok( setting( 'serializer' => 'YAML' ), "serializer YAML loaded" );
     Test::TCP::test_tcp(
@@ -72,7 +72,7 @@ sub test_yaml {
             $req->header( 'Content-Type' => 'text/x-yaml' );
             my $res = $ua->request($req);
             is_deeply(
-                YAML::Syck::Load( $res->content ),
+                YAML::Load( $res->content ),
                 { foo => 1 },
                 "data is correctly serialized"
             );
@@ -81,10 +81,10 @@ sub test_yaml {
 
             $req = HTTP::Request->new( POST => $url );
             $req->header( 'Content-Type' => 'text/x-yaml' );
-            $req->content( YAML::Syck::Dump( { foo => 1 } ) );
+            $req->content( YAML::Dump( { foo => 1 } ) );
             $res = $ua->request($req);
             is_deeply(
-                YAML::Syck::Load( $res->content ),
+                YAML::Load( $res->content ),
                 { foo => 1 },
                 "data is correctly deserialized"
             );
@@ -122,10 +122,10 @@ sub test_mutable {
 
             $req = HTTP::Request->new( POST => $url );
             $req->header( 'Content-Type' => 'text/x-yaml' );
-            $req->content( YAML::Syck::Dump( { foo => 1 } ) );
+            $req->content( YAML::Dump( { foo => 1 } ) );
             $res = $ua->request($req);
             is_deeply(
-                YAML::Syck::Load( $res->content ),
+                YAML::Load( $res->content ),
                 { foo => 1 },
                 "data is correctly deserialized"
             );
