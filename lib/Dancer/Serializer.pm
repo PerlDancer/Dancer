@@ -11,10 +11,9 @@ use Dancer::Error;
 my $_engine;
 sub engine {$_engine}
 
-# TODO : change the serializer according to $name
 sub init {
     my ( $class, $name, $config ) = @_;
-    $name ||= 'Mutable';    # maybe JSON ?
+    $name ||= 'JSON';
     $_engine = Dancer::Engine->build( 'serializer' => $name, $config );
 }
 
