@@ -7,6 +7,7 @@ use warnings;
 use Dancer::ModuleLoader;
 use Dancer::Engine;
 use Dancer::Error;
+use Dancer::SharedData;
 
 my $_engine;
 sub engine {$_engine}
@@ -14,11 +15,11 @@ sub engine {$_engine}
 # TODO : change the serializer according to $name
 sub init {
     my ( $class, $name, $config ) = @_;
-    $name ||= 'Mutable';    # maybe JSON ?
+    $name ||= 'Json';
     $_engine = Dancer::Engine->build( 'serializer' => $name, $config );
 }
 
-# takes a response object, and look wether or not it should be 
+# takes a response object, and look wether or not it should be
 # serialized.
 # returns an error object if the serializer fails
 sub sanitize_response {
@@ -28,7 +29,7 @@ sub sanitize_response {
     if (ref($content) && (ref($content) ne 'GLOB')) {
         local $@;
         eval { $content = engine->serialize($content) };
-        
+
         # the serializer failed, replace the response with an error object
         if ($@) {
             my $error = Dancer::Error->new(
@@ -38,7 +39,7 @@ sub sanitize_response {
             );
             $response = $error->render;
         }
-        
+
         # the serializer succeeded, alter the response object accordingly
         else {
             $response->update_headers('Content-Type' => engine->content_type);
@@ -48,6 +49,30 @@ sub sanitize_response {
 
     return $response;
 }
+
+sub handle_request {
+
+    my $request = Dancer::SharedData->request;
+
+    return
+        unless Dancer::Serializer->engine->content_type eq
+            $request->content_type;
+
+    return
+        unless ( $request->method eq 'PUT'
+        || $request->method eq 'POST' );
+
+    my $rdata      = $request->body;
+    my $new_params = Dancer::Serializer->engine->deserialize($rdata);
+    if ( keys %{ $request->{params} } ) {
+        $request->{params} = { %{ $request->{params} }, %$new_params };
+    }
+    else {
+        $request->{params} = $new_params;
+    }
+    Dancer::SharedData->request($request);
+}
+
 
 1;
 
