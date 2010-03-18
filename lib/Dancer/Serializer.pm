@@ -12,7 +12,6 @@ use Dancer::SharedData;
 my $_engine;
 sub engine {$_engine}
 
-# TODO : change the serializer according to $name
 sub init {
     my ( $class, $name, $config ) = @_;
     $name ||= 'Json';
@@ -22,7 +21,7 @@ sub init {
 # takes a response object, and look wether or not it should be
 # serialized.
 # returns an error object if the serializer fails
-sub sanitize_response {
+sub process_response {
     my ($class, $response) = @_;
     my $content = $response->{content};
 
@@ -50,27 +49,29 @@ sub sanitize_response {
     return $response;
 }
 
-sub handle_request {
+# deserialize input params in the request body, if matching the Serializer's
+# content-type.
+sub process_request {
+    my ($class, $request) = @_;
+    
+    return $request unless engine->content_type eq $request->content_type;
+    return $request unless $request->is_put || $request->is_post;
 
-    my $request = Dancer::SharedData->request;
-
-    return
-        unless Dancer::Serializer->engine->content_type eq
-            $request->content_type;
-
-    return
-        unless ( $request->method eq 'PUT'
-        || $request->method eq 'POST' );
-
-    my $rdata      = $request->body;
-    my $new_params = Dancer::Serializer->engine->deserialize($rdata);
-    if ( keys %{ $request->{params} } ) {
-        $request->{params} = { %{ $request->{params} }, %$new_params };
+    my $old_params = $request->params('body');
+    
+    # try to deserialize 
+    my $new_params;
+    eval { $new_params = engine->deserialize($request->body) };
+    if ($@) {
+        warn "Unable to deserialize request body with ".ref(engine()." : \n$@");
+        return $request;
     }
-    else {
-        $request->{params} = $new_params;
-    }
-    Dancer::SharedData->request($request);
+    
+    (keys %$old_params) 
+        ? $request->_set_body_params({%$old_params, %$new_params})
+        : $request->_set_body_params($new_params);
+
+    return $request;
 }
 
 

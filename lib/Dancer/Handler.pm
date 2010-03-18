@@ -27,15 +27,16 @@ sub get_handler {
 sub handle_request {
     my ($self, $request) = @_;
 
+    # deserialize the request body if possible
+    $request = Dancer::Serializer->process_request($request) if setting('serializer');
+
+    # save the request object
     Dancer::SharedData->request($request);
-
-    # if a serializer is set, and content is present in the body of the request,
-    # deserialize it
-    Dancer::Serializer->handle_request if setting('serializer');
-
+    
     # read cookies from client
     Dancer::Cookies->init;
 
+    # TODO : move that elsewhere
     if (setting('auto_reload')) {
         eval "use Module::Refresh";
         if ($@) {
@@ -66,7 +67,7 @@ sub render_response {
     my ($self, $response) = @_;
 
     # serializing magick occurs here! (only if needed)
-    $response = Dancer::Serializer->sanitize_response($response)
+    $response = Dancer::Serializer->process_response($response)
         if setting('serializer');
 
     my $content = $response->{content};
