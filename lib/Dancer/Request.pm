@@ -134,6 +134,14 @@ sub params {
     }
 }
 
+sub is_ajax {
+    my $self = shift;
+
+    return 0 unless defined $self->{x_requested_with};
+    return 0 if $self->{x_requested_with} ne 'XMLHttpRequest';
+    return 1;
+}
+
 # private
 
 sub _init {
@@ -149,8 +157,8 @@ sub _init {
     $self->_build_params();
 }
 
-# Some Dancer's core components sometimes need to alter 
-# the parsed request params, these protected accessors are provided 
+# Some Dancer's core components sometimes need to alter
+# the parsed request params, these protected accessors are provided
 # for this purpose
 sub _set_route_params {
     my ($self, $params) = @_;

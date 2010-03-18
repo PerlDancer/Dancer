@@ -5,6 +5,7 @@ use Test::More tests => 2, import => ['!pass'];
 use Dancer;
 use lib 't';
 use TestUtils;
+use Dancer::SharedData;
 
 my @requested_with = (
     {value => 'XMLHttpRequest', expected => 'ajax'},
@@ -14,7 +15,8 @@ my @requested_with = (
 );
 
 get '/ajax' => sub {
-    if (is_ajax) {
+    my $request = Dancer::SharedData->request;
+    if ($request->is_ajax) {
         return "ajax";
     }
     else {
