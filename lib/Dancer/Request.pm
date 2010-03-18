@@ -137,8 +137,8 @@ sub params {
 sub is_ajax {
     my $self = shift;
 
-    return 0 unless defined $self->{x_requested_with};
-    return 0 if $self->{x_requested_with} ne 'XMLHttpRequest';
+    return 0 unless defined $self->{'x_requested_with'};
+    return 0 if $self->{'x_requested_with'} ne 'XMLHttpRequest';
     return 1;
 }
 
@@ -193,7 +193,7 @@ sub _build_request_env {
     $self->{connection}         = $self->{env}{HTTP_CONNECTION};
     $self->{accept}             = $self->{env}{HTTP_ACCEPT};
     $self->{referer}            = $self->{env}{HTTP_REFERER};
-    $self->{'x_requested_with'} = $self->{env}{'X-REQUESTED-WITH'};
+    $self->{'x_requested_with'} = $self->{env}{'HTTP_X_REQUESTED_WITH'};
 
 }
 
@@ -434,6 +434,10 @@ Return the raw body of the request, unparsed.
 If you need to access the body of the request, you have to use this accessor and
 should not try to read C<psgi.input> by hand. C<Dancer::Request> already did it for you
 and kept the raw body untouched in there.
+
+=head2 is_ajax()
+
+Return true if the value of the header C<X-Requested-With> is XMLHttpRequest.
 
 =head2 env()
 

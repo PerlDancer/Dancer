@@ -25,7 +25,7 @@ get '/ajax' => sub {
 
 foreach my $test (@requested_with) {
 
-    %ENV = ('X-REQUESTED-WITH' => $test->{value},);
+    %ENV = ('HTTP_X_REQUESTED_WITH' => $test->{value},);
 
     my $request = fake_request(GET => "/ajax");
     Dancer::SharedData->request($request);
