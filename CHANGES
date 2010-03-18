@@ -12,10 +12,10 @@ Dancer 1.170
     * FIX for issue #47, uri_for now accepts a boolean for not escaping URIs,
       and redirect calls uri_for with that boolean.
 
-	[ Alexis Sukrieh ]
-	* FIX for bug #49
-	  Query string params are not dropped anymore when their value is 0. thanks
-	  to "Squeeks" for the report.
+    [ Alexis Sukrieh ]
+    * FIX for bug #49
+      Query string params are not dropped anymore when their value is 0. thanks
+      to "Squeeks" for the report.
 
 
 Dancer 1.160
