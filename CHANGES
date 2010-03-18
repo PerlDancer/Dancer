@@ -17,6 +17,13 @@ Dancer 1.170
       Query string params are not dropped anymore when their value is 0. thanks
       to "Squeeks" for the report.
 
+    [ Franck Cuny ]
+    * Support for automatic serialization/deserialization
+      Dancer is now able to serialize route handler's response in various
+      format (JSON, YAML, XML); and can also deserialize request body when
+      appropriate.
+      (closes: #29)
+
 
 Dancer 1.160
 
