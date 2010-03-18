@@ -3,8 +3,8 @@ use strict;
 use warnings;
 use Dancer::Config 'setting';
 
-plan skipp_all => "YAML::Syck is needed to run this tests"
-    unless Dancer::ModuleLoader->load('YAML::Syck');
+plan skipp_all => "YAML needed to run this tests"
+    unless Dancer::ModuleLoader->load('YAML');
 plan tests => 7;
 
 ok(setting('serializer' => 'YAML'), "serializer YAML loaded");

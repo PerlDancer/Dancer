@@ -7,6 +7,7 @@ use warnings;
 use Dancer::ModuleLoader;
 use Dancer::Engine;
 use Dancer::Error;
+use Dancer::SharedData;
 
 my $_engine;
 sub engine {$_engine}
@@ -17,17 +18,17 @@ sub init {
     $_engine = Dancer::Engine->build( 'serializer' => $name, $config );
 }
 
-# takes a response object, and look wether or not it should be 
+# takes a response object, and look wether or not it should be
 # serialized.
 # returns an error object if the serializer fails
-sub sanitize_response {
+sub process_response {
     my ($class, $response) = @_;
     my $content = $response->{content};
 
     if (ref($content) && (ref($content) ne 'GLOB')) {
         local $@;
         eval { $content = engine->serialize($content) };
-        
+
         # the serializer failed, replace the response with an error object
         if ($@) {
             my $error = Dancer::Error->new(
@@ -37,7 +38,7 @@ sub sanitize_response {
             );
             $response = $error->render;
         }
-        
+
         # the serializer succeeded, alter the response object accordingly
         else {
             $response->update_headers('Content-Type' => engine->content_type);
@@ -47,6 +48,32 @@ sub sanitize_response {
 
     return $response;
 }
+
+# deserialize input params in the request body, if matching the Serializer's
+# content-type.
+sub process_request {
+    my ($class, $request) = @_;
+    
+    return $request unless engine->content_type eq $request->content_type;
+    return $request unless $request->is_put || $request->is_post;
+
+    my $old_params = $request->params('body');
+    
+    # try to deserialize 
+    my $new_params;
+    eval { $new_params = engine->deserialize($request->body) };
+    if ($@) {
+        warn "Unable to deserialize request body with ".ref(engine()." : \n$@");
+        return $request;
+    }
+    
+    (keys %$old_params) 
+        ? $request->_set_body_params({%$old_params, %$new_params})
+        : $request->_set_body_params($new_params);
+
+    return $request;
+}
+
 
 1;
 
@@ -68,7 +95,7 @@ serializers.
 =head2 Default engine
 
 The default serializer used by Dancer::Serializer is
-L<Dancer::Serializer::Mutable>.
+L<Dancer::Serializer::JSON>.
 You can choose another serializer by setting the B<serializer> configuration
 variable.
 
@@ -88,8 +115,8 @@ Or in the application code:
 
 =head1 AUTHORS
 
-This module has been written by Alexis Sukrieh. See the AUTHORS file that comes
-with this distribution for details.
+This module has been written by Alexis Sukrieh and Franck Cuny. 
+See the AUTHORS file that comes with this distribution for details.
 
 =head1 LICENSE
 
@@ -99,8 +126,5 @@ itself.
 =head1 SEE ALSO
 
 See L<Dancer> for details about the complete framework.
-
-You can also search the CPAN for existing engines in the Dancer::Template
-namespace.
 
 =cut

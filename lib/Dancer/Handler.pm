@@ -26,27 +26,17 @@ sub get_handler {
 # handle an incoming request, process it and return a response
 sub handle_request {
     my ($self, $request) = @_;
-    Dancer::SharedData->request($request);
 
+    # deserialize the request body if possible
+    $request = Dancer::Serializer->process_request($request) if setting('serializer');
+
+    # save the request object
+    Dancer::SharedData->request($request);
+    
     # read cookies from client
     Dancer::Cookies->init;
 
-    # if a serializer is set, and content is present in the body of the request,
-    # deserialize it
-    if ( setting('serializer') ) {
-        if ( $request->{method} eq 'PUT' || $request->{method} eq 'POST' ) {
-            my $rdata      = $request->{body};
-            my $new_params = Dancer::Serializer->engine->deserialize($rdata);
-            if ( keys %{ $request->{params} } ) {
-                $request->{params}
-                    = { %{ $request->{params} }, %$new_params };
-            }
-            else {
-                $request->{params} = $new_params;
-            }
-        }
-    }
-
+    # TODO : move that elsewhere
     if (setting('auto_reload')) {
         eval "use Module::Refresh";
         if ($@) {
@@ -77,7 +67,7 @@ sub render_response {
     my ($self, $response) = @_;
 
     # serializing magick occurs here! (only if needed)
-    $response = Dancer::Serializer->sanitize_response($response) 
+    $response = Dancer::Serializer->process_response($response)
         if setting('serializer');
 
     my $content = $response->{content};
