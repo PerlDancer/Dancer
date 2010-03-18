@@ -21,14 +21,17 @@ sub _find_content_type {
 
     # first content type, second accept and final default
     my %content_types;
-    my $request = Dancer::SharedData->request;
-    my $params  = Dancer::SharedData->request->params;
+    my ( $request, $params );
+    $request = Dancer::SharedData->request;
+    if ($request) {
+        $params = $request->params;
+    }
 
     if ( $request->{content_type} ) {
         $content_types{ $request->{content_type} } = 3;
     }
 
-    if ( $params->{content_type} ) {
+    if ( $params && $params->{content_type} ) {
         $content_types{ $params->{content_type} } = 2;
     }
 
