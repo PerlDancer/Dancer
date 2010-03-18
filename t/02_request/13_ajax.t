@@ -15,8 +15,7 @@ my @requested_with = (
 );
 
 get '/ajax' => sub {
-    my $request = Dancer::SharedData->request;
-    if ($request->is_ajax) {
+    if (request->is_ajax) {
         return "ajax";
     }
     else {
@@ -31,5 +30,5 @@ foreach my $test (@requested_with) {
     my $request = fake_request(GET => "/ajax");
     Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();
-    is $response->{content}, $test->{expected};
+    is $response->{content}, $test->{expected}, $test->{expected};
 }
