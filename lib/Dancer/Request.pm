@@ -28,6 +28,10 @@ Dancer::Request->attributes(
 sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->{env}->{'REMOTE_ADDR'} }
 sub forwarded_for_address { $_[0]->{env}->{'X_FORWARDED_FOR'} }
+sub is_post               { $_[0]->{method} eq 'POST' }
+sub is_get                { $_[0]->{method} eq 'GET' }
+sub is_put                { $_[0]->{method} eq 'PUT' }
+sub is_delete             { $_[0]->{method} eq 'DELETE' }
 
 sub new {
     my ($class, $env) = @_;
@@ -143,9 +147,24 @@ sub _init {
     $self->_build_params();
 }
 
+# Some Dancer's core components sometimes need to alter 
+# the parsed request params, these protected accessors are provided 
+# for this purpose
 sub _set_route_params {
     my ($self, $params) = @_;
     $self->{_route_params} = $params;
+    $self->_build_params();
+}
+
+sub _set_body_params {
+    my ($self, $params) = @_;
+    $self->{_body_params} = $params;
+    $self->_build_params();
+}
+
+sub _set_query_params {
+    my ($self, $params) = @_;
+    $self->{_query_params} = $params;
     $self->_build_params();
 }
 
