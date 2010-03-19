@@ -23,7 +23,7 @@ sub init {
     };
 
     my $start_tag = $self->config->{start_tag} || '<%';
-    my $stop_tag  = $self->config->{stop_tag}  || '%>';
+    my $stop_tag  = $self->config->{stop_tag}  || $self->config->{end_tag} || '%>';
 
     # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
     # so I only change them if their value is different
