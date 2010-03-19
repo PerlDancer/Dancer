@@ -3,6 +3,9 @@ Dancer 1.170
     * Fixed bug with status keyword not converting aliases (e.g. 'not_found') to
       real usable status lines with valid HTTP codes.
       Thanks to P Kishor for reporting this on the dancer-users mailing list!
+    * Accept end_tag as a synonym for stop_tag when configuring TemplateToolkit.
+      Thanks to James Ronan for bringing this up.
+
 
     [ Sawyer X]
     * Route::Cache store_route = store_path, beefed up docs
