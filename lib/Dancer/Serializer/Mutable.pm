@@ -23,6 +23,8 @@ sub _find_content_type {
     my %content_types;
     my ( $request, $params );
     $request = Dancer::SharedData->request;
+
+
     if ($request) {
         $params = $request->params;
     }
@@ -61,7 +63,12 @@ sub deserialize {
 
 sub content_type {
     my $self = shift;
-    shift @{$self->_find_content_type};
+    keys %$serializer;
+}
+
+sub support_content_type {
+    my ($self, $ct) = @_;
+    grep /^$ct$/, $self->content_type;
 }
 
 sub _load_serializer {

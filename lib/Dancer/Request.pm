@@ -16,12 +16,13 @@ my @http_env_keys = (
     'connection',      'accept',
     'referer',
 );
+my $count = 0;
 
 Dancer::Request->attributes(
     # query
     'env',          'path', 'method',
     'content_type', 'content_length',
-    'body',         'path_info',
+    'body',         'path_info', 'id',
     @http_env_keys,
 );
 
@@ -47,6 +48,7 @@ sub new {
         content_length => $env->{CONTENT_LENGTH} || 0,
         content_type   => $env->{CONTENT_TYPE} || '',
         env            => $env,
+        id             => ++$count,
         _chunk_size    => 4096,
         _read_position => 0,
         _body_params   => undef,

@@ -53,8 +53,8 @@ sub process_response {
 # content-type.
 sub process_request {
     my ($class, $request) = @_;
-    
-    return $request unless engine->content_type eq $request->content_type;
+
+    return $request unless engine->support_content_type($request->content_type);
     return $request unless $request->is_put || $request->is_post;
 
     my $old_params = $request->params('body');
@@ -63,7 +63,7 @@ sub process_request {
     my $new_params;
     eval { $new_params = engine->deserialize($request->body) };
     if ($@) {
-        warn "Unable to deserialize request body with ".ref(engine()." : \n$@");
+        warn "Unable to deserialize request body with ".engine()." : \n$@";
         return $request;
     }
     

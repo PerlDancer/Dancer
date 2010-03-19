@@ -18,6 +18,7 @@ sub request { (@_ == 2) ? $request = $_[1] : $request }
 
 sub reset_all {
     $vars   = {};
+    undef $request;
 }
 
 'Dancer::SharedData';
