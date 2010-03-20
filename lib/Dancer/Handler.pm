@@ -15,7 +15,7 @@ use Dancer::Handler::Standalone;
 
 # This is where we choose which application handler to return
 sub get_handler {
-    if (setting('apphandler') eq 'PSGI') {
+    if (setting('apphandler') eq 'PSGI' || $ENV{PLACK_ENV}) {
         return Dancer::Handler::PSGI->new;
     }
     else {
