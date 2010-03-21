@@ -32,7 +32,7 @@ sub handle_request {
 
     # save the request object
     Dancer::SharedData->request($request);
-    
+
     # read cookies from client
     Dancer::Cookies->init;
 
@@ -58,16 +58,16 @@ sub handle_request {
       || Dancer::Renderer->render_error(404);
 
     Dancer::SharedData->reset_all();
-    return $self->render_response($response);
+    return $self->render_response($response, $request);
 }
 
 # render a PSGI-formated response from a response built by
 # handle_request()
 sub render_response {
-    my ($self, $response) = @_;
+    my ($self, $response, $request) = @_;
 
     # serializing magick occurs here! (only if needed)
-    $response = Dancer::Serializer->process_response($response)
+    $response = Dancer::Serializer->process_response($response, $request)
         if setting('serializer');
 
     my $content = $response->{content};
