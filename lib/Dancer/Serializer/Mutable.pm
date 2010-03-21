@@ -17,13 +17,11 @@ my $serializer = {
 my $loaded_serializer = {};
 
 sub _find_content_type {
-    my $self = shift;
+    my ($self, $request) = @_;
 
     # first content type, second accept and final default
     my %content_types;
-    my ( $request, $params );
-    $request = Dancer::SharedData->request;
-
+    my $params;
 
     if ($request) {
         $params = $request->params;
@@ -50,15 +48,15 @@ sub _find_content_type {
 }
 
 sub serialize {
-    my ($self, $entity) = @_;
-    my $serializer = $self->_load_serializer();
+    my ($self, $entity, $request) = @_;
+    my $serializer = $self->_load_serializer($request);
     return $serializer->serialize($entity);
 }
 
 sub deserialize {
-    my ($self, $content) = @_;
-    my $serializer = $self->_load_serializer;
-    return $serializer->deserialize($content);
+    my ($self, $content, $request) = @_;
+    my $serializer = $self->_load_serializer($request);
+    return $serializer->deserialize($content, $request);
 }
 
 sub content_type {
@@ -72,10 +70,9 @@ sub support_content_type {
 }
 
 sub _load_serializer {
-    my $self = shift;
+    my ($self, $request) = @_;
 
-    my $content_types = $self->_find_content_type();
-
+    my $content_types = $self->_find_content_type($request);
     foreach my $ct (@$content_types) {
         if ( exists $serializer->{$ct} ) {
             my $module = "Dancer::Serializer::" . $serializer->{$ct};
