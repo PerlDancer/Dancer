@@ -3,6 +3,7 @@ package Dancer::Request;
 use strict;
 use warnings;
 use Dancer::Object;
+use Dancer::Request::Upload;
 use Dancer::SharedData;
 use HTTP::Body;
 use URI;
@@ -23,6 +24,7 @@ Dancer::Request->attributes(
     'env',          'path', 'method',
     'content_type', 'content_length',
     'body',         'path_info', 'id',
+    'uploads',
     @http_env_keys,
 );
 
@@ -144,19 +146,30 @@ sub is_ajax {
     return 1;
 }
 
+# context-aware accessor for uploads
+sub upload {
+    my ($self, $name) = @_;
+    my $res = $self->{uploads}{$name};
+    
+    return $res unless wantarray;
+    return () unless defined $res;
+    return (ref($res) eq 'ARRAY') ? @$res : $res;
+}
+
 # private
 
 sub _init {
     my ($self) = @_;
 
+    $self->_build_request_env();
     $self->_build_path()      unless $self->path;
     $self->_build_method()    unless $self->method;
     $self->_build_path_info() unless $self->path_info;
-    $self->_build_request_env();
 
     $self->{_http_body} =
       HTTP::Body->new($self->content_type, $self->content_length);
     $self->_build_params();
+    $self->_build_uploads unless $self->uploads;
 }
 
 # Some Dancer's core components sometimes need to alter
@@ -350,6 +363,40 @@ sub _read {
     }
 }
 
+# Taken gently from Plack::Request, thanks to Plack authors.
+sub _build_uploads {
+    my ($self) = @_;
+
+    my $uploads = $self->{_http_body}->upload;
+    my %uploads;
+    
+    for my $name (keys %{ $uploads }) {
+        my $files = $uploads->{$name};
+        $files = ref $files eq 'ARRAY' ? $files : [$files];
+
+        my @uploads;
+        for my $upload (@{ $files }) {
+            push(
+                @uploads,
+                Dancer::Request::Upload->new(
+                    headers  => $upload->{headers},
+                    tempname => $upload->{tempname},
+                    size     => $upload->{size},
+                    filename => $upload->{filename},
+                )
+            );
+        }
+        $uploads{$name} = @uploads > 1 ? \@uploads : $uploads[0];
+
+        # support access to the filename as a normal param
+        my @filenames = map { $_->{filename} } @uploads;
+        $self->{_body_params}{$name} =  @filenames > 1 ? \@filenames : $filenames[0];
+    }
+
+    $self->{uploads} = \%uploads;
+    $self->_build_params();
+}
+
 1;
 
 __END__
@@ -444,6 +491,12 @@ Return true if the value of the header C<X-Requested-With> is XMLHttpRequest.
 =head2 env()
 
 Return the current environement (C<%ENV>), as a hashref.
+
+=head2 uploads()
+
+Returns a reference to a hash containing uploads. Values can be either a
+L<Dancer::Request::Upload> object, or an arrayref of L<Dancer::Request::Upload>
+objects.
 
 =head2 HTTP environment variables
 
