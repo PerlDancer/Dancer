@@ -58,16 +58,16 @@ sub process_request {
     return $request unless $request->is_put || $request->is_post;
 
     my $old_params = $request->params('body');
-    
-    # try to deserialize 
+
+    # try to deserialize
     my $new_params;
-    eval { $new_params = engine->deserialize($request->body) };
+    eval { $new_params = engine->deserialize($request->body, $request) };
     if ($@) {
         warn "Unable to deserialize request body with ".engine()." : \n$@";
         return $request;
     }
-    
-    (keys %$old_params) 
+
+    (keys %$old_params)
         ? $request->_set_body_params({%$old_params, %$new_params})
         : $request->_set_body_params($new_params);
 
@@ -115,7 +115,7 @@ Or in the application code:
 
 =head1 AUTHORS
 
-This module has been written by Alexis Sukrieh and Franck Cuny. 
+This module has been written by Alexis Sukrieh and Franck Cuny.
 See the AUTHORS file that comes with this distribution for details.
 
 =head1 LICENSE

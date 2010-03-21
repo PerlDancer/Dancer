@@ -32,7 +32,7 @@ sub handle_request {
 
     # save the request object
     Dancer::SharedData->request($request);
-    
+
     # read cookies from client
     Dancer::Cookies->init;
 
@@ -57,7 +57,6 @@ sub handle_request {
       || Dancer::Renderer->render_action
       || Dancer::Renderer->render_error(404);
 
-    Dancer::SharedData->reset_all();
     return $self->render_response($response);
 }
 
@@ -72,6 +71,9 @@ sub render_response {
 
     my $content = $response->{content};
     $content = [$content] unless (ref($content) eq 'GLOB');
+
+    Dancer::SharedData->reset_all();
+
     return [$response->{status}, $response->{headers}, $content];
 }
 
