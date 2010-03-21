@@ -57,21 +57,23 @@ sub handle_request {
       || Dancer::Renderer->render_action
       || Dancer::Renderer->render_error(404);
 
-    Dancer::SharedData->reset_all();
-    return $self->render_response($response, $request);
+    return $self->render_response($response);
 }
 
 # render a PSGI-formated response from a response built by
 # handle_request()
 sub render_response {
-    my ($self, $response, $request) = @_;
+    my ($self, $response) = @_;
 
     # serializing magick occurs here! (only if needed)
-    $response = Dancer::Serializer->process_response($response, $request)
+    $response = Dancer::Serializer->process_response($response)
         if setting('serializer');
 
     my $content = $response->{content};
     $content = [$content] unless (ref($content) eq 'GLOB');
+
+    Dancer::SharedData->reset_all();
+
     return [$response->{status}, $response->{headers}, $content];
 }
 

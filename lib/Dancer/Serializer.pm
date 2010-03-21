@@ -22,12 +22,12 @@ sub init {
 # serialized.
 # returns an error object if the serializer fails
 sub process_response {
-    my ($class, $response, $request) = @_;
+    my ($class, $response) = @_;
     my $content = $response->{content};
 
     if (ref($content) && (ref($content) ne 'GLOB')) {
         local $@;
-        eval { $content = engine->serialize($content, $request) };
+        eval { $content = engine->serialize($content) };
 
         # the serializer failed, replace the response with an error object
         if ($@) {

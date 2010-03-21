@@ -48,7 +48,8 @@ sub _find_content_type {
 }
 
 sub serialize {
-    my ($self, $entity, $request) = @_;
+    my ($self, $entity) = @_;
+    my $request = Dancer::SharedData->request;
     my $serializer = $self->_load_serializer($request);
     return $serializer->serialize($entity);
 }
