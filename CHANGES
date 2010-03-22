@@ -22,7 +22,8 @@ Dancer 1.170
       (closes: bug #49)
     * Support for file uploads
       The Dancer::Request class provides a common interface to access file
-      uploads. Syntactic sugar has been added to Dancer's as well (keyword 'upload').
+      uploads. Syntactic sugar has been added to Dancer's as well
+      (keyword 'upload').
       (closes whish #36)
 
     [ Franck Cuny ]
@@ -30,7 +31,7 @@ Dancer 1.170
       Dancer is now able to serialize route handler's response in various
       format (JSON, YAML, XML); and can also deserialize request body when
       appropriate.
-      (closes: whish #29)
+      (closes: wish #29)
 
 
 Dancer 1.160
