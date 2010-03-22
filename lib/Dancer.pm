@@ -60,6 +60,7 @@ $VERSION   = '1.160';
   status
   template
   true
+  upload
   uri_for
   var
   vars
@@ -118,6 +119,7 @@ sub splat    { @{Dancer::SharedData->request->params->{splat}} }
 sub status   { Dancer::Response::status(@_) }
 sub template { Dancer::Helpers::template(@_) }
 sub true     {1}
+sub upload   { Dancer::SharedData->request->upload(@_) }
 sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
 sub var      { Dancer::SharedData->var(@_) }
 sub vars     { Dancer::SharedData->vars }
@@ -415,6 +417,43 @@ render the response accordingly.
 
 The status keyword receives the name of the status to render, it can be either
 an HTTP code or its alias, as defined in L<Dancer::HTTP>.
+
+=head2 file uploads
+
+Dancer provides a common interface to handle file uploads. Any uploaded file is
+accessible as a L<Dancer::Request::Upload> object. you can access all parsed
+uploads via the upload keyword, like the following:
+
+    post '/some/route' => sub {
+        my $file = upload('file_input_foo');
+        # file is a Dancer::Request::Upload object
+    };
+
+If you named multiple input of type "file" with the same name, the upload
+keyword will return an array of Dancer::Request::Upload objects:
+
+    post '/some/route' => sub {
+        my ($file1, $file2) = upload('files_input');
+        # $file1 and $file2 are Dancer::Request::Upload objects
+    };
+
+You can also access the raw hashref of parsed uploads via the current requesrt
+object:
+
+    post '/some/route' => sub {
+        my $all_uploads = request->uploads;
+        # $all_uploads->{'file_input_foo'} is a Dancer::Request::Upload object
+        # $all_uploads->{'files_input'} is an array ref of Dancer::Request::Upload objects
+    };
+
+Note that you can also access the filename of the upload received via the params
+keyword:
+
+    post '/some/route' => sub {
+        # params->{'files_input'} is the filename of the file uploaded
+    };
+
+See L<Dancer::Request::Upload> for details about the interface provided.
 
 =head2 content_type
 
