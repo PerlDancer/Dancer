@@ -6,26 +6,31 @@ Dancer 1.170
     * Accept end_tag as a synonym for stop_tag when configuring TemplateToolkit.
       Thanks to James Ronan for bringing this up.
 
-
     [ Sawyer X]
     * Route::Cache store_route = store_path, beefed up docs
     * Changed names of limits in settings
     * Added documentation for it in Dancer.pm
-    * Closing issue #48
-    * FIX for issue #47, uri_for now accepts a boolean for not escaping URIs,
+    * More documentation about Module::Refresh dependency 
+      (closes bug #48)
+    * uri_for now accepts a boolean for not escaping URIs,
       and redirect calls uri_for with that boolean.
+      (closes: bug #47)
 
     [ Alexis Sukrieh ]
-    * FIX for bug #49
-      Query string params are not dropped anymore when their value is 0. thanks
+    * Query string params are not dropped anymore when their value is 0. thanks
       to "Squeeks" for the report.
+      (closes: bug #49)
+    * Support for file uploads
+      The Dancer::Request class provides a common interface to access file
+      uploads. Syntactic sugar has been added to Dancer's as well (keyword 'upload').
+      (closes whish #36)
 
     [ Franck Cuny ]
     * Support for automatic serialization/deserialization
       Dancer is now able to serialize route handler's response in various
       format (JSON, YAML, XML); and can also deserialize request body when
       appropriate.
-      (closes: #29)
+      (closes: whish #29)
 
 
 Dancer 1.160
