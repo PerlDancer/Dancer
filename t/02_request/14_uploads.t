@@ -1,5 +1,7 @@
 use strict;
 use warnings;
+    
+use Dancer ':syntax';
 use Dancer::Request;
 use Test::More;
 
@@ -57,14 +59,16 @@ do {
         SCRIPT_NAME    => '/',
         SERVER_PORT    => 80,
     });
+    Dancer::SharedData->request($req);
+
     my @undef = $req->upload('undef');
     is @undef, 0, 'non-existent upload as array is empty';
     my $undef = $req->upload('undef');
     is $undef, undef, '... and non-existent upload as scalar is undef';
 
-    my @uploads = $req->upload('test_upload_file');
+    my @uploads = upload('test_upload_file');
     like $uploads[0]->content, qr|^SHOGUN|,
-        "content for first upload is ok";
+        "content for first upload is ok, via 'upload'";
     like $uploads[1]->content, qr|^SHOGUN|,
         "... content for second as well";
     is $req->uploads->{'test_upload_file4'}[0]->content, 'SHOGUN4',
@@ -72,7 +76,7 @@ do {
 
     my $test_upload_file3 = $req->upload('test_upload_file3');
     is $test_upload_file3->content, 'SHOGUN3',
-        "content for upload #3 as a scalar is good";
+        "content for upload #3 as a scalar is good, via req->upload";
 
     my @test_upload_file6 = $req->upload('test_upload_file6');
     is $test_upload_file6[0]->content, 'SHOGUN6',
@@ -85,3 +89,4 @@ do {
     is $req->params->{'test_upload_file6'}, 'yappo6.txt',
         "filename is accessible via params";
 };
+

@@ -31,6 +31,8 @@ my @keywords = qw(
     splat
     status
     template
+    uri_for
+    upload
     true
     var
     vars
