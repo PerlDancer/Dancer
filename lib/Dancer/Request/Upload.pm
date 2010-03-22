@@ -70,6 +70,8 @@ keyword. See L<Dancer::Request> for details.
 
 =head1 METHODS
 
+=over 4
+
 =item filename
 
 Returns the filename as sent by the client.
