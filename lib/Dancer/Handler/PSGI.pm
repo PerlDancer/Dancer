@@ -16,14 +16,7 @@ sub new {
     return $self;
 }
 
-sub dance {
-    my $self = shift;
-    return sub {
-        my $env = shift;
-        my $request = Dancer::Request->new($env);
-        $self->handle_request($request);
-    };
-}
+sub dance { process(@_) }
 
 sub process {
     my ($self, $request) = @_;
