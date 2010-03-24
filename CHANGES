@@ -33,6 +33,9 @@ Dancer 1.170
       appropriate.
       (closes: wish #29)
 
+    [ Tatsuhiko Miyagawa ]
+    * Remove the need of a PSGI file, a Dancer script now behaves both as a
+      standalone PSGI server or as PSGI startup script for Plack handlers.
 
 Dancer 1.160
 
