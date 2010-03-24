@@ -1,3 +1,7 @@
+Dancer 1.171
+    [ Alexis Sukrieh ]
+    * Removed bogus TestApp/ directory
+
 Dancer 1.170
     [ David Precious ]
     * Fixed bug with status keyword not converting aliases (e.g. 'not_found') to
