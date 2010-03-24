@@ -3,9 +3,8 @@ use warnings;
     
 use Dancer ':syntax';
 use Dancer::Request;
-use Test::More;
+use Test::More 'import' => ['!pass'];
 
-use File::Basename 'dirname';
 
 sub test_path {
     my ($file, $dir) = @_;
