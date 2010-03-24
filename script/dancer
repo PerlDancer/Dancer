@@ -196,7 +196,6 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 
 "#!$^X
 use Dancer;
-use lib '[% appdir %]';
 use $appname;
 dance;
 ",
