@@ -123,13 +123,15 @@ following:
         <Location />
             SetHandler perl-script
             PerlHandler Plack::Handler::Apache2
-            PerlSetVar psgi_app /websites/myapp.example.com/app.psgi
+            PerlSetVar psgi_app /websites/myapp.example.com/app.pl
         </Location>
 
         ErrorLog  /websites/myapp.example.com/logs/error_log
         CustomLog /websites/myapp.example.com/logs/access_log common
     </VirtualHost>
 
+Note that B<app.pl> is the perl script that runs your Dancer app, and can be
+named differently. This is a script that ends with the B<dance> keyword.
 
 =head3 Running from Apache via FastCGI
 
