@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Dancer::Config 'setting';
 
-plan skipp_all => "JSON is needed to run this tests"
+plan skip_all => "JSON is needed to run this tests"
     unless Dancer::ModuleLoader->load('JSON');
 plan tests => 8;
 

@@ -6,9 +6,12 @@ plan skip_all => "LWP::UserAgent is needed to run this tests"
     unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
+plan skip_all => 'YAML is needed to run this test'
+    unless Dancer::ModuleLoader->load('YAML');
+plan skip_all => 'JSON is needed to run this test'
+    unless Dancer::ModuleLoader->load('JSON');
 
 use Dancer::Config 'setting';
-
 
 my $content_types = {
     'YAML' => 'text/x-yaml',

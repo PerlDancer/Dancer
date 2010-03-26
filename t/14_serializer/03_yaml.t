@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Dancer::Config 'setting';
 
-plan skipp_all => "YAML needed to run this tests"
+plan skip_all => "YAML needed to run this tests"
     unless Dancer::ModuleLoader->load('YAML');
 plan tests => 7;
 
