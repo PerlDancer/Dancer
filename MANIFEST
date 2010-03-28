@@ -22,6 +22,7 @@ lib/Dancer/Logger/Abstract.pm
 lib/Dancer/Logger/File.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
+lib/Dancer/Plugin.pm
 lib/Dancer/Renderer.pm
 lib/Dancer/Request.pm
 lib/Dancer/Request/Upload.pm
@@ -149,7 +150,9 @@ t/14_serializer/03_yaml.t
 t/14_serializer/04_mutable.t
 t/14_serializer/05_live.t
 t/14_serializer/handler-helper.t
+t/15_plugins/01_register.t
 t/lib/EasyMocker.pm
+t/lib/LinkBlocker.pm
 t/lib/TestApp.pm
 t/lib/TestSerializer.pm
 t/manifest.t
