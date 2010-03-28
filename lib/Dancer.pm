@@ -711,13 +711,17 @@ And the appdir/views/hello.tt view can contain the following code:
 
 A layout is a special view, located in the 'layouts' directory (inside the
 views directory) which must have a token named `content'. That token marks the
-place where to render the action view. This lets you define a global layout for
-your actions.
+place where to render the action view. This lets you define a global layout
+for your actions. Any tokens that you defined when you called the 'template'
+keyword are available in the layouts, as well as the standard session,
+request, and params tokens. This allows you to insert per-page content into
+the HTML boilerplate, such as page titles, current-page tags for navigation,
+etc. 
 
 Here is an example of a layout: views/layouts/main.tt :
 
     <html>
-        <head>...</head>
+        <head><% page_title %></head>
         <body>
         <div id="header">
         ...
@@ -738,7 +742,7 @@ This layout can be used like the following:
     layout 'main';
 
     get '/' => sub {
-        template 'index';
+        template 'index' => { page_title => "Your website Homepage" };
     };
 
 =head1 STATIC FILES
