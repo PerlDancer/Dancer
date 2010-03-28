@@ -1,3 +1,14 @@
+Dancer 1.72
+    [ Alexis Sukrieh ]
+    * Plugin support.
+
+    [ Franck Cuny ]
+    * Prevent usage of reserved Dancer keywords in plugins.
+    * Tests cleanups.
+
+    [ Robert Olson ]
+    * Fixing docs to clarify layouts can use variables too.
+
 Dancer 1.171
     [ Alexis Sukrieh ]
     * Removed bogus TestApp/ directory
