@@ -10,6 +10,10 @@ plan skip_all => 'YAML is needed to run this test'
     unless Dancer::ModuleLoader->load('YAML');
 plan skip_all => 'JSON is needed to run this test'
     unless Dancer::ModuleLoader->load('JSON');
+plan skip_all => 'HTTP::Request is needed to run this test'
+    unless Dancer::ModuleLoader->load('HTTP::Request');
+plan skip_all => 'LWP::UserAgent is needed to run this test'
+    unless Dancer::ModuleLoader->load('LWP::UserAgent');
 
 use Dancer::Config 'setting';
 
