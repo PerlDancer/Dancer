@@ -745,6 +745,17 @@ This layout can be used like the following:
         template 'index' => { page_title => "Your website Homepage" };
     };
 
+The layout can be disabled for a specific view like the following:
+    
+    use Dancer;
+    use Template;
+
+    layout 'main';
+
+    get '/nolayout' => sub {
+        template 'nolayout', { page_title => "No layout page" }, { layout => 0 };
+    };
+
 =head1 STATIC FILES
 
 =head2 STATIC DIRECTORY
