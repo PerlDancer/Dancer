@@ -9,6 +9,10 @@ Dancer 1.72
     [ Robert Olson ]
     * Fixing docs to clarify layouts can use variables too.
 
+    [ David Precious ]
+    * Fix issue 52 - creating invalid cookie expiration dates.
+      Thanks to Juanjo (reidrac) for reporting!
+
 Dancer 1.171
     [ Alexis Sukrieh ]
     * Removed bogus TestApp/ directory
