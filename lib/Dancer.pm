@@ -737,23 +737,22 @@ Here is an example of a layout: views/layouts/main.tt :
 This layout can be used like the following:
 
     use Dancer;
-    use Template;
-
     layout 'main';
 
     get '/' => sub {
         template 'index' => { page_title => "Your website Homepage" };
     };
 
-The layout can be disabled for a specific view like the following:
+Of course, if a layout is set, it can also be disabled for a specific action,
+like the following:
     
     use Dancer;
-    use Template;
-
     layout 'main';
 
     get '/nolayout' => sub {
-        template 'nolayout', { page_title => "No layout page" }, { layout => 0 };
+        template 'some_ajax_view', 
+            { tokens_var => "42" }, 
+            { layout => 0 };
     };
 
 =head1 STATIC FILES
