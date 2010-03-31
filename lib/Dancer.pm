@@ -466,6 +466,26 @@ keyword B<content_type>
         # here we can dump the contents of params->{txtfile}
     };
 
+=head2 cookies
+
+You can create/update cookies with the C<set_cookie> helper like the following:
+
+    get '/some_action' => sub {
+        set_cookie 'name' => 'value',
+            'expires' => (time + 3600),
+            'domain'  => '.foo.com';
+    };
+
+In the example above, only 'name' and 'value' are mandatory.
+
+You can access their value with the B<cookies> helper, which returns a hashref
+of Cookie objects:
+
+    get '/some_action' => sub { 
+        my $cookie = cookies->{name};
+        return $cookie->value;
+    };
+
 =head2 header(s)
 
 It is possible to add custom headers to responses with the B<header> (or B<headers>)
@@ -737,12 +757,22 @@ Here is an example of a layout: views/layouts/main.tt :
 This layout can be used like the following:
 
     use Dancer;
-    use Template;
-
     layout 'main';
 
     get '/' => sub {
         template 'index' => { page_title => "Your website Homepage" };
+    };
+
+Of course, if a layout is set, it can also be disabled for a specific action,
+like the following:
+    
+    use Dancer;
+    layout 'main';
+
+    get '/nolayout' => sub {
+        template 'some_ajax_view', 
+            { tokens_var => "42" }, 
+            { layout => 0 };
     };
 
 =head1 STATIC FILES
