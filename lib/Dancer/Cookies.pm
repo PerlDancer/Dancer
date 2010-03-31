@@ -32,22 +32,11 @@ sub init {
 # return true if the given cookie is not the same as the one sent by the client
 sub has_changed {
     my ($self, $cookie) = @_;
-    my ($name, $value, $expires) = ($cookie->{name}, $cookie->{value},
-        $cookie->{expires});
+    my ($name, $value) = ($cookie->{name}, $cookie->{value});
 
     my $client_cookies = parse_cookie_from_env();
     my $search         = $client_cookies->{$name};
-
     return 1 unless defined $search;
-    
-    if(defined $search->expires && !defined $expires ||
-        !defined $search->expires && defined $expires ||
-            defined $search->expires && defined $expires &&
-                $search->expires ne $expires)
-    {
-        return 1;
-    }
-    
     return $search->value ne $value;
 }
 
