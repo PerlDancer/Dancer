@@ -1,3 +1,8 @@
+Dancer 1.74
+    [ Franck Cuny ]
+    * Doc fixes.
+    (Thanks to poisonbit)
+
 Dancer 1.73
     [ Alexis Sukrieh ]
     * Documenting set_cookie in Dancer.pm.
