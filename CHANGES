@@ -1,3 +1,11 @@
+Dancer 1.73
+    [ Sawyer X ]
+    * Fix a few failing tests because of compilation errors.
+
+    [ David Precious ]
+    * Fix issue 52 - creating invalid cookie expiration dates.
+      Thanks to Juanjo (reidrac) for reporting!
+
 Dancer 1.72
     [ Alexis Sukrieh ]
     * Plugin support.
@@ -8,10 +16,6 @@ Dancer 1.72
 
     [ Robert Olson ]
     * Fixing docs to clarify layouts can use variables too.
-
-    [ David Precious ]
-    * Fix issue 52 - creating invalid cookie expiration dates.
-      Thanks to Juanjo (reidrac) for reporting!
 
 Dancer 1.171
     [ Alexis Sukrieh ]
