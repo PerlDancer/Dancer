@@ -2,8 +2,13 @@ package Dancer::Serializer::JSON;
 
 use strict;
 use warnings;
-use JSON;
+use Dancer::ModuleLoader;
 use base 'Dancer::Serializer::Abstract';
+
+sub init {
+    die 'JSON is needed and is not installed'
+      unless Dancer::ModuleLoader->load('JSON');
+}
 
 sub serialize {
     my ($self, $entity) = @_;
@@ -15,8 +20,6 @@ sub deserialize {
     JSON::decode_json $content;
 }
 
-sub content_type {
-    "application/json"
-}
+sub content_type { 'application/json' }
 
 1;
