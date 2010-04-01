@@ -293,8 +293,8 @@ This can easily be handled with a before filter to check their session:
 
     post '/login' => sub {
         # Validate the username and password they supplied
-        if ($params->{user} eq 'bob' && params->{pass} eq 'letmein') {
-            session user => $params->{user};
+        if (params->{user} eq 'bob' && params->{pass} eq 'letmein') {
+            session user => params->{user};
             redirect params->{path} || '/';
         } else {
             redirect '/login?failed=1';
