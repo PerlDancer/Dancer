@@ -1,4 +1,13 @@
 Dancer 1.73
+    [ Alexis Sukrieh ]
+    * Documenting set_cookie in Dancer.pm.
+
+    [ Franck Cuny ]
+    * Cleaning up serializer test.
+
+    [ François Charlier ]
+    * Documenting layout disabling.
+
     [ Sawyer X ]
     * Fix a few failing tests because of compilation errors.
     * Add init{} subs for all serializers.
