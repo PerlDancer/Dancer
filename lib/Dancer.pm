@@ -481,7 +481,7 @@ In the example above, only 'name' and 'value' are mandatory.
 You can access their value with the B<cookies> helper, which returns a hashref
 of Cookie objects:
 
-    get '/some_action' => sub { 
+    get '/some_action' => sub {
         my $cookie = cookies->{name};
         return $cookie->value;
     };
@@ -765,13 +765,13 @@ This layout can be used like the following:
 
 Of course, if a layout is set, it can also be disabled for a specific action,
 like the following:
-    
+
     use Dancer;
     layout 'main';
 
     get '/nolayout' => sub {
-        template 'some_ajax_view', 
-            { tokens_var => "42" }, 
+        template 'some_ajax_view',
+            { tokens_var => "42" },
             { layout => 0 };
     };
 
