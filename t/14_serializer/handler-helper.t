@@ -2,9 +2,12 @@ use strict;
 use warnings;
 use Test::More;
 
-plan skip_all => "JSON is needed to run this test" 
-    unless Dancer::ModuleLoader->load('JSON');
-plan tests => 3;
+BEGIN {
+    use Dancer::ModuleLoader;
+    plan skip_all => "JSON is needed to run this test"
+        unless Dancer::ModuleLoader->load('JSON');
+    plan tests => 3;
+}
 
 use Dancer::Config 'setting';
 use Dancer::Request;
