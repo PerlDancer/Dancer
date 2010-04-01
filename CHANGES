@@ -2,6 +2,7 @@ Dancer 1.73
     [ Sawyer X ]
     * Fix a few failing tests because of compilation errors.
     * Add init{} subs for all serializers.
+    * Dancer::Engine documentation
 
     [ David Precious ]
     * Fix issue 52 - creating invalid cookie expiration dates.
