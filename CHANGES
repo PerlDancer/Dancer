@@ -1,9 +1,9 @@
-Dancer 1.74
+Dancer 1.174
     [ Franck Cuny ]
     * Doc fixes.
     (Thanks to poisonbit)
 
-Dancer 1.73
+Dancer 1.173
     [ Alexis Sukrieh ]
     * Documenting set_cookie in Dancer.pm.
 
@@ -22,7 +22,7 @@ Dancer 1.73
     * Fix issue 52 - creating invalid cookie expiration dates.
       Thanks to Juanjo (reidrac) for reporting!
 
-Dancer 1.72
+Dancer 1.172
     [ Alexis Sukrieh ]
     * Plugin support.
 
