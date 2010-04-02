@@ -4,7 +4,7 @@ Dancer 1.174
       (Thanks to poisonbit)
 
 	[ Alexis Sukrieh ]
-	* New serializer: Dumper for easiyl output dumped variable in text/plain.
+	* New serializer: Dumper for easily output dumped variable in text/plain.
 
 Dancer 1.173
     [ Alexis Sukrieh ]
