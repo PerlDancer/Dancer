@@ -164,7 +164,7 @@ sub before_filters { Dancer::Route::Registry->before_filters }
 sub run_before_filters { $_->() for before_filters }
 
 sub build_params {
-    my ($handler, $request) = @_;
+    my ($class, $handler, $request) = @_;
     $request->_set_route_params($handler->{params} || {});
     return scalar($request->params);
 }
@@ -174,7 +174,7 @@ sub call($$) {
     my ($class, $handler) = @_;
 
     my $request = Dancer::SharedData->request;
-    my $params = build_params($handler, $request);
+    my $params = Dancer::Route->build_params($handler, $request);
 
     # eval the route handler, and copy the response object
     my $content;

@@ -78,14 +78,33 @@ sub html_page {
     );
 }
 
+sub get_action_response();
 sub get_action_response() {
-    Dancer::Route->run_before_filters;
-    
     my $request = Dancer::SharedData->request;
     my $path    = $request->path_info;
     my $method  = $request->method;
-
     my $handler = Dancer::Route->find($path, $method, $request);
+
+    # init the request and build the params
+    Dancer::Route->build_params($handler, $request);
+    Dancer::SharedData->request($request);
+
+    # run the before filters
+    Dancer::Route->run_before_filters;
+
+    # recurse if something has changed
+    my $limit = 0;
+    my $MAX_RECURSIVE_LOOP = 10;
+    if (($path ne Dancer::SharedData->request->path) ||
+        ($method ne Dancer::SharedData->request->method)) {
+        $limit++;
+        if ($limit > $MAX_RECURSIVE_LOOP) {
+            die "infinite loop detected, check your route/filters for '$method $path'";
+        }
+        return get_action_response();
+    }
+
+    # execute the action
     Dancer::Route->call($handler) if $handler;
 }
 
