@@ -2,7 +2,7 @@ package Dancer::Plugin;
 use strict;
 use warnings;
 
-use Dancer::Config;
+use Dancer::Config 'setting';
 
 use base 'Exporter';
 use vars qw(@EXPORT);
@@ -17,7 +17,19 @@ my @_reserved_keywords = @Dancer::EXPORT;
 
 my $_keywords = [];
 
-sub plugin_setting { Dancer::Config::plugin_setting(@_) }
+sub plugin_setting {
+    my $plugin_orig_name = caller();
+    my ($plugin_name) = $plugin_orig_name =~ s/Dancer::Plugin:://;
+    
+    my $settings = setting('plugins');
+
+    foreach ($plugin_name, $plugin_orig_name) {
+        return $settings->{$_}
+            if ( exists $settings->{$_} );
+    }
+    return undef;
+}
+
 
 sub register($$) {
     my ($keyword, $code) = @_;

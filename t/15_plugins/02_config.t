@@ -4,7 +4,7 @@ use warnings;
 use Test::More import => ['!pass'], tests => 7;
 
 use_ok 'Dancer';
-use_ok 'Dancer::Config', 'plugin_setting';
+use_ok 'Dancer::Config';
 use lib 't';
 use TestUtils;
 
@@ -25,7 +25,6 @@ ok( Dancer::Config->load, 'Config load works with a conffile' );
 
     package Dancer::Plugin::Test;
     use Dancer::Plugin;
-    use Dancer::Config qw/plugin_setting/;
 
     sub conf {
         plugin_setting;
@@ -35,7 +34,6 @@ ok( Dancer::Config->load, 'Config load works with a conffile' );
 
     package My::Other::Plugin;
     use Dancer::Plugin;
-    use Dancer::Config qw/plugin_setting/;
 
     sub conf {
         plugin_setting;

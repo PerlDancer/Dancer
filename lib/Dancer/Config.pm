@@ -10,7 +10,7 @@ use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 use Carp 'confess';
 
-@EXPORT_OK = qw(setting mime_types plugin_setting);
+@EXPORT_OK = qw(setting mime_types);
 
 # singleton for storing settings
 my $SETTINGS = {
@@ -78,21 +78,6 @@ sub environment_file {
 sub init_confdir {
     return setting('confdir') if setting('confdir');
     setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
-}
-
-sub plugin_setting {
-    my $plugin_orig_name = caller();
-    my ($plugin_name) = $plugin_orig_name =~ s/Dancer::Plugin:://;
-    _plugin_setting( $plugin_name, $plugin_orig_name );
-}
-
-sub _plugin_setting {
-    my (@names) = @_;
-    foreach (@names) {
-        return $SETTINGS->{plugins}->{$_}
-            if ( exists $SETTINGS->{plugins}->{$_} );
-    }
-    return undef;
 }
 
 sub load {
