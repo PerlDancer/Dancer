@@ -9,6 +9,7 @@ use Dancer::Cookie;
 use Dancer::Cookies;
 use Dancer::Request;
 use Dancer::Response;
+use Dancer::Serializer;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname read_file_content);
 use Dancer::SharedData;
@@ -105,7 +106,13 @@ sub get_action_response() {
     }
 
     # execute the action
-    Dancer::Route->call($handler) if $handler;
+    my $response = Dancer::Route->call($handler) if $handler;
+    
+    # serializing the response if needed
+    $response = Dancer::Serializer->process_response($response)
+        if setting('serializer');
+
+    return $response;
 }
 
 sub get_file_response() {

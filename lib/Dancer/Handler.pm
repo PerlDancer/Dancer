@@ -65,10 +65,6 @@ sub handle_request {
 sub render_response {
     my ($self, $response) = @_;
 
-    # serializing magick occurs here! (only if needed)
-    $response = Dancer::Serializer->process_response($response)
-        if setting('serializer');
-
     my $content = $response->{content};
     $content = [$content] unless (ref($content) eq 'GLOB');
 
