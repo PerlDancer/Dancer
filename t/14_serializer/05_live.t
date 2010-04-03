@@ -122,7 +122,6 @@ sub test_mutable {
             my $port = shift;
             my $url  = "http://127.0.0.1:$port/";
 
-            diag "testing JSON";
             my $req  = HTTP::Request->new( GET => $url );
             $req->header( 'Content-Type' => 'application/json' );
             my $ua = LWP::UserAgent->new;
@@ -136,7 +135,6 @@ sub test_mutable {
                 "content type is OK";
 
 
-            diag "testing YAML";
             undef $req;
             $req = HTTP::Request->new( POST => $url );
             $req->header( 'Content-Type' => 'text/x-yaml' );
