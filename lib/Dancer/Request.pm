@@ -23,7 +23,7 @@ Dancer::Request->attributes(
     # query
     'env',          'path', 'method',
     'content_type', 'content_length',
-    'body',         'path_info', 'id',
+    'body',         'id', 'request_uri',
     'uploads',
     @http_env_keys,
 );
@@ -36,6 +36,12 @@ sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
 sub is_put                { $_[0]->{method} eq 'PUT' }
 sub is_delete             { $_[0]->{method} eq 'DELETE' }
+
+# public interface compat with CGI.pm objects 
+sub request_method { method(@_) }
+sub path_info      { path(@_) }
+sub Vars           { params(@_) }
+sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 
 sub new {
     my ($class, $env) = @_;
@@ -110,11 +116,6 @@ sub uri_for {
     return $dont_escape ? uri_unescape( $uri->canonical ) : $uri->canonical;
 }
 
-# public interface compat with CGI.pm objects (FIXME do Dancer's users really
-# need that compat layer? ) Not sure...
-sub request_method { method(@_) }
-sub Vars           { params(@_) }
-sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 
 sub params {
     my ($self, $source) = @_;
@@ -245,8 +246,10 @@ sub _build_path {
 
     # fallback to REQUEST_URI if nothing found
     # we have to decode it, according to PSGI specs.
-    $path ||= $self->_url_decode($self->{env}->{REQUEST_URI})
-      if defined $self->{env}->{REQUEST_URI};
+    if (defined $self->{env}->{REQUEST_URI}) {
+        $self->{request_uri} = $self->{env}->{REQUEST_URI};
+        $path ||= $self->_url_decode($self->{request_uri});
+    }
 
     die "Cannot resolve path" if not $path;
     $self->{path} = $path;
