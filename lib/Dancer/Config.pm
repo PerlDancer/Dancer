@@ -10,7 +10,7 @@ use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 use Carp 'confess';
 
-@EXPORT_OK = qw(setting mime_types);
+@EXPORT_OK = qw(setting mime_types plugin_setting);
 
 # singleton for storing settings
 my $SETTINGS = {
@@ -80,8 +80,23 @@ sub init_confdir {
     setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
 }
 
+sub plugin_setting {
+    my $plugin_orig_name = caller();
+    my ($plugin_name) = $plugin_orig_name =~ s/Dancer::Plugin:://;
+    _plugin_setting( $plugin_name, $plugin_orig_name );
+}
+
+sub _plugin_setting {
+    my (@names) = @_;
+    foreach (@names) {
+        return $SETTINGS->{plugins}->{$_}
+            if ( exists $SETTINGS->{plugins}->{$_} );
+    }
+    return undef;
+}
+
 sub load {
-    init_confdir(); 
+    init_confdir();
 
     # look for the conffile
     return 1 unless -f conffile;
@@ -128,7 +143,7 @@ sub load_default_settings {
       ||= $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
       || 'development';
-    
+
     setting template => 'simple';
 }
 load_default_settings();
@@ -194,12 +209,12 @@ This is the path of the public directory, where static files are stored. Any
 existing file in that directory will be served as a static file, before
 mathcing any route.
 
-By default, it points to APPDIR/public where APPDIR is the directory that 
+By default, it points to APPDIR/public where APPDIR is the directory that
 contains your Dancer script.
 
 =head2 layout (string)
 
-name of the layout to use when rendering view. Dancer will look for 
+name of the layout to use when rendering view. Dancer will look for
 a matching template in the directory $appdir/views/layout.
 
 =head2 warnings (boolean)
