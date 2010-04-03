@@ -1,4 +1,4 @@
-Dancer 1.174
+Dancer 1.180
     [ Franck Cuny ]
     * Doc fixes.
       (Thanks to poisonbit)
@@ -7,6 +7,7 @@ Dancer 1.174
 	* New serializer: Dumper for easily output dumped variable 
 	  in text/plain.
 	* before filters can now access route params
+    * support for '.' as a token separator in params parsing
 
 Dancer 1.173
     [ Alexis Sukrieh ]
