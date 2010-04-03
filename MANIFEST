@@ -33,6 +33,7 @@ lib/Dancer/Route/Cache.pm
 lib/Dancer/Route/Registry.pm
 lib/Dancer/Serializer.pm
 lib/Dancer/Serializer/Abstract.pm
+lib/Dancer/Serializer/Dumper.pm
 lib/Dancer/Serializer/JSON.pm
 lib/Dancer/Serializer/Mutable.pm
 lib/Dancer/Serializer/XML.pm
@@ -96,6 +97,8 @@ t/03_route_handler/15_prefix.t
 t/03_route_handler/16_caching.t
 t/03_route_handler/17_compile.t
 t/03_route_handler/18_auto_page.t
+t/03_route_handler/19_filters_and_params.t
+t/03_route_handler/20_params_multiple_tokens.t
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
@@ -149,6 +152,7 @@ t/14_serializer/02_json.t
 t/14_serializer/03_yaml.t
 t/14_serializer/04_mutable.t
 t/14_serializer/05_live.t
+t/14_serializer/06_serialize_response.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/lib/EasyMocker.pm
