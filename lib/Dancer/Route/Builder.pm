@@ -46,9 +46,9 @@ sub make_regexp {
     else {
         # look for route with params (/hello/:foo)
         if ($pattern =~ /:/) {
-            @params = $pattern =~ /:([^\/]+)/g;
+            @params = $pattern =~ /:([^\/\.]+)/g;
             if (@params) {
-                $pattern =~ s/(:[^\/]+)/\(\[\^\/\]\+\)/g;
+                $pattern =~ s/(:[^\/\.]+)/\(\[\^\/\]\+\)/g;
                 $capture = 1;
             }
         }
