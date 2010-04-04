@@ -20,7 +20,7 @@ sub init {
 
     if (!-d $logdir) {
         if (not mkdir $logdir) {
-            warn "log directory $logdir doen't exist, unable to create";
+            warn "log directory $logdir doesn't exist, unable to create";
             return undef $logfile;
         }
     }
