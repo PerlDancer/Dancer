@@ -3,7 +3,7 @@ use t::lib::TestUtils;
 
 plan tests => 23;
 
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Route;
 
 eval { prefix 'say' };

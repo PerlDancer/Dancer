@@ -5,7 +5,7 @@ use Test::More tests => 2, import => ['!pass'];
 # This test makes sure a before filter can access the request params
 
 {
-    use Dancer;
+    use Dancer ':syntax';
 
     before sub { 
         ok(defined(params->{'format'}), 

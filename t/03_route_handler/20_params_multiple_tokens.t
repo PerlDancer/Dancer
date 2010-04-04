@@ -3,7 +3,7 @@ use warnings;
 use Test::More tests => 2, import => ['!pass'];
 
 {
-    use Dancer;
+    use Dancer ':syntax';
 
     get '/:resource/:id.:format' => sub {
         [ params->{'resource'}, 

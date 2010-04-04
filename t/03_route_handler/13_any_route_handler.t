@@ -3,7 +3,7 @@ use warnings;
 use Test::More tests => 17, import => ['!pass'];
 use t::lib::TestUtils;
 
-use Dancer;
+use Dancer ':syntax';
 
 eval {
     any ['get', 'delete'] => '/any_1' => sub { 

@@ -4,7 +4,7 @@ use t::lib::TestUtils;
 my @methods = qw(get head put post delete options);
 plan tests => scalar(@methods) + 5;
 
-use Dancer;
+use Dancer ':syntax';
 
 ok(get('/', sub { 'get' }), "GET / defined ");
 ok(post('/', sub { 'post' }), "POST / defined ");

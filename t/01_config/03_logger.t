@@ -1,7 +1,11 @@
 use Test::More tests => 15, import => ['!pass'];
 
 use Dancer::Config 'setting';
-use Dancer;
+use Dancer ':syntax';
+
+use File::Temp qw/tempdir/;
+my $dir = tempdir(CLEANUP => 1);
+set appdir => $dir;
 
 eval { logger 'foobar'};
 like($@, qr/unknown logger/, 'invalid logger detected');

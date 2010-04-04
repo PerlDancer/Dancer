@@ -1,5 +1,5 @@
 use Test::More import => ['!pass'];
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Session::YAML;
 
 plan tests => '4';

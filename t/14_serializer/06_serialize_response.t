@@ -12,7 +12,7 @@ my $json = JSON::encode_json($data);
 
 {
     package Webservice;
-    use Dancer;
+    use Dancer ':syntax';
 
     set serializer => 'JSON';
 

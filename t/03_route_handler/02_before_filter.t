@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Test::More 'no_plan', import => ['!pass'];
-use Dancer;
+use Dancer ':syntax';
 use t::lib::TestUtils;
 
 ok(before(sub { 

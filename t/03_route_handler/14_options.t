@@ -4,11 +4,9 @@ use warnings;
 use Test::More import => ['!pass'];
 use t::lib::TestUtils;
 
-BEGIN {
-    plan tests => 19;
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route';
-};
+plan tests => 17;
+use Dancer ':syntax';
+use Dancer::Route;
 
 {
     ok( get( '/', { agent => 'foo' } => sub {'agent foo'} ),

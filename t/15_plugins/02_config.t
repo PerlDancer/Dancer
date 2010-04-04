@@ -1,10 +1,10 @@
 use strict;
 use warnings;
 
-use Test::More import => ['!pass'], tests => 7;
+use Test::More import => ['!pass'], tests => 5;
 
-use_ok 'Dancer';
-use_ok 'Dancer::Config';
+use Dancer ':syntax';
+use Dancer::Config;
 use t::lib::TestUtils;
 
 use File::Temp qw/tempdir/;

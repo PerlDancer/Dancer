@@ -1,6 +1,6 @@
 use Test::More tests => 2, import => ['!pass'];
 
-use Dancer;
+use Dancer ':syntax';
 use t::lib::TestUtils;
 
 set show_errors => 1;

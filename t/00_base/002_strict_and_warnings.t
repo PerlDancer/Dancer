@@ -2,7 +2,7 @@ use Test::More tests => 5, import => ['!pass'];
 
 {
     package Webapp;
-    use Dancer;
+    use Dancer ':syntax';
     
     eval '$foo = 5;';
     ::ok($@, 'got an error because strict is on');

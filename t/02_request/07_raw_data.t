@@ -38,5 +38,3 @@ Test::TCP::test_tcp(
         Dancer->dance();
     },
 );
- 
-done_testing;

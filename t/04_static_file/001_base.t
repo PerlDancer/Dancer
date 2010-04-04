@@ -2,12 +2,10 @@ use strict;
 use warnings;
 
 use t::lib::TestUtils;
-use Test::More tests => 6, import => ['!pass'];
+use Test::More tests => 4, import => ['!pass'];
 
-BEGIN {
-    use_ok 'Dancer';
-    use_ok 'Dancer::Config', 'setting';
-}
+use Dancer ':syntax';
+use Dancer::Config 'setting';
 
 set public => path(dirname(__FILE__), 'static');
 my $public = setting('public');

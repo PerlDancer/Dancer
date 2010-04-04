@@ -47,5 +47,3 @@ Test::TCP::test_tcp(
         Plack::Loader->auto(port => $port)->run($app);
     },
 );
- 
-done_testing;

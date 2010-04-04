@@ -2,12 +2,10 @@ use strict;
 use warnings;
 
 use t::lib::TestUtils;
-use Test::More tests => 18, import => ['!pass'];
+use Test::More tests => 16, import => ['!pass'];
 
-BEGIN {
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route';
-}
+use Dancer ':syntax';
+use Dancer::Route;
 use Data::Dumper;
 
 {

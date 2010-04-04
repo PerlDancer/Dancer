@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 
