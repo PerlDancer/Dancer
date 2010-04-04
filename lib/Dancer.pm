@@ -21,7 +21,7 @@ use Dancer::Handler;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.173_01';
+$VERSION   = '1.18';
 @EXPORT    = qw(
   any
   before
