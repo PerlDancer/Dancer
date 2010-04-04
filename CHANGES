@@ -7,6 +7,8 @@ Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
     * Doc fixes.
       (Thanks to poisonbit)
+    * Plugins configuration
+    * Cleaning up tests
 
 	[ Alexis Sukrieh ]
 	* New serializer: Dumper for easily output dumped variable 
