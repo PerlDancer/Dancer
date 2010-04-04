@@ -23,6 +23,19 @@ sub _should {
     return $levels->{$conf_level} <= $levels->{$msg_level};
 }
 
+sub format_message {
+    my ($self, $level, $message) = @_;
+    my ($package, $file, $line) = caller(4);
+    $package ||= '-';
+    $file    ||= '-';
+    $line    ||= '-';
+
+    my $time = localtime;
+    chomp $message;
+    return "$time [$$] ($level) $message in $file l. $line\n";
+}
+
+
 sub debug   { $_[0]->_should('debug')   and $_[0]->_log('debug',   $_[1]) }
 sub warning { $_[0]->_should('warning') and $_[0]->_log('warning', $_[1]) }
 sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
