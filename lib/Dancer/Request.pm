@@ -93,6 +93,8 @@ sub base {
 
     my ($server, $host, $port, $path, $scheme) = @{$self->{env}}{@env_names};
 
+    $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'}; # Windows
+
     my $uri = URI->new;
     $uri->scheme($scheme);
     $uri->authority($host || "$server:$port");
