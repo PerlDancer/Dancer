@@ -5,6 +5,11 @@ Dancer 1.80
 	  Thanks to Gabor Szabo for the idea.
 	* Logger engines don't have anymore to implement _format(), they can use
 	  $self->format_message instead.
+	* New log level: "core" for letting Dancer's core express itself on crucial events.
+	  That way, when the app config sets log to "core", any core messages is
+	  sent to the logger, and the end-user can see which route is chosen for
+	  each request received.
+	  Thanks to Gabor Szabo for the idea.
 	
 Dancer 1.xxx
     [ Gabor Szabo ]
