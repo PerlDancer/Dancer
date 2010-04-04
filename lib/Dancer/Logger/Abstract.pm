@@ -16,6 +16,10 @@ sub _should {
     my ($self, $msg_level) = @_;
     my $conf_level = setting('log') || 'debug';
     my $levels = {
+        # levels < 0 are for core only
+        core    => -10, 
+
+        # levels > 0 are for end-users only
         debug   => 1,
         warning => 2,
         error   => 3,
@@ -35,7 +39,7 @@ sub format_message {
     return "$time [$$] ($level) $message in $file l. $line\n";
 }
 
-
+sub core    { $_[0]->_should('core')    and $_[0]->_log('core' ,   $_[1]) }
 sub debug   { $_[0]->_should('debug')   and $_[0]->_log('debug',   $_[1]) }
 sub warning { $_[0]->_should('warning') and $_[0]->_log('warning', $_[1]) }
 sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
