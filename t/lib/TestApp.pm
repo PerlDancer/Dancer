@@ -1,6 +1,6 @@
 package t::lib::TestApp;
 
-use Dancer;
+use Dancer ':syntax';
 use Data::Dumper;
 use t::lib::LinkBlocker;
 

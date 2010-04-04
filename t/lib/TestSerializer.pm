@@ -1,6 +1,6 @@
 package t::lib::TestSerializer;
 
-use Dancer;
+use Dancer ':syntax';
 
 set serializer => 'JSON';
 
