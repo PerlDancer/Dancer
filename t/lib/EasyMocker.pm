@@ -1,4 +1,4 @@
-package EasyMocker;
+package t::lib::EasyMocker;
 # I want an easy to use mocker, with pretty explicit syntax
 
 use strict;
@@ -10,7 +10,7 @@ use base 'Exporter';
 @EXPORT = qw(mock should method);
 
 # syntax:
-# use EasyMocker;
+# use t::lib::EasyMocker;
 # mock 'My::Class::method' => with sub { };
 # or even
 # mock 'My::Class', 'method' => with sub { };

@@ -1,3 +1,4 @@
+use 5.008005;
 use ExtUtils::MakeMaker;
 
 WriteMakefile1(
@@ -10,6 +11,8 @@ WriteMakefile1(
     META_MERGE => {
         resources => {
             repository => 'http://github.com/sukria/Dancer',
+            bugtracker => 'http://github.com/sukria/Dancer/issues',
+            homepage   => 'http://perldancer.org/',
         },
     },
 

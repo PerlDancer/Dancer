@@ -1,7 +1,6 @@
 use Test::More import => ['!pass'];
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 use Dancer;
 
 get '/error' => sub {

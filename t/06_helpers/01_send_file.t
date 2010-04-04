@@ -1,7 +1,5 @@
 use Test::More import => ['!pass'];
-
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 use Dancer;
 use Dancer::FileUtils 'read_glob_content';
 

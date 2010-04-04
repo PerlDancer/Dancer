@@ -55,8 +55,7 @@ test_tcp(
     server => sub {
         my $port = shift;
 
-        use lib "t/lib";
-        use TestApp;
+        use t::lib::TestApp;
         Dancer::Config->load;
 
         ok(setting(session => $engine), "using engine $engine");

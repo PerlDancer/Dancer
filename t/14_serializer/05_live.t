@@ -61,8 +61,7 @@ sub test_json {
         },
         server => sub {
             my $port = shift;
-            use lib "t/lib";
-            use TestSerializer;
+            use t::lib::TestSerializer;
             Dancer::Config->load;
             setting access_log => 0;
             setting port => $port;
@@ -104,8 +103,7 @@ sub test_yaml {
         },
         server => sub {
             my $port = shift;
-            use lib "t/lib";
-            use TestSerializer;
+            use t::lib::TestSerializer;
             Dancer::Config->load;
             setting port => $port;
             setting access_log => 0;
@@ -151,8 +149,7 @@ sub test_mutable {
         },
         server => sub {
             my $port = shift;
-            use lib "t/lib";
-            use TestSerializer;
+            use t::lib::TestSerializer;
             Dancer::Config->load;
             setting port => $port;
             setting access_log => 0;

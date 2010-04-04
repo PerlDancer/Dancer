@@ -6,9 +6,8 @@ use Dancer;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 
-use lib ('t', 't/lib');
-use TestUtils;
-use EasyMocker;
+use t::lib::TestUtils;
+use t::lib::EasyMocker;
 
 BEGIN { 
     plan skip_all => "need YAML" 
@@ -27,7 +26,7 @@ like $@, qr/YAML is needed/,
     "Need YAML";
 
 # TODO : need a way to restore original sub
-# in EasyMocker
+# in t::lib::EasyMocker
 mock 'Dancer::ModuleLoader' 
     => method 'load' => should sub { 1 };
 

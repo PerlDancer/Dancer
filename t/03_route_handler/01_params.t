@@ -1,8 +1,7 @@
 use strict;
 use warnings;
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 use Test::More tests => 18, import => ['!pass'];
 
 BEGIN {
@@ -27,7 +26,7 @@ my @tests = (
 );
 
 foreach my $test (@tests) {
-    my $request = TestUtils::fake_request($test->{method} => $test->{path});
+    my $request = t::lib::TestUtils::fake_request($test->{method} => $test->{path});
 
     Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();

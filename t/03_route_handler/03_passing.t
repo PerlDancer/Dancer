@@ -1,8 +1,7 @@
 use strict;
 use warnings;
 use Test::More tests => 19, import => ['!pass'];
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 BEGIN { 
     use_ok 'Dancer';

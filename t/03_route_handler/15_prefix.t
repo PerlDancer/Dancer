@@ -1,6 +1,5 @@
 use Test::More import => ['!pass'];
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 plan tests => 23;
 

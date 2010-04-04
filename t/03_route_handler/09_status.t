@@ -4,8 +4,7 @@ use strict;
 use warnings;
 
 use Dancer;
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 get '/' => sub { 1 };
 

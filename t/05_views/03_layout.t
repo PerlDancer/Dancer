@@ -1,8 +1,7 @@
 use Test::More import => ['!pass'];
 
 use Dancer;
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 my @tests = (
     { path => '/solo',
