@@ -5,8 +5,7 @@ use Test::More import => ['!pass'], tests => 7;
 
 use_ok 'Dancer';
 use_ok 'Dancer::Config';
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 my $conffile = Dancer::Config->conffile;
 

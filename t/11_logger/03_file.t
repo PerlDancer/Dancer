@@ -3,8 +3,7 @@ use Test::More tests => 9;
 use strict;
 use warnings;
 
-use lib ('t');
-use TestUtils;
+use t::lib::TestUtils;
 use Dancer::Config 'setting';
 setting appdir => 't/lib';
 

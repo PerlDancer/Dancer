@@ -8,8 +8,7 @@ plan tests => 16;
 
 use Dancer;
 use Dancer::Config 'setting'; 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 my $conffile = Dancer::Config->conffile;
 ok(defined($conffile), 'default conffile is defined');

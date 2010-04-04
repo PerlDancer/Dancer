@@ -1,7 +1,6 @@
 use Test::More import => ['!pass'];
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 use Dancer;
 
 # perl <= 5.8.x won't catch the warning

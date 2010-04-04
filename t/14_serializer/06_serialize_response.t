@@ -21,8 +21,7 @@ my $json = JSON::encode_json($data);
     };
 }
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 my $response = get_response_for_request(GET => '/data');
 ok(defined($response), "response found for /data");

@@ -37,8 +37,7 @@ test_tcp(
     server => sub {
         my $port = shift;
 
-        use lib "t/lib";
-        use TestApp;
+        use t::lib::TestApp;
         Dancer::Config->load;
 
         setting access_log => 0;

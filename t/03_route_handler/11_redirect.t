@@ -2,8 +2,7 @@ use strict;
 use warnings;
 use Test::More 'no_plan', import => ['!pass'];
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 use Dancer;
 
 get '/' => sub { 'home' };

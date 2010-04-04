@@ -5,8 +5,7 @@ use Test::More import => ['!pass'];
 plan tests => 5;
 
 use Dancer;
-use lib 't/lib';
-use EasyMocker;
+use t::lib::EasyMocker;
 
 {
     # checking that EasyMocker works

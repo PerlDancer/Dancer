@@ -2,8 +2,7 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 use Dancer;
 use Dancer::Route; 

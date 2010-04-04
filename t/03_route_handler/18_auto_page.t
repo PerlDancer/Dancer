@@ -5,8 +5,7 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'], tests => 4;
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 {
     package Foo;
