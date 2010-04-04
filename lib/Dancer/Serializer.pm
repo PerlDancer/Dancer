@@ -18,7 +18,7 @@ sub init {
     $_engine = Dancer::Engine->build( 'serializer' => $name, $config );
 }
 
-# takes a response object and looks weather or not it should be
+# takes a response object and looks whether or not it should be
 # serialized.
 # returns an error object if the serializer fails
 sub process_response {
