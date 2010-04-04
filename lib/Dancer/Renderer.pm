@@ -13,6 +13,7 @@ use Dancer::Serializer;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname read_file_content);
 use Dancer::SharedData;
+use Dancer::Logger;
 use MIME::Types;
 
 sub render_file {
@@ -106,7 +107,11 @@ sub get_action_response() {
     }
 
     # execute the action
-    my $response = Dancer::Route->call($handler) if $handler;
+    my $response;
+    if ($handler) {
+        $response = Dancer::Route->call($handler);
+        Dancer::Logger->core("route: ".$handler->{route});
+    }
     
     # serializing the response if needed
     $response = Dancer::Serializer->process_response($response)

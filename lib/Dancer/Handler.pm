@@ -16,9 +16,11 @@ use Dancer::Handler::Standalone;
 # This is where we choose which application handler to return
 sub get_handler {
     if (setting('apphandler') eq 'PSGI') {
+        Dancer::Logger->core('loading PSGI handler');
         return Dancer::Handler::PSGI->new;
     }
     else {
+        Dancer::Logger->core('loading Standalone handler');
         return Dancer::Handler::Standalone->new;
     }
 }
@@ -26,6 +28,7 @@ sub get_handler {
 # handle an incoming request, process it and return a response
 sub handle_request {
     my ($self, $request) = @_;
+    Dancer::Logger->core("request: ".$request->method." ".$request->path);
 
     # deserialize the request body if possible
     $request = Dancer::Serializer->process_request($request) if setting('serializer');
@@ -69,7 +72,8 @@ sub render_response {
     $content = [$content] unless (ref($content) eq 'GLOB');
 
     Dancer::SharedData->reset_all();
-
+    
+    Dancer::Logger->core("response: ".$response->{status});
     return [$response->{status}, $response->{headers}, $content];
 }
 
