@@ -1,5 +1,8 @@
 Dancer 1.80
 
+	[ Alexis Sukrieh ]
+	* new logger for sending log message to STDERR: Dancer::Logger::Console
+	  Thanks to Gabor Szabo for the idea.
 	
 
 Dancer 1.xxx
