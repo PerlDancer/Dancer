@@ -1,10 +1,11 @@
 Dancer 1.80
 
 	[ Alexis Sukrieh ]
-	* new logger for sending log message to STDERR: Dancer::Logger::Console
+	* New logger for sending log message to STDERR: Dancer::Logger::Console
 	  Thanks to Gabor Szabo for the idea.
+	* Logger engines don't have anymore to implement _format(), they can use
+	  $self->format_message instead.
 	
-
 Dancer 1.xxx
     [ Gabor Szabo ]
     * Docs fixes, typo in warning
