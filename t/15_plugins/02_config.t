@@ -7,6 +7,12 @@ use_ok 'Dancer';
 use_ok 'Dancer::Config';
 use t::lib::TestUtils;
 
+use File::Temp qw/tempdir/;
+
+my $dir = tempdir(CLEANUP => 1);
+set(appdir => $dir);
+set(confdir => $dir);
+
 my $conffile = Dancer::Config->conffile;
 
 my $conf = '
