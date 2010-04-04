@@ -155,6 +155,7 @@ t/14_serializer/05_live.t
 t/14_serializer/06_serialize_response.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
+t/15_plugins/02_config.t
 t/lib/EasyMocker.pm
 t/lib/LinkBlocker.pm
 t/lib/TestApp.pm
