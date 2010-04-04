@@ -9,6 +9,10 @@ Dancer 1.180
 	* before filters can now access route params
     * support for '.' as a token separator in params parsing
 
+    [ Sawyer X ]
+    * Fixed Windows PSGI.URL_SCHEME bug, causing tests to fail
+    (Thanks to ADAMK for reporting)
+
 Dancer 1.173
     [ Alexis Sukrieh ]
     * Documenting set_cookie in Dancer.pm.
