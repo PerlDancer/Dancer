@@ -6,12 +6,15 @@ Dancer 1.180
 	[ Alexis Sukrieh ]
 	* New serializer: Dumper for easily output dumped variable 
 	  in text/plain.
-	* before filters can now access route params
-    * support for '.' as a token separator in params parsing
+	* Before filters can now access route params
+    * Support for '.' as a token separator in params parsing
+	* The standalone server respect the 'access_log' setting, 
+	  the starting banner is printed on STDERR only if the 
+	  setting is set to true.
 
     [ Sawyer X ]
     * Fixed Windows PSGI.URL_SCHEME bug, causing tests to fail
-    (Thanks to ADAMK for reporting)
+      (Thanks to ADAMK for reporting)
 
 Dancer 1.173
     [ Alexis Sukrieh ]
