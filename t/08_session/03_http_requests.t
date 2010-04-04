@@ -61,6 +61,7 @@ test_tcp(
 
         ok(setting(session => $engine), "using engine $engine");
         setting show_errors => 1;
+        setting access_log => 0;
         setting environment => 'production';
         setting port => $port;
         Dancer->dance();

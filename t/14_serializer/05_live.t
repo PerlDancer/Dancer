@@ -64,6 +64,7 @@ sub test_json {
             use lib "t/lib";
             use TestSerializer;
             Dancer::Config->load;
+            setting access_log => 0;
             setting port => $port;
             Dancer->dance();
         },
@@ -107,6 +108,7 @@ sub test_yaml {
             use TestSerializer;
             Dancer::Config->load;
             setting port => $port;
+            setting access_log => 0;
             Dancer->dance();
         },
     );
@@ -153,6 +155,7 @@ sub test_mutable {
             use TestSerializer;
             Dancer::Config->load;
             setting port => $port;
+            setting access_log => 0;
             Dancer->dance();
         },
     );
