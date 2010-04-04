@@ -1,6 +1,7 @@
 Dancer 1.xxx
     [ Gabor Szabo ]
-    * Docs fixes, typo in warning
+    * Docs fixes, typo in warning.
+    * TestUtils.pm is now in "t/lib".
 
 Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
