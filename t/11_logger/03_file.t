@@ -19,7 +19,7 @@ isa_ok $l, 'Dancer::Logger::File';
 can_ok $l, qw(init _log debug warning error);
 
 my $format = $l->format_message('debug', 'test');
-like $format, qr/\[$$\] \(debug\) test in/,
+like $format, qr/\[\d+\] debug @.+> test in/,
     "format looks good";
 
 ok($l->_log(debug => "Perl Dancer test message"), "_log works");
