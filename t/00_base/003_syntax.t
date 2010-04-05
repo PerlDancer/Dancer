@@ -41,7 +41,7 @@ my @keywords = qw(
 
 plan tests => scalar(@keywords);
 
-use Dancer;
+use Dancer ':syntax';
 
 foreach my $symbol (@keywords) {
     ok(exists($::{$symbol}), "symbol `$symbol' is exported");

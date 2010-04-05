@@ -1,12 +1,11 @@
 use strict;
 use warnings;
 
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 use Test::More import => ['!pass'];
 
 plan tests => 7;

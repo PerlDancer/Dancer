@@ -2,25 +2,27 @@ use Test::More;
 use strict;
 use warnings;
 
+BEGIN {
+    use Dancer::ModuleLoader;
+
+    plan skip_all => "LWP::UserAgent is needed to run this tests"
+        unless Dancer::ModuleLoader->load('LWP::UserAgent');
+    plan skip_all => 'Test::TCP is needed to run this test'
+        unless Dancer::ModuleLoader->load('Test::TCP');
+    plan skip_all => 'YAML is needed to run this test'
+        unless Dancer::ModuleLoader->load('YAML');
+}
+
 use File::Spec;
 use File::Temp 'tempdir';
 my $tempdir = tempdir('Dancer.XXXXXX', DIR => File::Spec->curdir, CLEANUP => 1);
 
 use Dancer::Config 'setting';
-eval "use Test::Requires ('LWP::UserAgent')";
-plan skip_all => "Test::Requires needed for this test" if $@;
-eval "use Test::TCP";
-plan skip_all => "Test::TCP needed for this test" if $@;
-eval "use YAML";
-plan skip_all => "YAML needed for this test" if $@;
+use Dancer::Logger;
  
 my @clients = qw(one two three);
 my @engines = qw(YAML);
 
-if ($ENV{DANCER_TEST_MEMCACHED}) {
-    push @engines, "memcached";
-    setting(memcached_servers => '127.0.0.1:11211');
-}
 if ($ENV{DANCER_TEST_COOKIE}) {
     push @engines, "cookie";
     setting(session_cookie_key => "secret/foo*@!");
@@ -31,7 +33,7 @@ plan tests => 3 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
 foreach my $engine (@engines) {
 
-test_tcp(
+Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
 
@@ -55,10 +57,11 @@ test_tcp(
     server => sub {
         my $port = shift;
 
-        use lib "t/lib";
-        use TestApp;
+        use t::lib::TestApp;
         Dancer::Config->load;
 
+        setting appdir => $tempdir;
+        Dancer::Logger->init('File');
         ok(setting(session => $engine), "using engine $engine");
         setting show_errors => 1;
         setting access_log => 0;
@@ -68,5 +71,3 @@ test_tcp(
     },
 );
 }
-
-done_testing;

@@ -2,19 +2,23 @@ use strict;
 use warnings;
 use Test::More;
 
+BEGIN {
+    use Dancer::ModuleLoader;
+
+    plan skip_all => "LWP::UserAgent is needed to run this tests"
+        unless Dancer::ModuleLoader->load('LWP::UserAgent');
+    plan skip_all => 'Test::TCP is needed to run this test'
+        unless Dancer::ModuleLoader->load('Test::TCP');
+};
+
 use Dancer::Config 'setting';
 
 use File::Spec;
 use File::Temp 'tempdir';
 my $tempdir = tempdir('Dancer.XXXXXX', DIR => File::Spec->curdir, CLEANUP => 1);
 
-eval "use LWP::UserAgent";
-plan skip_all => "LWP needed for this test" if $@;
-eval "use Test::TCP";
-plan skip_all => "Test::TCP needed for this test" if $@;
- 
 plan tests => 9;
-test_tcp(
+Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
 
@@ -37,8 +41,7 @@ test_tcp(
     server => sub {
         my $port = shift;
 
-        use lib "t/lib";
-        use TestApp;
+        use t::lib::TestApp;
         Dancer::Config->load;
 
         setting access_log => 0;
@@ -47,5 +50,3 @@ test_tcp(
         Dancer->dance();
     },
 );
- 
-done_testing;

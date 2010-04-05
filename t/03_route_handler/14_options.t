@@ -2,14 +2,11 @@ use strict;
 use warnings;
 
 use Test::More import => ['!pass'];
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
-BEGIN {
-    plan tests => 19;
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route';
-};
+plan tests => 17;
+use Dancer ':syntax';
+use Dancer::Route;
 
 {
     ok( get( '/', { agent => 'foo' } => sub {'agent foo'} ),
@@ -72,7 +69,7 @@ ok (!defined $response, "no route for foo with useragent bar");
 sub do_request {
     my $test = shift;
     $ENV{HTTP_USER_AGENT} = $test->{agent} || undef;
-    my $request = TestUtils::fake_request($test->{method} => $test->{path});
+    my $request = t::lib::TestUtils::fake_request($test->{method} => $test->{path});
     Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();
 }

@@ -30,8 +30,7 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
-        use lib "t/lib";
-        use TestApp;
+        use t::lib::TestApp;
         Dancer::Config->load;
 
         setting environment => 'production';
@@ -40,5 +39,3 @@ Test::TCP::test_tcp(
         Dancer->dance();
     },
 );
- 
-done_testing;

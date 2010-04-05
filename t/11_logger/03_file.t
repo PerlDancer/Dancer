@@ -3,10 +3,12 @@ use Test::More tests => 9;
 use strict;
 use warnings;
 
-use lib ('t');
-use TestUtils;
+use File::Temp qw/tempdir/;
+use t::lib::TestUtils;
 use Dancer::Config 'setting';
-setting appdir => 't/lib';
+
+my $dir = tempdir(CLEAN_UP => 1);
+setting appdir => $dir;
 
 use_ok 'Dancer::Logger::File';
 
@@ -24,5 +26,3 @@ ok($l->_log(debug => "Perl Dancer test message"), "_log works");
 ok($l->debug("Perl Dancer test message 2/4"), "debug works");
 ok($l->warning("Perl Dancer test message 3/4"), "warning works");
 ok($l->error("Perl Dancer test message 4/4"), "error works");
-
-clean_tmp_files();

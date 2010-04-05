@@ -2,14 +2,13 @@ use Test::More tests => 8;
 
 use strict;
 use warnings;
-use lib ('t');
-use TestUtils;
+use t::lib::TestUtils;
 
+use File::Temp qw/tempdir/;
 use Dancer::Config 'setting';
-setting appdir => 't/lib';
 
-use Dancer::Config 'setting';
-setting appdir => 't/lib';
+my $dir = tempdir(CLEAN_UP => 1);
+setting appdir => $dir;
 
 use_ok 'Dancer::Logger';
 
@@ -29,5 +28,3 @@ isa_ok $engine, 'Dancer::Logger::File';
 foreach my $method qw(debug warning error) {
     ok Dancer::Logger->$method("test"), "$method works";
 }
-
-clean_tmp_files();

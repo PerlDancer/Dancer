@@ -1,8 +1,13 @@
 use Test::More import => ['!pass'];
 
-use lib 't';
-use TestUtils;
-use Dancer;
+use t::lib::TestUtils;
+use Dancer ':syntax';
+use Dancer::Logger;
+use File::Temp qw/tempdir/;
+
+my $dir = tempdir(CLEAN_UP => 1);
+set appdir => $dir;
+Dancer::Logger->init('File');
 
 # perl <= 5.8.x won't catch the warning
 plan skip_all => 'Need perl >= 5.10' if $] < 5.010;

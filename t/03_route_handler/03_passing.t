@@ -1,13 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 19, import => ['!pass'];
-use lib 't';
-use TestUtils;
+use Test::More tests => 17, import => ['!pass'];
+use t::lib::TestUtils;
 
-BEGIN { 
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route'; 
-}
+use Dancer ':syntax';
+use Dancer::Route; 
 
 ok(get('/say/:char' => sub { 
     pass and return false if length(params->{char}) > 1;

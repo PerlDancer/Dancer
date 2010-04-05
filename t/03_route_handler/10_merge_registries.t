@@ -9,7 +9,7 @@ use Test::More tests => 8, import => ['!pass'];
 use strict;
 use warnings;
 
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Route;
 
 # first registry

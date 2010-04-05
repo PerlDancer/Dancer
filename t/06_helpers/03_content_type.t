@@ -1,7 +1,6 @@
 use Test::More import => ['!pass'];
-use lib 't';
-use TestUtils;
-use Dancer;
+use t::lib::TestUtils;
+use Dancer ':syntax';
 use Dancer::Config 'setting';
 
 get '/' => sub {

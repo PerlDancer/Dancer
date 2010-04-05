@@ -1,5 +1,5 @@
 use Test::More tests => 5, import => ['!pass'];
-use Dancer;
+use Dancer ':syntax';
 is_deeply(cookies, {}, "cookies() return a hashref");
 
 ok(set_cookie(foo => 42), "set_cookie");

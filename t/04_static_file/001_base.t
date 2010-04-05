@@ -1,21 +1,18 @@
 use strict;
 use warnings;
 
-use lib 't';
-use TestUtils;
-use Test::More tests => 6, import => ['!pass'];
+use t::lib::TestUtils;
+use Test::More tests => 4, import => ['!pass'];
 
-BEGIN {
-    use_ok 'Dancer';
-    use_ok 'Dancer::Config', 'setting';
-}
+use Dancer ':syntax';
+use Dancer::Config 'setting';
 
 set public => path(dirname(__FILE__), 'static');
 my $public = setting('public');
 
 ok((defined($public) && (-d $public)), 'public dir is set');
 
-my $request = TestUtils::fake_request('GET' => '/hello.txt');
+my $request = t::lib::TestUtils::fake_request('GET' => '/hello.txt');
 my $path = $request->path_info;
 
 Dancer::SharedData->request($request);

@@ -2,9 +2,10 @@ use Test::More import => ['!pass'];
 use strict;
 use warnings;
 
-use Dancer;
-use lib 't';
-use TestUtils;
+use Dancer ':syntax';
+use t::lib::TestUtils;
+
+set views => path(dirname(__FILE__), 'views');
 
 my $time = time();
 

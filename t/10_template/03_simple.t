@@ -1,10 +1,10 @@
-use Test::More tests => 10;
+use Test::More tests => 9;
 
 use strict;
 use warnings;
 use Dancer::FileUtils 'path';
 
-BEGIN { use_ok 'Dancer::Template::Simple' };
+use Dancer::Template::Simple;
 
 { 
     package Foo;

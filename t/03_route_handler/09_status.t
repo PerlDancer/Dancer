@@ -3,9 +3,8 @@ use Test::More import => ['!pass'];
 use strict;
 use warnings;
 
-use Dancer;
-use lib 't';
-use TestUtils;
+use Dancer ':syntax';
+use t::lib::TestUtils;
 
 get '/' => sub { 1 };
 

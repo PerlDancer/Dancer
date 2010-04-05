@@ -2,6 +2,7 @@
 .perltidyrc
 AUTHORS
 CHANGES
+Dancer-1.173_01.tar.gz
 lib/Dancer.pm
 lib/Dancer/Config.pm
 lib/Dancer/Cookbook.pod
@@ -160,7 +161,7 @@ t/lib/EasyMocker.pm
 t/lib/LinkBlocker.pm
 t/lib/TestApp.pm
 t/lib/TestSerializer.pm
+t/lib/TestUtils.pm
 t/manifest.t
 t/pod.t
-t/TestUtils.pm
 TODO

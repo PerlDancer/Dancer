@@ -3,7 +3,7 @@ use warnings;
 use Test::More tests => 2, import => ['!pass'];
 
 {
-    use Dancer;
+    use Dancer ':syntax';
 
     get '/:resource/:id.:format' => sub {
         [ params->{'resource'}, 
@@ -12,8 +12,7 @@ use Test::More tests => 2, import => ['!pass'];
     };
 }
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 my $response = get_response_for_request(GET => '/user/42.json');
 ok( defined($response), "repsonse found for '/user/42.json'" );

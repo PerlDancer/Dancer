@@ -1,8 +1,16 @@
 use Test::More import => ['!pass'];
 
-use Dancer;
-use lib 't';
-use TestUtils;
+BEGIN {
+    use Dancer::ModuleLoader;
+
+    plan skip_all => "Template is needed to run this tests"
+        unless Dancer::ModuleLoader->load('Template');
+};
+
+use Dancer ':syntax';
+use t::lib::TestUtils;
+
+set views => path(dirname(__FILE__), 'views');
 
 my @tests = (
     { path => '/solo',
@@ -13,10 +21,7 @@ my @tests = (
 
 plan tests => scalar(@tests);
 
-# we need Template to continue
-eval "use Template";
 SKIP: {
-    skip "Template is required to test views", scalar(@tests) if $@;
     Template->import;
     
     get '/solo' => sub {

@@ -13,12 +13,15 @@ Dancer 1.80
 	
 Dancer 1.xxx
     [ Gabor Szabo ]
-    * Docs fixes, typo in warning
+    * Docs fixes, typo in warning.
+    * TestUtils.pm is now in "t/lib".
 
 Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
     * Doc fixes.
       (Thanks to poisonbit)
+    * Plugins configuration
+    * Cleaning up tests
 
 	[ Alexis Sukrieh ]
 	* New serializer: Dumper for easily output dumped variable 

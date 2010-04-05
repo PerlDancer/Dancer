@@ -1,6 +1,6 @@
 use Test::More 'no_plan', import => ['!pass'];
 
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Config 'setting';
 
 is(setting('apphandler'), 'standalone', 'default apphandler is standalone');

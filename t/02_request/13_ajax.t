@@ -2,9 +2,8 @@ use strict;
 use warnings;
 
 use Test::More tests => 2, import => ['!pass'];
-use Dancer;
-use lib 't';
-use TestUtils;
+use Dancer ':syntax';
+use t::lib::TestUtils;
 use Dancer::SharedData;
 
 my @requested_with = (

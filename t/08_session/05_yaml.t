@@ -2,13 +2,15 @@ use Test::More import => ['!pass'];
 
 use strict;
 use warnings;
-use Dancer;
+use Dancer ':syntax';
 use Dancer::ModuleLoader;
+use Dancer::Logger;
 use Dancer::Config 'setting';
 
-use lib ('t', 't/lib');
-use TestUtils;
-use EasyMocker;
+use t::lib::TestUtils;
+use t::lib::EasyMocker;
+
+use File::Temp qw/tempdir/;
 
 BEGIN { 
     plan skip_all => "need YAML" 
@@ -16,6 +18,11 @@ BEGIN {
     plan tests => 12;
     use_ok 'Dancer::Session::YAML' 
 }
+
+
+my $dir = tempdir(CLEAN_UP => 1);
+set appdir => $dir;
+Dancer::Logger->init('File');
 
 mock 'Dancer::ModuleLoader' 
     => method 'load' => should sub { 0 };
@@ -27,7 +34,7 @@ like $@, qr/YAML is needed/,
     "Need YAML";
 
 # TODO : need a way to restore original sub
-# in EasyMocker
+# in t::lib::EasyMocker
 mock 'Dancer::ModuleLoader' 
     => method 'load' => should sub { 1 };
 
@@ -55,5 +62,3 @@ is_deeply $s, $session, "session is changed on flush";
 $s->destroy;
 $session = Dancer::Session::YAML->retrieve($session->id);
 is $session, undef, 'destroy removes the session';
-
-clean_tmp_files();

@@ -1,9 +1,9 @@
-use Test::More tests => 7;
+use Test::More tests => 6;
 
 use strict;
 use warnings;
 
-use_ok 'Dancer::Response';
+use Dancer::Response;
 
 my $r = Dancer::Response->new;
 is $r->{status}, 200, "status looks good";

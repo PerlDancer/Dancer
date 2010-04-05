@@ -1,12 +1,17 @@
 use strict;
 use warnings;
 
-use Test::More import => ['!pass'], tests => 7;
+use Test::More import => ['!pass'], tests => 5;
 
-use_ok 'Dancer';
-use_ok 'Dancer::Config';
-use lib 't';
-use TestUtils;
+use Dancer ':syntax';
+use Dancer::Config;
+use t::lib::TestUtils;
+
+use File::Temp qw/tempdir/;
+
+my $dir = tempdir(CLEANUP => 1);
+set(appdir => $dir);
+set(confdir => $dir);
 
 my $conffile = Dancer::Config->conffile;
 

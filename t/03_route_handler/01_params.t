@@ -1,14 +1,11 @@
 use strict;
 use warnings;
 
-use lib 't';
-use TestUtils;
-use Test::More tests => 18, import => ['!pass'];
+use t::lib::TestUtils;
+use Test::More tests => 16, import => ['!pass'];
 
-BEGIN {
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route';
-}
+use Dancer ':syntax';
+use Dancer::Route;
 use Data::Dumper;
 
 {
@@ -27,7 +24,7 @@ my @tests = (
 );
 
 foreach my $test (@tests) {
-    my $request = TestUtils::fake_request($test->{method} => $test->{path});
+    my $request = t::lib::TestUtils::fake_request($test->{method} => $test->{path});
 
     Dancer::SharedData->request($request);
     my $response = Dancer::Renderer::get_action_response();

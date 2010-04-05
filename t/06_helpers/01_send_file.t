@@ -1,9 +1,9 @@
 use Test::More import => ['!pass'];
-
-use lib 't';
-use TestUtils;
-use Dancer;
+use t::lib::TestUtils;
+use Dancer ':syntax';
 use Dancer::FileUtils 'read_glob_content';
+
+set public => path(dirname(__FILE__), 'public');
 
 plan tests => 5;
 

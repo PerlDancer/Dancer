@@ -38,8 +38,7 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
-        use lib "t/lib";
-        use TestApp;
+        use t::lib::TestApp;
 
         setting apphandler  => 'PSGI';
         setting environment => 'production';
@@ -48,5 +47,3 @@ Test::TCP::test_tcp(
         Plack::Loader->auto(port => $port)->run($app);
     },
 );
- 
-done_testing;

@@ -5,7 +5,7 @@ use Test::More tests => 2, import => ['!pass'];
 # This test makes sure a before filter can access the request params
 
 {
-    use Dancer;
+    use Dancer ':syntax';
 
     before sub { 
         ok(defined(params->{'format'}), 
@@ -17,8 +17,7 @@ use Test::More tests => 2, import => ['!pass'];
     };
 }
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 my $response = get_response_for_request(GET => '/foo.json');
 ok(defined($response), "response found for /foo.json");
