@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Dancer::Engine';
 
+use Dancer::SharedData;
+use Dancer::Timer;
 use Dancer::Config 'setting';
 
 # This is the only method to implement if logger engines.
@@ -34,7 +36,7 @@ sub format_message {
     $file    ||= '-';
     $line    ||= '-';
 
-    my $time = localtime;
+    my $time = Dancer::SharedData->timer->to_string();
     chomp $message;
     return "$time [$$] ($level) $message in $file l. $line\n";
 }
