@@ -9,7 +9,7 @@ use t::lib::TestUtils;
 
 {
     package Foo;
-    use Dancer ':syntax';
+    use Dancer;
 
     set views => path(dirname(__FILE__), 'views');
     set auto_page => true;
