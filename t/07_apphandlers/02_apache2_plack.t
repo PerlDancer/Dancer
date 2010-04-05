@@ -56,7 +56,7 @@ $env->{'/'}  = {
                  'HTTP_HOST' => $host_name,
                  };
 
-use Dancer ':syntax';
+use Dancer;
 
 set apphandler => 'PSGI';
 set logger => 'file';
