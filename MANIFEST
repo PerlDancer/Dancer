@@ -2,7 +2,6 @@
 .perltidyrc
 AUTHORS
 CHANGES
-Dancer-1.173_01.tar.gz
 lib/Dancer.pm
 lib/Dancer/Config.pm
 lib/Dancer/Cookbook.pod
