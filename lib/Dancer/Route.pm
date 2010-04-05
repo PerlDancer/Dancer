@@ -241,7 +241,8 @@ sub call($$) {
         return Dancer::Response->new(
             status  => $st,
             headers => $headers,
-            content => $content
+            content => $content,
+            content_type => $ct,
         );
     }
 }

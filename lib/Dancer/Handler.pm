@@ -13,6 +13,8 @@ use Dancer::Config 'setting';
 use Dancer::Handler::PSGI;
 use Dancer::Handler::Standalone;
 
+use Encode;
+
 # This is where we choose which application handler to return
 sub get_handler {
     if (setting('apphandler') eq 'PSGI') {
@@ -69,7 +71,16 @@ sub render_response {
     my ($self, $response) = @_;
 
     my $content = $response->{content};
-    $content = [$content] unless (ref($content) eq 'GLOB');
+    unless (ref($content) eq 'GLOB') {
+        my $charset = setting('charset');
+        my $ctype = $response->{content_type};
+        if ($charset && $ctype =~ /^text\// && $ctype !~ /charset=/ && utf8::is_utf8($content)) {
+            $content = Encode::encode($charset, $content);
+            $response->update_headers('Content-Type' => "$ctype; charset=$charset");
+        }
+
+        $content = [ $content ];
+    }
 
     Dancer::SharedData->reset_all();
     

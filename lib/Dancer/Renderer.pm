@@ -115,7 +115,7 @@ sub get_action_response() {
     
     # serializing the response if needed
     $response = Dancer::Serializer->process_response($response)
-        if setting('serializer');
+        if setting('serializer') && $response->{content};
 
     return $response;
 }

@@ -26,8 +26,9 @@ WriteMakefile1(
         'URI'                        => 0,
 
         # core
-        'File::Basename'         => '0',
-        'File::Spec'             => '0',
+        'File::Basename' => '0',
+        'File::Spec'     => '0',
+        'Encode'         => '0',
     },
 
     test      => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},
