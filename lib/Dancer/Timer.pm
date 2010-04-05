@@ -5,20 +5,17 @@ use warnings;
 use base 'Dancer::Object';
 
 use Dancer::ModuleLoader;
-Dancer::Timer->attributes('mode');
-
-my $_start_time = undef;
-sub start_time { $_start_time }
+Dancer::Timer->attributes('mode', 'start_time');
 
 sub init { 
     my ($self) = @_;
     if (Dancer::ModuleLoader->load('Time::HiRes')) {
         $self->mode('hires');
-        $_start_time = [ Time::HiRes::gettimeofday() ]
+        $self->start_time([ Time::HiRes::gettimeofday() ]);
     }
     else {
         $self->mode('seconds');
-        $_start_time = time();
+        $self->start_time(time());
     }
 }
 
@@ -26,11 +23,12 @@ sub tick {
     my ($self) = @_;
     if ($self->mode eq 'hires') {
         my $now = [ Time::HiRes::gettimeofday() ];
-        return Time::HiRes::tv_interval($_start_time, $now);
+        my $delay = Time::HiRes::tv_interval($self->start_time, $now);
+        return sprintf('%0f', $delay);
     }
     else {
         my $now = time();
-        return $now - $_start_time;
+        return $now - $self->start_time;
     }
 }
 
