@@ -31,14 +31,24 @@ sub _should {
 
 sub format_message {
     my ($self, $level, $message) = @_;
+    chomp $message;
+
+    $level = 'warn' if $level eq 'warning';
+    $level = sprintf('%5s', $level);
+    
     my ($package, $file, $line) = caller(4);
     $package ||= '-';
     $file    ||= '-';
     $line    ||= '-';
 
     my $time = Dancer::SharedData->timer->to_string();
-    chomp $message;
-    return "$time [$$] ($level) $message in $file l. $line\n";
+    my $r = Dancer::SharedData->request;
+    if (defined $r) {
+        return "[$$] $level \@$time> [Req. #".$r->id."] $message in $file l. $line\n";
+    }
+    else {
+        return "[$$] $level \@$time> $message in $file l. $line\n";
+    }
 }
 
 sub core    { $_[0]->_should('core')    and $_[0]->_log('core' ,   $_[1]) }
