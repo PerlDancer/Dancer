@@ -10,6 +10,8 @@ Dancer 1.80
 	  sent to the logger, and the end-user can see which route is chosen for
 	  each request received.
 	  Thanks to Gabor Szabo for the idea.
+	* New class Dancer::Timer added so any logger engine can now show a timer string.
+	  If Time::HiRes is available, use it to produce microseconds ticks.
 
 	[ Alex Kapranof ]
 	* Support for on-the-fly charset encoding when the setting is set and a content
