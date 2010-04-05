@@ -20,6 +20,7 @@ sub request { (@_ == 2) ? $_request = $_[1] : $_request }
 # request timer
 my $_timer;
 sub timer { $_timer ||= Dancer::Timer->new };
+sub reset_timer { $_timer = Dancer::Timer->new };
 
 # purging accessor
 sub reset_all {
@@ -27,5 +28,6 @@ sub reset_all {
     undef $_request;
     undef $_timer;
 }
+
 
 'Dancer::SharedData';
