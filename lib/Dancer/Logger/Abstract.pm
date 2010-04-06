@@ -41,10 +41,10 @@ sub format_message {
     $file    ||= '-';
     $line    ||= '-';
 
-    my $time = Dancer::SharedData->timer->to_string();
+    my $time = Dancer::SharedData->timer->tick;
     my $r = Dancer::SharedData->request;
     if (defined $r) {
-        return "[$$] $level \@$time> [Req. #".$r->id."] $message in $file l. $line\n";
+        return "[$$] $level \@$time> [hit #".$r->id."] $message in $file l. $line\n";
     }
     else {
         return "[$$] $level \@$time> $message in $file l. $line\n";

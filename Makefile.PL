@@ -32,6 +32,7 @@ WriteMakefile1(
         'File::Basename' => '0',
         'File::Spec'     => '0',
         'Encode'         => '0',
+        'Time::HiRes'    => '0', # in core since 5.7
     },
 
     test      => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},
