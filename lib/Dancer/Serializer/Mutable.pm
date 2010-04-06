@@ -91,3 +91,53 @@ sub _load_serializer {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Dancer::Serializer::Mutable
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+This serializer will try find the best (de)serializer for a given request.
+For this, it will go through:
+
+=over 4
+
+=item
+
+The B<content_type> from the request headers
+
+=item
+
+the B<content_type> parameter from the URL
+
+=item
+
+the B<accept_type> from the request headers
+
+=item
+
+The default is B<application/json>
+
+=back
+
+=head2 METHODS
+
+=over 4
+
+=item B<serialize>
+
+Serialize a data structure to a YAML structure.
+
+=item B<deserialize>
+
+Deserialize a YAML structure to a data structure
+
+=item B<content_type>
+
+Return 'application/json'
+
+=back
