@@ -12,12 +12,12 @@ sub init {
 
 sub serialize {
     my ($self, $entity) = @_;
-    JSON::encode_json $entity;
+    JSON::encode_json($entity);
 }
 
 sub deserialize {
     my ($self, $content) = @_;
-    JSON::decode_json $content;
+    JSON::decode_json($content);
 }
 
 sub content_type { 'application/json' }
