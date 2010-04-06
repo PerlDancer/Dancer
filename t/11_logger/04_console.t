@@ -20,13 +20,13 @@ isa_ok($l, 'Dancer::Logger::Abstract');
 isa_ok($l, 'Dancer::Logger::Console');
 
 Test::Output::stderr_like( sub { $l->debug("debug message") }, 
-    qr/\(debug\) debug message in/,
+    qr/\[\d+\] debug @.+> debug message in/,
     "debug  output is sent to STDERR");
 
 Test::Output::stderr_like( sub { $l->warning("warning message") }, 
-    qr/\(warning\) warning message in/,
+    qr/\[\d+\]  warn @.+> warning message in/,
     "warning log output is sent to STDERR");
 
 Test::Output::stderr_like( sub { $l->error("error message") }, 
-    qr/\(error\) error message in/,
+    qr/\[\d+\] error @.+> error message in/,
     "error output is sent to STDERR");

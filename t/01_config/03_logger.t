@@ -28,9 +28,9 @@ open LOGFILE, '<', $logfile;
 my @content = <LOGFILE>;
 close LOGFILE;
 
-ok(grep(/\(debug\) $message/, @content), 'debug message found');
-ok(grep(/\(warning\) $message/, @content), 'warning message found');
-ok(grep(/\(error\) $message/, @content), 'error message found');
+ok(grep(/debug \@.*$message/, @content), 'debug message found');
+ok(grep(/warn \@.*$message/, @content), 'warning message found');
+ok(grep(/error \@.*$message/, @content), 'error message found');
 
 unlink $logfile;
 

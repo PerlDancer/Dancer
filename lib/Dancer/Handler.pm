@@ -30,6 +30,7 @@ sub get_handler {
 # handle an incoming request, process it and return a response
 sub handle_request {
     my ($self, $request) = @_;
+    Dancer::SharedData->reset_timer;
     Dancer::Logger->core("request: ".$request->method." ".$request->path);
 
     # deserialize the request body if possible
@@ -82,9 +83,8 @@ sub render_response {
         $content = [ $content ];
     }
 
-    Dancer::SharedData->reset_all();
-    
     Dancer::Logger->core("response: ".$response->{status});
+    Dancer::SharedData->reset_all();
     return [$response->{status}, $response->{headers}, $content];
 }
 
