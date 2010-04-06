@@ -15,6 +15,7 @@ my $serializer = {
 };
 
 my $loaded_serializer = {};
+my $_content_type;
 
 sub _find_content_type {
     my ($self, $request) = @_;
@@ -62,12 +63,12 @@ sub deserialize {
 
 sub content_type {
     my $self = shift;
-    keys %$serializer;
+    $_content_type;
 }
 
 sub support_content_type {
     my ($self, $ct) = @_;
-    grep /^$ct$/, $self->content_type;
+    grep /^$ct$/, keys %$serializer;
 }
 
 sub _load_serializer {
@@ -83,6 +84,7 @@ sub _load_serializer {
                     $loaded_serializer->{$module} = $serializer_object;
                 }
             }
+            $_content_type = $ct;
             return $loaded_serializer->{$module};
         }
     }
