@@ -298,7 +298,7 @@ sub _parse_get_params {
     $self->{_query_params} = {};
 
     my $source = $self->{env}{QUERY_STRING} || '';
-    foreach my $token (split /&/, $source) {
+    foreach my $token (split /[&;]/, $source) {
         my ($key, $val) = split(/=/, $token);
         next unless defined $key;
         $val = (defined $val) ? $val : '';

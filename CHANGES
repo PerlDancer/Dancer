@@ -3,6 +3,11 @@ Dancer 1.xxx
     * Docs fixes, typo in warning.
     * TestUtils.pm is now in "t/lib".
 
+    [ David Precious ]
+    * Support semi-colons as name=value pair separators when parsing
+      querystring.  Satisfies feature request/issue 59.
+      Thanks to deepakg for requesting this feature.
+
 Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
     * Doc fixes.
