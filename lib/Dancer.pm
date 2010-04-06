@@ -873,7 +873,7 @@ Here is an example of a route handler that will return a HashRef
     use Dancer;
     set serializer => 'JSON';
 
-    get '/user/:id'/ => sub {
+    get '/user/:id/' => sub {
         { foo => 42,
           number => 100234,
           list => [qw(one two three)],
