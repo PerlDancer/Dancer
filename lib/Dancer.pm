@@ -271,6 +271,18 @@ environments.
 
 =head2 any
 
+Define a route for multiple methods at one.
+
+    any ['get', 'post'] => '/myaction' => sub {
+        # code
+    };
+
+Or even, a route handler that would match any HTTP methods:
+
+    any '/myaction' => sub {
+        # code
+    };
+
 =head2 before
 
 =head2 cookies
@@ -290,6 +302,12 @@ environments.
 =head2 fale
 
 =head2 get
+
+Define a route for B<GET> method.
+
+    get '/' => sub {
+        return "Hello world";
+    }
 
 =head2 headers
 
@@ -312,6 +330,19 @@ environments.
 =head2 post
 
 =head2 prefix
+
+A prefix can be defined for each route handler, like this:
+
+    prefix '/home';
+
+From here, any route handler is defined to /home/*
+
+    get '/page1' => sub {}; # will match '/home/page1'
+
+You can unset the prefix value
+
+    prefix undef;
+    get '/page1' => sub {}; will match /page1
 
 =head2 del
 
