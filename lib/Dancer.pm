@@ -17,11 +17,12 @@ use Dancer::Route;
 use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
+use Dancer::ModuleLoader;
 
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.18';
+$VERSION   = '1.173_01';
 @EXPORT    = qw(
   any
   before
@@ -34,6 +35,9 @@ $VERSION   = '1.18';
   dirname
   error
   false
+  from_json
+  from_yaml
+  from_xml
   get
   header
   headers
@@ -59,6 +63,9 @@ $VERSION   = '1.18';
   splat
   status
   template
+  to_json
+  to_yaml
+  to_xml
   true
   upload
   uri_for
@@ -68,6 +75,7 @@ $VERSION   = '1.18';
 );
 
 # Dancer's syntax
+my $_serializers;
 
 sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
@@ -79,7 +87,30 @@ sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub error        { Dancer::Logger->error(@_) }
 sub send_error   { Dancer::Helpers->error(@_) }
 sub false        {0}
-
+sub from_json {
+    if ($_serializers->{JSON}) {
+        Dancer::Serializer::JSON->deserialize(@_);
+    }
+    else {
+        # should we die ?
+    }
+}
+sub from_yaml {
+    if ($_serializers->{YAML}) {
+        Dancer::Serializer::YAML->deserialize(@_);
+    }
+    else {
+        # should we die ?
+    }
+}
+sub from_xml {
+    if ($_serializers->{XML}) {
+        Dancer::Serializer::XML->deserialize(@_);
+    }
+    else {
+        # should we die ?
+    }
+}
 sub get {
     Dancer::Route->add('head', @_);
     Dancer::Route->add('get',  @_);
@@ -119,6 +150,30 @@ sub splat    { @{Dancer::SharedData->request->params->{splat}} }
 sub status   { Dancer::Response::status(@_) }
 sub template { Dancer::Helpers::template(@_) }
 sub true     {1}
+sub to_json {
+    if ($_serializers->{JSON}) {
+        Dancer::Serializer::JSON->serialize(@_);
+    }
+    else {
+        # should we die ?
+    }
+}
+sub to_yaml {
+    if ($_serializers->{YAML}) {
+        Dancer::Serializer::YAML->serialize(@_);
+    }
+    else {
+        # should we die ?
+    }
+}
+sub to_xml {
+    if ($_serializers->{XML}) {
+        Dancer::Serializer::XML->serialize(@_);
+    }
+    else {
+        # should we die ?
+    }
+}
 sub upload   { Dancer::SharedData->request->upload(@_) }
 sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
 sub var      { Dancer::SharedData->var(@_) }
@@ -130,6 +185,14 @@ sub warning  { Dancer::Logger->warning(@_) }
 sub import {
     my ($class,   $symbol) = @_;
     my ($package, $script) = caller;
+
+    for my $name (qw/JSON YAML XML/) {
+        my $module = "Dancer::Serializer::$name";
+        if (Dancer::ModuleLoader->load($module)) {
+            $module->init;
+            $_serializers->{$name} = 1;
+        }
+    }
     strict->import;
     warnings->import;
 
@@ -873,7 +936,7 @@ Here is an example of a route handler that will return a HashRef
     use Dancer;
     set serializer => 'JSON';
 
-    get '/user/:id'/ => sub {
+    get '/user/:id/' => sub {
         { foo => 42,
           number => 100234,
           list => [qw(one two three)],
