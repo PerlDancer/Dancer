@@ -259,7 +259,7 @@ See L<Dancer::Request::Upload> for details about the interface provided.
 You can also change the content type rendered in the same maner, with the
 keyword B<content_type>
 
-    get '/cat/:txtfile' => {
+    get '/cat/:txtfile' => sub {
         content_type 'text/plain';
 
         # here we can dump the contents of params->{txtfile}
@@ -291,7 +291,7 @@ It is possible to add custom headers to responses with the B<header> (or B<heade
 keyword:
 
     get '/send/header', sub {
-	    header 'X-My-Header' => 'shazam!';
+        header 'X-My-Header' => 'shazam!';
     }
 
 or...

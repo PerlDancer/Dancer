@@ -287,19 +287,58 @@ Or even, a route handler that would match any HTTP methods:
 
 =head2 cookies
 
+Access cookies values, which returns a hashref of Cookies objects:
+
+    get '/some_action' => sub {
+        my $cookie = cookies->{name};
+        return $cookie->value;
+    };
+
 =head2 config
+
+Access the configuration of the application:
+
+    get '/appname' => sub {
+        return "This is " . config->{appname};
+    };
 
 =head2 content_type
 
+Set the B<content-type> rendered :
+
+    get '/cat/:txtfile' => sub {
+        content_type 'text/plain';
+
+        # here we can dump the contents of params->{txtfile}
+    };
+
 =head2 debug
+
+Log a message of debug level
+
+    debug "This is a debug message";
 
 =head2 dirname
 
 =head2 error
 
+Log a message of error level:
+
+    error "This is an error message";
+
 =head2 send_error
 
-=head2 fale
+The application return an error. By default the HTTP code returned is 500.
+
+    get '/photo/:id' => sub {
+        if (...) {
+            send_error("Not allowed", 403);
+        } else {
+           # return content
+        }
+    }
+
+=head2 false
 
 =head2 get
 
@@ -311,7 +350,19 @@ Define a route for B<GET> method.
 
 =head2 headers
 
+Add custom headers to responses:
+
+    get '/send/headers', sub {
+        headers 'X-Foo' => 'bar', X-Bar => 'foo';
+    }
+
 =head2 header
+
+Add a custom header to response:
+
+    get '/send/header', sub {
+        header 'X-My-Header' => 'shazam!';
+    }
 
 =head2 layout
 
