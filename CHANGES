@@ -1,4 +1,4 @@
-Dancer 1.xxx
+Dancer 1.174
     [ Gabor Szabo ]
     * Docs fixes, typo in warning.
     * TestUtils.pm is now in "t/lib".
