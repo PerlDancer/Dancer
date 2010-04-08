@@ -300,6 +300,18 @@ The application return an error. By default the HTTP code returned is 500.
 
 =head2 false
 
+=head2 from_json
+
+Deserialize a JSON structure
+
+=head2 from_yaml
+
+Deserialize a YAML structure
+
+=head2 from_xml
+
+Deserialize a XML structur
+
 =head2 get
 
 Define a route for B<GET> method.
@@ -380,6 +392,18 @@ You can unset the prefix value
 =head2 status
 
 =head2 template
+
+=head2 to_json
+
+Serialize a structure to JSON
+
+=head2 to_yaml
+
+Serialize a structure to YAML
+
+=head2 to_xml
+
+Serialize a struture to XML
 
 =head2 upload
 
