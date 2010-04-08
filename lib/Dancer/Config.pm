@@ -115,15 +115,15 @@ sub load_settings_from_yaml {
 
 
 sub load_default_settings {
-    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER} || '0.0.0.0';
-    $SETTINGS->{port}         ||= $ENV{DANCER_PORT} || '3000';
+    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER}       || '0.0.0.0';
+    $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
     $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
-    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET} || '';
-    $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG} || 1;
-    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON} || 0;
-    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER} || 'standalone';
-    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS} || 0;
-    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD} || 0;
+    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
+    $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG}   || 1;
+    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
+    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'standalone';
+    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
+    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
     $SETTINGS->{environment}
       ||= $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
