@@ -8,7 +8,6 @@ $ENV{REQUEST_METHOD} = 'GET';
 $ENV{PATH_INFO} = '/';
 
 for my $separator ('&', ';') {
-    diag "Testing a query using $separator to seperate name=value pairs";
     $ENV{QUERY_STRING} = join($separator, 
         ('name=Alexis%20Sukrieh',
         'IRC%20Nickname=sukria',
