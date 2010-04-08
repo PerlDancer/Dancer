@@ -198,11 +198,10 @@ Dancer - Lightweight yet powerful web application framework
 
     dance;
 
-The above is a basic but functional web app created with Dancer.  If you want to
-see more examples and get up and running quickly, check out the
-L<Dancer::Cookbook>.  For examples on deploying your Dancer applications, see
-L<Dancer::Deployment>.
-
+The above is a basic but functional web app created with Dancer.  If you want
+to see more examples and get up and running quickly, check out the
+L<Dancer::Introduction> and the L<Dancer::Cookbook>.  For examples on
+deploying your Dancer applications, see L<Dancer::Deployment>.
 
 =head1 DESCRIPTION
 
