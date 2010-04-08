@@ -8,6 +8,10 @@ Dancer 1.xxx
       querystring.  Satisfies feature request/issue 59.
       Thanks to deepakg for requesting this feature.
 
+    [ Sawyer X ]
+    * RT #56381 reported by Jonathan Yu on behalf on Debian Perl team.
+      (Adding LICENSE file)
+
 Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
     * Doc fixes.
