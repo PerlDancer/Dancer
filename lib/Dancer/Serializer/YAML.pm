@@ -12,12 +12,12 @@ sub init {
 
 sub serialize {
     my ($self, $entity) = @_;
-    YAML::Dump $entity;
+    YAML::Dump($entity);
 }
 
 sub deserialize {
     my ($self, $content) = @_;
-    YAML::Load $content;
+    YAML::Load($content);
 }
 
 sub content_type { 'text/x-yaml' }
