@@ -75,7 +75,6 @@ $VERSION   = '1.173_01';
 );
 
 # Dancer's syntax
-my $_serializers;
 
 sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
@@ -152,7 +151,6 @@ sub import {
         my $module = "Dancer::Serializer::$name";
         if ( Dancer::ModuleLoader->load($module) ) {
             $module->init;
-            $_serializers->{$name} = 1;
         }
     }
 
