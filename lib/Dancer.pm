@@ -87,30 +87,10 @@ sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub error        { Dancer::Logger->error(@_) }
 sub send_error   { Dancer::Helpers->error(@_) }
 sub false        {0}
-sub from_json {
-    if ($_serializers->{JSON}) {
-        Dancer::Serializer::JSON->deserialize(@_);
-    }
-    else {
-        # should we die ?
-    }
-}
-sub from_yaml {
-    if ($_serializers->{YAML}) {
-        Dancer::Serializer::YAML->deserialize(@_);
-    }
-    else {
-        # should we die ?
-    }
-}
-sub from_xml {
-    if ($_serializers->{XML}) {
-        Dancer::Serializer::XML->deserialize(@_);
-    }
-    else {
-        # should we die ?
-    }
-}
+sub from_json    { Dancer::Serializer::JSON->deserialize(@_) }
+sub from_yaml    { Dancer::Serializer::YAML->deserialize(@_) }
+sub from_xml     { Dancer::Serializer::XML->deserialize(@_) }
+
 sub get {
     Dancer::Route->add('head', @_);
     Dancer::Route->add('get',  @_);
@@ -146,34 +126,13 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
-sub splat    { @{Dancer::SharedData->request->params->{splat}} }
+sub splat    { @{ Dancer::SharedData->request->params->{splat} } }
 sub status   { Dancer::Response::status(@_) }
 sub template { Dancer::Helpers::template(@_) }
 sub true     {1}
-sub to_json {
-    if ($_serializers->{JSON}) {
-        Dancer::Serializer::JSON->serialize(@_);
-    }
-    else {
-        # should we die ?
-    }
-}
-sub to_yaml {
-    if ($_serializers->{YAML}) {
-        Dancer::Serializer::YAML->serialize(@_);
-    }
-    else {
-        # should we die ?
-    }
-}
-sub to_xml {
-    if ($_serializers->{XML}) {
-        Dancer::Serializer::XML->serialize(@_);
-    }
-    else {
-        # should we die ?
-    }
-}
+sub to_json  { Dancer::Serializer::JSON->serialize(@_) }
+sub to_yaml  { Dancer::Serializer::YAML->serialize(@_) }
+sub to_xml   { Dancer::Serializer::XML->serialize(@_) }
 sub upload   { Dancer::SharedData->request->upload(@_) }
 sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
 sub var      { Dancer::SharedData->var(@_) }
@@ -183,31 +142,32 @@ sub warning  { Dancer::Logger->warning(@_) }
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
-    my ($class,   $symbol) = @_;
-    my ($package, $script) = caller;
+    my ( $class,   $symbol ) = @_;
+    my ( $package, $script ) = caller;
+
+    strict->import;
+    warnings->import;
 
     for my $name (qw/JSON YAML XML/) {
         my $module = "Dancer::Serializer::$name";
-        if (Dancer::ModuleLoader->load($module)) {
+        if ( Dancer::ModuleLoader->load($module) ) {
             $module->init;
             $_serializers->{$name} = 1;
         }
     }
-    strict->import;
-    warnings->import;
 
-    $class->export_to_level(1, $class, @EXPORT);
+    $class->export_to_level( 1, $class, @EXPORT );
 
     # if :syntax option exists, don't change settings
-    if ($symbol && $symbol eq ':syntax') {
+    if ( $symbol && $symbol eq ':syntax' ) {
         return;
     }
 
     Dancer::GetOpt->process_args();
-    setting appdir => dirname(File::Spec->rel2abs($script));
-    setting public => path(setting('appdir'), 'public');
-    setting views  => path(setting('appdir'), 'views');
-    setting logger => 'file';
+    setting appdir  => dirname( File::Spec->rel2abs($script) );
+    setting public  => path( setting('appdir'), 'public' );
+    setting views   => path( setting('appdir'), 'views' );
+    setting logger  => 'file';
     setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
     Dancer::Config->load;
 }
