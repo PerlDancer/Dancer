@@ -79,8 +79,7 @@ sub html_page {
     );
 }
 
-sub get_action_response();
-sub get_action_response() {
+sub get_action_response {
     my $request = Dancer::SharedData->request;
     my $path    = $request->path_info;
     my $method  = $request->method;
