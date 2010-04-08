@@ -374,7 +374,23 @@ You can unset the prefix value
 
 =head2 redirect
 
+The redirect action is a helper and shortcut to a common HTTP response code (302).
+You can either redirect to a complete different site or you can also do it
+within the application:
+
+    get '/twitter', sub {
+	    redirect 'http://twitter.com/me';
+    };
+
+You can also force Dancer to return a specific 300-ish HTTP response code:
+
+    get '/old/:resource', sub {
+        redirect '/new/'.params->{resource}, 301;
+    };
+
 =head2 request
+
+Return a L<Dancer::Request> object.
 
 =head2 send_file
 
@@ -382,11 +398,48 @@ You can unset the prefix value
 
 =head2 set_cookie
 
+You can create/update cookies with the C<set_cookie> helper like the following:
+
+    get '/some_action' => sub {
+        set_cookie 'name' => 'value',
+            'expires' => (time + 3600),
+            'domain'  => '.foo.com';
+    };
+
+In the example above, only 'name' and 'value' are mandatory.
+
+You can access their value with the B<cookies> helper, which returns a hashref
+of Cookie objects:
+
+    get '/some_action' => sub {
+        my $cookie = cookies->{name};
+        return $cookie->value;
+    };
+
 =head2 session
 
 =head2 splat
 
 =head2 status
+
+=head2 status
+
+By default, an action will produce an 'HTTP 200 OK' status code, meaning
+everything is OK. It's possible to change that with the keyword B<status> :
+
+    get '/download/:file' => {
+        if (! -f params->{file}) {
+            status 'not_found';
+            return "File does not exist, unable to download";
+        }
+        # serving the file...
+    };
+
+In that example, Dancer will notice that the status has changed, and will
+render the response accordingly.
+
+The status keyword receives the name of the status to render, it can be either
+an HTTP code or its alias, as defined in L<Dancer::HTTP>.
 
 =head2 template
 
@@ -403,6 +456,41 @@ Serialize a structure to YAML
 Serialize a struture to XML
 
 =head2 upload
+
+Dancer provides a common interface to handle file uploads. Any uploaded file is
+accessible as a L<Dancer::Request::Upload> object. you can access all parsed
+uploads via the upload keyword, like the following:
+
+    post '/some/route' => sub {
+        my $file = upload('file_input_foo');
+        # file is a Dancer::Request::Upload object
+    };
+
+If you named multiple input of type "file" with the same name, the upload
+keyword will return an array of Dancer::Request::Upload objects:
+
+    post '/some/route' => sub {
+        my ($file1, $file2) = upload('files_input');
+        # $file1 and $file2 are Dancer::Request::Upload objects
+    };
+
+You can also access the raw hashref of parsed uploads via the current requesrt
+object:
+
+    post '/some/route' => sub {
+        my $all_uploads = request->uploads;
+        # $all_uploads->{'file_input_foo'} is a Dancer::Request::Upload object
+        # $all_uploads->{'files_input'} is an array ref of Dancer::Request::Upload objects
+    };
+
+Note that you can also access the filename of the upload received via the params
+keyword:
+
+    post '/some/route' => sub {
+        # params->{'files_input'} is the filename of the file uploaded
+    };
+
+See L<Dancer::Request::Upload> for details about the interface provided.
 
 =head2 uri_for
 
