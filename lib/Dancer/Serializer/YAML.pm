@@ -57,6 +57,6 @@ Deserialize a YAML structure to a data structure
 
 =item B<content_type>
 
-Return 'application/json'
+Return 'text/yaml'
 
 =back

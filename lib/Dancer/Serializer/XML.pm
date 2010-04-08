@@ -37,3 +37,30 @@ sub deserialize {
 sub content_type { 'text/xml' }
 
 1;
+__END__
+
+=head1 NAME
+
+Dancer::Serializer::XML
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head2 METHODS
+
+=over 4
+
+=item B<serialize>
+
+Serialize a data structure to a XML structure.
+
+=item B<deserialize>
+
+Deserialize a XML structure to a data structure
+
+=item B<content_type>
+
+Return 'text/xml'
+
+=back
