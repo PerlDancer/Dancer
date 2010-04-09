@@ -13,6 +13,7 @@ my @keywords = qw(
     get 
     layout
     load
+    load_app
     logger
     mime_type
     params
