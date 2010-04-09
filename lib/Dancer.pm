@@ -14,6 +14,10 @@ use Dancer::Logger;
 use Dancer::Renderer;
 use Dancer::Response;
 use Dancer::Route;
+use Dancer::Serializer::JSON;
+use Dancer::Serializer::YAML;
+use Dancer::Serializer::XML;
+use Dancer::Serializer::Dumper;
 use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
@@ -35,6 +39,7 @@ $VERSION   = '1.174';
   dirname
   error
   false
+  from_dumper
   from_json
   from_yaml
   from_xml
@@ -63,6 +68,7 @@ $VERSION   = '1.174';
   splat
   status
   template
+  to_dumper
   to_json
   to_yaml
   to_xml
@@ -86,9 +92,10 @@ sub dirname      { Dancer::FileUtils::dirname(@_) }
 sub error        { Dancer::Logger->error(@_) }
 sub send_error   { Dancer::Helpers->error(@_) }
 sub false        {0}
-sub from_json    { Dancer::Serializer::JSON->deserialize(@_) }
-sub from_yaml    { Dancer::Serializer::YAML->deserialize(@_) }
-sub from_xml     { Dancer::Serializer::XML->deserialize(@_) }
+sub from_dumper  { Dancer::Serializer::Dumper::from_dumper(@_) }
+sub from_json    { Dancer::Serializer::JSON::from_json(@_) }
+sub from_yaml    { Dancer::Serializer::YAML::from_yaml(@_) }
+sub from_xml     { Dancer::Serializer::XML::from_xml(@_) }
 
 sub get {
     Dancer::Route->add('head', @_);
@@ -129,9 +136,10 @@ sub splat    { @{ Dancer::SharedData->request->params->{splat} } }
 sub status   { Dancer::Response::status(@_) }
 sub template { Dancer::Helpers::template(@_) }
 sub true     {1}
-sub to_json  { Dancer::Serializer::JSON->serialize(@_) }
-sub to_yaml  { Dancer::Serializer::YAML->serialize(@_) }
-sub to_xml   { Dancer::Serializer::XML->serialize(@_) }
+sub to_dumper{ Dancer::Serializer::Dumper::to_dumper(@_) }
+sub to_json  { Dancer::Serializer::JSON::to_json(@_) }
+sub to_yaml  { Dancer::Serializer::YAML::to_yaml(@_) }
+sub to_xml   { Dancer::Serializer::XML::to_xml(@_) }
 sub upload   { Dancer::SharedData->request->upload(@_) }
 sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
 sub var      { Dancer::SharedData->var(@_) }
@@ -145,14 +153,6 @@ sub import {
     my ( $package, $script ) = caller;
 
     strict->import;
-
-    for my $name (qw/JSON YAML XML/) {
-        my $module = "Dancer::Serializer::$name";
-        if ( Dancer::ModuleLoader->load($module) ) {
-            $module->init;
-        }
-    }
-
     $class->export_to_level( 1, $class, @EXPORT );
 
     # if :syntax option exists, don't change settings
@@ -295,6 +295,10 @@ The application return an error. By default the HTTP code returned is 500.
     }
 
 =head2 false
+
+=head2 from_dumper
+
+Deserialize a Data::Dumper structure
 
 =head2 from_json
 
@@ -441,6 +445,10 @@ The status keyword receives the name of the status to render, it can be either
 an HTTP code or its alias, as defined in L<Dancer::HTTP>.
 
 =head2 template
+
+=head2 to_dumper
+
+Serialize a structure with Data::Dumper
 
 =head2 to_json
 
