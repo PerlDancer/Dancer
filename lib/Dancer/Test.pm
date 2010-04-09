@@ -1,10 +1,11 @@
-package Test::Dancer;
+package Dancer::Test;
 # test helpers for Dancer apps
 
 use strict;
 use warnings;
-use Test::More;
+use Test::More import => ['!pass'];
 
+use Dancer ':syntax';
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
@@ -17,6 +18,15 @@ use vars '@EXPORT';
     response_status_is
     response_content_like
 );
+
+sub import {
+    my ($class, %options) = @_;
+    my ($package, $script) = caller;
+    $class->export_to_level(1, $class, @EXPORT );
+
+    $options{appdir} ||= '..';
+    Dancer::set_appdir($options{appdir});
+}
 
 sub route_exists {
     my ($args, $message) = @_;
@@ -52,7 +62,7 @@ __END__
 
 =head1 NAME
 
-Test::Dancer - Test helpers to test a Dancer application
+Dancer::Test - Test helpers to test a Dancer application
 
 =head1 SYNOPSYS
 
@@ -60,8 +70,8 @@ Test::Dancer - Test helpers to test a Dancer application
     use warnings;
     use Test::More tests => 2;
 
-    use Test::Dancer;
     use MyWebApp;
+    use Dancer::Test appdir => '..';
 
     response_status_is [GET => '/'], 200, "GET / is found";
     response_content_like [GET => '/'], qr/hello, world/, "content looks good for /";
@@ -70,6 +80,23 @@ Test::Dancer - Test helpers to test a Dancer application
 =head1 DESCRIPTION
 
 This module provides test heplers for testing Dancer apps.
+
+=head1 CONFIGURATON
+
+When importing Dancer::Test, the appdir is set by defaut to '..', assuming that
+your test scrtipt is directly in your t/ directory. If you put your test scrtipt
+deeper in the 't/' hierarchy (like in 't/routes/01_some_test.t') you'll have to
+tell Dancer::Test that the appdir is one step upper.
+
+To do so, you can tell where the appdir is thanks to an import option:
+
+    use MyWebApp;
+    use Dancer::Test appdir => '../..';
+
+Be careful, the order in the example above is very important.
+Make sure to use C<Dancer::Test> B<after> importing the application package
+otherwise your appdir will be automatically set to C<lib> and your test script
+won't be able to find views, conffiles and other application content.
 
 =head1 METHODS
 
