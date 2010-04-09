@@ -18,6 +18,10 @@ Dancer 1.80
 	  is sent by Dancer and needs to be encoded.
 	  The response Content-Type is updated accordingly as well.
 
+    [ Sawyer X ]
+    * Adding "import_warnings" settings. On by default, but allows to disable
+      auto-import of "warnings" pragram. Reported by Adam Kennedy.
+
 Dancer 1.xxx
     [ Gabor Szabo ]
     * Docs fixes, typo in warning.
