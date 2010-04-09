@@ -259,6 +259,25 @@ get '/' => sub {
 };
 
 true;
+=pod
+
+=head1 NAME
+
+$appname - A Dancer based web application
+
+=head1 DESCRIPTION
+
+PUT HERE A DESCRIPTION OF YOUR WEBAPP
+
+=head1 COPYRIGHT
+
+PUT YOUR COPYRIGHT NOTE HERE
+
+=head1 LICENSE
+
+PUT YOUR LICENSE NOTES HERE
+
+=cut
 ",
 
 'style.css' => 
