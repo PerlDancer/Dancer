@@ -49,6 +49,7 @@ $VERSION   = '1.174';
   headers
   layout
   load
+  load_app
   logger
   mime_type
   options
@@ -105,6 +106,7 @@ sub get {
 sub headers    { Dancer::Response::headers(@_); }
 sub header     { goto &headers; }                      # goto ftw!
 sub layout     { set(layout => shift) }
+sub load       { require $_ for @_ }
 sub logger     { set(logger => @_) }
 sub mime_type  { Dancer::Config::mime_types(@_) }
 sub params     { Dancer::SharedData->request->params(@_) }
@@ -146,11 +148,12 @@ sub var      { Dancer::SharedData->var(@_) }
 sub vars     { Dancer::SharedData->vars }
 sub warning  { Dancer::Logger->warning(@_) }
 
-sub load { 
+sub load_app { 
     for my $app (@_) {
         Dancer::Logger->core("loading application $app");
         use lib path(dirname(abs_path($0)), 'lib');
-        require $app;
+        Dancer::ModuleLoader->load($app) or 
+            die "unable to load application $app";
     }
 }
 
@@ -354,6 +357,8 @@ Add a custom header to response:
 =head2 logger
 
 =head2 load
+
+=head2 load_app($app)
 
 =head2 mime_type
 
