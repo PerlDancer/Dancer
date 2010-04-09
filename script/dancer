@@ -427,8 +427,10 @@ use warnings;
 use $appname;
 use Dancer::Test;
 
-route_exists [GET => '/'];
-response_content_like [GET => '/'], qr/It Works.*I'm in.*index\.tt/s;
+route_exists [GET => '/'], 'a route handler is defined for /';
+response_status_is ['GET' => '/'], 200, 'response status is 200 for /';
+response_content_like [GET => '/'], qr/It Works.*I'm in.*index.tt/s,
+    'content looks OK for /';
 ",
 
     };
