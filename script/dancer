@@ -202,7 +202,7 @@ WriteMakefile(
 'app.psgi'  => 
 
 "# PSGI application bootstraper for Dancer
-load '$appname';
+load_app '$appname';
 
 use Dancer::Config 'setting';
 setting apphandler  => 'PSGI';
@@ -243,14 +243,15 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 
 "#!$^X
 use Dancer;
-load '$appname';
+load_app '$appname';
 dance;
 ",
 
 "$appname.pm" => 
 
 "package $appname;
-use Dancer;
+use Dancer ':syntax';
+
 our \$VERSION = '0.1';
 
 get '/' => sub {
