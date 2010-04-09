@@ -24,8 +24,9 @@ my $dir = tempdir(CLEAN_UP => 1);
 set appdir => $dir;
 Dancer::Logger->init('File');
 
+my $mocker = { YAML => 0};
 mock 'Dancer::ModuleLoader' 
-    => method 'load' => should sub { 0 };
+    => method 'load' => should sub { $mocker->{$_[1]} };
 
 my $session;
 
@@ -35,8 +36,7 @@ like $@, qr/YAML is needed/,
 
 # TODO : need a way to restore original sub
 # in t::lib::EasyMocker
-mock 'Dancer::ModuleLoader' 
-    => method 'load' => should sub { 1 };
+$mocker->{YAML} = 1;
 
 eval { $session = Dancer::Session::YAML->create };
 is $@, '', "YAML session created";

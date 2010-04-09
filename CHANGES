@@ -1,3 +1,27 @@
+Dancer 1.180
+
+	[ Alexis Sukrieh ]
+	* New logger for sending log message to STDERR: Dancer::Logger::Console
+	  Thanks to Gabor Szabo for the idea.
+	* Logger engines don't have anymore to implement _format(), they can use
+	  $self->format_message instead.
+	* New log level: "core" for letting Dancer's core express itself on crucial events.
+	  That way, when the app config sets log to "core", any core messages is
+	  sent to the logger, and the end-user can see which route is chosen for
+	  each request received.
+	  Thanks to Gabor Szabo for the idea.
+	* New class Dancer::Timer added so any logger engine can now show a timer string.
+	  If Time::HiRes is available, use it to produce microseconds ticks.
+
+	[ Alex Kapranof ]
+	* Support for on-the-fly charset encoding when the setting is set and a content
+	  is sent by Dancer and needs to be encoded.
+	  The response Content-Type is updated accordingly as well.
+
+    [ Sawyer X ]
+    * Adding "import_warnings" settings. On by default, but allows to disable
+      auto-import of "warnings" pragma. Reported by Adam Kennedy.
+
 Dancer 1.174
     [ Gabor Szabo ]
     * Docs fixes, typo in warning.

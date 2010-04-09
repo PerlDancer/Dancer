@@ -42,6 +42,10 @@ my $setters = {
         require Dancer::Serializer;
         Dancer::Serializer->init($value);
     },
+    import_warnings => sub {
+        my ($setting, $value) = @_;
+        $^W = $value ? 1 : 0;
+    },
 };
 
 # public accessor for get/set
@@ -115,22 +119,24 @@ sub load_settings_from_yaml {
 
 
 sub load_default_settings {
-    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER} || '0.0.0.0';
-    $SETTINGS->{port}         ||= $ENV{DANCER_PORT} || '3000';
+    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER}       || '0.0.0.0';
+    $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
     $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
-    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET} || 'UTF-8';
-    $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG} || 1;
-    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON} || 0;
-    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER} || 'standalone';
-    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS} || 0;
-    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD} || 0;
+    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
+    $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG}   || 1;
+    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
+    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'standalone';
+    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
+    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
     $SETTINGS->{environment}
       ||= $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
       || 'development';
 
-    setting template => 'simple';
+    setting template        => 'simple';
+    setting import_warnings => 1;
 }
+
 load_default_settings();
 
 1;
@@ -183,10 +189,23 @@ This setting can be changed on the command-line with the B<--daemon> flag.
 The default content type of outgoing content.
 Default value is 'text/html'.
 
-=head2 charset
+=head2 charset (string)
 
-The default charset of outgoing content.
-Default value is 'UTF-8'. (not implemented yet)
+The default charset of outgoing content. Unicode bodies in HTTP
+responses of C<text/*> types will be encoded to this charset. Also,
+C<charset=> item will be added to Content-Type response header.
+
+Default value is empty which means don't do anything. HTTP responses
+without charset will be interpreted as ISO-8859-1 by most clients.
+
+You can cancel any charset processing by specifying your own charset
+in Content-Type header or by ensuring that response body leaves your
+handler without Unicode flag set (by encoding it into some 8bit
+charset, for example).
+
+Also, since automatically serialized JSON responses have
+C<application/json> Content-Type, you should always encode them by
+hand.
 
 =head2 public (string)
 
