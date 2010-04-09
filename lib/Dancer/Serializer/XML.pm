@@ -5,33 +5,38 @@ use warnings;
 use Dancer::ModuleLoader;
 use base 'Dancer::Serializer::Abstract';
 
-my $xml_serializer;
+# helpers
 
-my $_loaded;
+sub from_xml {
+    my ($xml) = @_;
+    my $s = Dancer::Serializer::XML->new;
+    $s->deserialize($xml);
+}
+
+sub to_xml {
+    my ($data) = @_;
+    my $s = Dancer::Serializer::XML->new;
+    $s->serialize($data);
+}
+
+# class definition
+
+sub loaded { Dancer::ModuleLoader->load('XML::Simple') }
+
 sub init {
+    my ($self) = @_;
     die 'XML::Simple is needed and is not installed'
-      unless Dancer::ModuleLoader->load('XML::Simple');
-
-    $xml_serializer = XML::Simple->new( ForceArray => 0 );
-    $_loaded = 1;
+      unless $self->loaded;
 }
 
 sub serialize {
     my ( $self, $entity ) = @_;
-    if ($_loaded) {
-        $xml_serializer->XMLout( { data => $entity } );
-    }else{
-        # die ?
-    }
+    $self->XMLout( { data => $entity } );
 }
 
 sub deserialize {
     my ( $self, $content ) = @_;
-    if ($_loaded) {
-        $xml_serializer->XMLin($content);
-    }else{
-        # die ?
-    }
+    $self->XMLin($content);
 }
 
 sub content_type { 'text/xml' }

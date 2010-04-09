@@ -5,31 +5,38 @@ use warnings;
 use Dancer::ModuleLoader;
 use base 'Dancer::Serializer::Abstract';
 
-my $_loaded;
+# helpers
+
+sub from_yaml {
+    my ($yaml) = @_;
+    my $s = Dancer::Serializer::YAML->new;
+    $s->deserialize($yaml);
+}
+
+sub to_yaml {
+    my ($data) = @_;
+    my $s = Dancer::Serializer::YAML->new;
+    $s->serialize($data);
+}
+
+# class definition
+
+sub loaded { Dancer::ModuleLoader->load('YAML') }
+
 sub init {
+    my ($self) = @_;
     die 'YAML is needed and is not installed'
-      unless Dancer::ModuleLoader->load('YAML');
-    $_loaded = 1;
+      unless $self->loaded;
 }
 
 sub serialize {
     my ($self, $entity) = @_;
-    if ($_loaded) {
-        YAML::Dump($entity);
-    }
-    else{
-        # die ?
-    }
+    YAML::Dump($entity);
 }
 
 sub deserialize {
     my ($self, $content) = @_;
-    if ($_loaded) {
-        YAML::Load($content);
-    }
-    else{
-        # die ?
-    }
+    YAML::Load($content);
 }
 
 sub content_type { 'text/x-yaml' }
