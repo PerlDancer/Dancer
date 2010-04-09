@@ -1,7 +1,7 @@
 use Test::More import => ['!pass'];
 use t::lib::TestUtils;
 
-use Test::Dancer;
+use Dancer::Test;
 
 my @methods = qw(get head put post delete options);
 plan tests => 23;
