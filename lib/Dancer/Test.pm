@@ -15,8 +15,13 @@ use vars '@EXPORT';
 
 @EXPORT = qw(
     route_exists
+    route_doesnt_exist
+
     response_status_is
+    response_status_isnt
+
     response_content_like
+    response_content_unlike
 );
 
 sub import {
@@ -29,31 +34,43 @@ sub import {
 }
 
 sub route_exists {
-    my ($args, $message) = @_;
-    my ($method, $path) = @$args;
-    my $req = Dancer::Request->new_for_request($method => $path);
+    my ($req, $test_name) = @_;
+    my ($method, $path) = @$req;
+    $req = Dancer::Request->new_for_request($method => $path);
+    ok(Dancer::Route->find($path, $method, $req), $test_name);
+}
 
-    ok(Dancer::Route->find($path, $method, $req), $message);
+sub route_doesnt_exist {
+    my ($req, $test_name) = @_;
+    my ($method, $path) = @$req;
+    $req = Dancer::Request->new_for_request($method => $path);
+    ok((!defined(Dancer::Route->find($path, $method, $req))), $test_name);
 }
 
 sub response_status_is {
-    my ($req, $status, $message) = @_;
-    my ($method, $path) = @$req;
-    my $request = Dancer::Request->new_for_request($method => $path);
-    Dancer::SharedData->request($request);
-    my $response = Dancer::Renderer::get_action_response();
-    
-    is $response->{status}, $status, $message;
+    my ($req, $status, $test_name) = @_;
+    my $response = _get_response($req); 
+    is $response->{status}, $status, $test_name;
+}
+
+sub response_status_isnt {
+    my ($req, $status, $test_name) = @_;
+    my $response = _get_response($req); 
+    isnt $response->{status}, $status, $test_name;
 }
 
 sub response_content_like {
-    my ($req, $matcher, $message) = @_;
+    my ($req, $matcher, $test_name) = @_;
+    my $response = _get_response($req); 
+    like $response->{content}, $matcher, $test_name;
+}
+
+sub _get_response {
+    my ($req) = @_;
     my ($method, $path) = @$req;
     my $request = Dancer::Request->new_for_request($method => $path);
     Dancer::SharedData->request($request);
-    my $response = Dancer::Renderer::get_action_response();
-    
-    like $response->{content}, $matcher, $message;
+    return Dancer::Renderer::get_action_response();
 }
 
 1;
@@ -100,26 +117,49 @@ won't be able to find views, conffiles and other application content.
 
 =head1 METHODS
 
-=head2 route_exists([$method, $path], $message)
+=head2 route_exists([$method, $path], $test_name)
 
 Asserts that the given request matches a route handler in Dancer's
 registry.
 
     route_exists [GET => '/'], "GET / is handled";
 
-=head2 response_status_is([$method, $path], $status, $message)
+=head2 route_doesnt_exist([$method, $path], $test_name)
+
+Asserts that the given request does not match any route handler 
+in Dancer's registry.
+
+    route_doesnt_exist [GET => '/bogus_path'], "GET /bogus_path is not handled";
+
+
+=head2 response_status_is([$method, $path], $status, $test_name)
 
 Asserts that Dancer's response for the given request has a status equal to the
 one given.
 
     response_status_is [GET => '/'], 200, "response for GET / is 200";
 
-=head2 response_content_like([$method, $path], $regexp, $message)
+=head2 response_status_isnt([$method, $path], $status, $test_name)
+
+Asserts that the status of Dancer's response is not equal to the
+one given.
+
+    response_status_isnt [GET => '/'], 404, "response for GET / is not a 404";
+
+=head2 response_content_like([$method, $path], $regexp, $test_name)
 
 Asserts that the response content for the given request matches the regexp
 given.
 
     response_content_like [GET => '/'], qr/Hello, World/, 
+        "response content looks good for GET /";
+
+=head2 response_content_unlike([$method, $path], $regexp, $test_name)
+
+Asserts that the response content for the given request does not match the regexp
+given.
+
+    response_content_unlike [GET => '/'], qr/Page not found/, 
         "response content looks good for GET /";
 
 
