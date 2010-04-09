@@ -438,7 +438,7 @@ use_ok '$appname';
 ",
 
 "002_index_route.t" => 
-"use Test::More tests => 2;
+"use Test::More tests => 3;
 use strict;
 use warnings;
 
