@@ -1,4 +1,4 @@
-Dancer 1.180
+Dancer 1.18
 
 	[ Alexis Sukrieh ]
 	* New logger for sending log message to STDERR: Dancer::Logger::Console
