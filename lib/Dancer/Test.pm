@@ -17,9 +17,13 @@ use vars '@EXPORT';
     route_exists
     route_doesnt_exist
 
+    response_exists
+    response_doesnt_exist
     response_status_is
     response_status_isnt
-
+    response_content_is
+    response_content_isnt
+    response_content_is_deeply
     response_content_like
     response_content_unlike
 );
@@ -32,6 +36,8 @@ sub import {
     $options{appdir} ||= '..';
     Dancer::set_appdir($options{appdir});
 }
+
+# Route Registry
 
 sub route_exists {
     my ($req, $test_name) = @_;
@@ -47,6 +53,20 @@ sub route_doesnt_exist {
     ok((!defined(Dancer::Route->find($path, $method, $req))), $test_name);
 }
 
+# Response status
+
+sub response_exists {
+    my ($req, $test_name) = @_;
+    my $response = _get_response($req);
+    ok(defined($response), $test_name);
+}
+
+sub response_doesnt_exist {
+    my ($req, $test_name) = @_;
+    my $response = _get_response($req);
+    ok(!defined($response), $test_name);
+}
+
 sub response_status_is {
     my ($req, $status, $test_name) = @_;
     my $response = _get_response($req); 
@@ -59,10 +79,36 @@ sub response_status_isnt {
     isnt $response->{status}, $status, $test_name;
 }
 
+# Response content
+
+sub response_content_is {
+    my ($req, $matcher, $test_name) = @_;
+    my $response = _get_response($req); 
+    is $response->{content}, $matcher, $test_name;
+}
+
+sub response_content_isnt {
+    my ($req, $matcher, $test_name) = @_;
+    my $response = _get_response($req); 
+    isnt $response->{content}, $matcher, $test_name;
+}
+
 sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
     my $response = _get_response($req); 
     like $response->{content}, $matcher, $test_name;
+}
+
+sub response_content_unlike {
+    my ($req, $matcher, $test_name) = @_;
+    my $response = _get_response($req); 
+    unlike $response->{content}, $matcher, $test_name;
+}
+
+sub response_content_is_deeply {
+    my ($req, $matcher, $test_name) = @_;
+    my $response = _get_response($req); 
+    is_deeply $response->{content}, $matcher, $test_name;
 }
 
 sub _get_response {
@@ -132,6 +178,22 @@ in Dancer's registry.
     route_doesnt_exist [GET => '/bogus_path'], "GET /bogus_path is not handled";
 
 
+=head2 response_exists([$method, $path], $test_name)
+
+Asserts that a response is found for the given request (note that even though 
+a route for that path might not exist, a response can be found during request
+processing, because of filters).
+
+    response_exists [GET => '/path_that_gets_redirected_to_home'],
+        "response found for unknown path";
+
+=head2 response_doesnt_exist([$method, $path], $test_name)
+
+Asserts that no response is found when processing the given request.
+
+    response_doesnt_exist [GET => '/unknown_path'],
+        "response not found for unknown path";
+
 =head2 response_status_is([$method, $path], $status, $test_name)
 
 Asserts that Dancer's response for the given request has a status equal to the
@@ -145,6 +207,33 @@ Asserts that the status of Dancer's response is not equal to the
 one given.
 
     response_status_isnt [GET => '/'], 404, "response for GET / is not a 404";
+
+=head2 response_content_is([$method, $path], $expected, $test_name)
+
+Asserts that the response content is equal to the C<$expected> string.
+
+    response_content_is [GET => '/'], "Hello, World", 
+        "got expected response content for GET /";
+
+=head2 response_content_isnt([$method, $path], $not_expected, $test_name)
+
+Asserts that the response content is not equal to the C<$not_expected> string.
+
+    response_content_is [GET => '/'], "Hello, World", 
+        "got expected response content for GET /";
+
+=head2 response_content_is_deeply([$method, $path], $expected_struct, $test_name)
+
+Similar to response_content_is(), except that if response content and 
+$expected_struct are references, it does a deep comparison walking each data 
+structure to see if they are equivalent.  
+
+If the two structures are different, it will display the place where they start
+differing.
+
+    response_content_is_deeply [GET => '/complex_struct'], 
+        { foo => 42, bar => 24}, 
+        "got expected response structure for GET /complex_struct";
 
 =head2 response_content_like([$method, $path], $regexp, $test_name)
 
