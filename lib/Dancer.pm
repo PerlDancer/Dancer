@@ -3,6 +3,7 @@ package Dancer;
 use strict;
 use warnings;
 use Carp 'confess';
+use Cwd 'abs_path';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config 'setting';
@@ -105,7 +106,6 @@ sub headers    { Dancer::Response::headers(@_); }
 sub header     { goto &headers; }                      # goto ftw!
 sub layout     { set(layout => shift) }
 sub logger     { set(logger => @_) }
-sub load       { require $_ for @_ }
 sub mime_type  { Dancer::Config::mime_types(@_) }
 sub params     { Dancer::SharedData->request->params(@_) }
 sub pass       { Dancer::Response->pass }
@@ -146,6 +146,14 @@ sub var      { Dancer::SharedData->var(@_) }
 sub vars     { Dancer::SharedData->vars }
 sub warning  { Dancer::Logger->warning(@_) }
 
+sub load { 
+    for my $app (@_) {
+        Dancer::Logger->core("loading application $app");
+        use lib path(dirname(abs_path($0)), 'lib');
+        require $app;
+    }
+}
+
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
@@ -161,7 +169,12 @@ sub import {
     }
 
     Dancer::GetOpt->process_args();
-    setting appdir  => dirname( File::Spec->rel2abs($script) );
+    set_appdir($script);
+}
+
+sub set_appdir {
+    my ($path) = @_;
+    setting appdir  => dirname( File::Spec->rel2abs($path) );
     setting public  => path( setting('appdir'), 'public' );
     setting views   => path( setting('appdir'), 'views' );
     setting logger  => 'file';
