@@ -12,6 +12,10 @@ Dancer 1.18
 	  Thanks to Gabor Szabo for the idea.
 	* New class Dancer::Timer added so any logger engine can now show a timer string.
 	  If Time::HiRes is available, use it to produce microseconds ticks.
+	* Scaffolded applications are now built like a CPAN distribution, with a Makefile.PL
+	  and test scripts (thanks to Gabor Szabo for the idea).
+	* Added Dancer::Test to provide helpers for writing test script for Dancer
+	  applications
 
 	[ Alex Kapranof ]
 	* Support for on-the-fly charset encoding when the setting is set and a content
