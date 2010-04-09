@@ -42,6 +42,10 @@ my $setters = {
         require Dancer::Serializer;
         Dancer::Serializer->init($value);
     },
+    import_warnings => sub {
+        my ($setting, $value) = @_;
+        $^W = $value ? 1 : 0;
+    },
 };
 
 # public accessor for get/set
@@ -129,8 +133,10 @@ sub load_default_settings {
       || $ENV{PLACK_ENV}
       || 'development';
 
-    setting template => 'simple';
+    setting template        => 'simple';
+    setting import_warnings => 1;
 }
+
 load_default_settings();
 
 1;

@@ -145,7 +145,6 @@ sub import {
     my ( $package, $script ) = caller;
 
     strict->import;
-    warnings->import;
 
     for my $name (qw/JSON YAML XML/) {
         my $module = "Dancer::Serializer::$name";
