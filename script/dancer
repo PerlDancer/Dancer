@@ -87,7 +87,11 @@ sub app_tree($)  {
     return {
         "app.psgi"      => FILE,
         "+$appname.pl"  => FILE,
-        "$appname.pm"   => FILE,
+        "Makefile.PL"   => FILE,
+        lib => {
+            "$appname.pm"   => FILE,
+            $appname => { },
+        },
         "config.yml"    => FILE,
         "environments"  => {
             "development.yml" => FILE,
@@ -110,6 +114,10 @@ sub app_tree($)  {
             },
             "images" => { },
             "favicon.ico" => \&write_favicon,
+        },
+        "t" => {
+            "001_base.t" => FILE,
+            "002_index_route.t" => FILE,
         },
     };
 }
@@ -168,11 +176,33 @@ sub templates($) {
     my $appname = shift;
     return {
 
+'Makefile.PL' => 
+"use strict;
+use warnings;
+use ExtUtils::MakeMaker;
+
+WriteMakefile(
+    NAME                => '$appname',
+    AUTHOR              => q{YOUR NAME <youremail\@example.com>},
+    VERSION_FROM        => 'lib/$appname.pm',
+    ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
+    (\$ExtUtils::MakeMaker::VERSION >= 6.3002
+      ? ('LICENSE'=> 'perl')
+      : ()),
+    PL_FILES            => {},
+    PREREQ_PM => {
+        'Test::More' => 0,
+        'YAML'       => 0,
+    },
+    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    clean               => { FILES => 'TestApp-*' },
+);
+",
+
 'app.psgi'  => 
 
 "# PSGI application bootstraper for Dancer
-use lib '[%appdir%]';
-use $appname;
+load '$appname';
 
 use Dancer::Config 'setting';
 setting apphandler  => 'PSGI';
@@ -213,7 +243,7 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 
 "#!$^X
 use Dancer;
-use $appname;
+load '$appname';
 dance;
 ",
 
@@ -221,6 +251,7 @@ dance;
 
 "package $appname;
 use Dancer;
+our \$VERSION = '0.1';
 
 get '/' => sub {
     template 'index';
@@ -377,6 +408,28 @@ route_cache: 1
 auto_reload: 0
 
 ',
+
+"001_base.t" => 
+"use Test::More tests => 1;
+use strict;
+use warnings;
+
+use_ok '$appname';
+",
+
+"002_index_route.t" => 
+"use Test::More tests => 2;
+use strict;
+use warnings;
+
+# the order is important
+use $appname;
+use Dancer::Test;
+
+route_exists [GET => '/'];
+response_content_like [GET => '/'], qr/It Works.*I'm in.*index\.tt/s;
+",
+
     };
 }
 
