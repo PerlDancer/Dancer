@@ -11,6 +11,7 @@ Dancer 1.174
     [ Sawyer X ]
     * RT #56381 reported by Jonathan Yu on behalf on Debian Perl team.
       (Adding LICENSE file)
+    * Documentation for Dancer::Error
 
 Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
