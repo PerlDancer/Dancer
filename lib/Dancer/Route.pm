@@ -230,6 +230,10 @@ sub call($$) {
             return $error->render;
         }
 
+        # coerce undef content to empty string to 
+        # prevent warnings
+        $content = (defined $content) ? $content : '';
+
         # drop the content if this is a HEAD request
         $content = '' if $handler->{method} eq 'head';
         my $ct = $response->{content_type} || setting('content_type');
