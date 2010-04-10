@@ -113,8 +113,8 @@ sub response_content_is_deeply {
 
 sub _get_response {
     my ($req) = @_;
-    my ($method, $path) = @$req;
-    my $request = Dancer::Request->new_for_request($method => $path);
+    my ($method, $path, $params) = @$req;
+    my $request = Dancer::Request->new_for_request($method => $path, $params);
     Dancer::SharedData->request($request);
     return Dancer::Renderer::get_action_response();
 }
