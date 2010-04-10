@@ -410,7 +410,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Request
+Dancer::Request - Interface for accessing incoming requests
 
 =head1 DESCRIPTION
 
@@ -495,7 +495,7 @@ Return true if the value of the header C<X-Requested-With> is XMLHttpRequest.
 
 =head2 env()
 
-Return the current environement (C<%ENV>), as a hashref.
+Return the current environment (C<%ENV>), as a hashref.
 
 =head2 uploads()
 
@@ -505,7 +505,7 @@ objects.
 
 =head2 HTTP environment variables
 
-All HTTP environement variables that are in %ENV will be provided in the
+All HTTP environment variables that are in %ENV will be provided in the
 Dancer::Request object through specific accessors, here are those supported:
 
 =over 4
