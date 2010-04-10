@@ -16,6 +16,8 @@ Dancer 1.18
 	  and test scripts (thanks to Gabor Szabo for the idea).
 	* Added Dancer::Test to provide helpers for writing test script for Dancer
 	  applications
+	* FIX bug when returning a void context after redirecting a route.
+	  Thanks to Juan J. Martínez  for the report.
 
 	[ Alex Kapranof ]
 	* Support for on-the-fly charset encoding when the setting is set and a content
