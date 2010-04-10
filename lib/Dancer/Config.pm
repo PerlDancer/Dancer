@@ -140,7 +140,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Config
+Dancer::Config - Setting registry for Dancer
 
 =head1 DESCRIPTION
 
