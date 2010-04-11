@@ -286,7 +286,7 @@ Renders a response using L<Dancer::Response>.
 =head2 environment
 
 A main function to render environment information: the caller (using
-C<get_caller), the settings and environment (using C<dumper>) and more.
+C<get_caller>), the settings and environment (using C<dumper>) and more.
 
 =head2 get_caller
 
