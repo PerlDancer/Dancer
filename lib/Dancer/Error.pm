@@ -51,7 +51,6 @@ sub backtrace {
     my @lines = <$fh>;
     close $fh;
 
-
     my $backtrace = $message;
 
     $backtrace
@@ -123,6 +122,7 @@ sub _censor {
         warn "_censor given incorrect input: $hash";
         return;
     }
+
     my $censored = 0;
     for my $key (keys %$hash) {
         if (ref $hash->{$key} eq 'HASH') {
@@ -132,6 +132,7 @@ sub _censor {
             $censored++;
         }
     }
+
     return $censored;
 }
 
@@ -189,3 +190,125 @@ sub get_caller {
 }
 
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Dancer::Error - Objects representing fatal errors
+
+=head1 SYNOPSIS
+
+    # taken from send_file:
+    use Dancer::Error;
+
+    my $error = Dancer::Error->new(
+        code    => 404,
+        message => "No such file: `$path'"
+    );
+
+    Dancer::Response::set($error->render);
+
+=head1 DESCRIPTION
+
+With Dancer::Error you can throw reasonable-looking errors to the user instead
+of crashing the application and filling up the logs.
+
+This is usually used in debugging environments, and it's what Dancer uses as
+well under debugging to catch errors and show them on screen.
+
+=head1 ATTRIBUTES
+
+=head2 code
+
+The code that caused the error.
+
+This is only an attribute getter, you'll have to set it at C<new>.
+
+=head2 title
+
+The title of the error page.
+
+This is only an attribute getter, you'll have to set it at C<new>.
+
+=head2 message
+
+The message of the error page.
+
+This is only an attribute getter, you'll have to set it at C<new>.
+
+=head1 METHODS/SUBROUTINES
+
+=head2 new
+
+Create a new Dancer::Error object.
+
+=head3 title
+
+The title of the error page.
+
+=head3 type
+
+What type of error this is.
+
+=head3 code
+
+The code that caused the error.
+
+=head3 message
+
+The message that will appear to the user.
+
+=head2 backtrace
+
+Create a backtrace of the code where the error is caused.
+
+This method tries to find out where the error appeared according to the actual
+error message (using the C<message> attribute) and tries to parse it (supporting
+the regular/default Perl warning or error pattern and the L<Devel::SimpleTrace>
+output) and then returns an error-higlighted C<message>.
+
+=head2 tabulate
+
+Small subroutine to help output nicer.
+
+=head2 dumper
+
+This uses L<Data::Dumper> to create nice content output with a few predefined
+options.
+
+=head2 render
+
+Renders a response using L<Dancer::Response>.
+
+=head2 environment
+
+A main function to render environment information: the caller (using
+C<get_caller), the settings and environment (using C<dumper>) and more.
+
+=head2 get_caller
+
+Creates a strack trace of callers.
+
+=head2 _censor
+
+An internal method that tries to censor out content which should be protected.
+
+C<dumper> calls this method to censor things like passwords and such.
+
+=head1 AUTHOR
+
+Alexis Sukrieh
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2009-2010 Alexis Sukrieh.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+

@@ -9,8 +9,10 @@ Dancer 1.174
       Thanks to deepakg for requesting this feature.
 
     [ Sawyer X ]
-    * RT #56381 reported by Jonathan Yu on behalf on Debian Perl team.
+    * RT #56381 reported by Jonathan Yu on behalf of Debian Perl team.
       (Adding LICENSE file)
+    * RT #56395 reported by Jonathan Yu on behalf of Debian Perl team.
+    * Documentation for Dancer::Error
 
 Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
