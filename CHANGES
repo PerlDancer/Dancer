@@ -11,7 +11,6 @@ Dancer 1.18
 	  each request received.
 	  Thanks to Gabor Szabo for the idea.
 	* New class Dancer::Timer added so any logger engine can now show a timer string.
-	  If Time::HiRes is available, use it to produce microseconds ticks.
 	* Scaffolded applications are now built like a CPAN distribution, with a Makefile.PL
 	  and test scripts (thanks to Gabor Szabo for the idea).
 	* Added Dancer::Test to provide helpers for writing test script for Dancer
@@ -28,6 +27,14 @@ Dancer 1.18
     * Adding "import_warnings" settings. On by default, but allows to disable
       auto-import of "warnings" pragma. Reported by Adam Kennedy.
 
+Dancer 1.175
+    [ Sawyer X ]
+    * RT #56395 reported by Jonathan Yu on behalf of Debian Perl team.
+    * Documentation for Dancer::Error
+
+    [ Alexis Sukrieh ]
+    * fixed t/15_plugins/02_config.t when YAML is not installed 
+
 Dancer 1.174
     [ Gabor Szabo ]
     * Docs fixes, typo in warning.
@@ -41,8 +48,6 @@ Dancer 1.174
     [ Sawyer X ]
     * RT #56381 reported by Jonathan Yu on behalf of Debian Perl team.
       (Adding LICENSE file)
-    * RT #56395 reported by Jonathan Yu on behalf of Debian Perl team.
-    * Documentation for Dancer::Error
 
 Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
