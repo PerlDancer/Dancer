@@ -5,14 +5,14 @@ use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Encode;
 
-plan tests => 6;
-
 plan skip_all => "LWP is needed for this test" 
     unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => "HTTP::Request::Common is needed for this test"
     unless Dancer::ModuleLoader->load('HTTP::Request::Common');
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP");
+
+plan tests => 6;
 
 Test::TCP::test_tcp(
     client => sub {
