@@ -27,7 +27,7 @@ use Dancer::ModuleLoader;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.174';
+$VERSION   = '1.18_01';
 @EXPORT    = qw(
   any
   before
@@ -238,6 +238,18 @@ Dancer has few pre-requisites, so your Dancer webapps will be easy to deploy.
 Dancer apps can be used with a an embedded web server (great for easy testing),
 and can run under PSGI/Plack for easy deployment in a variety of webserver
 environments.
+
+=head1 DISCLAIMER
+
+This documentation describes all the exported symbols of Dancer, if you want to have
+a quick start guide to discover the framework, you should look at
+L<Dancer::Tutorial>.
+
+If you want to have specific examples of code for real-life problems, feel free
+to give a look at L<Dancer::Cookbook>.
+
+If you want to see configuration examples of different deployment solutions
+involving Dancer and Plack, see L<Dancer::Deployment>.
 
 =head1 METHODS
 
