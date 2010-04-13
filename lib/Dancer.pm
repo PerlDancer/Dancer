@@ -157,6 +157,18 @@ sub load_app {
     }
 }
 
+# FIXME : maybe this method should be named init()
+sub set_appdir {
+    my ($path) = @_;
+    setting appdir  => dirname( File::Spec->rel2abs($path) );
+    setting public  => path( setting('appdir'), 'public' );
+    setting views   => path( setting('appdir'), 'views' );
+    setting logger  => 'file';
+    setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
+    Dancer::Config->load;
+    Dancer::Route->init;
+}
+
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
@@ -173,16 +185,6 @@ sub import {
 
     Dancer::GetOpt->process_args();
     set_appdir($script);
-}
-
-sub set_appdir {
-    my ($path) = @_;
-    setting appdir  => dirname( File::Spec->rel2abs($path) );
-    setting public  => path( setting('appdir'), 'public' );
-    setting views   => path( setting('appdir'), 'views' );
-    setting logger  => 'file';
-    setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
-    Dancer::Config->load;
 }
 
 # Start/Run the application with the chosen apphandler
