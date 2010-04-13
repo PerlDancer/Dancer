@@ -24,7 +24,7 @@ Dancer::Request->attributes(
     'env',          'path', 'method',
     'content_type', 'content_length',
     'body',         'id', 'request_uri',
-    'uploads',
+    'uploads', 'headers',
     @http_env_keys,
 );
 
@@ -36,6 +36,7 @@ sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
 sub is_put                { $_[0]->{method} eq 'PUT' }
 sub is_delete             { $_[0]->{method} eq 'DELETE' }
+sub header                { $_[0]->{headers}{$_[1]} }
 
 # public interface compat with CGI.pm objects 
 sub request_method { method(@_) }
@@ -164,6 +165,7 @@ sub upload {
 sub _init {
     my ($self) = @_;
 
+    $self->_build_headers();
     $self->_build_request_env();
     $self->_build_path()      unless $self->path;
     $self->_build_method()    unless $self->method;
@@ -213,6 +215,24 @@ sub _build_request_env {
     $self->{referer}            = $self->{env}{HTTP_REFERER};
     $self->{'x_requested_with'} = $self->{env}{'HTTP_X_REQUESTED_WITH'};
 
+}
+
+sub _build_headers {
+    my ($self) = @_;
+    my $headers = Dancer::SharedData->headers;
+    my $parsed = {};
+
+    for (my $i=0; $i<scalar(@$headers); $i+=2) {
+        my ($key, $value) = ($headers->[$i], $headers->[$i + 1]);
+        if (defined $parsed->{$key}) {
+            $parsed->{$key} = [ $parsed->{$key} ];
+            push @{$parsed->{$key}}, $value;
+        }
+        else {
+            $parsed->{$key} = $value;
+        }
+    }
+    $self->{headers} = $parsed;
 }
 
 sub _build_params {
