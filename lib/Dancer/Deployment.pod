@@ -110,6 +110,11 @@ multiple Dancer apps on multiple other machines:
 
 
 
+=head2 Running from Apache
+
+You can run your Dancer app from Apache using the following examples:
+
+
 =head3 Running from Apache with Plack
 
 You can run your app from Apache using PSGI (Plack), with a config like the
