@@ -17,6 +17,7 @@ Dancer 1.18
 	  applications
 	* FIX bug when returning a void context after redirecting a route.
 	  Thanks to Juan J. Martínez  for the report.
+	* Add support for request headers in Dancer::Request
 
 	[ Alex Kapranof ]
 	* Support for on-the-fly charset encoding when the setting is set and a content
