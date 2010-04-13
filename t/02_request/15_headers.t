@@ -7,7 +7,7 @@ plan skip_all => "LWP::UserAgent is needed to run this tests"
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
 
-plan tests => 2;
+plan tests => 3;
 
 Test::TCP::test_tcp(
     client => sub {
@@ -19,7 +19,7 @@ Test::TCP::test_tcp(
         $request->header('X-User-Head2' => 43);
 
         my $res = $ua->request($request);
-#        ok($res->is_success, "req");
+        ok($res->is_success, "req is a success");
     },
     server => sub {
         my $port = shift;
@@ -29,10 +29,13 @@ Test::TCP::test_tcp(
         
         setting port => $port;
         setting show_errors => 1;
+        setting access_log => 0;
 
         get '/req' => sub {
-            is(request->header('X-User-Head1'), 42);
-            is(request->header('X-User-Head2'), 43);
+            is(request->header('X-User-Head1'), 42,
+                "header X-User-Head1 is ok");
+            is(request->header('X-User-Head2'), 43,
+                "header X-User-Head2 is ok");
         };
         
         Dancer->dance();
