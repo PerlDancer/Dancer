@@ -41,14 +41,20 @@ sub import {
 
 sub route_exists {
     my ($req, $test_name) = @_;
+
     my ($method, $path) = @$req;
+    $test_name ||= "a route exists for $method $path";
+    
     $req = Dancer::Request->new_for_request($method => $path);
     ok(Dancer::Route->find($path, $method, $req), $test_name);
 }
 
 sub route_doesnt_exist {
     my ($req, $test_name) = @_;
+
     my ($method, $path) = @$req;
+    $test_name ||= "no route exists for $method $path";
+
     $req = Dancer::Request->new_for_request($method => $path);
     ok((!defined(Dancer::Route->find($path, $method, $req))), $test_name);
 }
@@ -57,24 +63,32 @@ sub route_doesnt_exist {
 
 sub response_exists {
     my ($req, $test_name) = @_;
+    $test_name ||= "a response is found for @$req";
+
     my $response = _get_response($req);
     ok(defined($response), $test_name);
 }
 
 sub response_doesnt_exist {
     my ($req, $test_name) = @_;
+    $test_name ||= "no response found for @$req";
+
     my $response = _get_response($req);
     ok(!defined($response), $test_name);
 }
 
 sub response_status_is {
     my ($req, $status, $test_name) = @_;
+    $test_name ||= "response status is $status for @$req";
+
     my $response = _get_response($req); 
     is $response->{status}, $status, $test_name;
 }
 
 sub response_status_isnt {
     my ($req, $status, $test_name) = @_;
+    $test_name ||= "response status is not $status for @$req";
+
     my $response = _get_response($req); 
     isnt $response->{status}, $status, $test_name;
 }
@@ -83,30 +97,40 @@ sub response_status_isnt {
 
 sub response_content_is {
     my ($req, $matcher, $test_name) = @_;
+    $test_name ||= "response content looks good for @$req";
+
     my $response = _get_response($req); 
     is $response->{content}, $matcher, $test_name;
 }
 
 sub response_content_isnt {
     my ($req, $matcher, $test_name) = @_;
+    $test_name ||= "response content looks good for @$req";
+
     my $response = _get_response($req); 
     isnt $response->{content}, $matcher, $test_name;
 }
 
 sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
+    $test_name ||= "response content looks good for @$req";
+
     my $response = _get_response($req); 
     like $response->{content}, $matcher, $test_name;
 }
 
 sub response_content_unlike {
     my ($req, $matcher, $test_name) = @_;
+    $test_name ||= "response content looks good for @$req";
+
     my $response = _get_response($req); 
     unlike $response->{content}, $matcher, $test_name;
 }
 
 sub response_content_is_deeply {
     my ($req, $matcher, $test_name) = @_;
+    $test_name ||= "response content looks good for @$req";
+
     my $response = _get_response($req); 
     is_deeply $response->{content}, $matcher, $test_name;
 }
