@@ -10,7 +10,12 @@ use Dancer::HTTP;
 use Dancer::GetOpt;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(read_glob_content);
+use Dancer::SharedData;
 
+sub headers {
+    my ($class, $headers) = @_;
+    Dancer::SharedData->headers($headers);
+}
 
 # in standalone mode, this method initializes the process
 # and start an HTTP server
