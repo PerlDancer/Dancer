@@ -13,6 +13,10 @@ sub var {
     return $vars->{$key};
 }
 
+# request headers
+my $headers;
+sub headers { (@_ == 2) ? $headers = $_[1] : $headers }
+
 # request singleton
 my $_request;
 sub request { (@_ == 2) ? $_request = $_[1] : $_request }
