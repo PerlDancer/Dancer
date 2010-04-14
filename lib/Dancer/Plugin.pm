@@ -23,7 +23,9 @@ sub plugin_setting {
     
     my $settings = setting('plugins');
 
-    foreach ($plugin_name, $plugin_orig_name) {
+    foreach (   $plugin_name,    $plugin_orig_name,
+             lc $plugin_name, lc $plugin_orig_name) 
+    {
         return $settings->{$_}
             if ( exists $settings->{$_} );
     }
