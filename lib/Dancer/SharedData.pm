@@ -14,8 +14,8 @@ sub var {
 }
 
 # request headers
-my $headers;
-sub headers { (@_ == 2) ? $headers = $_[1] : $headers }
+my $_headers;
+sub headers { (@_ == 2) ? $_headers = $_[1] : $_headers }
 
 # request singleton
 my $_request;
@@ -31,6 +31,7 @@ sub reset_all {
     $vars   = {};
     undef $_request;
     undef $_timer;
+    undef $_headers;
 }
 
 
