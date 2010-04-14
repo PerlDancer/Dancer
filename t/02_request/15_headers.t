@@ -6,9 +6,12 @@ plan skip_all => "LWP::UserAgent is needed to run this tests"
     unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
+plan skip_all => 'Plack::Loader is needed to run this test'
+    unless Dancer::ModuleLoader->load('Plack::Loader');
+plan tests => 6;
 
-plan tests => 3;
 
+for my $handler ('Standalone', 'PSGI') {
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
@@ -19,7 +22,7 @@ Test::TCP::test_tcp(
         $request->header('X-User-Head2' => 43);
 
         my $res = $ua->request($request);
-        ok($res->is_success, "req is a success");
+        ok($res->is_success, "$handler server responded");
     },
     server => sub {
         my $port = shift;
@@ -27,6 +30,7 @@ Test::TCP::test_tcp(
         use Dancer;
         use Dancer::Config 'setting';
         
+        setting apphandler => $handler;
         setting port => $port;
         setting show_errors => 1;
         setting access_log => 0;
@@ -38,7 +42,18 @@ Test::TCP::test_tcp(
                 "header X-User-Head2 is ok");
         };
         
-        Dancer->dance();
+        if ($handler eq 'PSGI') {
+            my $app = sub {
+                my $env = shift;
+                my $request = Dancer::Request->new($env);
+                Dancer->dance($request);
+            };
+
+            Plack::Loader->auto(port => $port)->run($app);
+        }
+        else {
+            Dancer->dance();
+        }
     },
 );
-
+}
