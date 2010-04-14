@@ -36,7 +36,7 @@ sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
 sub is_put                { $_[0]->{method} eq 'PUT' }
 sub is_delete             { $_[0]->{method} eq 'DELETE' }
-sub header                { $_[0]->{headers}{$_[1]} }
+sub header                { $_[0]->{headers}->get($_[1]) }
 
 # public interface compat with CGI.pm objects 
 sub request_method { method(@_) }
@@ -219,20 +219,7 @@ sub _build_request_env {
 
 sub _build_headers {
     my ($self) = @_;
-    my $headers = Dancer::SharedData->headers;
-    my $parsed = {};
-
-    for (my $i=0; $i<scalar(@$headers); $i+=2) {
-        my ($key, $value) = ($headers->[$i], $headers->[$i + 1]);
-        if (defined $parsed->{$key}) {
-            $parsed->{$key} = [ $parsed->{$key} ];
-            push @{$parsed->{$key}}, $value;
-        }
-        else {
-            $parsed->{$key} = $value;
-        }
-    }
-    $self->{headers} = $parsed;
+    $self->{headers} = Dancer::SharedData->headers;
 }
 
 sub _build_params {
