@@ -488,6 +488,12 @@ Return the content type of the request.
 
 Return the content length of the request.
 
+=head2 header($name)
+
+Return the value of the given header, if present. If the header has multiple
+values, returns an the list of values if called in list context, the first one
+in scalar.
+
 =head2 body()
 
 Return the raw body of the request, unparsed.
