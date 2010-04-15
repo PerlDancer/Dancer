@@ -525,8 +525,8 @@ Helper to let you define a route pattern as a regular Perl regexp:
         ...
     };
 
-The string given is processed to be considered as a Perl regular
-expression except that all slashes and dots will be escaped before the match.
+The string given is treated as a Perl regular expression with the exception
+that all slashes and dots will be escaped before the match.
 
 =head2 redirect
 
@@ -579,7 +579,7 @@ In the example above, only 'name' and 'value' are mandatory.
 
 =head2 session
 
-Accessor the session object, providing access to all data stored in the current
+Accessor for session object, providing access to all data stored in the current
 session engine (if any).
 
 It can also be used as a setter to add new data to the current session engine.
