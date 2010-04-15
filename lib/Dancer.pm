@@ -376,7 +376,7 @@ Deserialize a YAML structure
 
 =head2 from_xml
 
-Deserialize a XML structur
+Deserialize a XML structure
 
 =head2 get
 
