@@ -262,7 +262,7 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 
 =head2 any
 
-Define a route for multiple methods at one.
+Define a route for multiple HTTP methods at once:
 
     any ['get', 'post'] => '/myaction' => sub {
         # code
@@ -380,7 +380,7 @@ Deserialize a XML structure
 
 =head2 get
 
-Define a route for B<GET> method.
+Define a route for HTTP B<GET> requests to the given path:
 
     get '/' => sub {
         return "Hello world";
@@ -478,7 +478,7 @@ underlying operating system.
 
 =head2 post
 
-Define a route for B<POST> method.
+Define a route for HTTP B<POST> requests to the given URL:
 
     POST '/' => sub {
         return "Hello world";
@@ -501,19 +501,19 @@ You can unset the prefix value
 
 =head2 del
 
-Define a route for the B<DELETE> method
+Define a route for HTTP B<DELETE> requests to the given URL:
 
 del '/resource' => sub { ... };
 
 =head2 options
 
-Define a route for the B<OPTIONS> method
+Define a route for HTTP B<OPTIONS> requests to the given URL:
 
 options '/resource' => sub { ... };
 
 =head2 put
 
-Define a route for the B<PUT> method
+Define a route for HTTP B<PUT> requests to the given URL:
 
 put '/resource' => sub { ... };
 
