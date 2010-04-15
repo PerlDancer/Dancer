@@ -523,7 +523,7 @@ Helper to let you define a route pattern as a regular Perl regexp:
 
     get r('/some([a-z0-9]{4})/complex/rules?') => sub {
         ...
-    }
+    };
 
 The string given is processed to be considered as a Perl regular
 expression except that all slashes and dots will be escaped before the match.
