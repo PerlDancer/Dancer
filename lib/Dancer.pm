@@ -283,8 +283,12 @@ Defines a before filter:
     };
 
 The anonymous function which is given to C<before> will be executed before
-request. You can define multiple before filters, using the C<before> helper as
-many time as you like.
+looking for a route handler to handle the request.
+
+You can define multiple before filters, using the C<before> helper as
+many times as you wish; each filter will be executed, in the order you added
+them.
+
 
 =head2 cookies
 
