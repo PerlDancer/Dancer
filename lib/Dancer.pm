@@ -254,8 +254,8 @@ This documentation describes all the exported symbols of Dancer, if you want to 
 a quick start guide to discover the framework, you should look at
 L<Dancer::Tutorial>.
 
-If you want to have specific examples of code for real-life problems, feel free
-to give a look at L<Dancer::Cookbook>.
+If you want to have specific examples of code for real-life problems, see the 
+L<Dancer::Cookbook>.
 
 If you want to see configuration examples of different deployment solutions
 involving Dancer and Plack, see L<Dancer::Deployment>.
@@ -279,7 +279,7 @@ or
 
 =head2 any
 
-Define a route for multiple methods at one.
+Define a route for multiple HTTP methods at once:
 
     any ['get', 'post'] => '/myaction' => sub {
         # code
@@ -300,8 +300,12 @@ Defines a before filter:
     };
 
 The anonymous function which is given to C<before> will be executed before
-request. You can define multiple before filters, using the C<before> helper as
-many time as you like.
+looking for a route handler to handle the request.
+
+You can define multiple before filters, using the C<before> helper as
+many times as you wish; each filter will be executed, in the order you added
+them.
+
 
 =head2 cookies
 
@@ -357,7 +361,7 @@ Log a message of error level:
 
 =head2 send_error
 
-The application return an error. By default the HTTP code returned is 500.
+Return a HTTP error.  By default the HTTP code returned is 500.
 
     get '/photo/:id' => sub {
         if (...) {
@@ -366,6 +370,10 @@ The application return an error. By default the HTTP code returned is 500.
            # return content
         }
     }
+
+This will not cause your route handler to return immediately, so be careful that
+your route handler doesn't then override the error.  You can avoid that by
+saying C<return send_error(...)> instead.
 
 =head2 false
 
@@ -385,11 +393,11 @@ Deserialize a YAML structure
 
 =head2 from_xml
 
-Deserialize a XML structur
+Deserialize a XML structure
 
 =head2 get
 
-Define a route for B<GET> method.
+Define a route for HTTP B<GET> requests to the given path:
 
     get '/' => sub {
         return "Hello world";
@@ -487,7 +495,7 @@ underlying operating system.
 
 =head2 post
 
-Define a route for B<POST> method.
+Define a route for HTTP B<POST> requests to the given URL:
 
     POST '/' => sub {
         return "Hello world";
@@ -510,19 +518,19 @@ You can unset the prefix value
 
 =head2 del
 
-Define a route for the B<DELETE> method
+Define a route for HTTP B<DELETE> requests to the given URL:
 
 del '/resource' => sub { ... };
 
 =head2 options
 
-Define a route for the B<OPTIONS> method
+Define a route for HTTP B<OPTIONS> requests to the given URL:
 
 options '/resource' => sub { ... };
 
 =head2 put
 
-Define a route for the B<PUT> method
+Define a route for HTTP B<PUT> requests to the given URL:
 
 put '/resource' => sub { ... };
 
@@ -532,10 +540,10 @@ Helper to let you define a route pattern as a regular Perl regexp:
 
     get r('/some([a-z0-9]{4})/complex/rules?') => sub {
         ...
-    }
+    };
 
-The string given is processed to be considered as a Perl regular
-expression except that all slashes and dots will be escaped before the match.
+The string given is treated as a Perl regular expression with the exception
+that all slashes and dots will be escaped before the match.
 
 =head2 redirect
 
@@ -588,7 +596,7 @@ In the example above, only 'name' and 'value' are mandatory.
 
 =head2 session
 
-Accessor the session object, providing access to all data stored in the current
+Accessor for session object, providing access to all data stored in the current
 session engine (if any).
 
 It can also be used as a setter to add new data to the current session engine.
@@ -624,8 +632,8 @@ keyword returns the list of captures made:
 Starts the application or the standalone server (depending on the deployment
 choices).
 
-This keyword should be called at the very end of the
-script, once every route are defined.
+This keyword should be called at the very end of the script, once all routes 
+are defined.  At this point, Dancer takes over control.
 
 =head2 status
 
@@ -656,7 +664,7 @@ Tells the route handler to build a response with the current template engine:
     };
 
 The first parameter should be a template available in the views directory, the
-second one (optional) is a HASH of tokens to interpolate.
+second one (optional) is a hashref of tokens to interpolate.
 
 =head2 to_dumper
 
@@ -672,7 +680,7 @@ Serialize a structure to YAML
 
 =head2 to_xml
 
-Serialize a struture to XML
+Serialize a structure to XML
 
 =head2 true
 
@@ -697,7 +705,7 @@ keyword will return an array of Dancer::Request::Upload objects:
         # $file1 and $file2 are Dancer::Request::Upload objects
     };
 
-You can also access the raw hashref of parsed uploads via the current requesrt
+You can also access the raw hashref of parsed uploads via the current request
 object:
 
     post '/some/route' => sub {
@@ -717,7 +725,7 @@ See L<Dancer::Request::Upload> for details about the interface provided.
 
 =head2 uri_for
 
-Returns a FQDN URI for the given path:
+Returns a fully-qualified URI for the given path:
 
     get '/' => sub {
         redirect uri_for('/path');
@@ -737,7 +745,7 @@ C<vars> keyword.
 
 =head2 vars
 
-Returns the HASH of all shared variables set previously during the filter/route
+Returns the hashref of all shared variables set previously during the filter/route
 chain.
 
     get '/path' => sub {
