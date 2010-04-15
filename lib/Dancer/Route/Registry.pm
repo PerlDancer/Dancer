@@ -2,7 +2,7 @@ package Dancer::Route::Registry;
 use strict;
 use warnings;
 
-# instance 
+# instance
 use base 'Dancer::Object';
 
 sub init {
@@ -26,8 +26,17 @@ sub add_before_filter {
     push @{ $_registry->{before_filters} }, $filter;
 }
 
-sub routes { $_[1] ? $_registry->{routes}{$_[1]} : $_registry->{routes} }
-sub add_route { 
+sub routes {
+    if ( $_[1] ) {
+        my $route = $_registry->{routes}{ $_[1] };
+        $route ? return $route : [];
+    }
+    else {
+        return $_registry->{routes};
+    }
+}
+
+sub add_route {
     my ($class, %args) = @_;
     $_registry->{routes}{$args{method}} ||= [];
     push @{ $_registry->{routes}{$args{method}} }, \%args;
