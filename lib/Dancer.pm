@@ -29,6 +29,7 @@ use base 'Exporter';
 $AUTHORITY = 'SUKRIA';
 $VERSION   = '1.18_01';
 @EXPORT    = qw(
+  ajax
   any
   before
   cookies
@@ -85,6 +86,7 @@ $VERSION   = '1.18_01';
 
 # Dancer's syntax
 
+sub ajax         { Dancer::Route->add_ajax(@_) }
 sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
 sub cookies      { Dancer::Cookies->cookies }
@@ -150,11 +152,11 @@ sub var      { Dancer::SharedData->var(@_) }
 sub vars     { Dancer::SharedData->vars }
 sub warning  { Dancer::Logger->warning(@_) }
 
-sub load_app { 
+sub load_app {
     for my $app (@_) {
         Dancer::Logger->core("loading application $app");
         use lib path(dirname(abs_path($0)), 'lib');
-        Dancer::ModuleLoader->load($app) or 
+        Dancer::ModuleLoader->load($app) or
             die "unable to load application $app";
     }
 }
@@ -260,6 +262,21 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 
 =head1 METHODS
 
+=head2 ajax
+
+Define a route for 'ajax' query. To be matched, the request must have the B<X_REQUESTED_WITH> header set to B<XMLHttpRequet>.
+
+    ajax '/list' => sub {
+       my $resul = [qw/one two three/];
+       to_json($result);
+    }
+
+or
+
+    ajax ['get', 'post'] => '/list' => sub {
+        # code
+    }
+
 =head2 any
 
 Define a route for multiple HTTP methods at once:
@@ -278,7 +295,7 @@ Or even, a route handler that would match any HTTP methods:
 
 Defines a before filter:
 
-    before sub { 
+    before sub {
         # do something with request, vars or params
     };
 
@@ -430,9 +447,9 @@ C<./lib> directory.
 
     # if we have lib/Webapp.pm, we can load it like:
     load_app 'Webapp';
-    
+
 Note that a package loaded using load_app B<must> import Dancer with the
-C<:syntax> option, in order not to change the application directory 
+C<:syntax> option, in order not to change the application directory
 (which has been previously set for the caller script).
 
 =head2 mime_type
@@ -613,7 +630,7 @@ keyword returns the list of captures made:
 =head2 start
 
 Starts the application or the standalone server (depending on the deployment
-choices). 
+choices).
 
 This keyword should be called at the very end of the script, once all routes 
 are defined.  At this point, Dancer takes over control.
