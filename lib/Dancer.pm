@@ -615,8 +615,8 @@ keyword returns the list of captures made:
 Starts the application or the standalone server (depending on the deployment
 choices). 
 
-This keyword should be called at the very end of the
-script, once every route are defined.
+This keyword should be called at the very end of the script, once all routes 
+are defined.  At this point, Dancer takes over control.
 
 =head2 status
 
@@ -647,7 +647,7 @@ Tells the route handler to build a response with the current template engine:
     };
 
 The first parameter should be a template available in the views directory, the
-second one (optional) is a HASH of tokens to interpolate.
+second one (optional) is a hashref of tokens to interpolate.
 
 =head2 to_dumper
 
