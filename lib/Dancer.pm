@@ -344,7 +344,7 @@ Log a message of error level:
 
 =head2 send_error
 
-The application return an error. By default the HTTP code returned is 500.
+Return a HTTP error.  By default the HTTP code returned is 500.
 
     get '/photo/:id' => sub {
         if (...) {
@@ -353,6 +353,10 @@ The application return an error. By default the HTTP code returned is 500.
            # return content
         }
     }
+
+This will not cause your route handler to return immediately, so be careful that
+your route handler doesn't then override the error.  You can avoid that by
+saying C<return send_error(...)> instead.
 
 =head2 false
 
