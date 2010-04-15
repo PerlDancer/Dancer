@@ -252,8 +252,8 @@ This documentation describes all the exported symbols of Dancer, if you want to 
 a quick start guide to discover the framework, you should look at
 L<Dancer::Tutorial>.
 
-If you want to have specific examples of code for real-life problems, feel free
-to give a look at L<Dancer::Cookbook>.
+If you want to have specific examples of code for real-life problems, see the 
+L<Dancer::Cookbook>.
 
 If you want to see configuration examples of different deployment solutions
 involving Dancer and Plack, see L<Dancer::Deployment>.
