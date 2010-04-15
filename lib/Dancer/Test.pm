@@ -34,7 +34,7 @@ sub import {
     $class->export_to_level(1, $class, @EXPORT );
 
     $options{appdir} ||= '..';
-    Dancer::set_appdir($options{appdir});
+    Dancer::_init($options{appdir});
 }
 
 # Route Registry
