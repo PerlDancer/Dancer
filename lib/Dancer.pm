@@ -663,7 +663,7 @@ Serialize a structure to YAML
 
 =head2 to_xml
 
-Serialize a struture to XML
+Serialize a structure to XML
 
 =head2 true
 
@@ -688,7 +688,7 @@ keyword will return an array of Dancer::Request::Upload objects:
         # $file1 and $file2 are Dancer::Request::Upload objects
     };
 
-You can also access the raw hashref of parsed uploads via the current requesrt
+You can also access the raw hashref of parsed uploads via the current request
 object:
 
     post '/some/route' => sub {
@@ -708,7 +708,7 @@ See L<Dancer::Request::Upload> for details about the interface provided.
 
 =head2 uri_for
 
-Returns a FQDN URI for the given path:
+Returns a fully-qualified URI for the given path:
 
     get '/' => sub {
         redirect uri_for('/path');
@@ -728,7 +728,7 @@ C<vars> keyword.
 
 =head2 vars
 
-Returns the HASH of all shared variables set previously during the filter/route
+Returns the hashref of all shared variables set previously during the filter/route
 chain.
 
     get '/path' => sub {
