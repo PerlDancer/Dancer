@@ -43,7 +43,7 @@ script, which will build the framework of your application with a single
 command:
 
     $ dancer -a mywebapp
-    + [D] mywebapp 
+    + [D] mywebapp
     + [F] mywebapp/config.yml
     + [D] mywebapp/views
     + [D] mywebapp/views/layouts
@@ -77,7 +77,7 @@ which returns the response.
     };
 
 The above route specifies that, for GET requests to '/hello/...', the code block
-provided should be executed.  
+provided should be executed.
 
 =head2 Handling multiple HTTP request methods
 
@@ -102,7 +102,7 @@ requests.
 
 =head2 Retrieving request parameters
 
-The C<params> method returns a hashref of request parameters; these will be 
+The C<params> method returns a hashref of request parameters; these will be
 parameters supplied on the query string, within the path itself (with named
 placeholders), and, for HTTTP POST requests, the content of the POST body.
 
@@ -317,17 +317,17 @@ view. The `appdir/views' directory is the place where views are located.
 You can change this location by changing the setting 'views'.
 
 By default, the internal template engine L<Dancer::Template::Simple> is used,
-but you may want to upgrade to Template::Toolkit. If you do so, you have to 
+but you may want to upgrade to Template::Toolkit. If you do so, you have to
 enable this engine in your settings as explained in
-L<Dancer::Template::TemplateToolkit>.  If you do so, you'll also have to 
-import the L<Template> module in your application code. 
+L<Dancer::Template::TemplateToolkit>.  If you do so, you'll also have to
+import the L<Template> module in your application code.
 
-Note that, by default, Dancer configures the Template::Toolkit engine to use 
+Note that, by default, Dancer configures the Template::Toolkit engine to use
 C<<% %>> brackets instead of its default C<[% %]> brackets.  You can change this
 by using the following in your config file:
 
     template: template_toolkit
-    
+
     engines:
         template_toolkit:
             start_tag: '[%'
@@ -337,7 +337,7 @@ All views must have a '.tt' extension. This may change in the future.
 
 In order to render a view, just call the C<template> keyword at the end of the
 action by giving the view name and the HASHREF of tokens to interpolate in the
-view (note that for convenience, the request, session and route params are 
+view (note that for convenience, the request, session and route params are
 automatically accessible in the view, named request, session and params) - for
 example:
 
@@ -406,10 +406,10 @@ like the following:
     layout: 'main'
 
 And then write as many environment files as you like in C<appdir/environments>.
-That way, the appropriate environment config file will be loaded according to 
+That way, the appropriate environment config file will be loaded according to
 the running environment (if none is specified, it will be 'development').
 
-Note that you can change the running environment using the C<--environment> 
+Note that you can change the running environment using the C<--environment>
 commandline switch.
 
 Typically, you'll want to set the following values in a development config file:
@@ -469,6 +469,35 @@ Just call  C<debug>, C<warning> or C<error> with your message:
 
     debug "This is a debug message from my app.";
 
+=head2 Writing a REST application
+
+With Dancer, it's easy to write REST application. Dancer provides helpers to serialize and deserialize for the following data format:
+
+=over 4
+
+=item JSON
+
+=item YAML
+
+=item XML
+
+=item Data::Dumper
+
+=back
+
+To activate this feature, you only have to write this:
+
+   serializer => 'JSON'
+
+From now, all hash ref or array ref returned by a route will be serialized to JSON. And all data receive from B<POST> or B<PUT> will be deserialized from JSON.
+
+    get '/hello/:name' => sub {
+        # this structure will be returned to the client as
+	# {"name":"$name"}
+        return {name => params->{name}};
+    };
+
+It's possible to let the client choose which serializer he want to use. For this, use the B<mutable> serializer, and an appropriate serializer will be choosen from the B<Content-Type> header.
 
 =head2 Deploying your Dancer applications
 
