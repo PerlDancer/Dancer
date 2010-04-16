@@ -201,20 +201,19 @@ sub _set_query_params {
 sub _build_request_env {
     my ($self) = @_;
 
-    # Don't refactor that, it's called whenever a request object is needed, that
-    # means at least once per request. If refactored in a loop, this will cost 4
-    # times more than the following static map.
-    $self->{user_agent}         = $self->{env}{HTTP_USER_AGENT};
-    $self->{host}               = $self->{env}{HTTP_HOST};
-    $self->{accept_language}    = $self->{env}{HTTP_ACCEPT_LANGUAGE};
-    $self->{accept_charset}     = $self->{env}{HTTP_ACCEPT_CHARSET};
-    $self->{accept_encoding}    = $self->{env}{HTTP_ACCEPT_ENCODING};
-    $self->{keep_alive}         = $self->{env}{HTTP_KEEP_ALIVE};
-    $self->{connection}         = $self->{env}{HTTP_CONNECTION};
-    $self->{accept}             = $self->{env}{HTTP_ACCEPT};
-    $self->{referer}            = $self->{env}{HTTP_REFERER};
-    $self->{'x_requested_with'} = $self->{env}{'HTTP_X_REQUESTED_WITH'};
-
+   # Don't refactor that, it's called whenever a request object is needed, that
+   # means at least once per request. If refactored in a loop, this will cost 4
+   # times more than the following static map.
+    $self->{user_agent}       = $self->{env}{HTTP_USER_AGENT};
+    $self->{host}             = $self->{env}{HTTP_HOST};
+    $self->{accept_language}  = $self->{env}{HTTP_ACCEPT_LANGUAGE};
+    $self->{accept_charset}   = $self->{env}{HTTP_ACCEPT_CHARSET};
+    $self->{accept_encoding}  = $self->{env}{HTTP_ACCEPT_ENCODING};
+    $self->{keep_alive}       = $self->{env}{HTTP_KEEP_ALIVE};
+    $self->{connection}       = $self->{env}{HTTP_CONNECTION};
+    $self->{accept}           = $self->{env}{HTTP_ACCEPT};
+    $self->{referer}          = $self->{env}{HTTP_REFERER};
+    $self->{x_requested_with} = $self->{env}{HTTP_X_REQUESTED_WITH};
 }
 
 sub _build_headers {
