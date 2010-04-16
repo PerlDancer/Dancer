@@ -3,6 +3,7 @@ Dancer 1.175
     * RT #56395 reported by Jonathan Yu on behalf of Debian Perl team.
     * Documentation for Dancer::Error
     * Documentation for Dancer::FileUtils
+    * Documentation for Dancer::Cookie
 
     [ Alexis Sukrieh ]
     * fixed t/15_plugins/02_config.t when YAML is not installed 
