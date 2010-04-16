@@ -1,32 +1,39 @@
+use Test::More import => ['!pass'];
 use strict;
 use warnings;
 
-use Test::More tests => 3, import => ['!pass'];
-use Dancer ':syntax';
-use t::lib::TestUtils;
-use Dancer::SharedData;
-use Dancer::Test;
+plan skip_all => "LWP::UserAgent is needed to run this tests"
+    unless Dancer::ModuleLoader->load('LWP::UserAgent');
+plan skip_all => 'Test::TCP is needed to run this test'
+    unless Dancer::ModuleLoader->load('Test::TCP');
+plan tests => 3;
 
-my @requested_with = (
-    {value => 'XMLHttpRequest', expected => 'ajax', txt => 'valid ajax route'},
-    {   value    => 'FooBar',
-        expected => undef,
-        txt      => 'unvalid ajax route',
-    }
+Test::TCP::test_tcp(
+    client => sub {
+        my $port = shift;
+        my $ua = LWP::UserAgent->new;
+
+        my $request = HTTP::Request->new(GET => "http://127.0.0.1:$port/req");
+        $request->header('X-Requested-With' => 'XMLHttpRequest');
+        my $res = $ua->request($request);
+        ok($res->is_success, "server responded");
+	is($res->content, 1, "content ok");
+
+	$request = HTTP::Request->new(GET => "http://127.0.0.1:$port/req");
+        $res = $ua->request($request);
+        ok(!$res->is_success, "server didn't respond");
+    },
+    server => sub {
+        my $port = shift;
+
+        use Dancer;
+        use Dancer::Config 'setting';
+
+        setting port => $port;
+
+        ajax '/req' => sub {
+	     return 1;
+        };
+        Dancer->dance();
+    },
 );
-
-ok( ajax(
-        '/',
-        sub {
-            return "ajax";
-        }
-    ),
-    'defined ajax route'
-);
-
-foreach my $test (@requested_with) {
-
-    %ENV = ('HTTP_X_REQUESTED_WITH' => $test->{value},);
-
-    response_content_is [GET => "/"], $test->{expected}, $test->{txt};
-}
