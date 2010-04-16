@@ -267,7 +267,7 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 Define a route for 'ajax' query. To be matched, the request must have the B<X_REQUESTED_WITH> header set to B<XMLHttpRequet>.
 
     ajax '/list' => sub {
-       my $resul = [qw/one two three/];
+       my $result = [qw/one two three/];
        to_json($result);
     }
 
