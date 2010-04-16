@@ -38,7 +38,7 @@ sub is_put                { $_[0]->{method} eq 'PUT' }
 sub is_delete             { $_[0]->{method} eq 'DELETE' }
 sub header                { $_[0]->{headers}->get($_[1]) }
 
-# public interface compat with CGI.pm objects 
+# public interface compat with CGI.pm objects
 sub request_method { method(@_) }
 sub path_info      { path(@_) }
 sub Vars           { params(@_) }
@@ -145,8 +145,8 @@ sub params {
 sub is_ajax {
     my $self = shift;
 
-    return 0 unless defined $self->{'x_requested_with'};
-    return 0 if $self->{'x_requested_with'} ne 'XMLHttpRequest';
+    return 0 unless defined $self->header('X-Requested-With');
+    return 0 if $self->header('X-Requested-With') ne 'XMLHttpRequest';
     return 1;
 }
 
@@ -154,7 +154,7 @@ sub is_ajax {
 sub upload {
     my ($self, $name) = @_;
     my $res = $self->{uploads}{$name};
-    
+
     return $res unless wantarray;
     return () unless defined $res;
     return (ref($res) eq 'ARRAY') ? @$res : $res;
@@ -380,7 +380,7 @@ sub _build_uploads {
 
     my $uploads = $self->{_http_body}->upload;
     my %uploads;
-    
+
     for my $name (keys %{ $uploads }) {
         my $files = $uploads->{$name};
         $files = ref $files eq 'ARRAY' ? $files : [$files];
