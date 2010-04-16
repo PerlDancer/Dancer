@@ -3,8 +3,6 @@ use warnings;
 
 use Test::More tests => 3, import => ['!pass'];
 use Dancer ':syntax';
-use t::lib::TestUtils;
-use Dancer::SharedData;
 use Dancer::Test;
 
 my @requested_with = (
