@@ -155,9 +155,13 @@ sub warning  { Dancer::Logger->warning(@_) }
 sub load_app {
     for my $app (@_) {
         Dancer::Logger->core("loading application $app");
+
         use lib path(dirname(abs_path($0)), 'lib');
-        Dancer::ModuleLoader->load($app) or
-            die "unable to load application $app";
+
+        # we want to propagate loading errors, so don't use ModuleLoader here
+        local $@;
+        eval "use $app";
+        die "unable to load application $app : $@" if $@;
     }
 }
 
