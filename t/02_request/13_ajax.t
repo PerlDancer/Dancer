@@ -31,6 +31,7 @@ Test::TCP::test_tcp(
         use Dancer::Config 'setting';
 
         setting port => $port;
+        setting access_log => 0;
 
         get '/req' => sub {
 	    request->is_ajax ? return 1 : return 0;
