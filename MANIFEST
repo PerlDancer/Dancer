@@ -15,6 +15,7 @@ lib/Dancer/GetOpt.pm
 lib/Dancer/Handler.pm
 lib/Dancer/Handler/PSGI.pm
 lib/Dancer/Handler/Standalone.pm
+lib/Dancer/Headers.pm
 lib/Dancer/Helpers.pm
 lib/Dancer/HTTP.pm
 lib/Dancer/Introduction.pod
@@ -64,6 +65,10 @@ t/00_base/004_args.t
 t/00_base/005_module_loader.t
 t/00_base/007_load_syntax.t
 t/00_base/06_dancer_object.t
+t/00_base/08_pod_coverage_dancer.t
+t/00_base/09_load_app.t
+t/00_base/lib/AppWithError.pm
+t/00_base/lib/WorkingApp.pm
 t/01_config/01_settings.t
 t/01_config/02_mime_type.t
 t/01_config/03_logger.t
@@ -84,6 +89,7 @@ t/02_request/11_accessors.t
 t/02_request/12_base.t
 t/02_request/13_ajax.t
 t/02_request/14_uploads.t
+t/02_request/15_headers.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
@@ -106,6 +112,7 @@ t/03_route_handler/17_compile.t
 t/03_route_handler/18_auto_page.t
 t/03_route_handler/19_filters_and_params.t
 t/03_route_handler/20_params_multiple_tokens.t
+t/03_route_handler/21_ajax.t
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
