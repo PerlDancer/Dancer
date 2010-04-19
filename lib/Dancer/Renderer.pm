@@ -127,6 +127,8 @@ sub get_file_response_for_path {
 
     if (-f $static_file) {
         open my $fh, "<", $static_file;
+        binmode $fh;
+
         return Dancer::Response->new(
             status  => $status,
             headers => ['Content-Type' => get_mime_type($static_file)],
