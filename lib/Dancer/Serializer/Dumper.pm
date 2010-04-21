@@ -5,6 +5,18 @@ use warnings;
 use base 'Dancer::Serializer::Abstract';
 use Data::Dumper;
 
+sub from_dumper {
+    my ($string) = @_;
+    my $s = Dancer::Serializer::Dumper->new;
+    $s->deserialize($string);
+}
+
+sub to_dumper {
+    my ($data) = @_;
+    my $s = Dancer::Serializer::Dumper->new;
+    $s->serialize($data);
+}
+
 sub serialize {
     my ($self, $entity) = @_;
     {

@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More 'no_plan', import => ['!pass'];
 use Dancer ':syntax';
-use t::lib::TestUtils;
+use Dancer::Test;
 
 ok(before(sub { 
     params->{number} = 42;
@@ -18,9 +18,13 @@ ok(get('/' => sub {
 }), 'index route is defined');
 
 my $path = '/somewhere';
-my $request = fake_request(GET => $path);
+my $request = [ GET => $path ];
 
-Dancer::SharedData->request($request);
-my $response = Dancer::Renderer::get_action_response();
-ok(defined($response), "route handler found for $path");
-is($response->{content}, 'index', "$path got redirected to /");
+route_doesnt_exist $request, 
+    "there is no route handler for $path...";
+
+response_exists $request,
+    "...but a response is returned though";
+
+response_content_is $request, 'index', 
+    "which is the result of a redirection to /";

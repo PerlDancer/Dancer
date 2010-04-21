@@ -5,9 +5,29 @@ use warnings;
 use Dancer::ModuleLoader;
 use base 'Dancer::Serializer::Abstract';
 
+
+# helpers
+
+sub from_json { 
+    my ($json) = @_;
+    my $s = Dancer::Serializer::JSON->new;
+    $s->deserialize($json);
+}
+
+sub to_json { 
+    my ($data) = @_;
+    my $s = Dancer::Serializer::JSON->new;
+    $s->serialize($data);
+}
+
+# class definition
+
+sub loaded { Dancer::ModuleLoader->load('JSON') }
+
 sub init {
+    my ($self) = @_;
     die 'JSON is needed and is not installed'
-      unless Dancer::ModuleLoader->load('JSON');
+        unless $self->loaded;
 }
 
 sub serialize {
@@ -16,11 +36,11 @@ sub serialize {
 }
 
 sub deserialize {
-    my ($self, $content) = @_;
-    JSON::decode_json($content);
+    my ( $self, $entity ) = @_;
+    JSON::decode_json($entity);
 }
 
-sub content_type { 'application/json' }
+sub content_type {'application/json'}
 
 1;
 __END__

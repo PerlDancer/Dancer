@@ -4,7 +4,9 @@ use strict;
 use warnings;
 use base 'Dancer::Handler';
 
+use Plack::Request;
 use Dancer::GetOpt;
+use Dancer::Headers;
 use Dancer::Config;
 use Dancer::SharedData;
 
@@ -20,6 +22,12 @@ sub dance { process(@_) }
 
 sub process {
     my ($self, $request) = @_;
+
+    my $plack = Plack::Request->new($request->env);
+    my $headers = Dancer::Headers->new(headers => $plack->headers);
+    Dancer::SharedData->headers($headers);
+    $request->_build_headers();
+
     $self->handle_request($request);
 }
 
