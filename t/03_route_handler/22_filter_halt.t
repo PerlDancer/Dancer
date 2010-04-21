@@ -14,6 +14,12 @@ use Dancer::Test;
         }
     };
 
+    before sub {
+        unless (params->{'requested'}) {
+            halt("another halt");
+        }
+    };
+
     get '/' => sub {
         "route"
     };
