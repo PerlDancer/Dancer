@@ -81,6 +81,7 @@ sub html_page {
 }
 
 sub get_action_response {
+    my $response;
     my $request = Dancer::SharedData->request;
     my $path    = $request->path_info;
     my $method  = $request->method;
@@ -91,7 +92,11 @@ sub get_action_response {
     Dancer::SharedData->request($request);
 
     # run the before filters
+    # if a filter has set a response, return it now.
     Dancer::Route->run_before_filters;
+    if (Dancer::Response->exists) {
+        return serialize_response_if_needed(Dancer::Response->current);
+    }
 
     # recurse if something has changed
     my $limit = 0;
@@ -106,18 +111,21 @@ sub get_action_response {
     }
 
     # execute the action
-    my $response;
     if ($handler) {
         $response = Dancer::Route->call($handler);
         Dancer::Logger->core("route: ".$handler->{route});
     }
     
-    # serializing the response if needed
+    return serialize_response_if_needed($response);
+}
+
+sub serialize_response_if_needed {
+    my ($response) = @_;
     $response = Dancer::Serializer->process_response($response)
         if setting('serializer') && $response->{content};
-
     return $response;
 }
+
 
 sub get_file_response() {
     my $request     = Dancer::SharedData->request;

@@ -46,6 +46,7 @@ $VERSION   = '1.175_01';
   from_yaml
   from_xml
   get
+  halt
   header
   headers
   layout
@@ -107,6 +108,7 @@ sub get {
     Dancer::Route->add('head', @_);
     Dancer::Route->add('get',  @_);
 }
+sub halt       { Dancer::Response->halt(@_) }
 sub headers    { Dancer::Response::headers(@_); }
 sub header     { goto &headers; }                      # goto ftw!
 sub layout     { set(layout => shift) }
@@ -362,22 +364,6 @@ Log a message of error level:
 
     error "This is an error message";
 
-=head2 send_error
-
-Return a HTTP error.  By default the HTTP code returned is 500.
-
-    get '/photo/:id' => sub {
-        if (...) {
-            send_error("Not allowed", 403);
-        } else {
-           # return content
-        }
-    }
-
-This will not cause your route handler to return immediately, so be careful that
-your route handler doesn't then override the error.  You can avoid that by
-saying C<return send_error(...)> instead.
-
 =head2 false
 
 Constant that returns a false value (0).
@@ -405,6 +391,23 @@ Define a route for HTTP B<GET> requests to the given path:
     get '/' => sub {
         return "Hello world";
     }
+
+=head2 halt
+
+This keyword sets a response object with the content given. 
+
+When used as a return value from a filter, this breaks the execution flow and
+renders the response immediatly.
+
+    before sub { 
+        if ($some_condition) {
+            return halt("Unauthorized");
+        }
+    };
+
+    get '/' => sub { 
+        "hello there";
+    };
 
 =head2 headers
 
@@ -567,6 +570,23 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
 =head2 request
 
 Return a L<Dancer::Request> object representing the current request.
+
+=head2 send_error
+
+Return a HTTP error.  By default the HTTP code returned is 500.
+
+    get '/photo/:id' => sub {
+        if (...) {
+            send_error("Not allowed", 403);
+        } else {
+           # return content
+        }
+    }
+
+This will not cause your route handler to return immediately, so be careful that
+your route handler doesn't then override the error.  You can avoid that by
+saying C<return send_error(...)> instead.
+
 
 =head2 send_file
 

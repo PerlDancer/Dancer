@@ -34,10 +34,17 @@ sub current {
 }
 
 # helpers for the route handlers
+sub exists       { defined $CURRENT && length($CURRENT->{content}) }
 sub set          { $CURRENT                 = shift; }
 sub status       { $CURRENT->{status}       = Dancer::HTTP->status(shift) }
 sub content_type { $CURRENT->{content_type} = shift }
 sub pass         { $CURRENT->{pass}         = 1 }
+
+sub halt {
+    my ($class, $content) = @_;
+    $CURRENT = Dancer::Response->new;
+    $CURRENT->{content} = $content;
+}
 
 sub headers {
     push @{$CURRENT->{headers}}, @_;
