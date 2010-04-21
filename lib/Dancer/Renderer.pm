@@ -95,7 +95,7 @@ sub get_action_response {
     # if a filter has set a response, return it now.
     Dancer::Route->run_before_filters;
     if (Dancer::Response->exists) {
-        return serialize_response_if_needed(Dancer::Response->current);
+        $response = serialize_response_if_needed(Dancer::Response->current);
     }
 
     # recurse if something has changed
@@ -112,11 +112,18 @@ sub get_action_response {
 
     # execute the action
     if ($handler) {
+        # if a filter has set a response before, return it
+        return $response if defined $response;
+        undef $response;
+
         $response = Dancer::Route->call($handler);
         Dancer::Logger->core("route: ".$handler->{route});
+
+        return serialize_response_if_needed($response); #200
     }
-    
-    return serialize_response_if_needed($response);
+    else {
+        return undef; # 404
+    }
 }
 
 sub serialize_response_if_needed {
