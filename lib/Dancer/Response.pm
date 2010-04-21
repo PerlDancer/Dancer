@@ -42,9 +42,14 @@ sub pass         { $CURRENT->{pass}         = 1 }
 
 sub halt {
     my ($class, $content) = @_;
+
     $CURRENT = Dancer::Response->new;
     $CURRENT->{content} = $content;
+    $CURRENT->{halted}  = 1;
+    return $content;
 }
+
+sub halted { $CURRENT && $CURRENT->{halted} }
 
 sub headers {
     push @{$CURRENT->{headers}}, @_;

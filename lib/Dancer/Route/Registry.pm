@@ -2,6 +2,8 @@ package Dancer::Route::Registry;
 use strict;
 use warnings;
 
+use Dancer::Logger;
+
 # instance
 use base 'Dancer::Object';
 
@@ -23,7 +25,14 @@ sub reset  { $_registry = Dancer::Route::Registry->new }
 sub before_filters { @{ $_registry->{before_filters} } }
 sub add_before_filter {
     my ($class, $filter) = @_;
-    push @{ $_registry->{before_filters} }, $filter;
+
+    my $compiled_filter = sub {
+        return if Dancer::Response->halted;
+        Dancer::Logger->core("entering before filter");
+        $filter->();
+    };
+
+    push @{ $_registry->{before_filters} }, $compiled_filter;
 }
 
 sub routes {
