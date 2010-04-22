@@ -26,6 +26,8 @@ use vars '@EXPORT';
     response_content_is_deeply
     response_content_like
     response_content_unlike
+
+    response_is_file
 );
 
 sub import {
@@ -135,12 +137,35 @@ sub response_content_is_deeply {
     is_deeply $response->{content}, $matcher, $test_name;
 }
 
+sub response_is_file {
+    my ($req, $test_name) = @_;
+    $test_name ||= "a file is returned for @$req";
+
+    my $response = _get_file_response($req);
+    ok(defined($response), $test_name);
+}
+
 sub _get_response {
     my ($req) = @_;
     my ($method, $path, $params) = @$req;
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     Dancer::SharedData->request($request);
     return Dancer::Renderer::get_action_response();
+}
+
+sub _get_file_response {
+    my ($req) = @_;
+    my ($method, $path, $params) = @$req;
+    my $request = Dancer::Request->new_for_request($method => $path, $params);
+    Dancer::SharedData->request($request);
+    return Dancer::Renderer::get_file_response();
+}
+
+sub _get_handler_response {
+    my ($req) = @_;
+    my ($method, $path, $params) = @$req;
+    my $request = Dancer::Request->new_for_request($method => $path, $params);
+    return Dancer::Handler->handle_request($request);
 }
 
 1;
