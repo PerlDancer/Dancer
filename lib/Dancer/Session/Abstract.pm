@@ -169,9 +169,11 @@ Write the session object to the storage engine.
 
 Remove the current session object from the storage engine.
 
-=back
-
 =item B<session_name> (optional)
+
+Returns a string with the name of cookie used for storing the session ID.
+
+=back
 
 =head2 Inherited Methods
 
