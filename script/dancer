@@ -202,6 +202,7 @@ WriteMakefile(
 'app.psgi'  => 
 
 "# PSGI application bootstraper for Dancer
+use Dancer;
 load_app '$appname';
 
 use Dancer::Config 'setting';
