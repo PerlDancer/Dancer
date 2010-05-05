@@ -2,7 +2,13 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan', import => ['!pass'];
+use Test::More import => ['!pass'];
+
+plan skip_all => "Plack is needed for this test" 
+    unless Dancer::ModuleLoader->load('Plack');
+
+plan tests => 2;
+
 use File::Spec;
 use Dancer::Request;
 
