@@ -27,7 +27,7 @@ use Dancer::ModuleLoader;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.176';
+$VERSION   = '1.177_01';
 @EXPORT    = qw(
   ajax
   any
