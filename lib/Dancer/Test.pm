@@ -147,9 +147,12 @@ sub response_is_file {
 
 sub _get_response {
     my ($req) = @_;
-    my ($method, $path, $params) = @$req;
+    my ($method, $path, $params, $headers) = @$req;
     my $request = Dancer::Request->new_for_request($method => $path, $params);
+
+    Dancer::SharedData->headers($headers) if $headers;
     Dancer::SharedData->request($request);
+
     return Dancer::Renderer::get_action_response();
 }
 
