@@ -43,8 +43,13 @@ sub pass         { $CURRENT->{pass}         = 1 }
 sub halt {
     my ($class, $content) = @_;
 
-    $CURRENT = Dancer::Response->new;
-    $CURRENT->{content} = $content;
+    if (ref($content) && ref($content) eq 'Dancer::Response') {
+        $CURRENT = $content;
+    }
+    else {
+        $CURRENT = Dancer::Response->new;
+        $CURRENT->{content} = $content;
+    }
     $CURRENT->{halted}  = 1;
     return $content;
 }
