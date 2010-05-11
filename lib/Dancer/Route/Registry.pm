@@ -29,7 +29,14 @@ sub add_before_filter {
     my $compiled_filter = sub {
         return if Dancer::Response->halted;
         Dancer::Logger->core("entering before filter");
-        $filter->();
+        eval { $filter->() };
+        if ($@) {
+            my $err = Dancer::Error->new(
+                code => 500,
+                title => 'Before filter error',
+                message => "An error occured while executing the filter: $@");
+            return Dancer::halt($err->render);
+        }
     };
 
     push @{ $_registry->{before_filters} }, $compiled_filter;

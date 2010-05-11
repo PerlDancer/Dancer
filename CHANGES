@@ -1,4 +1,9 @@
-Dancer 1.18
+Dancer 1.178_02
+    [ Alexis Sukrieh ]
+    * Errors are caught in before filters
+    * halt can be given a Dancer::Response object rahter than plain text content
+
+Dancer 1.178_01
 
 	[ Alexis Sukrieh ]
 	* New logger for sending log message to STDERR: Dancer::Logger::Console

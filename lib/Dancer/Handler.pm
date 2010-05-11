@@ -44,18 +44,15 @@ sub handle_request {
 
     # TODO : move that elsewhere
     if (setting('auto_reload')) {
-        eval "use Module::Refresh";
-        if ($@) {
-            Dancer::Logger->warning("auto_reload is set, "
-                  . "but Module::Refresh is not installed");
-        }
-        else {
+        die "Module::Refresh is not installed, " . 
+            "install this module or unset 'auto_reload' in your config file" 
+            unless Dancer::ModuleLoader->load('Module::Refresh');
+
             my $orig_reg = Dancer::Route->registry;
             Dancer::Route->purge_all;
             Module::Refresh->refresh;
             my $new_reg = Dancer::Route->registry;
             Dancer::Route->merge_registry($orig_reg, $new_reg);
-        }
     }
 
     my $response =
