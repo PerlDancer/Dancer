@@ -41,7 +41,7 @@ __END__
 
 =head1 NAME
 
-Dancer::FileUtils - File utilities Dancer uses
+Dancer::FileUtils - helper providing file utilities
 
 =head1 SYNOPSIS
 

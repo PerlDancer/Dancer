@@ -83,7 +83,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Serializer - serializer support in Dancer
+Dancer::Serializer - serializer wrapper for Dancer
 
 =head1 DESCRIPTION
 

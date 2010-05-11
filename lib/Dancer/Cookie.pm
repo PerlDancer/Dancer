@@ -47,7 +47,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Cookie - A Dancer cookie object
+Dancer::Cookie - class representing cookies
 
 =head1 SYNOPSIS
 

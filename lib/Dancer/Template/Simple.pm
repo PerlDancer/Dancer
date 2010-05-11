@@ -157,7 +157,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Template::Simple - a pure Perl 5 template engine for Dancer
+Dancer::Template::Simple - pure Perl 5 template engine for Dancer
 
 =head1 DESCRIPTION
 

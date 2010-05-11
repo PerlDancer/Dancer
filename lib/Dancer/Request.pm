@@ -410,7 +410,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Request - Interface for accessing incoming requests
+Dancer::Request - interface for accessing incoming requests
 
 =head1 DESCRIPTION
 

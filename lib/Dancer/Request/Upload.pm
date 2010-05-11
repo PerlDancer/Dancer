@@ -60,7 +60,7 @@ sub basename {
 
 =head1 NAME 
 
-Dancer::Request::Upload - handles file uploads requests
+Dancer::Request::Upload - class representing file uploads requests
 
 =head1 DESCRIPTION
 

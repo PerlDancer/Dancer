@@ -88,7 +88,7 @@ __END__
 
 =head1 NAME
 
-Dancer::HTTP - Helper for rendering HTTP status codes for Dancer
+Dancer::HTTP - helper for rendering HTTP status codes for Dancer
 
 =head1 DESCRIPTION
 

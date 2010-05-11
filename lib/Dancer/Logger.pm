@@ -27,7 +27,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Logger - Common interface for logging in Dancer
+Dancer::Logger - common interface for logging in Dancer
 
 =head1 DESCRIPTION
 

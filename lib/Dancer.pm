@@ -163,8 +163,7 @@ __END__
 
 =head1 NAME
 
-Dancer - Lightweight yet powerful web application framework
-
+Dancer - lightweight yet powerful web application framework
 
 =head1 SYNOPSIS
 

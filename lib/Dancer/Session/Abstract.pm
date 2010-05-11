@@ -96,7 +96,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Session::Abstract - Abstract class for session engine
+Dancer::Session::Abstract - abstract class for session engine
 
 =head1 SPEC
 

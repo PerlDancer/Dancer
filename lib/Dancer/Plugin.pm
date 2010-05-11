@@ -61,7 +61,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Plugin
+Dancer::Plugin - helper for writing Dancer plugins
 
 =head1 DESCRIPTION
 
