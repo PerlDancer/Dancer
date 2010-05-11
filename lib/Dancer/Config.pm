@@ -166,6 +166,11 @@ directory.
 
 =head1 SUPPORTED SETTINGS
 
+=head2 server (string)
+
+The IP address that the Dancer app should bind to.  Default is 0.0.0.0, i.e.
+bind to all available interfaces.
+
 =head2 port (int)
 
 The port Dancer will listen to.
