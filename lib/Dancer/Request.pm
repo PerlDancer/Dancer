@@ -433,7 +433,7 @@ method, like in the following example:
         # ...
     };
 
-A route handler should not read the environment by itslef, but should instead
+A route handler should not read the environment by itself, but should instead
 use the current request object.
 
 =head1 PUBLIC INTERFACE
