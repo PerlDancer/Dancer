@@ -1,3 +1,8 @@
+Dancer 1.1800
+	[ Alexis Sukrieh ]
+	* merge of the devel branch into master, first stable release of
+	  1.178_01 and 1.178_02
+
 Dancer 1.178_02
     [ Alexis Sukrieh ]
     * Errors are caught in before filters
