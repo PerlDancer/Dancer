@@ -1,8 +1,10 @@
 use Test::More import => ['!pass'];
 use t::lib::TestUtils;
 
+use Dancer::Test;
+
 my @methods = qw(get head put post delete options);
-plan tests => scalar(@methods) + 5;
+plan tests => 23;
 
 use Dancer ':syntax';
 
@@ -13,8 +15,10 @@ ok(del('/', sub { 'delete' }), "DELETE / defined ");
 ok(options('/', sub { 'options' }), "OPTIONS / defined ");
 
 foreach my $m (@methods) {
-    my $request = t::lib::TestUtils::fake_request($m => '/');
-    Dancer::SharedData->request($request);
-    my $response = Dancer::Renderer::get_action_response();
-    ok(defined($response), "route handler found for method $m");
+    route_exists [$m => '/'], "route handler found for method $m";
+    response_status_is [$m => '/'], 200, "response status is 200 for $m";
+
+    my $content = $m;
+    $content = '' if $m eq 'head';
+    response_content_like [$m => '/'], qr/$content/, "response content is OK for $m";
 }

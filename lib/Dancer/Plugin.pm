@@ -38,7 +38,7 @@ sub register($$) {
     if (grep {$_ eq $keyword} @_reserved_keywords) {
         die "You can't use $keyword, this is a reserved keyword";
     }
-    push @$_keywords, {$keyword => $code};
+    push @$_keywords, [$keyword => $code];
 }
 
 sub register_plugin {
@@ -46,7 +46,7 @@ sub register_plugin {
     my ($application) = caller(1);
 
     for my $keyword (@$_keywords) {
-        my ($name, $code) = each (%$keyword);
+        my ($name, $code) = @$keyword;
         {
             no strict 'refs';
             *{"${application}::${name}"} = $code;

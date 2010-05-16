@@ -13,12 +13,16 @@ use Dancer::Config 'setting';
 use Dancer::Handler::PSGI;
 use Dancer::Handler::Standalone;
 
+use Encode;
+
 # This is where we choose which application handler to return
 sub get_handler {
     if (setting('apphandler') eq 'PSGI') {
+        Dancer::Logger->core('loading PSGI handler');
         return Dancer::Handler::PSGI->new;
     }
     else {
+        Dancer::Logger->core('loading Standalone handler');
         return Dancer::Handler::Standalone->new;
     }
 }
@@ -26,6 +30,8 @@ sub get_handler {
 # handle an incoming request, process it and return a response
 sub handle_request {
     my ($self, $request) = @_;
+    Dancer::SharedData->reset_timer;
+    Dancer::Logger->core("request: ".$request->method." ".$request->path);
 
     # deserialize the request body if possible
     $request = Dancer::Serializer->process_request($request) if setting('serializer');
@@ -38,18 +44,15 @@ sub handle_request {
 
     # TODO : move that elsewhere
     if (setting('auto_reload')) {
-        eval "use Module::Refresh";
-        if ($@) {
-            Dancer::Logger->warning("auto_reload is set, "
-                  . "but Module::Refresh is not installed");
-        }
-        else {
+        die "Module::Refresh is not installed, " . 
+            "install this module or unset 'auto_reload' in your config file" 
+            unless Dancer::ModuleLoader->load('Module::Refresh');
+
             my $orig_reg = Dancer::Route->registry;
             Dancer::Route->purge_all;
             Module::Refresh->refresh;
             my $new_reg = Dancer::Route->registry;
             Dancer::Route->merge_registry($orig_reg, $new_reg);
-        }
     }
 
     my $response =
@@ -66,10 +69,19 @@ sub render_response {
     my ($self, $response) = @_;
 
     my $content = $response->{content};
-    $content = [$content] unless (ref($content) eq 'GLOB');
+    unless (ref($content) eq 'GLOB') {
+        my $charset = setting('charset');
+        my $ctype = $response->{content_type};
+        if ($charset && $ctype =~ /^text\// && $ctype !~ /charset=/ && utf8::is_utf8($content)) {
+            $content = Encode::encode($charset, $content);
+            $response->update_headers('Content-Type' => "$ctype; charset=$charset");
+        }
 
+        $content = [ $content ];
+    }
+
+    Dancer::Logger->core("response: ".$response->{status});
     Dancer::SharedData->reset_all();
-
     return [$response->{status}, $response->{headers}, $content];
 }
 

@@ -18,7 +18,7 @@ sub init {
     $_engine = Dancer::Engine->build( 'serializer' => $name, $config );
 }
 
-# takes a response object, and look wether or not it should be
+# takes a response object and checks whether or not it should be
 # serialized.
 # returns an error object if the serializer fails
 sub process_response {
@@ -42,6 +42,7 @@ sub process_response {
         # the serializer succeeded, alter the response object accordingly
         else {
             $response->update_headers('Content-Type' => engine->content_type);
+            $response->{content_type} = engine->content_type;
             $response->{content} = $content;
         }
     }

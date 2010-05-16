@@ -4,6 +4,7 @@ use warnings;
 
 use base 'Dancer::Engine';
 
+use Dancer::Config 'setting';
 use Dancer::Cookies;
 use File::Spec;
 
@@ -52,8 +53,14 @@ sub new {
     return $self;
 }
 
-# it's a constant, maybe a setting in the future
-my $SESSION_NAME = 'dancer.session';
+# session name can be set in configuration file:
+# setting session_name => 'mydancer.session';
+my $SESSION_NAME = session_name();
+
+# this method can be overwrite in any Dancer::Session::* module
+sub session_name {
+    setting('session_name') || 'dancer.session';
+}
 
 # we try to make the best random number
 # with native Perl 5 code.
@@ -110,7 +117,7 @@ needed to manipulate a session, whatever its storing engine is.
 =item B<id>
 
 The session id will be written to a cookie, named C<dancer.session>, it is
-assumed that a client must accept cookies to be able to use a session-aware 
+assumed that a client must accept cookies to be able to use a session-aware
 Dancer webapp.
 
 =item B<storage engine>
@@ -137,9 +144,13 @@ done in order to allow multiple session storage with a common interface.
 Any session engine must inherits from Dancer::Session::Abstract and implement
 the following abstract methods.
 
-=head2 Abstract Methods 
+The default session name is "dancer_session". This can be set in your config file:
 
-=over 4 
+    setting session_name: "mydancer_session"
+
+=head2 Abstract Methods
+
+=over 4
 
 =item B<retrieve($id)>
 
@@ -158,6 +169,10 @@ Write the session object to the storage engine.
 
 Remove the current session object from the storage engine.
 
+=item B<session_name> (optional)
+
+Returns a string with the name of cookie used for storing the session ID.
+
 =back
 
 =head2 Inherited Methods
@@ -169,7 +184,7 @@ should be OK for each session engine.
 
 =item B<build_id>
 
-Build a new uniq id. 
+Build a new uniq id.
 
 =item B<read_session_id>
 

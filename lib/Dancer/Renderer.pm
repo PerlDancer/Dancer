@@ -13,6 +13,7 @@ use Dancer::Serializer;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname read_file_content);
 use Dancer::SharedData;
+use Dancer::Logger;
 use MIME::Types;
 
 sub render_file {
@@ -80,6 +81,7 @@ sub html_page {
 }
 
 sub get_action_response {
+    my $response;
     my $request = Dancer::SharedData->request;
     my $path    = $request->path_info;
     my $method  = $request->method;
@@ -90,7 +92,11 @@ sub get_action_response {
     Dancer::SharedData->request($request);
 
     # run the before filters
+    # if a filter has set a response, return it now.
     Dancer::Route->run_before_filters;
+    if (Dancer::Response->exists) {
+        $response = serialize_response_if_needed(Dancer::Response->current);
+    }
 
     # recurse if something has changed
     my $limit = 0;
@@ -105,14 +111,28 @@ sub get_action_response {
     }
 
     # execute the action
-    my $response = Dancer::Route->call($handler) if $handler;
-    
-    # serializing the response if needed
-    $response = Dancer::Serializer->process_response($response)
-        if setting('serializer');
+    if ($handler) {
+        # if a filter has set a response before, return it
+        return $response if defined $response;
+        undef $response;
 
+        $response = Dancer::Route->call($handler);
+        Dancer::Logger->core("route: ".$handler->{route});
+
+        return serialize_response_if_needed($response); #200
+    }
+    else {
+        return undef; # 404
+    }
+}
+
+sub serialize_response_if_needed {
+    my ($response) = @_;
+    $response = Dancer::Serializer->process_response($response)
+        if setting('serializer') && $response->{content};
     return $response;
 }
+
 
 sub get_file_response() {
     my $request     = Dancer::SharedData->request;
@@ -158,13 +178,14 @@ sub get_mime_type {
 
 # set of builtin templates needed by Dancer when rendering HTML pages
 sub templates {
+    my $charset = setting('charset') || 'UTF-8';
     {   default =>
           '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
 <title><% title %></title>
 <link rel="stylesheet" type="text/css" href="/css/<% style %>.css" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset='.$charset.'" />
 </head>
 <body>
 <h1><% title %></h1>

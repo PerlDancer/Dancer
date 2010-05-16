@@ -47,4 +47,8 @@ put '/jsondata' => sub {
     request->body;
 };
 
+get '/unicode' => sub {
+    "cyrillic shcha \x{0429}",
+};
+
 true;

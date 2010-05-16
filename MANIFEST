@@ -15,10 +15,13 @@ lib/Dancer/GetOpt.pm
 lib/Dancer/Handler.pm
 lib/Dancer/Handler/PSGI.pm
 lib/Dancer/Handler/Standalone.pm
+lib/Dancer/Headers.pm
 lib/Dancer/Helpers.pm
 lib/Dancer/HTTP.pm
+lib/Dancer/Introduction.pod
 lib/Dancer/Logger.pm
 lib/Dancer/Logger/Abstract.pm
+lib/Dancer/Logger/Console.pm
 lib/Dancer/Logger/File.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
@@ -47,6 +50,8 @@ lib/Dancer/Template.pm
 lib/Dancer/Template/Abstract.pm
 lib/Dancer/Template/Simple.pm
 lib/Dancer/Template/TemplateToolkit.pm
+lib/Dancer/Test.pm
+lib/Dancer/Timer.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
@@ -60,10 +65,15 @@ t/00_base/004_args.t
 t/00_base/005_module_loader.t
 t/00_base/007_load_syntax.t
 t/00_base/06_dancer_object.t
+t/00_base/08_pod_coverage_dancer.t
+t/00_base/09_load_app.t
+t/00_base/lib/AppWithError.pm
+t/00_base/lib/WorkingApp.pm
 t/01_config/01_settings.t
 t/01_config/02_mime_type.t
 t/01_config/03_logger.t
 t/01_config/04_config_file.t
+t/01_config/05_serialiers.t
 t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
 t/02_request/01_load.t
@@ -79,6 +89,7 @@ t/02_request/11_accessors.t
 t/02_request/12_base.t
 t/02_request/13_ajax.t
 t/02_request/14_uploads.t
+t/02_request/15_headers.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
@@ -91,6 +102,7 @@ t/03_route_handler/08_errors.t
 t/03_route_handler/09_status.t
 t/03_route_handler/10_merge_registries.t
 t/03_route_handler/11_redirect.t
+t/03_route_handler/11_redirect_no_content.t
 t/03_route_handler/12_response.t
 t/03_route_handler/13_any_route_handler.t
 t/03_route_handler/14_options.t
@@ -100,6 +112,8 @@ t/03_route_handler/17_compile.t
 t/03_route_handler/18_auto_page.t
 t/03_route_handler/19_filters_and_params.t
 t/03_route_handler/20_params_multiple_tokens.t
+t/03_route_handler/21_ajax.t
+t/03_route_handler/22_filter_halt.t
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
@@ -144,8 +158,11 @@ t/10_template/index.txt
 t/11_logger/01_abstract.t
 t/11_logger/02_factory.t
 t/11_logger/03_file.t
+t/11_logger/04_console.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t
+t/12_response/03_charset.t
+t/12_response/04_charset_server.t
 t/13_engines/00_load.t
 t/13_engines/02_template_init.t
 t/14_serializer/01_basic.t
@@ -157,6 +174,8 @@ t/14_serializer/06_serialize_response.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t
+t/16_timer/00_base.t
+t/16_timer/02_hires.t
 t/lib/EasyMocker.pm
 t/lib/LinkBlocker.pm
 t/lib/TestApp.pm

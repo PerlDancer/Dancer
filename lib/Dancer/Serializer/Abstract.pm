@@ -7,6 +7,11 @@ use base 'Dancer::Engine';
 sub serialize   { die 'must be implemented' }
 sub deserialize { die 'must be implemented' }
 
+# must be implemented to delcare if the serializer can be used or not
+# most of the time, just use :
+# Dancer::ModuleLoader->load('Your::Serializer::Deps');
+sub loaded { 0 }
+
 # should be implemented, fallback to text/plain if not
 sub content_type { 'text/plain' }
 

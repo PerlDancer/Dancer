@@ -1,3 +1,40 @@
+Dancer 1.178_02
+    [ Alexis Sukrieh ]
+    * Errors are caught in before filters
+    * halt can be given a Dancer::Response object rahter than plain text content
+
+Dancer 1.178_01
+
+	[ Alexis Sukrieh ]
+	* New logger for sending log message to STDERR: Dancer::Logger::Console
+	  Thanks to Gabor Szabo for the idea.
+	* Logger engines don't have anymore to implement _format(), they can use
+	  $self->format_message instead.
+	* New log level: "core" for letting Dancer's core express itself on crucial events.
+	  That way, when the app config sets log to "core", any core messages is
+	  sent to the logger, and the end-user can see which route is chosen for
+	  each request received.
+	  Thanks to Gabor Szabo for the idea.
+	* New class Dancer::Timer added so any logger engine can now show a timer string.
+    * Scaffolded applications are now built like a CPAN distribution, with a
+      Makefile.PL
+	  and test scripts (thanks to Gabor Szabo for the idea).
+	* Added Dancer::Test to provide helpers for writing test script for Dancer
+	  applications
+	* FIX bug when returning a void context after redirecting a route.
+	  Thanks to Juan J. Martínez  for the report.
+	* Add support for request headers in Dancer::Request
+    * Add support for halt() in Dancer's syntax.
+
+	[ Alex Kapranof ]
+	* Support for on-the-fly charset encoding when the setting is set and a content
+	  is sent by Dancer and needs to be encoded.
+	  The response Content-Type is updated accordingly as well.
+
+    [ Sawyer X ]
+    * Adding "import_warnings" settings. On by default, but allows to disable
+      auto-import of "warnings" pragma. Reported by Adam Kennedy.
+
 Dnacer 1.176
     * Bringing 1.175_01 into production.
 

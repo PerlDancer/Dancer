@@ -24,6 +24,46 @@ Point your browser at it, and away you go!
 This option can be useful for small personal web apps or internal apps, but if
 you want to make your app available to the world, it probably won't suit you.
 
+=head3 Plackup and various Perl's webserver
+
+C<Plackup> can also be used to start your application. A number of Perl web server supporting PSGI are available on cpan:
+
+=over 4
+
+=item Starman
+
+C<Starman> is a high performance web server, with support for preforking, signals, ...
+
+=item Twiggy
+
+C<Twiggy> is an C<AnyEvent> web server, it's light and fast.
+
+=item Corona
+
+C<Corona> is a C<Coro> based web server.
+
+=back
+
+To start you application using Plackup, all you need to do is
+
+   $ plackup -s Twiggy -p 5000 app.psgi
+
+
+=head4 Plackup and daemontools
+
+daemontools is a collection of tools for managing UNIX services. You can use it to easily start/restart/stop services.
+
+A basic script to start an application: (in /service/application/run)
+
+    #!/bin/sh
+
+    # if your application is not installed in @INC path:
+    export PERL5LIB='/path/to/your/application/lib'
+
+    exec 2>&1 \
+    /usr/local/bin/plackup -s Starman -a /path/to/your/application/app.psgi -p 5000
+
+
 
 =head3 Running stand-alone behind a proxy / load balancer
 
@@ -57,7 +97,7 @@ balancing, web serving, and a mix of the two, available from
 L<http://www.danga.com/perlbal/>
 
 It processes hundreds of millions of requests a day just for LiveJournal, Vox
-and TypePad and dozens of other "Web 2.0" applications. 
+and TypePad and dozens of other "Web 2.0" applications.
 
 It can also provide a management interface to let you see various information on
 requests handled etc.
@@ -109,6 +149,19 @@ multiple Dancer apps on multiple other machines:
     balance -b 10.0.0.1 80 10.0.0.2:3000 10.0.0.3:3000 10.0.0.4:3000
 
 
+=head4 Using Lighttpd
+
+You can use Lighttp's mod_proxy:
+
+    $HTTP["url"] =~ "/application" {
+        proxy.server = (
+            "/" => (
+                "application" => ( "host" => "127.0.0.1", "port" => 3000 )
+            )
+        )
+    }
+
+This configuration will proxy all request to the B</application> path to the path B</> on localhost:3000.
 
 =head2 Running from Apache
 
@@ -166,8 +219,8 @@ If you want to deploy multiple applications under the same VirtualHost, using
 one application per directory for example, you can do the following.
 
 This example uses the FastCGI dispatcher that comes with Dancer, but you should
-be able to adapt this to use any other way of deployment described in this guide. 
-The only purpose of this example is to show how to deploy multiple applications 
+be able to adapt this to use any other way of deployment described in this guide.
+The only purpose of this example is to show how to deploy multiple applications
 under the same base directory/virtualhost.
 
 	<VirtualHost *:80>

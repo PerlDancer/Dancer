@@ -51,7 +51,49 @@ sub prefix {
 
 # accessor for setting up a new route
 sub add {
-    my ($class, $method, $route, $code, $rest) = @_;
+    my ( $class, $method, $route, $code, $rest ) = @_;
+
+    my $options;
+    ( $route, $code, $rest, $options )
+        = $class->_get_route_and_code( $route, $code, $rest );
+
+    Dancer::Route::Registry->add_route(
+        method  => $method,
+        route   => $route,
+        code    => $code,
+        options => $options,
+    );
+}
+
+sub add_ajax {
+    my ( $class, $methods, $route, $code, $rest )
+        = _get_all_methods(@_);
+
+    my $options;
+    ( $route, $code, $rest, $options )
+        = $class->_get_route_and_code( $route, $code, $rest );
+
+    for (@$methods) {
+        Dancer::Route::Registry->add_route(
+            method  => $_,
+            route   => $route,
+            code    => $code,
+            options => $options,
+            ajax    => 1,
+        );
+    }
+    return scalar(@$methods);
+}
+
+# sugar for defining multiple routes at once
+sub add_any {
+    my ($class, $methods, $route, $code, $rest) = _get_all_methods(@_);
+    $class->add($_, $route, $code, $rest) for @$methods;
+    return scalar(@$methods);
+}
+
+sub _get_route_and_code {
+    my ($class, $route, $code, $rest) = @_;
 
     # look for route matching conditions
     my $options;
@@ -63,17 +105,10 @@ sub add {
 
     # is there a prefix set?
     $route = $class->_add_prefix_if_needed($route);
-
-    Dancer::Route::Registry->add_route(
-        method  => $method,
-        route   => $route,
-        code    => $code,
-        options => $options,
-    );
+    return ($route, $code, $rest, $options);
 }
 
-# sugar for defining multiple routes at once
-sub add_any {
+sub _get_all_methods {
     my ($class, $methods, $route, $code, $rest);
 
     # syntax: any ['get', 'post'] => '/route' => sub {};
@@ -91,9 +126,7 @@ sub add_any {
     else {
         die "syntax error: see perldoc Dancer for 'any' usage.";
     }
-
-    $class->add($_, $route, $code, $rest) for @$methods;
-    return scalar(@$methods);
+    return ($class, $methods, $route, $code, $rest);
 }
 
 # TODO Registry aliases, maybe we should drop them later
@@ -134,7 +167,7 @@ sub find {
                     my $re = $r->{options}{$opt};
                     next FIND
                       if (!$request->$opt)
-                      || ($request->$opt !~ $re);
+                        || ($request->$opt !~ $re);
                 }
             }
 
@@ -146,6 +179,8 @@ sub find {
 
     # if zero matches, zero biatches
     return undef unless defined $first_match;
+
+    return undef if ($first_match->{ajax} && !$request->is_ajax);
 
     # if we have a route cache, store the result
     if (setting('route_cache')) {
@@ -230,6 +265,10 @@ sub call($$) {
             return $error->render;
         }
 
+        # coerce undef content to empty string to
+        # prevent warnings
+        $content = (defined $content) ? $content : '';
+
         # drop the content if this is a HEAD request
         $content = '' if $handler->{method} eq 'head';
         my $ct = $response->{content_type} || setting('content_type');
@@ -241,7 +280,8 @@ sub call($$) {
         return Dancer::Response->new(
             status  => $st,
             headers => $headers,
-            content => $content
+            content => $content,
+            content_type => $ct,
         );
     }
 }

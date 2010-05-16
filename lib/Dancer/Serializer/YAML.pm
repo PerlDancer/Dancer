@@ -5,9 +5,28 @@ use warnings;
 use Dancer::ModuleLoader;
 use base 'Dancer::Serializer::Abstract';
 
+# helpers
+
+sub from_yaml {
+    my ($yaml) = @_;
+    my $s = Dancer::Serializer::YAML->new;
+    $s->deserialize($yaml);
+}
+
+sub to_yaml {
+    my ($data) = @_;
+    my $s = Dancer::Serializer::YAML->new;
+    $s->serialize($data);
+}
+
+# class definition
+
+sub loaded { Dancer::ModuleLoader->load('YAML') }
+
 sub init {
+    my ($self) = @_;
     die 'YAML is needed and is not installed'
-      unless Dancer::ModuleLoader->load('YAML');
+      unless $self->loaded;
 }
 
 sub serialize {
@@ -47,6 +66,10 @@ Deserialize a YAML structure to a data structure
 
 =item B<content_type>
 
+<<<<<<< HEAD:lib/Dancer/Serializer/YAML.pm
 Return 'application/json'
+=======
+Return 'text/yaml'
+>>>>>>> 404abb9e906e199486a237ea7c94939a1343b3f0:lib/Dancer/Serializer/YAML.pm
 
 =back

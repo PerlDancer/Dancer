@@ -80,6 +80,12 @@ Returns the filename as sent by the client.
 
 Returns basename for "filename".
 
+=item tempname
+
+Returns the name of the temporary file the data has been saved to.
+
+This will be in e.g. /tmp, and given a random name, with no file extension.
+
 =item link_to
 
 Creates a hard link to the temporary file. Returns true for success,
