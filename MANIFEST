@@ -114,6 +114,7 @@ t/03_route_handler/19_filters_and_params.t
 t/03_route_handler/20_params_multiple_tokens.t
 t/03_route_handler/21_ajax.t
 t/03_route_handler/22_filter_halt.t
+t/03_route_handler/23_filter_error_catching.t
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
