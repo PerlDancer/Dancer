@@ -39,12 +39,12 @@ logger engines.
 
 =head2 Default engine
 
-The setting B<logger> defined which logger engine to use. 
+The setting B<logger> defines which logger engine to use. 
 If this setting is not set, logging will not be available in the application
 code.
 
-Dancer comes with the logger engine L<Dancer::Logger::File>, 
-but more are available on the CPAN
+Dancer comes with the logger engines L<Dancer::Logger::File> and
+L<Dancer::Logger::Console>, but more are available on the CPAN.
 
 =head2 Configuration
 
@@ -52,8 +52,8 @@ The B<logger> configuration variable tells Dancer which engine to use.
 
 You can change it either in your config.yml file:
 
-    # logging to syslog
-    logger: "syslog"
+    # logging to console
+    logger: "console"
 
 Or in the application code:
 
