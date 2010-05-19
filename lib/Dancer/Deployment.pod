@@ -26,16 +26,16 @@ Access your app from the browser:
 Enable Pretty-URLs if your web server supports .htaccess files and mod_rewrite.
 Place this code in a file called .htaccess in your application's root folder:
 
-# BEGIN dancer application htaccess
-DirectoryIndex public/dispatch.cgi/
-AddHandler cgi-script .cgi
-Options +ExecCGI +FollowSymLinks -Indexes
-
-RewriteEngine On
-RewriteCond %{SCRIPT_FILENAME} !-d
-RewriteCond %{SCRIPT_FILENAME} !-f
-RewriteRule (.*) public/dispatch.cgi/$1 [L]
-# END dancer application htaccess
+    # BEGIN dancer application htaccess
+    DirectoryIndex public/dispatch.cgi/
+    AddHandler cgi-script .cgi
+    Options +ExecCGI +FollowSymLinks -Indexes
+    
+    RewriteEngine On
+    RewriteCond %{SCRIPT_FILENAME} !-d
+    RewriteCond %{SCRIPT_FILENAME} !-f
+    RewriteRule (.*) public/dispatch.cgi/$1 [L]
+    # END dancer application htaccess
 
 Now you can access your dancer application URLs as if you were using the embedded web server.
 
