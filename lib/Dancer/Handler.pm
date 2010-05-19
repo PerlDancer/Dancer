@@ -55,11 +55,19 @@ sub handle_request {
             Dancer::Route->merge_registry($orig_reg, $new_reg);
     }
 
-    my $response =
-         Dancer::Renderer->render_file
+    my $response;
+    eval {
+      $response = Dancer::Renderer->render_file
       || Dancer::Renderer->render_action
-      || Dancer::Renderer->render_error(404);
-
+      || Dancer::Renderer->render_error(404)
+    };
+    if ($@) {
+        my $error = Dancer::Error->new(
+            code => 500,
+            title => "Runtime Error",
+            message => $@);
+        $response = $error->render;
+    }
     return $self->render_response($response);
 }
 

@@ -215,8 +215,7 @@ sub call($$) {
     my $content;
     my $warning;
     local $SIG{__WARN__} = sub { $warning = $_[0] };
-    eval { $content = $handler->{code}->() };
-    my $response_error = $@;
+    $content = $handler->{code}->();
     my $response       = Dancer::Response->current;
 
     # Log warnings
@@ -241,27 +240,14 @@ sub call($$) {
     # Process the response
     else {
 
-        # trap errors
-        if ($response_error || (setting('warnings') && $warning)) {
-            my $error;
-            if ($response_error) {
-                $error = Dancer::Error->new(
-                    code    => 500,
-                    title   => 'Route Handler Error',
-                    type    => 'Execution failed',
-                    message => $response_error
-                );
-
-            }
-            elsif ($warning) {
-                $error = Dancer::Error->new(
+        # trap warnings if config ask for it
+        if (setting('warnings') && $warning) {
+            my $error = Dancer::Error->new(
                     code    => 500,
                     title   => 'Route Handler Error',
                     type    => 'Runtime Warning',
                     message => $warning
-                );
-
-            }
+            );
             return $error->render;
         }
 
