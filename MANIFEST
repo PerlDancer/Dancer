@@ -95,7 +95,6 @@ t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
 t/03_route_handler/03_passing.t
 t/03_route_handler/04_wildcards.t
-t/03_route_handler/05_error_catching.t
 t/03_route_handler/06_regexp.t
 t/03_route_handler/07_compilation_warning.t
 t/03_route_handler/08_errors.t
