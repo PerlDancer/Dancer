@@ -8,3 +8,4 @@ Makefile$
 ^cover_db
 ^.*\.log
 ^run_perltidy.sh$
+^.*\.swp$
