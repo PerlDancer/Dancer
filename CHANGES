@@ -1,3 +1,10 @@
+Dancer 1.1802
+    [Sawyer X]
+    * Fix RT #57158 (route_cache does not work with multiple parameters)
+      Cache revealed a small design overlook of not cloning a route before
+      returning it to the user, making multiple parameters disabled.
+      (Thanks to Stéphane Alnet for reporting and adding a test for it!)
+
 Dancer 1.1801
     [Alexis Sukrieh ]
     * FIX issue #69
@@ -22,12 +29,14 @@ Dancer 1.178_01
 	  Thanks to Gabor Szabo for the idea.
 	* Logger engines don't have anymore to implement _format(), they can use
 	  $self->format_message instead.
-	* New log level: "core" for letting Dancer's core express itself on crucial events.
-	  That way, when the app config sets log to "core", any core messages is
+	* New log level: "core" for letting Dancer's core express itself on crucial
+      events.
+      That way, when the app config sets log to "core", any core messages is
 	  sent to the logger, and the end-user can see which route is chosen for
 	  each request received.
 	  Thanks to Gabor Szabo for the idea.
-	* New class Dancer::Timer added so any logger engine can now show a timer string.
+	* New class Dancer::Timer added so any logger engine can now show a timer
+      string.
     * Scaffolded applications are now built like a CPAN distribution, with a
       Makefile.PL
 	  and test scripts (thanks to Gabor Szabo for the idea).
@@ -39,8 +48,8 @@ Dancer 1.178_01
     * Add support for halt() in Dancer's syntax.
 
 	[ Alex Kapranof ]
-	* Support for on-the-fly charset encoding when the setting is set and a content
-	  is sent by Dancer and needs to be encoded.
+	* Support for on-the-fly charset encoding when the setting is set and a
+      content is sent by Dancer and needs to be encoded.
 	  The response Content-Type is updated accordingly as well.
 
     [ Sawyer X ]
