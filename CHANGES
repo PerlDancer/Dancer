@@ -1,3 +1,10 @@
+Dancer 1.1801
+    [Alexis Sukrieh ]
+    * FIX issue #69
+      Error are trapped even if occuring from Dancer's source code.
+      auto_reload is set to false in scaffolded applications to 
+      prevent errors if Module::Refresh is not installed.
+
 Dancer 1.1800
 	[ Alexis Sukrieh ]
 	* merge of the devel branch into master, first stable release of
