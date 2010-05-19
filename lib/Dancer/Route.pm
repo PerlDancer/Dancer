@@ -171,7 +171,13 @@ sub find {
                 }
             }
 
-            $first_match = $r unless defined $first_match;
+            # we actually define $first_match by cloning $r
+            # so we don't screw with anything that uses references to keep track
+            # such as the routes cache
+            if ( not defined $first_match ) {
+                $first_match->{$_} = $r->{$_} for keys %{$r};
+            }
+
             $prev->{'next'} = $r if defined $prev;
             $prev = $r;
         }
