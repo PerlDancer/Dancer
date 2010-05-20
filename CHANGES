@@ -1,3 +1,9 @@
+Dancer 1.1803
+    [ Alexis Sukrieh ]
+    * Fix for issue #69
+      The issue was resolved in 1.1801, this time, the fix is working as
+      expected.
+
 Dancer 1.1802
     [Sawyer X]
     * Fix RT #57158 (route_cache does not work with multiple parameters)
