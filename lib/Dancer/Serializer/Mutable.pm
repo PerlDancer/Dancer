@@ -36,8 +36,8 @@ sub _find_content_type {
         $content_types{ $params->{content_type} } = 2;
     }
 
-    if ( $request->{accept_type} ) {
-        $content_types{ $request->{accept_type} } = 1;
+    if ( $request->{accept} ) {
+        $content_types{ $request->{accept} } = 1;
     }
 
     $content_types{'application/json'} = 0;
@@ -116,7 +116,7 @@ the B<content_type> parameter from the URL
 
 =item
 
-the B<accept_type> from the request headers
+the B<accept> from the request headers
 
 =item
 
