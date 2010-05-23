@@ -4,15 +4,18 @@ Dancer 1.1803
       The issue was resolved in 1.1801, this time, the fix is working as
       expected.
 
+    [ Sawyer X ]
+    * Fix for RT #57715, require Test::More 0.88 and up.
+
 Dancer 1.1802
-    [Sawyer X]
+    [ Sawyer X ]
     * Fix RT #57158 (route_cache does not work with multiple parameters)
       Cache revealed a small design overlook of not cloning a route before
       returning it to the user, making multiple parameters disabled.
       (Thanks to Stéphane Alnet for reporting and adding a test for it!)
 
 Dancer 1.1801
-    [Alexis Sukrieh ]
+    [ Alexis Sukrieh ]
     * FIX issue #69
       Error are trapped even if occuring from Dancer's source code.
       auto_reload is set to false in scaffolded applications to 
