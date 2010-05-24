@@ -1,3 +1,7 @@
+Dancer 1.1804
+    [ David Precious ]
+    * Fix test failures with old Plack versions (Issue 73)
+
 Dancer 1.1803
     [ Alexis Sukrieh ]
     * Fix for issue #69
