@@ -126,24 +126,26 @@ sub test_mutable {
             my $port = shift;
             my $url  = "http://127.0.0.1:$port/";
 
-            my $req = HTTP::Request->new( GET => $url );
-            $req->header( 'Content-Type' => 'application/json' );
+            for my $ct (qw/Accept Accept-Type/) {
+                my $req = HTTP::Request->new(GET => $url);
+                $req->header($ct => 'application/json');
+                my $ua  = LWP::UserAgent->new;
+                my $res = $ua->request($req);
+                is_deeply(
+                    JSON::decode_json($res->content),
+                    {foo => 1},
+                    "data is correctly serialized"
+                );
+                is $res->header('Content-Type'), 'application/json',
+                  "content type is OK";
+            }
+
+            my $req = HTTP::Request->new( POST => $url );
+            $req->header('Content-Type' => 'text/x-yaml');
+            $req->header('Accept-Type' => 'application/json');
+            $req->content( YAML::Dump( { foo => 42 } ) );
             my $ua  = LWP::UserAgent->new;
             my $res = $ua->request($req);
-            is_deeply(
-                JSON::decode_json( $res->content ),
-                { foo => 1 },
-                "data is correctly serialized"
-            );
-            is $res->header('Content-Type'), 'application/json',
-                "content type is OK";
-
-            undef $req;
-            $req = HTTP::Request->new( POST => $url );
-            $req->header( 'Content-Type' => 'text/x-yaml' );
-            $req->content( YAML::Dump( { foo => 42 } ) );
-            $ua  = LWP::UserAgent->new;
-            $res = $ua->request($req);
             is_deeply(
                 YAML::Load( $res->content ),
                 { foo => 42 },
