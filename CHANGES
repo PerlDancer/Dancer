@@ -1,9 +1,12 @@
 Dancer 1.xxx
     [ sebastian de castelberg ]
-    * Fix priority in D::S::Mutable
+    * Fix priority in D::S::Mutable.
 
     [ David Precious ]
-    * Fix test failures with old Plack versions (Issue 73)
+    * Fix test failures with old Plack versions (Issue 73).
+
+    [ nanis ]
+    * Fix issue #75.
 
 Dancer 1.1803
     [ Alexis Sukrieh ]
