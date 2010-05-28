@@ -24,6 +24,8 @@ use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::ModuleLoader;
 
+use File::Spec;
+
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
