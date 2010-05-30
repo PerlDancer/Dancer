@@ -103,6 +103,8 @@ sub _get_route_and_code {
         $code    = $rest;
     }
 
+    for ( $route ) { $_ = { regexp => $_ } if ref($_) eq 'Regexp' }
+
     # is there a prefix set?
     $route = $class->_add_prefix_if_needed($route);
     return ($route, $code, $rest, $options);
