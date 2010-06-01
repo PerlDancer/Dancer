@@ -166,10 +166,8 @@ sub load_app {
     for my $app (@_) {
         Dancer::Logger::core("loading application $app");
 
-        use lib path( dirname( File::Spec->rel2abs($0) ), 'lib' );
-
         # we want to propagate loading errors, so don't use ModuleLoader here
-        eval "use $app";
+        eval "use lib path(setting('appdir'), 'lib'); use $app;";
         die "unable to load application $app : $@" if $@;
     }
 }
