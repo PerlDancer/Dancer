@@ -5,7 +5,7 @@ use warnings;
 use Test::More import => ['!pass'];
 
 plan skip_all => "Plack is needed for this test" 
-    unless Dancer::ModuleLoader->load('Plack');
+    unless Dancer::ModuleLoader->load('Plack::Request');
 
 plan tests => 2;
 

@@ -25,13 +25,18 @@ GetOptions(
 );
 
 # main
+my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+
 usage() and exit(0) if $help;
 usage() if not defined $name;
 usage() unless -d $path && -w $path;
 
 validate_app_name($name);
+if ($name =~ /[^\w]/) {
+    warn "Error: Invalid application name.\n";
+    exit;
+}
 
-my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 my $DO_OVERWRITE_ALL = 0;
 my $DANCER_APP_DIR   = get_application_path($path, $name);
 my $DANCER_SCRIPT    = get_script_path($name);
@@ -120,6 +125,7 @@ sub create_node($;$) {
 
 sub app_tree($) {
     my ($appname) = @_;
+
 
     return {
         "app.psgi"           => FILE,
@@ -442,7 +448,6 @@ appname: \"$name\"
 warnings: 1
 show_errors: 1
 auto_reload: $AUTO_RELOAD
-
 ",
 
 'production.yml' =>

@@ -6,12 +6,17 @@ plan skip_all => "LWP::UserAgent is needed to run this tests"
     unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
-plan skip_all => 'Plack::Loader is needed to run this test'
-    unless Dancer::ModuleLoader->load('Plack::Loader');
-plan tests => 6;
 
 
-for my $handler ('Standalone', 'PSGI') {
+my $plack_available = Dancer::ModuleLoader->load('Plack::Request');
+Dancer::ModuleLoader->load('Plack::Loader') if $plack_available;
+
+plan tests => $plack_available ? 6 : 3;
+
+my @handlers = ('Standalone');
+push @handlers, 'Plack' if $plack_available;
+
+for my $handler (@handlers) {
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;

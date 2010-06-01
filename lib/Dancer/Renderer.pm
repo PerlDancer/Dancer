@@ -82,10 +82,10 @@ sub html_page {
 
 sub get_action_response {
     my $response;
-    my $request = Dancer::SharedData->request;
-    my $path    = $request->path_info;
-    my $method  = $request->method;
-    my $handler = Dancer::Route->find($path, $method, $request);
+    my $request     = Dancer::SharedData->request;
+    my $path_info   = $request->path_info;
+    my $method      = $request->method;
+    my $handler     = Dancer::Route->find($path_info, $method, $request);
 
     # init the request and build the params
     Dancer::Route->build_params($handler, $request);
@@ -101,11 +101,11 @@ sub get_action_response {
     # recurse if something has changed
     my $limit = 0;
     my $MAX_RECURSIVE_LOOP = 10;
-    if (($path ne Dancer::SharedData->request->path) ||
+    if (($path_info ne Dancer::SharedData->request->path_info) ||
         ($method ne Dancer::SharedData->request->method)) {
         $limit++;
         if ($limit > $MAX_RECURSIVE_LOOP) {
-            die "infinite loop detected, check your route/filters for '$method $path'";
+            die "infinite loop detected, check your route/filters for '$method $path_info'";
         }
         return get_action_response();
     }
@@ -136,8 +136,8 @@ sub serialize_response_if_needed {
 
 sub get_file_response() {
     my $request     = Dancer::SharedData->request;
-    my $path        = $request->path_info;
-    my $static_file = path(setting('public'), $path);
+    my $path_info   = $request->path_info;
+    my $static_file = path(setting('public'), $path_info);
     return Dancer::Renderer->get_file_response_for_path($static_file);
 }
 

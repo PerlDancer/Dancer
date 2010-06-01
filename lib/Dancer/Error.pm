@@ -197,7 +197,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Error - Objects representing fatal errors
+Dancer::Error - class for representing fatal errors
 
 =head1 SYNOPSIS
 

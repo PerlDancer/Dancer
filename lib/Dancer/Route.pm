@@ -171,7 +171,13 @@ sub find {
                 }
             }
 
-            $first_match = $r unless defined $first_match;
+            # we actually define $first_match by cloning $r
+            # so we don't screw with anything that uses references to keep track
+            # such as the routes cache
+            if ( not defined $first_match ) {
+                $first_match->{$_} = $r->{$_} for keys %{$r};
+            }
+
             $prev->{'next'} = $r if defined $prev;
             $prev = $r;
         }
@@ -215,8 +221,7 @@ sub call($$) {
     my $content;
     my $warning;
     local $SIG{__WARN__} = sub { $warning = $_[0] };
-    eval { $content = $handler->{code}->() };
-    my $response_error = $@;
+    $content = $handler->{code}->();
     my $response       = Dancer::Response->current;
 
     # Log warnings
@@ -241,27 +246,14 @@ sub call($$) {
     # Process the response
     else {
 
-        # trap errors
-        if ($response_error || (setting('warnings') && $warning)) {
-            my $error;
-            if ($response_error) {
-                $error = Dancer::Error->new(
-                    code    => 500,
-                    title   => 'Route Handler Error',
-                    type    => 'Execution failed',
-                    message => $response_error
-                );
-
-            }
-            elsif ($warning) {
-                $error = Dancer::Error->new(
+        # trap warnings if config ask for it
+        if (setting('warnings') && $warning) {
+            my $error = Dancer::Error->new(
                     code    => 500,
                     title   => 'Route Handler Error',
                     type    => 'Runtime Warning',
                     message => $warning
-                );
-
-            }
+            );
             return $error->render;
         }
 

@@ -8,6 +8,40 @@ Dancer has been designed to be flexible, and this flexibility extends to your
 choices when deploying your Dancer app.
 
 
+=head2 Running as a cgi-script
+
+In providing ultimate flexibility in terms of deployment, your Dancer app can be run
+as a simple cgi-script out-of-the-box. No additional web-server configuration needed.
+Your web server should recognize .cgi files and be able to serve Perl scripts.
+The Perl module Plack::Runner is required. Access your app from the browser:
+
+    http://localhost/myapp/dispatch.cgi
+    500 Internal Server Error - Wrong
+    
+    http://localhost/myapp/dispatch.cgi/
+    200 OK - Right
+    
+Enable Pretty-URLs if your web server supports .htaccess files and mod_rewrite.
+Place this code in a file called .htaccess in your application's root folder:
+
+    # BEGIN dancer application htaccess
+    DirectoryIndex dispatch.cgi/
+    AddHandler cgi-script .cgi
+    Options +ExecCGI +FollowSymLinks -Indexes
+    
+    RewriteEngine On
+    RewriteCond %{SCRIPT_FILENAME} !-d
+    RewriteCond %{SCRIPT_FILENAME} !-f
+    RewriteRule (.*) /dispatch.cgi/$1 [L]
+    # END dancer application htaccess
+
+Now you can access your dancer application URLs as if you were using the embedded web server.
+
+    http://localhost/myapp/
+
+This option is a no-brainer, easy to setup, low maintenance but serves requests
+slower than all other options.
+
 =head2 Running stand-alone
 
 At the simplest, your Dancer app can run standalone, operating as its own

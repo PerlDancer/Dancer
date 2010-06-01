@@ -47,7 +47,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Serializer::JSON
+Dancer::Serializer::JSON - serializer for handling JSON data
 
 =head1 SYNOPSIS
 

@@ -46,7 +46,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Serializer::YAML
+Dancer::Serializer::YAML - serializer for handling YAML data
 
 =head1 SYNOPSIS
 

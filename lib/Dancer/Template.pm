@@ -25,7 +25,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Template - template support in Dancer
+Dancer::Template - template wrapper for Dancer
 
 =head1 DESCRIPTION
 

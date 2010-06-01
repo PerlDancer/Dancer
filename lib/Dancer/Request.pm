@@ -14,8 +14,8 @@ my @http_env_keys = (
     'user_agent',      'host',
     'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive',
-    'connection',      'accept',
-    'referer',
+    'connection',      'accept', 
+    'accept_type',     'referer',
 );
 my $count = 0;
 
@@ -24,7 +24,7 @@ Dancer::Request->attributes(
     'env',          'path', 'method',
     'content_type', 'content_length',
     'body',         'id', 'request_uri',
-    'uploads', 'headers',
+    'uploads', 'headers', 'path_info',
     @http_env_keys,
 );
 
@@ -40,7 +40,6 @@ sub header                { $_[0]->{headers}->get($_[1]) }
 
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
-sub path_info      { path(@_) }
 sub Vars           { params(@_) }
 sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 
@@ -212,6 +211,7 @@ sub _build_request_env {
     $self->{keep_alive}       = $self->{env}{HTTP_KEEP_ALIVE};
     $self->{connection}       = $self->{env}{HTTP_CONNECTION};
     $self->{accept}           = $self->{env}{HTTP_ACCEPT};
+    $self->{accept_type}      = $self->{env}{HTTP_ACCEPT_TYPE};
     $self->{referer}          = $self->{env}{HTTP_REFERER};
     $self->{x_requested_with} = $self->{env}{HTTP_X_REQUESTED_WITH};
 }
@@ -416,7 +416,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Request - Interface for accessing incoming requests
+Dancer::Request - interface for accessing incoming requests
 
 =head1 DESCRIPTION
 
