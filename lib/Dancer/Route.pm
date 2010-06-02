@@ -301,6 +301,9 @@ sub match {
     # first, try the match, and save potential values
     my @values = $path =~ $regexp;
 
+    # if some named captures found, return url_paren
+    if (%+) { return { captures => {%+} } }
+
     # if no values found, do not match!
     return 0 unless @values;
 
