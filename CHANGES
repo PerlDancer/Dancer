@@ -5,7 +5,10 @@ Dancer 1.xxx
       mount an application under a directory.
 
     [ David Precious ]
-    * Fix test failures with old Plack versions (Issue 73)
+    * Fix test failures with old Plack versions (Issue 73).
+
+    [ nanis ]
+    * Fix issue #75.
 
 Dancer 1.1803
     [ Alexis Sukrieh ]
