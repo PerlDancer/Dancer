@@ -7,6 +7,8 @@ use File::Basename 'basename', 'dirname';
 use File::Spec::Functions;
 use Getopt::Long;
 use Dancer::Renderer;
+use IO::Socket::INET;
+use IO::Select;
 use constant FILE => 1;
 
 # options
@@ -43,6 +45,7 @@ my $DANCER_SCRIPT    = get_script_path($name);
 my ($LIB_FILE, $LIB_PATH) = get_lib_path($name);
 my $AUTO_RELOAD = eval "require Module::Refresh" ? 1 : 0;
 
+version_check();
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
@@ -458,6 +461,43 @@ response_content_like [GET => '/'], qr/It Works.*I'm in.*index.tt/s,
 ",
 
     };
+}
+
+# LWP, File::Fetch and other high level interfaces are not avaiable to us in perl 5.8.5.
+sub version_check {
+    my $host = 'github.com';
+    my $path = "/sukria/Dancer/raw/master/CHANGES";
+    my $timeout = 2;
+    my $latest_version;
+
+    my $sock = IO::Socket::INET->new(PeerAddr => $host, PeerPort => 'http(80)', Proto => 'tcp');
+    my $req = "GET $path HTTP/1.0\x0d\x0aHost: $host\x0d\x0a\x0d\x0a";
+
+    $sock->send( $req );
+    my $select = IO::Select->new( $sock );
+
+    while ( $select->can_read( $timeout ) ) {
+        my $resp = '';
+        my $ret = $sock->sysread( $resp, 4096, length($resp) );
+
+        if ($resp =~ m/Dancer (\d\.\d+)/) {
+            $latest_version = $1;
+            $select->remove( $sock );
+        }
+
+        if ( !defined $ret or $ret == 0 ) {
+            $select->remove( $sock );
+        }
+    }
+    close $sock;
+
+    if ($latest_version > $Dancer::VERSION) {
+        print qq|
+The latest Dancer release is $latest_version, you are currently using $Dancer::VERSION.
+Please check http://perldancer.org for updates.
+
+|;
+    }
 }
 
 =pod
