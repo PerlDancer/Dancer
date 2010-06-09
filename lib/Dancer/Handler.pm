@@ -31,7 +31,10 @@ sub get_handler {
 sub handle_request {
     my ($self, $request) = @_;
     Dancer::SharedData->reset_timer;
-    Dancer::Logger->core("request: ".$request->method." ".$request->path);
+    Dancer::Logger->core(
+        "request: ".$request->method." ".$request->path . " from "
+        . $request->remote_address
+    );
 
     # deserialize the request body if possible
     $request = Dancer::Serializer->process_request($request) if setting('serializer');
