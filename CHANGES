@@ -10,6 +10,10 @@ Dancer 1.xxx
     [ nanis ]
     * Fix issue #75.
 
+    [ Alexis Sukrieh ]
+    Applied miyagawa's patch for droping the app.psgi file. Refactoring of
+    Dancer::Handler::PSGI and friends.
+
 Dancer 1.1803
     [ Alexis Sukrieh ]
     * Fix for issue #69
