@@ -43,26 +43,24 @@ script, which will build the framework of your application with a single
 command:
 
     $ dancer -a mywebapp
-    + [D] mywebapp
-    + [F] mywebapp/config.yml
-    + [D] mywebapp/views
-    + [D] mywebapp/views/layouts
-    + [F] mywebapp/views/layouts/main.tt
-    + [F] mywebapp/views/index.tt
-    + [D] mywebapp/environments
-    + [F] mywebapp/environments/production.yml
-    + [F] mywebapp/environments/development.yml
-    + [F] mywebapp/mywebapp.pm
-    + [F] mywebapp/mywebapp.pl
-    + [F] mywebapp/app.psgi
+    + mywebapp
+    + mywebapp/config.yml
+    + mywebapp/views
+    + mywebapp/views/layouts
+    + mywebapp/views/layouts/main.tt
+    + mywebapp/views/index.tt
+    + mywebapp/environments
+    + mywebapp/environments/production.yml
+    + mywebapp/environments/development.yml
+    + mywebapp/mywebapp.pm
+    + mywebapp/mywebapp.pl
 
 
 As you can see, it creates a directory named after the name of the app, along
 with a configuration file, a views directory (where your templates and layouts
 will live), an environments directory (where environment-specific settings
 live), a module containing the actual guts of your application, a script to
-start it, and an app.psgi file - this will only be of interest if you're running
-your web app via Plack/PSGI - more on that later.
+start it - or to run your web app via Plack/PSGI - more on that later.
 
 
 =head2 Declaring routes

@@ -128,7 +128,6 @@ sub app_tree($) {
 
 
     return {
-        "app.psgi"           => FILE,
         "+$DANCER_SCRIPT.pl" => FILE,
         "Makefile.PL"        => FILE,
         lib                  => {
@@ -244,30 +243,6 @@ WriteMakefile(
     clean               => { FILES => '$appname-*' },
 );
 ",
-
-'app.psgi'  =>
-
-"# PSGI application bootstraper for Dancer
-use Dancer;
-use lib('lib');
-load_app '$appname';
-
-use Dancer::Config 'setting';
-setting apphandler  => 'PSGI';
-Dancer::Config->load;
-
-my \$handler = sub {
-    my \$env = shift;
-    my \$request = Dancer::Request->new(\$env);
-    Dancer->dance(\$request);
-};
-",
-'index.tt'  => '<h2>It Works!</h2>
-
-<p>
-I\'m in <code>[%appdir%]/views/index.tt</code>
-</p>
-',
 
 'main.tt'   =>
     Dancer::Renderer->html_page($appname, '<% content %>'),
