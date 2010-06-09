@@ -22,17 +22,23 @@ sub new {
     return $self;
 }
 
-sub dance { process(@_) }
+sub dance { 
+    my $self = shift;
+    return sub {
+        my $env = shift;
+        my $request = Dancer::Request->new($env);
+        $self->init_request_headers($request);
+        $self->handle_request($request);
+    };
+}
 
-sub process {
+sub init_request_headers {
     my ($self, $request) = @_;
 
     my $plack = Plack::Request->new($request->env);
     my $headers = Dancer::Headers->new(headers => $plack->headers);
     Dancer::SharedData->headers($headers);
     $request->_build_headers();
-
-    $self->handle_request($request);
 }
 
 1;

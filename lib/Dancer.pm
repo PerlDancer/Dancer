@@ -194,7 +194,12 @@ sub import {
 sub start {
     my ($class, $request) = @_;
     Dancer::Config->load;
-    Dancer::Handler->get_handler()->dance($request);
+
+    # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
+    if ($request) {
+        return Dancer::Handler->handle_request($request);
+    }
+    Dancer::Handler->get_handler()->dance;
 }
 
 # private
