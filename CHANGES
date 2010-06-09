@@ -11,8 +11,11 @@ Dancer 1.xxx
     * Fix issue #75.
 
     [ Alexis Sukrieh ]
-    Applied miyagawa's patch for droping the app.psgi file. Refactoring of
-    Dancer::Handler::PSGI and friends.
+    * Applied miyagawa's patch for droping the app.psgi file. Refactoring of
+      Dancer::Handler::PSGI and friends.
+    * Applied LoonyPandora's patch for checking Dancer's VERSION when running
+      script/dancer. Changed it a bit so it can check against CPAN rather than
+      GitHub.
 
 Dancer 1.1803
     [ Alexis Sukrieh ]
