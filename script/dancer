@@ -464,9 +464,18 @@ response_content_like [GET => '/'], qr/It Works.*I'm in.*index.tt/s,
 }
 
 # LWP, File::Fetch and other high level interfaces are not avaiable to us in perl 5.8.5.
-sub version_check {
-    my $host = 'github.com';
-    my $path = "/sukria/Dancer/raw/master/CHANGES";
+
+sub send_http_request {
+    my $url = shift;
+    my ($host, $path);
+
+    if ($url =~ /https?:\/\/([^\/]+)(.*)/) {
+        ($host, $path) = ($1, $2);
+    }
+    else {
+        die "unknown url: $url";
+    }
+
     my $timeout = 2;
     my $latest_version;
 
@@ -476,24 +485,45 @@ sub version_check {
     $sock->send( $req );
     my $select = IO::Select->new( $sock );
 
+    my $resp;
     while ( $select->can_read( $timeout ) ) {
-        my $resp = '';
+        $resp = '';
         my $ret = $sock->sysread( $resp, 4096, length($resp) );
+        $select->remove( $sock );
+    }
+    my @headers = split /\n/, $resp;
+    my $status_line = shift @headers;
 
-        if ($resp =~ m/Dancer (\d\.\d+)/) {
-            $latest_version = $1;
-            $select->remove( $sock );
-        }
-
-        if ( !defined $ret or $ret == 0 ) {
-            $select->remove( $sock );
+    # redirection handling
+    if ($status_line =~ /HTTP\/.*30[12]/) {
+        for my $header (@headers) {
+            if ($header =~ /Location: (\S+).*$/) {
+                my $path = $1;
+                if ($path =~ /^http:/) {
+                    return send_http_request($path);
+                }
+                else {
+                    return send_http_request("http://${host}${path}");
+                }
+            }
+            last if not $header;
         }
     }
-    close $sock;
+    return $resp;
+}
 
-    if ($latest_version > $Dancer::VERSION) {
+sub version_check {
+    my $latest_version = 0;
+    require Dancer;
+    my $dancer_version = $Dancer::VERSION;
+    my $resp = send_http_request('http://search.cpan.org/dist/Dancer/CHANGES');
+    if ($resp && $resp =~ m/Dancer (\d\.\d+)/) {
+        $latest_version = $1;
+    }
+
+    if ($latest_version > $dancer_version) {
         print qq|
-The latest Dancer release is $latest_version, you are currently using $Dancer::VERSION.
+The latest Dancer release is $latest_version, you are currently using $dancer_version.
 Please check http://perldancer.org for updates.
 
 |;
