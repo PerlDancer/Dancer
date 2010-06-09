@@ -17,6 +17,10 @@ Dancer 1.xxx
       script/dancer. Changed it a bit so it can check against CPAN rather than
       GitHub.
 
+    [jbarratt] 
+    * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
+      options.
+
 Dancer 1.1803
     [ Alexis Sukrieh ]
     * Fix for issue #69
