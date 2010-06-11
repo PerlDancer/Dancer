@@ -63,7 +63,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Engine - Base class for Dancer engines
+Dancer::Engine - base class for Dancer engines
 
 =head1 SYNOPSIS
 

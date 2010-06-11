@@ -13,6 +13,10 @@ sub var {
     return $vars->{$key};
 }
 
+# request headers
+my $_headers;
+sub headers { (@_ == 2) ? $_headers = $_[1] : $_headers }
+
 # request singleton
 my $_request;
 sub request { (@_ == 2) ? $_request = $_[1] : $_request }
@@ -27,6 +31,7 @@ sub reset_all {
     $vars   = {};
     undef $_request;
     undef $_timer;
+    undef $_headers;
 }
 
 

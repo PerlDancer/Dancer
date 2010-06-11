@@ -24,10 +24,15 @@ GetOptions(
     "p|path=s"        => \$path,
 );
 
-# main 
+# main
 usage() and exit(0) if $help;
 usage() if not defined $name;
 usage() unless -d $path && -w $path;
+
+if ($name =~ /[^\w]/) {
+    warn "Error: Invalid application name.\n";
+    exit;
+}
 
 my $DO_OVERWRITE_ALL = 0;
 my $DANCER_APP_DIR  = catfile($path, $name);
@@ -43,13 +48,13 @@ Dancer Helper - bootstrap a Dancer application
 
 Usage:
     dancer [options] -a <appname>
-    
+
     options are following :
     -h, --help            : display this help message
     -a, --application     : name of the application to create
     -p, --path            : existing path where to create the application tree
                             (current directory if not specified, must be writable)
-                            
+
 ENDUSAGE
     exit 0;
 }
@@ -57,12 +62,12 @@ ENDUSAGE
 sub create_node($;$) {
     my ($node, $root) = @_;
     $root ||= '.';
-    
+
     while ( my ($path, $content) = each %$node ) {
         $path = catfile($root, $path);
 
         if (ref($content) eq 'HASH') {
-            safe_mkdir($path); 
+            safe_mkdir($path);
             create_node($content, $path);
         } elsif (ref($content) eq 'CODE') {
             # The content is a coderef, which, given the path to the file it
@@ -83,6 +88,7 @@ sub create_node($;$) {
 
 sub app_tree($)  {
     my ($appname) = @_;
+
 
     return {
         "app.psgi"      => FILE,
@@ -108,7 +114,7 @@ sub app_tree($)  {
             "+dispatch.fcgi" => FILE,
             "404.html" => FILE,
             "500.html" => FILE,
-            "css" => { 
+            "css" => {
                 "style.css" => FILE,
                 "error.css" => FILE,
             },
@@ -136,6 +142,9 @@ sub safe_mkdir {
 sub write_file {
     my ($path, $template, $vars) = @_;
     die "no template found for $path" unless defined $template;
+
+    use Dancer ':syntax';
+    $vars->{dancer_version} = $Dancer::VERSION;
 
     # if file already exists, ask for confirmation
     if (-f $path && (not $DO_OVERWRITE_ALL)) {
@@ -176,7 +185,7 @@ sub templates($) {
     my $appname = shift;
     return {
 
-'Makefile.PL' => 
+'Makefile.PL' =>
 "use strict;
 use warnings;
 use ExtUtils::MakeMaker;
@@ -193,15 +202,17 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More' => 0,
         'YAML'       => 0,
+        'Dancer'     => [% dancer_version %],
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'TestApp-*' },
+    clean               => { FILES => '$appname-*' },
 );
 ",
 
-'app.psgi'  => 
+'app.psgi'  =>
 
 "# PSGI application bootstraper for Dancer
+use Dancer;
 load_app '$appname';
 
 use Dancer::Config 'setting';
@@ -221,16 +232,16 @@ I\'m in <code>[%appdir%]/views/index.tt</code>
 </p>
 ',
 
-'main.tt'   => 
+'main.tt'   =>
     Dancer::Renderer->html_page($appname, '<% content %>'),
 
-"dispatch.cgi" => 
+"dispatch.cgi" =>
 "#!$^X
 use Plack::Runner;
 Plack::Runner->run('[% appdir %]/app.psgi');
 ",
 
-"dispatch.fcgi" => 
+"dispatch.fcgi" =>
 "#!$^X
 use Plack::Handler::FCGI;
 
@@ -239,7 +250,7 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 \$server->run(\$app);
 ",
 
-"$appname.pl" => 
+"$appname.pl" =>
 
 "#!$^X
 use Dancer;
@@ -247,7 +258,7 @@ load_app '$appname';
 dance;
 ",
 
-"$appname.pm" => 
+"$appname.pm" =>
 
 "package $appname;
 use Dancer ':syntax';
@@ -259,31 +270,12 @@ get '/' => sub {
 };
 
 true;
-=pod
-
-=head1 NAME
-
-$appname - A Dancer based web application
-
-=head1 DESCRIPTION
-
-PUT HERE A DESCRIPTION OF YOUR WEBAPP
-
-=head1 COPYRIGHT
-
-PUT YOUR COPYRIGHT NOTE HERE
-
-=head1 LICENSE
-
-PUT YOUR LICENSE NOTES HERE
-
-=cut
 ",
 
-'style.css' => 
+'style.css' =>
 
 'body {
-    font-family: Lucida,sans-serif;   
+    font-family: Lucida,sans-serif;
     color: #eee;
     background-color: #1f1b1a;
 }
@@ -296,11 +288,11 @@ PUT YOUR LICENSE NOTES HERE
     padding-top: 0.5em;
 }
 
-a { 
+a {
     color: #a5ec02;
 }
 
-h1 { 
+h1 {
     color: #a5ec02;
 }
 
@@ -318,7 +310,7 @@ pre {
 
 ',
 
-"error.css" => 
+"error.css" =>
 
 "body {
     font-family: Lucida,sans-serif;
@@ -342,7 +334,7 @@ pre {
     font-size: 10px;
 }
 
-span.key { 
+span.key {
     color: #449;
     font-weight: bold;
     width: 120px;
@@ -392,35 +384,35 @@ pre.error {
 
 ",
 
-"404.html" => 
-    Dancer::Renderer->html_page( 
-        "Error 404", 
+"404.html" =>
+    Dancer::Renderer->html_page(
+        "Error 404",
         '<h2>Page Not Found</h2><p>Sorry, this is the void.</p>',
         'error'),
 
-"500.html" => 
-    Dancer::Renderer->html_page( 
-        "Error 500", 
+"500.html" =>
+    Dancer::Renderer->html_page(
+        "Error 500",
         '<h2>Internal Server Error</h2>'
                  . '<p>Wooops, something went wrong</p>',
         'error'),
 
-'config.yml' => 
+'config.yml' =>
 
 'layout: "main"
 logger: "file"
 
 ',
 
-'development.yml' => 
+'development.yml' =>
 'log: "debug"
 warnings: 1
 show_errors: 1
-auto_reload: 1
+auto_reload: 0
 
 ',
 
-'production.yml' => 
+'production.yml' =>
 'log: "warning"
 warnings: 0
 show_errors: 0
@@ -429,7 +421,7 @@ auto_reload: 0
 
 ',
 
-"001_base.t" => 
+"001_base.t" =>
 "use Test::More tests => 1;
 use strict;
 use warnings;
@@ -437,8 +429,8 @@ use warnings;
 use_ok '$appname';
 ",
 
-"002_index_route.t" => 
-"use Test::More tests => 2;
+"002_index_route.t" =>
+"use Test::More tests => 3;
 use strict;
 use warnings;
 
@@ -455,7 +447,7 @@ response_content_like [GET => '/'], qr/It Works.*I'm in.*index.tt/s,
     };
 }
 
-=pod 
+=pod
 
 =head1 NAME
 
@@ -484,7 +476,7 @@ dancer [options] -a <appname>
 Here is an application created with dancer:
 
     $ dancer -a mywebapp
-    + mywebapp 
+    + mywebapp
     + mywebapp/config.yml
     + mywebapp/views
     + mywebapp/views/layouts
@@ -508,7 +500,7 @@ The application is ready to serve:
 =head1 AUTHOR
 
 This script has been written by Sebastien Deseille
-<sebastien.deseille@gmail.com> and Alexis Sukrieh 
+<sebastien.deseille@gmail.com> and Alexis Sukrieh
 <sukria@cpan.org>.
 
 =head1 SOURCE CODE

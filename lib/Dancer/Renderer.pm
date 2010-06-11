@@ -81,6 +81,7 @@ sub html_page {
 }
 
 sub get_action_response {
+    my $response;
     my $request = Dancer::SharedData->request;
     my $path    = $request->path_info;
     my $method  = $request->method;
@@ -91,7 +92,11 @@ sub get_action_response {
     Dancer::SharedData->request($request);
 
     # run the before filters
+    # if a filter has set a response, return it now.
     Dancer::Route->run_before_filters;
+    if (Dancer::Response->exists) {
+        $response = serialize_response_if_needed(Dancer::Response->current);
+    }
 
     # recurse if something has changed
     my $limit = 0;
@@ -106,18 +111,28 @@ sub get_action_response {
     }
 
     # execute the action
-    my $response;
     if ($handler) {
+        # if a filter has set a response before, return it
+        return $response if defined $response;
+        undef $response;
+
         $response = Dancer::Route->call($handler);
         Dancer::Logger->core("route: ".$handler->{route});
+
+        return serialize_response_if_needed($response); #200
     }
-    
-    # serializing the response if needed
+    else {
+        return undef; # 404
+    }
+}
+
+sub serialize_response_if_needed {
+    my ($response) = @_;
     $response = Dancer::Serializer->process_response($response)
         if setting('serializer') && $response->{content};
-
     return $response;
 }
+
 
 sub get_file_response() {
     my $request     = Dancer::SharedData->request;
@@ -132,6 +147,8 @@ sub get_file_response_for_path {
 
     if (-f $static_file) {
         open my $fh, "<", $static_file;
+        binmode $fh;
+
         return Dancer::Response->new(
             status  => $status,
             headers => ['Content-Type' => get_mime_type($static_file)],
@@ -173,7 +190,7 @@ sub templates {
 <body>
 <h1><% title %></h1>
 <div id="content">
-<p><% content %></p>
+<% content %>
 </div>
 <div id="footer">
 Powered by <a href="http://perldancer.org/">Dancer</a> <% version %>

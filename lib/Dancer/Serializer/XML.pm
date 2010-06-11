@@ -5,6 +5,9 @@ use warnings;
 use Dancer::ModuleLoader;
 use base 'Dancer::Serializer::Abstract';
 
+# singleton for the XML::Simple object
+my $_xs;
+
 # helpers
 
 sub from_xml {
@@ -27,16 +30,17 @@ sub init {
     my ($self) = @_;
     die 'XML::Simple is needed and is not installed'
       unless $self->loaded;
+    $_xs = XML::Simple->new();
 }
 
 sub serialize {
     my ( $self, $entity ) = @_;
-    $self->XMLout( { data => $entity } );
+    $_xs->XMLout( { data => $entity } );
 }
 
 sub deserialize {
     my ( $self, $content ) = @_;
-    $self->XMLin($content);
+    $_xs->XMLin($content);
 }
 
 sub content_type { 'text/xml' }

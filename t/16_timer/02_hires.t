@@ -11,6 +11,10 @@ isa_ok($timer, 'Dancer::Object');
 isa_ok($timer, 'Dancer::Timer');
 can_ok($timer, 'tick');
 ok(defined($timer->start_time), "start_time is defined");
+
+my $t1 = $timer->tick;
 sleep 1;
-ok(($timer->tick > 1), "tick has been increased: ".$timer->tick);
+my $t2 = $timer->tick;
+
+ok(($t2 > $t1), "tick has been increased: ".$timer->tick);
 

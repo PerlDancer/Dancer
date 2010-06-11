@@ -14,8 +14,8 @@ my @http_env_keys = (
     'user_agent',      'host',
     'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive',
-    'connection',      'accept',
-    'referer',
+    'connection',      'accept', 
+    'accept_type',     'referer',
 );
 my $count = 0;
 
@@ -24,7 +24,7 @@ Dancer::Request->attributes(
     'env',          'path', 'method',
     'content_type', 'content_length',
     'body',         'id', 'request_uri',
-    'uploads',
+    'uploads', 'headers',
     @http_env_keys,
 );
 
@@ -36,8 +36,9 @@ sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
 sub is_put                { $_[0]->{method} eq 'PUT' }
 sub is_delete             { $_[0]->{method} eq 'DELETE' }
+sub header                { $_[0]->{headers}->get($_[1]) }
 
-# public interface compat with CGI.pm objects 
+# public interface compat with CGI.pm objects
 sub request_method { method(@_) }
 sub path_info      { path(@_) }
 sub Vars           { params(@_) }
@@ -144,8 +145,8 @@ sub params {
 sub is_ajax {
     my $self = shift;
 
-    return 0 unless defined $self->{'x_requested_with'};
-    return 0 if $self->{'x_requested_with'} ne 'XMLHttpRequest';
+    return 0 unless defined $self->header('X-Requested-With');
+    return 0 if $self->header('X-Requested-With') ne 'XMLHttpRequest';
     return 1;
 }
 
@@ -153,7 +154,7 @@ sub is_ajax {
 sub upload {
     my ($self, $name) = @_;
     my $res = $self->{uploads}{$name};
-    
+
     return $res unless wantarray;
     return () unless defined $res;
     return (ref($res) eq 'ARRAY') ? @$res : $res;
@@ -164,6 +165,7 @@ sub upload {
 sub _init {
     my ($self) = @_;
 
+    $self->_build_headers();
     $self->_build_request_env();
     $self->_build_path()      unless $self->path;
     $self->_build_method()    unless $self->method;
@@ -199,20 +201,25 @@ sub _set_query_params {
 sub _build_request_env {
     my ($self) = @_;
 
-    # Don't refactor that, it's called whenever a request object is needed, that
-    # means at least once per request. If refactored in a loop, this will cost 4
-    # times more than the following static map.
-    $self->{user_agent}         = $self->{env}{HTTP_USER_AGENT};
-    $self->{host}               = $self->{env}{HTTP_HOST};
-    $self->{accept_language}    = $self->{env}{HTTP_ACCEPT_LANGUAGE};
-    $self->{accept_charset}     = $self->{env}{HTTP_ACCEPT_CHARSET};
-    $self->{accept_encoding}    = $self->{env}{HTTP_ACCEPT_ENCODING};
-    $self->{keep_alive}         = $self->{env}{HTTP_KEEP_ALIVE};
-    $self->{connection}         = $self->{env}{HTTP_CONNECTION};
-    $self->{accept}             = $self->{env}{HTTP_ACCEPT};
-    $self->{referer}            = $self->{env}{HTTP_REFERER};
-    $self->{'x_requested_with'} = $self->{env}{'HTTP_X_REQUESTED_WITH'};
+   # Don't refactor that, it's called whenever a request object is needed, that
+   # means at least once per request. If refactored in a loop, this will cost 4
+   # times more than the following static map.
+    $self->{user_agent}       = $self->{env}{HTTP_USER_AGENT};
+    $self->{host}             = $self->{env}{HTTP_HOST};
+    $self->{accept_language}  = $self->{env}{HTTP_ACCEPT_LANGUAGE};
+    $self->{accept_charset}   = $self->{env}{HTTP_ACCEPT_CHARSET};
+    $self->{accept_encoding}  = $self->{env}{HTTP_ACCEPT_ENCODING};
+    $self->{keep_alive}       = $self->{env}{HTTP_KEEP_ALIVE};
+    $self->{connection}       = $self->{env}{HTTP_CONNECTION};
+    $self->{accept}           = $self->{env}{HTTP_ACCEPT};
+    $self->{accept_type}      = $self->{env}{HTTP_ACCEPT_TYPE};
+    $self->{referer}          = $self->{env}{HTTP_REFERER};
+    $self->{x_requested_with} = $self->{env}{HTTP_X_REQUESTED_WITH};
+}
 
+sub _build_headers {
+    my ($self) = @_;
+    $self->{headers} = Dancer::SharedData->headers;
 }
 
 sub _build_params {
@@ -374,7 +381,7 @@ sub _build_uploads {
 
     my $uploads = $self->{_http_body}->upload;
     my %uploads;
-    
+
     for my $name (keys %{ $uploads }) {
         my $files = $uploads->{$name};
         $files = ref $files eq 'ARRAY' ? $files : [$files];
@@ -410,7 +417,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Request
+Dancer::Request - interface for accessing incoming requests
 
 =head1 DESCRIPTION
 
@@ -427,7 +434,7 @@ method, like in the following example:
         # ...
     };
 
-A route handler should not read the environment by itslef, but should instead
+A route handler should not read the environment by itself, but should instead
 use the current request object.
 
 =head1 PUBLIC INTERFACE
@@ -481,6 +488,12 @@ Return the content type of the request.
 
 Return the content length of the request.
 
+=head2 header($name)
+
+Return the value of the given header, if present. If the header has multiple
+values, returns an the list of values if called in list context, the first one
+in scalar.
+
 =head2 body()
 
 Return the raw body of the request, unparsed.
@@ -495,7 +508,7 @@ Return true if the value of the header C<X-Requested-With> is XMLHttpRequest.
 
 =head2 env()
 
-Return the current environement (C<%ENV>), as a hashref.
+Return the current environment (C<%ENV>), as a hashref.
 
 =head2 uploads()
 
@@ -505,7 +518,7 @@ objects.
 
 =head2 HTTP environment variables
 
-All HTTP environement variables that are in %ENV will be provided in the
+All HTTP environment variables that are in %ENV will be provided in the
 Dancer::Request object through specific accessors, here are those supported:
 
 =over 4

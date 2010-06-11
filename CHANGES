@@ -1,30 +1,96 @@
-Dancer 1.18
+Dancer 1.xxx
+    [ sebastian de castelberg ]
+    * Fix priority in D::S::Mutable.
+
+    [ David Precious ]
+    * Fix test failures with old Plack versions (Issue 73).
+
+    [ nanis ]
+    * Fix issue #75.
+
+Dancer 1.1803
+    [ Alexis Sukrieh ]
+    * Fix for issue #69
+      The issue was resolved in 1.1801, this time, the fix is working as
+      expected.
+
+    [ Sawyer X ]
+    * Fix for RT #57715, require Test::More 0.88 and up.
+
+Dancer 1.1802
+    [ Sawyer X ]
+    * Fix RT #57158 (route_cache does not work with multiple parameters)
+      Cache revealed a small design overlook of not cloning a route before
+      returning it to the user, making multiple parameters disabled.
+      (Thanks to Stéphane Alnet for reporting and adding a test for it!)
+
+Dancer 1.1801
+    [ Alexis Sukrieh ]
+    * FIX issue #69
+      Error are trapped even if occuring from Dancer's source code.
+      auto_reload is set to false in scaffolded applications to 
+      prevent errors if Module::Refresh is not installed.
+
+Dancer 1.1800
+	[ Alexis Sukrieh ]
+	* merge of the devel branch into master, first stable release of
+	  1.178_01 and 1.178_02
+
+Dancer 1.178_02
+    [ Alexis Sukrieh ]
+    * Errors are caught in before filters
+    * halt can be given a Dancer::Response object rahter than plain text content
+
+Dancer 1.178_01
 
 	[ Alexis Sukrieh ]
 	* New logger for sending log message to STDERR: Dancer::Logger::Console
 	  Thanks to Gabor Szabo for the idea.
 	* Logger engines don't have anymore to implement _format(), they can use
 	  $self->format_message instead.
-	* New log level: "core" for letting Dancer's core express itself on crucial events.
-	  That way, when the app config sets log to "core", any core messages is
+	* New log level: "core" for letting Dancer's core express itself on crucial
+      events.
+      That way, when the app config sets log to "core", any core messages is
 	  sent to the logger, and the end-user can see which route is chosen for
 	  each request received.
 	  Thanks to Gabor Szabo for the idea.
-	* New class Dancer::Timer added so any logger engine can now show a timer string.
-	  If Time::HiRes is available, use it to produce microseconds ticks.
-	* Scaffolded applications are now built like a CPAN distribution, with a Makefile.PL
+	* New class Dancer::Timer added so any logger engine can now show a timer
+      string.
+    * Scaffolded applications are now built like a CPAN distribution, with a
+      Makefile.PL
 	  and test scripts (thanks to Gabor Szabo for the idea).
 	* Added Dancer::Test to provide helpers for writing test script for Dancer
 	  applications
+	* FIX bug when returning a void context after redirecting a route.
+	  Thanks to Juan J. Martínez  for the report.
+	* Add support for request headers in Dancer::Request
+    * Add support for halt() in Dancer's syntax.
 
 	[ Alex Kapranof ]
-	* Support for on-the-fly charset encoding when the setting is set and a content
-	  is sent by Dancer and needs to be encoded.
+	* Support for on-the-fly charset encoding when the setting is set and a
+      content is sent by Dancer and needs to be encoded.
 	  The response Content-Type is updated accordingly as well.
 
     [ Sawyer X ]
     * Adding "import_warnings" settings. On by default, but allows to disable
       auto-import of "warnings" pragma. Reported by Adam Kennedy.
+
+Dnacer 1.176
+    * Bringing 1.175_01 into production.
+
+Dancer 1.175_01 (Developer release)
+    [ Sawyer X ]
+    * Documentation for Dancer::FileUtils.
+    * Documentation for Dancer::Cookie.
+    * Fixing PNG bug on IE (reported by Adam Kennedy - thank you).
+
+Dancer 1.175
+    [ Sawyer X ]
+    * RT #56395 reported by Jonathan Yu on behalf of Debian Perl team.
+    * Documentation for Dancer::Error.
+
+    [ Alexis Sukrieh ]
+    * fixed t/15_plugins/02_config.t when YAML is not installed 
 
 Dancer 1.174
     [ Gabor Szabo ]
@@ -37,7 +103,7 @@ Dancer 1.174
       Thanks to deepakg for requesting this feature.
 
     [ Sawyer X ]
-    * RT #56381 reported by Jonathan Yu on behalf on Debian Perl team.
+    * RT #56381 reported by Jonathan Yu on behalf of Debian Perl team.
       (Adding LICENSE file)
 
 Dancer 1.173_01 (Developer release)

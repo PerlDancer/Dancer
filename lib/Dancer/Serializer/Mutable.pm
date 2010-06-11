@@ -28,23 +28,30 @@ sub _find_content_type {
         $params = $request->params;
     }
 
-    if ( $request->{content_type} ) {
-        $content_types{ $request->{content_type} } = 3;
+    my $method = $request->method;
+
+    if ($method =~ /^(?:POST|PUT)$/) {
+        if ($request->{content_type}) {
+            $content_types{$request->{content_type}} = 4;
+        }
+
+        if ($params && $params->{content_type}) {
+            $content_types{$params->{content_type}} = 3;
+        }
     }
 
-    if ( $params && $params->{content_type} ) {
-        $content_types{ $params->{content_type} } = 2;
+    if ($request->{accept}) {
+        $content_types{$request->{accept}} = 2;
     }
-
-    if ( $request->{accept_type} ) {
-        $content_types{ $request->{accept_type} } = 1;
+    if ($request->{'accept_type'}) {
+        $content_types{$request->{accept_type}} = 1;
     }
 
     $content_types{'application/json'} = 0;
 
     return [
         sort { $content_types{$b} <=> $content_types{$a} }
-            keys %content_types
+          keys %content_types
     ];
 }
 
@@ -116,7 +123,7 @@ the B<content_type> parameter from the URL
 
 =item
 
-the B<accept_type> from the request headers
+the B<accept> from the request headers
 
 =item
 

@@ -31,7 +31,10 @@ sub get_handler {
 sub handle_request {
     my ($self, $request) = @_;
     Dancer::SharedData->reset_timer;
-    Dancer::Logger->core("request: ".$request->method." ".$request->path);
+    Dancer::Logger->core(
+        "request: ".$request->method." ".$request->path . " from "
+        . $request->remote_address
+    );
 
     # deserialize the request body if possible
     $request = Dancer::Serializer->process_request($request) if setting('serializer');
@@ -44,25 +47,32 @@ sub handle_request {
 
     # TODO : move that elsewhere
     if (setting('auto_reload')) {
-        eval "use Module::Refresh";
-        if ($@) {
-            Dancer::Logger->warning("auto_reload is set, "
-                  . "but Module::Refresh is not installed");
-        }
-        else {
+        if (Dancer::ModuleLoader->load('Module::Refresh')) {
             my $orig_reg = Dancer::Route->registry;
             Dancer::Route->purge_all;
             Module::Refresh->refresh;
             my $new_reg = Dancer::Route->registry;
             Dancer::Route->merge_registry($orig_reg, $new_reg);
         }
+        else {
+            warn "Module::Refresh is not installed, " . 
+                "install this module or unset 'auto_reload' in your config file";
+        }
     }
 
-    my $response =
-         Dancer::Renderer->render_file
+    my $response;
+    eval {
+      $response = Dancer::Renderer->render_file
       || Dancer::Renderer->render_action
-      || Dancer::Renderer->render_error(404);
-
+      || Dancer::Renderer->render_error(404)
+    };
+    if ($@) {
+        my $error = Dancer::Error->new(
+            code => 500,
+            title => "Runtime Error",
+            message => $@);
+        $response = $error->render;
+    }
     return $self->render_response($response);
 }
 

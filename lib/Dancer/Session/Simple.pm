@@ -48,7 +48,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Session::Simple - Simple in-memory session backend for Dancer
+Dancer::Session::Simple - in-memory session backend for Dancer
 
 =head1 DESCRIPTION
 

@@ -146,7 +146,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Config
+Dancer::Config - setting registry for Dancer
 
 =head1 DESCRIPTION
 
@@ -171,6 +171,11 @@ The same is done for the environment file located in the B<environments>
 directory.
 
 =head1 SUPPORTED SETTINGS
+
+=head2 server (string)
+
+The IP address that the Dancer app should bind to.  Default is 0.0.0.0, i.e.
+bind to all available interfaces.
 
 =head2 port (int)
 
@@ -257,6 +262,10 @@ a major negative effect on performance because of L<Module::Refresh>.
 
 When this flag is set, you don't have to restart your webserver whenever you
 make a change in a route handler.
+
+Note that L<Module::Refresh> only operates on files in C<%INC>, so if the script
+your Dancer app is started from changes, even with auto_reload enabled, you will
+still not see the changes reflected until you start your app.
 
 =head2 session (enum)
 
