@@ -26,10 +26,7 @@ Test::TCP::test_tcp(
     },
     server => sub {
         my $port = shift;
-
         use Dancer;
-        use Dancer::Config 'setting';
-
         setting port => $port;
         setting access_log => 0;
 

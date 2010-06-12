@@ -1,8 +1,8 @@
-use Test::More;
+use Test::More import => ['!pass'];
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
-use Dancer::Config 'setting';
+use Dancer;
 use Encode;
 
 plan skip_all => "LWP is needed for this test" 

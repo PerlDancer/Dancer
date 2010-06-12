@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More;
+use Test::More import => ['!pass'];
 
 BEGIN {
     use Dancer::ModuleLoader;
@@ -11,7 +11,7 @@ BEGIN {
         unless Dancer::ModuleLoader->load('Test::TCP');
 };
 
-use Dancer::Config 'setting';
+use Dancer;
 
 use File::Spec;
 use File::Temp 'tempdir';

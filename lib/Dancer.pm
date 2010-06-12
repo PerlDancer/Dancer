@@ -6,7 +6,7 @@ use Carp 'confess';
 use Cwd 'abs_path';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
-use Dancer::Config 'setting';
+use Dancer::Config;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
@@ -69,6 +69,7 @@ $VERSION   = '1.1803';
   send_file
   send_error
   set
+  setting
   set_cookie
   session
   splat
@@ -130,7 +131,8 @@ sub r          { {regexp => $_[0]} }
 sub redirect   { Dancer::Helpers::redirect(@_) }
 sub request    { Dancer::SharedData->request }
 sub send_file  { Dancer::Helpers::send_file(@_) }
-sub set        { setting(@_) }
+sub set        { Dancer::Config::setting(@_) }
+sub setting    { Dancer::Config::setting(@_) }
 sub set_cookie { Dancer::Helpers::set_cookie(@_) }
 
 sub session {

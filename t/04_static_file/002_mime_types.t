@@ -2,7 +2,6 @@ use strict;
 use warnings;
 
 use Dancer ':syntax';
-use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 
 use t::lib::TestUtils;

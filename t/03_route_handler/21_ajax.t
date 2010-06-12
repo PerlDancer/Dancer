@@ -33,7 +33,6 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         use Dancer;
-        use Dancer::Config 'setting';
 
         setting access_log => 0;
         setting port => $port;

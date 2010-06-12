@@ -27,6 +27,12 @@ get '/' => sub {
     template 'index';
 };
 
+get '/with_fh' => sub {
+    my $fh;
+    
+    die "TODO";
+};
+
 use Data::Dumper;
 
 # test params.foo in view
