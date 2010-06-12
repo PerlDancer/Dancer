@@ -615,6 +615,12 @@ Lets you define a setting
 
     set something => 'value';
 
+=head2 setting
+
+Lets you get a value of a given setting
+
+    setting('something'); # 'value'
+
 =head2 set_cookie
 
 You can create/update cookies with the C<set_cookie> helper like the following:
