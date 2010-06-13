@@ -5,7 +5,6 @@ use Test::More tests => 3, import => ['!pass'];
 use Dancer::Test;
 
 use Dancer ':syntax';
-use Dancer::Config 'setting';
 
 set public => path(dirname(__FILE__), 'static');
 my $public = setting('public');
