@@ -24,7 +24,7 @@ Dancer::Request->attributes(
     'env',          'path', 'method',
     'content_type', 'content_length',
     'body',         'id', 'request_uri',
-    'uploads', 'headers',
+    'uploads', 'headers', 'path_info',
     @http_env_keys,
 );
 
@@ -40,7 +40,6 @@ sub header                { $_[0]->{headers}->get($_[1]) }
 
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
-sub path_info      { path(@_) }
 sub Vars           { params(@_) }
 sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 

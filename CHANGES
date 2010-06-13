@@ -1,12 +1,25 @@
 Dancer 1.xxx
-    [ sebastian de castelberg ]
-    * Fix priority in D::S::Mutable.
+    [ Sebastian de Castelberg ]
+    * Fix priority in D::S::Mutable
+    * Support for path_info() in Dancer::Request so it's possible to
+      mount an application under a directory.
 
     [ David Precious ]
     * Fix test failures with old Plack versions (Issue 73).
 
     [ nanis ]
     * Fix issue #75.
+
+    [ Alexis Sukrieh ]
+    * Applied miyagawa's patch for droping the app.psgi file. Refactoring of
+      Dancer::Handler::PSGI and friends.
+    * Applied LoonyPandora's patch for checking Dancer's VERSION when running
+      script/dancer. Changed it a bit so it can check against CPAN rather than
+      GitHub.
+
+    [jbarratt] 
+    * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
+      options.
 
 Dancer 1.1803
     [ Alexis Sukrieh ]
@@ -32,9 +45,9 @@ Dancer 1.1801
       prevent errors if Module::Refresh is not installed.
 
 Dancer 1.1800
-	[ Alexis Sukrieh ]
-	* merge of the devel branch into master, first stable release of
-	  1.178_01 and 1.178_02
+    [ Alexis Sukrieh ]
+    * merge of the devel branch into master, first stable release of
+      1.178_01 and 1.178_02
 
 Dancer 1.178_02
     [ Alexis Sukrieh ]
@@ -43,33 +56,33 @@ Dancer 1.178_02
 
 Dancer 1.178_01
 
-	[ Alexis Sukrieh ]
-	* New logger for sending log message to STDERR: Dancer::Logger::Console
-	  Thanks to Gabor Szabo for the idea.
-	* Logger engines don't have anymore to implement _format(), they can use
-	  $self->format_message instead.
-	* New log level: "core" for letting Dancer's core express itself on crucial
+    [ Alexis Sukrieh ]
+    * New logger for sending log message to STDERR: Dancer::Logger::Console
+      Thanks to Gabor Szabo for the idea.
+    * Logger engines don't have anymore to implement _format(), they can use
+      $self->format_message instead.
+    * New log level: "core" for letting Dancer's core express itself on crucial
       events.
       That way, when the app config sets log to "core", any core messages is
-	  sent to the logger, and the end-user can see which route is chosen for
-	  each request received.
-	  Thanks to Gabor Szabo for the idea.
-	* New class Dancer::Timer added so any logger engine can now show a timer
+      sent to the logger, and the end-user can see which route is chosen for
+      each request received.
+      Thanks to Gabor Szabo for the idea.
+    * New class Dancer::Timer added so any logger engine can now show a timer
       string.
     * Scaffolded applications are now built like a CPAN distribution, with a
       Makefile.PL
-	  and test scripts (thanks to Gabor Szabo for the idea).
-	* Added Dancer::Test to provide helpers for writing test script for Dancer
-	  applications
-	* FIX bug when returning a void context after redirecting a route.
-	  Thanks to Juan J. Martínez  for the report.
-	* Add support for request headers in Dancer::Request
+      and test scripts (thanks to Gabor Szabo for the idea).
+    * Added Dancer::Test to provide helpers for writing test script for Dancer
+      applications
+    * FIX bug when returning a void context after redirecting a route.
+      Thanks to Juan J. Martínez  for the report.
+    * Add support for request headers in Dancer::Request
     * Add support for halt() in Dancer's syntax.
 
-	[ Alex Kapranof ]
-	* Support for on-the-fly charset encoding when the setting is set and a
+    [ Alex Kapranof ]
+    * Support for on-the-fly charset encoding when the setting is set and a
       content is sent by Dancer and needs to be encoded.
-	  The response Content-Type is updated accordingly as well.
+      The response Content-Type is updated accordingly as well.
 
     [ Sawyer X ]
     * Adding "import_warnings" settings. On by default, but allows to disable
@@ -113,14 +126,14 @@ Dancer 1.173_01 (Developer release)
     * Plugins configuration
     * Cleaning up tests
 
-	[ Alexis Sukrieh ]
-	* New serializer: Dumper for easily output dumped variable 
-	  in text/plain.
-	* Before filters can now access route params
+    [ Alexis Sukrieh ]
+    * New serializer: Dumper for easily output dumped variable 
+      in text/plain.
+    * Before filters can now access route params
     * Support for '.' as a token separator in params parsing
-	* The standalone server respect the 'access_log' setting, 
-	  the starting banner is printed on STDERR only if the 
-	  setting is set to true.
+    * The standalone server respect the 'access_log' setting, 
+      the starting banner is printed on STDERR only if the 
+      setting is set to true.
 
     [ Sawyer X ]
     * Fixed Windows PSGI.URL_SCHEME bug, causing tests to fail
@@ -227,7 +240,7 @@ Dancer 1.160
     * FIX Params are not polluted anymore by the 'splat' keyword when no capture
       is needed by the pattern.
     * New feature 'auto_page' (closes: #41)
-	  Lets the user have automatic route resolution for 
+      Lets the user have automatic route resolution for 
       requests that match an existing template in the views dir. Thanks to 
       David Precious for the idea and his help.
 

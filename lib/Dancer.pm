@@ -81,6 +81,7 @@ $VERSION   = '1.1803';
   to_xml
   true
   upload
+  captures
   uri_for
   var
   vars
@@ -142,19 +143,20 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
-sub splat    { @{ Dancer::SharedData->request->params->{splat} } }
-sub status   { Dancer::Response::status(@_) }
-sub template { Dancer::Helpers::template(@_) }
-sub true     {1}
-sub to_dumper{ Dancer::Serializer::Dumper::to_dumper(@_) }
-sub to_json  { Dancer::Serializer::JSON::to_json(@_) }
-sub to_yaml  { Dancer::Serializer::YAML::to_yaml(@_) }
-sub to_xml   { Dancer::Serializer::XML::to_xml(@_) }
-sub upload   { Dancer::SharedData->request->upload(@_) }
-sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
-sub var      { Dancer::SharedData->var(@_) }
-sub vars     { Dancer::SharedData->vars }
-sub warning  { Dancer::Logger->warning(@_) }
+sub splat      { @{ Dancer::SharedData->request->params->{splat} } }
+sub status     { Dancer::Response::status(@_) }
+sub template   { Dancer::Helpers::template(@_) }
+sub true       {1}
+sub to_dumper  { Dancer::Serializer::Dumper::to_dumper(@_) }
+sub to_json    { Dancer::Serializer::JSON::to_json(@_) }
+sub to_yaml    { Dancer::Serializer::YAML::to_yaml(@_) }
+sub to_xml     { Dancer::Serializer::XML::to_xml(@_) }
+sub upload     { Dancer::SharedData->request->upload(@_) }
+sub uri_for    { Dancer::SharedData->request->uri_for(@_) }
+sub captures   { Dancer::SharedData->request->params->{captures} }
+sub var        { Dancer::SharedData->var(@_) }
+sub vars       { Dancer::SharedData->vars }
+sub warning    { Dancer::Logger->warning(@_) }
 
 sub load_app {
     for my $app (@_) {
@@ -192,7 +194,12 @@ sub import {
 sub start {
     my ($class, $request) = @_;
     Dancer::Config->load;
-    Dancer::Handler->get_handler()->dance($request);
+
+    # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
+    if ($request) {
+        return Dancer::Handler->handle_request($request);
+    }
+    Dancer::Handler->get_handler()->dance;
 }
 
 # private

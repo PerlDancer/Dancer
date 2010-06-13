@@ -24,7 +24,7 @@ is $req->uri_for('bar', { baz => 'baz' }),
 is $req->uri_for('/bar'), 'http://localhost:5000/foo/bar';
 
 is $req->request_uri, '/foo/bar/baz';
-is $req->path_info, '/foo/bar/baz';
+is $req->path_info, '/bar/baz';
 
 {
     local $env->{SCRIPT_NAME} = '';

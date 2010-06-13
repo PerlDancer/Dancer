@@ -17,7 +17,7 @@ use Encode;
 
 # This is where we choose which application handler to return
 sub get_handler {
-    if (setting('apphandler') eq 'PSGI') {
+    if (setting('apphandler') eq 'PSGI' || $ENV{PLACK_ENV}) {
         Dancer::Logger->core('loading PSGI handler');
         return Dancer::Handler::PSGI->new;
     }
@@ -32,8 +32,10 @@ sub handle_request {
     my ($self, $request) = @_;
     Dancer::SharedData->reset_timer;
     
-    my $remote = $request->remote_address || '-';
-    Dancer::Logger->core("request: ".$request->method." ".$request->path . " from $remote"); 
+    my $ip_addr = $request->remote_address || '-';
+    Dancer::Logger->core(
+        "request: ".$request->method." ".
+        $request->path . " from $ip_addr");
 
     # deserialize the request body if possible
     $request = Dancer::Serializer->process_request($request) if setting('serializer');
