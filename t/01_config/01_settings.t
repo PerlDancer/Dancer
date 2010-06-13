@@ -1,13 +1,9 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6, import => ['!pass'];
+use Test::More tests => 5, import => ['!pass'];
 
 use Dancer ':syntax';
-
-BEGIN {
-    use_ok 'Dancer::Config', 'setting';
-}
 
 # testing default values
 is(setting('port'), '3000', "default value for 'port' is OK"); 
