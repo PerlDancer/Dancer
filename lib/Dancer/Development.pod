@@ -13,9 +13,49 @@ guide.
 
 =head1 HOW TO CONTRIBUTE
 
+There are many ways to contribute to the project. Dancer is a young yet avtice
+project and any kind of help is appreciated.
+
 =head2 Marketing
 
+You don't have to start by hacking the code, spreadign the good words in
+valuable as well. If you have a blog, just feel free to speak about Dancer.
+
+If you're a twitter user, you can tweet about it with the hashtag C<#perl>.
+
+=head2 Documentation
+
+We do give lots of importance to documentation, but it's difficult to keep it
+up-to-date and error-prone. If you find a typo or an error in a documentation
+you can submit a patch with your fix (see "Patch submission").
+
 =head2 Quality Assurance
+
+We call "Quality Assurance" the fact that we keep in mind that Dancer should ne
+able to install into all version of Perl since Perl 5.8, on any platforms.
+
+We should avoid as much as possible regressions and backward compatibility
+should be always in mind when refactoring.
+
+=head2 Quality supervision
+
+Our weapon for being aware of our quality is the CPAN testers platform: 
+L<http://www.cpantesters.org>.
+
+A good way to help the project is to find a failing build log on the CPAN
+testers: L<http://www.cpantesters.org/distro/D/Dancer.html>
+
+If you find a failing test report, feel free to report it as a GitHub issue:
+L<http://github.com/sukria/Dancer/issues>.
+
+=head2 Reporting bugs
+
+We prefer to have all our bug reports on GitHub, in the issues section:
+<http://github.com/sukria/Dancer/issues>. It's possible though to report bugs
+on RT as well: L<https://rt.cpan.org/Dist/Display.html?Queue=Dancer>
+
+Please make sure the bug you're reporting is not yet present, in doubt ask on
+IRC.
 
 =head2 Patch submission
 
