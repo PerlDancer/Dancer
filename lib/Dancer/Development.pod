@@ -1,0 +1,57 @@
+=head1 NAME
+
+Dancer::Development - guide for developers interested in contributing
+
+=head1 DESCRIPTION
+
+This guide has been written to help developers of the project in their daily
+needs. This guide is the reference for any developer working on Dancer. 
+
+If you want to contribute code to Dancer you should first start by reading this
+guide.
+
+
+=head1 HOW TO CONTRIBUTE
+
+=head2 Marketing
+
+=head2 Quality Assurance
+
+=head2 Patch submission
+
+=head1 RESOURCES FOR DEVELOPERS
+
+=head2 Mailing lists
+
+=head2 IRC channels
+
+=head2 Repositories
+
+=head1 CODING GUIDELINES
+
+=head2 About dependencies
+
+=head2 Branches
+
+=head3 master
+
+=head3 devel
+
+=head3 feature-related branches
+
+=head2 Perltidy
+
+=head2 Tests
+
+=head1 RELEASING
+
+=head2 Public releases
+
+=head2 Developer releases
+
+=head2 Roadmap
+
+=head1 AUTHOR
+
+This document has been written by Alexis Sukrieh L<sukria@cpan.org>
+
