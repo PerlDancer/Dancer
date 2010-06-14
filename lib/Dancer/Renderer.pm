@@ -190,7 +190,7 @@ sub templates {
 <body>
 <h1><% title %></h1>
 <div id="content">
-<p><% content %></p>
+<% content %>
 </div>
 <div id="footer">
 Powered by <a href="http://perldancer.org/">Dancer</a> <% version %>

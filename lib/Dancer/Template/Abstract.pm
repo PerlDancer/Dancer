@@ -2,12 +2,40 @@ package Dancer::Template::Abstract;
 
 use strict;
 use warnings;
+use Dancer::FileUtils 'path';
 use base 'Dancer::Engine';
 
 # Overloads this method to implement the rendering
 # args:   $self, $template, $tokens
 # return: a string of $template's content processed with $tokens
 sub render($$$) { die "render not implemented" }
+
+sub view {
+    my ($self, $view) = @_;
+    $view .= ".tt" if $view !~ /\.tt$/;
+    $view = path(Dancer::Config::setting('views'), $view);
+
+    if (!-r $view) {
+        my $error = Dancer::Error->new(
+            code    => 404,
+            message => "Page not found",
+        );
+        return Dancer::Response::set($error->render);
+    }
+    $view;
+}
+
+sub layout {
+    my ($self, $layout, $tokens, $content) = @_;
+
+    $layout .= '.tt' if $layout !~ /\.tt/;
+    $layout = path(Dancer::Config::setting('views'), 'layouts', $layout);
+
+    my $full_content =
+      Dancer::Template->engine->render($layout,
+        {%$tokens, content => $content});
+    $full_content;
+}
 
 1;
 __END__
@@ -56,11 +84,11 @@ Examples :
 
     # with a template as a scalar
     my $template = "here is <% var %>";
-    $content = $engine->render(\$template, { var => 42 }); 
+    $content = $engine->render(\$template, { var => 42 });
 
 =back
 
-=head1 AUTHOR 
+=head1 AUTHOR
 
 This module has been written by Alexis Sukrieh, see L<Dancer> for details.
 

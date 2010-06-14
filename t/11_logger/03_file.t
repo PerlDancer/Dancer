@@ -1,11 +1,11 @@
-use Test::More tests => 9;
+use Test::More tests => 9, import => ['!pass'];
 
 use strict;
 use warnings;
 
 use File::Temp qw/tempdir/;
 use t::lib::TestUtils;
-use Dancer::Config 'setting';
+use Dancer;
 
 my $dir = tempdir(CLEAN_UP => 1);
 setting appdir => $dir;

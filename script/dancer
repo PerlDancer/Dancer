@@ -34,16 +34,15 @@ usage() if not defined $name;
 usage() unless -d $path && -w $path;
 
 validate_app_name($name);
-if ($name =~ /[^\w]/) {
-    warn "Error: Invalid application name.\n";
-    exit;
-}
 
 my $DO_OVERWRITE_ALL = 0;
 my $DANCER_APP_DIR   = get_application_path($path, $name);
 my $DANCER_SCRIPT    = get_script_path($name);
 my ($LIB_FILE, $LIB_PATH) = get_lib_path($name);
 my $AUTO_RELOAD = eval "require Module::Refresh" ? 1 : 0;
+
+require Dancer;
+my $DANCER_VERSION   = $Dancer::VERSION;
 
 version_check();
 safe_mkdir($DANCER_APP_DIR);
@@ -103,6 +102,8 @@ sub create_node($;$) {
     my ($node, $root) = @_;
     $root ||= '.';
 
+    my $templates = templates($name);
+
     while ( my ($path, $content) = each %$node ) {
         $path = catfile($root, $path);
 
@@ -117,7 +118,7 @@ sub create_node($;$) {
             my $file = basename($path);
             my $dir  = dirname($path);
             my $ex = ($file =~ s/^\+//); # look for '+' flag (executable)
-            my $template = templates($name)->{$file};
+            my $template = $templates->{$file};
 
             $path = catfile($dir, $file); # rebuild the path without the '+' flag
             write_file($path, $template, {appdir => File::Spec->rel2abs($DANCER_APP_DIR)});
@@ -128,7 +129,6 @@ sub create_node($;$) {
 
 sub app_tree($) {
     my ($appname) = @_;
-
 
     return {
         "+$DANCER_SCRIPT.pl" => FILE,
@@ -181,8 +181,7 @@ sub write_file {
     my ($path, $template, $vars) = @_;
     die "no template found for $path" unless defined $template;
 
-    require Dancer;
-    $vars->{dancer_version} = $Dancer::VERSION;
+    $vars->{dancer_version} = $DANCER_VERSION;
 
     # if file already exists, ask for confirmation
     if (-f $path && (not $DO_OVERWRITE_ALL)) {
@@ -246,7 +245,12 @@ WriteMakefile(
     clean               => { FILES => '$appname-*' },
 );
 ",
+'index.tt'  => '<h2>It Works!</h2>
 
+<p>
+I\'m in <code>[%appdir%]/views/index.tt</code>
+</p>
+',
 'main.tt'   =>
     Dancer::Renderer->html_page($appname, '<% content %>'),
 
@@ -515,15 +519,15 @@ sub send_http_request {
 sub version_check {
     my $latest_version = 0;
     require Dancer;
-    my $dancer_version = $Dancer::VERSION;
+
     my $resp = send_http_request('http://search.cpan.org/dist/Dancer/CHANGES');
     if ($resp && $resp =~ m/Dancer (\d\.\d+)/) {
         $latest_version = $1;
     }
 
-    if ($latest_version > $dancer_version) {
+    if ($latest_version > $DANCER_VERSION) {
         print qq|
-The latest Dancer release is $latest_version, you are currently using $dancer_version.
+The latest Dancer release is $latest_version, you are currently using $DANCER_VERSION.
 Please check http://perldancer.org for updates.
 
 |;

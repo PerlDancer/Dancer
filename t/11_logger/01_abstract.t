@@ -1,8 +1,8 @@
-use Test::More tests => 16;
+use Test::More tests => 16, import => ['!pass'];
 use strict;
 use warnings;
 
-use Dancer::Config 'setting';
+use Dancer;
 
 use t::lib::EasyMocker;
 

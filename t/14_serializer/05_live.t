@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More;
+use Test::More import => ['!pass'];
 
 BEGIN {
     use Dancer::ModuleLoader;
@@ -17,7 +17,7 @@ BEGIN {
         unless Dancer::ModuleLoader->load('HTTP::Request');
 }
 
-use Dancer::Config 'setting';
+use Dancer;
 
 my $content_types = {
     'YAML' => 'text/x-yaml',
