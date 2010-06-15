@@ -21,6 +21,10 @@ Dancer 1.xxx
     * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
       options.
 
+    [ Marc Chantreux ]
+    * Support for regexp objects in route definition
+    * Support for named captures (keyword 'captures' added to Dancer's syntax).
+
 Dancer 1.1803
     [ Alexis Sukrieh ]
     * Fix for issue #69
