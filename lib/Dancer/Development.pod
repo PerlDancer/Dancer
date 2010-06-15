@@ -59,9 +59,45 @@ IRC.
 
 =head2 Patch submission
 
+The Dancer's development team uses GitHub to collaborate. Any contribution must
+be submited via GitHub. Here is the workflow for submitting a patch:
+
+=over 4 
+
+=item *
+
+Fork the repository L<http://github.com/sukria/Dancer>
+
+=item *
+
+Clone your fork like the following:
+
+    $ git clone <PATH_TOUR_GIT_CLONE>
+
+=item *
+
+Apply your patch to your clone and then commit and push to your repository
+
+    $ cd Dancer
+    [ edit as many files as you need to build your patch ]
+    $ git commit -m "DESCRIPTION OF THE PATCH"
+    $ git push origin master
+
+=item *
+
+Send a I<pull request> via the GitHub interface.
+
+It's also a good idea to summarize your work in a report sent to the users
+mailing list, in order to make sure the team is aware of it.
+
+=back
+
 =head1 RESOURCES FOR DEVELOPERS
 
 =head2 Mailing lists
+
+A mailing list is available here:
+L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
 
 =head2 IRC channels
 
