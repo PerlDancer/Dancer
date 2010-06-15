@@ -101,19 +101,59 @@ L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
 
 =head2 IRC channels
 
+You can reach the development team on irc.perl.org, chan #dancer.
+
 =head2 Repositories
+
+The official repository is hosted on GitHub at the following location:
+L<http://github.com/sukria/Dancer>. 
+
+Official developers have write access to this repository, contributors are
+invited to fork it if they want to submit patches, as explained in the 
+I<Patch submission> section.
+
+The repository layout is organized as follows:
+
+=over 4
+
+=item * C<master>
+
+This branch is dedicated to prepare CPAN releases. We push to that branch only
+for packaging a new release. Every CPAN version are made from this branch. 
+
+=item * C<devel>
+
+This is the development branch. Every new feature are supposed to be first
+pushed to that branch. 
+
+=back
 
 =head1 CODING GUIDELINES
 
+
 =head2 About dependencies
 
-=head2 Branches
+Dancer is intended to be a micro-framework. That means among other things that it should remain
+lightweight. For this reason we try very hard to keep the dependency bag as low
+as possible. But we don't want either to reinvent the wheel. 
 
-=head3 master
+The balance is not easy to do but you can keep in mind that unless a very good
+reason, the team won't accept a new dependency to be added to the core.
 
-=head3 devel
+If a patch provides a new feature that depends on a module, the solution is to
+perform a dynamic loading. Dancer has a class dedicated to that job:
+L<Dancer::ModuleLoader>. Here is an example of how to use it:
 
-=head3 feature-related branches
+    package Dancer::Some::Thing;
+    
+    sub init {
+        unless (Dancer::ModuleLoader->load('Some::Deps')) {
+            die "the feature provided by Dancer::Some::Thing needs Some::Deps";
+        }
+    }
+
+That way, an optional feature doesn't block Dancer from being installed as the
+dependency check is performed at runtime.
 
 =head2 Perltidy
 
@@ -125,7 +165,25 @@ L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
 
 =head2 Developer releases
 
+Whenever the devel branch has been merged into the master branch, the CPAN
+release built must be a developer version (the version number should contain a
+'_').
+
+Before a new release is made, the uploaders must wait for the CPAN testers
+reports. This is done to make sure the new merge doesn't brings regressions.
+
 =head2 Roadmap
+
+The next major release is Dancer 1.2, all of the following items must be
+completed before this version is released.
+
+=over 4
+
+=item * 
+
+=item * 
+
+=back
 
 =head1 AUTHOR
 
