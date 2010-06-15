@@ -771,6 +771,22 @@ Returns a fully-qualified URI for the given path:
         # can be something like: http://localhost:3000/path
     };
 
+=head2 captures
+
+If there are named captures in the route Regexp, captures returns a reference to a copy of %+
+
+    get qr{
+	/ (?<object> user   | ticket | comment )
+	/ (?<action> delete | find )
+	/ (?<id> \d+ )
+	/?$
+    }x
+    , sub {
+	my $value_for = captures;
+	"i don't want to $$value_for{action} the $$value_for{object} $$value_for{id} !"
+    };
+
+
 =head2 var
 
 Setter to define a shared variable between filters and route handlers.
