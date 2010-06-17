@@ -173,6 +173,7 @@ sub _init {
 
     $self->{_http_body} =
       HTTP::Body->new($self->content_type, $self->content_length);
+    $self->{_http_body}->cleanup(1);
     $self->_build_params();
     $self->_build_uploads unless $self->uploads;
 }
