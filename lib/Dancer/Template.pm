@@ -14,7 +14,7 @@ sub engine {$engine}
 # setting name.
 sub init { 
     my ($class, $name, $config) = @_;
-    $name ||= 'simple';
+    $name ||= 'template_toolkit';
     $engine = Dancer::Engine->build(template => $name, $config);
 }
 

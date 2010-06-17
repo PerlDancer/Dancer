@@ -42,7 +42,18 @@ sub template {
         $tokens->{session} = Dancer::Session->get;
     }
 
-    $view = Dancer::Template->engine->view($view);
+    # absolute path to the view
+    my $engine = Dancer::Template->engine;
+    $view = $engine->view($view);
+
+    # 404 if no view
+    if (! -r $view) {
+        my $error = Dancer::Error->new(
+            code    => 404,
+            message => "Page not found, no such view: $view",
+        );
+        return Dancer::Response::set($error->render);
+    }
 
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
