@@ -68,7 +68,7 @@ sub html_page {
     $style ||= 'style';
 
     my $template = $class->templates->{'default'};
-    my $ts       = Dancer::Template::Simple->new;
+    my $ts       = Dancer::Template::TemplateToolkit->new;
 
     return $ts->render(
         \$template,
