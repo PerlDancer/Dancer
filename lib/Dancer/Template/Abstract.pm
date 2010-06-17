@@ -13,16 +13,7 @@ sub render($$$) { die "render not implemented" }
 sub view {
     my ($self, $view) = @_;
     $view .= ".tt" if $view !~ /\.tt$/;
-    $view = path(Dancer::Config::setting('views'), $view);
-
-    if (!-r $view) {
-        my $error = Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        );
-        return Dancer::Response::set($error->render);
-    }
-    $view;
+    return path(Dancer::Config::setting('views'), $view);
 }
 
 sub layout {

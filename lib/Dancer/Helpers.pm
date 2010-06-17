@@ -43,6 +43,13 @@ sub template {
     }
 
     $view = Dancer::Template->engine->view($view);
+    if (!-r $view) {
+        my $error = Dancer::Error->new(
+            code    => 404,
+            message => "Page not found",
+        );
+        return Dancer::Response::set($error->render);
+    }
 
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
