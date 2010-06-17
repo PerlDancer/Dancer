@@ -5,7 +5,6 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-use Dancer::Template;
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 use Carp 'confess';
@@ -23,18 +22,22 @@ sub settings {$SETTINGS}
 my $setters = {
     logger => sub {
         my ($setting, $value) = @_;
+        require Dancer::Logger;
         Dancer::Logger->init($value, settings());
     },
     session => sub {
         my ($setting, $value) = @_;
+        require Dancer::Session;
         Dancer::Session->init($value, settings());
     },
     template => sub {
         my ($setting, $value) = @_;
+        require Dancer::Template;
         Dancer::Template->init($value, settings());
     },
     route_cache => sub {
         my ($setting, $value) = @_;
+        require Dancer::Route::Cache;
         Dancer::Route::Cache->reset();
     },
     serializer => sub {
@@ -133,7 +136,7 @@ sub load_default_settings {
       || $ENV{PLACK_ENV}
       || 'development';
 
-    setting template        => 'simple';
+    setting template        => 'template_toolkit';
     setting import_warnings => 1;
 }
 
