@@ -8,7 +8,7 @@ use Dancer;
 plan skip_all => "Template needed" 
     unless Dancer::ModuleLoader->load('Template');
 
-plan tests => 7;
+plan tests => 8;
 
 use_ok 'Dancer::Template';
 
@@ -17,10 +17,18 @@ ok(Dancer::Template->init, "template init with undef setting");
 eval { setting template => 'FOOOBAR' };
 like $@, qr/unknown template engine/, "cannot load unknown template engine";
 
-setting template => 'simple';
-ok(Dancer::Template->init, "template init with 'simple' setting");
+# Dancer::Template::Simple should trigger a warning
+{
+    my $warn;
+    local $SIG{__WARN__} = sub { $warn = $_[0] };
 
-is(ref(Dancer::Template->engine), 'Dancer::Template::Simple',
+    setting template => 'simple';
+    ok(Dancer::Template->init, "template init with 'simple' setting");
+    like $warn, qr/Dancer::Template::Simple is deprecated, use another engine/, 
+        "Dancer::Template::Simple deprecated, warning triggered";
+}
+
+is(ref(Dancer::Template->engine), 'Dancer::Template::TemplateToolkit',
     "template engine is Simple");
 
 
