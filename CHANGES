@@ -8,6 +8,11 @@ Dancer 1.xxx
     [ nanis ]
     * Fix issue #75.
 
+    [ Daniel Pittman ]
+    * FIX for issue #80
+      Make sure the tempfiles created during uploads are removed when the
+      request object dies.
+
 Dancer 1.1803
     [ Alexis Sukrieh ]
     * Fix for issue #69
