@@ -15,7 +15,7 @@ use vars qw(@EXPORT);
 
 my @_reserved_keywords = @Dancer::EXPORT;
 
-my $_keywords = [];
+my $_keywords = {};
 
 sub plugin_setting {
     my $plugin_orig_name = caller();
@@ -32,20 +32,38 @@ sub plugin_setting {
     return undef;
 }
 
-
 sub register($$) {
     my ($keyword, $code) = @_;
+    my $plugin_name = caller();
+
     if (grep {$_ eq $keyword} @_reserved_keywords) {
         die "You can't use $keyword, this is a reserved keyword";
     }
-    push @$_keywords, [$keyword => $code];
+    $_keywords->{$plugin_name} ||= [];
+    push @{$_keywords->{$plugin_name}}, [$keyword => $code];
 }
 
 sub register_plugin {
+    my ($application) = shift || caller(1);
     my ($plugin) = caller();
-    my ($application) = caller(1);
 
-    for my $keyword (@$_keywords) {
+    export_plugin_symbols($plugin => $application); 
+}
+
+sub load_plugin {
+    my ($plugin) = @_;
+    my $application = caller();
+
+    eval "use $plugin";
+    die "unable to load plugin '$plugin' : $@" if $@;
+
+    export_plugin_symbols($plugin => $application);
+}
+
+sub export_plugin_symbols {
+    my ($plugin, $application) = @_;
+
+    for my $keyword (@{ $_keywords->{$plugin} }) {
         my ($name, $code) = @$keyword;
         {
             no strict 'refs';
