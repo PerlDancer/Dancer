@@ -96,9 +96,9 @@ sub cookies      { Dancer::Cookies->cookies }
 sub config       { Dancer::Config::settings() }
 sub content_type { Dancer::Response::content_type(@_) }
 sub dance        { Dancer::start(@_) }
-sub debug        { Dancer::Logger->debug(@_) }
+sub debug        { goto &Dancer::Logger::debug }
 sub dirname      { Dancer::FileUtils::dirname(@_) }
-sub error        { Dancer::Logger->error(@_) }
+sub error        { goto &Dancer::Logger::error }
 sub send_error   { Dancer::Helpers->error(@_) }
 sub false        {0}
 sub from_dumper  { Dancer::Serializer::Dumper::from_dumper(@_) }
@@ -154,7 +154,7 @@ sub upload   { Dancer::SharedData->request->upload(@_) }
 sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
 sub var      { Dancer::SharedData->var(@_) }
 sub vars     { Dancer::SharedData->vars }
-sub warning  { Dancer::Logger->warning(@_) }
+sub warning  { goto &Dancer::Logger::warning }
 
 sub load_app {
     for my $app (@_) {

@@ -36,7 +36,7 @@ sub format_message {
     $level = 'warn' if $level eq 'warning';
     $level = sprintf('%5s', $level);
     
-    my ($package, $file, $line) = caller(4);
+    my ($package, $file, $line) = caller(3);
     $package ||= '-';
     $file    ||= '-';
     $line    ||= '-';
