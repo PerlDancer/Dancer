@@ -1,3 +1,8 @@
+Dancer 1.18xx
+	[ Alexis Sukrieh ]
+	* Fix for RT#56239
+	logger calls are better traced
+
 Dancer 1.804
     [ sebastian de castelberg ]
     * Fix priority in D::S::Mutable.
