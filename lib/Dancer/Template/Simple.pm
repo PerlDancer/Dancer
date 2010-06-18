@@ -34,64 +34,61 @@ sub parse_branches {
     my @buffer;
     my $prefix             = "";
     my $should_bufferize   = 1;
-    my $opened_tag         = 0;
     my $bufferize_if_token = 0;
-    $content =~ s/\Q${start}\E(\S)/${start} $1/sg;
-    $content =~ s/(\S)\Q${stop}\E/$1 ${stop}/sg;
+#    $content =~ s/\Q${start}\E(\S)/${start} $1/sg;
+#    $content =~ s/(\S)\Q${stop}\E/$1 ${stop}/sg;
 
-    foreach my $word (split / /, $content) {
-        if ($word =~ /(.*)\Q$start\E/s) {
-            my $junk = $1;
-            $opened_tag = 1;
-            if (defined($junk) && length($junk)) {
-                $prefix = $junk;
+    # we get here a list of tokens without the start/stop tags
+    my @full = split (/\Q$start\E\s*(.*?)\s*\Q$stop\E/, $content);
+
+    # and here a list of tokens without variables
+    my @flat = split (/\Q$start\E\s*.*?\s*\Q$stop\E/, $content);
+
+    # eg: for 'foo=<% var %>'
+    #   @full = ('foo=', 'var')
+    #   @flat = ('foo=')
+
+    my $flat_index = 0;
+    my $full_index = 0;
+    for my $word (@full) {
+
+        # flat word, nothing to do
+        if (defined $flat[$flat_index] && ($flat[$flat_index] eq $full[$full_index])) {
+            push @buffer, $word if $should_bufferize;
+            $flat_index++;
+            $full_index++;
+            next;
+        }
+
+        my @to_parse = ($word);
+        @to_parse = split (/\s+/, $word) if $word =~ /\s+/;
+
+        for my $w (@to_parse) {
+
+            if ($w eq 'if') {
+                $bufferize_if_token = 1;
+            }
+            elsif ($w eq 'else') {
+                $should_bufferize = !$should_bufferize;
+            }
+            elsif ($w eq 'end') {
+                $should_bufferize = 1;
+            }
+            elsif ($bufferize_if_token) {
+                my $bool = _find_value_from_token_name($w, $tokens);
+                $should_bufferize = _interpolate_value($bool) ? 1 : 0;
+                $bufferize_if_token = 0;
+            }
+            elsif ($should_bufferize) {
+                my $val = _interpolate_value(_find_value_from_token_name($w, $tokens));
+                push @buffer, $val;
             }
         }
-        elsif ($word =~ /\Q$stop\E(.*)/s) {
-            my $junk = $1;
-            if (defined($junk) && length($junk)) {
-                if (@buffer) {
-                    $buffer[$#buffer] .= $junk;
-                }
-                else {
-                    push @buffer, $junk;
-                }
-            }
-            $opened_tag = 0;
-        }
-        elsif ($word eq 'if' && $opened_tag) {
-            $bufferize_if_token = 1;
-            next;
-        }
-        elsif ($word eq 'else' && $opened_tag) {
-            $should_bufferize = !$should_bufferize;
-            next;
-        }
-        elsif ($word eq 'end' && $opened_tag) {
-            $should_bufferize = 1;
-        }
-        elsif ($bufferize_if_token) {
-            my $bool = _find_value_from_token_name($word, $tokens);
-            $should_bufferize = _interpolate_value($bool) ? 1 : 0;
-            $bufferize_if_token = 0;
-            next;
-        }
-        elsif ($opened_tag) {
-            push @buffer,
-              ( $prefix
-                  . _interpolate_value(
-                    _find_value_from_token_name($word, $tokens)
-                  )
-              );
-            $prefix = "";
-        }
-        elsif ($should_bufferize) {
-            push @buffer, $prefix . $word;
-            $prefix = "";
-        }
+
+        $full_index++;
     }
 
-    return join " ", @buffer;
+    return join "", @buffer;
 }
 
 # private
