@@ -1,7 +1,10 @@
 Dancer 1.18xx
 	[ Alexis Sukrieh ]
-	* Fix for RT#56239
-	logger calls are better traced
+    * Fix for RT#56239
+	  logger calls are better traced
+    * Fix for GH#72
+      New keyword 'load_plugin' for loading a plugin in the current namespace.
+      Plugins can be used anywhere thanks to that method.
 
 Dancer 1.804
     [ sebastian de castelberg ]
