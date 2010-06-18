@@ -29,7 +29,7 @@ use File::Spec;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.1803';
+$VERSION   = '1.1804';
 @EXPORT    = qw(
   ajax
   any
