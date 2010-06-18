@@ -21,13 +21,13 @@ my $template = path('t', '10_template', 'index.txt');
 
 my $result = $engine->render(
     $template, 
-    { var1 => 1, 
-      var2 => 2,
+    { var1 => "xxx", 
+      var2 => "yyy",
       foo => 'one',
       bar => 'two',
       baz => 'three'});
 
-my $expected = 'this is var1="1" and var2=2'."\n\nanother line\n\n one two three\n";
+my $expected = 'this is var1="xxx" and var2=yyy'."\n\nanother line\n\n one two three\n\nxxx/xxx\n";
 is $result, $expected, "template got processed successfully";
 
 # variable interpolation, with scalar-based template
@@ -72,8 +72,7 @@ $result   = $engine->render(\$template, {
 is $result, $expected, "arrayref are interpolated in templates";
 
 # if-then-else 
-
-$template = '<% if want %> hello <% else %> goodbye <% end %> world';
+$template = '<% if want %>hello<% else %>goodbye<% end %> world';
 $result   = $engine->render(\$template, {want => 1});
 is $result, 'hello world', "true boolean condition matched";
 $result   = $engine->render(\$template, {want => 0});

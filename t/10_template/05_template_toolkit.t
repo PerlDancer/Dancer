@@ -40,7 +40,7 @@ my $result = $engine->render(
       bar => 'two',
       baz => 'three'});
 
-my $expected = 'this is var1="1" and var2=2'."\n\nanother line\n\n one two three\n";
+my $expected = 'this is var1="1" and var2=2'."\n\nanother line\n\n one two three\n\n1/1\n";
 is $result, $expected, "processed a template given as a file name";
 
 # as a filehandle
@@ -54,7 +54,6 @@ $result = $engine->render(
       bar => 'two',
       baz => 'three'});
 
-$expected = 'this is var1="1" and var2=2'."\n\nanother line\n\n one two three\n";
 is $result, $expected, "processed a template given as a file handle";
 
 $expected = "one=1, two=2, three=3";
