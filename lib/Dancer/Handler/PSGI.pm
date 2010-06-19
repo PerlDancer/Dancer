@@ -9,6 +9,7 @@ use Dancer::Headers;
 use Dancer::Config;
 use Dancer::ModuleLoader;
 use Dancer::SharedData;
+use Dancer::Logger;
 
 sub new {
     my $class = shift;
@@ -24,12 +25,36 @@ sub new {
 
 sub dance { 
     my $self = shift;
-    return sub {
+
+    my $app = sub {
         my $env = shift;
         my $request = Dancer::Request->new($env);
         $self->init_request_headers($request);
         $self->handle_request($request);
     };
+
+    if (Dancer::Config::setting('plack_middlewares')) {
+        my $middlewares = Dancer::Config::setting('plack_middlewares');
+        die "Plack::Builder is needed for middlewares support" unless
+            Dancer::ModuleLoader->load('Plack::Builder');
+
+        # FIXME
+        use Plack::Builder;
+        # Plack::Builder->import;
+        # strangely, we get the following error if we load dynamically
+        # Plack::Builder:
+        # Error while loading Foo.pl: enable/mount should be called inside builder {} block 
+        # we should ask miyagawa for help here
+
+        return builder {
+            for my $m (keys %$middlewares) {
+                enable($m => @{ $middlewares->{$m} });
+            }
+            $app;
+        };
+    }
+
+    return $app;
 }
 
 sub init_request_headers {

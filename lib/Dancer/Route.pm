@@ -216,7 +216,6 @@ sub build_params {
 sub call($$) {
     my ($class, $handler) = @_;
 
-    use Data::Dumper;
     Dancer::Logger::core("calling route handler: ".$handler->{route});
 
     my $request = Dancer::SharedData->request;
