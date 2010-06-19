@@ -3,6 +3,7 @@ package Dancer::Route;
 use strict;
 use warnings;
 
+use Dancer::Clone;
 use Dancer::SharedData;
 use Dancer::Config 'setting';
 use Dancer::Error;
@@ -142,6 +143,8 @@ sub find {
     $method ||= 'get';
     $method = lc($method);
 
+    Dancer::Logger::core("compiling route regsitry");
+
     # First, make sure the routes are compiled,
     # should be done yet by the calling handler,
     # if not, compile them now
@@ -161,6 +164,7 @@ sub find {
   FIND: foreach my $r (@{Dancer::Route::Registry->routes($method)}) {
 
         my $params = match($path, $r->{route});
+
         if ($params) {
             $r->{params} = $params;
 
@@ -173,15 +177,9 @@ sub find {
                 }
             }
 
-            # we actually define $first_match by cloning $r
-            # so we don't screw with anything that uses references to keep track
-            # such as the routes cache
-            if ( not defined $first_match ) {
-                $first_match->{$_} = $r->{$_} for keys %{$r};
-            }
-
             $prev->{'next'} = $r if defined $prev;
             $prev = $r;
+            $first_match = $r unless defined $first_match;
         }
     }
 
@@ -192,7 +190,9 @@ sub find {
 
     # if we have a route cache, store the result
     if (setting('route_cache')) {
-        Dancer::Route->route_cache->store_path($method, $path => $first_match);
+        # we have to clone the data here so the Route::Cache can work
+        Dancer::Route->route_cache->store_path($method, 
+            $path => Dancer::Clone::clone($first_match));
     }
 
     # return the first matching route, with a copy of the next ones
@@ -216,6 +216,9 @@ sub build_params {
 sub call($$) {
     my ($class, $handler) = @_;
 
+    use Data::Dumper;
+    Dancer::Logger::core("calling route handler: ".$handler->{route});
+
     my $request = Dancer::SharedData->request;
     my $params = Dancer::Route->build_params($handler, $request);
 
@@ -226,15 +229,20 @@ sub call($$) {
     $content = $handler->{code}->();
     my $response       = Dancer::Response->current;
 
+    Dancer::Logger::core("got response : ".$response->{status});
+
     # Log warnings
-    Dancer::Logger->warning($warning) if $warning;
+    Dancer::Logger::warning($warning) if $warning;
 
     # Pass: pass to the next route if available. otherwise, 404.
     if ($response->{pass}) {
+        Dancer::Logger::core("trying to pass to next route handler");
+
         if ($handler->{'next'}) {
             return Dancer::Route->call($handler->{'next'});
         }
         else {
+            Dancer::Logger::core("no next route handler found, 404");
             my $error = Dancer::Error->new(
                 code    => 404,
                 message => "<h2>Route Resolution Failed</h2>"
