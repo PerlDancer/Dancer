@@ -6,6 +6,10 @@ use Dancer::Test;
 
 {
     use Dancer;
+
+#    set logger => 'console';
+#    set 'log' => 'core';
+
     get '/:page' => sub {
         my $page = params->{page};
         return pass() unless $page ~~ [qw/about help intro upload/];
