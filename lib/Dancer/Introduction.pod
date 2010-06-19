@@ -113,16 +113,12 @@ be returned in an arrayref, accessible via the `splat' keyword.
 
 =head2 REGULAR EXPRESSION MATCHING
 
-A route can be defined with a Perl regular expression. The syntax is assumed to
-be a classic Perl regexp except for the slashes that will be escaped before
-running the match.
-
-For instance, don't do '\/hello\/(.+)' but rather: '/hello/(.+)'
+A route can be defined with a Perl regular expression. 
 
 In order to tell Dancer to consider the route as a real regexp, the route must
-be defined explicitly with the keyword 'r', like the following:
+be defined explicitly with C<qr{}>, like the following:
 
-    get r( '/hello/([\w]+)' ) => sub {
+    get qr{/hello/([\w]+)} => sub {
         my ($name) = splat;
         return "Hello $name";
     };
