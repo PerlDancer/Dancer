@@ -130,7 +130,7 @@ sub prefix     { Dancer::Route->prefix(@_) }
 sub del        { Dancer::Route->add('delete', @_) }
 sub options    { Dancer::Route->add('options', @_) }
 sub put        { Dancer::Route->add('put', @_) }
-sub r          { {regexp => $_[0]} }
+sub r          { warn "'r' is DEPRECATED use qr{} instead" ; return {regexp => $_[0]} }
 sub redirect   { Dancer::Helpers::redirect(@_) }
 sub request    { Dancer::SharedData->request }
 sub send_file  { Dancer::Helpers::send_file(@_) }
@@ -569,12 +569,16 @@ put '/resource' => sub { ... };
 
 Helper to let you define a route pattern as a regular Perl regexp:
 
-    get r('/some([a-z0-9]{4})/complex/rules?') => sub {
-        ...
-    };
+This method is B<DEPRECATED>. Dancer now supports real Perl Regexp objects
+instead. You should not use r() but qr{} instead:
 
-The string given is treated as a Perl regular expression with the exception
-that all slashes and dots will be escaped before the match.
+Don't do this:
+
+    get r('/some/pattern(.*)') => sub { };
+
+But rather this:
+
+    get qr{/some/pattern(.*)} => sub { };
 
 =head2 redirect
 
