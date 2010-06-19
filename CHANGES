@@ -7,6 +7,8 @@ Dancer 1.18xx (master)
     * Fix for GH#72
       New keyword 'load_plugin' for loading a plugin in the current namespace.
       Plugins can be used anywhere thanks to that method.
+	* Fix for issue #77
+	  Passing and caching works well together again.
 
 Dancer 1.804
     [ sebastian de castelberg ]
