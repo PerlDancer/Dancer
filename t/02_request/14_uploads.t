@@ -11,7 +11,7 @@ sub test_path {
     is dirname($file), $dir, "dir of $file is $dir";
 }
 
-plan tests => 11;
+plan tests => 13;
 
 my $content = qq{------BOUNDARY
 Content-Disposition: form-data; name="test_upload_file"; filename="yappo.txt"
@@ -87,5 +87,11 @@ do {
     ok $upload->file_handle, 'file handle is defined';
     is $req->params->{'test_upload_file6'}, 'yappo6.txt',
         "filename is accessible via params";
+
+    # make sure cleanup is performed when the HTTP::Body object is purged
+    my $file = $upload->tempname;
+    ok( (-f $file), 'temp file exists while HTTP::Body lives');
+    undef $req->{_http_body};
+    ok( (! -f $file), 'temp file is removed when HTTP::Body object dies');
 };
 

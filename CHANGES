@@ -1,14 +1,36 @@
-Dancer 1.xxx
-    [ Sebastian de Castelberg ]
-    * Fix priority in D::S::Mutable
+Dancer 1.18xx
+    [ Alexis Sukrieh ]
+    * Fix for RT#56239
+      logger calls are better traced
+    * Fix for GH#72
+      New keyword 'load_plugin' for loading a plugin in the current namespace.
+      Plugins can be used anywhere thanks to that method.
+
+Dancer 1.804
+    [ sebastian de castelberg ]
+    * Fix priority in D::S::Mutable.
     * Support for path_info() in Dancer::Request so it's possible to
       mount an application under a directory.
 
     [ David Precious ]
     * Fix test failures with old Plack versions (Issue 73).
+    * Don't surround content with <p> tags in layout.
+    * Add $ENV{REMOTE_ADDR} in core log messages 
 
-    [ nanis ]
-    * Fix issue #75.
+    [ SawyerX ]
+    * Fix issue #75, reported by nanis.
+      perl -MDancer -e "print $Dancer::VERSION" now works as expected
+
+    [ Daniel Pittman ]
+    * FIX for issue #80
+      Make sure the tempfiles created during uploads are removed when the
+      request object dies.
+    
+    [ Alexis Sukrieh ]
+    * FIX for bug RT#58355
+      Rewrite of Dancer::Template::Simple's parser, now more robust, 
+      based on Perl's regexp engine.
+    * FIX a warning when remote_address is undefined
 
     [ Alexis Sukrieh ]
     * Applied miyagawa's patch for droping the app.psgi file. Refactoring of
