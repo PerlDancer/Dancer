@@ -528,7 +528,7 @@ sub version_check {
     if ($latest_version > $DANCER_VERSION) {
         print qq|
 The latest Dancer release is $latest_version, you are currently using $DANCER_VERSION.
-Please check http://perldancer.org for updates.
+Please check http://search.cpan.org/dist/Dancer/ for updates.
 
 |;
     }
