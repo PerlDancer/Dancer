@@ -1,4 +1,6 @@
-Dancer 1.18xx
+Dancer 1.xxx (devel)
+
+Dancer 1.18xx (master)
     [ Alexis Sukrieh ]
     * Fix for RT#56239
       logger calls are better traced
