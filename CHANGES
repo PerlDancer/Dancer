@@ -1,6 +1,9 @@
-Dancer 1.xxx (devel)
+Dancer 1.xxxx (devel)
 
-Dancer 1.18xx (master)
+	[ sebastian de castelberg ]
+    * Support for path_info() in Dancer::Request so it's possible to
+      mount an application under a directory.
+
     [ Alexis Sukrieh ]
     * Fix for RT#56239
       logger calls are better traced
@@ -9,12 +12,25 @@ Dancer 1.18xx (master)
       Plugins can be used anywhere thanks to that method.
 	* Fix for issue #77
 	  Passing and caching works well together again.
+    * Applied miyagawa's patch for droping the app.psgi file. Refactoring of
+      Dancer::Handler::PSGI and friends.
+    * Applied LoonyPandora's patch for checking Dancer's VERSION when running
+      script/dancer. Changed it a bit so it can check against CPAN rather than
+      GitHub.
+	* Documentation update: r('') is now DEPRECATED, the method triggers a warning
+	  when called and will be removed in the next stable release (1.2).
+
+    [jbarratt] 
+    * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
+      options.
+
+    [ Marc Chantreux ]
+    * Support for regexp objects in route definition
+    * Support for named captures (keyword 'captures' added to Dancer's syntax).
 
 Dancer 1.804
     [ sebastian de castelberg ]
     * Fix priority in D::S::Mutable.
-    * Support for path_info() in Dancer::Request so it's possible to
-      mount an application under a directory.
 
     [ David Precious ]
     * Fix test failures with old Plack versions (Issue 73).
@@ -35,21 +51,6 @@ Dancer 1.804
       Rewrite of Dancer::Template::Simple's parser, now more robust, 
       based on Perl's regexp engine.
     * FIX a warning when remote_address is undefined
-
-    [ Alexis Sukrieh ]
-    * Applied miyagawa's patch for droping the app.psgi file. Refactoring of
-      Dancer::Handler::PSGI and friends.
-    * Applied LoonyPandora's patch for checking Dancer's VERSION when running
-      script/dancer. Changed it a bit so it can check against CPAN rather than
-      GitHub.
-
-    [jbarratt] 
-    * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
-      options.
-
-    [ Marc Chantreux ]
-    * Support for regexp objects in route definition
-    * Support for named captures (keyword 'captures' added to Dancer's syntax).
 
 Dancer 1.1803
     [ Alexis Sukrieh ]
