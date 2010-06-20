@@ -19,6 +19,9 @@ Dancer 1.xxxx (devel)
       GitHub.
 	* Documentation update: r('') is now DEPRECATED, the method triggers a warning
 	  when called and will be removed in the next stable release (1.2).
+    * Transparent wrapping of Plack middlewares in Dancer's configuration.
+      It's possible to enable/disable middlewares right from Dancer's config files.
+      Thanks to Tatsuiko Miyagawa and Franck Cuny for their help.
 
     [jbarratt] 
     * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
