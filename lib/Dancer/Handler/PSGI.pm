@@ -23,7 +23,7 @@ sub new {
     return $self;
 }
 
-sub dance { 
+sub dance {
     my $self = shift;
 
     my $app = sub {
@@ -38,20 +38,11 @@ sub dance {
         die "Plack::Builder is needed for middlewares support" unless
             Dancer::ModuleLoader->load('Plack::Builder');
 
-        # FIXME
-        use Plack::Builder;
-        # Plack::Builder->import;
-        # strangely, we get the following error if we load dynamically
-        # Plack::Builder:
-        # Error while loading Foo.pl: enable/mount should be called inside builder {} block 
-        # we should ask miyagawa for help here
-
-        return builder {
-            for my $m (keys %$middlewares) {
-                enable($m => @{ $middlewares->{$m} });
-            }
-            $app;
-        };
+        my $builder = Plack::Builder->new();
+        for my $m (keys %$middlewares) {
+            $builder->add_middleware($m, @{$middlewares->{$m}});
+        }
+        $app = $builder->to_app($app);
     }
 
     return $app;
