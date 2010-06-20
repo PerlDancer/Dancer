@@ -53,6 +53,14 @@ be done before the template engine is used.
 
 The base class provides a plain init() method that only returns true.
 
+=item B<view($view)>
+
+The default behavior of this method is to return the path of the given view.
+
+=item B<layout($layout, $tokens, $content)>
+
+The default behavior of this method is to merge a content with a layout.
+
 =item B<render($self, $template, $tokens)>
 
 This method must be implemented by the template engine. Given a template and a
