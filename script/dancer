@@ -316,7 +316,7 @@ h1 {
     color: #a5ec02;
 }
 
-#footer {
+footer {
     border-top: 1px solid #aba29c;
     margin-top: 2em;
     padding-top: 1em;
@@ -350,7 +350,7 @@ pre {
     padding-left: 1em;
 }
 
-#footer {
+footer {
     font-size: 10px;
 }
 
