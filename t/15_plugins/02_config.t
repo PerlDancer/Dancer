@@ -56,3 +56,4 @@ ok $plugin_conf = My::Other::Plugin::conf(), 'got config for plugin';
 is_deeply $plugin_conf, { path => '/' }, 'config is valid';
 
 unlink $conffile;
+File::Temp::cleanup();

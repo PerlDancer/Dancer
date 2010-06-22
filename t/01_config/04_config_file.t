@@ -11,7 +11,7 @@ use Dancer ':syntax';
 use Dancer::Config 'setting'; 
 use t::lib::TestUtils;
 
-my $dir = tempdir(CLEAN_UP => 1);
+my $dir = tempdir(CLEANUP => 1);
 set appdir => $dir;
 my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;
@@ -65,6 +65,7 @@ ok(Dancer::Config->load, 'load prod environment');
 is(setting('log'), 'warning', 'log setting looks good'); 
 is(setting('foo_prod'), '42', 'random setting set'); 
 is(setting('access_log'), '0', 'access_log setting looks good'); 
-unlink Dancer::Config->environment_file;
 
+unlink Dancer::Config->environment_file;
 unlink $conffile;
+File::Temp::cleanup();

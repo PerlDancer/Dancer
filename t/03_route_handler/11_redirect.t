@@ -7,7 +7,7 @@ use Dancer ':syntax';
 use Dancer::Logger;
 use File::Temp qw/tempdir/;
 
-my $dir = tempdir(CLEAN_UP => 1);
+my $dir = tempdir(CLEANUP => 1);
 set appdir => $dir;
 Dancer::Logger->init('File');
 
@@ -49,3 +49,5 @@ $res = get_response_for_request( GET => '/redirect_querystring' );
 is $headers{'Location'},
    'http://localhost/login?failed=1',
    'location is set to /login?failed=1';
+
+File::Temp::cleanup();

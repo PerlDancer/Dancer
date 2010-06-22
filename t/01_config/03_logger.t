@@ -52,3 +52,4 @@ ok(warning($message), 'warning message is logged');
 ok(error($message), 'error message is logged');
 
 unlink $logfile;
+File::Temp::cleanup();

@@ -37,6 +37,8 @@ Test::TCP::test_tcp(
             like $res->content, qr/'name' => '$client'/, 
             "cookie looks good for client $client"; 
         }
+
+        File::Temp::cleanup();
     },
     server => sub {
         my $port = shift;

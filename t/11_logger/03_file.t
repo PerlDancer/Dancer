@@ -7,7 +7,7 @@ use File::Temp qw/tempdir/;
 use t::lib::TestUtils;
 use Dancer::Config 'setting';
 
-my $dir = tempdir(CLEAN_UP => 1);
+my $dir = tempdir(CLEANUP => 1);
 setting appdir => $dir;
 
 use_ok 'Dancer::Logger::File';
@@ -26,3 +26,5 @@ ok($l->_log(debug => "Perl Dancer test message"), "_log works");
 ok($l->debug("Perl Dancer test message 2/4"), "debug works");
 ok($l->warning("Perl Dancer test message 3/4"), "warning works");
 ok($l->error("Perl Dancer test message 4/4"), "error works");
+
+File::Temp::cleanup();

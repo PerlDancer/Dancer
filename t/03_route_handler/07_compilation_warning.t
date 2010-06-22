@@ -5,7 +5,7 @@ use Dancer ':syntax';
 use Dancer::Logger;
 use File::Temp qw/tempdir/;
 
-my $dir = tempdir(CLEAN_UP => 1);
+my $dir = tempdir(CLEANUP => 1);
 set appdir => $dir;
 Dancer::Logger->init('File');
 
@@ -36,3 +36,5 @@ foreach my $test (@tests) {
 		$test->{expected}, 
 		"response looks good for ".$test->{path});
 }
+
+File::Temp::cleanup();

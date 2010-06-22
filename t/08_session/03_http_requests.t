@@ -53,6 +53,8 @@ Test::TCP::test_tcp(
             "session looks good for client $client"; 
 
         }
+
+        File::Temp::cleanup();
     },
     server => sub {
         my $port = shift;
@@ -71,3 +73,4 @@ Test::TCP::test_tcp(
     },
 );
 }
+
