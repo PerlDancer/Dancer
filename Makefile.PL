@@ -23,7 +23,7 @@ WriteMakefile1(
     PREREQ_PM => {
 
         # non-core
-        'HTTP::Body'                 => '0',
+        'HTTP::Body'                 => '1.07',
         'HTTP::Server::Simple::PSGI' => '0.11',
         'MIME::Types'                => '0',
         'URI'                        => 0,
