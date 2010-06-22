@@ -12,7 +12,7 @@ Installation of Dancer is simple:
 
 Create a web application using the dancer script:
 
-    dancer MyApp
+    dancer -a MyApp
 
 =head1 USAGE
 
