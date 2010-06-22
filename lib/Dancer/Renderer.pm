@@ -117,7 +117,7 @@ sub get_action_response {
         undef $response;
 
         $response = Dancer::Route->call($handler);
-        Dancer::Logger->core("route: ".$handler->{route});
+        Dancer::Logger::core("route: ".$handler->{route});
 
         return serialize_response_if_needed($response); #200
     }

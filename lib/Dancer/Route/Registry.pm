@@ -28,7 +28,7 @@ sub add_before_filter {
 
     my $compiled_filter = sub {
         return if Dancer::Response->halted;
-        Dancer::Logger->core("entering before filter");
+        Dancer::Logger::core("entering before filter");
         eval { $filter->() };
         if ($@) {
             my $err = Dancer::Error->new(

@@ -18,11 +18,11 @@ use Encode;
 # This is where we choose which application handler to return
 sub get_handler {
     if (setting('apphandler') eq 'PSGI') {
-        Dancer::Logger->core('loading PSGI handler');
+        Dancer::Logger::core('loading PSGI handler');
         return Dancer::Handler::PSGI->new;
     }
     else {
-        Dancer::Logger->core('loading Standalone handler');
+        Dancer::Logger::core('loading Standalone handler');
         return Dancer::Handler::Standalone->new;
     }
 }
@@ -33,7 +33,7 @@ sub handle_request {
     my $remote = $request->remote_address || '-';
 
     Dancer::SharedData->reset_timer;
-    Dancer::Logger->core(
+    Dancer::Logger::core(
         "request: ".$request->method." ".$request->path 
         . " from " . $remote
     );
@@ -95,7 +95,7 @@ sub render_response {
         $content = [ $content ];
     }
 
-    Dancer::Logger->core("response: ".$response->{status});
+    Dancer::Logger::core("response: ".$response->{status});
     Dancer::SharedData->reset_all();
     return [$response->{status}, $response->{headers}, $content];
 }

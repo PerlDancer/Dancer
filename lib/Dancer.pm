@@ -160,7 +160,7 @@ sub warning  { goto &Dancer::Logger::warning }
 
 sub load_app {
     for my $app (@_) {
-        Dancer::Logger->core("loading application $app");
+        Dancer::Logger::core("loading application $app");
 
         use lib path( dirname( File::Spec->rel2abs($0) ), 'lib' );
 
