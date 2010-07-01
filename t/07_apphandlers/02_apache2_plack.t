@@ -4,10 +4,12 @@ use warnings;
 
 use Test::More import => ['!pass'];
 
-plan skip_all => "Plack is needed for this test" 
+plan skip_all => "Plack is needed for this test"
     unless Dancer::ModuleLoader->load('Plack::Request');
 
 plan tests => 2;
+
+use Dancer::Handler::PSGI;
 
 use File::Spec;
 use Dancer::Request;
@@ -22,7 +24,7 @@ my $server_admin = 'admin@domain.com';
 my $server_addr = '127.0.0.1';
 my $host_name = 'app.localdomain.com';
 
-# a / request 
+# a / request
 $request->{'/'} = Dancer::Request->new_for_request(GET => '/');
 
 $env->{'/'}  = {

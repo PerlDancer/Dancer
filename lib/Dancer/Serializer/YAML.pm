@@ -66,10 +66,6 @@ Deserialize a YAML structure to a data structure
 
 =item B<content_type>
 
-<<<<<<< HEAD:lib/Dancer/Serializer/YAML.pm
 Return 'application/json'
-=======
-Return 'text/yaml'
->>>>>>> 404abb9e906e199486a237ea7c94939a1343b3f0:lib/Dancer/Serializer/YAML.pm
 
 =back

@@ -80,8 +80,10 @@ C<Corona> is a C<Coro> based web server.
 
 To start you application using Plackup, all you need to do is
 
-   $ plackup -s Twiggy -p 5000 app.psgi
+   $ plackup -s Twiggy -p 5000 <YOURAPP>.pl
 
+As you can see, the scaffolded Perl script for your app can be used as a PSGI
+startup file.
 
 =head4 Plackup and daemontools
 
@@ -95,7 +97,7 @@ A basic script to start an application: (in /service/application/run)
     export PERL5LIB='/path/to/your/application/lib'
 
     exec 2>&1 \
-    /usr/local/bin/plackup -s Starman -a /path/to/your/application/app.psgi -p 5000
+    /usr/local/bin/plackup -s Starman -a /path/to/your/application/app.pl -p 5000
 
 
 
@@ -215,7 +217,7 @@ following:
         <Location />
             SetHandler perl-script
             PerlHandler Plack::Handler::Apache2
-            PerlSetVar psgi_app /websites/myapp.example.com/app.psgi
+            PerlSetVar psgi_app /websites/myapp.example.com/app.pl
         </Location>
 
         ErrorLog  /websites/myapp.example.com/logs/error_log

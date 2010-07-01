@@ -1,10 +1,35 @@
-Dancer 1.18xx
-	[ Alexis Sukrieh ]
+Dancer 1.xxxx (devel)
+
+	[ sebastian de castelberg ]
+    * Support for path_info() in Dancer::Request so it's possible to
+      mount an application under a directory.
+
+    [ Alexis Sukrieh ]
     * Fix for RT#56239
-	  logger calls are better traced
+      logger calls are better traced
     * Fix for GH#72
       New keyword 'load_plugin' for loading a plugin in the current namespace.
       Plugins can be used anywhere thanks to that method.
+	* Fix for issue #77
+	  Passing and caching works well together again.
+    * Applied miyagawa's patch for droping the app.psgi file. Refactoring of
+      Dancer::Handler::PSGI and friends.
+    * Applied LoonyPandora's patch for checking Dancer's VERSION when running
+      script/dancer. Changed it a bit so it can check against CPAN rather than
+      GitHub.
+	* Documentation update: r('') is now DEPRECATED, the method triggers a warning
+	  when called and will be removed in the next stable release (1.2).
+    * Transparent wrapping of Plack middlewares in Dancer's configuration.
+      It's possible to enable/disable middlewares right from Dancer's config files.
+      Thanks to Tatsuiko Miyagawa and Franck Cuny for their help.
+
+    [jbarratt] 
+    * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
+      options.
+
+    [ Marc Chantreux ]
+    * Support for regexp objects in route definition
+    * Support for named captures (keyword 'captures' added to Dancer's syntax).
 
 Dancer 1.804
     [ sebastian de castelberg ]
@@ -12,12 +37,12 @@ Dancer 1.804
 
     [ David Precious ]
     * Fix test failures with old Plack versions (Issue 73).
-	* Don't surround content with <p> tags in layout.
-	* Add $ENV{REMOTE_ADDR} in core log messages 
+    * Don't surround content with <p> tags in layout.
+    * Add $ENV{REMOTE_ADDR} in core log messages 
 
     [ SawyerX ]
     * Fix issue #75, reported by nanis.
-	  perl -MDancer -e "print $Dancer::VERSION" now works as expected
+      perl -MDancer -e "print $Dancer::VERSION" now works as expected
 
     [ Daniel Pittman ]
     * FIX for issue #80

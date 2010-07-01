@@ -1,9 +1,9 @@
-use Test::More;
+use Test::More import => ['!pass'];
 
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
-use Dancer::Config 'setting';
+use Dancer;
 
 plan skip_all => "Template needed" 
     unless Dancer::ModuleLoader->load('Template');

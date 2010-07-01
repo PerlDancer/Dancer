@@ -4,7 +4,7 @@ use warnings;
 use vars '@ARGV';
 
 use Dancer::GetOpt;
-use Dancer::Config 'setting';
+use Dancer;
 
 my @tests = (
     

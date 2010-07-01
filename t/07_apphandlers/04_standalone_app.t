@@ -1,8 +1,7 @@
-use Test::More;
+use Test::More import => ['!pass'];
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
-use Dancer::Config 'setting';
 
 plan skip_all => "LWP is needed for this test" 
     unless Dancer::ModuleLoader->load('LWP::UserAgent');
@@ -30,6 +29,7 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
+        use Dancer;
         use t::lib::TestApp;
         Dancer::Config->load;
 

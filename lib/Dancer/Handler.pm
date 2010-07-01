@@ -8,34 +8,42 @@ use Dancer::GetOpt;
 use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
-
-# supported application handlers
-use Dancer::Handler::PSGI;
-use Dancer::Handler::Standalone;
+use Dancer::ModuleLoader;
 
 use Encode;
 
 # This is where we choose which application handler to return
 sub get_handler {
-    if (setting('apphandler') eq 'PSGI') {
-        Dancer::Logger::core('loading PSGI handler');
-        return Dancer::Handler::PSGI->new;
+    my $handler;
+
+    if ($ENV{'PLACK_ENV'}) {
+        $handler = 'Dancer::Handler::PSGI'; 
+        setting('apphandler'  => 'PSGI');
+        setting('environment' => $ENV{'PLACK_ENV'});
+    }
+ 
+    my $app_handler = setting('apphandler') || 'Standalone';
+    $handler = 'Dancer::Handler::' . $app_handler;
+   
+    if (Dancer::ModuleLoader->load($handler)) {
+        Dancer::Logger::core('loading ' . $app_handler . ' handler');
+        return $handler->new;
     }
     else {
-        Dancer::Logger::core('loading Standalone handler');
-        return Dancer::Handler::Standalone->new;
+        setting('apphandler', 'Standalone');
+        return get_handler();
     }
 }
 
 # handle an incoming request, process it and return a response
 sub handle_request {
     my ($self, $request) = @_;
-    my $remote = $request->remote_address || '-';
+    my $ip_addr = $request->remote_address || '-';
 
     Dancer::SharedData->reset_timer;
     Dancer::Logger::core(
-        "request: ".$request->method." ".$request->path 
-        . " from " . $remote
+        "request: ".$request->method." ".
+        $request->path . " from $ip_addr"
     );
 
     # deserialize the request body if possible
@@ -57,7 +65,7 @@ sub handle_request {
             Dancer::Route->merge_registry($orig_reg, $new_reg);
         }
         else {
-            warn "Module::Refresh is not installed, " . 
+            warn "Module::Refresh is not installed, " .
                 "install this module or unset 'auto_reload' in your config file";
         }
     }
