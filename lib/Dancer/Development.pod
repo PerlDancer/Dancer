@@ -1,0 +1,191 @@
+=head1 NAME
+
+Dancer::Development - guide for developers interested in contributing
+
+=head1 DESCRIPTION
+
+This guide has been written to help developers of the project in their daily
+needs. This guide is the reference for any developer working on Dancer. 
+
+If you want to contribute code to Dancer you should first start by reading this
+guide.
+
+
+=head1 HOW TO CONTRIBUTE
+
+There are many ways to contribute to the project. Dancer is a young yet avtice
+project and any kind of help is appreciated.
+
+=head2 Marketing
+
+You don't have to start by hacking the code, spreadign the good words in
+valuable as well. If you have a blog, just feel free to speak about Dancer.
+
+If you're a twitter user, you can tweet about it with the hashtag C<#perl>.
+
+=head2 Documentation
+
+We do give lots of importance to documentation, but it's difficult to keep it
+up-to-date and error-prone. If you find a typo or an error in a documentation
+you can submit a patch with your fix (see "Patch submission").
+
+=head2 Quality Assurance
+
+We call "Quality Assurance" the fact that we keep in mind that Dancer should ne
+able to install into all version of Perl since Perl 5.8, on any platforms.
+
+We should avoid as much as possible regressions and backward compatibility
+should be always in mind when refactoring.
+
+=head2 Quality supervision
+
+Our weapon for being aware of our quality is the CPAN testers platform: 
+L<http://www.cpantesters.org>.
+
+A good way to help the project is to find a failing build log on the CPAN
+testers: L<http://www.cpantesters.org/distro/D/Dancer.html>
+
+If you find a failing test report, feel free to report it as a GitHub issue:
+L<http://github.com/sukria/Dancer/issues>.
+
+=head2 Reporting bugs
+
+We prefer to have all our bug reports on GitHub, in the issues section:
+<http://github.com/sukria/Dancer/issues>. It's possible though to report bugs
+on RT as well: L<https://rt.cpan.org/Dist/Display.html?Queue=Dancer>
+
+Please make sure the bug you're reporting is not yet present, in doubt ask on
+IRC.
+
+=head2 Patch submission
+
+The Dancer's development team uses GitHub to collaborate. Any contribution must
+be submited via GitHub. Here is the workflow for submitting a patch:
+
+=over 4 
+
+=item *
+
+Fork the repository L<http://github.com/sukria/Dancer>
+
+=item *
+
+Clone your fork like the following:
+
+    $ git clone <PATH_TOUR_GIT_CLONE>
+
+=item *
+
+Apply your patch to your clone and then commit and push to your repository
+
+    $ cd Dancer
+    [ edit as many files as you need to build your patch ]
+    $ git commit -m "DESCRIPTION OF THE PATCH"
+    $ git push origin master
+
+=item *
+
+Send a I<pull request> via the GitHub interface.
+
+It's also a good idea to summarize your work in a report sent to the users
+mailing list, in order to make sure the team is aware of it.
+
+=back
+
+=head1 RESOURCES FOR DEVELOPERS
+
+=head2 Mailing lists
+
+A mailing list is available here:
+L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
+
+=head2 IRC channels
+
+You can reach the development team on irc.perl.org, chan #dancer.
+
+=head2 Repositories
+
+The official repository is hosted on GitHub at the following location:
+L<http://github.com/sukria/Dancer>. 
+
+Official developers have write access to this repository, contributors are
+invited to fork it if they want to submit patches, as explained in the 
+I<Patch submission> section.
+
+The repository layout is organized as follows:
+
+=over 4
+
+=item * C<master>
+
+This branch is dedicated to prepare CPAN releases. We push to that branch only
+for packaging a new release. Every CPAN version are made from this branch. 
+
+=item * C<devel>
+
+This is the development branch. Every new feature are supposed to be first
+pushed to that branch. 
+
+=back
+
+=head1 CODING GUIDELINES
+
+
+=head2 About dependencies
+
+Dancer is intended to be a micro-framework. That means among other things that it should remain
+lightweight. For this reason we try very hard to keep the dependency bag as low
+as possible. But we don't want either to reinvent the wheel. 
+
+The balance is not easy to do but you can keep in mind that unless a very good
+reason, the team won't accept a new dependency to be added to the core.
+
+If a patch provides a new feature that depends on a module, the solution is to
+perform a dynamic loading. Dancer has a class dedicated to that job:
+L<Dancer::ModuleLoader>. Here is an example of how to use it:
+
+    package Dancer::Some::Thing;
+    
+    sub init {
+        unless (Dancer::ModuleLoader->load('Some::Deps')) {
+            die "the feature provided by Dancer::Some::Thing needs Some::Deps";
+        }
+    }
+
+That way, an optional feature doesn't block Dancer from being installed as the
+dependency check is performed at runtime.
+
+=head2 Perltidy
+
+=head2 Tests
+
+=head1 RELEASING
+
+=head2 Public releases
+
+=head2 Developer releases
+
+Whenever the devel branch has been merged into the master branch, the CPAN
+release built must be a developer version (the version number should contain a
+'_').
+
+Before a new release is made, the uploaders must wait for the CPAN testers
+reports. This is done to make sure the new merge doesn't brings regressions.
+
+=head2 Roadmap
+
+The next major release is Dancer 1.2, all of the following items must be
+completed before this version is released.
+
+=over 4
+
+=item * 
+
+=item * 
+
+=back
+
+=head1 AUTHOR
+
+This document has been written by Alexis Sukrieh L<sukria@cpan.org>
+

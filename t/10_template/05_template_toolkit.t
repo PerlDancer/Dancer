@@ -11,7 +11,7 @@ use t::lib::EasyMocker;
 BEGIN { 
     plan skip_all => "need Template to run this test" 
         unless Dancer::ModuleLoader->load('Template');
-    plan tests => 6;
+    plan tests => 7;
     use_ok 'Dancer::Template::TemplateToolkit';
 };
 
@@ -30,6 +30,7 @@ eval { $engine = Dancer::Template::TemplateToolkit->new };
 is $@, '', 
     "Template dependency is not triggered if Template is there";
 
+# as a file path
 my $template = path('t', '10_template', 'index.txt');
 my $result = $engine->render(
     $template, 
@@ -41,6 +42,19 @@ my $result = $engine->render(
 
 my $expected = 'this is var1="1" and var2=2'."\n\nanother line\n\n one two three\n\n1/1\n";
 is $result, $expected, "processed a template given as a file name";
+
+# as a filehandle
+my $fh;
+open $fh, '<', $template or die "cannot open file $template: $!";
+$result = $engine->render(
+    $fh, 
+    { var1 => 1, 
+      var2 => 2,
+      foo => 'one',
+      bar => 'two',
+      baz => 'three'});
+
+is $result, $expected, "processed a template given as a file handle";
 
 $expected = "one=1, two=2, three=3";
 $template = "one=<% one %>, two=<% two %>, three=<% three %>";

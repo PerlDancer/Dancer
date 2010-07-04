@@ -1,7 +1,7 @@
-use Test::More;
+use Test::More import => ['!pass'];
 use strict;
 use warnings;
-use Dancer::Config 'setting';
+use Dancer;
 
 plan tests => 5;
 

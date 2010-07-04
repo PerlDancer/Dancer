@@ -2,10 +2,10 @@
 
 use strict;
 use warnings;
-use Test::More;
+use Test::More import => ['!pass'];
 
 use Dancer::ModuleLoader;
-use Dancer::Config 'setting';
+use Dancer;
 
 plan skip_all => "Test::Output is needed for this test"
     unless Dancer::ModuleLoader->load('Test::Output');

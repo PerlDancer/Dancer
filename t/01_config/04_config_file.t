@@ -8,7 +8,6 @@ plan tests => 16;
 
 use File::Temp qw/tempdir/;
 use Dancer ':syntax';
-use Dancer::Config 'setting'; 
 use t::lib::TestUtils;
 
 my $dir = tempdir(CLEANUP => 1);

@@ -9,7 +9,6 @@ use warnings;
 
 use Dancer::Response;
 use Dancer::Config 'setting';
-use Dancer::FileUtils 'path';
 use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Template;
@@ -36,17 +35,6 @@ sub template {
     my $layout = setting('layout');
     undef $layout unless $options->{layout};
 
-    $view .= ".tt" if $view !~ /\.tt$/;
-    $view = path(setting('views'), $view);
-
-    if (! -r $view) {
-        my $error = Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        );
-        return Dancer::Response::set($error->render);
-    }
-
     $tokens ||= {};
     $tokens->{request} = Dancer::SharedData->request;
     $tokens->{params}  = Dancer::SharedData->request->params;
@@ -54,15 +42,20 @@ sub template {
         $tokens->{session} = Dancer::Session->get;
     }
 
+    $view = Dancer::Template->engine->view($view);
+    if (!-r $view) {
+        my $error = Dancer::Error->new(
+            code    => 404,
+            message => "Page not found",
+        );
+        return Dancer::Response::set($error->render);
+    }
+
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
 
-    $layout .= '.tt' if $layout !~ /\.tt/;
-    $layout = path(setting('views'), 'layouts', $layout);
     my $full_content =
-      Dancer::Template->engine->render($layout,
-        {%$tokens, content => $content});
-
+      Dancer::Template->engine->layout($layout, $tokens, $content);
     return $full_content;
 }
 

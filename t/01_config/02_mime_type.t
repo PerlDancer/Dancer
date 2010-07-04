@@ -6,7 +6,7 @@ use Test::More tests => 5, import => ['!pass'];
 use Dancer ':syntax';
 
 BEGIN {
-    use_ok 'Dancer::Config', 'setting', 'mime_types';
+    use_ok 'Dancer::Config', 'mime_types';
 }
 
 is_deeply(mime_types, {}, 'user defined mime_types are empty');

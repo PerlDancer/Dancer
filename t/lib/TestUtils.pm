@@ -5,7 +5,6 @@ use vars '@EXPORT';
 
 use File::Path qw(mkpath rmtree);
 use Dancer::Request;
-use Dancer::Config 'setting';
 
 @EXPORT =
   qw(fake_request http_request write_file get_response_for_request clean_tmp_files);
@@ -47,4 +46,4 @@ sub clean_tmp_files {
     rmtree($sessions) if $sessions && -d $sessions;
 }
 
-'TestUtils';
+1;

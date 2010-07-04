@@ -4,7 +4,6 @@ use warnings;
 
 use Dancer;
 use Dancer::ModuleLoader;
-use Dancer::Config 'setting';
 
 use Encode;
 

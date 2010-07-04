@@ -1,4 +1,4 @@
-use Test::More;
+use Test::More import => ['!pass'];
 use strict;
 use warnings;
 
@@ -17,7 +17,7 @@ use File::Spec;
 use File::Temp 'tempdir';
 my $tempdir = tempdir('Dancer.XXXXXX', DIR => File::Spec->curdir, CLEANUP => 1);
 
-use Dancer::Config 'setting';
+use Dancer;
 use Dancer::Logger;
  
 my @clients = qw(one two three);
