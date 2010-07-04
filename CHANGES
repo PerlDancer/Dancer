@@ -1,10 +1,14 @@
-Dancer 1.18xx
+Dancer 1.1805
 	[ Alexis Sukrieh ]
     * Fix for RT#56239
 	  logger calls are better traced
     * Fix for GH#72
       New keyword 'load_plugin' for loading a plugin in the current namespace.
       Plugins can be used anywhere thanks to that method.
+    
+    [ Minty ]
+    * Update Introduction pod with (required) -a dancer opt (Murray, 5 hours ago)
+    * Bump HTTP::Body dependency to 1.07 (Murray, 6 hours ago)
 
 Dancer 1.804
     [ sebastian de castelberg ]
