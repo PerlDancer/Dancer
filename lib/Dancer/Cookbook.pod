@@ -173,7 +173,7 @@ All you need to do is set up the following route as the B<last> route:
 
     any r('.*') => sub {
         status 'not_found';
-        template => 'special_404', { path => request->path };
+        template 'special_404', { path => request->path };
     };
 
 Then you can set up the template as such:
