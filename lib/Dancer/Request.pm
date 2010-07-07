@@ -462,13 +462,13 @@ would return C<http://localhost:5000/foo/bar?baz=baz>.
 =head2 params($source)
 
 Called in scalar context, returns a hashref of params, either from the specified
-source (see below for more info on that) or merging all sources).
+source (see below for more info on that) or merging all sources.
 
 So, you can use, for instance:
 
     my $foo = params->{foo}
 
-If called in list context, returns a list of key, value pairs, so you could use:
+If called in list context, returns a list of key => value pairs, so you could use:
 
     my %allparams = params;
 
