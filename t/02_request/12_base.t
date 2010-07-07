@@ -1,6 +1,8 @@
 use Test::More;
 use Dancer::Request;
 
+plan tests => 8;
+
 my $env = {
     'psgi.url_scheme' => 'http',
     REQUEST_METHOD    => 'GET',
@@ -21,8 +23,8 @@ is $req->uri_for('bar', { baz => 'baz' }),
 
 is $req->uri_for('/bar'), 'http://localhost:5000/foo/bar';
 
-is $req->path, '/foo/bar/baz';
-is $req->path_info, '/bar/baz';
+is $req->request_uri, '/foo/bar/baz';
+is $req->path_info, '/foo/bar/baz';
 
 {
     local $env->{SCRIPT_NAME} = '';
@@ -35,5 +37,3 @@ is $req->path_info, '/bar/baz';
     local $env->{HTTP_HOST} = 'oddhostname:5000';
     is $req->base, 'http://oddhostname:5000/foo';
 }
-
-done_testing;

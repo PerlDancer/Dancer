@@ -2,9 +2,14 @@ use strict;
 use warnings;
 use Test::More 'no_plan', import => ['!pass'];
 
-use lib 't';
-use TestUtils;
-use Dancer;
+use t::lib::TestUtils;
+use Dancer ':syntax';
+use Dancer::Logger;
+use File::Temp qw/tempdir/;
+
+my $dir = tempdir(CLEANUP => 1);
+set appdir => $dir;
+Dancer::Logger->init('File');
 
 get '/' => sub { 'home' };
 get '/bounce' => sub { redirect '/' };
@@ -45,4 +50,4 @@ is $headers{'Location'},
    'http://localhost/login?failed=1',
    'location is set to /login?failed=1';
 
-clean_tmp_files();
+File::Temp::cleanup();

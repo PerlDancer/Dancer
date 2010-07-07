@@ -1,14 +1,11 @@
 use strict;
 use warnings;
 
-use lib 't';
-use TestUtils;
-use Test::More tests => 18, import => ['!pass'];
+use Test::More tests => 16, import => ['!pass'];
+use Dancer::Test;
 
-BEGIN {
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route';
-}
+use Dancer ':syntax';
+use Dancer::Route;
 use Data::Dumper;
 
 {
@@ -27,17 +24,13 @@ my @tests = (
 );
 
 foreach my $test (@tests) {
-    my $request = TestUtils::fake_request($test->{method} => $test->{path});
+    my $req = [$test->{method}, $test->{path}];
 
-    Dancer::SharedData->request($request);
-    my $response = Dancer::Renderer::get_action_response();
+    route_exists $req, 
+        "route handler found for path `".$test->{path}."'";
 
-    ok( defined $response, 
-        "route handler found for path `".$test->{path}."'");
-
-
-    is( $response->{content}, $test->{expected}, 
-        "matching param looks good: ".$response->{content});
+    response_content_is $req, $test->{expected},
+        "matching param looks good";
 
     # splat should not be set
     ok(!exists(params->{'splat'}), "splat not defined for ".$test->{path});

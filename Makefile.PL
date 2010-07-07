@@ -1,3 +1,4 @@
+use 5.008005;
 use ExtUtils::MakeMaker;
 
 WriteMakefile1(
@@ -10,24 +11,28 @@ WriteMakefile1(
     META_MERGE => {
         resources => {
             repository => 'http://github.com/sukria/Dancer',
+            bugtracker => 'http://github.com/sukria/Dancer/issues',
+            homepage   => 'http://perldancer.org/',
         },
     },
 
     BUILD_REQUIRES => {
-        'Test::More'             => '0.87',
+        'Test::More'             => '0.88',
     },
 
     PREREQ_PM => {
 
         # non-core
-        'HTTP::Body'                 => '0',
+        'HTTP::Body'                 => '1.07', # needed for cleanup()
         'HTTP::Server::Simple::PSGI' => '0.11',
         'MIME::Types'                => '0',
-        'URI'                        => 0,
+        'URI'                        => '0',
 
         # core
-        'File::Basename'         => '0',
-        'File::Spec'             => '0',
+        'File::Basename' => '0',
+        'File::Spec'     => '0',
+        'Encode'         => '0',
+        'Time::HiRes'    => '0', # in core since 5.7
     },
 
     test      => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},

@@ -1,10 +1,152 @@
+Dancer 1.18xx
+	[ Alexis Sukrieh ]
+    * Fix for RT#56239
+	  logger calls are better traced
+    * Fix for GH#72
+      New keyword 'load_plugin' for loading a plugin in the current namespace.
+      Plugins can be used anywhere thanks to that method.
+
+Dancer 1.804
+    [ sebastian de castelberg ]
+    * Fix priority in D::S::Mutable.
+
+    [ David Precious ]
+    * Fix test failures with old Plack versions (Issue 73).
+	* Don't surround content with <p> tags in layout.
+	* Add $ENV{REMOTE_ADDR} in core log messages 
+
+    [ SawyerX ]
+    * Fix issue #75, reported by nanis.
+	  perl -MDancer -e "print $Dancer::VERSION" now works as expected
+
+    [ Daniel Pittman ]
+    * FIX for issue #80
+      Make sure the tempfiles created during uploads are removed when the
+      request object dies.
+    
+    [ Alexis Sukrieh ]
+    * FIX for bug RT#58355
+      Rewrite of Dancer::Template::Simple's parser, now more robust, 
+      based on Perl's regexp engine.
+    * FIX a warning when remote_address is undefined
+
+Dancer 1.1803
+    [ Alexis Sukrieh ]
+    * Fix for issue #69
+      The issue was resolved in 1.1801, this time, the fix is working as
+      expected.
+
+    [ Sawyer X ]
+    * Fix for RT #57715, require Test::More 0.88 and up.
+
+Dancer 1.1802
+    [ Sawyer X ]
+    * Fix RT #57158 (route_cache does not work with multiple parameters)
+      Cache revealed a small design overlook of not cloning a route before
+      returning it to the user, making multiple parameters disabled.
+      (Thanks to Stéphane Alnet for reporting and adding a test for it!)
+
+Dancer 1.1801
+    [ Alexis Sukrieh ]
+    * FIX issue #69
+      Error are trapped even if occuring from Dancer's source code.
+      auto_reload is set to false in scaffolded applications to 
+      prevent errors if Module::Refresh is not installed.
+
+Dancer 1.1800
+    [ Alexis Sukrieh ]
+    * merge of the devel branch into master, first stable release of
+      1.178_01 and 1.178_02
+
+Dancer 1.178_02
+    [ Alexis Sukrieh ]
+    * Errors are caught in before filters
+    * halt can be given a Dancer::Response object rahter than plain text content
+
+Dancer 1.178_01
+
+    [ Alexis Sukrieh ]
+    * New logger for sending log message to STDERR: Dancer::Logger::Console
+      Thanks to Gabor Szabo for the idea.
+    * Logger engines don't have anymore to implement _format(), they can use
+      $self->format_message instead.
+    * New log level: "core" for letting Dancer's core express itself on crucial
+      events.
+      That way, when the app config sets log to "core", any core messages is
+      sent to the logger, and the end-user can see which route is chosen for
+      each request received.
+      Thanks to Gabor Szabo for the idea.
+    * New class Dancer::Timer added so any logger engine can now show a timer
+      string.
+    * Scaffolded applications are now built like a CPAN distribution, with a
+      Makefile.PL
+      and test scripts (thanks to Gabor Szabo for the idea).
+    * Added Dancer::Test to provide helpers for writing test script for Dancer
+      applications
+    * FIX bug when returning a void context after redirecting a route.
+      Thanks to Juan J. Martínez  for the report.
+    * Add support for request headers in Dancer::Request
+    * Add support for halt() in Dancer's syntax.
+
+    [ Alex Kapranof ]
+    * Support for on-the-fly charset encoding when the setting is set and a
+      content is sent by Dancer and needs to be encoded.
+      The response Content-Type is updated accordingly as well.
+
+    [ Sawyer X ]
+    * Adding "import_warnings" settings. On by default, but allows to disable
+      auto-import of "warnings" pragma. Reported by Adam Kennedy.
+
+Dnacer 1.176
+    * Bringing 1.175_01 into production.
+
+Dancer 1.175_01 (Developer release)
+    [ Sawyer X ]
+    * Documentation for Dancer::FileUtils.
+    * Documentation for Dancer::Cookie.
+    * Fixing PNG bug on IE (reported by Adam Kennedy - thank you).
+
+Dancer 1.175
+    [ Sawyer X ]
+    * RT #56395 reported by Jonathan Yu on behalf of Debian Perl team.
+    * Documentation for Dancer::Error.
+
+    [ Alexis Sukrieh ]
+    * fixed t/15_plugins/02_config.t when YAML is not installed 
+
 Dancer 1.174
+    [ Gabor Szabo ]
+    * Docs fixes, typo in warning.
+    * TestUtils.pm is now in "t/lib".
+
+    [ David Precious ]
+    * Support semi-colons as name=value pair separators when parsing
+      querystring.  Satisfies feature request/issue 59.
+      Thanks to deepakg for requesting this feature.
+
+    [ Sawyer X ]
+    * RT #56381 reported by Jonathan Yu on behalf of Debian Perl team.
+      (Adding LICENSE file)
+
+Dancer 1.173_01 (Developer release)
     [ Franck Cuny ]
     * Doc fixes.
       (Thanks to poisonbit)
+    * Plugins configuration
+    * Cleaning up tests
 
-	[ Alexis Sukrieh ]
-	* New serializer: Dumper for easily output dumped variable in text/plain.
+    [ Alexis Sukrieh ]
+    * New serializer: Dumper for easily output dumped variable 
+      in text/plain.
+    * Before filters can now access route params
+    * Support for '.' as a token separator in params parsing
+    * The standalone server respect the 'access_log' setting, 
+      the starting banner is printed on STDERR only if the 
+      setting is set to true.
+
+    [ Sawyer X ]
+    * Fixed Windows PSGI.URL_SCHEME bug, causing tests to fail
+      (Thanks to ADAMK for reporting)
 
 Dancer 1.173
     [ Alexis Sukrieh ]
@@ -107,7 +249,7 @@ Dancer 1.160
     * FIX Params are not polluted anymore by the 'splat' keyword when no capture
       is needed by the pattern.
     * New feature 'auto_page' (closes: #41)
-	  Lets the user have automatic route resolution for 
+      Lets the user have automatic route resolution for 
       requests that match an existing template in the views dir. Thanks to 
       David Precious for the idea and his help.
 

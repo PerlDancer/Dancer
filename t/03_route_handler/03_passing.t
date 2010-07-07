@@ -1,13 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 19, import => ['!pass'];
-use lib 't';
-use TestUtils;
+use Test::More tests => 17, import => ['!pass'];
 
-BEGIN { 
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route'; 
-}
+use Dancer ':syntax';
+use Dancer::Route; 
+use Dancer::Test;
 
 ok(get('/say/:char' => sub { 
     pass and return false if length(params->{char}) > 1;
@@ -44,14 +41,9 @@ my @tests = (
 foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
- 
-    my $request = fake_request(GET => $path);
-    Dancer::SharedData->request($request);
-
-    my $response = Dancer::Renderer::get_action_response();
        
-    ok( defined($response), "route found for path `$path'");
-    is_deeply(
-        $response->{content}, $expected, 
+    response_exists( [GET => $path], 
+        "route found for path `$path'");
+    response_content_is_deeply([GET => $path], $expected, 
         "match data for path `$path' looks good");
 }

@@ -41,7 +41,7 @@ is_deeply(Dancer::Handler->render_response($res),
 
 $res->{content} = "\x{0429}";   # cyrillic shcha -- way beyond latin1
 
-is_deeply(Dancer::Handler->render_response($res),
+is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
     [
         200,
         [ 'Content-Type', 'text/plain; charset=utf-8' ],
@@ -56,8 +56,9 @@ SKIP: {
     setting serializer => 'JSON';
     $res->{content_type} = 'application/json';
     $res->{content} = { key => 'value' };
+    $res->update_headers('Content-Type' => $res->{content_type});
 
-    is_deeply(Dancer::Handler->render_response($res),
+    is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
         [
             200,
             [ 'Content-Type', 'application/json' ],
@@ -73,8 +74,9 @@ SKIP: {
     setting serializer => 'XML';
     $res->{content_type} = 'text/xml';
     $res->{content} = { key => "\x{0429}" };
+    $res->update_headers('Content-Type' => $res->{content_type}."; charset=utf-8");
 
-    is_deeply(Dancer::Handler->render_response($res),
+    is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
         [
             200,
             [ 'Content-Type', 'text/xml; charset=utf-8' ],

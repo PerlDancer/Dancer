@@ -5,11 +5,13 @@ use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 
 plan skip_all => "Plack is needed to run this test"
-    unless Dancer::ModuleLoader->load('Plack::Loader');
+    unless Dancer::ModuleLoader->load('Plack::Request');
 plan skip_all => "LWP is needed to run this test"
     unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => "Test::TCP is needed to run this test"
     unless Dancer::ModuleLoader->load('Test::TCP');
+
+Dancer::ModuleLoader->load('Plack::Loader');
 
 my $app = sub {
     my $env = shift;
@@ -38,8 +40,7 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
-        use lib "t/lib";
-        use TestApp;
+        use t::lib::TestApp;
 
         setting apphandler  => 'PSGI';
         setting environment => 'production';
@@ -48,5 +49,3 @@ Test::TCP::test_tcp(
         Plack::Loader->auto(port => $port)->run($app);
     },
 );
- 
-done_testing;

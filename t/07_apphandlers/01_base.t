@@ -1,6 +1,11 @@
-use Test::More 'no_plan', import => ['!pass'];
+use Test::More import => ['!pass'];
 
-use Dancer;
+plan skip_all => "Plack is needed for this test"
+    unless Dancer::ModuleLoader->load('Plack::Request');
+
+plan tests => 4;
+
+use Dancer ':syntax';
 use Dancer::Config 'setting';
 
 is(setting('apphandler'), 'standalone', 'default apphandler is standalone');

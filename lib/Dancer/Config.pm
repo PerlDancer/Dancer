@@ -42,6 +42,10 @@ my $setters = {
         require Dancer::Serializer;
         Dancer::Serializer->init($value);
     },
+    import_warnings => sub {
+        my ($setting, $value) = @_;
+        $^W = $value ? 1 : 0;
+    },
 };
 
 # public accessor for get/set
@@ -81,7 +85,7 @@ sub init_confdir {
 }
 
 sub load {
-    init_confdir(); 
+    init_confdir();
 
     # look for the conffile
     return 1 unless -f conffile;
@@ -115,22 +119,24 @@ sub load_settings_from_yaml {
 
 
 sub load_default_settings {
-    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER} || '0.0.0.0';
-    $SETTINGS->{port}         ||= $ENV{DANCER_PORT} || '3000';
+    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER}       || '0.0.0.0';
+    $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
     $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
-    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET} || '';
-    $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG} || 1;
-    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON} || 0;
-    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER} || 'standalone';
-    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS} || 0;
-    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD} || 0;
+    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
+    $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG}   || 1;
+    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
+    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'standalone';
+    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
+    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
     $SETTINGS->{environment}
       ||= $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
       || 'development';
-    
-    setting template => 'simple';
+
+    setting template        => 'simple';
+    setting import_warnings => 1;
 }
+
 load_default_settings();
 
 1;
@@ -140,7 +146,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Config
+Dancer::Config - setting registry for Dancer
 
 =head1 DESCRIPTION
 
@@ -165,6 +171,11 @@ The same is done for the environment file located in the B<environments>
 directory.
 
 =head1 SUPPORTED SETTINGS
+
+=head2 server (string)
+
+The IP address that the Dancer app should bind to.  Default is 0.0.0.0, i.e.
+bind to all available interfaces.
 
 =head2 port (int)
 
@@ -207,12 +218,12 @@ This is the path of the public directory, where static files are stored. Any
 existing file in that directory will be served as a static file, before
 mathcing any route.
 
-By default, it points to APPDIR/public where APPDIR is the directory that 
+By default, it points to APPDIR/public where APPDIR is the directory that
 contains your Dancer script.
 
 =head2 layout (string)
 
-name of the layout to use when rendering view. Dancer will look for 
+name of the layout to use when rendering view. Dancer will look for
 a matching template in the directory $appdir/views/layout.
 
 =head2 warnings (boolean)
@@ -251,6 +262,10 @@ a major negative effect on performance because of L<Module::Refresh>.
 
 When this flag is set, you don't have to restart your webserver whenever you
 make a change in a route handler.
+
+Note that L<Module::Refresh> only operates on files in C<%INC>, so if the script
+your Dancer app is started from changes, even with auto_reload enabled, you will
+still not see the changes reflected until you start your app.
 
 =head2 session (enum)
 

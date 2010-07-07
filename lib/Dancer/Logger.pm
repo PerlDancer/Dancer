@@ -15,9 +15,10 @@ sub init {
     $logger = Dancer::Engine->build(logger => $name, $config);
 }
 
-sub debug   { $logger->debug($_[1]) }
-sub warning { $logger->warning($_[1]) }
-sub error   { $logger->error($_[1]) }
+sub core    { defined($logger) and $logger->core($_[0])    }
+sub debug   { defined($logger) and $logger->debug($_[0])   }
+sub warning { defined($logger) and $logger->warning($_[0]) }
+sub error   { defined($logger) and $logger->error($_[0])   }
 
 1;
 
@@ -27,7 +28,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Logger - Common interface for logging in Dancer
+Dancer::Logger - common interface for logging in Dancer
 
 =head1 DESCRIPTION
 
@@ -38,12 +39,12 @@ logger engines.
 
 =head2 Default engine
 
-The setting B<logger> defined which logger engine to use. 
+The setting B<logger> defines which logger engine to use. 
 If this setting is not set, logging will not be available in the application
 code.
 
-Dancer comes with the logger engine L<Dancer::Logger::File>, 
-but more are available on the CPAN
+Dancer comes with the logger engines L<Dancer::Logger::File> and
+L<Dancer::Logger::Console>, but more are available on the CPAN.
 
 =head2 Configuration
 
@@ -51,8 +52,8 @@ The B<logger> configuration variable tells Dancer which engine to use.
 
 You can change it either in your config.yml file:
 
-    # logging to syslog
-    logger: "syslog"
+    # logging to console
+    logger: "console"
 
 Or in the application code:
 

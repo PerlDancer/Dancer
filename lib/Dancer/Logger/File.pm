@@ -20,7 +20,7 @@ sub init {
 
     if (!-d $logdir) {
         if (not mkdir $logdir) {
-            warn "log directory $logdir doen't exist, unable to create";
+            warn "log directory $logdir doesn't exist, unable to create";
             return undef $logfile;
         }
     }
@@ -35,24 +35,12 @@ sub init {
     close LOGFILE;
 }
 
-sub _format {
-    my ($level, $message) = @_;
-    my ($package, $file, $line) = caller(3);
-    $package ||= '-';
-    $file    ||= '-';
-    $line    ||= '-';
-
-    my $time = localtime;
-    chomp $message;
-    return "$time [$$] ($level) $message in $file l. $line\n";
-}
-
 sub _log {
     my ($self, $level, $message) = @_;
     return unless defined $logfile;
 
     if (open(LOGFILE, '>>', $logfile)) {
-        print LOGFILE _format($level => $message);
+        print LOGFILE $self->format_message($level => $message);
         close LOGFILE;
     }
 }

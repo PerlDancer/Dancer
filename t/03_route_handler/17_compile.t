@@ -3,7 +3,7 @@ use warnings;
 use Test::More tests => 6, import => ['!pass'];
 
 {
-    use Dancer;
+    use Dancer ':syntax';
     get '/foo/:key' => sub { params->{'key'} };
 
     get '/simple' => sub { 1 };

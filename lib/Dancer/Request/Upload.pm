@@ -60,7 +60,7 @@ sub basename {
 
 =head1 NAME 
 
-Dancer::Request::Upload - handles file uploads requests
+Dancer::Request::Upload - class representing file uploads requests
 
 =head1 DESCRIPTION
 
@@ -79,6 +79,12 @@ Returns the filename as sent by the client.
 =item basename
 
 Returns basename for "filename".
+
+=item tempname
+
+Returns the name of the temporary file the data has been saved to.
+
+This will be in e.g. /tmp, and given a random name, with no file extension.
 
 =item link_to
 

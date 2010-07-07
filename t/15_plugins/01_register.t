@@ -2,11 +2,8 @@ use strict;
 use warnings;
 use Test::More 'import' => ['!pass'], tests => 2;
 
-use lib 't';
-use TestUtils;
-
-use lib 't/lib';
-use TestApp;
+use t::lib::TestUtils;
+use t::lib::TestApp;
 
 $ENV{HTTP_REFERER} = 'http://www.google.com';
 my $response = get_response_for_request(GET => '/');

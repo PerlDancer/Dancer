@@ -5,8 +5,7 @@ use warnings;
 use Dancer::Config;
 use Dancer::ModuleLoader;
 
-use lib 't/lib';
-use EasyMocker;
+use t::lib::EasyMocker;
 
 mock 'Dancer::Config'
     => method 'conffile'

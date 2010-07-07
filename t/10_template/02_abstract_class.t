@@ -1,8 +1,8 @@
-use Test::More tests => 3;
+use Test::More tests => 2;
 use strict;
 use warnings;
 
-BEGIN { use_ok 'Dancer::Template::Abstract' }
+use Dancer::Template::Abstract;
 
 my $a = Dancer::Template::Abstract->new;
 eval { $a->render };

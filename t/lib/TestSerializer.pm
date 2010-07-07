@@ -1,4 +1,4 @@
-package TestSerializer;
+package t::lib::TestSerializer;
 
 use Dancer;
 

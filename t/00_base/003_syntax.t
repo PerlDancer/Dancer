@@ -13,6 +13,7 @@ my @keywords = qw(
     get 
     layout
     load
+    load_app
     logger
     mime_type
     params
@@ -41,7 +42,7 @@ my @keywords = qw(
 
 plan tests => scalar(@keywords);
 
-use Dancer;
+use Dancer ':syntax';
 
 foreach my $symbol (@keywords) {
     ok(exists($::{$symbol}), "symbol `$symbol' is exported");

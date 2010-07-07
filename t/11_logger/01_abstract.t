@@ -4,8 +4,7 @@ use warnings;
 
 use Dancer::Config 'setting';
 
-use lib 't/lib';
-use EasyMocker;
+use t::lib::EasyMocker;
 
 use_ok 'Dancer::Logger::Abstract';
 

@@ -1,4 +1,4 @@
-package TestUtils;
+package t::lib::TestUtils;
 
 use base 'Exporter';
 use vars '@EXPORT';

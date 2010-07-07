@@ -2,14 +2,19 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-eval "use YAML";
-plan skip_all => "YAML is not installed" if $@;
+plan skip_all => "YAML needed to run this tests"
+    unless Dancer::ModuleLoader->load('YAML');
 plan tests => 16;
 
-use Dancer;
+use File::Temp qw/tempdir/;
+use Dancer ':syntax';
 use Dancer::Config 'setting'; 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
+
+my $dir = tempdir(CLEANUP => 1);
+set appdir => $dir;
+my $envdir = File::Spec->catdir($dir, 'environments');
+mkdir $envdir;
 
 my $conffile = Dancer::Config->conffile;
 ok(defined($conffile), 'default conffile is defined');
@@ -60,6 +65,7 @@ ok(Dancer::Config->load, 'load prod environment');
 is(setting('log'), 'warning', 'log setting looks good'); 
 is(setting('foo_prod'), '42', 'random setting set'); 
 is(setting('access_log'), '0', 'access_log setting looks good'); 
-unlink Dancer::Config->environment_file;
 
+unlink Dancer::Config->environment_file;
 unlink $conffile;
+File::Temp::cleanup();

@@ -2,10 +2,9 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Route; 
 
 my @paths = ('/hello/*', '/hello/*/welcome/*', '/download/*.*');

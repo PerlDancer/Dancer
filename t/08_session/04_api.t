@@ -1,11 +1,10 @@
 use Test::More import => ['!pass'];
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Session::YAML;
 
 plan tests => '4';
 
-use lib 't/lib';
-use EasyMocker;
+use t::lib::EasyMocker;
 
 my $fake_session = bless { foo => 42 }, 'Dancer::Session::YAML';
 

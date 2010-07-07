@@ -30,14 +30,12 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
-        use lib "t/lib";
-        use TestApp;
+        use t::lib::TestApp;
         Dancer::Config->load;
 
         setting environment => 'production';
+        setting access_log => 0;
         setting port => $port;
         Dancer->dance();
     },
 );
- 
-done_testing;

@@ -2,13 +2,10 @@ use strict;
 use warnings;
 use Test::More 'no_plan', import => ['!pass'];
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
-BEGIN { 
-    use_ok 'Dancer';
-    use_ok 'Dancer::Route'; 
-}
+use Dancer ':syntax';
+use Dancer::Route; 
 
 ok(get(r('/hello/([\w]+)') => sub { [splat] }), 'first route set');
 ok(get(r('/show/([\d]+)') => sub { [splat] }), 'second route set');

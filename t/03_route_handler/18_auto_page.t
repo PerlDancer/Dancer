@@ -5,13 +5,13 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'], tests => 4;
 
-use lib 't';
-use TestUtils;
+use t::lib::TestUtils;
 
 {
     package Foo;
     use Dancer;
 
+    set views => path(dirname(__FILE__), 'views');
     set auto_page => true;
 
     get '/' => sub { 1 };

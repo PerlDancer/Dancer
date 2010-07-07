@@ -18,7 +18,7 @@ sub init {
     $_engine = Dancer::Engine->build( 'serializer' => $name, $config );
 }
 
-# takes a response object and looks whether or not it should be
+# takes a response object and checks whether or not it should be
 # serialized.
 # returns an error object if the serializer fails
 sub process_response {
@@ -84,7 +84,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Serializer - serializer support in Dancer
+Dancer::Serializer - serializer wrapper for Dancer
 
 =head1 DESCRIPTION
 

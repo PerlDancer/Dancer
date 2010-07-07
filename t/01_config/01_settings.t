@@ -1,10 +1,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7, import => ['!pass'];
+use Test::More tests => 6, import => ['!pass'];
+
+use Dancer ':syntax';
 
 BEGIN {
-    use_ok 'Dancer';
     use_ok 'Dancer::Config', 'setting';
 }
 
