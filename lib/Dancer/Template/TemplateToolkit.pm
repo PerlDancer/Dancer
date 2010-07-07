@@ -19,6 +19,7 @@ sub init {
     my $tt_config = {
         ANYCASE   => 1,
         ABSOLUTE  => 1,
+        ENCODING  => 'utf8',
         %{$self->config},
     };
 
