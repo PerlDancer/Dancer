@@ -1,4 +1,4 @@
-use Test::More tests => 4, import => ['!pass'];
+use Test::More tests => 5, import => ['!pass'];
 use strict;
 use warnings;
 
@@ -18,3 +18,11 @@ my $other = Dancer::App->new(name => 'Foo::Bar');
 is $other->name, 'Foo::Bar', 
     "Foo::Bar app created";
 
+isa_ok(Dancer::App->current(), 'Dancer::App',
+    "Dancer::App->current exists");
+is(Dancer::App->current->name, 'main',
+    "current is main");
+ok(Dancer::App->current(Dancer::App->new(name => "Other")),
+    "set current to 'Other'");
+is(Dancer::App->current->name, 'Other',
+    "current is 'Other'");
