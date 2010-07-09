@@ -163,16 +163,19 @@ sub vars     { Dancer::SharedData->vars }
 sub warning  { goto &Dancer::Logger::warning }
 
 sub load_app {
-    my ($app, %options) = @_;
-    Dancer::Logger::core("loading application $app");
+    my ($app_name, %options) = @_;
+    Dancer::Logger::core("loading application $app_name");
     
     # set the application
-    Dancer::App->set_running_app($app);
+    my $app = Dancer::App->set_running_app($app_name);
+    
+    # Application options
+    $app->prefix($options{prefix}) if $options{prefix};
 
     # load the application
     use lib path( dirname( File::Spec->rel2abs($0) ), 'lib' );
-    eval "use $app";
-    die "unable to load application $app : $@" if $@;
+    eval "use $app_name";
+    die "unable to load application $app_name : $@" if $@;
 
     # restore the main application
     Dancer::App->set_running_app('main');

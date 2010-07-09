@@ -1,4 +1,4 @@
-use Test::More tests => 8, import => ['!pass'];
+use Test::More tests => 9, import => ['!pass'];
 use strict;
 use warnings;
 
@@ -25,3 +25,7 @@ ok(Dancer::App->current(Dancer::App->new(name => "Other")),
     "set current to 'Other'");
 is(Dancer::App->current->name, 'Other',
     "current is 'Other'");
+
+
+$app->prefix('foo');
+is $app->prefix, 'foo', 'prefix is set';

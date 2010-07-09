@@ -4,6 +4,7 @@ use t::lib::TestUtils;
 plan tests => 23;
 
 use Dancer ':syntax';
+use Dancer::Test;
 use Dancer::Route;
 
 eval { prefix 'say' };
@@ -78,12 +79,6 @@ foreach my $test (@tests) {
     my $path     = $test->{path};
     my $expected = $test->{expected};
 
-    my $request = fake_request( GET => $path );
-    Dancer::SharedData->request($request);
-
-    my $response = Dancer::Renderer::get_action_response();
-
-    ok( defined($response), "route found for path `$path'" );
-    is_deeply( $response->{content}, $expected,
-        "match data for path `$path' looks good" );
+    response_exists [GET => $path];
+    response_content_is_deeply [GET => $path], $expected;
 }

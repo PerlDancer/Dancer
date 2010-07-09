@@ -49,6 +49,20 @@ sub set_regexp {
 }
 
 
+sub add_prefix {
+    my ($self, $route, $prefix) = @_;
+
+    if (ref($route) eq 'HASH' && $route->{regexp}) {
+        if ($route->{regexp} !~ /^$prefix/) {
+            $route->{regexp} = $prefix . $route->{regexp};
+        }
+    }
+    else {
+        $route = $prefix . $route;
+    }
+    return $route;
+}
+
 # replace any ':foo' by '(.+)' and stores all the named
 # matches defined in $REG->{route_params}{$route}
 sub make_regexp {
@@ -56,6 +70,9 @@ sub make_regexp {
     my $capture = 0;
     my @params;
     my $pattern  = $route->{route};
+
+    my $prefix = $route->{prefix};
+    $pattern = $self->add_prefix($pattern, $prefix) if $prefix;
 
     if (ref($pattern) && $pattern->{regexp}) {
         $pattern = $pattern->{regexp};

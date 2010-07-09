@@ -33,16 +33,15 @@ sub merge_registry {
 
 sub route_cache { Dancer::Route::Cache->get() }
 
-# accessor for defining a route prefix
-my $PREFIX;
-
 sub prefix {
     my ($class, $prefix) = @_;
-    return $PREFIX if @_ < 2;
+
+    return Dancer::App->current->prefix if @_ < 2;
 
     die "Not a valid prefix, must begins with '/'"
       if defined $prefix && ($prefix !~ /^\//);
-    $PREFIX = $prefix;
+
+    Dancer::App->current->{'prefix'} = $prefix;
 
     return 1;
 }
@@ -57,6 +56,7 @@ sub add {
 
     Dancer::App->current->registry->add_route(
         app     => Dancer::App->current,
+        prefix  => Dancer::App->current->prefix,
         method  => $method,
         route   => $route,
         code    => $code,
@@ -75,6 +75,7 @@ sub add_ajax {
     for (@$methods) {
         Dancer::App->current->registry->add_route(
             app     => Dancer::App->current,
+            prefix  => Dancer::App->current->prefix,
             method  => $_,
             route   => $route,
             code    => $code,
@@ -105,8 +106,6 @@ sub _get_route_and_code {
 
     for ( $route ) { $_ = { regexp => $_ } if ref($_) eq 'Regexp' }
 
-    # is there a prefix set?
-    $route = $class->_add_prefix_if_needed($route);
     return ($route, $code, $rest, $options);
 }
 
@@ -331,19 +330,4 @@ sub _build_condition_regexp {
     return $conditions;
 }
 
-sub _add_prefix_if_needed {
-    my ($class, $route) = @_;
-    my $prefix = $class->prefix;
-    return $route unless defined $prefix;
-
-    if (ref($route) eq 'HASH' && $route->{regexp}) {
-        if ($route->{regexp} !~ /^$prefix/) {
-            $route->{regexp} = $prefix . $route->{regexp};
-        }
-    }
-    else {
-        $route = $class->prefix . $route;
-    }
-    return $route;
-}
 1;

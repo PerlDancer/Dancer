@@ -6,6 +6,8 @@ use warnings;
     use Dancer;
 
     load_app 't::lib::TestApp';
+    load_app 't::lib::Forum', prefix => '/forum';
+
     get '/' => sub { "home" };
 }
 
