@@ -59,6 +59,7 @@ sub add_prefix {
     }
     else {
         $route = $prefix . $route;
+        $route =~ s/\/$//; # remove trailing slash
     }
     return $route;
 }
@@ -74,11 +75,13 @@ sub make_regexp {
     my $prefix = $route->{prefix};
     $pattern = $self->add_prefix($pattern, $prefix) if $prefix;
 
+
     if (ref($pattern) && $pattern->{regexp}) {
         $pattern = $pattern->{regexp};
         $capture = 1;
     }
     else {
+        
         # look for route with params (/hello/:foo)
         if ($pattern =~ /:/) {
             @params = $pattern =~ /:([^\/\.]+)/g;

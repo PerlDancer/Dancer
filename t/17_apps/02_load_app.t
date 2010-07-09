@@ -1,4 +1,4 @@
-use Test::More tests => 7, import => ['!pass'];
+use Test::More tests => 8, import => ['!pass'];
 use strict;
 use warnings;
 
@@ -31,3 +31,4 @@ is @{ $test_app->registry->routes->{'get'} }, 8,
     "8 routes are defined in main app";
 
 response_content_is [GET => "/forum/index"], "forum index"; 
+response_content_is [GET => "/forum"], "root"; 
