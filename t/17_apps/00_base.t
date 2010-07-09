@@ -4,12 +4,6 @@ use warnings;
 
 use Dancer::App;
 
-{
-    package Foo::Bar;
-    use Dancer ':syntax';
-    sub foo { "foo" }
-}
-
 my $app = Dancer::App->new;
 isa_ok $app, 'Dancer::App';
 
@@ -23,3 +17,4 @@ like $@, qr/an app named 'main' already exists/,
 my $other = Dancer::App->new(name => 'Foo::Bar');
 is $other->name, 'Foo::Bar', 
     "Foo::Bar app created";
+
