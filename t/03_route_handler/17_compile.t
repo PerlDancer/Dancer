@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6, import => ['!pass'];
+use Test::More tests => 5, import => ['!pass'];
 
 {
     use Dancer ':syntax';
@@ -9,25 +9,22 @@ use Test::More tests => 6, import => ['!pass'];
     get '/simple' => sub { 1 };
 }
 
-use Dancer::Route::Builder;
+use Dancer::App;
+my $reg = Dancer::App->current->registry;
 
-ok(Dancer::Route::Builder->is_new, "registry is new");
+ok($reg->is_new, "registry is new");
+$reg->compile;
 
-is_deeply(Dancer::Route::Builder->registry, { _state => 'NEW' },
-    "compiled registry is uninitialized");
-
-Dancer::Route->compile_routes();
-
-ok ((! Dancer::Route::Builder->is_new), "registry is compiled");
+ok ((!$reg->is_new), "registry is compiled");
 
 my $expected_regexp = '^\/foo\/([^\/]+)$' ;
-is_deeply(Dancer::Route::Builder->registry, { _state => 'DONE', 
+is_deeply($reg->{_regexps}, {
     '/foo/:key' => [$expected_regexp, ['key'], 1 ],
     '/simple'   => ['^\/simple$', [], 0 ], 
     },
     "compiled registry is done, and looks good");
 
-my ($regexp, $variables) = @{ Dancer::Route::Builder->get_regexp('/foo/:key') };
+my ($regexp, $variables) = @{ $reg->get_regexp('/foo/:key') };
 is $regexp, $expected_regexp, 'regexp is sent by get_regexp_from_route';
 is_deeply $variables, [ 'key' ], "variables are sent by get_regexp_from_route";
 

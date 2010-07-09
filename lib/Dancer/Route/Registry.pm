@@ -13,18 +13,19 @@ sub init {
     $self->{_regexps} = {};
 }
 
-sub is_new { $_[0]->{state} eq 'NEW' }
-sub is_compiled { $_[0]->{state} eq 'COMPILED' }
+sub is_new      { $_[0]->{_state} eq 'NEW' }
+sub is_compiled { $_[0]->{_state} eq 'COMPILED' }
 
 sub get_regexp {
     my ($self, $name) = @_;
+    warn "looking for regexp $name";
     $self->{_regexps}{$name};
 }
 
 sub compile {
-    my ($self, $routes) = @_;
-    foreach my $method (keys %$routes) {
-        foreach my $route (@{$routes->{$method}}) {
+    my ($self) = @_;
+    foreach my $method (keys %{ $self->{'routes'} }) {
+        foreach my $route (@{ $self->{'routes'}{$method} }) {
             my ($regexp, $variables, $capture) = 
                 @{ $self->make_regexp($route) };
             $self->set_regexp($route => $regexp, $variables, $capture);
@@ -39,6 +40,7 @@ sub set_regexp {
     my $key = $route->{'route'};
     $key = $key->{'regexp'} if ref($key);
 
+    warn "setting regexp for $key";
     $self->{_regexps}{$key} = [ $regexp => $params, $capture ];
 }
 
