@@ -7,6 +7,7 @@ use Test::More tests => 5, import => ['!pass'];
     get '/foo/:key' => sub { params->{'key'} };
 
     get '/simple' => sub { 1 };
+
 }
 
 use Dancer::App;

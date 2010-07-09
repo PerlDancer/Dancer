@@ -3,13 +3,12 @@ package Dancer::Route;
 use strict;
 use warnings;
 
+use Dancer::App;
 use Dancer::Clone;
 use Dancer::SharedData;
 use Dancer::Config 'setting';
 use Dancer::Error;
-
 use Dancer::Route::Registry;
-use Dancer::Route::Builder;
 use Dancer::Route::Cache;
 
 my @supported_conditions = qw(agent user_agent host hostname referer);
@@ -25,16 +24,11 @@ sub init {
     }
 
     # compile all the route handlers
-    compile_routes();
+    Dancer::App->current->registry->compile();
 }
 
 
 sub route_cache { Dancer::Route::Cache->get() }
-
-sub compile_routes {
-    my $routes = Dancer::Route::Registry->routes;
-    Dancer::Route::Builder->compile($routes);
-}
 
 # accessor for defining a route prefix
 my $PREFIX;
@@ -58,7 +52,7 @@ sub add {
     ( $route, $code, $rest, $options )
         = $class->_get_route_and_code( $route, $code, $rest );
 
-    Dancer::Route::Registry->add_route(
+    Dancer::App->current->registry->add_route(
         method  => $method,
         route   => $route,
         code    => $code,
@@ -75,7 +69,7 @@ sub add_ajax {
         = $class->_get_route_and_code( $route, $code, $rest );
 
     for (@$methods) {
-        Dancer::Route::Registry->add_route(
+        Dancer::App->current->registry->add_route(
             method  => $_,
             route   => $route,
             code    => $code,
@@ -132,11 +126,6 @@ sub _get_all_methods {
     return ($class, $methods, $route, $code, $rest);
 }
 
-# TODO Registry aliases, maybe we should drop them later
-sub registry       { Dancer::Route::Registry->get() }
-sub purge_all      { Dancer::Route::Registry->reset() }
-sub merge_registry { Dancer::Route::Registry::merge(@_) }
-
 # return the first route that matches the path
 sub find {
     my ($class, $path, $method, $request) = @_;
@@ -148,7 +137,8 @@ sub find {
     # First, make sure the routes are compiled,
     # should be done yet by the calling handler,
     # if not, compile them now
-    compile_routes() if Dancer::Route::Builder->is_new;
+    Dancer::App->current->registry->compile() 
+        if Dancer::App->current->registry->is_new;
 
     # if route cache is enabled, we check if we handled this path before
     if (setting('route_cache')) {
@@ -161,7 +151,7 @@ sub find {
     # action chooses to pass.
     my $prev;
     my $first_match;
-  FIND: foreach my $r (@{Dancer::Route::Registry->routes($method)}) {
+  FIND: foreach my $r (@{Dancer::App->current->registry->routes($method)}) {
 
         my $params = match($path, $r->{route});
 
@@ -201,9 +191,9 @@ sub find {
 
 sub before_filter {
     my ($class, $filter) = @_;
-    Dancer::Route::Registry->add_before_filter($filter);
+    Dancer::App->current->registry->add_before_filter($filter);
 }
-sub before_filters { Dancer::Route::Registry->before_filters }
+sub before_filters { Dancer::App->current->registry->before_filters }
 sub run_before_filters { $_->() for before_filters }
 
 sub build_params {
@@ -330,9 +320,10 @@ sub get_regexp {
     $route = $route->{regexp} if ref($route);
 
     # the route tree may have changed since the last compilation
-    compile_routes() unless Dancer::Route::Builder->is_compiled($route);
-
-    return Dancer::Route::Builder->get_regexp($route);
+    Dancer::App->current->registry->compile()   
+        unless Dancer::App->current->registry->is_compiled();
+    
+    return Dancer::App->current->registry->get_regexp($route)
 }
 
 sub _build_condition_regexp {

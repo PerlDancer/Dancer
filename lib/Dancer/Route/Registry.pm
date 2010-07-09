@@ -18,7 +18,6 @@ sub is_compiled { $_[0]->{_state} eq 'COMPILED' }
 
 sub get_regexp {
     my ($self, $name) = @_;
-    warn "looking for regexp $name";
     $self->{_regexps}{$name};
 }
 
@@ -40,7 +39,6 @@ sub set_regexp {
     my $key = $route->{'route'};
     $key = $key->{'regexp'} if ref($key);
 
-    warn "setting regexp for $key";
     $self->{_regexps}{$key} = [ $regexp => $params, $capture ];
 }
 

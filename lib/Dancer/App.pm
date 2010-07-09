@@ -6,7 +6,7 @@ use base 'Dancer::Object';
 
 use Dancer::Route::Registry;
 
-Dancer::App->attributes(qw(name routes settings));
+Dancer::App->attributes(qw(name registry settings));
 
 # singleton that saves any app created, we want unicity for app names
 my $_apps = {};
@@ -20,7 +20,7 @@ sub init {
     
     # default values for properties
     $self->settings({});
-    $self->routes(Dancer::Route::Registry->new);
+    $self->registry(Dancer::Route::Registry->new);
 
     $_apps->{ $self->name } = $self;
 }
