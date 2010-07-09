@@ -2,6 +2,6 @@ package t::lib::Forum;
 
 use Dancer ':syntax';
 
-get '/' => sub { 'forum' };
+get '/index' => sub { 'forum index' };
 
 1;

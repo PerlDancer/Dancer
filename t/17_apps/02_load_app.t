@@ -1,6 +1,8 @@
-use Test::More tests => 5, import => ['!pass'];
+use Test::More tests => 7, import => ['!pass'];
 use strict;
 use warnings;
+
+use Dancer::Test;
 
 {
     use Dancer;
@@ -12,16 +14,20 @@ use warnings;
 }
 
 my $apps = [ Dancer::App->applications ];
-is scalar(@$apps), 2, "2 applications exist";
+is scalar(@$apps), 3, "3 applications exist";
 
-my $main = Dancer::App->get('main');
+my $main     = Dancer::App->get('main');
 my $test_app = Dancer::App->get('t::lib::TestApp');
+my $forum    = Dancer::App->get('t::lib::Forum');
 
 ok defined($main), "app 'main' is defined";
 ok defined($test_app), "app 't::lib::TestApp' is defined";
+ok defined($forum), "app 't::lib::Forum' is defined";
 
 is @{ $main->registry->routes->{'get'} }, 1, 
     "one route is defined in main app";
 
 is @{ $test_app->registry->routes->{'get'} }, 8, 
     "8 routes are defined in main app";
+
+response_content_is [GET => "/forum/index"], "forum index"; 
