@@ -125,7 +125,7 @@ sub load_default_settings {
     $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
     $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG}   || 1;
     $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
-    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'standalone';
+    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
     $SETTINGS->{environment}
