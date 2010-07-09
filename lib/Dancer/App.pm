@@ -15,17 +15,18 @@ sub init {
 
     die "an app named '".$self->name."' already exists" 
         if exists $_apps->{ $self->name };
+    
+    $self->settings({}) unless defined $self->settings;
 
     $_apps->{ $self->name } = $self;
 }
 
 sub setting {
     my ($self, $name, $value) = @_;
-    $self->settings({}) unless defined $self->settings;
 
     return (@_ == 3) 
         ? $self->settings->{$name} = $value
-        : $self->settings;
+        : $self->settings->{$name};
 }
 
 1;
