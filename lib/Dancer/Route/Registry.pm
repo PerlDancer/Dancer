@@ -178,7 +178,7 @@ sub merge {
       ? $new_reg->{before_filters}
       : $orig_reg->{before_filters};
 
-    $self = $merged_reg;
+    return $merged_reg;
 }
 
 1;

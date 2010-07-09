@@ -20,9 +20,14 @@ sub init {
     
     # default values for properties
     $self->settings({});
-    $self->registry(Dancer::Route::Registry->new);
+    $self->init_registry();
 
     $_apps->{ $self->name } = $self;
+}
+
+sub init_registry {
+    my ($self, $reg) = @_;
+    $self->registry($reg || Dancer::Route::Registry->new);
 }
 
 # singleton that saves the current active Dancer::App object

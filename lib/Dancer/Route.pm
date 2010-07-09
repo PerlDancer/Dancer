@@ -24,6 +24,12 @@ sub init {
     }
 }
 
+sub merge_registry {
+    my ($class, $orig, $new) = @_;
+    my $merge = Dancer::App->current->registry->merge(
+        $orig, $new);
+    Dancer::App->current->init_registry($merge);
+}
 
 sub route_cache { Dancer::Route::Cache->get() }
 
