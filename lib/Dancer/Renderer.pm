@@ -93,7 +93,10 @@ sub get_action_response {
 
     # run the before filters
     # if a filter has set a response, return it now.
-    Dancer::Route->run_before_filters;
+    for my $app (Dancer::App->applications ) {
+        $_->() for @{ $app->registry->before_filters };
+    }
+
     if (Dancer::Response->exists) {
         $response = serialize_response_if_needed(Dancer::Response->current);
     }
@@ -116,6 +119,7 @@ sub get_action_response {
         return $response if defined $response;
         undef $response;
 
+        Dancer::App->current($handler->{app});
         $response = Dancer::Route->call($handler);
         Dancer::Logger::core("route: ".$handler->{route});
 

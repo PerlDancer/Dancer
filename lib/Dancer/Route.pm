@@ -56,6 +56,7 @@ sub add {
         = $class->_get_route_and_code( $route, $code, $rest );
 
     Dancer::App->current->registry->add_route(
+        app     => Dancer::App->current,
         method  => $method,
         route   => $route,
         code    => $code,
@@ -73,6 +74,7 @@ sub add_ajax {
 
     for (@$methods) {
         Dancer::App->current->registry->add_route(
+            app     => Dancer::App->current,
             method  => $_,
             route   => $route,
             code    => $code,
@@ -147,30 +149,30 @@ sub find {
     my $prev;
     my $first_match;
 
-  FIND: foreach my $r (@{ Dancer::App->current->registry->routes($method) }) {
-        my $params = match($path, $r->{route});
+    for my $app (Dancer::App->applications) {
 
-        if ($params) {
-            $r->{params} = $params;
+      FIND: foreach my $r (@{$app->registry->routes($method)}) {
+            my $params = match($app, $path, $r->{route});
 
-            if ($r->{options}) {
-                foreach my $opt (keys %{$r->{options}}) {
-                    my $re = $r->{options}{$opt};
-                    next FIND
-                      if (!$request->$opt)
-                        || ($request->$opt !~ $re);
+            if ($params) {
+                $r->{params} = $params;
+
+                if ($r->{options}) {
+                    foreach my $opt (keys %{$r->{options}}) {
+                        my $re = $r->{options}{$opt};
+                        next FIND
+                          if (!$request->$opt)
+                          || ($request->$opt !~ $re);
+                    }
                 }
-            }
 
-            $prev->{'next'} = $r if defined $prev;
-            $prev = $r;
-            $first_match = $r unless defined $first_match;
+                $prev->{'next'} = $r if defined $prev;
+                $prev = $r;
+                $first_match = $r unless defined $first_match;
+            }
         }
     }
-
-    # if zero matches, zero biatches
     return undef unless defined $first_match;
-
     return undef if ($first_match->{ajax} && !$request->is_ajax);
 
     # if we have a route cache, store the result
@@ -273,9 +275,9 @@ sub call($$) {
 }
 
 sub match {
-    my ($path, $route) = @_;
+    my ($app, $path, $route) = @_;
 
-    my $compiled = get_regexp($route);
+    my $compiled = get_regexp($app, $route);
     return unless defined $compiled;
 
     my ($regexp, $variables, $capture) =
@@ -313,9 +315,9 @@ sub match {
 }
 
 sub get_regexp {
-    my ($route) = @_;
+    my ($app, $route) = @_;
     $route = $route->{regexp} if ref($route);
-    Dancer::App->current->registry->get_regexp($route);
+    $app->registry->get_regexp($route);
 }
 
 sub _build_condition_regexp {

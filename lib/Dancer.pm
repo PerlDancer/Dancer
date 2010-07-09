@@ -163,15 +163,19 @@ sub vars     { Dancer::SharedData->vars }
 sub warning  { goto &Dancer::Logger::warning }
 
 sub load_app {
-    for my $app (@_) {
-        Dancer::Logger::core("loading application $app");
+    my ($app, %options) = @_;
+    Dancer::Logger::core("loading application $app");
+    
+    # set the application
+    Dancer::App->set_running_app($app);
 
-        use lib path( dirname( File::Spec->rel2abs($0) ), 'lib' );
+    # load the application
+    use lib path( dirname( File::Spec->rel2abs($0) ), 'lib' );
+    eval "use $app";
+    die "unable to load application $app : $@" if $@;
 
-        # we want to propagate loading errors, so don't use ModuleLoader here
-        eval "use $app";
-        die "unable to load application $app : $@" if $@;
-    }
+    # restore the main application
+    Dancer::App->set_running_app('main');
 }
 
 sub load_plugin {

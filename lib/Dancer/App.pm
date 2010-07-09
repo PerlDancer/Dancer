@@ -10,6 +10,14 @@ Dancer::App->attributes(qw(name registry settings));
 
 # singleton that saves any app created, we want unicity for app names
 my $_apps = {};
+sub applications { values %$_apps }
+
+sub set_running_app {
+    my ($self, $name) = @_;
+    my $app = Dancer::App->get($name);
+    $app = Dancer::App->new(name => $name) unless defined $app;
+    Dancer::App->current($app);
+}
 
 sub init {
     my ($self) = @_;
