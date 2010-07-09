@@ -2,29 +2,88 @@ package Dancer::Route::Registry;
 use strict;
 use warnings;
 
-use Dancer::Logger;
-
-# instance
 use base 'Dancer::Object';
+use Dancer::Logger;
 
 sub init {
     my ($self) = @_;
     $self->{routes} = {};
     $self->{before_filters} = [];
+    $self->{_state} = 'NEW';
+    $self->{_regexps} = {};
 }
 
-# singleton for the current registry
-my $_registry = Dancer::Route::Registry->new;
+sub is_new { $_[0]->{state} eq 'NEW' }
+sub is_compiled { $_[0]->{state} eq 'COMPILED' }
+
+sub get_regexp {
+    my ($self, $name) = @_;
+    $self->{_regexps}{$name};
+}
+
+sub compile {
+    my ($self, $routes) = @_;
+    foreach my $method (keys %$routes) {
+        foreach my $route (@{$routes->{$method}}) {
+            my ($regexp, $variables, $capture) = 
+                @{ $self->make_regexp($route) };
+            $self->set_regexp($route => $regexp, $variables, $capture);
+        }
+    }
+    $self->{_state} = 'COMPILED';
+}
+
+sub set_regexp {
+    my ($self, $route, $regexp, $params, $capture) = @_;
+
+    my $key = $route->{'route'};
+    $key = $key->{'regexp'} if ref($key);
+
+    $self->{_regexps}{$key} = [ $regexp => $params, $capture ];
+}
 
 
-# static
-sub get    {$_registry}
-sub set    { $_registry = $_[1] }
-sub reset  { $_registry = Dancer::Route::Registry->new }
+# replace any ':foo' by '(.+)' and stores all the named
+# matches defined in $REG->{route_params}{$route}
+sub make_regexp {
+    my ($self, $route) = @_;
+    my $capture = 0;
+    my @params;
+    my $pattern  = $route->{route};
 
-sub before_filters { @{ $_registry->{before_filters} } }
+    if (ref($pattern) && $pattern->{regexp}) {
+        $pattern = $pattern->{regexp};
+        $capture = 1;
+    }
+    else {
+        # look for route with params (/hello/:foo)
+        if ($pattern =~ /:/) {
+            @params = $pattern =~ /:([^\/\.]+)/g;
+            if (@params) {
+                $pattern =~ s/(:[^\/\.]+)/\(\[\^\/\]\+\)/g;
+                $capture = 1;
+            }
+        }
+
+        # parse wildcards
+        if ($pattern =~ /\*/) {
+            $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
+            $capture = 1;
+        }
+
+        # escape dots
+        $pattern =~ s/\./\\\./g if $pattern =~ /\./;
+    }
+
+    # escape slashes
+    $pattern =~ s/\//\\\//g;
+
+    # return the final regexp, plus meta information
+    return ["^${pattern}\$", \@params, $capture];
+}
+
 sub add_before_filter {
-    my ($class, $filter) = @_;
+    my ($self, $filter) = @_;
 
     my $compiled_filter = sub {
         return if Dancer::Response->halted;
@@ -39,28 +98,30 @@ sub add_before_filter {
         }
     };
 
-    push @{ $_registry->{before_filters} }, $compiled_filter;
+    push @{ $self->{before_filters} }, $compiled_filter;
 }
 
 sub routes {
+    my ($self) = @_;
+
     if ( $_[1] ) {
-        my $route = $_registry->{routes}{ $_[1] };
+        my $route = $self->{routes}{ $_[1] };
         $route ? return $route : [];
     }
     else {
-        return $_registry->{routes};
+        return $self->{routes};
     }
 }
 
 sub add_route {
-    my ($class, %args) = @_;
-    $_registry->{routes}{$args{method}} ||= [];
-    push @{ $_registry->{routes}{$args{method}} }, \%args;
+    my ($self, %args) = @_;
+    $self->{routes}{$args{method}} ||= [];
+    push @{ $self->{routes}{$args{method}} }, \%args;
 }
 
 # look for a route in the given array
 sub find_route {
-    my ($r, $reg) = @_;
+    my ($self, $r, $reg) = @_;
     foreach my $route (@$reg) {
         return $route if ($r->{route} eq $route->{route});
     }
@@ -68,7 +129,7 @@ sub find_route {
 }
 
 sub merge {
-    my ($class, $orig_reg, $new_reg) = @_;
+    my ($self, $orig_reg, $new_reg) = @_;
     my $merged_reg = Dancer::Route::Registry->new;
 
     # walking through all the routes, using the newest when exists
@@ -86,7 +147,7 @@ sub merge {
         # walk through all the orig elements, if we have a new version,
         # overwrite it, else, keep the old one.
         foreach my $route (@$orig_routes) {
-            my $new = find_route($route, $new_routes);
+            my $new = $self->find_route($route, $new_routes);
             if (defined $new) {
                 push @$merged_routes, $new;
             }
@@ -98,7 +159,7 @@ sub merge {
         # now, walk through all the new elements, looking for a new route
         foreach my $route (@$new_routes) {
             push @$merged_routes, $route
-              unless find_route($route, $merged_routes);
+              unless $self->find_route($route, $merged_routes);
         }
 
         $merged_reg->{routes}{$method} = $merged_routes;
@@ -111,7 +172,7 @@ sub merge {
       ? $new_reg->{before_filters}
       : $orig_reg->{before_filters};
 
-    Dancer::Route::Registry->set($merged_reg);
+    $self = $merged_reg;
 }
 
 1;
