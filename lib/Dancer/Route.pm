@@ -22,9 +22,6 @@ sub init {
             Dancer::Helpers::template($params->{'page'});
         });
     }
-
-    # compile all the route handlers
-    Dancer::App->current->registry->compile();
 }
 
 
@@ -132,14 +129,6 @@ sub find {
     $method ||= 'get';
     $method = lc($method);
 
-    Dancer::Logger::core("compiling route regsitry");
-
-    # First, make sure the routes are compiled,
-    # should be done yet by the calling handler,
-    # if not, compile them now
-    Dancer::App->current->registry->compile() 
-        if Dancer::App->current->registry->is_new;
-
     # if route cache is enabled, we check if we handled this path before
     if (setting('route_cache')) {
         my $route = Dancer::Route->route_cache->route_from_path($method, $path);
@@ -151,8 +140,8 @@ sub find {
     # action chooses to pass.
     my $prev;
     my $first_match;
-  FIND: foreach my $r (@{Dancer::App->current->registry->routes($method)}) {
 
+  FIND: foreach my $r (@{ Dancer::App->current->registry->routes($method) }) {
         my $params = match($path, $r->{route});
 
         if ($params) {
@@ -193,7 +182,7 @@ sub before_filter {
     my ($class, $filter) = @_;
     Dancer::App->current->registry->add_before_filter($filter);
 }
-sub before_filters { Dancer::App->current->registry->before_filters }
+sub before_filters { @{ Dancer::App->current->registry->before_filters } }
 sub run_before_filters { $_->() for before_filters }
 
 sub build_params {
@@ -281,6 +270,8 @@ sub match {
     my ($path, $route) = @_;
 
     my $compiled = get_regexp($route);
+    return unless defined $compiled;
+
     my ($regexp, $variables, $capture) =
       ($compiled->[0], $compiled->[1], $compiled->[2]);
 
@@ -318,12 +309,7 @@ sub match {
 sub get_regexp {
     my ($route) = @_;
     $route = $route->{regexp} if ref($route);
-
-    # the route tree may have changed since the last compilation
-    Dancer::App->current->registry->compile()   
-        unless Dancer::App->current->registry->is_compiled();
-    
-    return Dancer::App->current->registry->get_regexp($route)
+    Dancer::App->current->registry->get_regexp($route);
 }
 
 sub _build_condition_regexp {

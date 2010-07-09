@@ -5,6 +5,10 @@ use warnings;
 use base 'Dancer::Object';
 use Dancer::Logger;
 
+Dancer::Route::Registry->attributes(qw(
+    before_filters
+));
+
 sub init {
     my ($self) = @_;
     $self->{routes} = {};
@@ -18,13 +22,15 @@ sub is_compiled { $_[0]->{_state} eq 'COMPILED' }
 
 sub get_regexp {
     my ($self, $name) = @_;
+    $self->compile unless defined $self->{_regexps}{$name};
     $self->{_regexps}{$name};
 }
 
 sub compile {
     my ($self) = @_;
+
     foreach my $method (keys %{ $self->{'routes'} }) {
-        foreach my $route (@{ $self->{'routes'}{$method} }) {
+        foreach my $route (@{ $self->routes($method) }) {
             my ($regexp, $variables, $capture) = 
                 @{ $self->make_regexp($route) };
             $self->set_regexp($route => $regexp, $variables, $capture);
@@ -102,10 +108,10 @@ sub add_before_filter {
 }
 
 sub routes {
-    my ($self) = @_;
+    my ($self, $method) = @_;
 
-    if ( $_[1] ) {
-        my $route = $self->{routes}{ $_[1] };
+    if ( $method ) {
+        my $route = $self->{routes}{$method};
         $route ? return $route : [];
     }
     else {
