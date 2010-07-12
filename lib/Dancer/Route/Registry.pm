@@ -13,101 +13,10 @@ sub init {
     my ($self) = @_;
     $self->{routes} = {};
     $self->{before_filters} = [];
-    $self->{_state} = 'NEW';
-    $self->{_regexps} = {};
-}
-
-sub is_new      { $_[0]->{_state} eq 'NEW' }
-sub is_compiled { $_[0]->{_state} eq 'COMPILED' }
-
-sub get_regexp {
-    my ($self, $name) = @_;
-    $self->compile unless defined $self->{_regexps}{$name};
-    $self->{_regexps}{$name};
-}
-
-sub compile {
-    my ($self) = @_;
-
-    foreach my $method (keys %{ $self->{'routes'} }) {
-        foreach my $route (@{ $self->routes($method) }) {
-            my ($regexp, $variables, $capture) = 
-                @{ $self->make_regexp($route) };
-            $self->set_regexp($route => $regexp, $variables, $capture);
-        }
-    }
-    $self->{_state} = 'COMPILED';
-}
-
-sub set_regexp {
-    my ($self, $route, $regexp, $params, $capture) = @_;
-
-    my $key = $route->{'route'};
-    $key = $key->{'regexp'} if ref($key);
-
-    $self->{_regexps}{$key} = [ $regexp => $params, $capture ];
-}
-
-
-sub add_prefix {
-    my ($self, $route, $prefix) = @_;
-
-    if (ref($route) eq 'HASH' && $route->{regexp}) {
-        if ($route->{regexp} !~ /^$prefix/) {
-            $route->{regexp} = $prefix . $route->{regexp};
-        }
-    }
-    else {
-        $route = $prefix . $route;
-        $route =~ s/\/$//; # remove trailing slash
-    }
-    return $route;
 }
 
 # replace any ':foo' by '(.+)' and stores all the named
 # matches defined in $REG->{route_params}{$route}
-sub make_regexp {
-    my ($self, $route) = @_;
-    my $capture = 0;
-    my @params;
-    my $pattern  = $route->{route};
-
-    my $prefix = $route->{prefix};
-    $pattern = $self->add_prefix($pattern, $prefix) if $prefix;
-
-
-    if (ref($pattern) && $pattern->{regexp}) {
-        $pattern = $pattern->{regexp};
-        $capture = 1;
-    }
-    else {
-        
-        # look for route with params (/hello/:foo)
-        if ($pattern =~ /:/) {
-            @params = $pattern =~ /:([^\/\.]+)/g;
-            if (@params) {
-                $pattern =~ s/(:[^\/\.]+)/\(\[\^\/\]\+\)/g;
-                $capture = 1;
-            }
-        }
-
-        # parse wildcards
-        if ($pattern =~ /\*/) {
-            $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
-            $capture = 1;
-        }
-
-        # escape dots
-        $pattern =~ s/\./\\\./g if $pattern =~ /\./;
-    }
-
-    # escape slashes
-    $pattern =~ s/\//\\\//g;
-
-    # return the final regexp, plus meta information
-    return ["^${pattern}\$", \@params, $capture];
-}
-
 sub add_before_filter {
     my ($self, $filter) = @_;
 
@@ -140,16 +49,66 @@ sub routes {
 }
 
 sub add_route {
-    my ($self, %args) = @_;
-    $self->{routes}{$args{method}} ||= [];
-    push @{ $self->{routes}{$args{method}} }, \%args;
+    my ($self, $route) = @_;
+    $self->{routes}{$route->method} ||= [];
+    
+    my @registered = @{ $self->{routes}{$route->method} };
+    my $last = $registered[$#registered];
+    $route->set_previous($last) if defined $last;
+    push @{ $self->{routes}{$route->method} }, $route;
+}
+
+# sugar for add_route
+
+sub register_route {
+    my ($class, %args) = @_;
+    my $route = Dancer::Route->new(%args);
+    Dancer::App->current->registry->add_route($route);
+}
+
+# sugar for Dancer.pm
+sub universal_add {
+    my ($class, $method, $pattern, @rest) = @_;
+
+    my %options;
+    my $code;
+
+    if (@rest == 1) {
+        $code = $rest[0];
+    }
+    else {
+        %options = %{$rest[0]};
+        $code = $rest[1];
+    }
+
+    if ($method eq 'any') {
+        $class->universal_add('get', $pattern, @rest);
+        $class->universal_add('post', $pattern, @rest);
+        $class->universal_add('put', $pattern, @rest);
+        $class->universal_add('delete', $pattern, @rest);
+        $class->universal_add('options', $pattern, @rest);
+        return 1;
+    }
+    elsif ($method eq 'ajax') {
+        # FIXME conditions on request->is_ajax
+        $class->universal_add('post', $pattern, @rest);
+    }
+
+    my %route_args = (
+        method => $method,
+        code   => $code,
+        options => \%options,
+        pattern => $pattern,
+    );
+
+    $class->register_route(%route_args);
 }
 
 # look for a route in the given array
 sub find_route {
     my ($self, $r, $reg) = @_;
     foreach my $route (@$reg) {
-        return $route if ($r->{route} eq $route->{route});
+        return $route if $r->equals($route);
     }
     return undef;
 }
