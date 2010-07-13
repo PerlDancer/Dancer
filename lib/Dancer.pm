@@ -93,8 +93,8 @@ $VERSION   = '1.1805';
 
 # Dancer's syntax
 
-sub ajax         { Dancer::Route->add_ajax(@_) }
-sub any          { Dancer::Route->add_any(@_) }
+sub ajax         { Dancer::Route->universal_add('ajax', @_) }
+sub any          { Dancer::Route->universal_add('any', @_) }
 sub before       { Dancer::Route->before_filter(@_) }
 sub captures   { Dancer::SharedData->request->params->{captures} }
 sub cookies      { Dancer::Cookies->cookies }
@@ -112,8 +112,8 @@ sub from_yaml    { Dancer::Serializer::YAML::from_yaml(@_) }
 sub from_xml     { Dancer::Serializer::XML::from_xml(@_) }
 
 sub get {
-    Dancer::Route->add('head', @_);
-    Dancer::Route->add('get',  @_);
+    Dancer::Route::Registry->universal_add('head', @_);
+    Dancer::Route::Registry->universal_add('get', @_);
 }
 sub halt       { Dancer::Response->halt(@_) }
 sub headers    { Dancer::Response::headers(@_); }
@@ -125,11 +125,11 @@ sub mime_type  { Dancer::Config::mime_types(@_) }
 sub params     { Dancer::SharedData->request->params(@_) }
 sub pass       { Dancer::Response->pass }
 sub path       { Dancer::FileUtils::path(@_) }
-sub post       { Dancer::Route->add('post', @_) }
+sub post       { Dancer::Route::Registry->universal_add('post', @_) }
 sub prefix     { Dancer::Route->prefix(@_) }
-sub del        { Dancer::Route->add('delete', @_) }
-sub options    { Dancer::Route->add('options', @_) }
-sub put        { Dancer::Route->add('put', @_) }
+sub del        { Dancer::Route::Registry->universal_add('delete', @_) }
+sub options    { Dancer::Route::Registry->universal_add('options', @_) }
+sub put        { Dancer::Route::Registry->universal_add('put', @_) }
 sub r          { warn "'r' is DEPRECATED use qr{} instead" ; return {regexp => $_[0]} }
 sub redirect   { Dancer::Helpers::redirect(@_) }
 sub request    { Dancer::SharedData->request }
@@ -225,7 +225,6 @@ sub _init {
     setting logger  => 'file';
     setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
     Dancer::Config->load;
-    Dancer::Route->init;
 }
 
 1;
