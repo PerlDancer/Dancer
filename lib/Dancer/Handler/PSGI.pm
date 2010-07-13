@@ -19,7 +19,6 @@ sub new {
 
     my $self  = {};
     bless $self, $class;
-    Dancer::Route->init();
     return $self;
 }
 

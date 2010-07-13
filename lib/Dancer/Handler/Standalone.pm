@@ -39,7 +39,6 @@ sub start {
         $dancer->handle_request($req);
     };
 
-    Dancer::Route->init();
     $dancer->app($app);
 
     if (setting('daemon')) {
