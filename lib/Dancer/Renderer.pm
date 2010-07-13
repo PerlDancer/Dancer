@@ -85,10 +85,9 @@ sub get_action_response {
     my $request     = Dancer::SharedData->request;
     my $path_info   = $request->path_info;
     my $method      = $request->method;
-    my $handler     = Dancer::Route->find($path_info, $method, $request);
+    my $handler     = Dancer::App->find_route_through_apps($request);
 
     # init the request and build the params
-    Dancer::Route->build_params($handler, $request);
     Dancer::SharedData->request($request);
 
     # run the before filters
@@ -119,9 +118,8 @@ sub get_action_response {
         return $response if defined $response;
         undef $response;
 
-        Dancer::App->current($handler->{app});
-        $response = Dancer::Route->call($handler);
-        Dancer::Logger::core("route: ".$handler->{route});
+        Dancer::App->current($handler->app);
+        $response = $handler->run($request);
 
         return serialize_response_if_needed($response); #200
     }
