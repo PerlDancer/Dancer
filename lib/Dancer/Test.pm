@@ -6,6 +6,7 @@ use warnings;
 use Test::More import => ['!pass'];
 
 use Dancer ':syntax';
+use Dancer::App;
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
@@ -48,7 +49,7 @@ sub route_exists {
     $test_name ||= "a route exists for $method $path";
     
     $req = Dancer::Request->new_for_request($method => $path);
-    ok(Dancer::Route->find($path, $method, $req), $test_name);
+    ok(Dancer::App->find_route_through_apps($req), $test_name);
 }
 
 sub route_doesnt_exist {
@@ -58,7 +59,7 @@ sub route_doesnt_exist {
     $test_name ||= "no route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
-    ok((!defined(Dancer::Route->find($path, $method, $req))), $test_name);
+    ok(! defined(Dancer::App->find_route_through_apps($req)), $test_name);
 }
 
 # Response status

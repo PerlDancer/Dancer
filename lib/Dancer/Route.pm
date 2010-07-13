@@ -2,331 +2,199 @@ package Dancer::Route;
 
 use strict;
 use warnings;
+use base 'Dancer::Object';
 
 use Dancer::App;
-use Dancer::Clone;
-use Dancer::SharedData;
 use Dancer::Config 'setting';
-use Dancer::Error;
-use Dancer::Route::Cache;
+use Dancer::Response;
 
-my @supported_conditions = qw(agent user_agent host hostname referer);
+Dancer::Route->attributes(qw(
+    app         
+    method 
+    pattern     
+    regexp
+    prefix
+    code
+    prev
+    next
+    options
+    match_data
+));
 
-# main init stuff to setup the route handler
 sub init {
-    # add the default auto_page route handler if needed
-    if (setting('auto_page')) {
-        Dancer::Route->add('get', '/:page' => sub {
-            my $params = Dancer::SharedData->request->params;
-            Dancer::Helpers::template($params->{'page'});
-        });
-    }
-}
+    my ($self) = @_;
+    $self->{'_compiled_regexp'} = undef;
 
-sub merge_registry {
-    my ($class, $orig, $new) = @_;
-    my $merge = Dancer::App->current->registry->merge(
-        $orig, $new);
-    Dancer::App->current->init_registry($merge);
-}
-
-sub route_cache { Dancer::Route::Cache->get() }
-
-sub prefix {
-    my ($class, $prefix) = @_;
-
-    return Dancer::App->current->prefix if @_ < 2;
-
-    die "Not a valid prefix, must begins with '/'"
-      if defined $prefix && ($prefix !~ /^\//);
-
-    Dancer::App->current->{'prefix'} = $prefix;
-
-    return 1;
-}
-
-# accessor for setting up a new route
-sub add {
-    my ( $class, $method, $route, $code, $rest ) = @_;
-
-    my $options;
-    ( $route, $code, $rest, $options )
-        = $class->_get_route_and_code( $route, $code, $rest );
-
-    Dancer::App->current->registry->add_route(
-        app     => Dancer::App->current,
-        prefix  => Dancer::App->current->prefix,
-        method  => $method,
-        route   => $route,
-        code    => $code,
-        options => $options,
-    );
-}
-
-sub add_ajax {
-    my ( $class, $methods, $route, $code, $rest )
-        = _get_all_methods(@_);
-
-    my $options;
-    ( $route, $code, $rest, $options )
-        = $class->_get_route_and_code( $route, $code, $rest );
-
-    for (@$methods) {
-        Dancer::App->current->registry->add_route(
-            app     => Dancer::App->current,
-            prefix  => Dancer::App->current->prefix,
-            method  => $_,
-            route   => $route,
-            code    => $code,
-            options => $options,
-            ajax    => 1,
-        );
-    }
-    return scalar(@$methods);
-}
-
-# sugar for defining multiple routes at once
-sub add_any {
-    my ($class, $methods, $route, $code, $rest) = _get_all_methods(@_);
-    $class->add($_, $route, $code, $rest) for @$methods;
-    return scalar(@$methods);
-}
-
-sub _get_route_and_code {
-    my ($class, $route, $code, $rest) = @_;
-
-    # look for route matching conditions
-    my $options;
-    if ($rest) {
-        die "Invalid route definition" unless ref($code) eq 'HASH';
-        $options = $class->_build_condition_regexp($code);
-        $code    = $rest;
+    if (! $self->pattern ) {
+        die "cannot create Dancer::Route without a pattern";
     }
 
-    for ( $route ) { $_ = { regexp => $_ } if ref($_) eq 'Regexp' }
-
-    return ($route, $code, $rest, $options);
+    $self->app(Dancer::App->current);
+    $self->prefix(Dancer::App->current->prefix);
+    $self->_init_prefix() if $self->prefix;
+    $self->_build_regexp();
+    $self->set_previous($self->prev) if $self->prev;
 }
 
-sub _get_all_methods {
-    my ($class, $methods, $route, $code, $rest);
-
-    # syntax: any ['get', 'post'] => '/route' => sub {};
-    if (@_ == 4) {
-        ($class, $methods, $route, $code, $rest) = @_;
-        die "Syntax error, methods should be provided as an ARRAY ref."
-          unless ref($methods) eq 'ARRAY';
-    }
-
-    # syntax: any '/route' => sub {};
-    elsif (@_ == 3) {
-        ($class, $route, $code, $rest) = @_;
-        $methods = [qw(get post delete put)];
-    }
-    else {
-        die "syntax error: see perldoc Dancer for 'any' usage.";
-    }
-    return ($class, $methods, $route, $code, $rest);
+sub set_previous {
+    my ($self, $prev) = @_;
+    $self->prev($prev);
+    $self->prev->{'next'} = $self;
 }
 
-# return the first route that matches the path
-sub find {
-    my ($class, $path, $method, $request) = @_;
-    $method ||= 'get';
-    $method = lc($method);
-
-    # if route cache is enabled, we check if we handled this path before
-    if (setting('route_cache')) {
-        my $route = Dancer::Route->route_cache->route_from_path($method, $path);
-        return $route if $route;
-    }
-
-    # browse all matching routes, and return the first one with
-    # a copy of the next matches, so we can call the next route if the
-    # action chooses to pass.
-    my $prev;
-    my $first_match;
-
-    for my $app (Dancer::App->applications) {
-
-      FIND: foreach my $r (@{$app->registry->routes($method)}) {
-            my $params = match($app, $path, $r->{route});
-
-            if ($params) {
-                $r->{params} = $params;
-
-                if ($r->{options}) {
-                    foreach my $opt (keys %{$r->{options}}) {
-                        my $re = $r->{options}{$opt};
-                        next FIND
-                          if (!$request->$opt)
-                          || ($request->$opt !~ $re);
-                    }
-                }
-
-                $prev->{'next'} = $r if defined $prev;
-                $prev = $r;
-                $first_match = $r unless defined $first_match;
-            }
-        }
-    }
-    return undef unless defined $first_match;
-    return undef if ($first_match->{ajax} && !$request->is_ajax);
-
-    # if we have a route cache, store the result
-    if (setting('route_cache')) {
-        # we have to clone the data here so the Route::Cache can work
-        Dancer::Route->route_cache->store_path($method, 
-            $path => Dancer::Clone::clone($first_match));
-    }
-
-    # return the first matching route, with a copy of the next ones
-    return $first_match;
-}
-
-sub before_filter {
-    my ($class, $filter) = @_;
-    Dancer::App->current->registry->add_before_filter($filter);
-}
-sub before_filters { @{ Dancer::App->current->registry->before_filters } }
-sub run_before_filters { $_->() for before_filters }
-
-sub build_params {
-    my ($class, $handler, $request) = @_;
-    $request->_set_route_params($handler->{params} || {});
-    return scalar($request->params);
-}
-
-# Recursive call of actions through the matching tree
-sub call($$) {
-    my ($class, $handler) = @_;
-
-    Dancer::Logger::core("calling route handler: ".$handler->{route});
-
-    my $request = Dancer::SharedData->request;
-    my $params = Dancer::Route->build_params($handler, $request);
-
-    # eval the route handler, and copy the response object
-    my $content;
-    my $warning;
-    local $SIG{__WARN__} = sub { $warning = $_[0] };
-    $content = $handler->{code}->();
-    my $response       = Dancer::Response->current;
-
-    Dancer::Logger::core("got response : ".$response->{status});
-
-    # Log warnings
-    Dancer::Logger::warning($warning) if $warning;
-
-    # Pass: pass to the next route if available. otherwise, 404.
-    if ($response->{pass}) {
-        Dancer::Logger::core("trying to pass to next route handler");
-
-        if ($handler->{'next'}) {
-            return Dancer::Route->call($handler->{'next'});
-        }
-        else {
-            Dancer::Logger::core("no next route handler found, 404");
-            my $error = Dancer::Error->new(
-                code    => 404,
-                message => "<h2>Route Resolution Failed</h2>"
-                  . "<p>Last matching route passed, "
-                  . "but no other route left.</p>"
-            );
-            return $error->render;
-        }
-    }
-
-    # Process the response
-    else {
-
-        # trap warnings if config ask for it
-        if (setting('warnings') && $warning) {
-            my $error = Dancer::Error->new(
-                    code    => 500,
-                    title   => 'Route Handler Error',
-                    type    => 'Runtime Warning',
-                    message => $warning
-            );
-            return $error->render;
-        }
-
-        # coerce undef content to empty string to
-        # prevent warnings
-        $content = (defined $content) ? $content : '';
-
-        # drop the content if this is a HEAD request
-        $content = '' if $handler->{method} eq 'head';
-        my $ct = $response->{content_type} || setting('content_type');
-        my $st = $response->{status}       || 200;
-        my $headers = [];
-        push @$headers, @{$response->{headers}}, 'Content-Type' => $ct;
-
-        return $content if ref($content) eq 'Dancer::Response';
-        return Dancer::Response->new(
-            status  => $st,
-            headers => $headers,
-            content => $content,
-            content_type => $ct,
-        );
-    }
-}
-
+# Does the route match the request
 sub match {
-    my ($app, $path, $route) = @_;
+    my ($self, $request) = @_;
 
-    my $compiled = get_regexp($app, $route);
-    return unless defined $compiled;
-
-    my ($regexp, $variables, $capture) =
-      ($compiled->[0], $compiled->[1], $compiled->[2]);
-
-    # If there's no regexp or no path, don't even try to match:
-    return if (!$regexp || !$path);
-
-    # first, try the match, and save potential values
-    my @values = $path =~ $regexp;
+    my $method = lc($request->method);
+    my $path   = $request->path;
+    my %params;
+    
+    my @values = $path =~ $self->{_compiled_regexp};
 
     # if some named captures found, return captures
     # no warnings is for perl < 5.10
     if ( my %captures = do { no warnings; %+ } ) {
-	return { captures => \%captures }
+	    return \%captures;
     }
 
-    # if no values found, do not match!
-    return 0 unless @values;
+    return undef unless @values;
 
-    # Hmm, I can has a match?
-    my %params;
-
-    # if named variables were found, return params accordingly
-    if (@$variables) {
-        for (my $i = 0; $i < ~~ @$variables; $i++) {
-            $params{$variables->[$i]} = $values[$i];
+    # named tokens
+    my @tokens = @{ $self->{_params} };
+    if (@tokens) {
+        for (my $i = 0; $i < @tokens; $i++) {
+            $params{$tokens[$i]} = $values[$i];
         }
         return \%params;
     }
-
-    # else, we have unnamed matches, store them in params->{splat}
-    # if the route wants capture, if not just return an empty hash
-    return $capture ? {splat => \@values} : {};
-}
-
-sub get_regexp {
-    my ($app, $route) = @_;
-    $route = $route->{regexp} if ref($route);
-    $app->registry->get_regexp($route);
-}
-
-sub _build_condition_regexp {
-    my ($class, $conditions) = @_;
-    foreach my $cond (keys %$conditions) {
-        die "Not a valid option for route matching: `$cond'"
-          unless grep /^$cond$/, @supported_conditions;
-        my $val = $conditions->{$cond};
-        $conditions->{$cond} = qr/$val/;
+    
+    elsif ($self->{_should_capture}) {
+        return {splat => \@values};
     }
-    return $conditions;
+    
+    return {};
+}
+
+sub run {
+    my ($self, $request) = @_;
+    $request->_set_route_params($self->match_data || {});
+    
+    my $content = $self->execute();
+    my $response = Dancer::Response->current;
+    
+    if ($response->{pass}) {
+        if ($self->next) {
+            my $next_route = $self->find_next_matching_route($request);
+            return $next_route->run($request);
+        }
+        else {
+            die "Last matching route passed";
+        }
+    }
+
+    # coerce undef content to empty string to
+    # prevent warnings
+    $content = (defined $content) ? $content : '';
+
+    # drop content if HEAD request
+    $content = '' if $request->is_head;
+
+    # init response headers
+    my $ct = $response->{content_type} || setting('content_type');
+    my $st = $response->{status}       || 200;
+    my $headers = [];
+    push @$headers, @{$response->{headers}}, 'Content-Type' => $ct;
+
+    return $content if ref($content) eq 'Dancer::Response';
+    return Dancer::Response->new(
+        status  => $st,
+        headers => $headers,
+        content => $content,
+        content_type => $ct,
+    );
+}
+
+sub find_next_matching_route {
+    my ($self, $request) = @_;
+    my $next = $self->next;
+    return undef unless $next;
+
+    my $match;
+    if ($match = $next->match($request)) {
+       $next->match_data($match);
+       return $next;
+    }
+    return $next->find_next_matching_route($request);
+}
+
+# TODO  trap warnings if config ask for it
+sub execute {
+    my ($self) = @_;
+    $self->code->();
+}
+
+sub _init_prefix {
+    my ($self, $prefix) = @_;
+
+    if ($self->regexp) {
+        if ($self->regexp !~ /^$prefix/) {
+            $self->{regexp} = $prefix . $self->regexp;
+        }
+    }
+    else {
+        $self->{pattern} = $prefix . $self->pattern;
+        $self->{pattern} =~ s/\/$//; # remove trailing slash
+    }
+}
+
+sub equals {
+    my ($self, $route) = @_;
+    return $self->pattern eq $route->pattern; # FIXME handle regexp
+}
+
+sub _build_regexp {
+    my ($self) = @_;
+    
+    if ($self->regexp) {
+        $self->{_compiled_regexp} = $self->regexp;
+        $self->{_should_capture} = 1;
+    }
+    else {
+        $self->_build_regexp_from_string($self->pattern);
+    }
+
+}
+
+sub _build_regexp_from_string {
+    my ($self, $pattern) = @_;
+    my $capture = 0;
+    my @params;
+
+    # look for route with params (/hello/:foo)
+    if ($pattern =~ /:/) {
+        @params = $pattern =~ /:([^\/\.]+)/g;
+        if (@params) {
+            $pattern =~ s/(:[^\/\.]+)/\(\[\^\/\]\+\)/g;
+            $capture = 1;
+        }
+    }
+
+    # parse wildcards
+    if ($pattern =~ /\*/) {
+        $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
+        $capture = 1;
+    }
+
+    # escape dots
+    $pattern =~ s/\./\\\./g if $pattern =~ /\./;
+
+    # escape slashes
+    $pattern =~ s/\//\\\//g;
+
+    $self->{_compiled_regexp} = "^${pattern}\$";
+    $self->{_params} = \@params;
+    $self->{_should_capture} = $capture;
 }
 
 1;

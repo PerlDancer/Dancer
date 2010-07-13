@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Dancer::Object';
 
+use Dancer::Config;
 use Dancer::Route::Registry;
 
 Dancer::App->attributes(qw(name prefix registry settings));
@@ -17,6 +18,35 @@ sub set_running_app {
     my $app = Dancer::App->get($name);
     $app = Dancer::App->new(name => $name) unless defined $app;
     Dancer::App->current($app);
+}
+
+sub find_route_through_apps {
+    my ($class, $request) = @_;
+    for my $app (Dancer::App->applications) {
+        my $route = $app->find_route($request);
+        return $route if $route;
+    }
+    return undef;
+}
+
+# instance
+
+# FIXME should handle options
+# FIXME should handle is_ajax
+# FIXME should handle route cache
+sub find_route {
+    my ($self, $request) = @_;
+    my $method = lc($request->method);
+    my @routes = @{ $self->registry->routes($method) }; 
+
+    for my $r (@routes) {
+        my $match = $r->match($request);
+        if ($match) {
+            $r->match_data($match);
+            return $r;
+        }
+    }
+    return undef;
 }
 
 sub init {
@@ -36,6 +66,14 @@ sub init {
 sub init_registry {
     my ($self, $reg) = @_;
     $self->registry($reg || Dancer::Route::Registry->new);
+    if (Dancer::Config::setting('auto_page')) {
+        Dancer::Route::Registry->universal_add('get', '/:page',
+            sub {
+                my $params = Dancer::SharedData->request->params;
+                Dancer::Helpers::template($params->{'page'});
+            }
+        );
+    }
 }
 
 # singleton that saves the current active Dancer::App object
