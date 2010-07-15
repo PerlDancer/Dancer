@@ -12,7 +12,7 @@ use Dancer::Test;
 
     get '/:page' => sub {
         my $page = params->{page};
-        return pass() unless $page ~~ [qw/about help intro upload/];
+        return pass() unless $page =~ m/about|help|intro|upload/;
         return $page;
     };
     get '/status' => sub { 'status' };
