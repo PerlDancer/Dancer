@@ -8,8 +8,6 @@ use t::lib::TestUtils;
 use Dancer ':syntax';
 use Dancer::Route;
 
-use Dancer::Config 'setting';
-
 {
     ok(get('/'                           => sub { 'index' }),            'first route set');
     ok(get('/name/:name'                 => sub { params->{name} }),     'second route set');

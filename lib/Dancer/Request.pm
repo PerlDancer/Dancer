@@ -24,7 +24,7 @@ Dancer::Request->attributes(
     'env',          'path', 'method',
     'content_type', 'content_length',
     'body',         'id', 'request_uri',
-    'uploads', 'headers',
+    'uploads', 'headers', 'path_info',
     @http_env_keys,
 );
 
@@ -40,7 +40,6 @@ sub header                { $_[0]->{headers}->get($_[1]) }
 
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
-sub path_info      { path(@_) }
 sub Vars           { params(@_) }
 sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 
@@ -461,16 +460,35 @@ would return C<http://localhost:5000/foo/bar?baz=baz>.
 
 =head2 params($source)
 
-If no source given, return a mixed hashref containing all the parameters that
-have been parsed.
-Be aware it's a mixed structure, so if you use multiple
-variables with the same name in your route pattern, query string or request
-body, you can't know for sure which value you'll get there.
+Called in scalar context, returns a hashref of params, either from the specified
+source (see below for more info on that) or merging all sources.
 
-If you need to use the same name for different sources of input, use the
-C<$source> option, like the following:
+So, you can use, for instance:
 
-If source equals C<route>, then only params parsed from route pattern
+    my $foo = params->{foo}
+
+If called in list context, returns a list of key => value pairs, so you could use:
+
+    my %allparams = params;
+
+
+=head3 Fetching only params from a given source
+
+If a required source isn't specified, a mixed hashref (or list of key value
+pairs, in list context) will be returned; this will contain params from all
+sources (route, query, body).
+
+In practical terms, this means that if the param C<foo> is passed both on the
+querystring and in a POST body, you can only access one of them.
+
+If you want to see only params from a given source, you can say so by passing
+the C<$source> param to C<params()>:
+
+    my %querystring_params = params('query');
+    my %route_params       = params('route');
+    my %post_params        = params('body');
+
+If source equals C<route>, then only params parsed from the route pattern
 are returned.
 
 If source equals C<query>, then only params parsed from the query string are

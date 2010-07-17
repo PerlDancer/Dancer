@@ -31,9 +31,7 @@ Test::TCP::test_tcp(
     },
     server => sub {
         my $port = shift;
-            
         use Dancer;
-        use Dancer::Config 'setting';
         
         setting apphandler => $handler;
         setting port => $port;

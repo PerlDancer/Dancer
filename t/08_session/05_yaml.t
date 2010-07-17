@@ -5,7 +5,6 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
 use Dancer::Logger;
-use Dancer::Config 'setting';
 
 use t::lib::TestUtils;
 use t::lib::EasyMocker;

@@ -6,7 +6,7 @@ use Carp 'confess';
 use Cwd 'abs_path';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
-use Dancer::Config 'setting';
+use Dancer::Config;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
@@ -30,7 +30,7 @@ use File::Spec;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.1805';
+$VERSION   = '1.1806_01';
 @EXPORT    = qw(
   ajax
   any
@@ -71,6 +71,7 @@ $VERSION   = '1.1805';
   send_file
   send_error
   set
+  setting
   set_cookie
   session
   splat
@@ -83,6 +84,7 @@ $VERSION   = '1.1805';
   to_xml
   true
   upload
+  captures
   uri_for
   var
   vars
@@ -94,6 +96,7 @@ $VERSION   = '1.1805';
 sub ajax         { Dancer::Route->add_ajax(@_) }
 sub any          { Dancer::Route->add_any(@_) }
 sub before       { Dancer::Route->before_filter(@_) }
+sub captures   { Dancer::SharedData->request->params->{captures} }
 sub cookies      { Dancer::Cookies->cookies }
 sub config       { Dancer::Config::settings() }
 sub content_type { Dancer::Response::content_type(@_) }
@@ -127,11 +130,12 @@ sub prefix     { Dancer::Route->prefix(@_) }
 sub del        { Dancer::Route->add('delete', @_) }
 sub options    { Dancer::Route->add('options', @_) }
 sub put        { Dancer::Route->add('put', @_) }
-sub r          { {regexp => $_[0]} }
+sub r          { warn "'r' is DEPRECATED use qr{} instead" ; return {regexp => $_[0]} }
 sub redirect   { Dancer::Helpers::redirect(@_) }
 sub request    { Dancer::SharedData->request }
 sub send_file  { Dancer::Helpers::send_file(@_) }
-sub set        { setting(@_) }
+sub set        { Dancer::Config::setting(@_) }
+sub setting    { Dancer::Config::setting(@_) }
 sub set_cookie { Dancer::Helpers::set_cookie(@_) }
 
 sub session {
@@ -196,7 +200,12 @@ sub import {
 sub start {
     my ($class, $request) = @_;
     Dancer::Config->load;
-    Dancer::Handler->get_handler()->dance($request);
+
+    # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
+    if ($request) {
+        return Dancer::Handler->handle_request($request);
+    }
+    Dancer::Handler->get_handler()->dance;
 }
 
 # private
@@ -560,12 +569,16 @@ put '/resource' => sub { ... };
 
 Helper to let you define a route pattern as a regular Perl regexp:
 
-    get r('/some([a-z0-9]{4})/complex/rules?') => sub {
-        ...
-    };
+This method is B<DEPRECATED>. Dancer now supports real Perl Regexp objects
+instead. You should not use r() but qr{} instead:
 
-The string given is treated as a Perl regular expression with the exception
-that all slashes and dots will be escaped before the match.
+Don't do this:
+
+    get r('/some/pattern(.*)') => sub { };
+
+But rather this:
+
+    get qr{/some/pattern(.*)} => sub { };
 
 =head2 redirect
 
@@ -620,6 +633,12 @@ definition (see C<mime_type> if you want to defined your own).
 Lets you define a setting
 
     set something => 'value';
+
+=head2 setting
+
+Lets you get a value of a given setting
+
+    setting('something'); # 'value'
 
 =head2 set_cookie
 
@@ -770,6 +789,22 @@ Returns a fully-qualified URI for the given path:
         redirect uri_for('/path');
         # can be something like: http://localhost:3000/path
     };
+
+=head2 captures
+
+If there are named captures in the route Regexp, captures returns a reference to a copy of %+
+
+    get qr{
+	/ (?<object> user   | ticket | comment )
+	/ (?<action> delete | find )
+	/ (?<id> \d+ )
+	/?$
+    }x
+    , sub {
+	my $value_for = captures;
+	"i don't want to $$value_for{action} the $$value_for{object} $$value_for{id} !"
+    };
+
 
 =head2 var
 

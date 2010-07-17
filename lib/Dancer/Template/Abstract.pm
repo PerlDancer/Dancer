@@ -2,12 +2,31 @@ package Dancer::Template::Abstract;
 
 use strict;
 use warnings;
+use Dancer::FileUtils 'path';
 use base 'Dancer::Engine';
 
 # Overloads this method to implement the rendering
 # args:   $self, $template, $tokens
 # return: a string of $template's content processed with $tokens
 sub render($$$) { die "render not implemented" }
+
+sub view {
+    my ($self, $view) = @_;
+    $view .= ".tt" if $view !~ /\.tt$/;
+    return path(Dancer::Config::setting('views'), $view);
+}
+
+sub layout {
+    my ($self, $layout, $tokens, $content) = @_;
+
+    $layout .= '.tt' if $layout !~ /\.tt/;
+    $layout = path(Dancer::Config::setting('views'), 'layouts', $layout);
+
+    my $full_content =
+      Dancer::Template->engine->render($layout,
+        {%$tokens, content => $content});
+    $full_content;
+}
 
 1;
 __END__
@@ -34,6 +53,14 @@ be done before the template engine is used.
 
 The base class provides a plain init() method that only returns true.
 
+=item B<view($view)>
+
+The default behavior of this method is to return the path of the given view.
+
+=item B<layout($layout, $tokens, $content)>
+
+The default behavior of this method is to merge a content with a layout.
+
 =item B<render($self, $template, $tokens)>
 
 This method must be implemented by the template engine. Given a template and a
@@ -56,11 +83,11 @@ Examples :
 
     # with a template as a scalar
     my $template = "here is <% var %>";
-    $content = $engine->render(\$template, { var => 42 }); 
+    $content = $engine->render(\$template, { var => 42 });
 
 =back
 
-=head1 AUTHOR 
+=head1 AUTHOR
 
 This module has been written by Alexis Sukrieh, see L<Dancer> for details.
 

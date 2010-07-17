@@ -43,26 +43,24 @@ script, which will build the framework of your application with a single
 command:
 
     $ dancer -a mywebapp
-    + [D] mywebapp
-    + [F] mywebapp/config.yml
-    + [D] mywebapp/views
-    + [D] mywebapp/views/layouts
-    + [F] mywebapp/views/layouts/main.tt
-    + [F] mywebapp/views/index.tt
-    + [D] mywebapp/environments
-    + [F] mywebapp/environments/production.yml
-    + [F] mywebapp/environments/development.yml
-    + [F] mywebapp/mywebapp.pm
-    + [F] mywebapp/mywebapp.pl
-    + [F] mywebapp/app.psgi
+    + mywebapp
+    + mywebapp/config.yml
+    + mywebapp/views
+    + mywebapp/views/layouts
+    + mywebapp/views/layouts/main.tt
+    + mywebapp/views/index.tt
+    + mywebapp/environments
+    + mywebapp/environments/production.yml
+    + mywebapp/environments/development.yml
+    + mywebapp/mywebapp.pm
+    + mywebapp/mywebapp.pl
 
 
 As you can see, it creates a directory named after the name of the app, along
 with a configuration file, a views directory (where your templates and layouts
 will live), an environments directory (where environment-specific settings
 live), a module containing the actual guts of your application, a script to
-start it, and an app.psgi file - this will only be of interest if you're running
-your web app via Plack/PSGI - more on that later.
+start it - or to run your web app via Plack/PSGI - more on that later.
 
 
 =head2 Declaring routes
@@ -171,9 +169,9 @@ any other route.
 
 All you need to do is set up the following route as the B<last> route:
 
-    any r('.*') => sub {
+    any qr{.*} => sub {
         status 'not_found';
-        template => 'special_404', { path => request->path };
+        template 'special_404', { path => request->path };
     };
 
 Then you can set up the template as such:
@@ -439,6 +437,37 @@ within its config file, for instance:
 This makes keeping your application's settings all in one place simple and easy
 - you shouldn't need to worry about implementing all that yourself :)
 
+=head2 Plack middlewares
+
+If you deploy with Plack and use some Plack middlewares, you can enable them
+directly from Dancer's configuration files.
+
+To enable middlewares in Dancer, you just have to set the plack_middlewares
+setting like the following:
+
+    set plack_middlewares => {
+        'SomeMiddleware' => [ qw(some options for somemiddleware) ],
+    };
+
+For instance, if you want to enable L<Plack::Middleware::Debug> in your Dancer
+application, all you have to do is to set C<plack_middlewares> like that:
+
+    set plack_middlewares => {
+        'Debug' => [ 'pannels' => [ qw(DBITrace Memory Timer) ]],
+    };
+
+Of course, you can also put this configuration into your config.yml file, or
+even in your enviuronment configuration files:
+
+    # environments/development.yml
+    ...
+    plack_middlewares:
+      Debug:
+        - pannels
+        -
+          - DBITrace
+          - Memory
+          - Timer
 
 =head2 Logging
 

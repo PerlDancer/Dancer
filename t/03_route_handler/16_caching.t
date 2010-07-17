@@ -1,7 +1,4 @@
-#!perl
-
 # testing caching mechanism
-
 use strict;
 use warnings;
 
@@ -9,8 +6,6 @@ use Test::More tests => 105, import => ['!pass'];
 use t::lib::TestUtils;
 
 use Dancer ':syntax';
-use Dancer::Config 'setting';
-
 setting route_cache => 1;
 
 {

@@ -7,6 +7,8 @@ use File::Basename 'basename', 'dirname';
 use File::Spec::Functions;
 use Getopt::Long;
 use Dancer::Renderer;
+use IO::Socket::INET;
+use IO::Select;
 use constant FILE => 1;
 
 # options
@@ -25,18 +27,24 @@ GetOptions(
 );
 
 # main
+my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+
 usage() and exit(0) if $help;
 usage() if not defined $name;
 usage() unless -d $path && -w $path;
 
-if ($name =~ /[^\w]/) {
-    warn "Error: Invalid application name.\n";
-    exit;
-}
+validate_app_name($name);
 
 my $DO_OVERWRITE_ALL = 0;
-my $DANCER_APP_DIR  = catfile($path, $name);
+my $DANCER_APP_DIR   = get_application_path($path, $name);
+my $DANCER_SCRIPT    = get_script_path($name);
+my ($LIB_FILE, $LIB_PATH) = get_lib_path($name);
+my $AUTO_RELOAD = eval "require Module::Refresh" ? 1 : 0;
 
+require Dancer;
+my $DANCER_VERSION   = $Dancer::VERSION;
+
+version_check();
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
@@ -59,9 +67,42 @@ ENDUSAGE
     exit 0;
 }
 
+sub validate_app_name {
+    my $name = shift;
+    if ($name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
+        warn "Error: Invalid application name.\n";
+        usage();
+    }
+}
+
+sub get_application_path {
+    my ($path, $app_name) = @_;
+    catdir($path, _dash_name($app_name));
+}
+
+sub get_lib_path {
+    my $name = shift;
+    my @lib_path = split('::', $name);
+    my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
+    $lib_path = join('/', @lib_path);
+    return ($lib_file, $lib_path);
+}
+
+sub get_script_path {
+    _dash_name(shift);
+}
+
+sub _dash_name {
+    my $name = shift;
+    $name =~ s/\:\:/-/g;
+    $name;
+}
+
 sub create_node($;$) {
     my ($node, $root) = @_;
     $root ||= '.';
+
+    my $templates = templates($name);
 
     while ( my ($path, $content) = each %$node ) {
         $path = catfile($root, $path);
@@ -77,7 +118,7 @@ sub create_node($;$) {
             my $file = basename($path);
             my $dir  = dirname($path);
             my $ex = ($file =~ s/^\+//); # look for '+' flag (executable)
-            my $template = templates($name)->{$file};
+            my $template = $templates->{$file};
 
             $path = catfile($dir, $file); # rebuild the path without the '+' flag
             write_file($path, $template, {appdir => File::Spec->rel2abs($DANCER_APP_DIR)});
@@ -86,47 +127,44 @@ sub create_node($;$) {
     }
 }
 
-sub app_tree($)  {
+sub app_tree($) {
     my ($appname) = @_;
 
-
     return {
-        "app.psgi"      => FILE,
-        "+$appname.pl"  => FILE,
-        "Makefile.PL"   => FILE,
-        lib => {
-            "$appname.pm"   => FILE,
-            $appname => { },
+        "+$DANCER_SCRIPT.pl" => FILE,
+        "Makefile.PL"        => FILE,
+        lib                  => {
+         $LIB_PATH => {
+            $LIB_FILE => FILE,}
         },
-        "config.yml"    => FILE,
-        "environments"  => {
+        "config.yml"         => FILE,
+        "environments"       => {
             "development.yml" => FILE,
             "production.yml"  => FILE,
         },
         "views" => {
-            "layouts" => {
-                "main.tt" => FILE,
-            },
+            "layouts"  => {"main.tt" => FILE,},
             "index.tt" => FILE,
         },
         "public" => {
-            "+dispatch.cgi" => FILE,
+            "+dispatch.cgi"  => FILE,
             "+dispatch.fcgi" => FILE,
-            "404.html" => FILE,
-            "500.html" => FILE,
-            "css" => {
+            "404.html"       => FILE,
+            "500.html"       => FILE,
+            "css"            => {
                 "style.css" => FILE,
                 "error.css" => FILE,
             },
-            "images" => { },
+            "images"      => {},
             "favicon.ico" => \&write_favicon,
         },
         "t" => {
-            "001_base.t" => FILE,
+            "001_base.t"        => FILE,
             "002_index_route.t" => FILE,
         },
     };
 }
+
 
 sub safe_mkdir {
     my ($dir) = @_;
@@ -143,8 +181,7 @@ sub write_file {
     my ($path, $template, $vars) = @_;
     die "no template found for $path" unless defined $template;
 
-    use Dancer ':syntax';
-    $vars->{dancer_version} = $Dancer::VERSION;
+    $vars->{dancer_version} = $DANCER_VERSION;
 
     # if file already exists, ask for confirmation
     if (-f $path && (not $DO_OVERWRITE_ALL)) {
@@ -208,41 +245,23 @@ WriteMakefile(
     clean               => { FILES => '$appname-*' },
 );
 ",
-
-'app.psgi'  =>
-
-"# PSGI application bootstraper for Dancer
-use Dancer;
-load_app '$appname';
-
-use Dancer::Config 'setting';
-setting apphandler  => 'PSGI';
-Dancer::Config->load;
-
-my \$handler = sub {
-    my \$env = shift;
-    my \$request = Dancer::Request->new(\$env);
-    Dancer->dance(\$request);
-};
-",
 'index.tt'  => '<h2>It Works!</h2>
 
 <p>
 I\'m in <code>[%appdir%]/views/index.tt</code>
 </p>
 ',
-
 'main.tt'   =>
     Dancer::Renderer->html_page($appname, '<% content %>'),
 
 "dispatch.cgi" =>
-"#!$^X
+"$PERL_INTERPRETER
 use Plack::Runner;
 Plack::Runner->run('[% appdir %]/app.psgi');
 ",
 
 "dispatch.fcgi" =>
-"#!$^X
+"$PERL_INTERPRETER
 use Plack::Handler::FCGI;
 
 my \$app = do('[% appdir %]/app.psgi');
@@ -250,15 +269,16 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 \$server->run(\$app);
 ",
 
-"$appname.pl" =>
+"$DANCER_SCRIPT.pl" =>
 
-"#!$^X
+"$PERL_INTERPRETER
 use Dancer;
+use lib ('lib');
 load_app '$appname';
 dance;
 ",
 
-"$appname.pm" =>
+"$LIB_FILE" =>
 
 "package $appname;
 use Dancer ':syntax';
@@ -296,7 +316,7 @@ h1 {
     color: #a5ec02;
 }
 
-#footer {
+footer {
     border-top: 1px solid #aba29c;
     margin-top: 2em;
     padding-top: 1em;
@@ -330,7 +350,7 @@ pre {
     padding-left: 1em;
 }
 
-#footer {
+footer {
     font-size: 10px;
 }
 
@@ -399,18 +419,18 @@ pre.error {
 
 'config.yml' =>
 
-'layout: "main"
-logger: "file"
+"layout: \"main\"
+logger: \"file\"
+appname: \"$name\"
 
-',
+",
 
 'development.yml' =>
-'log: "debug"
+"log: \"debug\"
 warnings: 1
 show_errors: 1
-auto_reload: 0
-
-',
+auto_reload: $AUTO_RELOAD
+",
 
 'production.yml' =>
 'log: "warning"
@@ -445,6 +465,73 @@ response_content_like [GET => '/'], qr/It Works.*I'm in.*index.tt/s,
 ",
 
     };
+}
+
+# LWP, File::Fetch and other high level interfaces are not avaiable to us in perl 5.8.5.
+
+sub send_http_request {
+    my $url = shift;
+    my ($host, $path);
+
+    if ($url =~ /https?:\/\/([^\/]+)(.*)/) {
+        ($host, $path) = ($1, $2);
+    }
+    else {
+        die "unknown url: $url";
+    }
+
+    my $timeout = 2;
+    my $latest_version;
+
+    my $sock = IO::Socket::INET->new(PeerAddr => $host, PeerPort => 'http(80)', Proto => 'tcp');
+    my $req = "GET $path HTTP/1.0\x0d\x0aHost: $host\x0d\x0a\x0d\x0a";
+
+    $sock->send( $req );
+    my $select = IO::Select->new( $sock );
+
+    my $resp;
+    while ( $select->can_read( $timeout ) ) {
+        $resp = '';
+        my $ret = $sock->sysread( $resp, 4096, length($resp) );
+        $select->remove( $sock );
+    }
+    my @headers = split /\n/, $resp;
+    my $status_line = shift @headers;
+
+    # redirection handling
+    if ($status_line =~ /HTTP\/.*30[12]/) {
+        for my $header (@headers) {
+            if ($header =~ /Location: (\S+).*$/) {
+                my $path = $1;
+                if ($path =~ /^http:/) {
+                    return send_http_request($path);
+                }
+                else {
+                    return send_http_request("http://${host}${path}");
+                }
+            }
+            last if not $header;
+        }
+    }
+    return $resp;
+}
+
+sub version_check {
+    my $latest_version = 0;
+    require Dancer;
+
+    my $resp = send_http_request('http://search.cpan.org/dist/Dancer/CHANGES');
+    if ($resp && $resp =~ m/Dancer (\d\.\d+)/) {
+        $latest_version = $1;
+    }
+
+    if ($latest_version > $DANCER_VERSION) {
+        print qq|
+The latest Dancer release is $latest_version, you are currently using $DANCER_VERSION.
+Please check http://search.cpan.org/dist/Dancer/ for updates.
+
+|;
+    }
 }
 
 =pod

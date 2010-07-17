@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More;
+use Test::More import => ['!pass'];
 
 BEGIN {
     use Dancer::ModuleLoader;
@@ -9,7 +9,7 @@ BEGIN {
     plan tests => 3;
 }
 
-use Dancer::Config 'setting';
+use Dancer;
 use Dancer::Request;
 use Dancer::Serializer;
 use Dancer::Serializer::JSON;
