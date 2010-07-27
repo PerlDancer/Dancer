@@ -1,16 +1,20 @@
 use strict;
 use warnings;
-use Test::More 'no_plan', import => ['!pass'];
+use Test::More import => ['!pass'];
 
 use t::lib::TestUtils;
 
 use Dancer ':syntax';
 use Dancer::Route; 
+
+# perl <= 5.8.x doesn't support named captures
+plan skip_all => 'Need perl >= 5.10' if $] < 5.010;
+
+my $route_regex = "(?<class> user | content | post )(?<action> delete | find )(?<id> \\d+ )";
+
 ok ( get( qr{
-	/ (?<class> user | content | post )
-	/ (?<action> delete | find )
-	/ (?<id> \d+ )
-	}x, sub { captures }
+    $route_regex
+  }x, sub { captures }
     ), 'first route set'
 );
 

@@ -790,7 +790,9 @@ Returns a fully-qualified URI for the given path:
 
 =head2 captures
 
-If there are named captures in the route Regexp, captures returns a reference to a copy of %+
+If there are named captures in the route Regexp, captures returns a reference to a copy of %+.
+
+Named captures are a feature of Perl 5.10, and are not supported in earlier versions.
 
     get qr{
 	/ (?<object> user   | ticket | comment )
