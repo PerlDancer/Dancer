@@ -230,6 +230,12 @@ following:
         ServerAlias myapp.example.com
         DocumentRoot /websites/myapp.example.com
 
+        <Directory /home/myapp/myapp>
+            AllowOverride None
+            Order allow,deny
+            Allow from all
+        </Directory>
+        
         <Location />
             SetHandler perl-script
             PerlHandler Plack::Handler::Apache2
