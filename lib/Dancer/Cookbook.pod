@@ -412,6 +412,13 @@ file, or within your code:
 
     layout 'main';
 
+You can control which layout to use (or whether to use a layout at all) for a
+specific request without altering the layout setting by passing an options
+hashref as the third param to the template keyword:
+
+    template 'index.tt', {}, { layout => undef };
+
+
 =head3 template and unicode
 
 If you use L<Plack> and have some unicode problem with your Dancer application,

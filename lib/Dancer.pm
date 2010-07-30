@@ -720,7 +720,15 @@ Tells the route handler to build a response with the current template engine:
     };
 
 The first parameter should be a template available in the views directory, the
-second one (optional) is a hashref of tokens to interpolate.
+second one (optional) is a hashref of tokens to interpolate, and the third
+(again optional) is a hashref of options.
+
+For example, to disable the layout for a specific request:
+
+    get '/' => sub {
+        template 'index.tt', {}, { layout => undef };
+    };
+
 
 =head2 to_dumper
 
