@@ -128,10 +128,23 @@ sub find_next_matching_route {
     return $next->find_next_matching_route($request);
 }
 
-# TODO  trap warnings if config ask for it
+# FIXME trap warnings if config ask for it
 sub execute {
     my ($self) = @_;
-    $self->code->();
+    if (Dancer::Config::setting('warnings')) {
+        my $warning;
+        $SIG{__WARN__} = sub { $warning = $_[0] };
+        $self->code->();
+        if ($warning) {
+            return Dancer::Error->new(
+                status => 500,
+                message => "Warning caught during route execution: $warning",
+                )->render;
+        }
+    }
+    else {
+        $self->code->();
+    }
 }
 
 sub _init_prefix {
