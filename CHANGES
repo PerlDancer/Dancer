@@ -9,6 +9,9 @@ Dancer
     [François Charlier]
     * fix for GH#76 and GH#88
 
+    [David Precious]
+    * Add Dancer::Plugins POD, describing useful plugins
+
 Dancer 1.1806_01
 
     [ sebastian de castelberg ]
