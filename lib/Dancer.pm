@@ -95,7 +95,7 @@ $VERSION   = '1.1805';
 
 sub ajax         { Dancer::Route::Registry->universal_add('ajax', @_) }
 sub any          { Dancer::Route::Registry->universal_add('any', @_) }
-sub before       { Dancer::Route->before_filter(@_) }
+sub before       { Dancer::Route::Registry->before_filter(@_) }
 sub captures   { Dancer::SharedData->request->params->{captures} }
 sub cookies      { Dancer::Cookies->cookies }
 sub config       { Dancer::Config::settings() }
