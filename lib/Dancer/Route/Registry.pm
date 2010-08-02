@@ -15,6 +15,11 @@ sub init {
     $self->{before_filters} = [];
 }
 
+sub before_filter {
+    my ($class, $filter) = @_;
+    Dancer::App->current->registry->add_before_filter($filter);
+}
+
 # replace any ':foo' by '(.+)' and stores all the named
 # matches defined in $REG->{route_params}{$route}
 sub add_before_filter {
