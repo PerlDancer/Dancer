@@ -1,6 +1,17 @@
-Dancer 1.xxxx (devel)
+Dancer
 
-	[ sebastian de castelberg ]
+    [James Aitken]
+    * fix issues GH #84 #86 and #87 (failing tests on < 5.10 due to regex with named captures)
+
+    [franck cuny]
+    * update cookbook
+
+    [François Charlier]
+    * fix for GH#76 and GH#88
+
+Dancer 1.1806_01
+
+    [ sebastian de castelberg ]
     * Support for path_info() in Dancer::Request so it's possible to
       mount an application under a directory.
 
@@ -10,15 +21,15 @@ Dancer 1.xxxx (devel)
     * Fix for GH#72
       New keyword 'load_plugin' for loading a plugin in the current namespace.
       Plugins can be used anywhere thanks to that method.
-	* Fix for issue #77
-	  Passing and caching works well together again.
+    * Fix for issue #77
+      Passing and caching works well together again.
     * Applied miyagawa's patch for droping the app.psgi file. Refactoring of
       Dancer::Handler::PSGI and friends.
     * Applied LoonyPandora's patch for checking Dancer's VERSION when running
       script/dancer. Changed it a bit so it can check against CPAN rather than
       GitHub.
-	* Documentation update: r('') is now DEPRECATED, the method triggers a warning
-	  when called and will be removed in the next stable release (1.2).
+    * Documentation update: r('') is now DEPRECATED, the method triggers a warning
+      when called and will be removed in the next stable release (1.2).
     * Transparent wrapping of Plack middlewares in Dancer's configuration.
       It's possible to enable/disable middlewares right from Dancer's config files.
       Thanks to Tatsuiko Miyagawa and Franck Cuny for their help.
@@ -30,6 +41,19 @@ Dancer 1.xxxx (devel)
     [ Marc Chantreux ]
     * Support for regexp objects in route definition
     * Support for named captures (keyword 'captures' added to Dancer's syntax).
+
+
+Dancer 1.1805
+    [ Alexis Sukrieh ]
+    * Fix for RT#56239
+      logger calls are better traced
+    * Fix for GH#72
+      New keyword 'load_plugin' for loading a plugin in the current namespace.
+      Plugins can be used anywhere thanks to that method.
+    
+    [ Minty ]
+    * Update Introduction pod with (required) -a dancer opt (Murray, 5 hours ago)
+    * Bump HTTP::Body dependency to 1.07 (Murray, 6 hours ago)
 
 Dancer 1.804
     [ sebastian de castelberg ]

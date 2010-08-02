@@ -30,7 +30,7 @@ use File::Spec;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.1805';
+$VERSION   = '1.1806_01';
 @EXPORT    = qw(
   ajax
   any
@@ -162,6 +162,7 @@ sub var      { Dancer::SharedData->var(@_) }
 sub vars     { Dancer::SharedData->vars }
 sub warning  { goto &Dancer::Logger::warning }
 
+# FIXME handle previous usage of load_app with multiple app names
 sub load_app {
     my ($app_name, %options) = @_;
     Dancer::Logger::core("loading application $app_name");
@@ -728,7 +729,15 @@ Tells the route handler to build a response with the current template engine:
     };
 
 The first parameter should be a template available in the views directory, the
-second one (optional) is a hashref of tokens to interpolate.
+second one (optional) is a hashref of tokens to interpolate, and the third
+(again optional) is a hashref of options.
+
+For example, to disable the layout for a specific request:
+
+    get '/' => sub {
+        template 'index.tt', {}, { layout => undef };
+    };
+
 
 =head2 to_dumper
 
@@ -798,7 +807,9 @@ Returns a fully-qualified URI for the given path:
 
 =head2 captures
 
-If there are named captures in the route Regexp, captures returns a reference to a copy of %+
+If there are named captures in the route Regexp, captures returns a reference to a copy of %+.
+
+Named captures are a feature of Perl 5.10, and are not supported in earlier versions.
 
     get qr{
 	/ (?<object> user   | ticket | comment )

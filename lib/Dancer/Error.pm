@@ -33,7 +33,7 @@ sub backtrace {
     my ($self) = @_;
 
     $self->{message} ||= "";
-    my $message = "<pre class=\"error\">" . $self->{message} . "</pre>";
+    my $message = qq|<pre class="error">| . _html_encode($self->{message}) . "</pre>";
 
     # the default perl warning/error pattern
     my ($file, $line) = ($message =~ /at (\S+) line (\d+)/);
@@ -54,9 +54,9 @@ sub backtrace {
     my $backtrace = $message;
 
     $backtrace
-      .= "<div class=\"title\">" . "$file around line $line" . "</div>";
+      .= qq|<div class="title">| . "$file around line $line" . "</div>";
 
-    $backtrace .= "<pre class=\"content\">";
+    $backtrace .= qq|<pre class="content">|;
 
     $line--;
     my $start = (($line - 3) >= 0)             ? ($line - 3) : 0;
@@ -64,20 +64,21 @@ sub backtrace {
 
     for (my $l = $start; $l <= $stop; $l++) {
         chomp $lines[$l];
+        
         if ($l == $line) {
             $backtrace
-              .= "<span class=\"nu\">"
+              .= qq|<span class="nu">|
               . tabulate($l + 1, $stop + 1)
-              . "</span> <font color=\"red\">"
-              . $lines[$l]
-              . "</font>\n";
+              . qq|</span> <span style="color: red;">|
+              . _html_encode($lines[$l])
+              . "</span>\n";
         }
         else {
             $backtrace
-              .= "<span class=\"nu\">"
+              .= qq|<span class="nu">|
               . tabulate($l + 1, $stop + 1)
               . "</span> "
-              . $lines[$l] . "\n";
+              . _html_encode($lines[$l]) . "\n";
         }
     }
     $backtrace .= "</pre>";
@@ -107,7 +108,7 @@ sub dumper {
     my $dd = Data::Dumper->new([\%data]);
     $dd->Terse(1)->Quotekeys(0)->Indent(1);
     my $content = $dd->Dump();
-    $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =>}g;
+    $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =&gt;}g;
     if ($censored) {
         $content .= "\n\nNote: Values of $censored sensitive-looking keys hidden\n";
     }
@@ -136,6 +137,19 @@ sub _censor {
     return $censored;
 }
 
+# Replaces the entities that are illegal in (X)HTML.
+sub _html_encode {
+    my $value = shift;
+
+    $value =~ s/&/&amp;/g;
+    $value =~ s/</&lt;/g;
+    $value =~ s/>/&gt;/g;
+    $value =~ s/'/&#39;/g;  
+    $value =~ s/"/&quot;/g;
+
+    return $value;
+}
+
 sub render {
     my $self = shift;
     return Dancer::Response->new(
@@ -156,15 +170,15 @@ sub environment {
     $r_env = $request->env if defined $request;
 
     my $env =
-        "<div class=\"title\">Environment</div><pre class=\"content\">"
+        qq|<div class="title">Environment</div><pre class="content">|
       . dumper($r_env)
       . "</pre>";
     my $settings =
-        "<div class=\"title\">Settings</div><pre class=\"content\">"
+        qq|<div class="title">Settings</div><pre class="content">|
       . dumper(Dancer::Config->settings)
       . "</pre>";
     my $source =
-        "<div class=\"title\">Stack</div><pre class=\"content\">"
+        qq|<div class="title">Stack</div><pre class="content">|
       . $self->get_caller
       . "</pre>";
     my $session = "";
@@ -297,6 +311,11 @@ Creates a strack trace of callers.
 An internal method that tries to censor out content which should be protected.
 
 C<dumper> calls this method to censor things like passwords and such.
+
+=head2 _html_encode
+
+Internal method to encode entities that are illegal in (X)HTML. We output as
+UTF-8, so no need to encode all non-ASCII characters or use a module.
 
 =head1 AUTHOR
 

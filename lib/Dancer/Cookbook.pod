@@ -171,7 +171,7 @@ All you need to do is set up the following route as the B<last> route:
 
     any qr{.*} => sub {
         status 'not_found';
-        template => 'special_404', { path => request->path };
+        template 'special_404', { path => request->path };
     };
 
 Then you can set up the template as such:
@@ -200,6 +200,37 @@ Then, if you request C</foo/bar>, Dancer will look in the views dir for
 C</foo/bar.tt>.
 
 
+=head2 Using the prefix feature to split your application
+
+For better maintainability, you may want to separate some of your application
+components to different packages. Let's say we have a simple web app with an
+admin section, and want to maintain this in a different package:
+
+    package myapp;
+    use Dancer ':syntax';
+    use myapp::admin;
+
+    prefix undef;
+
+    get '/' => sub {...};
+
+    1;
+
+    package myapp::admin;
+    use Dancer ':syntax';
+
+    prefix 'admin';
+
+    get '/' => sub {...};
+
+    1;
+
+The following routes will be generated for us:
+
+    - get /
+    - get /admin/
+    - head /
+    - head /admin/
 
 =head2 Handling sessions
 
@@ -381,6 +412,24 @@ file, or within your code:
 
     layout 'main';
 
+You can control which layout to use (or whether to use a layout at all) for a
+specific request without altering the layout setting by passing an options
+hashref as the third param to the template keyword:
+
+    template 'index.tt', {}, { layout => undef };
+
+
+=head3 template and unicode
+
+If you use L<Plack> and have some unicode problem with your Dancer application,
+don't forget to check if you have set your template engine to use unicode, and
+set the default charset to utf-8. So, if you are using template toolkit, your
+config.yaml will look like this:
+
+    charset: utf-8
+    engines:
+      template_toolkit:
+        ENCODING: utf8
 
 =head2 Configuration and environments
 
@@ -453,17 +502,17 @@ For instance, if you want to enable L<Plack::Middleware::Debug> in your Dancer
 application, all you have to do is to set C<plack_middlewares> like that:
 
     set plack_middlewares => {
-        'Debug' => [ 'pannels' => [ qw(DBITrace Memory Timer) ]],
+        'Debug' => [ 'panels' => [ qw(DBITrace Memory Timer) ]],
     };
 
 Of course, you can also put this configuration into your config.yml file, or
-even in your enviuronment configuration files:
+even in your environment configuration files:
 
     # environments/development.yml
     ...
     plack_middlewares:
       Debug:
-        - pannels
+        - panels
         -
           - DBITrace
           - Memory

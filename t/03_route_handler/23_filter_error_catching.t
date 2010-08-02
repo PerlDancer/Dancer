@@ -10,7 +10,7 @@ use Dancer::Test;
 set show_errors => true;
 
 {
-    before sub { 
+    before sub {
         FooBar->send_error; # FAIL
     };
 
@@ -20,4 +20,4 @@ set show_errors => true;
 }
 
 response_status_is [GET => '/'], 500;
-response_content_like [GET => '/'], qr/FooBar->send_error/;
+response_content_like [GET => '/'], qr/FooBar-&gt;send_error/;

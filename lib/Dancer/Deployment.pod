@@ -199,6 +199,22 @@ You can use Lighttp's mod_proxy:
 
 This configuration will proxy all request to the B</application> path to the path B</> on localhost:3000.
 
+=head4 Using Nginx
+
+with Nginx:
+
+    upstream backend {
+        server 10.0.0.1:8080;
+        server 10.0.0.2:8080;
+        ...
+    }
+
+    server {
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+
 =head2 Running from Apache
 
 You can run your Dancer app from Apache using the following examples:
@@ -214,6 +230,12 @@ following:
         ServerAlias myapp.example.com
         DocumentRoot /websites/myapp.example.com
 
+        <Directory /home/myapp/myapp>
+            AllowOverride None
+            Order allow,deny
+            Allow from all
+        </Directory>
+        
         <Location />
             SetHandler perl-script
             PerlHandler Plack::Handler::Apache2
@@ -282,3 +304,39 @@ under the same base directory/virtualhost.
 Of course, if your Apache configuration allows that, you can put the
 RewriteRules in a .htaccess file directly within the application's directory,
 which lets you add a new application without changing the Apache configuration.
+
+
+=head3 Plack::Builder with Starman|Twiggy|...
+
+You can use Plack::Builder to mount multiple Dancer's application and run
+a L<Plack> webserver like L<Starman> in front.
+
+Start by creating a simple app.psgi file:
+
+    use Dancer;
+    use Plack::Builder;
+    load_app 'MyApp1', 'MyApp2';
+
+    use Dancer::Config 'setting';
+    setting apphandler => 'PSGI';
+    Dancer::Config->load;
+
+    my $app1 = sub {
+        my $env = shift;
+        my $request = Dancer::Request->new( $env );
+        Dancer->dance( $request );
+    };
+    my $app2 = sub {
+        my $env = shift;
+        my $request = Dancer::Request->new( $env );
+        Dancer->dance( $request );
+    };
+
+    builder {
+        mount "/app1" => builder {$app1};
+        mount "/app2" => builder {$app2};
+    };
+
+and now use L<Starman>
+
+    plackup -a app.psgi -s Starman
