@@ -12,7 +12,6 @@ Dancer::Route->attributes(qw(
     app         
     method 
     pattern     
-    regexp
     prefix
     code
     prev
@@ -61,7 +60,7 @@ sub match {
     return undef unless @values;
 
     # named tokens
-    my @tokens = @{ $self->{_params} };
+    my @tokens = @{ $self->{_params} || [] };
     if (@tokens) {
         for (my $i = 0; $i < @tokens; $i++) {
             $params{$tokens[$i]} = $values[$i];
@@ -137,9 +136,9 @@ sub execute {
 sub _init_prefix {
     my ($self, $prefix) = @_;
 
-    if ($self->regexp) {
-        if ($self->regexp !~ /^$prefix/) {
-            $self->{regexp} = $prefix . $self->regexp;
+    if ($self->is_regexp) {
+        if ($self->pattern !~ /^$prefix/) {
+            $self->{pattern} = $prefix . $self->pattern;
         }
     }
     else {
@@ -153,11 +152,15 @@ sub equals {
     return $self->pattern eq $route->pattern; # FIXME handle regexp
 }
 
+sub is_regexp {
+    $_[0]->pattern && (ref($_[0]->pattern) eq 'Regexp')
+}
+
 sub _build_regexp {
     my ($self) = @_;
     
-    if ($self->regexp) {
-        $self->{_compiled_regexp} = $self->regexp;
+    if ($self->is_regexp) {
+        $self->{_compiled_regexp} = $self->pattern;
         $self->{_should_capture} = 1;
     }
     else {
