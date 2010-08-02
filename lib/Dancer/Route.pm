@@ -15,6 +15,7 @@ Dancer::Route->attributes(qw(
     prefix
     code
     prev
+    regexp
     next
     options
     match_data
@@ -137,8 +138,9 @@ sub _init_prefix {
     my ($self, $prefix) = @_;
 
     if ($self->is_regexp) {
-        if ($self->pattern !~ /^$prefix/) {
-            $self->{pattern} = $prefix . $self->pattern;
+        my $regexp = $self->regexp || $self->pattern;
+        if ($regexp !~ /^$prefix/) {
+            $self->{pattern} = $prefix . $self->regexp;
         }
     }
     else {
@@ -149,18 +151,21 @@ sub _init_prefix {
 
 sub equals {
     my ($self, $route) = @_;
-    return $self->pattern eq $route->pattern; # FIXME handle regexp
+    # TODO remove this hack when r() is deprecated
+    my $r1 = $self->regexp || $self->pattern;
+    my $r2 = $route->regexp || $route->pattern;
+    return $r1 eq $r2;
 }
 
 sub is_regexp {
-    $_[0]->pattern && (ref($_[0]->pattern) eq 'Regexp')
+    ($_[0]->pattern && (ref($_[0]->pattern) eq 'Regexp')) || $_[0]->regexp;
 }
 
 sub _build_regexp {
     my ($self) = @_;
     
     if ($self->is_regexp) {
-        $self->{_compiled_regexp} = $self->pattern;
+        $self->{_compiled_regexp} = $self->regexp || $self->pattern;
         $self->{_should_capture} = 1;
     }
     else {
