@@ -128,7 +128,6 @@ sub find_next_matching_route {
     return $next->find_next_matching_route($request);
 }
 
-# FIXME trap warnings if config ask for it
 sub execute {
     my ($self) = @_;
     if (Dancer::Config::setting('warnings')) {
