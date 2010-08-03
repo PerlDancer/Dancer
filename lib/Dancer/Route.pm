@@ -89,6 +89,8 @@ sub has_options {
 
 sub check_options {
     my ($self) = @_;
+    return 1 unless defined $self->options;
+
     for my $opt (keys %{ $self->options }) {
         die "Not a valid option for route matching: `$opt'"
             if not ( 
