@@ -63,7 +63,6 @@ sub find_route_through_apps {
 
 # instance
 
-# FIXME should handle options
 # FIXME should handle is_ajax
 # FIXME should handle route cache
 sub find_route {
@@ -74,6 +73,7 @@ sub find_route {
     for my $r (@routes) {
         my $match = $r->match($request);
         if ($match) {
+            next if $r->has_options && (not $r->validate_options($request));
             $r->match_data($match);
             return $r;
         }
