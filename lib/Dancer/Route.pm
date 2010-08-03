@@ -6,6 +6,7 @@ use base 'Dancer::Object';
 
 use Dancer::App;
 use Dancer::Config 'setting';
+use Dancer::Request;
 use Dancer::Response;
 
 Dancer::Route->attributes(qw(
@@ -21,6 +22,10 @@ Dancer::Route->attributes(qw(
     match_data
 ));
 
+# supported options and aliases
+my @_supported_options = Dancer::Request->get_attributes();
+my %_options_aliases   = (agent => 'user_agent');
+
 sub init {
     my ($self) = @_;
     $self->{'_compiled_regexp'} = undef;
@@ -29,6 +34,7 @@ sub init {
         die "cannot create Dancer::Route without a pattern";
     }
 
+    $self->check_options();
     $self->app(Dancer::App->current);
     $self->prefix(Dancer::App->current->prefix);
     $self->_init_prefix() if $self->prefix;
@@ -74,6 +80,33 @@ sub match {
     }
     
     return {};
+}
+
+sub has_options {
+    my ($self) = @_;
+    keys %{ $self->options } ? 1 : 0;
+}
+
+sub check_options {
+    my ($self) = @_;
+    for my $opt (keys %{ $self->options }) {
+        die "Not a valid option for route matching: `$opt'"
+            if not ( 
+                (grep /^$opt$/, @_supported_options) or 
+                (grep /^$opt$/, keys(%_options_aliases)) 
+            );
+    }
+    return 1;
+}
+
+sub validate_options {
+    my ($self, $request) = @_;
+
+    while (my ($option, $value) = each %{ $self->options }) {
+        $option = $_options_aliases{$option} if exists $_options_aliases{$option};
+        return 0 if (not $request->$option) || ($request->$option !~ $value);
+    }
+    return 1;
 }
 
 sub run {
