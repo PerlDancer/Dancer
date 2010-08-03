@@ -7,6 +7,12 @@ use Dancer ':syntax';
 use Dancer::Logger;
 use File::Temp qw/tempdir/;
 
+# mimic PSGI env
+$ENV{SERVERNAME} = 'localhost';
+$ENV{HTTP_HOST} = 'localhost';
+$ENV{SERVER_PORT} = 80;
+$ENV{'psgi.url_scheme'} = 'http';
+
 my $dir = tempdir(CLEANUP => 1);
 set appdir => $dir;
 Dancer::Logger->init('File');
@@ -33,8 +39,6 @@ is($res->{content}, "home",
 
 get '/redirect' => sub { header 'X-Foo' => 'foo'; redirect '/'; };
 
-$ENV{HTTP_HOST} = 'localhost';
-$ENV{'psgi.url_scheme'} = 'http';
 $res = get_response_for_request(GET => '/redirect');
 my %headers = @{$res->{headers}};
 is $headers{'X-Foo'},    'foo', 'header x-foo is set';
