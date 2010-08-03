@@ -94,9 +94,9 @@ $VERSION   = '1.1806_01';
 # Dancer's syntax
 
 sub ajax         { Dancer::Route::Registry->universal_add('ajax', @_) }
-sub any          { Dancer::Route::Registry->universal_add('any', @_) }
+sub any          { Dancer::Route::Registry->any_add(@_) }
 sub before       { Dancer::Route::Registry->before_filter(@_) }
-sub captures   { Dancer::SharedData->request->params->{captures} }
+sub captures     { Dancer::SharedData->request->params->{captures} }
 sub cookies      { Dancer::Cookies->cookies }
 sub config       { Dancer::Config::settings() }
 sub content_type { Dancer::Response::content_type(@_) }
