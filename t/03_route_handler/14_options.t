@@ -4,7 +4,7 @@ use warnings;
 use Test::More import => ['!pass'];
 use Dancer::Test;
 
-plan tests => 17;
+plan tests => 26;
 use Dancer ':syntax';
 use Dancer::Route;
 
@@ -51,13 +51,6 @@ foreach my $test (@tests) {
     $ENV{HTTP_USER_AGENT} = $test->{agent} || undef;
     my $req = [$test->{method} => $test->{path}];
     
-    if ($test->{agent}) {
-        diag "testing route ".join(" => ", @$req)." with agent '".$test->{agent}."'";
-    }
-    else {
-        diag "testing route ".join(" => ", @$req)." without agent";
-    }
-
     route_exists $req;
     response_exists $req;
     response_content_is $req, $test->{expected};
