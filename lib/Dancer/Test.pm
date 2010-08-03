@@ -33,6 +33,13 @@ use vars '@EXPORT';
 
 sub import {
     my ($class, %options) = @_;
+
+    # mimic PSGI env
+    $ENV{SERVERNAME} = 'localhost';
+    $ENV{HTTP_HOST} = 'localhost';
+    $ENV{SERVER_PORT} = 80;
+    $ENV{'psgi.url_scheme'} = 'http';
+
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT );
 
