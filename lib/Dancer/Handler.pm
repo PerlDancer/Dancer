@@ -55,7 +55,9 @@ sub handle_request {
     # read cookies from client
     Dancer::Cookies->init;
 
-    # FIXME auto_reload feature to implement somewhere appropriate
+    if (Dancer::Config::setting('auto_reload')) {
+        Dancer::App->reload_apps;
+    }
 
     my $response;
     eval {

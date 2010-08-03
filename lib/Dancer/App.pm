@@ -5,6 +5,7 @@ use warnings;
 use base 'Dancer::Object';
 
 use Dancer::Config;
+use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
 
 Dancer::App->attributes(qw(name prefix registry settings));
@@ -18,6 +19,37 @@ sub set_running_app {
     my $app = Dancer::App->get($name);
     $app = Dancer::App->new(name => $name) unless defined $app;
     Dancer::App->current($app);
+}
+
+sub reload_apps {
+    my ($class) = @_;
+
+    if (Dancer::ModuleLoader->load('Module::Refresh')) {
+        
+        # save the current state
+        my $orig_apps = $_apps;
+        
+        # purge all applications loaded
+        $_apps = {};
+
+        # refresh modules
+        Module::Refresh->refresh;
+        
+        # apply modifications
+        my $new_apps = $_apps;
+        while (my ($name, $app) = each %$orig_apps) {
+            $app->merge_registries($app->registry, $new_apps->{$name}->registry)
+                if exists($new_apps->{$name});
+        }
+        # adding new apps
+        while (my ($name, $app) = each %$new_apps) {
+            $_apps->{$name} = $app if not exists $_apps->{$name};
+        }
+    }
+    else {
+        warn "Module::Refresh is not installed, "
+          . "install this module or unset 'auto_reload' in your config file";
+    }
 }
 
 sub find_route_through_apps {
@@ -74,6 +106,12 @@ sub init_registry {
             }
         );
     }
+}
+
+sub merge_registries {
+    my ($self, $orig, $new) = @_;
+    my $merge = Dancer::Route::Registry->merge($orig, $new);
+    $self->registry($merge);
 }
 
 # singleton that saves the current active Dancer::App object
