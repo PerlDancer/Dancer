@@ -20,8 +20,10 @@ use vars '@EXPORT';
 
     response_exists
     response_doesnt_exist
+
     response_status_is
     response_status_isnt
+    
     response_content_is
     response_content_isnt
     response_content_is_deeply
@@ -29,6 +31,8 @@ use vars '@EXPORT';
     response_content_unlike
 
     response_is_file
+
+    response_headers_are_deeply
 );
 
 sub import {
@@ -152,6 +156,16 @@ sub response_is_file {
     my $response = _get_file_response($req);
     ok(defined($response), $test_name);
 }
+
+sub response_headers_are_deeply {
+    my ($req, $expected, $test_name) = @_;
+    $test_name ||= "headers are as expected for @$req";
+
+    my $response = _get_response($req);
+    is_deeply($response->{headers}, $expected, $test_name);
+}
+
+# private
 
 sub _get_response {
     my ($req) = @_;
@@ -311,6 +325,11 @@ given.
     response_content_unlike [GET => '/'], qr/Page not found/, 
         "response content looks good for GET /";
 
+=head2 response_headers_are_deeply([$method, $path], $expected, $test_name)
+
+Asserts that the response headers data structure equals the one given.
+
+    response_headers_are_deeply [GET => '/'], [ 'X-Powered-By' => 'Dancer 1.150' ];
 
 =head1 LICENSE
 
