@@ -73,6 +73,25 @@ sub register_route {
 }
 
 # sugar for Dancer.pm
+# class, any, ARRAY(0x9864818), '/path', CODE(0x990ac88)
+# or
+# class, any, '/path', CODE(0x990ac88)
+sub any_add {
+    my ($class, $pattern, @rest) = @_;
+
+    my @methods = qw(get post put delete options);
+
+    if (ref($pattern) eq 'ARRAY') {
+        @methods = @$pattern;
+        $pattern = shift @rest;
+    }
+
+    die "Syntax error, methods should be provided as an ARRAY ref"
+        if grep /^$pattern$/, @methods;
+
+    $class->universal_add($_, $pattern, @rest) for @methods;
+}
+
 sub universal_add {
     my ($class, $method, $pattern, @rest) = @_;
 
@@ -87,15 +106,7 @@ sub universal_add {
         $code = $rest[1];
     }
 
-    if ($method eq 'any') {
-        $class->universal_add('get', $pattern, @rest);
-        $class->universal_add('post', $pattern, @rest);
-        $class->universal_add('put', $pattern, @rest);
-        $class->universal_add('delete', $pattern, @rest);
-        $class->universal_add('options', $pattern, @rest);
-        return 1;
-    }
-    elsif ($method eq 'ajax') {
+    if ($method eq 'ajax') {
         # FIXME conditions on request->is_ajax
         $class->universal_add('post', $pattern, @rest);
     }
