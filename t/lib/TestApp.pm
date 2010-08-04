@@ -40,7 +40,8 @@ get '/set_session/*' => sub {
 };
 
 get '/read_session' => sub {
-    "name='".session('name')."'"
+    my $name = session('name') || '';
+    "name='$name'"
 };
 
 put '/jsondata' => sub {
