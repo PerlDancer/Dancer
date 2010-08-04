@@ -33,7 +33,6 @@ lib/Dancer/Request.pm
 lib/Dancer/Request/Upload.pm
 lib/Dancer/Response.pm
 lib/Dancer/Route.pm
-lib/Dancer/Route/Builder.pm
 lib/Dancer/Route/Cache.pm
 lib/Dancer/Route/Registry.pm
 lib/Dancer/Serializer.pm
