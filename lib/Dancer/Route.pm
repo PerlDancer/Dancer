@@ -49,6 +49,13 @@ sub set_previous {
     $self->prev->{'next'} = $self;
 }
 
+sub save_match_data {
+    my ($self, $request, $match_data) = @_;
+    $self->match_data($match_data);
+    $request->_set_route_params($match_data);
+    return $match_data;
+}
+
 # Does the route match the request
 sub match {
     my ($self, $request) = @_;
@@ -67,7 +74,7 @@ sub match {
     # no warnings is for perl < 5.10
     if ( my %captures = do { no warnings; %+ } ) {
         Dancer::Logger::core("  --> captures are: ".join(", ", keys(%captures))) if keys %captures;
-	    return \%captures;
+	    return $self->save_match_data($request, \%captures);
     }
 
     return undef unless @values;
@@ -80,14 +87,14 @@ sub match {
         for (my $i = 0; $i < @tokens; $i++) {
             $params{$tokens[$i]} = $values[$i];
         }
-        return \%params;
+	    return $self->save_match_data($request, \%params);
     }
     
     elsif ($self->{_should_capture}) {
-        return {splat => \@values};
+        return $self->save_match_data($request, {splat => \@values});
     }
     
-    return {};
+    return $self->save_match_data($request, {});
 }
 
 sub has_options {
@@ -163,12 +170,7 @@ sub find_next_matching_route {
     my $next = $self->next;
     return undef unless $next;
 
-    my $match;
-    if ($match = $next->match($request)) {
-       $next->match_data($match);
-       $request->_set_route_params($match);
-       return $next;
-    }
+    return $next if $next->match($request);
     return $next->find_next_matching_route($request);
 }
 
