@@ -28,6 +28,7 @@ lib/Dancer/Logger/File.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
 lib/Dancer/Plugin.pm
+lib/Dancer/Plugin/Ajax.pm
 lib/Dancer/Renderer.pm
 lib/Dancer/Request.pm
 lib/Dancer/Request/Upload.pm
