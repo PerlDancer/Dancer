@@ -126,7 +126,7 @@ sub params     { Dancer::SharedData->request->params(@_) }
 sub pass       { Dancer::Response->pass }
 sub path       { Dancer::FileUtils::path(@_) }
 sub post       { Dancer::Route::Registry->universal_add('post', @_) }
-sub prefix     { Dancer::Route->prefix(@_) }
+sub prefix     { Dancer::App->current->set_prefix(@_) }
 sub del        { Dancer::Route::Registry->universal_add('delete', @_) }
 sub options    { Dancer::Route::Registry->universal_add('options', @_) }
 sub put        { Dancer::Route::Registry->universal_add('put', @_) }

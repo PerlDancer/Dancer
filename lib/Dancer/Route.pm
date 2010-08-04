@@ -119,6 +119,7 @@ sub run {
     my $response = Dancer::Response->current;
     
     if ($response->{pass}) {
+
         if ($self->next) {
             my $next_route = $self->find_next_matching_route($request);
             return $next_route->run($request);
@@ -182,12 +183,13 @@ sub execute {
 }
 
 sub _init_prefix {
-    my ($self, $prefix) = @_;
+    my ($self) = @_;
+    my $prefix = $self->prefix;
 
     if ($self->is_regexp) {
         my $regexp = $self->regexp || $self->pattern;
         if ($regexp !~ /^$prefix/) {
-            $self->{pattern} = $prefix . $self->regexp;
+            $self->{pattern} = qr{${prefix}${regexp}};
         }
     }
     else {

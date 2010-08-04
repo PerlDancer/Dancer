@@ -8,7 +8,7 @@ use Dancer::Test;
 use Dancer::Route;
 
 eval { prefix 'say' };
-like $@, qr/not a valid prefix/i, 'prefix must start with a /';
+like $@, qr/not a valid prefix/, 'prefix must start with a /';
 
 ok( prefix '/say', 'prefix defined' );
 
@@ -36,7 +36,7 @@ ok( any( '/any' => sub {"any"} ), 'route any /any defined' );
 
 ok(
     get(
-        { regexp => '/_(.*)' } => sub {
+        qr{/_(.*)} => sub {
             "underscore: " . params->{splat}[0];
         }
     ),
@@ -54,7 +54,7 @@ ok(
 );
 
 
-ok( prefix undef );
+ok( prefix(undef), "undef prefix" );
 
 ok(
     get(

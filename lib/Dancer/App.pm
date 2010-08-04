@@ -21,6 +21,14 @@ sub set_running_app {
     Dancer::App->current($app);
 }
 
+sub set_prefix {
+    my ($self, $prefix) = @_;
+    die "not a valid prefix: `$prefix', must start with a /" 
+        if defined($prefix) && $prefix !~ /^\//;
+    Dancer::App->current->prefix($prefix);
+    return 1; # prefix may have been set to undef
+}
+
 sub reload_apps {
     my ($class) = @_;
 
@@ -72,6 +80,7 @@ sub find_route {
 
     for my $r (@routes) {
         my $match = $r->match($request);
+
         if ($match) {
             next if $r->has_options && (not $r->validate_options($request));
             $r->match_data($match);
