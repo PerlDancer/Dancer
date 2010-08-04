@@ -16,8 +16,7 @@ register 'ajax' => sub {
         my $layout = setting('layout');
             
         # must be an XMLHttpRequest
-        if ( (not defined request->header('X-Requested-With')) ||
-             (request->header('X-Requested-With') ne 'XMLHttpRequest')) {
+        if (not request->is_ajax) {
             pass and return 0;
         }
     
