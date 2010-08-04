@@ -55,7 +55,6 @@ sub save_match_data {
     $request->_set_route_params($match_data);
 
     use Data::Dumper;
-    warn "saved data: ".Dumper($match_data);
     return $match_data;
 }
 
