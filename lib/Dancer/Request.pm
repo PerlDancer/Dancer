@@ -71,6 +71,11 @@ sub new {
     return $self;
 }
 
+sub to_string {
+    my ($self) = @_;
+    return "[#".$self->id."] ".$self->method." ".$self->path;
+}
+
 # helper for building a request object by hand
 # with forced method, path and params.
 sub new_for_request {

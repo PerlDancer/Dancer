@@ -17,11 +17,11 @@ ok(get('/' => sub {
     return 'index';
 }), 'index route is defined');
 
-my $path = '/somewhere';
-my $request = [ GET => $path ];
-
 route_exists [GET => '/'];
 response_exists [GET => '/'];
+
+my $path = '/somewhere';
+my $request = [ GET => $path ];
 
 route_doesnt_exist $request, 
     "there is no route handler for $path...";

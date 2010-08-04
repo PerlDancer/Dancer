@@ -107,11 +107,6 @@ sub universal_add {
         $code = $rest[1];
     }
 
-    if ($method eq 'ajax') {
-        # FIXME conditions on request->is_ajax
-        return $self->universal_add('post', $pattern, @rest);
-    }
-
     my %route_args = (
         method => $method,
         code   => $code,

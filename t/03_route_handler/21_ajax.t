@@ -33,13 +33,16 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         use Dancer;
+        use Dancer::Plugin::Ajax;
 
         setting access_log => 0;
+        #setting 'log' => "core";
+        # setting logger => "console";
         setting port => $port;
 
         ajax '/req' => sub {
 	     return 1;
         };
-        Dancer->dance();
+        start();
     },
 );

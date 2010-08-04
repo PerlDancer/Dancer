@@ -32,7 +32,6 @@ use base 'Exporter';
 $AUTHORITY = 'SUKRIA';
 $VERSION   = '1.1806_01';
 @EXPORT    = qw(
-  ajax
   any
   before
   cookies
@@ -93,7 +92,6 @@ $VERSION   = '1.1806_01';
 
 # Dancer's syntax
 
-sub ajax         { Dancer::App->current->registry->universal_add('ajax', @_) }
 sub any          { Dancer::App->current->registry->any_add(@_) }
 sub before       { Dancer::Route::Registry->before_filter(@_) }
 sub captures     { Dancer::SharedData->request->params->{captures} }
@@ -287,21 +285,6 @@ If you want to see configuration examples of different deployment solutions
 involving Dancer and Plack, see L<Dancer::Deployment>.
 
 =head1 METHODS
-
-=head2 ajax
-
-Define a route for 'ajax' query. To be matched, the request must have the B<X_REQUESTED_WITH> header set to B<XMLHttpRequet>.
-
-    ajax '/list' => sub {
-       my $result = [qw/one two three/];
-       to_json($result);
-    }
-
-or
-
-    ajax ['get', 'post'] => '/list' => sub {
-        # code
-    }
 
 =head2 any
 
