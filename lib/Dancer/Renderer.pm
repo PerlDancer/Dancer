@@ -86,14 +86,15 @@ sub get_action_response {
     # save the request before the filters are ran
     my $request = Dancer::SharedData->request;
 
-    # run the before filters
+    # run the before filters, before "running" the route handler
     for my $app (Dancer::App->applications ) {
         $_->() for @{ $app->registry->before_filters };
     }
 
-    # look for a matching route handler for the (altered) request
+    # look for a matching route handler 
     my $handler = Dancer::App->find_route_through_apps(Dancer::SharedData->request);
 
+    # a response may exist, produced by a before filter
     if (Dancer::Response->exists) {
         $response = serialize_response_if_needed(Dancer::Response->current);
     }

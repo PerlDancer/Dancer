@@ -91,6 +91,7 @@ sub find_route {
         if ($match) {
             next if $r->has_options && (not $r->validate_options($request));
             $r->match_data($match);
+            $request->_set_route_params($match);
 
             # if we have a route cache, store the result
             if (Dancer::Config::setting('route_cache')) {

@@ -5,6 +5,7 @@ use warnings;
 use base 'Dancer::Object';
 
 use Dancer::App;
+use Dancer::Logger;
 use Dancer::Config 'setting';
 use Dancer::Request;
 use Dancer::Response;
@@ -56,11 +57,16 @@ sub match {
     my $path   = $request->path;
     my %params;
     
+    Dancer::Logger::core("trying to match `$path' ".
+        "against /".$self->{_compiled_regexp}."/");
+
     my @values = $path =~ $self->{_compiled_regexp};
+    Dancer::Logger::core("  --> got @values") if @values;
 
     # if some named captures found, return captures
     # no warnings is for perl < 5.10
     if ( my %captures = do { no warnings; %+ } ) {
+        Dancer::Logger::core("  --> captures are: ".join(", ", keys(%captures))) if keys %captures;
 	    return \%captures;
     }
 
@@ -68,6 +74,8 @@ sub match {
 
     # named tokens
     my @tokens = @{ $self->{_params} || [] };
+
+    Dancer::Logger::core("  --> named tokens are: @tokens") if @tokens;
     if (@tokens) {
         for (my $i = 0; $i < @tokens; $i++) {
             $params{$tokens[$i]} = $values[$i];
@@ -113,7 +121,6 @@ sub validate_options {
 
 sub run {
     my ($self, $request) = @_;
-    $request->_set_route_params($self->match_data || {});
     
     my $content = $self->execute();
     my $response = Dancer::Response->current;
@@ -159,6 +166,7 @@ sub find_next_matching_route {
     my $match;
     if ($match = $next->match($request)) {
        $next->match_data($match);
+       $request->_set_route_params($match);
        return $next;
     }
     return $next->find_next_matching_route($request);
