@@ -330,6 +330,36 @@ This can easily be handled with a before filter to check their session:
         }
     };
 
+Of course, you'll probably want to validate your users against a database table,
+or maybe via IMAP/LDAP/SSH/POP3/local system accounts via PAM etc.
+L<Authen::Simple> is probably a good starting point here!
+
+A simple working example of handling authentication against a database table
+yourself (using L<Dancer::Plugin::Database> which provides the C<database>
+keyword, and L<Crypt::SaltedHash> to handle salted hashed passwords (well, you
+wouldn't store your users passwords in the clear, would you?)) follows:
+
+    post '/login' => sub {
+        my $user = database()->selectrow_hashref(
+            'select * from users where username = ?', {}, params->{user}
+        );
+        if (!$user) {
+            warning "Failed login for unrecognised user " . params->{user};
+            redirect '/login?failed=1';
+        } else {
+            if (Crypt::SaltedHash->validate($user->{password}, params->{pass})) 
+            {
+                debug "Password correct";
+                # Logged in successfully
+                session user => $user;
+                redirect params->{path} || '/';
+            } else {
+                debug("Login failed - password incorrect for " . params->{user});
+                redirect '/login?failed=1';
+            }
+        }
+    };
+
 
 
 =head2 Using templates - views and layouts
