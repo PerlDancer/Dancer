@@ -72,7 +72,6 @@ sub find_route_through_apps {
 
 # instance
 
-# FIXME should handle is_ajax
 sub find_route {
     my ($self, $request) = @_;
     my $method = lc($request->method);
@@ -80,7 +79,11 @@ sub find_route {
     # if route cache is enabled, we check if we handled this path before
     if (Dancer::Config::setting('route_cache')) {
         my $route = Dancer::Route::Cache->get->route_from_path($method, $request->path);
-        return $route if $route;
+        # NOTE maybe we should cache the match data as well
+        if ($route) {
+            $route->match($request);
+            return $route;
+        }
     }
 
     my @routes = @{ $self->registry->routes($method) }; 
