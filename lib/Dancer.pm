@@ -93,7 +93,7 @@ $VERSION   = '1.1806_01';
 
 # Dancer's syntax
 
-sub ajax         { Dancer::Route::Registry->universal_add('ajax', @_) }
+sub ajax         { Dancer::App->current->registry->universal_add('ajax', @_) }
 sub any          { Dancer::Route::Registry->any_add(@_) }
 sub before       { Dancer::Route::Registry->before_filter(@_) }
 sub captures     { Dancer::SharedData->request->params->{captures} }
@@ -112,8 +112,8 @@ sub from_yaml    { Dancer::Serializer::YAML::from_yaml(@_) }
 sub from_xml     { Dancer::Serializer::XML::from_xml(@_) }
 
 sub get {
-    Dancer::Route::Registry->universal_add('head', @_);
-    Dancer::Route::Registry->universal_add('get', @_);
+    Dancer::App->current->registry->universal_add('head', @_);
+    Dancer::App->current->registry->universal_add('get', @_);
 }
 sub halt       { Dancer::Response->halt(@_) }
 sub headers    { Dancer::Response::headers(@_); }
@@ -125,11 +125,11 @@ sub mime_type  { Dancer::Config::mime_types(@_) }
 sub params     { Dancer::SharedData->request->params(@_) }
 sub pass       { Dancer::Response->pass }
 sub path       { Dancer::FileUtils::path(@_) }
-sub post       { Dancer::Route::Registry->universal_add('post', @_) }
+sub post       { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix     { Dancer::App->current->set_prefix(@_) }
-sub del        { Dancer::Route::Registry->universal_add('delete', @_) }
-sub options    { Dancer::Route::Registry->universal_add('options', @_) }
-sub put        { Dancer::Route::Registry->universal_add('put', @_) }
+sub del        { Dancer::App->current->registry->universal_add('delete', @_) }
+sub options    { Dancer::App->current->registry->universal_add('options', @_) }
+sub put        { Dancer::App->current->registry->universal_add('put', @_) }
 sub r          { warn "'r' is DEPRECATED use qr{} instead" ; return {regexp => $_[0]} }
 sub redirect   { Dancer::Helpers::redirect(@_) }
 sub request    { Dancer::SharedData->request }
