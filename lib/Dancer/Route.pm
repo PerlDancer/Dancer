@@ -53,6 +53,9 @@ sub save_match_data {
     my ($self, $request, $match_data) = @_;
     $self->match_data($match_data);
     $request->_set_route_params($match_data);
+
+    use Data::Dumper;
+    warn "saved data: ".Dumper($match_data);
     return $match_data;
 }
 
@@ -74,7 +77,7 @@ sub match {
     # no warnings is for perl < 5.10
     if ( my %captures = do { no warnings; %+ } ) {
         Dancer::Logger::core("  --> captures are: ".join(", ", keys(%captures))) if keys %captures;
-	    return $self->save_match_data($request, \%captures);
+	    return $self->save_match_data($request, {captures => \%captures});
     }
 
     return undef unless @values;
