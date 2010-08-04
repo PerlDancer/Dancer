@@ -3,7 +3,7 @@
 AUTHORS
 CHANGES
 lib/Dancer.pm
-lib/Dancer/Clone.pm
+lib/Dancer/App.pm
 lib/Dancer/Config.pm
 lib/Dancer/Cookbook.pod
 lib/Dancer/Cookie.pm
@@ -93,6 +93,7 @@ t/02_request/13_ajax.t
 t/02_request/14_uploads.t
 t/02_request/15_headers.t
 t/03_route_handler/00_http_methods.t
+t/03_route_handler/00_route_object.t
 t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
 t/03_route_handler/03_passing.t
@@ -183,7 +184,12 @@ t/15_plugins/02_config.t
 t/15_plugins/03_namespace.t
 t/16_timer/00_base.t
 t/16_timer/02_hires.t
+t/17_apps/00_base.t
+t/17_apps/01_settings.t
+t/17_apps/02_load_app.t
+t/17_apps/03_prefix.t
 t/lib/EasyMocker.pm
+t/lib/Forum.pm
 t/lib/LinkBlocker.pm
 t/lib/TestApp.pm
 t/lib/TestSerializer.pm
