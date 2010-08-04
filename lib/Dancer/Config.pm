@@ -36,6 +36,7 @@ my $setters = {
     },
     route_cache => sub {
         my ($setting, $value) = @_;
+        require Dancer::Route::Cache;
         Dancer::Route::Cache->reset();
     },
     serializer => sub {
