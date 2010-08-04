@@ -67,9 +67,9 @@ sub add_route {
 # sugar for add_route
 
 sub register_route {
-    my ($class, %args) = @_;
+    my ($self, %args) = @_;
     my $route = Dancer::Route->new(%args);
-    Dancer::App->current->registry->add_route($route);
+    $self->add_route($route);
 }
 
 # sugar for Dancer.pm
@@ -77,7 +77,7 @@ sub register_route {
 # or
 # class, any, '/path', CODE(0x990ac88)
 sub any_add {
-    my ($class, $pattern, @rest) = @_;
+    my ($self, $pattern, @rest) = @_;
 
     my @methods = qw(get post put delete options);
 
@@ -89,12 +89,12 @@ sub any_add {
     die "Syntax error, methods should be provided as an ARRAY ref"
         if grep /^$pattern$/, @methods;
 
-    $class->universal_add($_, $pattern, @rest) for @methods;
+    $self->universal_add($_, $pattern, @rest) for @methods;
     return scalar(@methods);
 }
 
 sub universal_add {
-    my ($class, $method, $pattern, @rest) = @_;
+    my ($self, $method, $pattern, @rest) = @_;
 
     my %options;
     my $code;
@@ -109,7 +109,7 @@ sub universal_add {
 
     if ($method eq 'ajax') {
         # FIXME conditions on request->is_ajax
-        $class->universal_add('post', $pattern, @rest);
+        return $self->universal_add('post', $pattern, @rest);
     }
 
     my %route_args = (
@@ -119,7 +119,7 @@ sub universal_add {
         pattern => $pattern,
     );
 
-    $class->register_route(%route_args);
+    $self->register_route(%route_args);
 }
 
 # look for a route in the given array
