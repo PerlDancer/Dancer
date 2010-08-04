@@ -110,7 +110,6 @@ t/03_route_handler/13_any_route_handler.t
 t/03_route_handler/14_options.t
 t/03_route_handler/15_prefix.t
 t/03_route_handler/16_caching.t
-t/03_route_handler/17_compile.t
 t/03_route_handler/18_auto_page.t
 t/03_route_handler/19_filters_and_params.t
 t/03_route_handler/20_params_multiple_tokens.t
