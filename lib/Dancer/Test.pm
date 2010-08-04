@@ -26,8 +26,9 @@ use vars '@EXPORT';
     response_content_is_deeply
     response_content_like
     response_content_unlike
-
     response_is_file
+
+    get_response
 );
 
 sub import {
@@ -67,7 +68,7 @@ sub response_exists {
     my ($req, $test_name) = @_;
     $test_name ||= "a response is found for @$req";
 
-    my $response = _get_response($req);
+    my $response = get_response($req);
     ok(defined($response), $test_name);
 }
 
@@ -75,7 +76,7 @@ sub response_doesnt_exist {
     my ($req, $test_name) = @_;
     $test_name ||= "no response found for @$req";
 
-    my $response = _get_response($req);
+    my $response = get_response($req);
     ok(!defined($response), $test_name);
 }
 
@@ -83,7 +84,7 @@ sub response_status_is {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is $status for @$req";
 
-    my $response = _get_response($req); 
+    my $response = get_response($req); 
     is $response->{status}, $status, $test_name;
 }
 
@@ -91,7 +92,7 @@ sub response_status_isnt {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is not $status for @$req";
 
-    my $response = _get_response($req); 
+    my $response = get_response($req); 
     isnt $response->{status}, $status, $test_name;
 }
 
@@ -101,7 +102,7 @@ sub response_content_is {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = _get_response($req); 
+    my $response = get_response($req); 
     is $response->{content}, $matcher, $test_name;
 }
 
@@ -109,7 +110,7 @@ sub response_content_isnt {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = _get_response($req); 
+    my $response = get_response($req); 
     isnt $response->{content}, $matcher, $test_name;
 }
 
@@ -117,7 +118,7 @@ sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = _get_response($req); 
+    my $response = get_response($req); 
     like $response->{content}, $matcher, $test_name;
 }
 
@@ -125,7 +126,7 @@ sub response_content_unlike {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = _get_response($req); 
+    my $response = get_response($req); 
     unlike $response->{content}, $matcher, $test_name;
 }
 
@@ -133,7 +134,7 @@ sub response_content_is_deeply {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = _get_response($req); 
+    my $response = get_response($req); 
     is_deeply $response->{content}, $matcher, $test_name;
 }
 
@@ -145,7 +146,7 @@ sub response_is_file {
     ok(defined($response), $test_name);
 }
 
-sub _get_response {
+sub get_response {
     my ($req) = @_;
     my ($method, $path, $params, $headers) = @$req;
     my $request = Dancer::Request->new_for_request($method => $path, $params);
@@ -302,6 +303,20 @@ given.
 
     response_content_unlike [GET => '/'], qr/Page not found/, 
         "response content looks good for GET /";
+
+=head2 get_response([$method, $path])
+
+Returns a Dancer::Response object for the given request. The status and content can both be accessed with this object. A good reason to use this function is for testing POST requests. Since POST requests may not be idempotent, it is necessary to capture the content and status in one shot. Calling the response_status_is and response_content_is functions in succession would make two requests, each of which could alter the state of the application and cause Schrodinger's cat to die.
+
+    my $response = get_response [POST => '/widgets'];
+    is $response->{status}, 202, "response for POST /widgets is 202";
+    is $response->{content}, "Widget #1 has been scheduled for creation",
+        "response content looks good for first POST /widgets";
+
+    $response = get_response [POST => '/widgets'];
+    is $response->{status}, 202, "response for POST /widgets is 202";
+    is $response->{content}, "Widget #2 has been scheduled for creation",
+        "response content looks good for second POST /widgets";
 
 
 =head1 LICENSE
