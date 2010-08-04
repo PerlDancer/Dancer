@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Dancer::Object';
 
+use Dancer::Clone;
 use Dancer::Config;
 use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
@@ -72,10 +73,16 @@ sub find_route_through_apps {
 # instance
 
 # FIXME should handle is_ajax
-# FIXME should handle route cache
 sub find_route {
     my ($self, $request) = @_;
     my $method = lc($request->method);
+
+    # if route cache is enabled, we check if we handled this path before
+    if (Dancer::Config::setting('route_cache')) {
+        my $route = Dancer::Route::Cache->get->route_from_path($method, $request->path);
+        return $route if $route;
+    }
+
     my @routes = @{ $self->registry->routes($method) }; 
 
     for my $r (@routes) {
@@ -84,6 +91,12 @@ sub find_route {
         if ($match) {
             next if $r->has_options && (not $r->validate_options($request));
             $r->match_data($match);
+
+            # if we have a route cache, store the result
+            if (Dancer::Config::setting('route_cache')) {
+                Dancer::Route::Cache->get->store_path($method, $request->path => $r);
+            }
+
             return $r;
         }
     }
