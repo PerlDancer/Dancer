@@ -90,6 +90,7 @@ sub any_add {
         if grep /^$pattern$/, @methods;
 
     $class->universal_add($_, $pattern, @rest) for @methods;
+    return scalar(@methods);
 }
 
 sub universal_add {
