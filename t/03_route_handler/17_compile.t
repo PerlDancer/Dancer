@@ -12,11 +12,7 @@ use Test::More tests => 5, import => ['!pass'];
 
 use Dancer::App;
 my $reg = Dancer::App->current->registry;
-
-ok($reg->is_new, "registry is new");
 $reg->compile;
-
-ok ((!$reg->is_new), "registry is compiled");
 
 my $expected_regexp = '^\/foo\/([^\/]+)$' ;
 is_deeply($reg->{_regexps}, {
