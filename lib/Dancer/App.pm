@@ -107,14 +107,7 @@ sub init {
 sub init_registry {
     my ($self, $reg) = @_;
     $self->registry($reg || Dancer::Route::Registry->new);
-    if (Dancer::Config::setting('auto_page')) {
-        Dancer::Route::Registry->universal_add('get', '/:page',
-            sub {
-                my $params = Dancer::SharedData->request->params;
-                Dancer::Helpers::template($params->{'page'});
-            }
-        );
-    }
+    
 }
 
 sub merge_registries {

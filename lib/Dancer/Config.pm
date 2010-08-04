@@ -5,6 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
+use Dancer::App;
 use Dancer::Template;
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
@@ -45,6 +46,18 @@ my $setters = {
     import_warnings => sub {
         my ($setting, $value) = @_;
         $^W = $value ? 1 : 0;
+    },
+    auto_page => sub {
+        my ($setting, $auto_page) = @_;
+        if ($auto_page) {
+            Dancer::App->current->registry->universal_add(
+                'get', '/:page',
+                sub {
+                    my $params = Dancer::SharedData->request->params;
+                    Dancer::Helpers::template($params->{'page'});
+                }
+            );
+        }
     },
 };
 
