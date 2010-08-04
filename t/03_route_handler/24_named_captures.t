@@ -2,10 +2,8 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'], tests => 3;
 
-use t::lib::TestUtils;
-
 use Dancer ':syntax';
-use Dancer::Route;
+use Dancer::Test;
 
 # perl <= 5.8.x doesn't support named captures
 plan skip_all => 'Need perl >= 5.10' if $] < 5.010;
@@ -27,14 +25,9 @@ for my $test
      my $handle;
      my $path = $test->{path};
      my $expected = $test->{expected};
-     my $request = fake_request(GET => $path);
+     my $request = [GET => $path];
 
-     Dancer::SharedData->request($request);
-     my $response = Dancer::Renderer::get_action_response();
-
-     ok( defined($response), "route handler found for path `$path'");
-     is_deeply(
-         $response->{content}, $expected,
-         "match data for path `$path' looks good");
+     response_exists $request;
+     response_content_is_deeply $request, $expected;
 }
 
