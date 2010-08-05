@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use base 'Dancer::Object';
 
-use Dancer::Clone;
 use Dancer::Config;
 use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
