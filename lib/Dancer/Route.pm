@@ -37,7 +37,7 @@ sub init {
 
     $self->check_options();
     $self->app(Dancer::App->current);
-    $self->prefix(Dancer::App->current->prefix);
+    $self->prefix(Dancer::App->current->prefix) if not $self->prefix;
     $self->_init_prefix() if $self->prefix;
     $self->_build_regexp();
     $self->set_previous($self->prev) if $self->prev;
@@ -181,16 +181,17 @@ sub execute {
     if (Dancer::Config::setting('warnings')) {
         my $warning;
         $SIG{__WARN__} = sub { $warning = $_[0] };
-        $self->code->();
+        my $content = $self->code->();
         if ($warning) {
             return Dancer::Error->new(
                 status => 500,
                 message => "Warning caught during route execution: $warning",
                 )->render;
         }
+        return $content;
     }
     else {
-        $self->code->();
+        return $self->code->();
     }
 }
 
