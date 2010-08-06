@@ -170,6 +170,7 @@ sub load_app {
     
     # Application options
     $app->prefix($options{prefix}) if $options{prefix};
+    $app->settings($options{settings}) if $options{settings};
 
     # load the application
     use lib path( dirname( File::Spec->rel2abs($0) ), 'lib' );

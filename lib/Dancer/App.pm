@@ -7,12 +7,18 @@ use base 'Dancer::Object';
 use Dancer::Config;
 use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
+use Dancer::Logger;
 
 Dancer::App->attributes(qw(name prefix registry settings));
 
 # singleton that saves any app created, we want unicity for app names
 my $_apps = {};
 sub applications { values %$_apps }
+
+sub app_exists {
+    my ($self, $name) = @_;
+    grep /^$name$/, keys %$_apps;
+}
 
 sub set_running_app {
     my ($self, $name) = @_;
@@ -29,30 +35,32 @@ sub set_prefix {
     return 1; # prefix may have been set to undef
 }
 
+sub routes {
+   my ($self, $method) = @_;
+   map { $_->pattern } @{ $self->registry->{'routes'}{$method} }; 
+}
+
 sub reload_apps {
     my ($class) = @_;
 
     if (Dancer::ModuleLoader->load('Module::Refresh')) {
         
-        # save the current state
-        my $orig_apps = $_apps;
+        # saving apps & purging app registries
+        my $orig_apps = {};
+        while (my ($name, $app) = each %$_apps) {
+            $orig_apps->{$name} = $app->clone;
+            $app->registry->init();
+        }
         
-        # purge all applications loaded
-        $_apps = {};
-
-        # refresh modules
+        # reloading changed modules, getting apps reloaded 
         Module::Refresh->refresh;
-        
-        # apply modifications
-        my $new_apps = $_apps;
+
+        # make sure old apps that didn't get reloaded are kept
         while (my ($name, $app) = each %$orig_apps) {
-            $app->merge_registries($app->registry, $new_apps->{$name}->registry)
-                if exists($new_apps->{$name});
+            $_apps->{$name} = $app unless defined $_apps->{$name};
+            $_apps->{$name} = $app if $_apps->{$name}->registry->is_empty;
         }
-        # adding new apps
-        while (my ($name, $app) = each %$new_apps) {
-            $_apps->{$name} = $app if not exists $_apps->{$name};
-        }
+
     }
     else {
         warn "Module::Refresh is not installed, "
@@ -122,12 +130,6 @@ sub init_registry {
     my ($self, $reg) = @_;
     $self->registry($reg || Dancer::Route::Registry->new);
     
-}
-
-sub merge_registries {
-    my ($self, $orig, $new) = @_;
-    my $merge = Dancer::Route::Registry->merge($orig, $new);
-    $self->registry($merge);
 }
 
 # singleton that saves the current active Dancer::App object

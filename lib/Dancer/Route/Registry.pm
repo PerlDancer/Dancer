@@ -6,14 +6,29 @@ use base 'Dancer::Object';
 use Dancer::Logger;
 
 Dancer::Route::Registry->attributes(qw(
+    id
     before_filters
 ));
 
+my $id = 1;
+
 sub init {
     my ($self) = @_;
+    
+    unless (defined $self->{id}) {
+        $self->{id} = $id++;
+    }
     $self->{routes} = {};
     $self->{before_filters} = [];
 }
+
+sub is_empty {
+    my ($self) = @_;
+    for my $method (keys %{ $self->{routes}}) {
+        return 0 if scalar(@{ $self->{routes}{$method}});
+    }
+    return 1;
+}   
 
 sub before_filter {
     my ($class, $filter) = @_;
@@ -68,8 +83,20 @@ sub add_route {
 
 sub register_route {
     my ($self, %args) = @_;
-    my $route = Dancer::Route->new(%args);
-    $self->add_route($route);
+
+    # look if the caller (where the route is declared) exists as a Dancer::App
+    # object
+    my ($package) = caller(2);
+    if (Dancer::App->app_exists($package)) {
+        my $app = Dancer::App->get($package);
+        my $route = Dancer::Route->new(prefix => $app->prefix, %args);
+        $app->registry->add_route($route);
+    }
+    else {
+        # FIXME maybe this code is useless, drop it later if so
+        my $route = Dancer::Route->new(%args);
+        $self->add_route($route);
+    }
 }
 
 # sugar for Dancer.pm
@@ -124,53 +151,6 @@ sub find_route {
         return $route if $r->equals($route);
     }
     return undef;
-}
-
-sub merge {
-    my ($self, $orig_reg, $new_reg) = @_;
-    my $merged_reg = Dancer::Route::Registry->new;
-
-    # walking through all the routes, using the newest when exists
-    foreach
-      my $method (keys(%{$new_reg->{routes}}), keys(%{$orig_reg->{routes}}))
-    {
-
-        # don't work out a method if already done
-        next if exists $merged_reg->{routes}{$method};
-
-        my $merged_routes = [];
-        my $orig_routes   = $orig_reg->{routes}{$method};
-        my $new_routes    = $new_reg->{routes}{$method};
-
-        # walk through all the orig elements, if we have a new version,
-        # overwrite it, else, keep the old one.
-        foreach my $route (@$orig_routes) {
-            my $new = $self->find_route($route, $new_routes);
-            if (defined $new) {
-                push @$merged_routes, $new;
-            }
-            else {
-                push @$merged_routes, $route;
-            }
-        }
-
-        # now, walk through all the new elements, looking for a new route
-        foreach my $route (@$new_routes) {
-            push @$merged_routes, $route
-              unless $self->find_route($route, $merged_routes);
-        }
-
-        $merged_reg->{routes}{$method} = $merged_routes;
-    }
-
-    # NOTE: we have to warn the user about mixing before_filters in different
-    # files, that's not supported. Only the last before_filters block is used.
-    $merged_reg->{before_filters} =
-      (scalar(@{$new_reg->{before_filters}}) > 0)
-      ? $new_reg->{before_filters}
-      : $orig_reg->{before_filters};
-
-    return $merged_reg;
 }
 
 1;
