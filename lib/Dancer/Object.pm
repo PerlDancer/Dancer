@@ -15,6 +15,13 @@ sub new {
     return $self;
 }
 
+sub clone {
+    my ($self) = @_;
+    die "The 'Clone' module is needed" 
+        unless Dancer::ModuleLoader->load('Clone');
+    return Clone::clone($self);
+}
+
 # initializer
 sub init {1}
 
