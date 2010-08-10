@@ -32,8 +32,10 @@ use base 'Exporter';
 $AUTHORITY = 'SUKRIA';
 $VERSION   = '1.1806_01';
 @EXPORT    = qw(
+  after
   any
   before
+  before_template
   cookies
   config
   content_type
@@ -92,8 +94,10 @@ $VERSION   = '1.1806_01';
 
 # Dancer's syntax
 
+sub after        { Dancer::Route::Registry->hook('after', @_) }
 sub any          { Dancer::App->current->registry->any_add(@_) }
-sub before       { Dancer::Route::Registry->before_filter(@_) }
+sub before       { Dancer::Route::Registry->hook('before', @_) }
+sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures     { Dancer::SharedData->request->params->{captures} }
 sub cookies      { Dancer::Cookies->cookies }
 sub config       { Dancer::Config::settings() }
@@ -287,6 +291,22 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 
 =head1 METHODS
 
+=head2 after
+
+Add a hook at the B<after> position:
+
+    after sub {
+        my $response = shift;
+        # do something with request
+    };
+
+The anonymous function which is given to C<after> will be executed after
+having executed a route.
+
+You can define multiple after filters, using the C<after> helper as
+many times as you wish; each filter will be executed, in the order you added
+them.
+
 =head2 any
 
 Define a route for multiple HTTP methods at once:
@@ -316,6 +336,18 @@ You can define multiple before filters, using the C<before> helper as
 many times as you wish; each filter will be executed, in the order you added
 them.
 
+=head2 before_template
+
+Defines a before_template filter:
+
+    before_template sub {
+        # do something with request, vars or params
+    };
+
+The anonymous function which is given to C<before_template> will be executed
+before sending data and tokens to the template.
+
+This filter works as the C<before> and C<after> filter.
 
 =head2 cookies
 
