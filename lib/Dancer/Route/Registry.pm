@@ -7,19 +7,19 @@ use Dancer::Logger;
 
 Dancer::Route::Registry->attributes(qw(
     id
-    before_filters
+    hooks
 ));
 
 my $id = 1;
 
 sub init {
     my ($self) = @_;
-    
-    unless (defined $self->{id}) {
+
+    unless ( defined $self->{id} ) {
         $self->{id} = $id++;
     }
     $self->{routes} = {};
-    $self->{before_filters} = [];
+    $self->{hooks}  = {};
 }
 
 sub is_empty {
@@ -30,31 +30,30 @@ sub is_empty {
     return 1;
 }   
 
-sub before_filter {
-    my ($class, $filter) = @_;
-    Dancer::App->current->registry->add_before_filter($filter);
+sub hook {
+    my ($class, $position, $filter) = @_;
+    Dancer::App->current->registry->add_hook($position, $filter);
 }
 
 # replace any ':foo' by '(.+)' and stores all the named
 # matches defined in $REG->{route_params}{$route}
-sub add_before_filter {
-    my ($self, $filter) = @_;
+sub add_hook {
+    my ( $self, $position, $filter ) = @_;
 
     my $compiled_filter = sub {
         return if Dancer::Response->halted;
-        Dancer::Logger::core("entering before filter");
-        
-        eval { $filter->() };
+        Dancer::Logger::core( "entering " . $position . " hook" );
+        eval { $filter->(@_) };
         if ($@) {
             my $err = Dancer::Error->new(
-                code => 500,
-                title => 'Before filter error',
-                message => "An error occured while executing the filter: $@");
-            return Dancer::halt($err->render);
+                code  => 500,
+                title => $position . ' filter error',
+                message => "An error occured while executing the filter at position $position: $@"
+            );
+            return Dancer::halt( $err->render );
         }
     };
-
-    push @{ $self->{before_filters} }, $compiled_filter;
+    push @{ $self->{hooks}->{$position} }, $compiled_filter;
 }
 
 sub routes {
