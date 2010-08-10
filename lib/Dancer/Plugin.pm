@@ -8,6 +8,7 @@ use base 'Exporter';
 use vars qw(@EXPORT);
 
 @EXPORT = qw(
+    add_hook
     register
     register_plugin
     plugin_setting
@@ -16,6 +17,8 @@ use vars qw(@EXPORT);
 my @_reserved_keywords = @Dancer::EXPORT;
 
 my $_keywords = {};
+
+sub add_hook { Dancer::Route::Registry->hook(@_) }
 
 sub plugin_setting {
     my $plugin_orig_name = caller();
