@@ -1,8 +1,10 @@
 use Test::More import => ['!pass'];
 
 my @keywords = qw(
+    after
     any
     before
+    before_template
     cookies
     content_type
     dance
