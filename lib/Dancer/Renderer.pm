@@ -93,7 +93,7 @@ sub get_action_response {
 
     # run the before filters, before "running" the route handler
     for my $app (Dancer::App->applications ) {
-        $_->() for @{ $app->registry->before_filters };
+        $_->() for @{ $app->registry->hooks->{before} };
     }
 
     # recurse if something has changed
@@ -117,9 +117,13 @@ sub get_action_response {
             if Dancer::Response->exists;
 
         # else, get the route handler's response
-        Dancer::App->current($handler->app);
+        Dancer::App->current( $handler->app );
         $response = $handler->run($request);
-        return serialize_response_if_needed($response);
+        $response = serialize_response_if_needed($response);
+        for my $app ( Dancer::App->applications ) {
+            $_->($response) for ( @{ $app->registry->hooks->{after} } );
+        }
+        return $response;
     }
     else {
         return undef; # 404

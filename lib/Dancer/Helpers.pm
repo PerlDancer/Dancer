@@ -31,6 +31,7 @@ sub send_file {
 
 sub template {
     my ($view, $tokens, $options) = @_;
+
     $options ||= {layout => 1};
     my $layout = setting('layout');
     undef $layout unless $options->{layout};
@@ -43,12 +44,17 @@ sub template {
     }
 
     $view = Dancer::Template->engine->view($view);
+
     if (!-r $view) {
         my $error = Dancer::Error->new(
             code    => 404,
             message => "Page not found",
         );
         return Dancer::Response::set($error->render);
+    }
+
+    for my $app ( Dancer::App->applications ) {
+        $_->($tokens) for ( @{ $app->registry->hooks->{before_template} } );
     }
 
     my $content = Dancer::Template->engine->render($view, $tokens);
