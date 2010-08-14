@@ -27,8 +27,8 @@ ok defined($forum), "app 't::lib::Forum' is defined";
 is @{ $main->registry->routes->{'get'} }, 1, 
     "one route is defined in main app";
 
-is @{ $test_app->registry->routes->{'get'} }, 8, 
-    "8 routes are defined in main app";
+is @{ $test_app->registry->routes->{'get'} }, 9, 
+    "9 routes are defined in main app";
 
 response_content_is [GET => "/forum/index"], "forum index"; 
 response_content_is [GET => "/forum"], "root"; 
