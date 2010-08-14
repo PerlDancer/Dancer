@@ -103,7 +103,6 @@ t/03_route_handler/06_regexp.t
 t/03_route_handler/07_compilation_warning.t
 t/03_route_handler/08_errors.t
 t/03_route_handler/09_status.t
-t/03_route_handler/10_merge_registries.t
 t/03_route_handler/11_redirect.t
 t/03_route_handler/11_redirect_no_content.t
 t/03_route_handler/12_response.t
