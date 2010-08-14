@@ -14,7 +14,7 @@ Dancer::ModuleLoader->load('Plack::Loader') if $plack_available;
 plan tests => $plack_available ? 6 : 3;
 
 my @handlers = ('Standalone');
-push @handlers, 'Plack' if $plack_available;
+push @handlers, 'PSGI' if $plack_available;
 
 for my $handler (@handlers) {
 Test::TCP::test_tcp(
@@ -46,12 +46,7 @@ Test::TCP::test_tcp(
         };
         
         if ($handler eq 'PSGI') {
-            my $app = sub {
-                my $env = shift;
-                my $request = Dancer::Request->new($env);
-                Dancer->dance($request);
-            };
-
+            my $app = Dancer::Handler->get_handler()->dance;
             Plack::Loader->auto(port => $port)->run($app);
         }
         else {
