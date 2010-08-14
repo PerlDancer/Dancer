@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use Dancer::App;
+use Dancer::Test;
 
 my $app = Dancer::App->new;
 
@@ -17,3 +18,25 @@ ok $app->setting('foo' => 42),
 
 is $app->setting('foo'), 42,
     "setting 'foo' is 42";
+
+# a setting could be overwritten by a Dancer::App instance
+
+{ 
+    package Webapp;
+    use Dancer;
+
+    setting onlyroot => 42;
+    setting foo => "root";
+
+    load_app 't::lib::TestApp', 
+        settings => { 
+            foo => 'testapp',
+            onlyapp => '43',
+        };
+}
+
+response_content_is_deeply [ GET => '/test_app_setting' ], { 
+        onlyroot => 42,
+        foo => 'testapp',
+        onyapp => 43, 
+    };

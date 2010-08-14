@@ -8,6 +8,14 @@ block_links_from "www.foo.com";
 
 get '/' => sub { "Hello, this is the home" };
 
+get '/test_app_setting' => sub {
+    return { 
+        onlyroot => setting('onlyroot'),
+        foo => setting('foo'),
+        onyapp => setting('onyapp') 
+    };
+};
+
 get '/name/:name' => sub {
     "Your name: ".params->{name}
 };
