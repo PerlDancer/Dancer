@@ -93,6 +93,7 @@ sub get_action_response {
 
     # run the before filters, before "running" the route handler
     my $app = Dancer::App->current;
+    $app = $handler->{app} if ($handler);
     $_->() for @{ $app->registry->hooks->{before} };
 
     # recurse if something has changed
