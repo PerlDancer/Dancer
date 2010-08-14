@@ -6,13 +6,17 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
+ok(Dancer::App->current->registry->is_empty, 
+    "registry is empty");
+ok(Dancer::Plugin::Ajax::ajax( '/', sub { "ajax" } ), "ajax helper called");
+ok(!Dancer::App->current->registry->is_empty, 
+    "registry is not empty");
+
 plan skip_all => "LWP::UserAgent is needed to run this tests"
     unless Dancer::ModuleLoader->load('LWP::UserAgent');
 
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
-
-plan tests => 3;
 
 Test::TCP::test_tcp(
     client => sub {
@@ -46,3 +50,6 @@ Test::TCP::test_tcp(
         start();
     },
 );
+
+
+done_testing;

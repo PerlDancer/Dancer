@@ -6,7 +6,9 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::Plugin;
 
-register 'ajax' => sub {
+register 'ajax' => \&ajax;
+
+sub ajax {
     my ($pattern, @rest) = @_;
     
     my $code;
@@ -39,7 +41,7 @@ register 'ajax' => sub {
     }
 
     any ['get', 'post'] => $pattern, @compiled_rest;
-};
+}
 
 register_plugin;
 1;
