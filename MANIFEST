@@ -182,6 +182,7 @@ t/14_serializer/06_serialize_response.t
 t/14_serializer/07_bug_57805.t
 t/14_serializer/08_error.t
 t/14_serializer/09_abstract.t
+t/14_serializer/10_dumper.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t
