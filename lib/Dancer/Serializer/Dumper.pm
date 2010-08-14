@@ -5,6 +5,9 @@ use warnings;
 use base 'Dancer::Serializer::Abstract';
 use Data::Dumper;
 
+# we want to eval serialized strings
+$Data::Dumper::Purity = 1;
+
 sub from_dumper {
     my ($string) = @_;
     my $s = Dancer::Serializer::Dumper->new;
@@ -27,7 +30,9 @@ sub serialize {
 
 sub deserialize {
     my ($self, $content) = @_;
-    eval "$content";
+    my $res = eval "my \$VAR1; $content";
+    die "unable to deserialize : $@" if $@;
+    return $res;
 }
 
 sub content_type { 'text/plain' }
