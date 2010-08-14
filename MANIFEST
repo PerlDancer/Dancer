@@ -119,6 +119,7 @@ t/03_route_handler/23_filter_error_catching.t
 t/03_route_handler/24_multiple_params.t
 t/03_route_handler/24_named_captures.t
 t/03_route_handler/25_issue_77_pass_breaks_routes.t
+t/03_route_handler/26_after_hook.t
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
@@ -159,7 +160,9 @@ t/10_template/01_factory.t
 t/10_template/02_abstract_class.t
 t/10_template/03_simple.t
 t/10_template/05_template_toolkit.t
+t/10_template/06_before_template_hook.t
 t/10_template/index.txt
+t/10_template/views/index.tt
 t/11_logger/01_abstract.t
 t/11_logger/02_factory.t
 t/11_logger/03_file.t
@@ -177,6 +180,8 @@ t/14_serializer/04_mutable.t
 t/14_serializer/05_live.t
 t/14_serializer/06_serialize_response.t
 t/14_serializer/07_bug_57805.t
+t/14_serializer/08_error.t
+t/14_serializer/09_abstract.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t
