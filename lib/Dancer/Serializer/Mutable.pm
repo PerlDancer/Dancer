@@ -102,7 +102,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Serializer::Mutable
+Dancer::Serializer::Mutable - (De)Serialize content using the appropriate HTTP header
 
 =head1 SYNOPSIS
 
