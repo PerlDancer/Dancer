@@ -611,7 +611,7 @@ From now, all hash ref or array ref returned by a route will be serialized to JS
 
 It's possible to let the client choose which serializer he want to use. For this, use the B<mutable> serializer, and an appropriate serializer will be chosen from the B<Content-Type> header.
 
-It's also possible to return custom error, using the C<send_error> function. When not using a serializer, the C<send_error> function will take a string as first parameter (the message), and an optional HTTP code. When using a serializer, the message can be a string, an arrayref or a hashref:
+It's also possible to return custom error, using the C<send_error> function. When you don't use a serializer, the C<send_error> function will take a string as first parameter (the message), and an optional HTTP code. When using a serializer, the message can be a string, an arrayref or a hashref:
 
     get '/hello/:name' => sub {
         if (...) {
