@@ -53,9 +53,8 @@ sub template {
         return Dancer::Response::set($error->render);
     }
 
-    for my $app ( Dancer::App->applications ) {
-        $_->($tokens) for ( @{ $app->registry->hooks->{before_template} } );
-    }
+    my $app = Dancer::App->current;
+    $_->($tokens) for ( @{ $app->registry->hooks->{before_template} } );
 
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
