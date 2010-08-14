@@ -120,7 +120,7 @@ sub get_action_response {
         Dancer::App->current( $handler->app );
         $response = $handler->run($request);
         $response = serialize_response_if_needed($response);
-        $app->($response) for ( @{ $app->registry->hooks->{after} } );
+        $_->($response) for ( @{ $app->registry->hooks->{after} } );
         return $response;
     }
     else {
