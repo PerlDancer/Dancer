@@ -17,14 +17,17 @@ sub new {
     $self->{title} ||= "Error " . $self->code;
     $self->{type}  ||= "runtime error";
 
-    my $html_output = "<h2>" . $self->{type} . "</h2>";
-    $html_output .= $self->backtrace;
-    $html_output .= $self->environment;
+    if (!$self->has_serializer) {
+        my $html_output = "<h2>" . $self->{type} . "</h2>";
+        $html_output .= $self->backtrace;
+        $html_output .= $self->environment;
 
-    $self->{message} = $html_output;
+        $self->{message} = $html_output;
+    }
     return $self;
 }
 
+sub has_serializer { setting('serializer') }
 sub code    { $_[0]->{code} }
 sub title   { $_[0]->{title} }
 sub message { $_[0]->{message} }
@@ -152,6 +155,28 @@ sub _html_encode {
 
 sub render {
     my $self = shift;
+
+    my $serializer = setting('serializer');
+
+    $serializer ? $self->_render_serialized() : $self->_render_html();
+}
+
+sub _render_serialized {
+    my $self = shift;
+
+    my $message =
+      !ref $self->message ? {error => $self->message} : $self->message;
+
+    Dancer::Response->new(
+        status  => $self->code,
+        content => Dancer::Serializer->engine->serialize($message),
+        headers => ['Content-Type' => Dancer::Serializer->engine->content_type]
+    );
+}
+
+sub _render_html {
+    my $self = shift;
+
     return Dancer::Response->new(
         status  => $self->code,
         headers => ['Content-Type' => 'text/html'],
