@@ -17,4 +17,7 @@ if (Dancer::ModuleLoader->load('HTTP::Headers')) {
         "Dancer::Headers works with HTTP::Headers object";
 }
 
+is_deeply $dh->get_all, {'Some-Header' => 42},
+    "get_all works";
+
 done_testing;
