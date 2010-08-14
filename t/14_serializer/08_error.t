@@ -35,7 +35,7 @@ sub test_json {
             my $res = $ua->request($req);
             ok !$res->is_success;
             is $res->code, 400;
-            is_deeply JSON::decode_json $res->content, {error => 'no'};
+            is_deeply(JSON::decode_json($res->content), {error => 'no'});
 
             $req->uri($url . 'error');
             $res = $ua->request($req);
@@ -48,8 +48,8 @@ sub test_json {
             $res = $ua->request($req);
             ok !$res->is_success;
             is $res->code, 500;
-            is_deeply JSON::decode_json $res->content,
-              {error => 'no http code'};
+            is_deeply(JSON::decode_json($res->content),
+              {error => 'no http code'});
         },
         server => sub {
             my $port = shift;
