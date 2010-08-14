@@ -90,7 +90,7 @@ do {
 
     # copy_to, link_to
     my $dest_dir = File::Temp::tempdir(CLEANUP => 1);
-    my $dest_file = path($dest_dir, $upload->filename);
+    my $dest_file = path($dest_dir, $upload->basename);
     $upload->copy_to($dest_file);
     ok((-f $dest_file), "file '$dest_file' has been copied");
 
