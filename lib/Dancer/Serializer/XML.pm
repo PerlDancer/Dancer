@@ -50,7 +50,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Serializer::XML
+Dancer::Serializer::XML - serializer for handling XML data
 
 =head1 SYNOPSIS
 
