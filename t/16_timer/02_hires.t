@@ -2,7 +2,7 @@ use Test::More;
 use strict;
 use warnings;
 
-plan tests => 6;
+plan tests => 7;
 use Dancer::Timer;
 
 my $timer = Dancer::Timer->new;
@@ -18,3 +18,4 @@ my $t2 = $timer->tick;
 
 ok(($t2 > $t1), "tick has been increased: ".$timer->tick);
 
+ok(length($timer->to_string), "to_string returned a string");
