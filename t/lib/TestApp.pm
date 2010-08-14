@@ -12,7 +12,7 @@ get '/test_app_setting' => sub {
     return { 
         onlyroot => setting('onlyroot'),
         foo => setting('foo'),
-        onyapp => setting('onyapp') 
+        onlyapp => setting('onlyapp') 
     };
 };
 

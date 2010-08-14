@@ -1,4 +1,4 @@
-use Test::More tests => 4;
+use Test::More tests => 6;
 use strict;
 use warnings;
 
@@ -28,6 +28,15 @@ is $app->setting('foo'), 42,
     setting onlyroot => 42;
     setting foo => "root";
 
+    get '/root_action' => sub {
+        return { 
+        onlyroot => setting('onlyroot'),
+        foo => setting('foo'),
+        onlyapp => setting('onlyapp') 
+    };
+
+    };
+
     load_app 't::lib::TestApp', 
         settings => { 
             foo => 'testapp',
@@ -35,8 +44,14 @@ is $app->setting('foo'), 42,
         };
 }
 
+
+response_content_is_deeply [ GET => '/root_action' ], { 
+        onlyroot => 42,
+        foo => 'root',
+        onlyapp => undef, 
+    };
 response_content_is_deeply [ GET => '/test_app_setting' ], { 
         onlyroot => 42,
         foo => 'testapp',
-        onyapp => 43, 
+        onlyapp => 43, 
     };

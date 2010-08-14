@@ -136,8 +136,16 @@ sub r          { warn "'r' is DEPRECATED use qr{} instead" ; return {regexp => $
 sub redirect   { Dancer::Helpers::redirect(@_) }
 sub request    { Dancer::SharedData->request }
 sub send_file  { Dancer::Helpers::send_file(@_) }
-sub set        { Dancer::Config::setting(@_) }
-sub setting    { Dancer::Config::setting(@_) }
+sub set        { goto &setting }
+sub setting    { 
+    if (Dancer::App->applications) {
+        return Dancer::App->current->setting(@_);
+    }
+    else {
+        return Dancer::Config::setting(@_)
+    }
+}
+
 sub set_cookie { Dancer::Helpers::set_cookie(@_) }
 
 sub session {

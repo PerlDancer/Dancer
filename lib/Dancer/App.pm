@@ -153,9 +153,20 @@ sub get {
 sub setting {
     my ($self, $name, $value) = @_;
 
-    return (@_ == 3) 
-        ? $self->settings->{$name} = $value
-        : $self->settings->{$name};
+    if ($self->name eq 'main') {
+        return (@_ == 3) 
+            ? Dancer::Config::setting($name => $value)
+            : Dancer::Config::setting($name) ;
+    }
+
+    return
+      (@_ == 3) 
+      ? $self->settings->{$name} = $value
+      : (
+        exists($self->settings->{$name}) 
+            ? $self->settings->{$name}
+            : Dancer::Config::setting($name)
+      );
 }
 
 1;
