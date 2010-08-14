@@ -70,6 +70,7 @@ t/00_base/007_load_syntax.t
 t/00_base/06_dancer_object.t
 t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
+t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
 t/01_config/01_settings.t
