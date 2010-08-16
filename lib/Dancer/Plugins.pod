@@ -1,0 +1,48 @@
+=head1 NAME
+
+Dancer::Plugins - interesting plugins to add to Dancer's capabilities
+
+=head1 DESCRIPTION
+
+Dancer aims to keep the core as small as possible, but there are a growing
+number of useful plugins to add helpful features.
+
+This document provides a quick summary of some recommended plugins.
+
+=head1 PLUGINS
+
+=over 4
+
+=item L<Dancer::Plugin::Database>
+
+Provides easy database access via DBI, reading the DB connection details from
+your app's config file, and taking care of ensuring the connection is still valid
+and reconnecting if not (useful in persistent environments).  Just calling the
+C<database> keyword gives you a connected and working database handle.
+
+=item L<Dancer::Plugin::Email>
+
+Provides easy email-sending powered by Email::Send - simply call the C<email>
+keyword.  Email sending settings can be taken from your app's config.
+
+=item L<Dancer::Plugin::REST>
+
+Makes writing RESTful web services easy.
+
+=item L<Dancer::Plugin::SiteMap>
+
+Automatically provides site maps (as a HTML page, or as an XML sitemap ready for
+Google) based on the routes your app defines.
+
+
+=item L<Dancer::Plugin::Validation>
+
+Easy data validation powered by L<Oogly>.
+
+=back
+
+More plugins are appearing on CPAN all the time - just search for
+C<Dancer::Plugin> to see what may have been released since this document was
+last updated!
+
+

@@ -7,7 +7,7 @@ plan tests => 4;
 
 use Dancer ':syntax';
 
-is(setting('apphandler'), 'standalone', 'default apphandler is standalone');
+is(setting('apphandler'), 'Standalone', 'default apphandler is standalone');
 my $app = Dancer::Handler->get_handler;
 is(ref($app), 'Dancer::Handler::Standalone', 'got expected handler');
 
