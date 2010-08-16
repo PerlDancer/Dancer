@@ -54,7 +54,7 @@ sub template {
     }
 
     my $app = Dancer::App->current;
-    $_->($tokens) for ( @{ $app->registry->hooks->{before_template} } );
+    $_->($tokens) for (@{$app->registry->hooks->{before_template}});
 
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
@@ -73,10 +73,11 @@ sub error {
 
 sub redirect {
     my ($destination, $status) = @_;
-    if($destination =~ m!^(\w://)?/!) {
+    if ($destination =~ m!^(\w://)?/!) {
+
         # no absolute uri here, build one, RFC 2616 forces us to do so
         my $request = Dancer::SharedData->request;
-        $destination = $request->uri_for( $destination, {}, 1 );
+        $destination = $request->uri_for($destination, {}, 1);
     }
     Dancer::Response::status($status || 302);
     Dancer::Response::headers('Location' => $destination);

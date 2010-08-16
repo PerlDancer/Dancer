@@ -5,63 +5,69 @@ use warnings;
 use base 'Dancer::Object';
 use Dancer::Logger;
 
-Dancer::Route::Registry->attributes(qw(
-    id
-    hooks
-));
+Dancer::Route::Registry->attributes(
+    qw(
+      id
+      hooks
+      )
+);
 
 my $id = 1;
 
 sub init {
     my ($self) = @_;
 
-    unless ( defined $self->{id} ) {
+    unless (defined $self->{id}) {
         $self->{id} = $id++;
     }
     $self->{routes} = {};
     $self->{hooks}  = {};
+
+    return $self;
 }
 
 sub is_empty {
     my ($self) = @_;
-    for my $method (keys %{ $self->{routes}}) {
-        return 0 if scalar(@{ $self->{routes}{$method}});
+    for my $method (keys %{$self->{routes}}) {
+        return 0 if scalar(@{$self->{routes}{$method}});
     }
     return 1;
-}   
+}
 
 sub hook {
     my ($class, $position, $filter) = @_;
-    Dancer::App->current->registry->add_hook($position, $filter);
+    return Dancer::App->current->registry->add_hook($position, $filter);
 }
 
 # replace any ':foo' by '(.+)' and stores all the named
 # matches defined in $REG->{route_params}{$route}
 sub add_hook {
-    my ( $self, $position, $filter ) = @_;
+    my ($self, $position, $filter) = @_;
 
     my $compiled_filter = sub {
         return if Dancer::Response->halted;
-        Dancer::Logger::core( "entering " . $position . " hook" );
+        Dancer::Logger::core("entering " . $position . " hook");
         eval { $filter->(@_) };
         if ($@) {
             my $err = Dancer::Error->new(
                 code  => 500,
                 title => $position . ' filter error',
-                message => "An error occured while executing the filter at position $position: $@"
+                message =>
+                  "An error occured while executing the filter at position $position: $@"
             );
-            return Dancer::halt( $err->render );
+            return Dancer::halt($err->render);
         }
     };
-    push @{ $self->{hooks}->{$position} }, $compiled_filter;
+    push @{$self->{hooks}->{$position}}, $compiled_filter;
+    return $compiled_filter;
 }
 
 sub routes {
     my ($self, $method) = @_;
 
-    if ( $method ) {
+    if ($method) {
         my $route = $self->{routes}{$method};
-        $route ? return $route : [];
+        return $route ? $route : [];
     }
     else {
         return $self->{routes};
@@ -71,11 +77,12 @@ sub routes {
 sub add_route {
     my ($self, $route) = @_;
     $self->{routes}{$route->method} ||= [];
-    
-    my @registered = @{ $self->{routes}{$route->method} };
-    my $last = $registered[$#registered];
+
+    my @registered = @{$self->{routes}{$route->method}};
+    my $last       = $registered[-1];
     $route->set_previous($last) if defined $last;
-    push @{ $self->{routes}{$route->method} }, $route;
+    push @{$self->{routes}{$route->method}}, $route;
+    return $route;
 }
 
 # sugar for add_route
@@ -89,12 +96,13 @@ sub register_route {
     if (Dancer::App->app_exists($package)) {
         my $app = Dancer::App->get($package);
         my $route = Dancer::Route->new(prefix => $app->prefix, %args);
-        $app->registry->add_route($route);
+        return $app->registry->add_route($route);
     }
     else {
+
         # FIXME maybe this code is useless, drop it later if so
         my $route = Dancer::Route->new(%args);
-        $self->add_route($route);
+        return $self->add_route($route);
     }
 }
 
@@ -113,7 +121,7 @@ sub any_add {
     }
 
     die "Syntax error, methods should be provided as an ARRAY ref"
-        if grep /^$pattern$/, @methods;
+      if grep { /^$pattern$/ } @methods;
 
     $self->universal_add($_, $pattern, @rest) for @methods;
     return scalar(@methods);
@@ -130,17 +138,17 @@ sub universal_add {
     }
     else {
         %options = %{$rest[0]};
-        $code = $rest[1];
+        $code    = $rest[1];
     }
 
     my %route_args = (
-        method => $method,
-        code   => $code,
+        method  => $method,
+        code    => $code,
         options => \%options,
         pattern => $pattern,
     );
 
-    $self->register_route(%route_args);
+    return $self->register_route(%route_args);
 }
 
 # look for a route in the given array
@@ -149,7 +157,7 @@ sub find_route {
     foreach my $route (@$reg) {
         return $route if $r->equals($route);
     }
-    return undef;
+    return;
 }
 
 1;

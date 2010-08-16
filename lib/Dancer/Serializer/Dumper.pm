@@ -35,6 +35,6 @@ sub deserialize {
     return $res;
 }
 
-sub content_type { 'text/x-data-dumper' }
+sub content_type {'text/x-data-dumper'}
 
 1;

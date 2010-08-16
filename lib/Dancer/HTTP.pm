@@ -75,7 +75,7 @@ $HTTP_CODES->{error} = $HTTP_CODES->{internal_server_error};
 
 # always return a numeric status code
 # if alias, return the corresponding code
-sub status { 
+sub status {
     my ($class, $name) = @_;
     return $name if $name =~ /^\d+$/;
     return $HTTP_CODES->{$name};

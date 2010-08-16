@@ -29,30 +29,30 @@ sub set_running_app {
 
 sub set_prefix {
     my ($self, $prefix) = @_;
-    die "not a valid prefix: `$prefix', must start with a /" 
-        if defined($prefix) && $prefix !~ /^\//;
+    die "not a valid prefix: `$prefix', must start with a /"
+      if defined($prefix) && $prefix !~ /^\//;
     Dancer::App->current->prefix($prefix);
-    return 1; # prefix may have been set to undef
+    return 1;    # prefix may have been set to undef
 }
 
 sub routes {
-   my ($self, $method) = @_;
-   map { $_->pattern } @{ $self->registry->{'routes'}{$method} }; 
+    my ($self, $method) = @_;
+    map { $_->pattern } @{$self->registry->{'routes'}{$method}};
 }
 
 sub reload_apps {
     my ($class) = @_;
 
     if (Dancer::ModuleLoader->load('Module::Refresh')) {
-        
+
         # saving apps & purging app registries
         my $orig_apps = {};
         while (my ($name, $app) = each %$_apps) {
             $orig_apps->{$name} = $app->clone;
             $app->registry->init();
         }
-        
-        # reloading changed modules, getting apps reloaded 
+
+        # reloading changed modules, getting apps reloaded
         Module::Refresh->refresh;
 
         # make sure old apps that didn't get reloaded are kept
@@ -74,7 +74,7 @@ sub find_route_through_apps {
         my $route = $app->find_route($request);
         return $route if $route;
     }
-    return undef;
+    return;
 }
 
 # instance
@@ -85,7 +85,9 @@ sub find_route {
 
     # if route cache is enabled, we check if we handled this path before
     if (Dancer::Config::setting('route_cache')) {
-        my $route = Dancer::Route::Cache->get->route_from_path($method, $request->path);
+        my $route =
+          Dancer::Route::Cache->get->route_from_path($method, $request->path);
+
         # NOTE maybe we should cache the match data as well
         if ($route) {
             $route->match($request);
@@ -93,7 +95,7 @@ sub find_route {
         }
     }
 
-    my @routes = @{ $self->registry->routes($method) }; 
+    my @routes = @{$self->registry->routes($method)};
 
     for my $r (@routes) {
         my $match = $r->match($request);
@@ -103,37 +105,39 @@ sub find_route {
 
             # if we have a route cache, store the result
             if (Dancer::Config::setting('route_cache')) {
-                Dancer::Route::Cache->get->store_path($method, $request->path => $r);
+                Dancer::Route::Cache->get->store_path($method,
+                    $request->path => $r);
             }
 
             return $r;
         }
     }
-    return undef;
+    return;
 }
 
 sub init {
     my ($self) = @_;
     $self->name('main') unless defined $self->name;
 
-    die "an app named '".$self->name."' already exists" 
-        if exists $_apps->{ $self->name };
-    
+    die "an app named '" . $self->name . "' already exists"
+      if exists $_apps->{$self->name};
+
     # default values for properties
     $self->settings({});
     $self->init_registry();
 
-    $_apps->{ $self->name } = $self;
+    $_apps->{$self->name} = $self;
 }
 
 sub init_registry {
     my ($self, $reg) = @_;
     $self->registry($reg || Dancer::Route::Registry->new);
-    
+
 }
 
 # singleton that saves the current active Dancer::App object
 my $_current;
+
 sub current {
     my ($class, $app) = @_;
     return $_current = $app if defined $app;
@@ -154,18 +158,17 @@ sub setting {
     my ($self, $name, $value) = @_;
 
     if ($self->name eq 'main') {
-        return (@_ == 3) 
-            ? Dancer::Config::setting($name => $value)
-            : Dancer::Config::setting($name) ;
+        return (@_ == 3)
+          ? Dancer::Config::setting($name => $value)
+          : Dancer::Config::setting($name);
     }
 
     return
-      (@_ == 3) 
-      ? $self->settings->{$name} = $value
+      (@_ == 3) ? $self->settings->{$name} =
+      $value
       : (
-        exists($self->settings->{$name}) 
-            ? $self->settings->{$name}
-            : Dancer::Config::setting($name)
+        exists($self->settings->{$name}) ? $self->settings->{$name}
+        : Dancer::Config::setting($name)
       );
 }
 

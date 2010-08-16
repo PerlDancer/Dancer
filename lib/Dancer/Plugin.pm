@@ -8,10 +8,10 @@ use base 'Exporter';
 use vars qw(@EXPORT);
 
 @EXPORT = qw(
-    add_hook
-    register
-    register_plugin
-    plugin_setting
+  add_hook
+  register
+  register_plugin
+  plugin_setting
 );
 
 my @_reserved_keywords = @Dancer::EXPORT;
@@ -23,23 +23,23 @@ sub add_hook { Dancer::Route::Registry->hook(@_) }
 sub plugin_setting {
     my $plugin_orig_name = caller();
     my ($plugin_name) = $plugin_orig_name =~ s/Dancer::Plugin:://;
-    
+
     my $settings = setting('plugins');
 
-    foreach (   $plugin_name,    $plugin_orig_name,
-             lc $plugin_name, lc $plugin_orig_name) 
+    foreach ($plugin_name, $plugin_orig_name, lc $plugin_name,
+        lc $plugin_orig_name)
     {
         return $settings->{$_}
-            if ( exists $settings->{$_} );
+          if (exists $settings->{$_});
     }
-    return undef;
+    return;
 }
 
-sub register($$) {
+sub register {
     my ($keyword, $code) = @_;
     my $plugin_name = caller();
 
-    if (grep {$_ eq $keyword} @_reserved_keywords) {
+    if (grep { $_ eq $keyword } @_reserved_keywords) {
         die "You can't use $keyword, this is a reserved keyword";
     }
     $_keywords->{$plugin_name} ||= [];
@@ -50,7 +50,7 @@ sub register_plugin {
     my ($application) = shift || caller(1);
     my ($plugin) = caller();
 
-    export_plugin_symbols($plugin => $application); 
+    export_plugin_symbols($plugin => $application);
 }
 
 sub load_plugin {
@@ -66,7 +66,7 @@ sub load_plugin {
 sub export_plugin_symbols {
     my ($plugin, $application) = @_;
 
-    for my $keyword (@{ $_keywords->{$plugin} }) {
+    for my $keyword (@{$_keywords->{$plugin}}) {
         my ($name, $code) = @$keyword;
         {
             no strict 'refs';

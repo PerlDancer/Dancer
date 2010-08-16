@@ -10,28 +10,30 @@ use Dancer::Config 'setting';
 use Dancer::Request;
 use Dancer::Response;
 
-Dancer::Route->attributes(qw(
-    app         
-    method 
-    pattern     
-    prefix
-    code
-    prev
-    regexp
-    next
-    options
-    match_data
-));
+Dancer::Route->attributes(
+    qw(
+      app
+      method
+      pattern
+      prefix
+      code
+      prev
+      regexp
+      next
+      options
+      match_data
+      )
+);
 
 # supported options and aliases
 my @_supported_options = Dancer::Request->get_attributes();
-my %_options_aliases   = (agent => 'user_agent');
+my %_options_aliases = (agent => 'user_agent');
 
 sub init {
     my ($self) = @_;
     $self->{'_compiled_regexp'} = undef;
 
-    if (! $self->pattern ) {
+    if (!$self->pattern) {
         die "cannot create Dancer::Route without a pattern";
     }
 
@@ -41,12 +43,15 @@ sub init {
     $self->_init_prefix() if $self->prefix;
     $self->_build_regexp();
     $self->set_previous($self->prev) if $self->prev;
+
+    return $self;
 }
 
 sub set_previous {
     my ($self, $prev) = @_;
     $self->prev($prev);
     $self->prev->{'next'} = $self;
+    return $prev;
 }
 
 sub save_match_data {
@@ -54,7 +59,6 @@ sub save_match_data {
     $self->match_data($match_data);
     $request->_set_route_params($match_data);
 
-    use Data::Dumper;
     return $match_data;
 }
 
@@ -65,55 +69,60 @@ sub match {
     my $method = lc($request->method);
     my $path   = $request->path;
     my %params;
-    
-    Dancer::Logger::core("trying to match `$path' ".
-        "against /".$self->{_compiled_regexp}."/");
+
+    Dancer::Logger::core("trying to match `$path' "
+          . "against /"
+          . $self->{_compiled_regexp}
+          . "/");
 
     my @values = $path =~ $self->{_compiled_regexp};
     Dancer::Logger::core("  --> got @values") if @values;
 
     # if some named captures found, return captures
     # no warnings is for perl < 5.10
-    if ( my %captures = do { no warnings; %+ } ) {
-        Dancer::Logger::core("  --> captures are: ".join(", ", keys(%captures))) if keys %captures;
-	    return $self->save_match_data($request, {captures => \%captures});
+    if (my %captures =
+        do { no warnings; %+ }
+      )
+    {
+        Dancer::Logger::core(
+            "  --> captures are: " . join(", ", keys(%captures)))
+          if keys %captures;
+        return $self->save_match_data($request, {captures => \%captures});
     }
 
-    return undef unless @values;
+    return unless @values;
 
     # named tokens
-    my @tokens = @{ $self->{_params} || [] };
+    my @tokens = @{$self->{_params} || []};
 
     Dancer::Logger::core("  --> named tokens are: @tokens") if @tokens;
     if (@tokens) {
         for (my $i = 0; $i < @tokens; $i++) {
             $params{$tokens[$i]} = $values[$i];
         }
-	    return $self->save_match_data($request, \%params);
+        return $self->save_match_data($request, \%params);
     }
-    
+
     elsif ($self->{_should_capture}) {
         return $self->save_match_data($request, {splat => \@values});
     }
-    
+
     return $self->save_match_data($request, {});
 }
 
 sub has_options {
     my ($self) = @_;
-    keys %{ $self->options } ? 1 : 0;
+    return keys(%{$self->options}) ? 1 : 0;
 }
 
 sub check_options {
     my ($self) = @_;
     return 1 unless defined $self->options;
 
-    for my $opt (keys %{ $self->options }) {
+    for my $opt (keys %{$self->options}) {
         die "Not a valid option for route matching: `$opt'"
-            if not ( 
-                (grep /^$opt$/, @_supported_options) or 
-                (grep /^$opt$/, keys(%_options_aliases)) 
-            );
+          if not(    (grep {/^$opt$/} @_supported_options)
+                  or (grep {/^$opt$/} keys(%_options_aliases)));
     }
     return 1;
 }
@@ -121,8 +130,9 @@ sub check_options {
 sub validate_options {
     my ($self, $request) = @_;
 
-    while (my ($option, $value) = each %{ $self->options }) {
-        $option = $_options_aliases{$option} if exists $_options_aliases{$option};
+    while (my ($option, $value) = each %{$self->options}) {
+        $option = $_options_aliases{$option}
+          if exists $_options_aliases{$option};
         return 0 if (not $request->$option) || ($request->$option !~ $value);
     }
     return 1;
@@ -130,10 +140,10 @@ sub validate_options {
 
 sub run {
     my ($self, $request) = @_;
-    
-    my $content = $self->execute();
+
+    my $content  = $self->execute();
     my $response = Dancer::Response->current;
-    
+
     if ($response->{pass}) {
 
         if ($self->next) {
@@ -160,9 +170,9 @@ sub run {
 
     return $content if ref($content) eq 'Dancer::Response';
     return Dancer::Response->new(
-        status  => $st,
-        headers => $headers,
-        content => $content,
+        status       => $st,
+        headers      => $headers,
+        content      => $content,
         content_type => $ct,
     );
 }
@@ -170,7 +180,7 @@ sub run {
 sub find_next_matching_route {
     my ($self, $request) = @_;
     my $next = $self->next;
-    return undef unless $next;
+    return unless $next;
 
     return $next if $next->match($request);
     return $next->find_next_matching_route($request);
@@ -180,13 +190,13 @@ sub execute {
     my ($self) = @_;
     if (Dancer::Config::setting('warnings')) {
         my $warning;
-        $SIG{__WARN__} = sub { $warning = $_[0] };
+        local $SIG{__WARN__} = sub { $warning = $_[0] };
         my $content = $self->code->();
         if ($warning) {
             return Dancer::Error->new(
-                status => 500,
+                status  => 500,
                 message => "Warning caught during route execution: $warning",
-                )->render;
+            )->render;
         }
         return $content;
     }
@@ -207,25 +217,30 @@ sub _init_prefix {
     }
     else {
         $self->{pattern} = $prefix . $self->pattern;
-        $self->{pattern} =~ s/\/$//; # remove trailing slash
+        $self->{pattern} =~ s/\/$//;    # remove trailing slash
     }
+
+    return $prefix;
 }
 
 sub equals {
     my ($self, $route) = @_;
+
     # TODO remove this hack when r() is deprecated
-    my $r1 = $self->regexp || $self->pattern;
+    my $r1 = $self->regexp  || $self->pattern;
     my $r2 = $route->regexp || $route->pattern;
     return $r1 eq $r2;
 }
 
 sub is_regexp {
-    ($_[0]->pattern && (ref($_[0]->pattern) eq 'Regexp')) || $_[0]->regexp;
+    my ($self) = @_;
+    return ($self->pattern && (ref($self->pattern) eq 'Regexp'))
+      || $self->regexp;
 }
 
 sub _build_regexp {
     my ($self) = @_;
-    
+
     if ($self->is_regexp) {
         $self->{_compiled_regexp} = $self->regexp || $self->pattern;
         $self->{_should_capture} = 1;
@@ -234,6 +249,7 @@ sub _build_regexp {
         $self->_build_regexp_from_string($self->pattern);
     }
 
+    return $self->{_compiled_regexp};
 }
 
 sub _build_regexp_from_string {
@@ -263,8 +279,10 @@ sub _build_regexp_from_string {
     $pattern =~ s/\//\\\//g;
 
     $self->{_compiled_regexp} = "^${pattern}\$";
-    $self->{_params} = \@params;
-    $self->{_should_capture} = $capture;
+    $self->{_params}          = \@params;
+    $self->{_should_capture}  = $capture;
+
+    return $self->{_compiled_regexp};
 }
 
 1;

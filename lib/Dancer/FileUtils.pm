@@ -21,7 +21,7 @@ sub read_file_content {
         return read_glob_content($fh);
     }
     else {
-        return undef;
+        return;
     }
 }
 

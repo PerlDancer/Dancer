@@ -8,7 +8,7 @@ use base 'Dancer::Engine';
 # Overloads this method to implement the rendering
 # args:   $self, $template, $tokens
 # return: a string of $template's content processed with $tokens
-sub render($$$) { die "render not implemented" }
+sub render { die "render not implemented" }
 
 sub view {
     my ($self, $view) = @_;
