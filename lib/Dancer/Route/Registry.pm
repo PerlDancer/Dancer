@@ -22,6 +22,8 @@ sub init {
     }
     $self->{routes} = {};
     $self->{hooks}  = {};
+
+    return $self;
 }
 
 sub is_empty {
@@ -34,7 +36,7 @@ sub is_empty {
 
 sub hook {
     my ($class, $position, $filter) = @_;
-    Dancer::App->current->registry->add_hook($position, $filter);
+    return Dancer::App->current->registry->add_hook($position, $filter);
 }
 
 # replace any ':foo' by '(.+)' and stores all the named
@@ -57,6 +59,7 @@ sub add_hook {
         }
     };
     push @{$self->{hooks}->{$position}}, $compiled_filter;
+    return $compiled_filter;
 }
 
 sub routes {
@@ -64,7 +67,7 @@ sub routes {
 
     if ($method) {
         my $route = $self->{routes}{$method};
-        $route ? return $route : [];
+        return $route ? $route : [];
     }
     else {
         return $self->{routes};
@@ -76,9 +79,10 @@ sub add_route {
     $self->{routes}{$route->method} ||= [];
 
     my @registered = @{$self->{routes}{$route->method}};
-    my $last       = $registered[$#registered];
+    my $last       = $registered[-1];
     $route->set_previous($last) if defined $last;
     push @{$self->{routes}{$route->method}}, $route;
+    return $route;
 }
 
 # sugar for add_route
@@ -92,13 +96,13 @@ sub register_route {
     if (Dancer::App->app_exists($package)) {
         my $app = Dancer::App->get($package);
         my $route = Dancer::Route->new(prefix => $app->prefix, %args);
-        $app->registry->add_route($route);
+        return $app->registry->add_route($route);
     }
     else {
 
         # FIXME maybe this code is useless, drop it later if so
         my $route = Dancer::Route->new(%args);
-        $self->add_route($route);
+        return $self->add_route($route);
     }
 }
 
@@ -117,7 +121,7 @@ sub any_add {
     }
 
     die "Syntax error, methods should be provided as an ARRAY ref"
-      if grep /^$pattern$/, @methods;
+      if grep { /^$pattern$/ } @methods;
 
     $self->universal_add($_, $pattern, @rest) for @methods;
     return scalar(@methods);
@@ -144,7 +148,7 @@ sub universal_add {
         pattern => $pattern,
     );
 
-    $self->register_route(%route_args);
+    return $self->register_route(%route_args);
 }
 
 # look for a route in the given array
