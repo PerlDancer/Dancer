@@ -18,6 +18,7 @@ Test::TCP::test_tcp(
 
         my $request = HTTP::Request->new(GET => "http://127.0.0.1:$port/");
         ok my $res = $ua->request($request);
+        $res->header('Acccept' => 'application/json');
         ok $res->header('X-Test');
         is $res->header('X-Test'), 'ok';
     },
@@ -25,6 +26,7 @@ Test::TCP::test_tcp(
         my $port  = shift;
         use Dancer;
         set serializer => 'JSON';
+        set access_log => 0;
         set port => $port;
         get '/' => sub {
             header 'X-Test' => 'ok';
