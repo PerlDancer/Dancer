@@ -14,7 +14,7 @@ use base 'Dancer::Object';
 #      settings => $hash_of_engine_settings
 Dancer::Engine->attributes(qw(name type));
 
-# Accessor to the config hash, it may not be initialized if someone 
+# Accessor to the config hash, it may not be initialized if someone
 # creates a new engine without giving the appropriate arguments.
 # e.g. Dancer::Template::Simple->new();
 sub config {
@@ -28,12 +28,12 @@ sub config {
 # if Dancer::$type::$name exists.
 sub build {
     my ($class, $type, $name, $config) = @_;
-    
-    die "cannot build engine without type and name " 
-        unless $name and $type;
+
+    die "cannot build engine without type and name "
+      unless $name and $type;
 
     my $class_name = ucfirst($type);
-    my $namespace = "Dancer::${class_name}";
+    my $namespace  = "Dancer::${class_name}";
 
     $config ||= {};
     $config->{engines} ||= {};
@@ -43,15 +43,15 @@ sub build {
     my $engine_class =
       Dancer::ModuleLoader->class_from_setting($namespace => $name);
 
-    die "unknown $type engine '$name', " .
-        "perhaps you need to install $engine_class?"
+    die "unknown $type engine '$name', "
+      . "perhaps you need to install $engine_class?"
       unless Dancer::ModuleLoader->load($engine_class);
 
     # creating the engine
     return $engine_class->new(
-        name     => $name,
-        type     => $type,
-        config   => $settings,
+        name   => $name,
+        type   => $type,
+        config => $settings,
     );
 }
 

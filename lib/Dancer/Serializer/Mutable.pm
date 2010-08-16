@@ -57,7 +57,7 @@ sub _find_content_type {
 
 sub serialize {
     my ($self, $entity) = @_;
-    my $request = Dancer::SharedData->request;
+    my $request    = Dancer::SharedData->request;
     my $serializer = $self->_load_serializer($request);
     return $serializer->serialize($entity);
 }
@@ -83,10 +83,10 @@ sub _load_serializer {
 
     my $content_types = $self->_find_content_type($request);
     foreach my $ct (@$content_types) {
-        if ( exists $serializer->{$ct} ) {
+        if (exists $serializer->{$ct}) {
             my $module = "Dancer::Serializer::" . $serializer->{$ct};
-            if ( !exists $loaded_serializer->{$module} ) {
-                if ( Dancer::ModuleLoader->load($module) ) {
+            if (!exists $loaded_serializer->{$module}) {
+                if (Dancer::ModuleLoader->load($module)) {
                     my $serializer_object = $module->new;
                     $loaded_serializer->{$module} = $serializer_object;
                 }

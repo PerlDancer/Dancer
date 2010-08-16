@@ -142,7 +142,7 @@ sub load_default_settings {
     $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
-    $SETTINGS->{environment}
+    $SETTINGS->{environment} 
       ||= $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
       || 'development';

@@ -29,15 +29,14 @@ sub retrieve {
 }
 
 
-
 sub destroy {
     my ($self) = @_;
-    undef $sessions{ $self->id };
+    undef $sessions{$self->id};
 }
 
 sub flush {
     my $self = shift;
-    $sessions{ $self->id } = $self;
+    $sessions{$self->id} = $self;
     return $self;
 }
 

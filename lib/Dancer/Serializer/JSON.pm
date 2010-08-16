@@ -9,13 +9,13 @@ use base 'Dancer::Serializer::Abstract';
 
 # helpers
 
-sub from_json { 
+sub from_json {
     my ($json) = @_;
     my $s = Dancer::Serializer::JSON->new;
     $s->deserialize($json);
 }
 
-sub to_json { 
+sub to_json {
     my ($data) = @_;
     my $s = Dancer::Serializer::JSON->new;
     $s->serialize($data);
@@ -28,29 +28,29 @@ sub loaded { Dancer::ModuleLoader->load('JSON') }
 sub init {
     my ($self) = @_;
     die 'JSON is needed and is not installed'
-        unless $self->loaded;
+      unless $self->loaded;
 }
 
 sub serialize {
     my ($self, $entity) = @_;
     my $json = JSON->new();
-    
+
     # Why doesn't $self->config have this?
     my $config = setting('engines') || {};
     $config = $config->{JSON} || {};
-    
-    if($config->{allow_blessed}) {
+
+    if ($config->{allow_blessed}) {
         $json->allow_blessed();
     }
-    if($config->{convert_blessed}) {
+    if ($config->{convert_blessed}) {
         $json->convert_blessed();
     }
-    
+
     $json->utf8->encode($entity);
 }
 
 sub deserialize {
-    my ( $self, $entity ) = @_;
+    my ($self, $entity) = @_;
     JSON::decode_json($entity);
 }
 

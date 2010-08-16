@@ -10,18 +10,18 @@ register 'ajax' => \&ajax;
 
 sub ajax {
     my ($pattern, @rest) = @_;
-    
+
     my $code;
     for my $e (@rest) { $code = $e if (ref($e) eq 'CODE') }
 
     my $ajax_route = sub {
         my $layout = setting('layout');
-            
+
         # must be an XMLHttpRequest
         if (not request->is_ajax) {
             pass and return 0;
         }
-    
+
         # disable layout
         setting('layout' => undef);
         my $response = $code->();
@@ -47,6 +47,7 @@ register_plugin;
 1;
 
 __END__
+
 =pod
 
 =head1 NAME

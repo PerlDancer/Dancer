@@ -11,20 +11,19 @@ use URI::Escape;
 
 use base 'Dancer::Object';
 my @http_env_keys = (
-    'user_agent',      'host',
-    'accept_language', 'accept_charset',
-    'accept_encoding', 'keep_alive',
-    'connection',      'accept', 
+    'user_agent',      'host',       'accept_language', 'accept_charset',
+    'accept_encoding', 'keep_alive', 'connection',      'accept',
     'accept_type',     'referer',
 );
 my $count = 0;
 
 Dancer::Request->attributes(
+
     # query
-    'env',          'path', 'method',
+    'env',          'path',    'method',
     'content_type', 'content_length',
-    'body',         'id', 'request_uri',
-    'uploads', 'headers', 'path_info',
+    'body',         'id',      'request_uri',
+    'uploads',      'headers', 'path_info',
     @http_env_keys,
 );
 
@@ -73,7 +72,7 @@ sub new {
 
 sub to_string {
     my ($self) = @_;
-    return "[#".$self->id."] ".$self->method." ".$self->path;
+    return "[#" . $self->id . "] " . $self->method . " " . $self->path;
 }
 
 # helper for building a request object by hand
@@ -94,23 +93,23 @@ sub base {
     my $self = shift;
 
     my @env_names = qw(
-        SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
+      SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
     );
 
     my ($server, $host, $port, $path, $scheme) = @{$self->{env}}{@env_names};
 
-    $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'}; # Windows
+    $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'};    # Windows
 
     my $uri = URI->new;
     $uri->scheme($scheme);
     $uri->authority($host || "$server:$port");
-    $uri->path($path || '/');
+    $uri->path($path      || '/');
 
     return $uri->canonical;
 }
 
 sub uri_for {
-    my ( $self, $part, $params, $dont_escape ) = @_;
+    my ($self, $part, $params, $dont_escape) = @_;
     my $uri = $self->base;
 
     # Make sure there's exactly one slash between the base and the new part
@@ -121,7 +120,7 @@ sub uri_for {
 
     $uri->query_form($params) if $params;
 
-    return $dont_escape ? uri_unescape( $uri->canonical ) : $uri->canonical;
+    return $dont_escape ? uri_unescape($uri->canonical) : $uri->canonical;
 }
 
 
@@ -161,7 +160,7 @@ sub upload {
     my $res = $self->{uploads}{$name};
 
     return $res unless wantarray;
-    return () unless defined $res;
+    return ()   unless defined $res;
     return (ref($res) eq 'ARRAY') ? @$res : $res;
 }
 
@@ -241,10 +240,8 @@ sub _build_params {
 
     # and merge everything
     $self->{params} = {
-        %$previous,
-        %{$self->{_query_params}},
-        %{$self->{_route_params}},
-        %{$self->{_body_params}},
+        %$previous,                %{$self->{_query_params}},
+        %{$self->{_route_params}}, %{$self->{_body_params}},
     };
 }
 
@@ -274,6 +271,7 @@ sub _build_path_info {
     my ($self) = @_;
     my $info = $self->{env}->{'PATH_INFO'};
     if (defined $info) {
+
         # Empty path info will be interpreted as "root".
         $info ||= '/';
     }
@@ -388,12 +386,12 @@ sub _build_uploads {
     my $uploads = $self->{_http_body}->upload;
     my %uploads;
 
-    for my $name (keys %{ $uploads }) {
+    for my $name (keys %{$uploads}) {
         my $files = $uploads->{$name};
         $files = ref $files eq 'ARRAY' ? $files : [$files];
 
         my @uploads;
-        for my $upload (@{ $files }) {
+        for my $upload (@{$files}) {
             push(
                 @uploads,
                 Dancer::Request::Upload->new(
@@ -408,7 +406,8 @@ sub _build_uploads {
 
         # support access to the filename as a normal param
         my @filenames = map { $_->{filename} } @uploads;
-        $self->{_body_params}{$name} =  @filenames > 1 ? \@filenames : $filenames[0];
+        $self->{_body_params}{$name} =
+          @filenames > 1 ? \@filenames : $filenames[0];
     }
 
     $self->{uploads} = \%uploads;

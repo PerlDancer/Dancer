@@ -16,11 +16,11 @@ use Dancer::SharedData;
 # we have to subclass headers, from HTTP::Server::Simple in order to catch them
 sub headers {
     my ($self, $headers) = @_;
-    
+
     # first, save the headers
     my $dh = Dancer::Headers->new(headers => $headers);
     Dancer::SharedData->headers($dh);
-    
+
     # then, let the SUPER method do its job
     $self->SUPER::headers($headers);
 }
@@ -44,13 +44,13 @@ sub start {
     if (setting('daemon')) {
         my $pid = $dancer->background();
         print STDERR
-          ">> Dancer server $pid listening on http://$ipaddr:$port\n" 
-            if setting('access_log');
+          ">> Dancer server $pid listening on http://$ipaddr:$port\n"
+          if setting('access_log');
         return $pid;
     }
     else {
         print STDERR ">> Dancer server $$ listening on http://$ipaddr:$port\n"
-            if setting('access_log');
+          if setting('access_log');
         $dancer->run();
     }
 }

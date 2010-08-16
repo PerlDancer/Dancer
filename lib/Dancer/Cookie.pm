@@ -32,11 +32,11 @@ sub _epoch_to_gmtstring {
     my @days   = qw(- Mon Tue Wed Thu Fri Sat Sun);
 
     return sprintf "%s, %02d-%s-%d %02d:%02d:%02d GMT",
-        $days[$wday],
-        $mday,
-        $months[$mon],
-        ($year + 1900),
-        $hour, $min, $sec;
+      $days[$wday],
+      $mday,
+      $months[$mon],
+      ($year + 1900),
+      $hour, $min, $sec;
 }
 
 1;

@@ -15,9 +15,9 @@ sub new {
     my $class = shift;
 
     die "Plack::Request is needed by the PSGI handler"
-        unless Dancer::ModuleLoader->load('Plack::Request');
+      unless Dancer::ModuleLoader->load('Plack::Request');
 
-    my $self  = {};
+    my $self = {};
     bless $self, $class;
     return $self;
 }
@@ -26,7 +26,7 @@ sub dance {
     my $self = shift;
 
     my $app = sub {
-        my $env = shift;
+        my $env     = shift;
         my $request = Dancer::Request->new($env);
         $self->init_request_headers($request);
         $self->handle_request($request);
@@ -34,8 +34,8 @@ sub dance {
 
     if (Dancer::Config::setting('plack_middlewares')) {
         my $middlewares = Dancer::Config::setting('plack_middlewares');
-        die "Plack::Builder is needed for middlewares support" unless
-            Dancer::ModuleLoader->load('Plack::Builder');
+        die "Plack::Builder is needed for middlewares support"
+          unless Dancer::ModuleLoader->load('Plack::Builder');
 
         my $builder = Plack::Builder->new();
         for my $m (keys %$middlewares) {

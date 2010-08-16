@@ -12,31 +12,31 @@ $VERSION = '0.01';
 use base 'Dancer::Object';
 Dancer::Route::Cache->attributes('size_limit', 'path_limit');
 
-# static 
+# static
 
 # singleton for the current cache object
 my $_cache;
 
-sub get { $_cache };
+sub get {$_cache}
 
 sub reset {
     $_cache = Dancer::Route::Cache->new();
     $_cache->{size_limit} = setting('route_cache_size_limit')
-        if defined setting('route_cache_size_limit');
+      if defined setting('route_cache_size_limit');
     $_cache->{path_limit} = setting('route_cache_path_limit')
-        if defined setting('route_cache_path_limit');
+      if defined setting('route_cache_path_limit');
 }
 
-# instance 
+# instance
 
-sub init { 
+sub init {
     my ($self, %args) = @_;
-    $self->build_size_limit( $args{'size_limit'} || '10M' );
-    $self->build_path_limit( $args{'path_limit'} || 600   );
+    $self->build_size_limit($args{'size_limit'} || '10M');
+    $self->build_path_limit($args{'path_limit'} || 600);
 }
 
 sub build_path_limit {
-    my ( $self, $limit ) = @_;
+    my ($self, $limit) = @_;
     if ($limit) {
         $self->{'path_limit'} = $limit;
     }
@@ -45,7 +45,7 @@ sub build_path_limit {
 }
 
 sub build_size_limit {
-    my ( $self, $limit ) = @_;
+    my ($self, $limit) = @_;
     if ($limit) {
         $self->{'size_limit'} = $self->parse_size($limit);
     }
@@ -54,14 +54,14 @@ sub build_size_limit {
 }
 
 sub parse_size {
-    my ( $self, $size ) = @_;
+    my ($self, $size) = @_;
 
-    if ( $size =~ /^(\d+)(K|M|G)?$/i ) {
+    if ($size =~ /^(\d+)(K|M|G)?$/i) {
         my $base = $1;
-        if ( my $ext = $2 ) {
-            $ext eq 'K' and return $base * 1024 ** 1;
-            $ext eq 'M' and return $base * 1024 ** 2;
-            $ext eq 'G' and return $base * 1024 ** 3;
+        if (my $ext = $2) {
+            $ext eq 'K' and return $base * 1024**1;
+            $ext eq 'M' and return $base * 1024**2;
+            $ext eq 'G' and return $base * 1024**3;
         }
 
         return $base;
@@ -69,34 +69,34 @@ sub parse_size {
 }
 
 sub route_from_path {
-    my ( $self, $method, $path ) = @_;
+    my ($self, $method, $path) = @_;
 
     $method && $path
-        or die "Missing method or path";
+      or die "Missing method or path";
 
     return $self->{'cache'}{$method}{$path} || undef;
 }
 
 sub store_path {
-    my ( $self, $method, $path, $route ) = @_;
+    my ($self, $method, $path, $route) = @_;
 
     $method && $path && $route
-        or die "Missing method, path or route";
+      or die "Missing method, path or route";
 
     $self->{'cache'}{$method}{$path} = $route;
 
-    push @{ $self->{'cache_array'} }, [ $method, $path ];
+    push @{$self->{'cache_array'}}, [$method, $path];
 
-    if ( my $limit = $self->size_limit ) {
-        while ( $self->route_cache_size() > $limit ) {
-            my ( $method, $path ) = @{ shift @{ $self->{'cache_array'} } };
+    if (my $limit = $self->size_limit) {
+        while ($self->route_cache_size() > $limit) {
+            my ($method, $path) = @{shift @{$self->{'cache_array'}}};
             delete $self->{'cache'}{$method}{$path};
         }
     }
 
-    if ( my $limit = $self->path_limit ) {
-        while ( $self->route_cache_paths() > $limit ) {
-            my ( $method, $path ) = @{ shift @{ $self->{'cache_array'} } };
+    if (my $limit = $self->path_limit) {
+        while ($self->route_cache_paths() > $limit) {
+            my ($method, $path) = @{shift @{$self->{'cache_array'}}};
             delete $self->{'cache'}{$method}{$path};
         }
     }
@@ -104,15 +104,15 @@ sub store_path {
 
 sub route_cache_size {
     my $self  = shift;
-    my %cache = %{ $self->{'cache'} };
+    my %cache = %{$self->{'cache'}};
     my $size  = 0;
 
     use bytes;
 
-    foreach my $method ( keys %cache ) {
+    foreach my $method (keys %cache) {
         $size += length $method;
 
-        foreach my $path ( keys %{ $cache{$method} } ) {
+        foreach my $path (keys %{$cache{$method}}) {
             $size += length $path;
             $size += length $cache{$method}{$path};
         }
@@ -124,10 +124,10 @@ sub route_cache_size {
 }
 
 sub route_cache_paths {
-    my $self  = shift;
-    my %cache = $self->{'cache'} ? %{ $self->{'cache'} } : ();
+    my $self = shift;
+    my %cache = $self->{'cache'} ? %{$self->{'cache'}} : ();
 
-    return scalar map { keys %{ $cache{$_} } } keys %cache;
+    return scalar map { keys %{$cache{$_}} } keys %cache;
 }
 
 1;

@@ -28,15 +28,16 @@ sub new {
 }
 
 sub has_serializer { setting('serializer') }
-sub code    { $_[0]->{code} }
-sub title   { $_[0]->{title} }
-sub message { $_[0]->{message} }
+sub code           { $_[0]->{code} }
+sub title          { $_[0]->{title} }
+sub message        { $_[0]->{message} }
 
 sub backtrace {
     my ($self) = @_;
 
     $self->{message} ||= "";
-    my $message = qq|<pre class="error">| . _html_encode($self->{message}) . "</pre>";
+    my $message =
+      qq|<pre class="error">| . _html_encode($self->{message}) . "</pre>";
 
     # the default perl warning/error pattern
     my ($file, $line) = ($message =~ /at (\S+) line (\d+)/);
@@ -67,7 +68,7 @@ sub backtrace {
 
     for (my $l = $start; $l <= $stop; $l++) {
         chomp $lines[$l];
-        
+
         if ($l == $line) {
             $backtrace
               .= qq|<span class="nu">|
@@ -100,20 +101,21 @@ sub tabulate {
 sub dumper {
     my $obj = shift;
     return "Unavailable without Data::Dumper"
-        unless Dancer::ModuleLoader->load('Data::Dumper');
+      unless Dancer::ModuleLoader->load('Data::Dumper');
 
 
     # Take a copy of the data, so we can mask sensitive-looking stuff:
-    my %data = %$obj;
-    my $censored = _censor(\%data); 
-   
+    my %data     = %$obj;
+    my $censored = _censor(\%data);
+
     #use Data::Dumper;
     my $dd = Data::Dumper->new([\%data]);
     $dd->Terse(1)->Quotekeys(0)->Indent(1);
     my $content = $dd->Dump();
     $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =&gt;}g;
     if ($censored) {
-        $content .= "\n\nNote: Values of $censored sensitive-looking keys hidden\n";
+        $content
+          .= "\n\nNote: Values of $censored sensitive-looking keys hidden\n";
     }
     return $content;
 }
@@ -131,7 +133,8 @@ sub _censor {
     for my $key (keys %$hash) {
         if (ref $hash->{$key} eq 'HASH') {
             $censored += _censor($hash->{$key});
-        } elsif ($key =~ /(pass|card?num|pan|secret)/i) {
+        }
+        elsif ($key =~ /(pass|card?num|pan|secret)/i) {
             $hash->{$key} = "Hidden (looks potentially sensitive)";
             $censored++;
         }
@@ -147,7 +150,7 @@ sub _html_encode {
     $value =~ s/&/&amp;/g;
     $value =~ s/</&lt;/g;
     $value =~ s/>/&gt;/g;
-    $value =~ s/'/&#39;/g;  
+    $value =~ s/'/&#39;/g;
     $value =~ s/"/&quot;/g;
 
     return $value;
@@ -191,7 +194,7 @@ sub environment {
     my ($self) = @_;
 
     my $request = Dancer::SharedData->request;
-    my $r_env = {};
+    my $r_env   = {};
     $r_env = $request->env if defined $request;
 
     my $env =
@@ -207,11 +210,12 @@ sub environment {
       . $self->get_caller
       . "</pre>";
     my $session = "";
+
     if (setting('session')) {
-        $session = 
+        $session =
             qq[<div class="title">Session</div><pre class="content">]
-            . dumper(  Dancer::Session->get  )
-            . "</pre>";
+          . dumper(Dancer::Session->get)
+          . "</pre>";
     }
     return "$source $settings $session $env";
 }
