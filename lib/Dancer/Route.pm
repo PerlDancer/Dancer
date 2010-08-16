@@ -43,12 +43,15 @@ sub init {
     $self->_init_prefix() if $self->prefix;
     $self->_build_regexp();
     $self->set_previous($self->prev) if $self->prev;
+
+    return $self;
 }
 
 sub set_previous {
     my ($self, $prev) = @_;
     $self->prev($prev);
     $self->prev->{'next'} = $self;
+    return $prev;
 }
 
 sub save_match_data {
@@ -56,7 +59,6 @@ sub save_match_data {
     $self->match_data($match_data);
     $request->_set_route_params($match_data);
 
-    use Data::Dumper;
     return $match_data;
 }
 
@@ -110,7 +112,7 @@ sub match {
 
 sub has_options {
     my ($self) = @_;
-    keys %{$self->options} ? 1 : 0;
+    return keys(%{$self->options}) ? 1 : 0;
 }
 
 sub check_options {
@@ -119,8 +121,8 @@ sub check_options {
 
     for my $opt (keys %{$self->options}) {
         die "Not a valid option for route matching: `$opt'"
-          if not(    (grep /^$opt$/, @_supported_options)
-                  or (grep /^$opt$/, keys(%_options_aliases)));
+          if not(    (grep {/^$opt$/} @_supported_options)
+                  or (grep {/^$opt$/} keys(%_options_aliases)));
     }
     return 1;
 }
@@ -188,7 +190,7 @@ sub execute {
     my ($self) = @_;
     if (Dancer::Config::setting('warnings')) {
         my $warning;
-        $SIG{__WARN__} = sub { $warning = $_[0] };
+        local $SIG{__WARN__} = sub { $warning = $_[0] };
         my $content = $self->code->();
         if ($warning) {
             return Dancer::Error->new(
@@ -217,6 +219,8 @@ sub _init_prefix {
         $self->{pattern} = $prefix . $self->pattern;
         $self->{pattern} =~ s/\/$//;    # remove trailing slash
     }
+
+    return $prefix;
 }
 
 sub equals {
@@ -229,7 +233,9 @@ sub equals {
 }
 
 sub is_regexp {
-    ($_[0]->pattern && (ref($_[0]->pattern) eq 'Regexp')) || $_[0]->regexp;
+    my ($self) = @_;
+    return ($self->pattern && (ref($self->pattern) eq 'Regexp'))
+      || $self->regexp;
 }
 
 sub _build_regexp {
@@ -243,6 +249,7 @@ sub _build_regexp {
         $self->_build_regexp_from_string($self->pattern);
     }
 
+    return $self->{_compiled_regexp};
 }
 
 sub _build_regexp_from_string {
@@ -274,6 +281,8 @@ sub _build_regexp_from_string {
     $self->{_compiled_regexp} = "^${pattern}\$";
     $self->{_params}          = \@params;
     $self->{_should_capture}  = $capture;
+
+    return $self->{_compiled_regexp};
 }
 
 1;
