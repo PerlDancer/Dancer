@@ -67,7 +67,7 @@ sub match {
     my ($self, $request) = @_;
 
     my $method = lc($request->method);
-    my $path   = $request->path;
+    my $path   = $request->path_info;
     my %params;
 
     Dancer::Logger::core("trying to match `$path' "

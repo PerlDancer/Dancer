@@ -43,7 +43,7 @@ sub handle_request {
     Dancer::SharedData->reset_timer;
     Dancer::Logger::core("request: "
           . $request->method . " "
-          . $request->path
+          . $request->path_info
           . " from $ip_addr");
 
     # deserialize the request body if possible

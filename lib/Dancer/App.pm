@@ -85,8 +85,8 @@ sub find_route {
 
     # if route cache is enabled, we check if we handled this path before
     if (Dancer::Config::setting('route_cache')) {
-        my $route =
-          Dancer::Route::Cache->get->route_from_path($method, $request->path);
+        my $route = Dancer::Route::Cache->get->route_from_path($method,
+            $request->path_info);
 
         # NOTE maybe we should cache the match data as well
         if ($route) {
@@ -106,7 +106,7 @@ sub find_route {
             # if we have a route cache, store the result
             if (Dancer::Config::setting('route_cache')) {
                 Dancer::Route::Cache->get->store_path($method,
-                    $request->path => $r);
+                    $request->path_info => $r);
             }
 
             return $r;
