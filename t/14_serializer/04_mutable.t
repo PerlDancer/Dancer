@@ -32,10 +32,10 @@ my $request = Dancer::Request->new_for_request('GET', '/',);
 Dancer::SharedData->request($request);
 
 my $data = {foo => 42};
-ok my $result = $s->serialize($data);
-like $result, qr/{"foo":42}/;
+ok my $result = $s->serialize($data), 'got result from serialize';
+like $result, qr/{"foo":42}/, 'result is correct';
 
-is $s->content_type, 'application/json';
+is $s->content_type, 'application/json', 'correct content_type';
 
 $result = $s->deserialize($result, $request);
 is_deeply($result, $data, 'got same result');
@@ -50,11 +50,10 @@ is_deeply($result, $data, 'got same result');
 
 my $req = Dancer::Request->new(\%ENV);
 Dancer::SharedData->request($req);
-
 eval { $s->deserialize($data) };
-ok $@, 'Died okay';
+ok $@, 'died okay';
 
 $result = $s->serialize($data);
-is $s->content_type, 'text/x-yaml';
+is $s->content_type, 'text/x-yaml', 'correct content_type';
 
 done_testing;
