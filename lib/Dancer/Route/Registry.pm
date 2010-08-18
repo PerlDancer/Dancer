@@ -121,7 +121,7 @@ sub any_add {
     }
 
     die "Syntax error, methods should be provided as an ARRAY ref"
-      if grep { /^$pattern$/ } @methods;
+      if grep {/^$pattern$/} @methods;
 
     $self->universal_add($_, $pattern, @rest) for @methods;
     return scalar(@methods);
