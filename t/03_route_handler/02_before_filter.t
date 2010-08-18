@@ -5,10 +5,10 @@ use Test::More tests => 13, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-ok(before(sub { 
+ok(before(sub {
     params->{number} = 42;
     var notice => "I am here";
-    request->path('/');
+    request->path_info('/');
 }), 'before filter is defined');
 
 ok(get('/' => sub {

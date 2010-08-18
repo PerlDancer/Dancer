@@ -30,9 +30,9 @@ sub render_action {
 sub render_error {
     my ($class, $error_code) = @_;
 
-    my $app = Dancer::App->current;
+    my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), "$error_code.html");
-    my $response = Dancer::Renderer->get_file_response_for_path(
+    my $response    = Dancer::Renderer->get_file_response_for_path(
         $static_file => $error_code);
     return $response if $response;
 
@@ -143,7 +143,7 @@ sub serialize_response_if_needed {
 sub get_file_response {
     my $request     = Dancer::SharedData->request;
     my $path_info   = $request->path_info;
-    my $app = Dancer::App->current;
+    my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
     return Dancer::Renderer->get_file_response_for_path($static_file);
 }
