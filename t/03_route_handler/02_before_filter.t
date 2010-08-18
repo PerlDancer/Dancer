@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan', import => ['!pass'];
+use Test::More tests => 13, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
 ok(before(sub { 
     params->{number} = 42;
     var notice => "I am here";
-    request->path_info('/');
+    request->path('/');
 }), 'before filter is defined');
 
 ok(get('/' => sub {
@@ -16,6 +16,9 @@ ok(get('/' => sub {
     is("I am here", vars->{notice}, "vars->{notice} is set");
     return 'index';
 }), 'index route is defined');
+
+route_exists [GET => '/'];
+response_exists [GET => '/'];
 
 my $path = '/somewhere';
 my $request = [ GET => $path ];

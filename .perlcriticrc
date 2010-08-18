@@ -1,0 +1,7 @@
+verbose  = [%p] %m at %f line %l, near '%r'\n
+
+# we use eval strings in Dancer for dynamic loading
+[-BuiltinFunctions::ProhibitStringyEval] 
+
+# we use magic closure bindings in some places 
+[-TestingAndDebugging::ProhibitNoStrict]

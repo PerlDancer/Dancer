@@ -15,14 +15,15 @@ sub engine {$ENGINE}
 sub init {
     my ($class, $name, $config) = @_;
     $ENGINE = Dancer::Engine->build(session => $name, $config);
-    #$ENGINE->init(); already done 
+
+    #$ENGINE->init(); already done
 }
 
 # retrieve or create a session for the client
 sub get_current_session {
     my $sid     = engine->read_session_id;
     my $session = undef;
-    my $class = ref(engine);
+    my $class   = ref(engine);
 
     $session = $class->retrieve($sid) if $sid;
 

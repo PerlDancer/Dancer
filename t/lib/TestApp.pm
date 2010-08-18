@@ -7,6 +7,20 @@ use t::lib::LinkBlocker;
 block_links_from "www.foo.com";
 
 get '/' => sub { "Hello, this is the home" };
+get '/hash' => sub { { a => 1, b => 2, c => 3} };
+get '/with_headers' => sub {
+    header 'X-Foo-Dancer' => 42;
+    1;
+};
+
+
+get '/test_app_setting' => sub {
+    return { 
+        onlyroot => setting('onlyroot'),
+        foo => setting('foo'),
+        onlyapp => setting('onlyapp') 
+    };
+};
 
 get '/name/:name' => sub {
     "Your name: ".params->{name}
@@ -40,7 +54,8 @@ get '/set_session/*' => sub {
 };
 
 get '/read_session' => sub {
-    "name='".session('name')."'"
+    my $name = session('name') || '';
+    "name='$name'"
 };
 
 put '/jsondata' => sub {

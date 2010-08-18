@@ -39,7 +39,7 @@ sub deserialize {
     YAML::Load($content);
 }
 
-sub content_type { 'text/x-yaml' }
+sub content_type {'text/x-yaml'}
 
 1;
 __END__

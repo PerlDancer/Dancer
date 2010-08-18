@@ -34,23 +34,23 @@ sub init {
 }
 
 sub serialize {
-    my ( $self, $entity ) = @_;
-    $_xs->XMLout( { data => $entity } );
+    my ($self, $entity) = @_;
+    $_xs->XMLout({data => $entity});
 }
 
 sub deserialize {
-    my ( $self, $content ) = @_;
+    my ($self, $content) = @_;
     $_xs->XMLin($content);
 }
 
-sub content_type { 'text/xml' }
+sub content_type {'text/xml'}
 
 1;
 __END__
 
 =head1 NAME
 
-Dancer::Serializer::XML
+Dancer::Serializer::XML - serializer for handling XML data
 
 =head1 SYNOPSIS
 

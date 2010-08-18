@@ -3,7 +3,7 @@
 AUTHORS
 CHANGES
 lib/Dancer.pm
-lib/Dancer/Clone.pm
+lib/Dancer/App.pm
 lib/Dancer/Config.pm
 lib/Dancer/Cookbook.pod
 lib/Dancer/Cookie.pm
@@ -28,12 +28,13 @@ lib/Dancer/Logger/File.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
 lib/Dancer/Plugin.pm
+lib/Dancer/Plugin/Ajax.pm
+lib/Dancer/Plugins.pod
 lib/Dancer/Renderer.pm
 lib/Dancer/Request.pm
 lib/Dancer/Request/Upload.pm
 lib/Dancer/Response.pm
 lib/Dancer/Route.pm
-lib/Dancer/Route/Builder.pm
 lib/Dancer/Route/Cache.pm
 lib/Dancer/Route/Registry.pm
 lib/Dancer/Serializer.pm
@@ -69,6 +70,7 @@ t/00_base/007_load_syntax.t
 t/00_base/06_dancer_object.t
 t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
+t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
 t/01_config/01_settings.t
@@ -93,6 +95,7 @@ t/02_request/13_ajax.t
 t/02_request/14_uploads.t
 t/02_request/15_headers.t
 t/03_route_handler/00_http_methods.t
+t/03_route_handler/00_route_object.t
 t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
 t/03_route_handler/03_passing.t
@@ -101,7 +104,6 @@ t/03_route_handler/06_regexp.t
 t/03_route_handler/07_compilation_warning.t
 t/03_route_handler/08_errors.t
 t/03_route_handler/09_status.t
-t/03_route_handler/10_merge_registries.t
 t/03_route_handler/11_redirect.t
 t/03_route_handler/11_redirect_no_content.t
 t/03_route_handler/12_response.t
@@ -109,7 +111,6 @@ t/03_route_handler/13_any_route_handler.t
 t/03_route_handler/14_options.t
 t/03_route_handler/15_prefix.t
 t/03_route_handler/16_caching.t
-t/03_route_handler/17_compile.t
 t/03_route_handler/18_auto_page.t
 t/03_route_handler/19_filters_and_params.t
 t/03_route_handler/20_params_multiple_tokens.t
@@ -119,6 +120,7 @@ t/03_route_handler/23_filter_error_catching.t
 t/03_route_handler/24_multiple_params.t
 t/03_route_handler/24_named_captures.t
 t/03_route_handler/25_issue_77_pass_breaks_routes.t
+t/03_route_handler/26_after_hook.t
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
@@ -159,7 +161,9 @@ t/10_template/01_factory.t
 t/10_template/02_abstract_class.t
 t/10_template/03_simple.t
 t/10_template/05_template_toolkit.t
+t/10_template/06_before_template_hook.t
 t/10_template/index.txt
+t/10_template/views/index.tt
 t/11_logger/01_abstract.t
 t/11_logger/02_factory.t
 t/11_logger/03_file.t
@@ -177,13 +181,21 @@ t/14_serializer/04_mutable.t
 t/14_serializer/05_live.t
 t/14_serializer/06_serialize_response.t
 t/14_serializer/07_bug_57805.t
+t/14_serializer/08_error.t
+t/14_serializer/09_abstract.t
+t/14_serializer/10_dumper.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t
 t/15_plugins/03_namespace.t
 t/16_timer/00_base.t
 t/16_timer/02_hires.t
+t/17_apps/00_base.t
+t/17_apps/01_settings.t
+t/17_apps/02_load_app.t
+t/17_apps/03_prefix.t
 t/lib/EasyMocker.pm
+t/lib/Forum.pm
 t/lib/LinkBlocker.pm
 t/lib/TestApp.pm
 t/lib/TestSerializer.pm
