@@ -1,5 +1,4 @@
 use Test::More import => ['!pass'];
-use Test::Exception;
 
 use strict;
 use warnings;
@@ -52,7 +51,8 @@ is_deeply($result, $data, 'got same result');
 my $req = Dancer::Request->new(\%ENV);
 Dancer::SharedData->request($req);
 
-dies_ok {$s->deserialize($data)};
+eval { $s->deserialize($data) };
+ok $@, 'Died okay';
 
 $result = $s->serialize($data);
 is $s->content_type, 'text/x-yaml';
