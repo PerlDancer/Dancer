@@ -1,4 +1,9 @@
-Dancer
+Dancer 1.18xxxxx
+
+    [Sawyer X]
+    * Fix for RT #60403: removing Test::Exception requirement
+
+Dancer 1.1806_02
 
     [James Aitken]
     * fix issues GH #84 #86 and #87 (failing tests on < 5.10 due to regex with named captures)
@@ -12,9 +17,6 @@ Dancer
     [David Precious]
     * Add Dancer::Plugins POD, describing useful plugins
     * Extend sessions & logging in entry in cookbook
-
-    [Sawyer X]
-    * Fix for RT #60403: removing Test::Exception requirement
 
 Dancer 1.1806_01
 
