@@ -13,6 +13,9 @@ Dancer
     * Add Dancer::Plugins POD, describing useful plugins
     * Extend sessions & logging in entry in cookbook
 
+    [Sawyer X]
+    * Fix for RT #60403: removing Test::Exception requirement
+
 Dancer 1.1806_01
 
     [ sebastian de castelberg ]
