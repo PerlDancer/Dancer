@@ -30,7 +30,8 @@ sub render_action {
 sub render_error {
     my ($class, $error_code) = @_;
 
-    my $static_file = path(setting('public'), "$error_code.html");
+    my $app = Dancer::App->current;
+    my $static_file = path($app->setting('public'), "$error_code.html");
     my $response = Dancer::Renderer->get_file_response_for_path(
         $static_file => $error_code);
     return $response if $response;
@@ -85,7 +86,7 @@ sub get_action_response {
 
     # save the request before the filters are ran
     my $request = Dancer::SharedData->request;
-    my ($method, $path) = ($request->method, $request->path);
+    my ($method, $path) = ($request->method, $request->path_info);
 
     # look for a matching route handler, for the given request
     my $handler =
@@ -99,7 +100,7 @@ sub get_action_response {
     # recurse if something has changed
     my $limit              = 0;
     my $MAX_RECURSIVE_LOOP = 10;
-    if (   ($path ne Dancer::SharedData->request->path)
+    if (   ($path ne Dancer::SharedData->request->path_info)
         || ($method ne Dancer::SharedData->request->method))
     {
         $limit++;
@@ -142,7 +143,8 @@ sub serialize_response_if_needed {
 sub get_file_response {
     my $request     = Dancer::SharedData->request;
     my $path_info   = $request->path_info;
-    my $static_file = path(setting('public'), $path_info);
+    my $app = Dancer::App->current;
+    my $static_file = path($app->setting('public'), $path_info);
     return Dancer::Renderer->get_file_response_for_path($static_file);
 }
 

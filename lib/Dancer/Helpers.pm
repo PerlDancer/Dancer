@@ -32,8 +32,10 @@ sub send_file {
 sub template {
     my ($view, $tokens, $options) = @_;
 
+    my $app = Dancer::App->current;
+
     $options ||= {layout => 1};
-    my $layout = setting('layout');
+    my $layout = $app->setting('layout');
     undef $layout unless $options->{layout};
 
     $tokens ||= {};
@@ -53,7 +55,6 @@ sub template {
         return Dancer::Response::set($error->render);
     }
 
-    my $app = Dancer::App->current;
     $_->($tokens) for (@{$app->registry->hooks->{before_template}});
 
     my $content = Dancer::Template->engine->render($view, $tokens);
