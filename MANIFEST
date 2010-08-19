@@ -1,4 +1,5 @@
 .gitignore
+.perlcriticrc
 .perltidyrc
 AUTHORS
 CHANGES
@@ -70,6 +71,7 @@ t/00_base/007_load_syntax.t
 t/00_base/06_dancer_object.t
 t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
+t/00_base/10_headers.t
 t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
@@ -119,8 +121,9 @@ t/03_route_handler/22_filter_halt.t
 t/03_route_handler/23_filter_error_catching.t
 t/03_route_handler/24_multiple_params.t
 t/03_route_handler/24_named_captures.t
-t/03_route_handler/25_issue_77_pass_breaks_routes.t
 t/03_route_handler/26_after_hook.t
+t/03_route_handler/27_issue_77_pass_breaks_routes.t
+t/03_route_handler/28_plack_mount.t
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
@@ -152,6 +155,8 @@ t/08_session/02_dependency_check.t
 t/08_session/03_http_requests.t
 t/08_session/04_api.t
 t/08_session/05_yaml.t
+t/08_session/06_abstract.t
+t/08_session/07_session_expires.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t
@@ -184,6 +189,7 @@ t/14_serializer/07_bug_57805.t
 t/14_serializer/08_error.t
 t/14_serializer/09_abstract.t
 t/14_serializer/10_dumper.t
+t/14_serializer/11_bug_57829.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t
@@ -194,9 +200,12 @@ t/17_apps/00_base.t
 t/17_apps/01_settings.t
 t/17_apps/02_load_app.t
 t/17_apps/03_prefix.t
+t/17_apps/04_issue_91.t
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm
+t/lib/MyApp.pm
+t/lib/MyAppFoo.pm
 t/lib/TestApp.pm
 t/lib/TestSerializer.pm
 t/lib/TestUtils.pm
