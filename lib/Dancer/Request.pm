@@ -76,15 +76,16 @@ sub to_string {
 }
 
 # helper for building a request object by hand
-# with forced method, path and params.
+# with forced method, path, params and body.
 sub new_for_request {
-    my ($class, $method, $path, $params) = @_;
+    my ($class, $method, $path, $params, $body) = @_;
     $params ||= {};
     $method = uc($method);
 
     my $req =
       $class->new({%ENV, PATH_INFO => $path, REQUEST_METHOD => $method});
     $req->{params} = {%{$req->{params}}, %{$params}};
+    $req->{body} = $body if defined $body;
 
     return $req;
 }
