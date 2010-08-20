@@ -113,7 +113,7 @@ be returned in an arrayref, accessible via the `splat' keyword.
 
 =head2 REGULAR EXPRESSION MATCHING
 
-A route can be defined with a Perl regular expression. 
+A route can be defined with a Perl regular expression.
 
 In order to tell Dancer to consider the route as a real regexp, the route must
 be defined explicitly with C<qr{}>, like the following:
@@ -194,7 +194,7 @@ use the following keywords.
 
 =head2 DEFAULT ERROR PAGES
 
-When an error is renderered (the action responded with a status code different
+When an error is rendered (the action responded with a status code different
 than 200), Dancer first looks in the public directory for an HTML file matching
 the error code (eg: 500.html or 404.html).
 
@@ -252,7 +252,7 @@ incoming request. See the documentation of the L<Dancer::Request> module for det
 =head1 CONFIGURATION AND ENVIRONMENTS
 
 Configuring a Dancer application can be done in many ways. The easiest one (and
-maybe the the dirtiest) is to put all your settings statements at the top of
+maybe the dirtiest) is to put all your settings statements at the top of
 your script, before calling the dance() method.
 
 Other ways are possible, you can write all your setting calls in the file
@@ -324,7 +324,7 @@ the config keyword:
 
 =head1 Importing just the syntax
 
-If you want to use more complex files hierarchies, you can import just the
+If you want to use more complex file hierarchies, you can import just the
 syntax of Dancer.
 
     package App;
@@ -425,7 +425,7 @@ request, and params tokens. This allows you to insert per-page content into
 the HTML boilerplate, such as page titles, current-page tags for navigation,
 etc.
 
-Here is an example of a layout: views/layouts/main.tt :
+Here is an example of a layout: views/layouts/main.tt:
 
     <html>
         <head><% page_title %></head>
@@ -548,7 +548,7 @@ See L<Dancer::Config> for complete details about supported settings.
 =head1 SERIALIZERS
 
 When writing a webservice, data serialization/deserialization is a common issue
-to deal with. Dancer can automaticall handle that for you, via a serializer.
+to deal with. Dancer can automatically handle that for you, via a serializer.
 
 When setting up a serializer, a new behaviour is authorized for any route
 handler you define: any non-scalar response will be rendered as a serialized
