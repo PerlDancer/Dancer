@@ -166,18 +166,19 @@ sub response_headers_are_deeply {
     is_deeply($response->{headers}, $expected, $test_name);
 }
 
-# private
-
 sub get_response {
     my ($req) = @_;
-    my ($method, $path, $params, $headers) = @$req;
-    my $request = Dancer::Request->new_for_request($method => $path, $params);
+    my ($method, $path, $params, $body, $headers) = @$req;
+    my $request = Dancer::Request->new_for_request(
+        $method => $path, $params, $body);
 
     Dancer::SharedData->headers($headers) if $headers;
     Dancer::SharedData->request($request);
 
     return Dancer::Renderer::get_action_response();
 }
+
+# private
 
 sub _get_file_response {
     my ($req) = @_;
