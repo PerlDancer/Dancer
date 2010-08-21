@@ -264,7 +264,6 @@ L<Dancer::Session::YAML>.  There are other session backends you may wish to use,
 for instance L<Dancer::Session::Memcache>, but the YAML backend is a simple and
 easy to use example which stores session data in a YAML file in sessions).
 
-
 =head3 Storing data in the session
 
 Storing data in the session is as easy as:
@@ -298,7 +297,11 @@ and easily within your config file, for example:
 If the directory you specify does not exist, Dancer will attempt to create it
 for you.
 
+=head3 Destroying a session
 
+When you're done with your session, you can destroy it:
+
+    session->destroy
 
 =head2 Sessions and logging in
 

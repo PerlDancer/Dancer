@@ -707,6 +707,15 @@ It can also be used as a setter to add new data to the current session engine.
         ...
     };
 
+You may also need to clear a session:
+
+    # destroy session
+    get '/logout' => sub {
+        ...
+        session->destroy;
+        ...
+    };
+
 =head2 splat
 
 When inside a route handler with a route pattern with wildcards, the splat
