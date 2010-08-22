@@ -80,6 +80,11 @@ sub add_route {
     my @registered = @{$self->{routes}{$route->method}};
     my $last       = $registered[-1];
     $route->set_previous($last) if defined $last;
+
+    # if the route have options, we store the route at the begining
+    # of the routes. This way, we can have the following routes:
+    # get '/' => sub {} and ajax '/' => sub {}
+    # and the user won't have to declare the ajax route before the get
     if (keys %{$route->{options}}) {
         unshift @{$self->{routes}{$route->method}}, $route;
     }
