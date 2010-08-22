@@ -121,8 +121,8 @@ sub check_options {
 
     for my $opt (keys %{$self->options}) {
         die "Not a valid option for route matching: `$opt'"
-          if not(    (grep {/^$opt$/} @_supported_options)
-                  or (grep {/^$opt$/} keys(%_options_aliases)));
+          if not(    (grep {/^$opt$/} @{$_supported_options[0]})
+                  || (grep {/^$opt$/} keys(%_options_aliases)));
     }
     return 1;
 }

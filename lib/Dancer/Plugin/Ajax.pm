@@ -33,10 +33,10 @@ sub ajax {
     my @compiled_rest;
     for my $e (@rest) {
         if (ref($e) eq 'CODE') {
-            push @compiled_rest, $ajax_route;
+            push @compiled_rest, {ajax => 1}, $ajax_route;
         }
         else {
-            push @compiled_rest, $e;
+            push @compiled_rest, {ajax => 1}, $e;
         }
     }
 
