@@ -6,9 +6,9 @@ use strict;
 use warnings;
 
 sub load {
-    my ($class, $module) = @_;
+    my ($class, $module, $version) = @_;
     local $@;
-    eval "use $module";
+    $version ? eval "use $module $version" : eval "use $module";
     return $@ ? 0 : 1;
 }
 
