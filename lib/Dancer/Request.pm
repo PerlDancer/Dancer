@@ -24,6 +24,7 @@ Dancer::Request->attributes(
     'content_type', 'content_length',
     'body',         'id',      'request_uri',
     'uploads',      'headers', 'path_info',
+    'ajax',
     @http_env_keys,
 );
 
@@ -150,6 +151,7 @@ sub params {
 sub is_ajax {
     my $self = shift;
 
+    return 0 unless defined $self->headers;
     return 0 unless defined $self->header('X-Requested-With');
     return 0 if $self->header('X-Requested-With') ne 'XMLHttpRequest';
     return 1;
@@ -181,6 +183,7 @@ sub _init {
     $self->{_http_body}->cleanup(1);
     $self->_build_params();
     $self->_build_uploads unless $self->uploads;
+    $self->{ajax} = $self->is_ajax;
 }
 
 # Some Dancer's core components sometimes need to alter
