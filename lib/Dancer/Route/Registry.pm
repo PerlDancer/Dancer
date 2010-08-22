@@ -77,11 +77,15 @@ sub routes {
 sub add_route {
     my ($self, $route) = @_;
     $self->{routes}{$route->method} ||= [];
-
     my @registered = @{$self->{routes}{$route->method}};
     my $last       = $registered[-1];
     $route->set_previous($last) if defined $last;
-    push @{$self->{routes}{$route->method}}, $route;
+    if (keys %{$route->{options}}) {
+        unshift @{$self->{routes}{$route->method}}, $route;
+    }
+    else {
+        push @{$self->{routes}{$route->method}}, $route;
+    }
     return $route;
 }
 

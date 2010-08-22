@@ -157,6 +157,8 @@ t/08_session/04_api.t
 t/08_session/05_yaml.t
 t/08_session/06_abstract.t
 t/08_session/07_session_expires.t
+t/08_session/08_simple.t
+t/08_session/09_session.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t
