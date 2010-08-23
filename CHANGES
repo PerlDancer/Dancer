@@ -1,20 +1,38 @@
 Dancer 1.1807
 
-    [Sawyer X]
+    [ Sawyer X ]
     * Fix for RT #60403: removing Test::Exception requirement
 
-	[ Alexis Sukrieh ]
-	* Global rewrite of Dancer's core to allow support for sub-application
-  	 (Dancer::App instances). 
-	 It's now possible to mount applications within a Dancer app, via the
-	 load_app keyword. Sub-apps can have their own settings registry and can be
-	 mounted under a given prefix.
-	
-	[Franck Cuny ]
-	* Support for new hooks:
-	  - after: to allow response post-processing
-	  - before_template: to allow defaut tokens to be given at anytime to the
-		template function.
+    [ Alexis Sukrieh ]
+    * Global rewrite of Dancer's core to allow support for
+     sub-application, better route resolution and a better design.
+    * Support for mountable applications via "load_app".
+     Mounted applications can have their own settings registry and 
+     can be mounted under a given prefix.
+    
+    [ Franck Cuny ]
+    * Support for new hooks:
+      - after: to allow response post-processing
+      - before_template: to allow defaut tokens to be given at anytime
+        to the template function.
+    * Fix and test for bug  RT#57829 
+      (Custom response headers lost when using JSON serializer)
+    * FIX PSGI compatibility layer (request->path_info is used when appropriate
+      instead of request->path)
+    * FIX for GH#100
+      When loading a module, it's possible to require a minimal
+      version.
+    * New option "ajax" for route handlers.
+    * Fix a bug in ajax route when processing the route resolution
+      (when a route is defined with options, it's pushed in the
+      beggining of the route handler tree).
+
+    [ jamhed ]
+    * Support for new setting "session_expire" in order to allow
+      session cookies to expire before the browser is closed.
+     
+    [ Naveed Massjouni ]
+    * Dancer::Test can now test requests with a body
 
 Dancer 1.1806_02
 
