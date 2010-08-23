@@ -1,0 +1,18 @@
+verbose  = [%p] %m at %f line %l, near '%r'\n
+severity = 5
+
+# we use eval strings in Dancer for dynamic loading
+[-BuiltinFunctions::ProhibitStringyEval] 
+
+# we use magic closure bindings in some places 
+[-TestingAndDebugging::ProhibitNoStrict]
+[-TestingAndDebugging::ProhibitNoWarnings]
+
+# We're not under CVS! :)
+[-Miscellanea::RequireRcsKeywords]
+
+# only Dancer.pm matters here
+[-Modules::RequireVersionVar]
+
+# we use postifx controls
+[-ControlStructures::ProhibitPostfixControls]

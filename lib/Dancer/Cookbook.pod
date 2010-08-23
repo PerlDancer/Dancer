@@ -264,7 +264,6 @@ L<Dancer::Session::YAML>.  There are other session backends you may wish to use,
 for instance L<Dancer::Session::Memcache>, but the YAML backend is a simple and
 easy to use example which stores session data in a YAML file in sessions).
 
-
 =head3 Storing data in the session
 
 Storing data in the session is as easy as:
@@ -298,7 +297,11 @@ and easily within your config file, for example:
 If the directory you specify does not exist, Dancer will attempt to create it
 for you.
 
+=head3 Destroying a session
 
+When you're done with your session, you can destroy it:
+
+    session->destroy
 
 =head2 Sessions and logging in
 
@@ -609,7 +612,19 @@ From now, all hash ref or array ref returned by a route will be serialized to JS
         return {name => params->{name}};
     };
 
-It's possible to let the client choose which serializer he want to use. For this, use the B<mutable> serializer, and an appropriate serializer will be choosen from the B<Content-Type> header.
+It's possible to let the client choose which serializer he want to use. For this, use the B<mutable> serializer, and an appropriate serializer will be chosen from the B<Content-Type> header.
+
+It's also possible to return custom error, using the C<send_error> function. When you don't use a serializer, the C<send_error> function will take a string as first parameter (the message), and an optional HTTP code. When using a serializer, the message can be a string, an arrayref or a hashref:
+
+    get '/hello/:name' => sub {
+        if (...) {
+           send_error("you can't do that");
+           # or
+           send_error({reason => 'access denied', message => "no"});
+        }
+    };
+
+The content of the error will be serialized using the appropriate serializer.
 
 =head2 Deploying your Dancer applications
 

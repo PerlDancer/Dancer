@@ -34,7 +34,7 @@ sub current {
 }
 
 # helpers for the route handlers
-sub exists       { defined $CURRENT && length($CURRENT->{content}) }
+sub exists { defined $CURRENT && length($CURRENT->{content}) }
 sub set          { $CURRENT                 = shift; }
 sub status       { $CURRENT->{status}       = Dancer::HTTP->status(shift) }
 sub content_type { $CURRENT->{content_type} = shift }
@@ -50,7 +50,7 @@ sub halt {
         $CURRENT = Dancer::Response->new;
         $CURRENT->{content} = $content;
     }
-    $CURRENT->{halted}  = 1;
+    $CURRENT->{halted} = 1;
     return $content;
 }
 
@@ -85,7 +85,8 @@ sub update_headers {
 
     for (my $i = 0; $i < scalar(@$headers); $i += 2) {
         my ($key, $value) = ($headers->[$i], $headers->[$i + 1]);
-        push @new_headers, ($key => $params{$key}) if exists($params{$key});
+        my $header_value = (exists $params{$key}) ? $params{$key} : $value;
+        push @new_headers, ($key => $header_value);
     }
     $self->{headers} = \@new_headers;
 }

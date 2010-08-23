@@ -7,7 +7,7 @@ Dancer::Template::Simple->attributes('start_tag', 'stop_tag');
 use Dancer::FileUtils 'read_file_content';
 
 sub init {
-    my $self = shift;
+    my $self     = shift;
     my $settings = $self->config;
 
     my $start = $settings->{'start_tag'} || '<%';
@@ -17,7 +17,7 @@ sub init {
     $self->stop_tag($stop)   unless defined $self->stop_tag;
 }
 
-sub render($$$) {
+sub render {
     my ($self, $template, $tokens) = @_;
     my $content;
 
@@ -35,14 +35,15 @@ sub parse_branches {
     my $prefix             = "";
     my $should_bufferize   = 1;
     my $bufferize_if_token = 0;
+
 #    $content =~ s/\Q${start}\E(\S)/${start} $1/sg;
 #    $content =~ s/(\S)\Q${stop}\E/$1 ${stop}/sg;
 
     # we get here a list of tokens without the start/stop tags
-    my @full = split (/\Q$start\E\s*(.*?)\s*\Q$stop\E/, $content);
+    my @full = split(/\Q$start\E\s*(.*?)\s*\Q$stop\E/, $content);
 
     # and here a list of tokens without variables
-    my @flat = split (/\Q$start\E\s*.*?\s*\Q$stop\E/, $content);
+    my @flat = split(/\Q$start\E\s*.*?\s*\Q$stop\E/, $content);
 
     # eg: for 'foo=<% var %>'
     #   @full = ('foo=', 'var')
@@ -53,7 +54,9 @@ sub parse_branches {
     for my $word (@full) {
 
         # flat word, nothing to do
-        if (defined $flat[$flat_index] && ($flat[$flat_index] eq $full[$full_index])) {
+        if (defined $flat[$flat_index]
+            && ($flat[$flat_index] eq $full[$full_index]))
+        {
             push @buffer, $word if $should_bufferize;
             $flat_index++;
             $full_index++;
@@ -61,7 +64,7 @@ sub parse_branches {
         }
 
         my @to_parse = ($word);
-        @to_parse = split (/\s+/, $word) if $word =~ /\s+/;
+        @to_parse = split(/\s+/, $word) if $word =~ /\s+/;
 
         for my $w (@to_parse) {
 
@@ -80,7 +83,8 @@ sub parse_branches {
                 $bufferize_if_token = 0;
             }
             elsif ($should_bufferize) {
-                my $val = _interpolate_value(_find_value_from_token_name($w, $tokens));
+                my $val =
+                  _interpolate_value(_find_value_from_token_name($w, $tokens));
                 push @buffer, $val;
             }
         }
@@ -131,7 +135,7 @@ sub _find_value_from_token_name {
     return $value;
 }
 
-sub _interpolate_value($) {
+sub _interpolate_value {
     my ($value) = @_;
     if (ref($value) eq 'CODE') {
         local $@;

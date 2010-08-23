@@ -58,9 +58,9 @@ Point your browser at it, and away you go!
 This option can be useful for small personal web apps or internal apps, but if
 you want to make your app available to the world, it probably won't suit you.
 
-=head3 Plackup and various Perl's webserver
+=head3 Running on Perl webservers with plackup
 
-C<Plackup> can also be used to start your application. A number of Perl web server supporting PSGI are available on cpan:
+A number of Perl web servers supporting PSGI are available on cpan:
 
 =over 4
 
@@ -78,14 +78,51 @@ C<Corona> is a C<Coro> based web server.
 
 =back
 
-To start you application using Plackup, all you need to do is
+To start your application, just run plackup
 
    $ plackup -s Twiggy -p 5000 <YOURAPP>.pl
 
 As you can see, the scaffolded Perl script for your app can be used as a PSGI
 startup file.
 
-=head4 Plackup and daemontools
+
+=head3 Running multiple apps with Plack::Builder
+
+You can use Plack::Builder to mount multiple Dancer applications on
+a L<PSGI> webserver like L<Starman>.
+
+Start by creating a simple app.psgi file:
+
+    use Dancer;
+    use Plack::Builder;
+    load_app 'MyApp1', 'MyApp2';
+
+    use Dancer::Config 'setting';
+    setting apphandler => 'PSGI';
+    Dancer::Config->load;
+
+    my $app1 = sub {
+        my $env = shift;
+        my $request = Dancer::Request->new( $env );
+        Dancer->dance( $request );
+    };
+    my $app2 = sub {
+        my $env = shift;
+        my $request = Dancer::Request->new( $env );
+        Dancer->dance( $request );
+    };
+
+    builder {
+        mount "/app1" => builder {$app1};
+        mount "/app2" => builder {$app2};
+    };
+
+and now use L<Starman>
+
+    plackup -a app.psgi -s Starman
+
+
+=head3 Using daemontools to create a service
 
 daemontools is a collection of tools for managing UNIX services. You can use it to easily start/restart/stop services.
 
@@ -246,6 +283,13 @@ following:
         CustomLog /websites/myapp.example.com/logs/access_log common
     </VirtualHost>
 
+To set the environment you want to use for your application (production or development), you can set it this way:
+
+    <VirtualHost>
+        ...
+        SetEnv DANCER_ENVIRONMENT "production"
+        ...
+    </VirtualHost>
 
 =head3 Running from Apache via FastCGI
 
@@ -306,37 +350,50 @@ RewriteRules in a .htaccess file directly within the application's directory,
 which lets you add a new application without changing the Apache configuration.
 
 
-=head3 Plack::Builder with Starman|Twiggy|...
+=head2 Running on lighttpd
 
-You can use Plack::Builder to mount multiple Dancer's application and run
-a L<Plack> webserver like L<Starman> in front.
+It is very easy to configure lighttpd to deploy Dancer applications. Multiple
+applications can be deployed on the same server by setting up virtual hosts.
+You can configure name based virtual hosts with conditional blocks that start
+with: 
 
-Start by creating a simple app.psgi file:
+    $HTTP["host"] == "myapp.example.com" { ...
 
-    use Dancer;
-    use Plack::Builder;
-    load_app 'MyApp1', 'MyApp2';
+Or you can configure port based virtual hosts:
 
-    use Dancer::Config 'setting';
-    setting apphandler => 'PSGI';
-    Dancer::Config->load;
+    $SERVER["socket"] == ":5000" { ...
 
-    my $app1 = sub {
-        my $env = shift;
-        my $request = Dancer::Request->new( $env );
-        Dancer->dance( $request );
-    };
-    my $app2 = sub {
-        my $env = shift;
-        my $request = Dancer::Request->new( $env );
-        Dancer->dance( $request );
-    };
+There is no need to explicitly set the document root for the following examples.
+It will be set to the public folder implicitly, since that is where the dispatch
+scripts live. If you would like your document root to be elsewhere, you can add
+this line inside of the conditional block:
 
-    builder {
-        mount "/app1" => builder {$app1};
-        mount "/app2" => builder {$app2};
-    };
+    server.document-root = "/somewhere/else/"
 
-and now use L<Starman>
 
-    plackup -a app.psgi -s Starman
+=head3 Running on lighttpd (CGI)
+
+Make sure mod_cgi is enabled. This example uses a name based virtual host.
+
+    cgi.assign = ( ".cgi" => "" )
+    $HTTP["host"] == "myapp.example.com" {
+        alias.url += ("" => "/path/to/myapp/public/dispatch.cgi")
+    }
+
+
+=head3 Running on lighttpd (FastCGI)
+
+Make sure mod_fcgi is enabled. You also must install the FCGI module from
+CPAN. This example uses a port based virtual host.
+
+    $SERVER["socket"] == ":5000" {
+        fastcgi.server += (
+            ".fcgi" => ((
+                "bin-path" => "/path/to/myapp/public/dispatch.fcgi",
+                "socket" => "/tmp/fcgi.sock",
+            ))
+        )
+        alias.url += ("" => "/path/to/myapp/public/dispatch.fcgi")
+    }
+
+

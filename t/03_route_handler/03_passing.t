@@ -16,7 +16,7 @@ ok(get('/say/:number' => sub {
     "number: ".params->{number};
 }), 'route /say/:number defined');
 
-ok(get({regexp => '/say/_(.*)'} => sub { 
+ok(get(qr{/say/_(.*)} => sub { 
     "underscore: ".params->{splat}[0];
 }), 'route /say/_(.*) defined');
 

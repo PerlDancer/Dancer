@@ -2,116 +2,166 @@ package Dancer::Route::Registry;
 use strict;
 use warnings;
 
+use base 'Dancer::Object';
 use Dancer::Logger;
 
-# instance
-use base 'Dancer::Object';
+Dancer::Route::Registry->attributes(
+    qw(
+      id
+      hooks
+      )
+);
+
+my $id = 1;
 
 sub init {
     my ($self) = @_;
+
+    unless (defined $self->{id}) {
+        $self->{id} = $id++;
+    }
     $self->{routes} = {};
-    $self->{before_filters} = [];
+    $self->{hooks}  = {};
+
+    return $self;
 }
 
-# singleton for the current registry
-my $_registry = Dancer::Route::Registry->new;
+sub is_empty {
+    my ($self) = @_;
+    for my $method (keys %{$self->{routes}}) {
+        return 0 if scalar(@{$self->{routes}{$method}});
+    }
+    return 1;
+}
 
+sub hook {
+    my ($class, $position, $filter) = @_;
+    return Dancer::App->current->registry->add_hook($position, $filter);
+}
 
-# static
-sub get    {$_registry}
-sub set    { $_registry = $_[1] }
-sub reset  { $_registry = Dancer::Route::Registry->new }
-
-sub before_filters { @{ $_registry->{before_filters} } }
-sub add_before_filter {
-    my ($class, $filter) = @_;
+# replace any ':foo' by '(.+)' and stores all the named
+# matches defined in $REG->{route_params}{$route}
+sub add_hook {
+    my ($self, $position, $filter) = @_;
 
     my $compiled_filter = sub {
         return if Dancer::Response->halted;
-        Dancer::Logger::core("entering before filter");
-        eval { $filter->() };
+        Dancer::Logger::core("entering " . $position . " hook");
+        eval { $filter->(@_) };
         if ($@) {
             my $err = Dancer::Error->new(
-                code => 500,
-                title => 'Before filter error',
-                message => "An error occured while executing the filter: $@");
+                code  => 500,
+                title => $position . ' filter error',
+                message =>
+                  "An error occured while executing the filter at position $position: $@"
+            );
             return Dancer::halt($err->render);
         }
     };
-
-    push @{ $_registry->{before_filters} }, $compiled_filter;
+    push @{$self->{hooks}->{$position}}, $compiled_filter;
+    return $compiled_filter;
 }
 
 sub routes {
-    if ( $_[1] ) {
-        my $route = $_registry->{routes}{ $_[1] };
-        $route ? return $route : [];
+    my ($self, $method) = @_;
+
+    if ($method) {
+        my $route = $self->{routes}{$method};
+        return $route ? $route : [];
     }
     else {
-        return $_registry->{routes};
+        return $self->{routes};
     }
 }
 
 sub add_route {
-    my ($class, %args) = @_;
-    $_registry->{routes}{$args{method}} ||= [];
-    push @{ $_registry->{routes}{$args{method}} }, \%args;
+    my ($self, $route) = @_;
+    $self->{routes}{$route->method} ||= [];
+    my @registered = @{$self->{routes}{$route->method}};
+    my $last       = $registered[-1];
+    $route->set_previous($last) if defined $last;
+    if (keys %{$route->{options}}) {
+        unshift @{$self->{routes}{$route->method}}, $route;
+    }
+    else {
+        push @{$self->{routes}{$route->method}}, $route;
+    }
+    return $route;
+}
+
+# sugar for add_route
+
+sub register_route {
+    my ($self, %args) = @_;
+
+    # look if the caller (where the route is declared) exists as a Dancer::App
+    # object
+    my ($package) = caller(2);
+    if (Dancer::App->app_exists($package)) {
+        my $app = Dancer::App->get($package);
+        my $route = Dancer::Route->new(prefix => $app->prefix, %args);
+        return $app->registry->add_route($route);
+    }
+    else {
+
+        # FIXME maybe this code is useless, drop it later if so
+        my $route = Dancer::Route->new(%args);
+        return $self->add_route($route);
+    }
+}
+
+# sugar for Dancer.pm
+# class, any, ARRAY(0x9864818), '/path', CODE(0x990ac88)
+# or
+# class, any, '/path', CODE(0x990ac88)
+sub any_add {
+    my ($self, $pattern, @rest) = @_;
+
+    my @methods = qw(get post put delete options);
+
+    if (ref($pattern) eq 'ARRAY') {
+        @methods = @$pattern;
+        $pattern = shift @rest;
+    }
+
+    die "Syntax error, methods should be provided as an ARRAY ref"
+      if grep {/^$pattern$/} @methods;
+
+    $self->universal_add($_, $pattern, @rest) for @methods;
+    return scalar(@methods);
+}
+
+sub universal_add {
+    my ($self, $method, $pattern, @rest) = @_;
+
+    my %options;
+    my $code;
+
+    if (@rest == 1) {
+        $code = $rest[0];
+    }
+    else {
+        %options = %{$rest[0]};
+        $code    = $rest[1];
+    }
+
+    my %route_args = (
+        method  => $method,
+        code    => $code,
+        options => \%options,
+        pattern => $pattern,
+    );
+
+    return $self->register_route(%route_args);
 }
 
 # look for a route in the given array
 sub find_route {
-    my ($r, $reg) = @_;
+    my ($self, $r, $reg) = @_;
     foreach my $route (@$reg) {
-        return $route if ($r->{route} eq $route->{route});
+        return $route if $r->equals($route);
     }
-    return undef;
-}
-
-sub merge {
-    my ($class, $orig_reg, $new_reg) = @_;
-    my $merged_reg = Dancer::Route::Registry->new;
-
-    # walking through all the routes, using the newest when exists
-    foreach
-      my $method (keys(%{$new_reg->{routes}}), keys(%{$orig_reg->{routes}}))
-    {
-
-        # don't work out a method if already done
-        next if exists $merged_reg->{routes}{$method};
-
-        my $merged_routes = [];
-        my $orig_routes   = $orig_reg->{routes}{$method};
-        my $new_routes    = $new_reg->{routes}{$method};
-
-        # walk through all the orig elements, if we have a new version,
-        # overwrite it, else, keep the old one.
-        foreach my $route (@$orig_routes) {
-            my $new = find_route($route, $new_routes);
-            if (defined $new) {
-                push @$merged_routes, $new;
-            }
-            else {
-                push @$merged_routes, $route;
-            }
-        }
-
-        # now, walk through all the new elements, looking for a new route
-        foreach my $route (@$new_routes) {
-            push @$merged_routes, $route
-              unless find_route($route, $merged_routes);
-        }
-
-        $merged_reg->{routes}{$method} = $merged_routes;
-    }
-
-    # NOTE: we have to warn the user about mixing before_filters in different
-    # files, that's not supported. Only the last before_filters block is used.
-    $merged_reg->{before_filters} =
-      (scalar(@{$new_reg->{before_filters}}) > 0)
-      ? $new_reg->{before_filters}
-      : $orig_reg->{before_filters};
-
-    Dancer::Route::Registry->set($merged_reg);
+    return;
 }
 
 1;

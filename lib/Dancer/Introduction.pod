@@ -1,6 +1,6 @@
 =head1 NAME
 
-Dancer::Introduction
+Dancer::Introduction - A gentle introduction to Dancer
 
 =head1 INSTALL
 

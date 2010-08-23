@@ -3,10 +3,8 @@ use warnings;
 
 use Test::More tests => 26*2+9, import => ['!pass'];
 
-use t::lib::TestUtils;
-
 use Dancer ':syntax';
-use Dancer::Route;
+use Dancer::Test;
 
 {
     ok(get('/'                           => sub { 'index' }),            'first route set');
@@ -77,19 +75,12 @@ my @tests = (
 setting route_cache => 1;
 
 foreach my $test (@tests) {
-    #use Data::Dumper; diag("TEST DATA: " . Dumper $test);
     my $method = $test->{method};
     my $path = $test->{path};
     my $expected = $test->{expected};
 
-    my $request = fake_request($method => $path);
-
-    Dancer::SharedData->request($request);
-    my $response = Dancer::Renderer::get_action_response();
+    my $request = [$method => $path];
     
-    ok( defined($response), "route handler found for path `$path'");
-    is_deeply(
-        $response->{content}, $expected, 
-        "match data for path `$path' looks good");
-
+    response_exists $request;
+    response_content_is_deeply $request, $expected, 
 }

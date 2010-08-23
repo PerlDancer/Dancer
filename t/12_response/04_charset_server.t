@@ -5,8 +5,8 @@ use Dancer::ModuleLoader;
 use Dancer;
 use Encode;
 
-plan skip_all => "LWP is needed for this test" 
-    unless Dancer::ModuleLoader->load('LWP::UserAgent');
+plan skip_all => "LWP is needed for this test"
+    unless Dancer::ModuleLoader->load('LWP::UserAgent', '5.827');
 plan skip_all => "HTTP::Request::Common is needed for this test"
     unless Dancer::ModuleLoader->load('HTTP::Request::Common');
 plan skip_all => "Test::TCP is needed for this test"
@@ -20,7 +20,7 @@ Test::TCP::test_tcp(
         my $ua = LWP::UserAgent->new;
         my $req = HTTP::Request::Common::POST("http://127.0.0.1:$port/name", [ name => 'vasya' ]);
         my $res = $ua->request($req);
-        
+
         is $res->content_type, 'text/html';
         ok !$res->content_type_charset;
         is $res->content, 'Your name: vasya';

@@ -88,12 +88,16 @@ sub read_session_id {
 
 sub write_session_id {
     my ($class, $id) = @_;
-    Dancer::Cookies->cookies->{$SESSION_NAME} = Dancer::Cookie->new(
+    my %cookie = (
         name  => $SESSION_NAME,
-        value => $id,
-
-        # no expires: will expire when the browser is closed
+        value => $id
     );
+    if (my $expires = setting('session_expires')) {
+        $cookie{expires} =
+          Dancer::Cookie::_epoch_to_gmtstring(time + $expires);
+    }
+
+    Dancer::Cookies->cookies->{$SESSION_NAME} = Dancer::Cookie->new(%cookie);
 }
 
 1;

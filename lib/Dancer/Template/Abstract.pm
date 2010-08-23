@@ -8,19 +8,22 @@ use base 'Dancer::Engine';
 # Overloads this method to implement the rendering
 # args:   $self, $template, $tokens
 # return: a string of $template's content processed with $tokens
-sub render($$$) { die "render not implemented" }
+sub render { die "render not implemented" }
 
 sub view {
     my ($self, $view) = @_;
     $view .= ".tt" if $view !~ /\.tt$/;
-    return path(Dancer::Config::setting('views'), $view);
+
+    my $app = Dancer::App->current;
+    return path($app->setting('views'), $view);
 }
 
 sub layout {
     my ($self, $layout, $tokens, $content) = @_;
 
+    my $app = Dancer::App->current;
     $layout .= '.tt' if $layout !~ /\.tt/;
-    $layout = path(Dancer::Config::setting('views'), 'layouts', $layout);
+    $layout = path($app->setting('views'), 'layouts', $layout);
 
     my $full_content =
       Dancer::Template->engine->render($layout,

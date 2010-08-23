@@ -4,10 +4,11 @@ use t::lib::TestUtils;
 plan tests => 23;
 
 use Dancer ':syntax';
+use Dancer::Test;
 use Dancer::Route;
 
 eval { prefix 'say' };
-like $@, qr/not a valid prefix/i, 'prefix must start with a /';
+like $@, qr/not a valid prefix/, 'prefix must start with a /';
 
 ok( prefix '/say', 'prefix defined' );
 
@@ -35,7 +36,7 @@ ok( any( '/any' => sub {"any"} ), 'route any /any defined' );
 
 ok(
     get(
-        { regexp => '/_(.*)' } => sub {
+        qr{/_(.*)} => sub {
             "underscore: " . params->{splat}[0];
         }
     ),
@@ -53,7 +54,7 @@ ok(
 );
 
 
-ok( prefix undef );
+ok( prefix(undef), "undef prefix" );
 
 ok(
     get(
@@ -78,12 +79,6 @@ foreach my $test (@tests) {
     my $path     = $test->{path};
     my $expected = $test->{expected};
 
-    my $request = fake_request( GET => $path );
-    Dancer::SharedData->request($request);
-
-    my $response = Dancer::Renderer::get_action_response();
-
-    ok( defined($response), "route found for path `$path'" );
-    is_deeply( $response->{content}, $expected,
-        "match data for path `$path' looks good" );
+    response_exists [GET => $path];
+    response_content_is_deeply [GET => $path], $expected;
 }

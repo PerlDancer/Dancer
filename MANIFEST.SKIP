@@ -1,4 +1,5 @@
 ^\.git\/
+.last_cover_stats
 Makefile$
 ^blib
 ^pm_to_blib

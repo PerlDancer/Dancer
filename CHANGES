@@ -1,4 +1,22 @@
-Dancer
+Dancer 1.1807
+
+    [Sawyer X]
+    * Fix for RT #60403: removing Test::Exception requirement
+
+	[ Alexis Sukrieh ]
+	* Global rewrite of Dancer's core to allow support for sub-application
+  	 (Dancer::App instances). 
+	 It's now possible to mount applications within a Dancer app, via the
+	 load_app keyword. Sub-apps can have their own settings registry and can be
+	 mounted under a given prefix.
+	
+	[Franck Cuny ]
+	* Support for new hooks:
+	  - after: to allow response post-processing
+	  - before_template: to allow defaut tokens to be given at anytime to the
+		template function.
+
+Dancer 1.1806_02
 
     [James Aitken]
     * fix issues GH #84 #86 and #87 (failing tests on < 5.10 due to regex with named captures)

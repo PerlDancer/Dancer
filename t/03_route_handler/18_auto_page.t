@@ -17,8 +17,6 @@ use t::lib::TestUtils;
     get '/' => sub { 1 };
 }
 
-Dancer::Route->init;
-
 my $resp = get_response_for_request('GET' => '/hello');
 ok( defined($resp), "response found for /hello");
 is $resp->{content}, "Hello\n", "content looks good";
