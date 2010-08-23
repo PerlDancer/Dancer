@@ -5,10 +5,10 @@ Dancer 1.1807
 
     [ Alexis Sukrieh ]
     * Global rewrite of Dancer's core to allow support for
-     sub-application, better route resolution and a better design.
+      sub-application, better route resolution and a better design.
     * Support for mountable applications via "load_app".
-     Mounted applications can have their own settings registry and 
-     can be mounted under a given prefix.
+      Mounted applications can have their own settings registry and 
+      can be mounted under a given prefix.
     
     [ Franck Cuny ]
     * Support for new hooks:
