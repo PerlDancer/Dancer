@@ -1,3 +1,8 @@
+    [ Franck Cuny ]
+    * update Deployement.pod and Cookbook.pod
+    * fix bug in route building with prefix
+    * don't use app.psgi anymore in generated scripts
+
 Dancer 1.1808
 
     [ Alexis Sukrieh ]

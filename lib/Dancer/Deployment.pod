@@ -390,9 +390,15 @@ Make sure mod_cgi is enabled. This example uses a name based virtual host.
 =head3 Running on lighttpd (FastCGI)
 
 Make sure mod_fcgi is enabled. You also must install the FCGI module from
-CPAN. This example uses a port based virtual host.
+CPAN.
 
-    $SERVER["socket"] == ":5000" {
+=head4 Script
+
+This example uses a script based virtual host.
+
+Your lighttpd configuration:
+
+    $HTTP["url"] == "^/app" {
         fastcgi.server += (
             ".fcgi" => ((
                 "bin-path" => "/path/to/myapp/public/dispatch.fcgi",
@@ -402,4 +408,45 @@ CPAN. This example uses a port based virtual host.
         alias.url += ("" => "/path/to/myapp/public/dispatch.fcgi")
     }
 
+=head4 TCP/IP
 
+This example uses TCP/IP.
+
+Your lighttpd configuration:
+
+    $HTTP["url"] == "^/app" {
+        fastcgi.server += (
+            "/app" => (
+                "" => (
+                    "host" => "127.0.0.1",
+                    "port" => "5000",
+                    "check-local" => "disable",
+                )
+           )
+       )
+   }
+
+Launch your application
+
+    plackup -s FCGI --port 8080 app.pl
+
+=head4 Unix socket
+
+This example uses a socket.
+
+Your lighttpd configuration:
+
+    $HTTP["url"] =~ "^/app" {
+        fastcgi.server += (
+            "/app" => (
+                "" => ( 
+                    "socket" => "/tmp/fcgi.sock",  
+                    "check-local" => "disable", 
+                )
+            )
+        )
+    } 
+
+Launch your application:
+
+    plackup -s FCGI --listen /tmp/fcgi.sock app.pl
