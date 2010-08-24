@@ -1,3 +1,10 @@
+Dancer 1.1808
+
+    [ Alexis Sukrieh ]
+    * FIX test failures 
+      - t/08_session/07_session_expires.t
+      - t/08_session/07_session_expires.t
+
 Dancer 1.1807
 
     [ Sawyer X ]
