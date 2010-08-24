@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 4, import => ['!pass'];
+use Test::More import => ['!pass'];
 use Dancer::ModuleLoader;
 use Dancer;
 use Dancer::Cookie;
@@ -10,6 +10,7 @@ plan skip_all => "LWP is needed for this test"
 plan skip_all => "Test::TCP is needed for this test"
   unless Dancer::ModuleLoader->load("Test::TCP");
 
+plan tests => 4;
 
 my $check_expires = Dancer::Cookie::_epoch_to_gmtstring(time + 42);
 
