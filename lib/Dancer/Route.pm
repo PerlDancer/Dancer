@@ -70,7 +70,7 @@ sub match {
     my $path   = $request->path_info;
     my %params;
 
-    Dancer::Logger::core("trying to match `$path' "
+    Dancer::Logger::debug("trying to match `$path' "
           . "against /"
           . $self->{_compiled_regexp}
           . "/");
@@ -216,8 +216,11 @@ sub _init_prefix {
         }
     }
     else {
+        my $original_pattern = $self->pattern;
         $self->{pattern} = $prefix . $self->pattern;
-        $self->{pattern} =~ s/\/$//;    # remove trailing slash
+        $self->{pattern} =~ s/\/$//
+          unless $original_pattern eq
+              '/';    # remove trailing slash unless the path is /
     }
 
     return $prefix;

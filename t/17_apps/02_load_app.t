@@ -31,4 +31,4 @@ is @{ $test_app->registry->routes->{'get'} }, 11,
     "9 routes are defined in main app";
 
 response_content_is [GET => "/forum/index"], "forum index"; 
-response_content_is [GET => "/forum"], "root"; 
+response_content_is [GET => "/forum/"], "root"; 
