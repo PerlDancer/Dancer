@@ -20,6 +20,12 @@ The Perl module Plack::Runner is required. Access your app from the browser:
     
     http://localhost/myapp/dispatch.cgi/
     200 OK - Right
+
+Start by adding the following to your apache configuration:
+
+    <VirtualHost *:80>
+        ScriptAlias /myapp /path/to/app/public/dispatch.cgi/
+    </VirtualHost>
     
 Enable Pretty-URLs if your web server supports .htaccess files and mod_rewrite.
 Place this code in a file called .htaccess in your application's root folder:
