@@ -257,14 +257,14 @@ I\'m in <code>[%appdir%]/views/index.tt</code>
 "dispatch.cgi" =>
 "$PERL_INTERPRETER
 use Plack::Runner;
-Plack::Runner->run('[% appdir %]/app.psgi');
+Plack::Runner->run('[% appdir %]/$DANCER_SCRIPT.pl');
 ",
 
 "dispatch.fcgi" =>
 "$PERL_INTERPRETER
 use Plack::Handler::FCGI;
 
-my \$app = do('[% appdir %]/app.psgi');
+my \$app = do('[% appdir %]/$DANCER_SCRIPT.pl');
 my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 \$server->run(\$app);
 ",
@@ -576,7 +576,6 @@ Here is an application created with dancer:
     + mywebapp/environments/development.yml
     + mywebapp/mywebapp.pm
     + mywebapp/mywebapp.pl
-    + mywebapp/app.psgi
     + mywebapp/favicon.ico
 
 The application is ready to serve:
