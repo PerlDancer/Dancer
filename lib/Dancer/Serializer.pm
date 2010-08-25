@@ -57,17 +57,22 @@ sub process_response {
 sub process_request {
     my ($class, $request) = @_;
 
+    return $request unless engine;
     return $request
       unless engine->support_content_type($request->content_type);
+
     return $request unless $request->is_put || $request->is_post;
 
     my $old_params = $request->params('body');
+
 
     # try to deserialize
     my $new_params;
     eval { $new_params = engine->deserialize($request->body, $request) };
     if ($@) {
-        warn "Unable to deserialize request body with " . engine() . " : \n$@";
+        Dancer::Logger::core "Unable to deserialize request body with "
+          . engine()
+          . " : \n$@";
         return $request;
     }
 
