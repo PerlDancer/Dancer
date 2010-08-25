@@ -1,12 +1,13 @@
 use strict;
 use warnings;
-use Test::More import => ['!pass'], tests => 3;
+use Test::More import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::Test;
 
 # perl <= 5.8.x doesn't support named captures
 plan skip_all => 'Need perl >= 5.10' if $] < 5.010;
+plan tests => 3;
 
 my $route_regex = "/(?<class> user | content | post )/(?<action> delete | find )/(?<id> \\d+ )";
 
