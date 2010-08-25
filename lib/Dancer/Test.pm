@@ -334,10 +334,14 @@ Asserts that the response headers data structure equals the one given.
 
     response_headers_are_deeply [GET => '/'], [ 'X-Powered-By' => 'Dancer 1.150' ];
 
-=head2 get_response([$method, $path])
+=head2 get_response([$method, $path, $params, $body, $headers])
 
-Returns a Dancer::Response object for the given request. The status and content
-can both be accessed with this object. A good reason to use this function is for
+Returns a Dancer::Response object for the given request.
+Only $method and $path are required.
+$params and $headers are expected to be hashrefs.
+$body is expected to be a string.
+Both the status and content can be accessed from the response.
+A good reason to use this function is for
 testing POST requests. Since POST requests may not be idempotent, it is
 necessary to capture the content and status in one shot. Calling the
 response_status_is and response_content_is functions in succession would make
