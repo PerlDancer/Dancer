@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 7;
 
 use strict;
 use warnings FATAL => 'all';
@@ -24,6 +24,9 @@ my $expected_params = {
 my $req = Dancer::Request->new($env);
 is $req->path, '/', 'path is set';
 is $req->method, 'POST', 'method is set';
+ok $req->is_post, 'method is post';
+my $request_to_string = $req->to_string;
+is $request_to_string, '[#1] POST /';
 
 is_deeply scalar($req->params), $expected_params, 'params are OK';
 is $req->params->{'name'}, 'john', 'params accessor works';
