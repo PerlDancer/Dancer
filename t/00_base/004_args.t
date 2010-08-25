@@ -23,7 +23,7 @@ my @tests = (
       expected => sub { setting('confdir') eq '/tmp/foo'} },
 );
 
-plan tests => scalar(@tests);
+plan tests => scalar(@tests) + 1;
 
 foreach my $test (@tests) {
     @ARGV = @{ $test->{args}};
@@ -31,3 +31,5 @@ foreach my $test (@tests) {
     ok($test->{expected}->(),
         "arg processing looks good for: ".join(' ', @{$test->{args}}));
 }
+
+ok(Dancer::GetOpt->print_usage());
