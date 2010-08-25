@@ -1,7 +1,12 @@
+Dancer 1.1809
+
     [ Franck Cuny ]
     * update Deployement.pod and Cookbook.pod
     * fix bug in route building with prefix
     * don't use app.psgi anymore in generated scripts
+
+    [ Alexis Sukrieh ]
+    * fix plan for t/03_route_handler/24_named_captures.t
 
 Dancer 1.1808
 

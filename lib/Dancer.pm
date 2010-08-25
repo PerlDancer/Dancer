@@ -30,7 +30,7 @@ use File::Spec;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.1808';
+$VERSION   = '1.1809';
 @EXPORT    = qw(
   after
   any
