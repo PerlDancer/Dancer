@@ -1,4 +1,4 @@
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use strict;
 use warnings FATAL => 'all';
@@ -13,3 +13,4 @@ is $req->path_info, '/stuff', 'path_info alias reads';
 $req->path_info('/other');
 is $req->path_info, '/other', 'path_info alias writes';
 
+is $req->request_method, 'GET', 'method is set';
