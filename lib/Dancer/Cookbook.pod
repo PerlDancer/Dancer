@@ -451,13 +451,13 @@ hashref as the third param to the template keyword:
 
     template 'index.tt', {}, { layout => undef };
 
-If your application is not mounted under root (B</>), instead to
-hardocre the full path to your application path for the CSS, images,
-javascript, ...  you can do this in your application:
+If your application is not mounted under root (B</>), you can use a
+before_template instead of hardcoding the path to your application for your
+css, images and javascript:
 
     before_template sub {
-        my $tokens = shift; $tokens->{uri_base} =
-        request->base;
+        my $tokens = shift;
+        $tokens->{uri_base} = request->base;
     };
 
 THen in your layout, modify your css inclusion as follows:
