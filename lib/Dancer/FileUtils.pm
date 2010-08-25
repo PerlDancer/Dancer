@@ -17,7 +17,7 @@ sub dirname { File::Basename::dirname(@_) }
 sub read_file_content {
     my ($file) = @_;
     my $fh;
-    if (open($fh, '<', $file)) {
+    if ($file && open($fh, '<', $file)) {
         return read_glob_content($fh);
     }
     else {
