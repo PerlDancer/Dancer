@@ -173,7 +173,9 @@ sub dancer_response {
     $args ||= {};
     my ($params, $body, $headers) = @$args{qw(params body headers)};
     my $request = Dancer::Request->new_for_request(
-        $method => $path, $params, $body, $headers);
+        $method => $path,
+        $params, $body, $headers
+    );
     Dancer::SharedData->request($request);
 
     return Dancer::Renderer::get_action_response();
