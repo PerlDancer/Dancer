@@ -26,9 +26,9 @@ sub dance {
     my $self = shift;
 
     my $app = sub {
-        my $env     = shift;
+        my $env = shift;
+        $self->init_request_headers($env);
         my $request = Dancer::Request->new($env);
-        $self->init_request_headers($request);
         $self->handle_request($request);
     };
 
@@ -48,12 +48,11 @@ sub dance {
 }
 
 sub init_request_headers {
-    my ($self, $request) = @_;
+    my ($self, $env) = @_;
 
-    my $plack = Plack::Request->new($request->env);
+    my $plack = Plack::Request->new($env);
     my $headers = Dancer::Headers->new(headers => $plack->headers);
     Dancer::SharedData->headers($headers);
-    $request->_build_headers();
 }
 
 1;
