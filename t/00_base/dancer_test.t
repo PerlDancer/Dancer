@@ -31,8 +31,22 @@ response_headers_are_deeply [GET => '/with_headers'], [
     'X-Foo-Dancer' => 42,
     'Content-Type' => 'text/html',
     ];
+
 my $resp = get_response($req);
-is $resp->{status}, 200, "response status liooks good";
+is $resp->{status}, 200, "response status from get_response looks good";
+
+$resp = dancer_response(@$req);
+is $resp->{status}, 200, "response status from dancer_response looks good";
+
+response_content_is [PUT => '/jsondata', { body => 42 }], 42,
+    "a request with a body looks good";
+
+response_content_is [POST => '/name', { params => {name => 'Bob'} }],
+    "Your name: Bob", "a request with params looks good";
+
+response_content_is
+    [GET => '/headers_again', { headers => ['X-Foo-Dancer' => 55] }], 55,
+    "a request with headers looks good";
 
 done_testing;
 
