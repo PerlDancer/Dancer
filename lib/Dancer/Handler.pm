@@ -84,18 +84,28 @@ sub render_response {
 
     my $content = $response->{content};
     unless (ref($content) eq 'GLOB') {
-        my $charset = setting('charset');
-        my $ctype   = $response->{content_type};
-        if (   $charset
-            && $ctype =~ /^text\//
-            && $ctype !~ /charset=/
-            && utf8::is_utf8($content))
-        {
-            $content = Encode::encode($charset, $content);
-            $response->update_headers(
-                'Content-Type' => "$ctype; charset=$charset");
-        }
 
+        # when the request is considered as ajax,
+        # we set the content type to text/xml
+        if (   Dancer::SharedData->request
+            && Dancer::SharedData->request->is_ajax)
+        {
+            $response->update_headers(
+                'Content-Type' => 'text/xml; charset=UTF-8');
+        }
+        else {
+            my $charset = setting('charset');
+            my $ctype   = $response->{content_type};
+            if (   $charset
+                && $ctype =~ /^text\//
+                && $ctype !~ /charset=/
+                && utf8::is_utf8($content))
+            {
+                $content = Encode::encode($charset, $content);
+                $response->update_headers(
+                    'Content-Type' => "$ctype; charset=$charset");
+            }
+        }
         $content = [$content];
     }
 
