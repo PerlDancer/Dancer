@@ -84,7 +84,11 @@ sub render_response {
 
     my $content = $response->{content};
     unless (ref($content) eq 'GLOB') {
-        if (Dancer::SharedData->request->is_ajax) {
+        # when the request is considered as ajax,
+        # we set the content type to text/xml
+        if (   Dancer::SharedData->request
+            && Dancer::SharedData->request->is_ajax)
+        {
             $response->update_headers(
                 'Content-Type' => 'text/xml; charset=UTF-8');
         }
