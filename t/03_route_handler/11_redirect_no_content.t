@@ -24,7 +24,7 @@ my $not_redirected_content = 'gotcha';
     };
 }
 
-my $req = [GET => '/cond_bounce', { bounce => 1 }];
+my $req = [GET => '/cond_bounce', { params => { bounce => 1 } }];
 response_exists $req, "response for /cond_bounce, with bounce param";
 response_status_is $req, 302, 'status is 302';
 response_content_is $req, '', 'content is empty when bounced';
