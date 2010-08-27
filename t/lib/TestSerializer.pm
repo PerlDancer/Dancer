@@ -2,14 +2,20 @@ package t::lib::TestSerializer;
 
 use Dancer;
 
-set serializer => 'JSON';
+setting serializer => 'JSON';
 
 get '/' => sub {
     { foo => 1 }
 };
 
+get '/blessed' => sub {
+    require HTTP::Headers;
+    my $r = HTTP::Request->new(GET => 'http://localhost');
+    {request => $r};
+};
+
 post '/' => sub {
-    request->params; 
+    request->params;
 };
 
 get '/error' => sub {
