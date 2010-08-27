@@ -13,8 +13,11 @@ my $_engine;
 
 sub engine {
     return $_engine if $_engine;
+
+    # don't create a new serializer unless it's defined in the config
+    # (else it's created using json, and that's *not* what we want)
     my $serializer = Dancer::App->current->setting('serializer');
-    Dancer::Serializer->init($serializer);
+    Dancer::Serializer->init($serializer) if $serializer;
 }
 
 sub init {
@@ -63,7 +66,7 @@ sub process_response {
 sub process_request {
     my ($class, $request) = @_;
 
-#    return $request unless engine;
+    return $request unless engine;
     return $request
       unless engine->support_content_type($request->content_type);
 
