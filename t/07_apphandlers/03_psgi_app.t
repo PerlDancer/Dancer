@@ -18,16 +18,17 @@ my $app = sub {
     Dancer->dance($request);
 };
 
-plan tests => 3;
+plan tests => 5;
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua = LWP::UserAgent->new;
-        
+
         my $res = $ua->get("http://127.0.0.1:$port/env");
-        like $res->content, qr/psgi\.version/, 
+        like $res->content, qr/psgi\.version/,
             'content looks good for /env';
-        
+
         $res = $ua->get("http://127.0.0.1:$port/name/bar");
         like $res->content, qr/Your name: bar/,
             'content looks good for /name/bar';
@@ -48,3 +49,19 @@ Test::TCP::test_tcp(
         Plack::Loader->auto(port => $port)->run($app);
     },
 );
+
+# test D::H::PSGI interface
+
+Dancer::ModuleLoader->require('Dancer::Handler::PSGI');
+
+my %ENV = (
+    METHOD          => 'GET',
+    PATH            => '/',
+    HTTP_ACCEPT     => 'text/html',
+    HTTP_USER_AGENT => 'test::more',
+);
+
+my $handler = Dancer::Handler::PSGI->new();
+$handler->init_request_headers(\%ENV);
+ok my $headers = Dancer::SharedData->headers;
+isa_ok $headers->{_headers}, 'HTTP::Headers';
