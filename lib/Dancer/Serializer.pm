@@ -10,7 +10,12 @@ use Dancer::Error;
 use Dancer::SharedData;
 
 my $_engine;
-sub engine {$_engine}
+
+sub engine {
+    return $_engine if $_engine;
+    my $serializer = Dancer::App->current->setting('serializer');
+    Dancer::Serializer->init($serializer);
+}
 
 sub init {
     my ($class, $name, $config) = @_;
@@ -23,6 +28,7 @@ sub init {
 # returns an error object if the serializer fails
 sub process_response {
     my ($class, $response) = @_;
+
     my $content = $response->{content};
 
     if (ref($content) && (ref($content) ne 'GLOB')) {
@@ -57,7 +63,7 @@ sub process_response {
 sub process_request {
     my ($class, $request) = @_;
 
-    return $request unless engine;
+#    return $request unless engine;
     return $request
       unless engine->support_content_type($request->content_type);
 

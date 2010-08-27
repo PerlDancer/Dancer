@@ -48,7 +48,7 @@ sub handle_request {
 
     # deserialize the request body if possible
     $request = Dancer::Serializer->process_request($request)
-      if setting('serializer');
+      if Dancer::App->current->setting('serializer');
 
     # save the request object
     Dancer::SharedData->request($request);
