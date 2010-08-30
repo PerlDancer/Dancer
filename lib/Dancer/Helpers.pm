@@ -34,9 +34,9 @@ sub template {
 
     my $app = Dancer::App->current;
 
-    $options ||= {layout => 1};
-    my $layout = $app->setting('layout');
-    undef $layout unless $options->{layout};
+    $options ||= {layout => 0};
+    my $layout = $options->{layout} ? $options->{layout} : $app->setting('layout');
+    undef $layout unless defined ($options->{layout});
 
     $tokens ||= {};
     $tokens->{request} = Dancer::SharedData->request;

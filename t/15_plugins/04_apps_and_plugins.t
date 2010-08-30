@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More import => ['!pass'];
-plan tests => 2;
+plan tests => 1;
 
 {
     use Dancer ':syntax';

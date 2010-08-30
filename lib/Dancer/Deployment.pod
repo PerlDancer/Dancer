@@ -451,6 +451,8 @@ Launch your application:
 
     plackup -s FCGI --listen /tmp/fcgi.sock app.pl
 
+(see L<Plack::Handler::FCGI>)
+
 =head4 NOTE
 
 If you're going to host your application under the root path (B</>), add the
@@ -458,4 +460,3 @@ following directive:
 
     "fix-root-scriptname" => "enable"
 
-(see L<Plack::Handler::FCGI>)
