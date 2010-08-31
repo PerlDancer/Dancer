@@ -5,6 +5,13 @@ package Dancer::Object;
 
 use strict;
 use warnings;
+use Storable 'dclone';
+{ # We have to set $Deparse and $Eval to be able to clone objects that contain
+  # coderefs http://p3rl.org/Storable#CODE_REFERENCES
+    no warnings 'once';
+    $Storable::Deparse = 1;
+    $Storable::Eval = 1;
+}
 
 # constructor
 sub new {
@@ -17,9 +24,7 @@ sub new {
 
 sub clone {
     my ($self) = @_;
-    die "The 'Clone' module is needed"
-      unless Dancer::ModuleLoader->load('Clone');
-    return Clone::clone($self);
+    return dclone($self);
 }
 
 # initializer
