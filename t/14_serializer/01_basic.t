@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-use Test::More import => ['!pass'], tests => 6;
+use Test::More import => ['!pass'];
+my $num_tests = 5;
 
 use Dancer ':syntax';
 use Dancer::Response;
@@ -40,4 +41,7 @@ if ( Dancer::ModuleLoader->load('JSON') ) {
     my $res        = Dancer::Serializer->process_request($req);
     is_deeply $req, $res,
       'request and response are the same, impossible to deserialize';
+    $num_tests++;
 }
+
+done_testing($num_tests);
