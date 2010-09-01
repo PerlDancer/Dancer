@@ -9,6 +9,8 @@ plan skip_all => "LWP is needed for this test"
   unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => "Test::TCP is needed for this test"
   unless Dancer::ModuleLoader->load("Test::TCP");
+plan skip_all => "YAML is needed for this test"
+  unless Dancer::ModuleLoader->load("YAML");
 
 plan tests => 4;
 
