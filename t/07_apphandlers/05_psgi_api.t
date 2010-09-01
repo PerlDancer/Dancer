@@ -9,7 +9,7 @@ BEGIN {
     use Dancer ':syntax';
 }
 
-plan tests => 5;
+plan tests => 9;
 
 Dancer::ModuleLoader->require('Dancer::Handler::PSGI');
 
@@ -38,3 +38,10 @@ ok $app = $handler->apply_plack_middlewares($app);
 my $res = $app->( \%ENV );
 is $res->[0], 404;
 ok grep { /X-Runtime/ } @{ $res->[1] };
+
+ok $handler = Dancer::Handler::PSGI->new();
+ok $app = $handler->dance;
+$res = $app->(\%ENV);
+is $res->[0], 404;
+
+is ref $app, 'CODE';
