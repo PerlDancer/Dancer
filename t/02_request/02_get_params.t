@@ -1,4 +1,4 @@
-use Test::More tests => 10;
+use Test::More tests => 12;
 
 use strict;
 use warnings FATAL => 'all';
@@ -29,7 +29,7 @@ for my $separator ('&', ';') {
     my $req = Dancer::Request->new(\%ENV);
     is $req->path, '/', 'path is set';
     is $req->method, 'GET', 'method is set';
-
+    ok $req->is_get, "request method is GET";
     is_deeply scalar($req->params), $expected_params, 'params are OK';
     is $req->params->{'name'}, 'Alexis Sukrieh', 'params accessor works';
 

@@ -45,16 +45,29 @@ command:
     $ dancer -a mywebapp
     + mywebapp
     + mywebapp/config.yml
+    + mywebapp/environments
+    + mywebapp/environments/development.yml
+    + mywebapp/environments/production.yml
     + mywebapp/views
+    + mywebapp/views/index.tt
     + mywebapp/views/layouts
     + mywebapp/views/layouts/main.tt
-    + mywebapp/views/index.tt
-    + mywebapp/environments
-    + mywebapp/environments/production.yml
-    + mywebapp/environments/development.yml
-    + mywebapp/mywebapp.pm
     + mywebapp/mywebapp.pl
-
+    + mywebapp/lib
+    + mywebapp/lib/mywebapp.pm
+    + mywebapp/public
+    + mywebapp/public/css
+    + mywebapp/public/css/style.css
+    + mywebapp/public/css/error.css
+    + mywebapp/public/images
+    + mywebapp/public/404.html
+    + mywebapp/public/dispatch.fcgi
+    + mywebapp/public/dispatch.cgi
+    + mywebapp/public/500.html
+    + mywebapp/Makefile.PL
+    + mywebapp/t
+    + mywebapp/t/002_index_route.t
+    + mywebapp/t/001_base.t
 
 As you can see, it creates a directory named after the name of the app, along
 with a configuration file, a views directory (where your templates and layouts
@@ -451,13 +464,13 @@ hashref as the third param to the template keyword:
 
     template 'index.tt', {}, { layout => undef };
 
-If your application is not mounted under root (B</>), instead to
-hardocre the full path to your application path for the CSS, images,
-javascript, ...  you can do this in your application:
+If your application is not mounted under root (B</>), you can use a
+before_template instead of hardcoding the path to your application for your
+css, images and javascript:
 
     before_template sub {
-        my $tokens = shift; $tokens->{uri_base} =
-        request->base;
+        my $tokens = shift;
+        $tokens->{uri_base} = request->base;
     };
 
 THen in your layout, modify your css inclusion as follows:

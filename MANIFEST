@@ -73,6 +73,7 @@ t/00_base/06_dancer_object.t
 t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
 t/00_base/10_headers.t
+t/00_base/11_file_utils.t
 t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
@@ -97,6 +98,7 @@ t/02_request/12_base.t
 t/02_request/13_ajax.t
 t/02_request/14_uploads.t
 t/02_request/15_headers.t
+t/02_request/16_delete.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/00_route_object.t
 t/03_route_handler/01_params.t
