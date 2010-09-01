@@ -70,7 +70,7 @@ sub match {
     my $path   = $request->path_info;
     my %params;
 
-    Dancer::Logger::debug("trying to match `$path' "
+    Dancer::Logger::core("trying to match `$path' "
           . "against /"
           . $self->{_compiled_regexp}
           . "/");
