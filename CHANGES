@@ -1,3 +1,14 @@
+Dancer 1.1810
+
+    [ Naveed Massjouni ]
+    * FIX for issue #108
+      replaced Clone::clone() with Storable::dclone().
+    * Fixed the plan of one of the test files.
+
+    [ Alexis Sukrieh ]
+    * Fix a test that depends on YAML (pass if not present)
+      (Smoker failure '2010-08-30T11:07:59Z').
+
 Dancer 1.1809
 
     [ Franck Cuny ]
