@@ -39,7 +39,7 @@ my $DO_OVERWRITE_ALL = 0;
 my $DANCER_APP_DIR   = get_application_path($path, $name);
 my $DANCER_SCRIPT    = get_script_path($name);
 my ($LIB_FILE, $LIB_PATH) = get_lib_path($name);
-my $AUTO_RELOAD = eval "require Module::Refresh" ? 1 : 0;
+my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
 
 require Dancer;
 my $DANCER_VERSION   = $Dancer::VERSION;

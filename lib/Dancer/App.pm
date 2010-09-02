@@ -43,7 +43,10 @@ sub routes {
 sub reload_apps {
     my ($class) = @_;
 
-    if (Dancer::ModuleLoader->load('Module::Refresh')) {
+    my @missing_modules = grep { not Dancer::ModuleLoader->load($_) }
+        qw(Module::Refresh Clone);
+
+    if (not @missing_modules) {
 
         # saving apps & purging app registries
         my $orig_apps = {};
@@ -63,8 +66,8 @@ sub reload_apps {
 
     }
     else {
-        warn "Module::Refresh is not installed, "
-          . "install this module or unset 'auto_reload' in your config file";
+        warn "Modules required for auto_reload are missing. Install modules"
+            . " [@missing_modules] or unset 'auto_reload' in your config file.";
     }
 }
 
