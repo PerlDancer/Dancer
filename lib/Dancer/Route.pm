@@ -214,13 +214,19 @@ sub _init_prefix {
         if ($regexp !~ /^$prefix/) {
             $self->{pattern} = qr{${prefix}${regexp}};
         }
+    }elsif($self->pattern eq '/') {
+        # if pattern is '/', we should match:
+        # - /prefix/
+        # - /prefix
+        # this is done by creating a regex for this case
+        my $pattern = $self->pattern;
+        my $regex = qr/$prefix(?:$pattern)?$/;
+        $self->{regexp} = $regex;
+        $self->{pattern} = $regex;
     }
     else {
-        my $original_pattern = $self->pattern;
         $self->{pattern} = $prefix . $self->pattern;
-        $self->{pattern} =~ s/\/$//
-          unless $original_pattern eq
-              '/';    # remove trailing slash unless the path is /
+        $self->{pattern} =~ s/\/$//;
     }
 
     return $prefix;
