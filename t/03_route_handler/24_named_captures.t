@@ -5,30 +5,28 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-# perl <= 5.8.x doesn't support named captures
-plan skip_all => 'Need perl >= 5.10' if $] < 5.010;
 plan tests => 3;
 
-my $route_regex = "/(?<class> user | content | post )/(?<action> delete | find )/(?<id> \\d+ )";
+SKIP: {
+    skip "Need perl >= 5.10", 3 unless $] >= 5.010;
 
-ok ( get( qr{
-    $route_regex
-  }x, sub { captures }
-    ), 'first route set'
-);
+    my $route_regex =
+      "/(?<class> user | content | post )/(?<action> delete | find )/(?<id> \\d+ )";
 
-for my $test
-(
-    { path     => '/user/delete/234'
-    , expected => {qw/ class user action delete id 234 /}
+    ok(get(qr{ $route_regex }x, sub {captures}), 'first route set');
+
+    for my $test (
+        {   path     => '/user/delete/234',
+            expected => {qw/ class user action delete id 234 /}
+        }
+      )
+    {
+        my $handle;
+        my $path     = $test->{path};
+        my $expected = $test->{expected};
+        my $request  = [GET => $path];
+
+        response_exists $request;
+        response_content_is_deeply $request, $expected;
     }
-) {
-     my $handle;
-     my $path = $test->{path};
-     my $expected = $test->{expected};
-     my $request = [GET => $path];
-
-     response_exists $request;
-     response_content_is_deeply $request, $expected;
 }
-
