@@ -1,7 +1,7 @@
 use Test::More import => ['!pass'];
 use t::lib::TestUtils;
 
-plan tests => 23;
+plan tests => 26;
 
 use Dancer ':syntax';
 use Dancer::Test;
@@ -53,6 +53,14 @@ ok(
     'route /:word defined'
 );
 
+ok(
+    get(
+        '/' => sub {
+            "char: all";
+        }
+    ),
+    'route / defined'
+);
 
 ok( prefix(undef), "undef prefix" );
 
@@ -66,6 +74,7 @@ ok(
 );
 
 my @tests = (
+    { path => '/say/',        expected => 'char: all' },
     { path => '/say/A',       expected => 'char: A' },
     { path => '/say/24',      expected => 'number: 24' },
     { path => '/say/B',       expected => 'char: B' },
