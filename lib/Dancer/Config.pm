@@ -124,8 +124,12 @@ sub load {
 sub load_settings_from_yaml {
     my ($file) = @_;
 
-    my $config = YAML::LoadFile($file)
-      or confess "Unable to parse the configuration file: $file";
+    my $config;
+
+    eval { $config = YAML::LoadFile($file) };
+    if ( my $err = $@ ) {
+        confess "Unable to parse the configuration file: $file";
+    }
 
     @{$SETTINGS}{keys %$config} = values %$config;
     return scalar(keys %$config);
