@@ -33,6 +33,7 @@ my $app = sub {
 };
 
 setting 'plack_middlewares' => { 'Runtime' => [], };
+setting 'public' => '.';
 
 ok $app = $handler->apply_plack_middlewares($app);
 my $res = $app->( \%ENV );
