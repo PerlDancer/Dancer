@@ -48,7 +48,7 @@ sub handle_request {
 
     # deserialize the request body if possible
     $request = Dancer::Serializer->process_request($request)
-      if setting('serializer');
+      if Dancer::App->current->setting('serializer');
 
     # save the request object
     Dancer::SharedData->request($request);
@@ -84,18 +84,27 @@ sub render_response {
 
     my $content = $response->{content};
     unless (ref($content) eq 'GLOB') {
-        my $charset = setting('charset');
-        my $ctype   = $response->{content_type};
-        if (   $charset
-            && $ctype =~ /^text\//
-            && $ctype !~ /charset=/
-            && utf8::is_utf8($content))
+        # when the request is considered as ajax,
+        # we set the content type to text/xml
+        if (   Dancer::SharedData->request
+            && Dancer::SharedData->request->is_ajax)
         {
-            $content = Encode::encode($charset, $content);
             $response->update_headers(
-                'Content-Type' => "$ctype; charset=$charset");
+                'Content-Type' => 'text/xml; charset=UTF-8');
         }
-
+        else {
+            my $charset = setting('charset');
+            my $ctype   = $response->{content_type};
+            if (   $charset
+                && $ctype =~ /^text\//
+                && $ctype !~ /charset=/
+                && utf8::is_utf8($content))
+            {
+                $content = Encode::encode($charset, $content);
+                $response->update_headers(
+                    'Content-Type' => "$ctype; charset=$charset");
+            }
+        }
         $content = [$content];
     }
 

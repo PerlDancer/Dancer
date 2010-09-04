@@ -56,4 +56,39 @@ ok $@, 'died okay';
 $result = $s->serialize($data);
 is $s->content_type, 'text/x-yaml', 'correct content_type';
 
+# tests to check _find_content_type works as expected
+
+%ENV = (
+    'REQUEST_METHOD' => 'GET',
+    'HTTP_CONTENT_TYPE'   => 'application/json',
+    'HTTP_ACCEPT'         => 'text/xml',
+    'HTTP_ACCEPT_TYPE'    => 'text/x-yaml',
+    'PATH_INFO'      => '/',
+);
+
+$req = Dancer::Request->new(\%ENV);
+Dancer::SharedData->request($req);
+my $ct = $s->_find_content_type($req);
+is_deeply $ct, ['text/xml', 'text/x-yaml', 'application/json'];
+
+%ENV = (
+    'REQUEST_METHOD' => 'PUT',
+    'PATH_INFO' => '/',
+);
+$req = Dancer::Request->new(\%ENV);
+Dancer::SharedData->request($req);
+$ct = $s->_find_content_type($req);
+is_deeply $ct, ['application/json'];
+
+%ENV = (
+    'REQUEST_METHOD' => 'PUT',
+    'PATH_INFO' => '/',
+    'HTTP_ACCEPT' => 'text/xml',
+    'CONTENT_TYPE' => 'application/json',
+);
+$req = Dancer::Request->new(\%ENV);
+Dancer::SharedData->request($req);
+$ct = $s->_find_content_type($req);
+is_deeply $ct, ['application/json', 'text/xml'];
+
 done_testing;

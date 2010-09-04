@@ -16,3 +16,6 @@ severity = 5
 
 # we use postifx controls
 [-ControlStructures::ProhibitPostfixControls]
+
+# we provide syntactic sugar, so we need them
+[-Subroutines::ProhibitSubroutinePrototypes]

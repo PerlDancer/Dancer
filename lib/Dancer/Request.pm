@@ -3,6 +3,7 @@ package Dancer::Request;
 use strict;
 use warnings;
 use Dancer::Object;
+use Dancer::Headers;
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use HTTP::Body;
@@ -77,9 +78,9 @@ sub to_string {
 }
 
 # helper for building a request object by hand
-# with forced method, path, params and body.
+# with the given method, path, params, body and headers.
 sub new_for_request {
-    my ($class, $method, $path, $params, $body) = @_;
+    my ($class, $method, $path, $params, $body, $headers) = @_;
     $params ||= {};
     $method = uc($method);
 
@@ -87,6 +88,7 @@ sub new_for_request {
       $class->new({%ENV, PATH_INFO => $path, REQUEST_METHOD => $method});
     $req->{params} = {%{$req->{params}}, %{$params}};
     $req->{body} = $body if defined $body;
+    $req->{headers} = Dancer::Headers->new(headers => $headers) if $headers;
 
     return $req;
 }

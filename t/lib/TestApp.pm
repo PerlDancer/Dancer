@@ -12,6 +12,7 @@ get '/with_headers' => sub {
     header 'X-Foo-Dancer' => 42;
     1;
 };
+get '/headers_again' => sub { request->header('X-Foo-Dancer') };
 
 
 get '/test_app_setting' => sub {
