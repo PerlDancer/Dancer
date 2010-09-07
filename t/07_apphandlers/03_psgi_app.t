@@ -1,7 +1,6 @@
-use Test::More;
+use Test::More import => ['!pass'];
 use strict;
 use warnings;
-use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 
 plan skip_all => "Plack is needed to run this test"
@@ -41,7 +40,7 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         use t::lib::TestApp;
-
+        use Dancer;
         setting apphandler  => 'PSGI';
         setting environment => 'production';
         Dancer::Config->load;

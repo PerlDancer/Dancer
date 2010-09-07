@@ -1,7 +1,4 @@
-#!perl
-
 # testing caching mechanism
-
 use strict;
 use warnings;
 
@@ -9,8 +6,6 @@ use Test::More tests => 105, import => ['!pass'];
 use t::lib::TestUtils;
 
 use Dancer ':syntax';
-use Dancer::Config 'setting';
-
 setting route_cache => 1;
 
 {
@@ -61,7 +56,7 @@ foreach my $method ( qw/get post/ ) {
     }
 }
 
-my $cache = Dancer::Route->route_cache;
+my $cache = Dancer::Route::Cache->get;
 isa_ok( $cache, 'Dancer::Route::Cache' );
 
 # checking when path doesn't exist
@@ -80,7 +75,7 @@ is(
 foreach my $method ( qw/get post/ ) {
     foreach my $path ( '/in', '/out', '/err' ) {
         my $route = $cache->route_from_path( $method, $path );
-        is( ref $route, 'HASH', "Got route for $path ($method)" );
+        is( ref $route, 'Dancer::Route', "Got route for $path ($method)" );
     }
 }
 

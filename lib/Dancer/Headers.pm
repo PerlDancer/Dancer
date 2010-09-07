@@ -12,10 +12,10 @@ sub init {
     if (ref($headers) eq 'ARRAY') {
         my $parsed = {};
 
-        for (my $i=0; $i<scalar(@$headers); $i+=2) {
+        for (my $i = 0; $i < scalar(@$headers); $i += 2) {
             my ($key, $value) = ($headers->[$i], $headers->[$i + 1]);
             if (defined $parsed->{$key}) {
-                $parsed->{$key} = [ $parsed->{$key} ];
+                $parsed->{$key} = [$parsed->{$key}];
                 push @{$parsed->{$key}}, $value;
             }
             else {
@@ -42,7 +42,7 @@ sub get {
     my ($self, $header) = @_;
     my $value = $self->{_headers}{$header};
 
-    return undef unless defined $value;
+    return unless defined $value;
     return $value unless ref($value);
     return wantarray ? @$value : $value->[0];
 }
@@ -52,6 +52,7 @@ sub get_all { $_[0]->{_headers} }
 
 1;
 __END__
+
 =pod
 
 =head1 NAME 

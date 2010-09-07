@@ -1,8 +1,9 @@
-use Test::More;
+use Test::More import => ['!pass'];
 use strict;
 use warnings;
+
+use Dancer ':syntax';
 use Dancer::ModuleLoader;
-use Dancer::Config 'setting';
 
 plan skip_all => "LWP is needed for this test" 
     unless Dancer::ModuleLoader->load('LWP::UserAgent');

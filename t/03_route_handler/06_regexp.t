@@ -1,15 +1,26 @@
 use strict;
 use warnings;
-use Test::More 'no_plan', import => ['!pass'];
-
-use t::lib::TestUtils;
+use Test::More tests => 10, import => ['!pass'];
 
 use Dancer ':syntax';
-use Dancer::Route; 
+use Dancer::Test;
 
-ok(get(r('/hello/([\w]+)') => sub { [splat] }), 'first route set');
-ok(get(r('/show/([\d]+)') => sub { [splat] }), 'second route set');
-ok(get(r('/post/([\w\d\-\.]+)/#comment([\d]+)') => sub { [splat] }), 'third route set');
+{
+   
+    my $warn;
+    local $SIG{__WARN__} = sub { $warn = shift };
+
+    get r('/foo') => sub {
+        "foo";
+    };
+ 
+    like $warn, qr/'r' is DEPRECATED use qr{} instead/,
+        "DEPRECATED warning triggered by r()";
+}
+
+ok(get(qr{/hello/([\w]+)} => sub { [splat] }), 'first route set');
+ok(get(qr{/show/([\d]+)} => sub { [splat] }), 'second route set');
+ok(get(qr{/post/([\w\d\-\.]+)/#comment([\d]+)} => sub { [splat] }), 'third route set');
 
 my @tests = ( 
     {path => '/hello/sukria', 
@@ -27,13 +38,9 @@ foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
  
-    my $request = fake_request(GET => $path);
-
-    Dancer::SharedData->request($request);
-    my $response = Dancer::Renderer::get_action_response();
+    my $request = [GET => $path];
        
-    ok( defined($response), "route handler found for path `$path'");
-    is_deeply(
-        $response->{content}, $expected, 
+    response_exists($request, "route handler found for path `$path'");
+    response_content_is_deeply($request, $expected, 
         "match data for path `$path' looks good");
 }

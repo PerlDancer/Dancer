@@ -11,20 +11,20 @@ use URI::Escape;
 
 use base 'Dancer::Object';
 my @http_env_keys = (
-    'user_agent',      'host',
-    'accept_language', 'accept_charset',
-    'accept_encoding', 'keep_alive',
-    'connection',      'accept', 
+    'user_agent',      'host',       'accept_language', 'accept_charset',
+    'accept_encoding', 'keep_alive', 'connection',      'accept',
     'accept_type',     'referer',
 );
 my $count = 0;
 
 Dancer::Request->attributes(
+
     # query
-    'env',          'path', 'method',
+    'env',          'path',    'method',
     'content_type', 'content_length',
-    'body',         'id', 'request_uri',
-    'uploads', 'headers',
+    'body',         'id',      'request_uri',
+    'uploads',      'headers', 'path_info',
+    'ajax',
     @http_env_keys,
 );
 
@@ -32,6 +32,7 @@ Dancer::Request->attributes(
 sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->{env}->{'REMOTE_ADDR'} }
 sub forwarded_for_address { $_[0]->{env}->{'X_FORWARDED_FOR'} }
+sub is_head               { $_[0]->{method} eq 'HEAD' }
 sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
 sub is_put                { $_[0]->{method} eq 'PUT' }
@@ -40,7 +41,6 @@ sub header                { $_[0]->{headers}->get($_[1]) }
 
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
-sub path_info      { path(@_) }
 sub Vars           { params(@_) }
 sub input_handle   { $_[0]->{env}->{'psgi.input'} }
 
@@ -71,16 +71,22 @@ sub new {
     return $self;
 }
 
+sub to_string {
+    my ($self) = @_;
+    return "[#" . $self->id . "] " . $self->method . " " . $self->path;
+}
+
 # helper for building a request object by hand
-# with forced method, path and params.
+# with forced method, path, params and body.
 sub new_for_request {
-    my ($class, $method, $path, $params) = @_;
+    my ($class, $method, $path, $params, $body) = @_;
     $params ||= {};
     $method = uc($method);
 
     my $req =
       $class->new({%ENV, PATH_INFO => $path, REQUEST_METHOD => $method});
     $req->{params} = {%{$req->{params}}, %{$params}};
+    $req->{body} = $body if defined $body;
 
     return $req;
 }
@@ -89,23 +95,23 @@ sub base {
     my $self = shift;
 
     my @env_names = qw(
-        SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
+      SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
     );
 
     my ($server, $host, $port, $path, $scheme) = @{$self->{env}}{@env_names};
 
-    $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'}; # Windows
+    $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'};    # Windows
 
     my $uri = URI->new;
     $uri->scheme($scheme);
     $uri->authority($host || "$server:$port");
-    $uri->path($path || '/');
+    $uri->path($path      || '/');
 
     return $uri->canonical;
 }
 
 sub uri_for {
-    my ( $self, $part, $params, $dont_escape ) = @_;
+    my ($self, $part, $params, $dont_escape) = @_;
     my $uri = $self->base;
 
     # Make sure there's exactly one slash between the base and the new part
@@ -116,7 +122,7 @@ sub uri_for {
 
     $uri->query_form($params) if $params;
 
-    return $dont_escape ? uri_unescape( $uri->canonical ) : $uri->canonical;
+    return $dont_escape ? uri_unescape($uri->canonical) : $uri->canonical;
 }
 
 
@@ -145,6 +151,7 @@ sub params {
 sub is_ajax {
     my $self = shift;
 
+    return 0 unless defined $self->headers;
     return 0 unless defined $self->header('X-Requested-With');
     return 0 if $self->header('X-Requested-With') ne 'XMLHttpRequest';
     return 1;
@@ -156,7 +163,7 @@ sub upload {
     my $res = $self->{uploads}{$name};
 
     return $res unless wantarray;
-    return () unless defined $res;
+    return ()   unless defined $res;
     return (ref($res) eq 'ARRAY') ? @$res : $res;
 }
 
@@ -176,6 +183,7 @@ sub _init {
     $self->{_http_body}->cleanup(1);
     $self->_build_params();
     $self->_build_uploads unless $self->uploads;
+    $self->{ajax} = $self->is_ajax;
 }
 
 # Some Dancer's core components sometimes need to alter
@@ -236,10 +244,8 @@ sub _build_params {
 
     # and merge everything
     $self->{params} = {
-        %$previous,
-        %{$self->{_query_params}},
-        %{$self->{_route_params}},
-        %{$self->{_body_params}},
+        %$previous,                %{$self->{_query_params}},
+        %{$self->{_route_params}}, %{$self->{_body_params}},
     };
 }
 
@@ -269,6 +275,7 @@ sub _build_path_info {
     my ($self) = @_;
     my $info = $self->{env}->{'PATH_INFO'};
     if (defined $info) {
+
         # Empty path info will be interpreted as "root".
         $info ||= '/';
     }
@@ -383,12 +390,12 @@ sub _build_uploads {
     my $uploads = $self->{_http_body}->upload;
     my %uploads;
 
-    for my $name (keys %{ $uploads }) {
+    for my $name (keys %{$uploads}) {
         my $files = $uploads->{$name};
         $files = ref $files eq 'ARRAY' ? $files : [$files];
 
         my @uploads;
-        for my $upload (@{ $files }) {
+        for my $upload (@{$files}) {
             push(
                 @uploads,
                 Dancer::Request::Upload->new(
@@ -403,7 +410,8 @@ sub _build_uploads {
 
         # support access to the filename as a normal param
         my @filenames = map { $_->{filename} } @uploads;
-        $self->{_body_params}{$name} =  @filenames > 1 ? \@filenames : $filenames[0];
+        $self->{_body_params}{$name} =
+          @filenames > 1 ? \@filenames : $filenames[0];
     }
 
     $self->{uploads} = \%uploads;
@@ -461,16 +469,35 @@ would return C<http://localhost:5000/foo/bar?baz=baz>.
 
 =head2 params($source)
 
-If no source given, return a mixed hashref containing all the parameters that
-have been parsed.
-Be aware it's a mixed structure, so if you use multiple
-variables with the same name in your route pattern, query string or request
-body, you can't know for sure which value you'll get there.
+Called in scalar context, returns a hashref of params, either from the specified
+source (see below for more info on that) or merging all sources.
 
-If you need to use the same name for different sources of input, use the
-C<$source> option, like the following:
+So, you can use, for instance:
 
-If source equals C<route>, then only params parsed from route pattern
+    my $foo = params->{foo}
+
+If called in list context, returns a list of key => value pairs, so you could use:
+
+    my %allparams = params;
+
+
+=head3 Fetching only params from a given source
+
+If a required source isn't specified, a mixed hashref (or list of key value
+pairs, in list context) will be returned; this will contain params from all
+sources (route, query, body).
+
+In practical terms, this means that if the param C<foo> is passed both on the
+querystring and in a POST body, you can only access one of them.
+
+If you want to see only params from a given source, you can say so by passing
+the C<$source> param to C<params()>:
+
+    my %querystring_params = params('query');
+    my %route_params       = params('route');
+    my %post_params        = params('body');
+
+If source equals C<route>, then only params parsed from the route pattern
 are returned.
 
 If source equals C<query>, then only params parsed from the query string are

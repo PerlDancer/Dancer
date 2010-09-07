@@ -43,26 +43,37 @@ script, which will build the framework of your application with a single
 command:
 
     $ dancer -a mywebapp
-    + [D] mywebapp
-    + [F] mywebapp/config.yml
-    + [D] mywebapp/views
-    + [D] mywebapp/views/layouts
-    + [F] mywebapp/views/layouts/main.tt
-    + [F] mywebapp/views/index.tt
-    + [D] mywebapp/environments
-    + [F] mywebapp/environments/production.yml
-    + [F] mywebapp/environments/development.yml
-    + [F] mywebapp/mywebapp.pm
-    + [F] mywebapp/mywebapp.pl
-    + [F] mywebapp/app.psgi
-
+    + mywebapp
+    + mywebapp/config.yml
+    + mywebapp/environments
+    + mywebapp/environments/development.yml
+    + mywebapp/environments/production.yml
+    + mywebapp/views
+    + mywebapp/views/index.tt
+    + mywebapp/views/layouts
+    + mywebapp/views/layouts/main.tt
+    + mywebapp/mywebapp.pl
+    + mywebapp/lib
+    + mywebapp/lib/mywebapp.pm
+    + mywebapp/public
+    + mywebapp/public/css
+    + mywebapp/public/css/style.css
+    + mywebapp/public/css/error.css
+    + mywebapp/public/images
+    + mywebapp/public/404.html
+    + mywebapp/public/dispatch.fcgi
+    + mywebapp/public/dispatch.cgi
+    + mywebapp/public/500.html
+    + mywebapp/Makefile.PL
+    + mywebapp/t
+    + mywebapp/t/002_index_route.t
+    + mywebapp/t/001_base.t
 
 As you can see, it creates a directory named after the name of the app, along
 with a configuration file, a views directory (where your templates and layouts
 will live), an environments directory (where environment-specific settings
 live), a module containing the actual guts of your application, a script to
-start it, and an app.psgi file - this will only be of interest if you're running
-your web app via Plack/PSGI - more on that later.
+start it - or to run your web app via Plack/PSGI - more on that later.
 
 
 =head2 Declaring routes
@@ -171,7 +182,7 @@ any other route.
 
 All you need to do is set up the following route as the B<last> route:
 
-    any r('.*') => sub {
+    any qr{.*} => sub {
         status 'not_found';
         template 'special_404', { path => request->path };
     };
@@ -202,6 +213,37 @@ Then, if you request C</foo/bar>, Dancer will look in the views dir for
 C</foo/bar.tt>.
 
 
+=head2 Using the prefix feature to split your application
+
+For better maintainability, you may want to separate some of your application
+components to different packages. Let's say we have a simple web app with an
+admin section, and want to maintain this in a different package:
+
+    package myapp;
+    use Dancer ':syntax';
+    use myapp::admin;
+
+    prefix undef;
+
+    get '/' => sub {...};
+
+    1;
+
+    package myapp::admin;
+    use Dancer ':syntax';
+
+    prefix 'admin';
+
+    get '/' => sub {...};
+
+    1;
+
+The following routes will be generated for us:
+
+    - get /
+    - get /admin/
+    - head /
+    - head /admin/
 
 =head2 Handling sessions
 
@@ -234,7 +276,6 @@ the example is the session backend to use; this is shorthand for
 L<Dancer::Session::YAML>.  There are other session backends you may wish to use,
 for instance L<Dancer::Session::Memcache>, but the YAML backend is a simple and
 easy to use example which stores session data in a YAML file in sessions).
-
 
 =head3 Storing data in the session
 
@@ -269,7 +310,11 @@ and easily within your config file, for example:
 If the directory you specify does not exist, Dancer will attempt to create it
 for you.
 
+=head3 Destroying a session
 
+When you're done with your session, you can destroy it:
+
+    session->destroy
 
 =head2 Sessions and logging in
 
@@ -298,6 +343,36 @@ This can easily be handled with a before filter to check their session:
             redirect params->{path} || '/';
         } else {
             redirect '/login?failed=1';
+        }
+    };
+
+Of course, you'll probably want to validate your users against a database table,
+or maybe via IMAP/LDAP/SSH/POP3/local system accounts via PAM etc.
+L<Authen::Simple> is probably a good starting point here!
+
+A simple working example of handling authentication against a database table
+yourself (using L<Dancer::Plugin::Database> which provides the C<database>
+keyword, and L<Crypt::SaltedHash> to handle salted hashed passwords (well, you
+wouldn't store your users passwords in the clear, would you?)) follows:
+
+    post '/login' => sub {
+        my $user = database()->selectrow_hashref(
+            'select * from users where username = ?', {}, params->{user}
+        );
+        if (!$user) {
+            warning "Failed login for unrecognised user " . params->{user};
+            redirect '/login?failed=1';
+        } else {
+            if (Crypt::SaltedHash->validate($user->{password}, params->{pass})) 
+            {
+                debug "Password correct";
+                # Logged in successfully
+                session user => $user;
+                redirect params->{path} || '/';
+            } else {
+                debug("Login failed - password incorrect for " . params->{user});
+                redirect '/login?failed=1';
+            }
         }
     };
 
@@ -383,6 +458,39 @@ file, or within your code:
 
     layout 'main';
 
+You can control which layout to use (or whether to use a layout at all) for a
+specific request without altering the layout setting by passing an options
+hashref as the third param to the template keyword:
+
+    template 'index.tt', {}, { layout => undef };
+
+If your application is not mounted under root (B</>), you can use a
+before_template instead of hardcoding the path to your application for your
+css, images and javascript:
+
+    before_template sub {
+        my $tokens = shift;
+        $tokens->{uri_base} = request->base;
+    };
+
+THen in your layout, modify your css inclusion as follows:
+
+    <link rel="stylesheet" href="<% uri_base %>/css/style.css" />
+
+From now on, you can mount your application wherever you want, without
+any further modification of the css inclusion
+
+=head3 template and unicode
+
+If you use L<Plack> and have some unicode problem with your Dancer application,
+don't forget to check if you have set your template engine to use unicode, and
+set the default charset to utf-8. So, if you are using template toolkit, your
+config.yaml will look like this:
+
+    charset: utf-8
+    engines:
+      template_toolkit:
+        ENCODING: utf8
 
 =head2 Configuration and environments
 
@@ -439,6 +547,37 @@ within its config file, for instance:
 This makes keeping your application's settings all in one place simple and easy
 - you shouldn't need to worry about implementing all that yourself :)
 
+=head2 Plack middlewares
+
+If you deploy with Plack and use some Plack middlewares, you can enable them
+directly from Dancer's configuration files.
+
+To enable middlewares in Dancer, you just have to set the plack_middlewares
+setting like the following:
+
+    set plack_middlewares => {
+        'SomeMiddleware' => [ qw(some options for somemiddleware) ],
+    };
+
+For instance, if you want to enable L<Plack::Middleware::Debug> in your Dancer
+application, all you have to do is to set C<plack_middlewares> like that:
+
+    set plack_middlewares => {
+        'Debug' => [ 'panels' => [ qw(DBITrace Memory Timer) ]],
+    };
+
+Of course, you can also put this configuration into your config.yml file, or
+even in your environment configuration files:
+
+    # environments/development.yml
+    ...
+    plack_middlewares:
+      Debug:
+        - panels
+        -
+          - DBITrace
+          - Memory
+          - Timer
 
 =head2 Logging
 
@@ -501,7 +640,19 @@ From now, all hash ref or array ref returned by a route will be serialized to JS
         return {name => params->{name}};
     };
 
-It's possible to let the client choose which serializer he want to use. For this, use the B<mutable> serializer, and an appropriate serializer will be choosen from the B<Content-Type> header.
+It's possible to let the client choose which serializer he want to use. For this, use the B<mutable> serializer, and an appropriate serializer will be chosen from the B<Content-Type> header.
+
+It's also possible to return custom error, using the C<send_error> function. When you don't use a serializer, the C<send_error> function will take a string as first parameter (the message), and an optional HTTP code. When using a serializer, the message can be a string, an arrayref or a hashref:
+
+    get '/hello/:name' => sub {
+        if (...) {
+           send_error("you can't do that");
+           # or
+           send_error({reason => 'access denied', message => "no"});
+        }
+    };
+
+The content of the error will be serialized using the appropriate serializer.
 
 =head2 Deploying your Dancer applications
 

@@ -12,7 +12,7 @@ sub engine {$engine}
 # init the engine according to the settings
 # the template engine module will take from the
 # setting name.
-sub init { 
+sub init {
     my ($class, $name, $config) = @_;
     $name ||= 'simple';
     $engine = Dancer::Engine->build(template => $name, $config);

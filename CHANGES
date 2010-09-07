@@ -1,10 +1,135 @@
-Dancer 1.18xx
-	[ Alexis Sukrieh ]
+Dancer 1.1811
+
+    [ Franck Cuny ]
+    * FIX for issue #113 and #112
+
+    [ Naveed Massjouni ]
+    * FIX for issues #111 and #108
+
+Dancer 1.1810
+
+    [ Naveed Massjouni ]
+    * FIX for issue #108
+      replaced Clone::clone() with Storable::dclone().
+    * Fixed the plan of one of the test files.
+
+    [ Alexis Sukrieh ]
+    * Fix a test that depends on YAML (pass if not present)
+      (Smoker failure '2010-08-30T11:07:59Z').
+
+Dancer 1.1809
+
+    [ Franck Cuny ]
+    * update Deployement.pod and Cookbook.pod
+    * fix bug in route building with prefix
+    * don't use app.psgi anymore in generated scripts
+
+    [ Alexis Sukrieh ]
+    * fix plan for t/03_route_handler/24_named_captures.t
+
+Dancer 1.1808
+
+    [ Alexis Sukrieh ]
+    * FIX test failures 
+      - t/08_session/07_session_expires.t
+      - t/08_session/07_session_expires.t
+
+Dancer 1.1807
+
+    [ Sawyer X ]
+    * Fix for RT #60403: removing Test::Exception requirement
+
+    [ Alexis Sukrieh ]
+    * Global rewrite of Dancer's core to allow support for
+      sub-application, better route resolution and a better design.
+    * Support for mountable applications via "load_app".
+      Mounted applications can have their own settings registry and 
+      can be mounted under a given prefix.
+    
+    [ Franck Cuny ]
+    * Support for new hooks:
+      - after: to allow response post-processing
+      - before_template: to allow defaut tokens to be given at anytime
+        to the template function.
+    * Fix and test for bug  RT#57829 
+      (Custom response headers lost when using JSON serializer)
+    * FIX PSGI compatibility layer (request->path_info is used when appropriate
+      instead of request->path)
+    * FIX for GH#100
+      When loading a module, it's possible to require a minimal
+      version.
+    * New option "ajax" for route handlers.
+    * Fix a bug in ajax route when processing the route resolution
+      (when a route is defined with options, it's pushed in the
+      beggining of the route handler tree).
+
+    [ jamhed ]
+    * Support for new setting "session_expire" in order to allow
+      session cookies to expire before the browser is closed.
+     
+    [ Naveed Massjouni ]
+    * Dancer::Test can now test requests with a body
+
+Dancer 1.1806_02
+
+    [James Aitken]
+    * fix issues GH #84 #86 and #87 (failing tests on < 5.10 due to regex with named captures)
+
+    [franck cuny]
+    * update cookbook
+
+    [François Charlier]
+    * fix for GH#76 and GH#88
+
+    [David Precious]
+    * Add Dancer::Plugins POD, describing useful plugins
+    * Extend sessions & logging in entry in cookbook
+
+Dancer 1.1806_01
+
+    [ sebastian de castelberg ]
+    * Support for path_info() in Dancer::Request so it's possible to
+      mount an application under a directory.
+
+    [ Alexis Sukrieh ]
     * Fix for RT#56239
-	  logger calls are better traced
+      logger calls are better traced
     * Fix for GH#72
       New keyword 'load_plugin' for loading a plugin in the current namespace.
       Plugins can be used anywhere thanks to that method.
+    * Fix for issue #77
+      Passing and caching works well together again.
+    * Applied miyagawa's patch for droping the app.psgi file. Refactoring of
+      Dancer::Handler::PSGI and friends.
+    * Applied LoonyPandora's patch for checking Dancer's VERSION when running
+      script/dancer. Changed it a bit so it can check against CPAN rather than
+      GitHub.
+    * Documentation update: r('') is now DEPRECATED, the method triggers a warning
+      when called and will be removed in the next stable release (1.2).
+    * Transparent wrapping of Plack middlewares in Dancer's configuration.
+      It's possible to enable/disable middlewares right from Dancer's config files.
+      Thanks to Tatsuiko Miyagawa and Franck Cuny for their help.
+
+    [jbarratt] 
+    * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
+      options.
+
+    [ Marc Chantreux ]
+    * Support for regexp objects in route definition
+    * Support for named captures (keyword 'captures' added to Dancer's syntax).
+
+
+Dancer 1.1805
+    [ Alexis Sukrieh ]
+    * Fix for RT#56239
+      logger calls are better traced
+    * Fix for GH#72
+      New keyword 'load_plugin' for loading a plugin in the current namespace.
+      Plugins can be used anywhere thanks to that method.
+    
+    [ Minty ]
+    * Update Introduction pod with (required) -a dancer opt (Murray, 5 hours ago)
+    * Bump HTTP::Body dependency to 1.07 (Murray, 6 hours ago)
 
 Dancer 1.804
     [ sebastian de castelberg ]
@@ -12,12 +137,12 @@ Dancer 1.804
 
     [ David Precious ]
     * Fix test failures with old Plack versions (Issue 73).
-	* Don't surround content with <p> tags in layout.
-	* Add $ENV{REMOTE_ADDR} in core log messages 
+    * Don't surround content with <p> tags in layout.
+    * Add $ENV{REMOTE_ADDR} in core log messages 
 
     [ SawyerX ]
     * Fix issue #75, reported by nanis.
-	  perl -MDancer -e "print $Dancer::VERSION" now works as expected
+      perl -MDancer -e "print $Dancer::VERSION" now works as expected
 
     [ Daniel Pittman ]
     * FIX for issue #80

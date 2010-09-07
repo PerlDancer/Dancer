@@ -17,23 +17,27 @@ sub new {
     $self->{title} ||= "Error " . $self->code;
     $self->{type}  ||= "runtime error";
 
-    my $html_output = "<h2>" . $self->{type} . "</h2>";
-    $html_output .= $self->backtrace;
-    $html_output .= $self->environment;
+    if (!$self->has_serializer) {
+        my $html_output = "<h2>" . $self->{type} . "</h2>";
+        $html_output .= $self->backtrace;
+        $html_output .= $self->environment;
 
-    $self->{message} = $html_output;
+        $self->{message} = $html_output;
+    }
     return $self;
 }
 
-sub code    { $_[0]->{code} }
-sub title   { $_[0]->{title} }
-sub message { $_[0]->{message} }
+sub has_serializer { setting('serializer') }
+sub code           { $_[0]->{code} }
+sub title          { $_[0]->{title} }
+sub message        { $_[0]->{message} }
 
 sub backtrace {
     my ($self) = @_;
 
     $self->{message} ||= "";
-    my $message = "<pre class=\"error\">" . $self->{message} . "</pre>";
+    my $message =
+      qq|<pre class="error">| . _html_encode($self->{message}) . "</pre>";
 
     # the default perl warning/error pattern
     my ($file, $line) = ($message =~ /at (\S+) line (\d+)/);
@@ -54,9 +58,9 @@ sub backtrace {
     my $backtrace = $message;
 
     $backtrace
-      .= "<div class=\"title\">" . "$file around line $line" . "</div>";
+      .= qq|<div class="title">| . "$file around line $line" . "</div>";
 
-    $backtrace .= "<pre class=\"content\">";
+    $backtrace .= qq|<pre class="content">|;
 
     $line--;
     my $start = (($line - 3) >= 0)             ? ($line - 3) : 0;
@@ -64,20 +68,21 @@ sub backtrace {
 
     for (my $l = $start; $l <= $stop; $l++) {
         chomp $lines[$l];
+
         if ($l == $line) {
             $backtrace
-              .= "<span class=\"nu\">"
+              .= qq|<span class="nu">|
               . tabulate($l + 1, $stop + 1)
-              . "</span> <font color=\"red\">"
-              . $lines[$l]
-              . "</font>\n";
+              . qq|</span> <span style="color: red;">|
+              . _html_encode($lines[$l])
+              . "</span>\n";
         }
         else {
             $backtrace
-              .= "<span class=\"nu\">"
+              .= qq|<span class="nu">|
               . tabulate($l + 1, $stop + 1)
               . "</span> "
-              . $lines[$l] . "\n";
+              . _html_encode($lines[$l]) . "\n";
         }
     }
     $backtrace .= "</pre>";
@@ -96,20 +101,21 @@ sub tabulate {
 sub dumper {
     my $obj = shift;
     return "Unavailable without Data::Dumper"
-        unless Dancer::ModuleLoader->load('Data::Dumper');
+      unless Dancer::ModuleLoader->load('Data::Dumper');
 
 
     # Take a copy of the data, so we can mask sensitive-looking stuff:
-    my %data = %$obj;
-    my $censored = _censor(\%data); 
-   
+    my %data     = %$obj;
+    my $censored = _censor(\%data);
+
     #use Data::Dumper;
     my $dd = Data::Dumper->new([\%data]);
     $dd->Terse(1)->Quotekeys(0)->Indent(1);
     my $content = $dd->Dump();
-    $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =>}g;
+    $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =&gt;}g;
     if ($censored) {
-        $content .= "\n\nNote: Values of $censored sensitive-looking keys hidden\n";
+        $content
+          .= "\n\nNote: Values of $censored sensitive-looking keys hidden\n";
     }
     return $content;
 }
@@ -127,7 +133,8 @@ sub _censor {
     for my $key (keys %$hash) {
         if (ref $hash->{$key} eq 'HASH') {
             $censored += _censor($hash->{$key});
-        } elsif ($key =~ /(pass|card?num|pan|secret)/i) {
+        }
+        elsif ($key =~ /(pass|card?num|pan|secret)/i) {
             $hash->{$key} = "Hidden (looks potentially sensitive)";
             $censored++;
         }
@@ -136,8 +143,43 @@ sub _censor {
     return $censored;
 }
 
+# Replaces the entities that are illegal in (X)HTML.
+sub _html_encode {
+    my $value = shift;
+
+    $value =~ s/&/&amp;/g;
+    $value =~ s/</&lt;/g;
+    $value =~ s/>/&gt;/g;
+    $value =~ s/'/&#39;/g;
+    $value =~ s/"/&quot;/g;
+
+    return $value;
+}
+
 sub render {
     my $self = shift;
+
+    my $serializer = setting('serializer');
+
+    $serializer ? $self->_render_serialized() : $self->_render_html();
+}
+
+sub _render_serialized {
+    my $self = shift;
+
+    my $message =
+      !ref $self->message ? {error => $self->message} : $self->message;
+
+    Dancer::Response->new(
+        status  => $self->code,
+        content => Dancer::Serializer->engine->serialize($message),
+        headers => ['Content-Type' => Dancer::Serializer->engine->content_type]
+    );
+}
+
+sub _render_html {
+    my $self = shift;
+
     return Dancer::Response->new(
         status  => $self->code,
         headers => ['Content-Type' => 'text/html'],
@@ -152,27 +194,28 @@ sub environment {
     my ($self) = @_;
 
     my $request = Dancer::SharedData->request;
-    my $r_env = {};
+    my $r_env   = {};
     $r_env = $request->env if defined $request;
 
     my $env =
-        "<div class=\"title\">Environment</div><pre class=\"content\">"
+        qq|<div class="title">Environment</div><pre class="content">|
       . dumper($r_env)
       . "</pre>";
     my $settings =
-        "<div class=\"title\">Settings</div><pre class=\"content\">"
+        qq|<div class="title">Settings</div><pre class="content">|
       . dumper(Dancer::Config->settings)
       . "</pre>";
     my $source =
-        "<div class=\"title\">Stack</div><pre class=\"content\">"
+        qq|<div class="title">Stack</div><pre class="content">|
       . $self->get_caller
       . "</pre>";
     my $session = "";
+
     if (setting('session')) {
-        $session = 
+        $session =
             qq[<div class="title">Session</div><pre class="content">]
-            . dumper(  Dancer::Session->get  )
-            . "</pre>";
+          . dumper(Dancer::Session->get)
+          . "</pre>";
     }
     return "$source $settings $session $env";
 }
@@ -297,6 +340,11 @@ Creates a strack trace of callers.
 An internal method that tries to censor out content which should be protected.
 
 C<dumper> calls this method to censor things like passwords and such.
+
+=head2 _html_encode
+
+Internal method to encode entities that are illegal in (X)HTML. We output as
+UTF-8, so no need to encode all non-ASCII characters or use a module.
 
 =head1 AUTHOR
 

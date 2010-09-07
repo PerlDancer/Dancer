@@ -15,13 +15,28 @@ sub new {
     return $self;
 }
 
+sub clone {
+    my ($self) = @_;
+    die "The 'Clone' module is needed"
+        unless Dancer::ModuleLoader->load('Clone');
+    return Clone::clone($self);
+}
+
 # initializer
 sub init {1}
+
+# meta information about classes
+my $_attrs_per_class = {};
+sub get_attributes { $_attrs_per_class->{$_[0]} }
 
 # accessors builder
 sub attributes {
     my ($class, @attributes) = @_;
 
+    # save meta information
+    $_attrs_per_class->{$class} = \@attributes;
+
+    # define setters and getters for each attribute
     foreach my $attr (@attributes) {
         my $code = sub {
             my ($self, $value) = @_;

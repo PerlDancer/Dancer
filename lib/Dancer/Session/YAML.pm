@@ -43,7 +43,7 @@ sub create {
 sub retrieve {
     my ($class, $id) = @_;
 
-    return undef unless -f yaml_file($id);
+    return unless -f yaml_file($id);
     return YAML::LoadFile(yaml_file($id));
 }
 

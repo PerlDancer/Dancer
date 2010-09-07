@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More;
+use Test::More import => ['!pass'];
 
 BEGIN {
     use Dancer::ModuleLoader;
@@ -17,7 +17,7 @@ BEGIN {
         unless Dancer::ModuleLoader->load('HTTP::Request');
 }
 
-use Dancer::Config 'setting';
+use Dancer;
 
 my $content_types = {
     'YAML' => 'text/x-yaml',
@@ -60,6 +60,20 @@ sub test_json {
             );
             is $res->headers->{'content-type'}, 'application/json',
                 'goodcontent type set in response';
+
+            $url  = "http://127.0.0.1:$port/error";
+            $req = HTTP::Request->new(GET => $url);
+            $res = $ua->request($req);
+            ok !$res->is_success;
+            is $res->code, 401;
+            is_deeply(JSON::decode_json($res->content), {foo => 42});
+
+            $url  = "http://127.0.0.1:$port/error_bis";
+            $req = HTTP::Request->new(GET => $url);
+            $res = $ua->request($req);
+            ok !$res->is_success;
+            is $res->code, 402;
+            is_deeply(JSON::decode_json($res->content), {error => 42});
         },
         server => sub {
             my $port = shift;
@@ -104,6 +118,20 @@ sub test_yaml {
             );
             is $res->headers->{'content-type'}, 'text/x-yaml',
                 'goodcontent type set in response';
+                        $url  = "http://127.0.0.1:$port/error";
+
+            $req = HTTP::Request->new(GET => $url);
+            $res = $ua->request($req);
+            ok !$res->is_success;
+            is $res->code, 401;
+            is_deeply(YAML::Load($res->content), {foo => 42});
+
+            $url  = "http://127.0.0.1:$port/error_bis";
+            $req = HTTP::Request->new(GET => $url);
+            $res = $ua->request($req);
+            ok !$res->is_success;
+            is $res->code, 402;
+            is_deeply(YAML::Load($res->content), {error => 42});
         },
         server => sub {
             my $port = shift;

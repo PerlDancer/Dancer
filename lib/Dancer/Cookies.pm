@@ -12,7 +12,7 @@ sub cookies {$COOKIES}
 
 sub parse_cookie_from_env {
     my $request = Dancer::SharedData->request;
-    my $env = (defined $request) ? $request->env : {};
+    my $env     = (defined $request) ? $request->env : {};
     my $env_str = $env->{COOKIE} || $env->{HTTP_COOKIE};
     return {} unless defined $env_str;
 

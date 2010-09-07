@@ -6,7 +6,7 @@ use Carp 'confess';
 use Cwd 'abs_path';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
-use Dancer::Config 'setting';
+use Dancer::Config;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
@@ -30,11 +30,12 @@ use File::Spec;
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.1805';
+$VERSION   = '1.1811';
 @EXPORT    = qw(
-  ajax
+  after
   any
   before
+  before_template
   cookies
   config
   content_type
@@ -71,6 +72,7 @@ $VERSION   = '1.1805';
   send_file
   send_error
   set
+  setting
   set_cookie
   session
   splat
@@ -83,6 +85,7 @@ $VERSION   = '1.1805';
   to_xml
   true
   upload
+  captures
   uri_for
   var
   vars
@@ -91,47 +94,59 @@ $VERSION   = '1.1805';
 
 # Dancer's syntax
 
-sub ajax         { Dancer::Route->add_ajax(@_) }
-sub any          { Dancer::Route->add_any(@_) }
-sub before       { Dancer::Route->before_filter(@_) }
-sub cookies      { Dancer::Cookies->cookies }
-sub config       { Dancer::Config::settings() }
-sub content_type { Dancer::Response::content_type(@_) }
-sub dance        { Dancer::start(@_) }
-sub debug        { goto &Dancer::Logger::debug }
-sub dirname      { Dancer::FileUtils::dirname(@_) }
-sub error        { goto &Dancer::Logger::error }
-sub send_error   { Dancer::Helpers->error(@_) }
-sub false        {0}
-sub from_dumper  { Dancer::Serializer::Dumper::from_dumper(@_) }
-sub from_json    { Dancer::Serializer::JSON::from_json(@_) }
-sub from_yaml    { Dancer::Serializer::YAML::from_yaml(@_) }
-sub from_xml     { Dancer::Serializer::XML::from_xml(@_) }
+sub after           { Dancer::Route::Registry->hook('after',           @_) }
+sub any             { Dancer::App->current->registry->any_add(@_) }
+sub before          { Dancer::Route::Registry->hook('before',          @_) }
+sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
+sub captures        { Dancer::SharedData->request->params->{captures} }
+sub cookies         { Dancer::Cookies->cookies }
+sub config          { Dancer::Config::settings() }
+sub content_type    { Dancer::Response::content_type(@_) }
+sub dance           { Dancer::start(@_) }
+sub debug           { goto &Dancer::Logger::debug }
+sub dirname         { Dancer::FileUtils::dirname(@_) }
+sub error           { goto &Dancer::Logger::error }
+sub send_error      { Dancer::Helpers->error(@_) }
+sub false           {0}
+sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
+sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
+sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
+sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
 
 sub get {
-    Dancer::Route->add('head', @_);
-    Dancer::Route->add('get',  @_);
+    Dancer::App->current->registry->universal_add('head', @_);
+    Dancer::App->current->registry->universal_add('get',  @_);
 }
-sub halt       { Dancer::Response->halt(@_) }
-sub headers    { Dancer::Response::headers(@_); }
-sub header     { goto &headers; }                      # goto ftw!
-sub layout     { set(layout => shift) }
-sub load       { require $_ for @_ }
-sub logger     { set(logger => @_) }
-sub mime_type  { Dancer::Config::mime_types(@_) }
-sub params     { Dancer::SharedData->request->params(@_) }
-sub pass       { Dancer::Response->pass }
-sub path       { Dancer::FileUtils::path(@_) }
-sub post       { Dancer::Route->add('post', @_) }
-sub prefix     { Dancer::Route->prefix(@_) }
-sub del        { Dancer::Route->add('delete', @_) }
-sub options    { Dancer::Route->add('options', @_) }
-sub put        { Dancer::Route->add('put', @_) }
-sub r          { {regexp => $_[0]} }
-sub redirect   { Dancer::Helpers::redirect(@_) }
-sub request    { Dancer::SharedData->request }
-sub send_file  { Dancer::Helpers::send_file(@_) }
-sub set        { setting(@_) }
+sub halt      { Dancer::Response->halt(@_) }
+sub headers   { Dancer::Response::headers(@_); }
+sub header    { goto &headers; }                            # goto ftw!
+sub layout    { set(layout => shift) }
+sub load      { require $_ for @_ }
+sub logger    { set(logger => @_) }
+sub mime_type { Dancer::Config::mime_types(@_) }
+sub params    { Dancer::SharedData->request->params(@_) }
+sub pass      { Dancer::Response->pass }
+sub path      { Dancer::FileUtils::path(@_) }
+sub post   { Dancer::App->current->registry->universal_add('post', @_) }
+sub prefix { Dancer::App->current->set_prefix(@_) }
+sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
+sub options { Dancer::App->current->registry->universal_add('options', @_) }
+sub put     { Dancer::App->current->registry->universal_add('put',     @_) }
+sub r { warn "'r' is DEPRECATED use qr{} instead"; return {regexp => $_[0]} }
+sub redirect  { Dancer::Helpers::redirect(@_) }
+sub request   { Dancer::SharedData->request }
+sub send_file { Dancer::Helpers::send_file(@_) }
+sub set       { goto &setting }
+
+sub setting {
+    if (Dancer::App->applications) {
+        return Dancer::App->current->setting(@_);
+    }
+    else {
+        return Dancer::Config::setting(@_);
+    }
+}
+
 sub set_cookie { Dancer::Helpers::set_cookie(@_) }
 
 sub session {
@@ -144,47 +159,56 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
-sub splat    { @{ Dancer::SharedData->request->params->{splat} } }
-sub status   { Dancer::Response::status(@_) }
-sub template { Dancer::Helpers::template(@_) }
-sub true     {1}
-sub to_dumper{ Dancer::Serializer::Dumper::to_dumper(@_) }
-sub to_json  { Dancer::Serializer::JSON::to_json(@_) }
-sub to_yaml  { Dancer::Serializer::YAML::to_yaml(@_) }
-sub to_xml   { Dancer::Serializer::XML::to_xml(@_) }
-sub upload   { Dancer::SharedData->request->upload(@_) }
-sub uri_for  { Dancer::SharedData->request->uri_for(@_) }
-sub var      { Dancer::SharedData->var(@_) }
-sub vars     { Dancer::SharedData->vars }
-sub warning  { goto &Dancer::Logger::warning }
+sub splat     { @{Dancer::SharedData->request->params->{splat}} }
+sub status    { Dancer::Response::status(@_) }
+sub template  { Dancer::Helpers::template(@_) }
+sub true      {1}
+sub to_dumper { Dancer::Serializer::Dumper::to_dumper(@_) }
+sub to_json   { Dancer::Serializer::JSON::to_json(@_) }
+sub to_yaml   { Dancer::Serializer::YAML::to_yaml(@_) }
+sub to_xml    { Dancer::Serializer::XML::to_xml(@_) }
+sub upload    { Dancer::SharedData->request->upload(@_) }
+sub uri_for   { Dancer::SharedData->request->uri_for(@_) }
+sub var       { Dancer::SharedData->var(@_) }
+sub vars      { Dancer::SharedData->vars }
+sub warning   { goto &Dancer::Logger::warning }
 
+# FIXME handle previous usage of load_app with multiple app names
 sub load_app {
-    for my $app (@_) {
-        Dancer::Logger::core("loading application $app");
+    my ($app_name, %options) = @_;
+    Dancer::Logger::core("loading application $app_name");
 
-        use lib path( dirname( File::Spec->rel2abs($0) ), 'lib' );
+    # set the application
+    my $app = Dancer::App->set_running_app($app_name);
 
-        # we want to propagate loading errors, so don't use ModuleLoader here
-        eval "use $app";
-        die "unable to load application $app : $@" if $@;
-    }
+    # Application options
+    $app->prefix($options{prefix})     if $options{prefix};
+    $app->settings($options{settings}) if $options{settings};
+
+    # load the application
+    use lib path(dirname(File::Spec->rel2abs($0)), 'lib');
+    eval "use $app_name";
+    die "unable to load application $app_name : $@" if $@;
+
+    # restore the main application
+    Dancer::App->set_running_app('main');
 }
 
 sub load_plugin {
-    goto &Dancer::Plugin::load_plugin; 
+    goto &Dancer::Plugin::load_plugin;
 }
 
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
-    my ( $class,   $symbol ) = @_;
-    my ( $package, $script ) = caller;
+    my ($class,   $symbol) = @_;
+    my ($package, $script) = caller;
 
     strict->import;
-    $class->export_to_level( 1, $class, @EXPORT );
+    $class->export_to_level(1, $class, @EXPORT);
 
     # if :syntax option exists, don't change settings
-    if ( $symbol && $symbol eq ':syntax' ) {
+    if ($symbol && $symbol eq ':syntax') {
         return;
     }
 
@@ -196,20 +220,24 @@ sub import {
 sub start {
     my ($class, $request) = @_;
     Dancer::Config->load;
-    Dancer::Handler->get_handler()->dance($request);
+
+    # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
+    if ($request) {
+        return Dancer::Handler->handle_request($request);
+    }
+    Dancer::Handler->get_handler()->dance;
 }
 
 # private
 
 sub _init {
     my ($path) = @_;
-    setting appdir  => dirname( File::Spec->rel2abs($path) );
-    setting public  => path( setting('appdir'), 'public' );
-    setting views   => path( setting('appdir'), 'views' );
+    setting appdir  => dirname(File::Spec->rel2abs($path));
+    setting public  => path(setting('appdir'), 'public');
+    setting views   => path(setting('appdir'), 'views');
     setting logger  => 'file';
     setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
     Dancer::Config->load;
-    Dancer::Route->init;
 }
 
 1;
@@ -260,11 +288,11 @@ environments.
 
 =head1 DISCLAIMER
 
-This documentation describes all the exported symbols of Dancer, if you want to have
+This documentation describes all the exported symbols of Dancer. If you want
 a quick start guide to discover the framework, you should look at
 L<Dancer::Introduction>.
 
-If you want to have specific examples of code for real-life problems, see the 
+If you want to have specific examples of code for real-life problems, see the
 L<Dancer::Cookbook>.
 
 If you want to see configuration examples of different deployment solutions
@@ -272,24 +300,25 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 
 =head1 METHODS
 
-=head2 ajax
+=head2 after
 
-Define a route for 'ajax' query. To be matched, the request must have the B<X_REQUESTED_WITH> header set to B<XMLHttpRequet>.
+Add a hook at the B<after> position:
 
-    ajax '/list' => sub {
-       my $result = [qw/one two three/];
-       to_json($result);
-    }
+    after sub {
+        my $response = shift;
+        # do something with request
+    };
 
-or
+The anonymous function which is given to C<after> will be executed after
+having executed a route.
 
-    ajax ['get', 'post'] => '/list' => sub {
-        # code
-    }
+You can define multiple after filters, using the C<after> helper as
+many times as you wish; each filter will be executed, in the order you added
+them.
 
 =head2 any
 
-Define a route for multiple HTTP methods at once:
+Defines a route for multiple HTTP methods at once:
 
     any ['get', 'post'] => '/myaction' => sub {
         # code
@@ -313,13 +342,25 @@ The anonymous function which is given to C<before> will be executed before
 looking for a route handler to handle the request.
 
 You can define multiple before filters, using the C<before> helper as
-many times as you wish; each filter will be executed, in the order you added
+many times as you wish; each filter will be executed in the order you added
 them.
 
+=head2 before_template
+
+Defines a before_template filter:
+
+    before_template sub {
+        # do something with request, vars or params
+    };
+
+The anonymous function which is given to C<before_template> will be executed
+before sending data and tokens to the template.
+
+This filter works as the C<before> and C<after> filter.
 
 =head2 cookies
 
-Access cookies values, which returns a hashref of L<Dancer::Cookie> objects:
+Accesses cookies values, which returns a hashref of L<Dancer::Cookie> objects:
 
     get '/some_action' => sub {
         my $cookie = cookies->{name};
@@ -328,7 +369,7 @@ Access cookies values, which returns a hashref of L<Dancer::Cookie> objects:
 
 =head2 config
 
-Access the configuration of the application:
+Accesses the configuration of the application:
 
     get '/appname' => sub {
         return "This is " . config->{appname};
@@ -336,7 +377,7 @@ Access the configuration of the application:
 
 =head2 content_type
 
-Set the B<content-type> rendered, for the current route handler:
+Sets the B<content-type> rendered, for the current route handler:
 
     get '/cat/:txtfile' => sub {
         content_type 'text/plain';
@@ -353,7 +394,7 @@ Alias for the C<start> keyword.
 
 =head2 debug
 
-Log a message of debug level
+Logs a message of debug level:
 
     debug "This is a debug message";
 
@@ -365,7 +406,7 @@ Returns the dirname of the path given:
 
 =head2 error
 
-Log a message of error level:
+Logs a message of error level:
 
     error "This is an error message";
 
@@ -375,23 +416,23 @@ Constant that returns a false value (0).
 
 =head2 from_dumper
 
-Deserialize a Data::Dumper structure
+Deserializes a Data::Dumper structure.
 
 =head2 from_json
 
-Deserialize a JSON structure
+Deserializes a JSON structure.
 
 =head2 from_yaml
 
-Deserialize a YAML structure
+Deserializes a YAML structure.
 
 =head2 from_xml
 
-Deserialize a XML structure
+Deserializes a XML structure.
 
 =head2 get
 
-Define a route for HTTP B<GET> requests to the given path:
+Defines a route for HTTP B<GET> requests to the given path:
 
     get '/' => sub {
         return "Hello world";
@@ -399,24 +440,24 @@ Define a route for HTTP B<GET> requests to the given path:
 
 =head2 halt
 
-This keyword sets a response object with the content given. 
+Sets a response object with the content given.
 
 When used as a return value from a filter, this breaks the execution flow and
-renders the response immediatly.
+renders the response immediatly:
 
-    before sub { 
+    before sub {
         if ($some_condition) {
             return halt("Unauthorized");
         }
     };
 
-    get '/' => sub { 
+    get '/' => sub {
         "hello there";
     };
 
 =head2 headers
 
-Add custom headers to responses:
+Adds custom headers to responses:
 
     get '/send/headers', sub {
         headers 'X-Foo' => 'bar', X-Bar => 'foo';
@@ -424,7 +465,7 @@ Add custom headers to responses:
 
 =head2 header
 
-Add a custom header to response:
+Adds a custom header to response:
 
     get '/send/header', sub {
         header 'X-My-Header' => 'shazam!';
@@ -432,29 +473,29 @@ Add a custom header to response:
 
 =head2 layout
 
-Syntactic sugar around the C<layout> setting, allows you to set the default layout
-to use when rendering a view:
+Allows you to set the default layout to use when rendering a view.  Syntactic
+sugar around the C<layout> setting:
 
     layout 'user';
 
 =head2 logger
 
-Syntactic sugar around the C<logger> setting, allows you to set the logger
-engine to use.
+Allows you to set the logger engine to use.  Syntactic sugar around the
+C<logger> setting:
 
     logger 'console';
 
 =head2 load
 
-Load one or more perl scripts in the current application's namespace. Syntactic
-sugar around Perl's require symbol:
+Loads one or more perl scripts in the current application's namespace. Syntactic
+sugar around Perl's C<require>:
 
     load 'UserActions.pl', 'AdminActions.pl';
 
 =head2 load_app
 
-Load a Dancer package. This method takes care to set the libdir to the curent
-C<./lib> directory.
+Loads a Dancer package. This method takes care to set the libdir to the curent
+C<./lib> directory:
 
     # if we have lib/Webapp.pm, we can load it like:
     load_app 'Webapp';
@@ -465,9 +506,8 @@ C<:syntax> option, in order not to change the application directory
 
 =head2 load_plugin
 
-Use this keyword to load plugin in the current namespace. As for
-load_app, the method takes care to set the libdir to the current
-C<./lib> directory.
+Loads a plugin in the current namespace. As with load_app, the method takes
+care to set the libdir to the current C<./lib> directory:
 
     package MyWebApp;
     use Dancer;
@@ -477,7 +517,7 @@ C<./lib> directory.
 =head2 mime_type
 
 Returns all the user-defined mime-types when called without parameters.
-Behaves as a setter/getter if parameters given:
+Behaves as a setter/getter when given parameters
 
     # get the global hash of user-defined mime-types:
     my $mimes = mime_types;
@@ -491,12 +531,12 @@ Behaves as a setter/getter if parameters given:
 =head2 params
 
 I<This method should be called from a route handler>.
-Alias to the L<Dancer::Request> params accessor.
+Alias for the L<Dancer::Request> params accessor.
 
 =head2 pass
 
 I<This method should be called from a route handler>.
-This method tells Dancer to pass the processing of the request to the next
+Tells Dancer to pass the processing of the request to the next
 matching route.
 
 You should always C<return> after calling C<pass>:
@@ -510,14 +550,14 @@ You should always C<return> after calling C<pass>:
 
 =head2 path
 
-Helper to concatenate multiple path together, without worrying about the
-underlying operating system.
+Concatenates multiple path together, without worrying about the underlying
+operating system:
 
     my $path = path(dirname($0), 'lib', 'File.pm');
 
 =head2 post
 
-Define a route for HTTP B<POST> requests to the given URL:
+Defines a route for HTTP B<POST> requests to the given URL:
 
     POST '/' => sub {
         return "Hello world";
@@ -525,56 +565,59 @@ Define a route for HTTP B<POST> requests to the given URL:
 
 =head2 prefix
 
-A prefix can be defined for each route handler, like this:
+Defines a prefix for each route handler, like this:
 
     prefix '/home';
 
-From here, any route handler is defined to /home/*
+From here, any route handler is defined to /home/*:
 
     get '/page1' => sub {}; # will match '/home/page1'
 
-You can unset the prefix value
+You can unset the prefix value:
 
     prefix undef;
     get '/page1' => sub {}; will match /page1
 
 =head2 del
 
-Define a route for HTTP B<DELETE> requests to the given URL:
+Defines a route for HTTP B<DELETE> requests to the given URL:
 
-del '/resource' => sub { ... };
+    del '/resource' => sub { ... };
 
 =head2 options
 
-Define a route for HTTP B<OPTIONS> requests to the given URL:
+Defines a route for HTTP B<OPTIONS> requests to the given URL:
 
-options '/resource' => sub { ... };
+    options '/resource' => sub { ... };
 
 =head2 put
 
-Define a route for HTTP B<PUT> requests to the given URL:
+Defines a route for HTTP B<PUT> requests to the given URL:
 
-put '/resource' => sub { ... };
+    put '/resource' => sub { ... };
 
 =head2 r
 
-Helper to let you define a route pattern as a regular Perl regexp:
+Defines a route pattern as a regular Perl regexp.
 
-    get r('/some([a-z0-9]{4})/complex/rules?') => sub {
-        ...
-    };
+This method is B<DEPRECATED>. Dancer now supports real Perl Regexp objects
+instead. You should not use r() but qr{} instead:
 
-The string given is treated as a Perl regular expression with the exception
-that all slashes and dots will be escaped before the match.
+Don't do this:
+
+    get r('/some/pattern(.*)') => sub { };
+
+But rather this:
+
+    get qr{/some/pattern(.*)} => sub { };
 
 =head2 redirect
 
-The redirect action is a helper and shortcut to a common HTTP response code (302).
-You can either redirect to a complete different site or you can also do it
-within the application:
+Generates a HTTP redirect (302).  You can either redirect to a complete
+different site or within the application:
 
     get '/twitter', sub {
-	    redirect 'http://twitter.com/me';
+        redirect 'http://twitter.com/me';
     };
 
 You can also force Dancer to return a specific 300-ish HTTP response code:
@@ -585,11 +628,11 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
 
 =head2 request
 
-Return a L<Dancer::Request> object representing the current request.
+Returns a L<Dancer::Request> object representing the current request.
 
 =head2 send_error
 
-Return a HTTP error.  By default the HTTP code returned is 500.
+Returns a HTTP error.  By default the HTTP code returned is 500:
 
     get '/photo/:id' => sub {
         if (...) {
@@ -612,18 +655,24 @@ Lets the current route handler send a file to the client.
         send_file(params->{file});
     }
 
-The content-type will be set accordingly, depending on the current mime-types
-definition (see C<mime_type> if you want to defined your own).
+The content-type will be set depending on the current mime-types definition
+(see C<mime_type> if you want to define your own).
 
 =head2 set
 
-Lets you define a setting
+Defines a setting:
 
     set something => 'value';
 
+=head2 setting
+
+Returns the value of a given setting:
+
+    setting('something'); # 'value'
+
 =head2 set_cookie
 
-You can create/update cookies with the C<set_cookie> helper like the following:
+Creates or updates cookie values:
 
     get '/some_action' => sub {
         set_cookie 'name' => 'value',
@@ -635,10 +684,10 @@ In the example above, only 'name' and 'value' are mandatory.
 
 =head2 session
 
-Accessor for session object, providing access to all data stored in the current
+Provides access to all data stored in the current
 session engine (if any).
 
-It can also be used as a setter to add new data to the current session engine.
+It can also be used as a setter to add new data to the current session engine:
 
     # getter example
     get '/user' => sub {
@@ -656,10 +705,19 @@ It can also be used as a setter to add new data to the current session engine.
         ...
     };
 
+You may also need to clear a session:
+
+    # destroy session
+    get '/logout' => sub {
+        ...
+        session->destroy;
+        ...
+    };
+
 =head2 splat
 
-When inside a route handler with a route pattern with wildcards, the splat
-keyword returns the list of captures made:
+Returns the list of captures made from a route handler with a route pattern
+which includes wildcards:
 
     get '/file/*.*' => sub {
         my ($file, $extension) = splat;
@@ -671,13 +729,13 @@ keyword returns the list of captures made:
 Starts the application or the standalone server (depending on the deployment
 choices).
 
-This keyword should be called at the very end of the script, once all routes 
+This keyword should be called at the very end of the script, once all routes
 are defined.  At this point, Dancer takes over control.
 
 =head2 status
 
-By default, an action will produce an C<HTTP 200 OK> status code, meaning
-everything is OK. It's possible to change that with the keyword B<status> :
+Changes the status code provided by an action.  By default, an action will
+produce an C<HTTP 200 OK> status code, meaning everything is OK:
 
     get '/download/:file' => {
         if (! -f params->{file}) {
@@ -703,23 +761,31 @@ Tells the route handler to build a response with the current template engine:
     };
 
 The first parameter should be a template available in the views directory, the
-second one (optional) is a hashref of tokens to interpolate.
+second one (optional) is a hashref of tokens to interpolate, and the third
+(again optional) is a hashref of options.
+
+For example, to disable the layout for a specific request:
+
+    get '/' => sub {
+        template 'index.tt', {}, { layout => undef };
+    };
+
 
 =head2 to_dumper
 
-Serialize a structure with Data::Dumper
+Serializes a structure with Data::Dumper.
 
 =head2 to_json
 
-Serialize a structure to JSON
+Serializes a structure to JSON.
 
 =head2 to_yaml
 
-Serialize a structure to YAML
+Serializes a structure to YAML.
 
 =head2 to_xml
 
-Serialize a structure to XML
+Serializes a structure to XML.
 
 =head2 true
 
@@ -727,9 +793,8 @@ Constant that returns a true value (1).
 
 =head2 upload
 
-Dancer provides a common interface to handle file uploads. Any uploaded file is
-accessible as a L<Dancer::Request::Upload> object. you can access all parsed
-uploads via the upload keyword, like the following:
+Provides access to file uploads.  Any uploaded file is accessible as a
+L<Dancer::Request::Upload> object. You can access all parsed uploads via:
 
     post '/some/route' => sub {
         my $file = upload('file_input_foo');
@@ -771,9 +836,27 @@ Returns a fully-qualified URI for the given path:
         # can be something like: http://localhost:3000/path
     };
 
+=head2 captures
+
+Returns a reference to a copy of C<%+>, if there are named captures in the route Regexp.
+
+Named captures are a feature of Perl 5.10, and are not supported in earlier versions:
+
+    get qr{
+        / (?<object> user   | ticket | comment )
+        / (?<action> delete | find )
+        / (?<id> \d+ )
+        /?$
+    }x
+    , sub {
+        my $value_for = captures;
+        "i don't want to $$value_for{action} the $$value_for{object} $$value_for{id} !"
+    };
+
+
 =head2 var
 
-Setter to define a shared variable between filters and route handlers.
+Defines a variable shared between filters and route handlers.
 
     before sub {
         var foo => 42;
@@ -784,8 +867,8 @@ C<vars> keyword.
 
 =head2 vars
 
-Returns the hashref of all shared variables set previously during the filter/route
-chain.
+Returns the hashref of all shared variables set during the filter/route
+chain:
 
     get '/path' => sub {
         if (vars->{foo} eq 42) {
@@ -795,7 +878,7 @@ chain.
 
 =head2 warning
 
-Log a warning message through the current logger engine.
+Logs a warning message through the current logger engine.
 
 =head1 AUTHOR
 
@@ -820,9 +903,7 @@ L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
 
 =head1 DEPENDENCIES
 
-Dancer depends on the following modules:
-
-The following modules are mandatory (Dancer cannot run without them)
+The following modules are mandatory (Dancer cannot run without them):
 
 =over 8
 
@@ -836,7 +917,7 @@ The following modules are mandatory (Dancer cannot run without them)
 
 =back
 
-The following modules are optional
+The following modules are optional:
 
 =over 8
 
@@ -848,10 +929,12 @@ The following modules are optional
 
 =back
 
+
 =head1 LICENSE
 
 This module is free software and is published under the same
 terms as Perl itself.
+
 
 =head1 SEE ALSO
 

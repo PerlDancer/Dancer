@@ -11,7 +11,7 @@ sub test_path {
     is dirname($file), $dir, "dir of $file is $dir";
 }
 
-plan tests => 13;
+plan tests => 15;
 
 my $content = qq{------BOUNDARY
 Content-Disposition: form-data; name="test_upload_file"; filename="yappo.txt"
@@ -88,10 +88,21 @@ do {
     is $req->params->{'test_upload_file6'}, 'yappo6.txt',
         "filename is accessible via params";
 
+    # copy_to, link_to
+    my $dest_dir = File::Temp::tempdir(CLEANUP => 1);
+    my $dest_file = path($dest_dir, $upload->basename);
+    $upload->copy_to($dest_file);
+    ok((-f $dest_file), "file '$dest_file' has been copied");
+
+    $upload->link_to(path($dest_dir, "hardlink"));
+    ok((-f path($dest_dir, "hardlink")), "hardlink is created");
+
     # make sure cleanup is performed when the HTTP::Body object is purged
     my $file = $upload->tempname;
     ok( (-f $file), 'temp file exists while HTTP::Body lives');
     undef $req->{_http_body};
     ok( (! -f $file), 'temp file is removed when HTTP::Body object dies');
+
+
 };
 

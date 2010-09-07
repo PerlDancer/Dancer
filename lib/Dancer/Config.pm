@@ -35,6 +35,7 @@ my $setters = {
     },
     route_cache => sub {
         my ($setting, $value) = @_;
+        require Dancer::Route::Cache;
         Dancer::Route::Cache->reset();
     },
     serializer => sub {
@@ -45,6 +46,19 @@ my $setters = {
     import_warnings => sub {
         my ($setting, $value) = @_;
         $^W = $value ? 1 : 0;
+    },
+    auto_page => sub {
+        my ($setting, $auto_page) = @_;
+        if ($auto_page) {
+            require Dancer::App;
+            Dancer::App->current->registry->universal_add(
+                'get', '/:page',
+                sub {
+                    my $params = Dancer::SharedData->request->params;
+                    Dancer::Helpers::template($params->{'page'});
+                }
+            );
+        }
     },
 };
 
@@ -125,10 +139,10 @@ sub load_default_settings {
     $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
     $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG}   || 1;
     $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
-    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'standalone';
+    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
-    $SETTINGS->{environment}
+    $SETTINGS->{environment} 
       ||= $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
       || 'development';
@@ -253,7 +267,7 @@ $public/$error_code.html if it exists.
 
 =head2 auto_reload (boolean)
 
-Requires L<Module::Refresh>.
+Requires L<Module::Refresh> and L<Clone>.
 
 If set to true, Dancer will reload the route handlers whenever the file where
 they are defined is changed. This is very useful in development environment but

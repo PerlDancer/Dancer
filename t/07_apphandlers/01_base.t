@@ -6,9 +6,8 @@ plan skip_all => "Plack is needed for this test"
 plan tests => 4;
 
 use Dancer ':syntax';
-use Dancer::Config 'setting';
 
-is(setting('apphandler'), 'standalone', 'default apphandler is standalone');
+is(setting('apphandler'), 'Standalone', 'default apphandler is standalone');
 my $app = Dancer::Handler->get_handler;
 is(ref($app), 'Dancer::Handler::Standalone', 'got expected handler');
 

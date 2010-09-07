@@ -24,7 +24,10 @@ sub init {
     };
 
     my $start_tag = $self->config->{start_tag} || '<%';
-    my $stop_tag  = $self->config->{stop_tag}  || $self->config->{end_tag} || '%>';
+    my $stop_tag =
+         $self->config->{stop_tag}
+      || $self->config->{end_tag}
+      || '%>';
 
     # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
     # so I only change them if their value is different
@@ -36,7 +39,7 @@ sub init {
     $_engine = Template->new(%$tt_config);
 }
 
-sub render($$$) {
+sub render {
     my ($self, $template, $tokens) = @_;
     die "'$template' is not a regular file"
       if !ref($template) && (!-f $template);

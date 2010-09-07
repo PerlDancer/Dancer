@@ -15,10 +15,10 @@ sub init {
     $logger = Dancer::Engine->build(logger => $name, $config);
 }
 
-sub core    { defined($logger) and $logger->core($_[0])    }
-sub debug   { defined($logger) and $logger->debug($_[0])   }
+sub core    { defined($logger) and $logger->core($_[0]) }
+sub debug   { defined($logger) and $logger->debug($_[0]) }
 sub warning { defined($logger) and $logger->warning($_[0]) }
-sub error   { defined($logger) and $logger->error($_[0])   }
+sub error   { defined($logger) and $logger->error($_[0]) }
 
 1;
 

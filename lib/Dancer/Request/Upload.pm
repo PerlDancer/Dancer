@@ -6,42 +6,44 @@ use strict;
 use warnings;
 use base 'Dancer::Object';
 
-Dancer::Request::Upload->attributes(qw(
-    filename tempname headers size
-));
+Dancer::Request::Upload->attributes(
+    qw(
+      filename tempname headers size
+      )
+);
 
 sub file_handle {
     my ($self) = @_;
     return $self->{_fh} if defined $self->{_fh};
-    open my $fh, '<', $self->tempname 
-        or die "Can't open `".$self->tempname."' for reading: $!";
+    open my $fh, '<', $self->tempname
+      or die "Can't open `" . $self->tempname . "' for reading: $!";
     $self->{_fh} = $fh;
 }
 
 sub copy_to {
-    my ( $self, $target ) = @_;
+    my ($self, $target) = @_;
     require File::Copy;
     File::Copy::copy($self->{tempname}, $target);
 }
 
 sub link_to {
-    my ( $self, $target ) = @_;
-    CORE::link( $self->{tempname}, $target );
+    my ($self, $target) = @_;
+    CORE::link($self->{tempname}, $target);
 }
 
 sub content {
-    my ( $self, $layer ) = @_;
-    return $self->{_content} 
-        if defined $self->{_content};
+    my ($self, $layer) = @_;
+    return $self->{_content}
+      if defined $self->{_content};
 
     $layer = ':raw' unless $layer;
 
     my $content = undef;
     my $handle  = $self->file_handle;
 
-    binmode( $handle, $layer );
+    binmode($handle, $layer);
 
-    while ( $handle->read( my $buffer, 8192 ) ) {
+    while ($handle->read(my $buffer, 8192)) {
         $content .= $buffer;
     }
 
@@ -120,4 +122,5 @@ L<Plack::Request::Upload>. Kudos to Plack authors.
 L<Dancer>
 
 =cut
+
 1;

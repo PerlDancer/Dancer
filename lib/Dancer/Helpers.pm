@@ -9,7 +9,6 @@ use warnings;
 
 use Dancer::Response;
 use Dancer::Config 'setting';
-use Dancer::FileUtils 'path';
 use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Template;
@@ -32,20 +31,12 @@ sub send_file {
 
 sub template {
     my ($view, $tokens, $options) = @_;
+
+    my $app = Dancer::App->current;
+
     $options ||= {layout => 1};
-    my $layout = setting('layout');
+    my $layout = $app->setting('layout');
     undef $layout unless $options->{layout};
-
-    $view .= ".tt" if $view !~ /\.tt$/;
-    $view = path(setting('views'), $view);
-
-    if (! -r $view) {
-        my $error = Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        );
-        return Dancer::Response::set($error->render);
-    }
 
     $tokens ||= {};
     $tokens->{request} = Dancer::SharedData->request;
@@ -54,15 +45,23 @@ sub template {
         $tokens->{session} = Dancer::Session->get;
     }
 
+    $view = Dancer::Template->engine->view($view);
+
+    if (!-r $view) {
+        my $error = Dancer::Error->new(
+            code    => 404,
+            message => "Page not found",
+        );
+        return Dancer::Response::set($error->render);
+    }
+
+    $_->($tokens) for (@{$app->registry->hooks->{before_template}});
+
     my $content = Dancer::Template->engine->render($view, $tokens);
     return $content if not defined $layout;
 
-    $layout .= '.tt' if $layout !~ /\.tt/;
-    $layout = path(setting('views'), 'layouts', $layout);
     my $full_content =
-      Dancer::Template->engine->render($layout,
-        {%$tokens, content => $content});
-
+      Dancer::Template->engine->layout($layout, $tokens, $content);
     return $full_content;
 }
 
@@ -75,10 +74,11 @@ sub error {
 
 sub redirect {
     my ($destination, $status) = @_;
-    if($destination =~ m!^(\w://)?/!) {
+    if ($destination =~ m!^(\w://)?/!) {
+
         # no absolute uri here, build one, RFC 2616 forces us to do so
         my $request = Dancer::SharedData->request;
-        $destination = $request->uri_for( $destination, {}, 1 );
+        $destination = $request->uri_for($destination, {}, 1);
     }
     Dancer::Response::status($status || 302);
     Dancer::Response::headers('Location' => $destination);

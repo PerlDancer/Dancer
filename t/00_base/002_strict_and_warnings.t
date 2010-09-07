@@ -3,7 +3,6 @@ use Test::More tests => 10, import => ['!pass'];
 {
     package Webapp;
     use Dancer ':syntax';
-    use Dancer::Config 'setting';
 
     # strict
     eval '$foo = 5;';
