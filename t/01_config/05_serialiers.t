@@ -33,5 +33,5 @@ SKIP: {
       unless Dancer::ModuleLoader->load('XML::Simple');
     ok my $test         = to_xml($struct), 'to xml';
     ok my $final_struct = from_xml($test), 'from xml';
-    is_deeply $final_struct->{data}, $struct, 'from => to works';
+    is_deeply $final_struct, $struct, 'from => to works';
 }

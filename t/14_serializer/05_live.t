@@ -19,11 +19,6 @@ BEGIN {
 
 use Dancer;
 
-my $content_types = {
-    'YAML' => 'text/x-yaml',
-    'JSON' => 'application/json',
-};
-
 test_json();
 test_yaml();
 test_mutable();
@@ -74,6 +69,11 @@ sub test_json {
             ok !$res->is_success;
             is $res->code, 402;
             is_deeply(JSON::decode_json($res->content), {error => 42});
+
+            $url = "http://127.0.0.1:$port/json";
+            $req = HTTP::Request->new(GET => $url);
+            $res = $ua->request($req);
+            is_deeply(JSON::decode_json($res->content), {foo => 'bar'});
         },
         server => sub {
             my $port = shift;
@@ -180,7 +180,8 @@ sub test_mutable {
                 "data is correctly deserialized"
             );
             is $res->headers->{'content-type'}, 'text/x-yaml',
-                'goodcontent type set in response';
+                'good content type set in response';
+
         },
         server => sub {
             my $port = shift;
