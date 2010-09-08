@@ -11,15 +11,13 @@ my $_xs;
 # helpers
 
 sub from_xml {
-    my ($xml) = @_;
     my $s = Dancer::Serializer::XML->new;
-    $s->deserialize($xml);
+    $s->deserialize(@_);
 }
 
 sub to_xml {
-    my ($data) = @_;
     my $s = Dancer::Serializer::XML->new;
-    $s->serialize($data);
+    $s->serialize(@_);
 }
 
 # class definition
@@ -34,13 +32,13 @@ sub init {
 }
 
 sub serialize {
-    my ($self, $entity) = @_;
-    $_xs->XMLout({data => $entity});
+    my $self = shift;
+    $_xs->XMLout(@_);
 }
 
 sub deserialize {
-    my ($self, $content) = @_;
-    $_xs->XMLin($content);
+    my $self = shift;
+    $_xs->XMLin(@_);
 }
 
 sub content_type {'text/xml'}

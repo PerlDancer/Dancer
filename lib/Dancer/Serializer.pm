@@ -74,10 +74,9 @@ sub process_request {
 
     my $old_params = $request->params('body');
 
-
     # try to deserialize
     my $new_params;
-    eval { $new_params = engine->deserialize($request->body, $request) };
+    eval { $new_params = engine->deserialize($request->body) };
     if ($@) {
         Dancer::Logger::core "Unable to deserialize request body with "
           . engine()

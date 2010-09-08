@@ -246,7 +246,7 @@ you can have
 and
 
     ajax '/user/:user' => sub {
-         to_xml({...});
+         to_xml({...}, RootName => undef);
     }
 
 
