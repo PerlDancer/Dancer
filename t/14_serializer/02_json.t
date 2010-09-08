@@ -5,9 +5,9 @@ use Dancer;
 
 plan skip_all => "JSON is needed to run this tests"
     unless Dancer::ModuleLoader->load('JSON');
-plan tests => 8;
+plan tests => 12;
 
-eval { 
+eval {
     setting serializer => 'FooBar';
 };
 like $@, qr/unknown serializer engine 'FooBar', perhaps you need to install Dancer::Serializer::FooBar/,
@@ -27,4 +27,19 @@ my $json = $s->serialize($data);
 is $json, '{"foo":42}', "data is correctly serialized";
 my $data2 = $s->deserialize($json);
 is_deeply $data2, $data, "data is correctly deserialized";
+
+# helpers
+
+$json = to_json($data);
+is $json, '{"foo":42}', "data is correctly serialized";
+
+$data2 = from_json($json);
+is_deeply($data2, $data, "data is correctly deserialized");
+
+$data = {foo => {bar => {baz => [qw/23 42/]}}};
+$json = to_json($data, pretty => 1);
+like $json, qr/"foo" : {/, "data is pretty!";
+$data2 = from_json($json);
+is_deeply($data2, $data, "data is correctly deserialized");
+
 

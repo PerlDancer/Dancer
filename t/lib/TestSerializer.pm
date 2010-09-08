@@ -4,6 +4,10 @@ use Dancer;
 
 setting serializer => 'JSON';
 
+get '/json' => sub {
+    to_json({foo => 'bar'}, pretty => 1);
+};
+
 get '/' => sub {
     { foo => 1 }
 };
