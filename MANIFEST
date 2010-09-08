@@ -16,6 +16,7 @@ lib/Dancer/Error.pm
 lib/Dancer/FileUtils.pm
 lib/Dancer/GetOpt.pm
 lib/Dancer/Handler.pm
+lib/Dancer/Handler/Debug.pm
 lib/Dancer/Handler/PSGI.pm
 lib/Dancer/Handler/Standalone.pm
 lib/Dancer/Headers.pm
@@ -30,7 +31,6 @@ lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
 lib/Dancer/Plugin.pm
 lib/Dancer/Plugin/Ajax.pm
-lib/Dancer/Plugin/WebSocket.pm
 lib/Dancer/Plugins.pod
 lib/Dancer/Renderer.pm
 lib/Dancer/Request.pm
@@ -74,14 +74,18 @@ t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
 t/00_base/10_headers.t
 t/00_base/11_file_utils.t
+t/00_base/config.t
+t/00_base/dance_start.t
 t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
+t/00_base/uri_for.t
 t/01_config/01_settings.t
 t/01_config/02_mime_type.t
 t/01_config/03_logger.t
 t/01_config/04_config_file.t
 t/01_config/05_serialiers.t
+t/01_config/06_config_api.t
 t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
 t/02_request/01_load.t
@@ -138,6 +142,7 @@ t/05_views/002_view_rendering.t
 t/05_views/03_layout.t
 t/05_views/views/clock.tt
 t/05_views/views/index.tt
+t/05_views/views/layouts/custom.tt
 t/05_views/views/layouts/main.tt
 t/05_views/views/request.tt
 t/05_views/views/t03.tt
@@ -197,6 +202,7 @@ t/14_serializer/09_abstract.t
 t/14_serializer/10_dumper.t
 t/14_serializer/11_bug_57829.t
 t/14_serializer/12_bug_gh106.t
+t/14_serializer/13_xml.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t

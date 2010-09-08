@@ -1,3 +1,12 @@
+    [ Franck Cuny ]
+    * implemented GH#120:
+      - methods {to,from}_{xml,json,yaml} accept more than one arguments. The
+        first argument is the data to transform. All the remainings arguments
+        are parameters to alter the behavior of the serializers. Refer to the
+        documentation for more informations.
+      *WARNING* in previous version, calling to_xml would return data under
+      rootname "data".  This is no longer the case.
+
 Dancer 1.1811
 
     [ Franck Cuny ]
