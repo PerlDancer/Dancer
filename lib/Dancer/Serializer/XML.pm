@@ -32,8 +32,13 @@ sub init {
 }
 
 sub serialize {
-    my $self = shift;
-    $_xs->XMLout(@_);
+    my $self    = shift;
+    my $entity  = shift;
+    my %options = @_;
+    if (!exists $options{RootName}) {
+        $options{RootName} = 'data';
+    }
+    $_xs->XMLout($entity, %options);
 }
 
 sub deserialize {
