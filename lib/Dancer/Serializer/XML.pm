@@ -34,10 +34,7 @@ sub init {
 sub serialize {
     my $self    = shift;
     my $entity  = shift;
-    my %options = @_;
-    if (!exists $options{RootName}) {
-        $options{RootName} = 'data';
-    }
+    my %options = (RootName => 'data', @_);
     $_xs->XMLout($entity, %options);
 }
 
