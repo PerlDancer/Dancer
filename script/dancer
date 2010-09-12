@@ -27,7 +27,7 @@ GetOptions(
 );
 
 # main
-my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+my $PERL_INTERPRETER = '#!/usr/bin/env perl';
 
 usage() and exit(0) if $help;
 usage() if not defined $name;
@@ -248,7 +248,7 @@ WriteMakefile(
 'index.tt'  => '<h2>It Works!</h2>
 
 <p>
-I\'m in <code>[%appdir%]/views/index.tt</code>
+I\'m in <code>views/index.tt</code>
 </p>
 ',
 'main.tt'   =>
@@ -256,15 +256,18 @@ I\'m in <code>[%appdir%]/views/index.tt</code>
 
 "dispatch.cgi" =>
 "$PERL_INTERPRETER
+use lib '../lib';
 use Plack::Runner;
-Plack::Runner->run('[% appdir %]/$DANCER_SCRIPT.pl');
+use FindBin;
+Plack::Runner->run(\$FindBin::Bin . '/../$DANCER_SCRIPT.pl');
 ",
 
 "dispatch.fcgi" =>
 "$PERL_INTERPRETER
+use lib '../lib';
 use Plack::Handler::FCGI;
-
-my \$app = do('[% appdir %]/$DANCER_SCRIPT.pl');
+use FindBin;
+my \$app = do(\$FindBin::Bin . '/../$DANCER_SCRIPT.pl');
 my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 \$server->run(\$app);
 ",
@@ -273,7 +276,7 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 
 "$PERL_INTERPRETER
 use Dancer;
-use lib ('lib');
+use lib 'lib';
 load_app '$appname';
 dance;
 ",
