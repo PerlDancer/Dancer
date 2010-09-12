@@ -7,19 +7,42 @@ Dancer::Deployment - common ways to put your Dancer app into use
 Dancer has been designed to be flexible, and this flexibility extends to your
 choices when deploying your Dancer app.
 
-
 =head2 Running as a cgi-script
 
 In providing ultimate flexibility in terms of deployment, your Dancer app can be run
-as a simple cgi-script out-of-the-box. No additional web-server configuration needed.
-Your web server should recognize .cgi files and be able to serve Perl scripts.
-The Perl module Plack::Runner is required. Access your app from the browser:
+as a simple cgi-script out-of-the-box. Under Apache or any web server supporting
+.htaccess files and mod_rewrite. The Perl module Plack::Runner is required.
 
-    http://localhost/myapp/dispatch.cgi
-    500 Internal Server Error - Wrong
+=head3 Running as a cgi-script using only .htaccess
+
+Place this code in a file called .htaccess in your application's root folder:
+
+    # BEGIN DANCER APPLICATION HTACCESS
     
-    http://localhost/myapp/dispatch.cgi/
-    200 OK - Right
+    DirectoryIndex public/dispatch.cgi/
+    AddHandler cgi-script .cgi
+    Options +ExecCGI +FollowSymLinks -Indexes
+    
+    # Handle Public Files
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} .*css$ [NC]
+    RewriteCond %{REQUEST_FILENAME} .*js$  [NC]
+    RewriteCond %{REQUEST_FILENAME} .*jpg$ [NC]
+    RewriteCond %{REQUEST_FILENAME} .*gif$ [NC]
+    RewriteCond %{REQUEST_FILENAME} .*png$ [NC]
+    RewriteRule (.*) public/$1 [L]
+    
+    # Handle Dynamic Content
+    RewriteCond %{SCRIPT_FILENAME} !-d
+    RewriteCond %{SCRIPT_FILENAME} !-f
+    RewriteRule (.*) public/dispatch.cgi/$1 [L]
+    
+    # END DANCER APPLICATION HTACCESS
+
+Please note that you may need to modify your .htaccess file to support additional
+file types under the "Handle Public Files" section.
+
+=head3 Running as a cgi-script under an Apache VirtualHost
 
 Start by adding the following to your apache configuration:
 
@@ -44,7 +67,7 @@ Place this code in a file called .htaccess in your application's root folder:
 Now you can access your dancer application URLs as if you were using the embedded web server.
 
     http://localhost/myapp/
-
+    
 This option is a no-brainer, easy to setup, low maintenance but serves requests
 slower than all other options.
 
