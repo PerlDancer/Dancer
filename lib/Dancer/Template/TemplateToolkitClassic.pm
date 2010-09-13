@@ -1,4 +1,4 @@
-package Dancer::Template::TemplateToolkit;
+package Dancer::Template::TemplateToolkitClassic;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ my $_engine;
 sub init {
     my ($self) = @_;
 
-    die "Template is needed by Dancer::Template::TemplateToolkit"
+    die "Template is needed by Dancer::Template::TemplateToolkitClassic"
       unless Dancer::ModuleLoader->load('Template');
 
     my $tt_config = {
@@ -22,11 +22,11 @@ sub init {
         %{$self->config},
     };
 
-    my $start_tag = $self->config->{start_tag} || '<%';
+    my $start_tag = $self->config->{start_tag} || '[%';
     my $stop_tag =
          $self->config->{stop_tag}
       || $self->config->{end_tag}
-      || '%>';
+      || '%]';
 
     # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
     # so I only change them if their value is different
@@ -55,7 +55,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Template::TemplateToolkit - Template Toolkit wrapper for Dancer
+Dancer::Template::TemplateToolkitClassic - Template Toolkit wrapper for Dancer
 
 =head1 DESCRIPTION
 
@@ -67,30 +67,17 @@ Template module.
 
 In order to use this engine, use the template setting:
 
-    template: template_toolkit
+    template: template_toolkit_classic
 
 This can be done in your config.yml file or directly in your app code with the
 B<set> keyword.
 
-Note that by default,  Dancer configures the Template::Toolkit engine to use 
-<% %> brackets instead of its default [% %] brackets.  This can be changed
-within your config file - for example:
-
-    template: template_toolkit
-    engines:
-        template_toolkit:
-            start_tag: '[%'
-            stop_tag: '%]'
-
-You can also use template_toolkit_classic which uses the [% %] brackets
-by default:
-
-    template: template_toolkit_classic
-
+Note that unlike L<Dancer::Template::TemplateToolkit> this module
+uses the standard Template::Toolkit [% %] brackets by default.
 
 =head1 SEE ALSO
 
-L<Dancer>, L<Template>, L<Dancer::Template::TemplateToolkitClassic>
+L<Dancer>, L<Template>, L<Dancer::Template::TemplateToolkit>
 
 =head1 AUTHOR
 
