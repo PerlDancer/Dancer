@@ -203,6 +203,7 @@ t/14_serializer/10_dumper.t
 t/14_serializer/11_bug_57829.t
 t/14_serializer/12_bug_gh106.t
 t/14_serializer/13_xml.t
+t/14_serializer/14_api.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t
