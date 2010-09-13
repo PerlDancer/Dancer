@@ -4,6 +4,7 @@
         first argument is the data to transform. All the remainings arguments
         are parameters to alter the behavior of the serializers. Refer to the
         documentation for more informations.
+    * MOAR TESTS
 
 Dancer 1.1811
 
