@@ -17,8 +17,6 @@ use vars qw(@EXPORT);
 
 sub register($&);
 
-my @_reserved_keywords = @Dancer::EXPORT;
-
 my $_keywords = {};
 
 sub add_hook { Dancer::Route::Registry->hook(@_) }
@@ -42,7 +40,7 @@ sub register($&) {
     my ($keyword, $code) = @_;
     my $plugin_name = caller();
 
-    if (grep { $_ eq $keyword } @_reserved_keywords) {
+    if (grep { $_ eq $keyword } @Dancer::EXPORT) {
         die "You can't use $keyword, this is a reserved keyword";
     }
     $_keywords->{$plugin_name} ||= [];
