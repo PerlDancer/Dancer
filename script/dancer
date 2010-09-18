@@ -257,14 +257,18 @@ I\'m in <code>[%appdir%]/views/index.tt</code>
 "dispatch.cgi" =>
 "$PERL_INTERPRETER
 use Plack::Runner;
-Plack::Runner->run('[% appdir %]/$DANCER_SCRIPT.pl');
+use Dancer ':syntax';
+my \$psgi = path(dirname(__FILE__), '..', '$DANCER_SCRIPT.pl');
+Plack::Runner->run(\$psgi);
 ",
 
 "dispatch.fcgi" =>
 "$PERL_INTERPRETER
 use Plack::Handler::FCGI;
+use Dancer ':syntax';
 
-my \$app = do('[% appdir %]/$DANCER_SCRIPT.pl');
+my \$psgi = path(dirname(__FILE__), '..', '$DANCER_SCRIPT.pl');
+my \$app = do(\$psgi);
 my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 \$server->run(\$app);
 ",
@@ -273,7 +277,7 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 
 "$PERL_INTERPRETER
 use Dancer;
-use lib ('lib');
+use lib path(dirname(__FILE__), 'lib');
 load_app '$appname';
 dance;
 ",
@@ -285,7 +289,7 @@ use Dancer ':syntax';
 
 our \$VERSION = '0.1';
 
-get '/' => sub {
+get qr{/(index.html)?/?} => sub {
     template 'index';
 };
 

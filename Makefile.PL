@@ -23,6 +23,7 @@ WriteMakefile1(
     PREREQ_PM => {
 
         # non-core
+        'LWP'                        => '0',
         'HTTP::Body'                 => '1.07', # needed for cleanup()
         'HTTP::Server::Simple::PSGI' => '0.11',
         'MIME::Types'                => '0',
