@@ -289,7 +289,7 @@ use Dancer ':syntax';
 
 our \$VERSION = '0.1';
 
-get qr{/(index.html)?/?} => sub {
+get qr{^/(index.html)?/?\$} => sub {
     template 'index';
 };
 
