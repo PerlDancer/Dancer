@@ -1,3 +1,15 @@
+Dancer 1.1812
+
+    [ Franck Cuny ]
+    * Skip bogus uploads test on Win32 (thanks to Alias for reporting)
+
+    [ Alexis Sukrieh ]
+    * Fix for scaffolded apps
+    * Dancer::Deployment cleanup (CGI section)
+
+    [ Sawyer X ]
+    * Nitpicking at tabs and spaces at end of lines
+
 Dancer 1.1811
 
     [ Franck Cuny ]
