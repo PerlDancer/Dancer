@@ -6,6 +6,7 @@ Dancer 1.1812
     [ Alexis Sukrieh ]
     * Fix for scaffolded apps
     * Dancer::Deployment cleanup (CGI section)
+    * Declare LWP explicitly (already implied by HTTP::Body and HTTP::Headers)
 
     [ Sawyer X ]
     * Nitpicking at tabs and spaces at end of lines
