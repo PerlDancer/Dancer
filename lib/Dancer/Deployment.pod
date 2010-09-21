@@ -25,8 +25,11 @@ Start by adding the following to your apache configuration:
 
         <Directory "/path/to/dancer/public">
             AllowOverride None
-            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch -Indexes
-            Order allow,deny
+
+            # +Indexes is important, if you don't enable it, Apache will silently try to get /index.html
+            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch +Indexes
+            
+			Order allow,deny
             Allow from all
             AddHandler cgi-script .cgi
         </Directory>

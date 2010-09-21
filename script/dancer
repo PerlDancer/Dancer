@@ -289,7 +289,7 @@ use Dancer ':syntax';
 
 our \$VERSION = '0.1';
 
-get qr{^/(index.html)?/?\$} => sub {
+get '/' => sub {
     template 'index';
 };
 
@@ -430,10 +430,14 @@ appname: \"$name\"
 ",
 
 'development.yml' =>
-"log: \"debug\"
+"log: \"core\"
 warnings: 1
 show_errors: 1
-auto_reload: $AUTO_RELOAD
+
+# auto_reload is a development feature
+# you should enable it by yourself if you want it
+# Module::Refresh is needed
+auto_reload: 0
 ",
 
 'production.yml' =>
@@ -441,6 +445,7 @@ auto_reload: $AUTO_RELOAD
 warnings: 0
 show_errors: 0
 route_cache: 1
+# never enable auto_reload in production
 auto_reload: 0
 
 ',
