@@ -245,14 +245,134 @@ WriteMakefile(
     clean               => { FILES => '$appname-*' },
 );
 ",
-'index.tt'  => '<h2>It Works!</h2>
+'index.tt'  => 
+'  
+<!-- 
+    Credit goes to the Ruby on Rails team for this page 
+    has been heavily based on the default Rails page that is 
+    built with a scaffolded application.
 
-<p>
-I\'m in <code>[%appdir%]/views/index.tt</code>
-</p>
+    Thanks a lot to them for their work.
+
+    See Ruby on Rails if you want a kickass framework in Ruby:
+    http://www.rubyonrails.org/
+-->
+
+<div id="page">
+      <div id="sidebar">
+        <ul id="sidebar-items">
+          <li>
+            <h3>Join the community</h3>
+            <ul class="links">
+
+              <li><a href="http://perldancer.org/">PerlDancer</a></li>
+              <li><a href="http://twitter.com/PerlDancer/">Official Twitter</a></li>
+              <li><a href="http://github.com/sukria/Dancer/">GitHub Community</a></li>
+            </ul>
+          </li>
+          
+          <li>
+            <h3>Browse the documentation</h3>
+
+            <ul class="links">
+              <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Cookbook.pod">Introduction</a></li>
+              <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Cookbook.pod">Cookbook</a></li>
+              <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Deployment.pod">Deployment Guide</a></li>
+            </ul>
+          </li>
+
+          <li>
+            <h3>Your application’s environment</h3>
+
+            <ul>
+                <li>Location: <code>[% appdir %]</code></li>
+                <li>Template engine: <code><% settings.template %></code></li>
+                <li>Logger: <code><% settings.logger %></code></li>
+                <li>Environment: <code><% settings.environment %></code></li>
+            </ul>
+
+          </li>
+        </ul>
+
+      </div>
+
+      <div id="content">
+        <div id="header">
+          <h1>Perl is dancing</h1>
+          <h2>You&rsquo;ve joined the dance floor!</h2>
+        </div>
+
+        <div id="getting-started">
+          <h1>Getting started</h1>
+          <h2>Here&rsquo;s how to get dancing:</h2>
+          
+          <ol>          
+            <li>
+              <h2>Tune your application</h2>
+
+              <p>
+              Your application is configured via a global configuration file,
+              <tt>config.yml</tt> and an "environment" configuration file,
+              <tt>environments/development.yml</tt>. Edit those files if you
+              want to change the settings of your application.
+              </p>
+            </li>
+
+            <li>
+              <h2>Add your own routes</h2>
+
+              <p>
+              The default route that displays this page can be removed,
+              it\'s just here to help you get started. The template used to
+              generate this content is located in 
+              <code>views/index.tt</code>.
+              
+              <p>
+              You can add some routes to <tt>lib/'.$appname.'.pm</tt>. 
+              You can see lots of examples in the 
+              <a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Introduction.pod">Dancer::Introduction</a> guide</p>
+            </li>
+
+            <li>
+                <h2>Restart your application</h2>
+
+                <p>
+                If you\'re using the standalone server (this is the case if you
+                just laucnhed <code>'.$appname.'.pl</code>) you will need to
+                restart it whenever you change the files located in the lib
+                directory (that\'s where you should put your routes).
+                </p>
+
+                <p>
+                If you want to be able to to change your routes on-the-fly, 
+                you can enable the auto_reload feature in
+                <code>environments/development.yml</code>.
+                </p>
+            </li>
+
+          </ol>
+        </div>
+      </div>
+    </div>
 ',
+
 'main.tt'   =>
-    Dancer::Renderer->html_page($appname, '<% content %>'),
+'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>FooApp</title>
+<link rel="stylesheet" href="/css/style.css" />
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<% content %>
+<div id="footer">
+Powered by <a href="http://perldancer.org/">Dancer</a> '.$DANCER_VERSION.'
+</div>
+</body>
+</html>
+',
 
 "dispatch.cgi" =>
 "$PERL_INTERPRETER
@@ -297,43 +417,200 @@ true;
 ",
 
 'style.css' =>
-
-'body {
-    font-family: Lucida,sans-serif;
-    color: #eee;
-    background-color: #1f1b1a;
-}
-
-#content {
-    color: #000;
-    background-color: #eee;
-    padding: 1em;
-    margin: 1em;
-    padding-top: 0.5em;
-}
-
-a {
-    color: #a5ec02;
+'
+body {
+font-family: \'Linux Libertine\', Palatino, \'Palatino Linotype\', \'Book Antiqua\', Georgia, \'Times New Roman\', serif;
+margin: 0;
+margin-bottom: 25px;
+padding: 0;
+background-color: #ddd;
+font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
+font-size: 13px;
+color: #333;
 }
 
 h1 {
-    color: #a5ec02;
+font-size: 28px;
+color: #000;
 }
 
-footer {
-    border-top: 1px solid #aba29c;
-    margin-top: 2em;
-    padding-top: 1em;
-    font-size: 10px;
-    color: #ddd;
+a  {color: #03c}
+a:hover {
+background-color: #03c;
+color: white;
+text-decoration: none;
 }
 
-pre {
-    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
+
+#page {
+background-color: #ddd;
+width: 750px;
+margin: 0;
+margin-left: auto;
+padding-left: 100px;
+margin-right: auto;
 }
 
+#content {
+background-color: white;
+border: 3px solid #aaa;
+border-top: none;
+padding: 25px;
+width: 500px;
+}
+
+#sidebar {
+float: right;
+width: 175px;
+}
+
+#header, #about, #getting-started {
+padding-left: 75px;
+padding-right: 30px;
+}
+
+
+#header {
+/* background-image: url("images/perldancer.png"); */
+background-repeat: no-repeat;
+background-position: top left;
+height: 64px;
+}
+#header h1, #header h2 {margin: 0}
+#header h2 {
+color: #888;
+font-weight: normal;
+font-size: 16px;
+}
+
+
+#about h3 {
+margin: 0;
+margin-bottom: 10px;
+font-size: 14px;
+}
+
+#about-content {
+background-color: #ffd;
+border: 1px solid #fc0;
+margin-left: -11px;
+}
+#about-content table {
+margin-top: 10px;
+margin-bottom: 10px;
+font-size: 11px;
+border-collapse: collapse;
+}
+#about-content td {
+padding: 10px;
+padding-top: 3px;
+padding-bottom: 3px;
+}
+#about-content td.name  {color: #555}
+#about-content td.value {color: #000}
+
+#about-content.failure {
+background-color: #fcc;
+border: 1px solid #f00;
+}
+#about-content.failure p {
+margin: 0;
+padding: 10px;
+}
+
+
+#getting-started {
+border-top: 1px solid #ccc;
+margin-top: 25px;
+padding-top: 15px;
+}
+#getting-started h1 {
+margin: 0;
+font-size: 20px;
+}
+#getting-started h2 {
+margin: 0;
+font-size: 14px;
+font-weight: normal;
+color: #333;
+margin-bottom: 25px;
+}
+#getting-started ol {
+margin-left: 0;
+padding-left: 0;
+}
+#getting-started li {
+font-size: 18px;
+color: #888;
+margin-bottom: 25px;
+}
+#getting-started li h2 {
+margin: 0;
+font-weight: normal;
+font-size: 18px;
+color: #333;
+}
+#getting-started li p {
+color: #555;
+font-size: 13px;
+}
+
+
+#search {
+margin: 0;
+padding-top: 10px;
+padding-bottom: 10px;
+font-size: 11px;
+}
+#search input {
+font-size: 11px;
+margin: 2px;
+}
+#search-text {width: 170px}
+
+
+#sidebar ul {
+margin-left: 0;
+padding-left: 0;
+}
+#sidebar ul h3 {
+margin-top: 25px;
+font-size: 16px;
+padding-bottom: 10px;
+border-bottom: 1px solid #ccc;
+}
+#sidebar li {
+list-style-type: none;
+}
+#sidebar ul.links li {
+margin-bottom: 5px;
+}
+
+
+h1, h2, h3, h4, h5 {
+font-family: sans-serif;
+margin: 1.2em 0 0.6em 0;
+}
+
+p {
+line-height: 1.5em;
+margin: 1.6em 0;
+}
+
+code {
+    font-family: \'Andale Mono\', Monaco, \'Liberation Mono\', \'Bitstream Vera Sans Mono\', \'DejaVu Sans Mono\', monospace;
+}
+
+#footer {
+clear: both;
+padding-top: 2em;
+text-align: center;
+font-family: sans-serif;
+font-size: 10px;
+}
 ',
 
+# error.css
 "error.css" =>
 
 "body {
@@ -459,7 +736,7 @@ use_ok '$appname';
 ",
 
 "002_index_route.t" =>
-"use Test::More tests => 3;
+"use Test::More tests => 2;
 use strict;
 use warnings;
 
@@ -469,8 +746,6 @@ use Dancer::Test;
 
 route_exists [GET => '/'], 'a route handler is defined for /';
 response_status_is ['GET' => '/'], 200, 'response status is 200 for /';
-response_content_like [GET => '/'], qr/It Works.*I'm in.*index.tt/s,
-    'content looks OK for /';
 ",
 
     };
