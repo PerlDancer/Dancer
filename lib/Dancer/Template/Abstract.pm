@@ -61,6 +61,13 @@ be done before the template engine is used.
 
 The base class provides a plain init() method that only returns true.
 
+=item B<default_tmpl_ext()>
+
+Template class that inherits this class should set this to a default template extension, 
+example: for TemplateToolkit its "tt" and for Mason its "mason". Note 1: please do not add a
+dot in front of the extension as Dancer will do that. Note 2: for backwords compatibility 
+abstract class sets it to "tt" instead of throwing an exception 'method not implemented'.
+
 =item B<view($view)>
 
 The default behavior of this method is to return the path of the given view.
