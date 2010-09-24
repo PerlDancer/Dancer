@@ -39,6 +39,7 @@ sub template {
     undef $layout unless $options->{layout};
 
     $tokens ||= {};
+    $tokens->{settings} = Dancer::Config->settings;
     $tokens->{request} = Dancer::SharedData->request;
     $tokens->{params}  = Dancer::SharedData->request->params;
     if (setting('session')) {
