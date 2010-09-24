@@ -25,9 +25,7 @@ Start by adding the following to your apache configuration:
 
         <Directory "/path/to/dancer/public">
             AllowOverride None
-
-            # +Indexes is important, if you don't enable it, Apache will silently try to get /index.html
-            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch +Indexes
+            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch -Indexes
             
 			Order allow,deny
             Allow from all
@@ -41,7 +39,6 @@ Place this code in a file called .htaccess (or directly in your VirtualHost
 configuration) in your application's root folder:
 
     # BEGIN dancer application htaccess
-    DirectoryIndex dispatch.cgi/
     RewriteEngine On
     RewriteCond %{SCRIPT_FILENAME} !-d
     RewriteCond %{SCRIPT_FILENAME} !-f
