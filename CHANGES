@@ -21,6 +21,10 @@ Dancer 1.1901 (1.2RC1)
       flagged "experimental").  
     * Default log level in development environment is now 'core' in order to
       provide more information.
+    * New scaffolded application design. More neutral and with lots of
+      information for a beginner, and links to useful material.
+      Based on the Ruby on Rails start page (kudos to the Rails team,
+      http://www.rubyonrails.org).
 
     [ Boris Shomodjvarac ] 
     * Support for a clean way for Template engines to define their template
