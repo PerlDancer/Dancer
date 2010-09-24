@@ -212,6 +212,46 @@ Simply enable auto_page in your config:
 Then, if you request C</foo/bar>, Dancer will look in the views dir for
 C</foo/bar.tt>.
 
+=head2 Why should I use the Ajax plugin
+
+As an Ajax query is just a HTTP query, it's similar to a GET or POST
+route. You may ask yourself why you may want to use the C<ajax>
+keyword (from the L<Dancer::Plugin::Ajax> plugin) instead of a simple
+C<get>.
+
+Let's say you have a path like '/user/:user' in your application. You
+may want to be able to serve this page, with a layout and HTML
+content. But you may also want to be able to call this same url from a
+javascript query using Ajax.
+
+So, instead of having the following code:
+
+    get '/user/:user' => sub {
+         if (request->is_ajax) {
+             # create xml, set headers to text/xml, blablabla
+              header('Content-Type' => 'text/xml');
+              header('Cache-Control' =>  'no-store, no-cache, must-revalidate');
+              to_xml({...})
+         }else{
+             template users, {....}
+         }
+    };
+
+you can have
+
+    get '/user/:user' => sub {
+        template users, {...}
+    }
+
+and
+
+    ajax '/user/:user' => sub {
+         to_xml({...}, RootName => undef);
+    }
+
+
+Because it's an ajax query, you know you need to return a xml content,
+so the content type of the response is set for you.
 
 =head2 Using the prefix feature to split your application
 

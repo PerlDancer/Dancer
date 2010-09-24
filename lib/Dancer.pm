@@ -414,21 +414,21 @@ Logs a message of error level:
 
 Constant that returns a false value (0).
 
-=head2 from_dumper
+=head2 from_dumper ($structure)
 
 Deserializes a Data::Dumper structure.
 
-=head2 from_json
+=head2 from_json ($structure, %options)
 
-Deserializes a JSON structure.
+Deserializes a JSON structure. Can receive optional arguments. Thoses arguments are valid L<JSON> arguments to change the behavior of the default C<JSON::from_json> function.
 
-=head2 from_yaml
+=head2 from_yaml ($structure)
 
 Deserializes a YAML structure.
 
-=head2 from_xml
+=head2 from_xml ($structure, %options)
 
-Deserializes a XML structure.
+Deserializes a XML structure. Can receive optional arguments. Thoses arguments are valid L<XML::Simple> arguments to change the behavior of the default C<XML::Simple::XMLin> function.
 
 =head2 get
 
@@ -771,21 +771,21 @@ For example, to disable the layout for a specific request:
     };
 
 
-=head2 to_dumper
+=head2 to_dumper ($structure)
 
 Serializes a structure with Data::Dumper.
 
-=head2 to_json
+=head2 to_json ($structure, %options)
 
-Serializes a structure to JSON.
+Serializes a structure to JSON. Can receive optional arguments. Thoses arguments are valid L<JSON> arguments to change the behavior of the default C<JSON::to_json> function.
 
-=head2 to_yaml
+=head2 to_yaml ($structure)
 
 Serializes a structure to YAML.
 
-=head2 to_xml
+=head2 to_xml ($structure, %options)
 
-Serializes a structure to XML.
+Serializes a structure to XML. Can receive optional arguments. Thoses arguments are valid L<XML::Simple> arguments to change the behavior of the default C<XML::Simple::XMLout> function.
 
 =head2 true
 

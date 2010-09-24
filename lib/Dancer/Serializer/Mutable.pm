@@ -63,9 +63,10 @@ sub serialize {
 }
 
 sub deserialize {
-    my ($self, $content, $request) = @_;
+    my ($self, $content) = @_;
+    my $request    = Dancer::SharedData->request;
     my $serializer = $self->_load_serializer($request);
-    return $serializer->deserialize($content, $request);
+    return $serializer->deserialize($content);
 }
 
 sub content_type {
