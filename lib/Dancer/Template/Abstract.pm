@@ -63,10 +63,15 @@ The base class provides a plain init() method that only returns true.
 
 =item B<default_tmpl_ext()>
 
-Template class that inherits this class should set this to a default template extension, 
-example: for TemplateToolkit its "tt" and for Mason its "mason". Note 1: please do not add a
-dot in front of the extension as Dancer will do that. Note 2: for backwords compatibility 
-abstract class sets it to "tt" instead of throwing an exception 'method not implemented'.
+Template class that inherits this class should override this method to return a default template
+extension, example: for Template::Toolkit it returns "tt" and for HTML::Mason it returns "mason". 
+So when you call C<template 'index';> in your dispatch code, Dancer will look for a file 'index.tt'
+or 'index.mason' based on the template you use.
+
+Note 1: when returning the extension string, please do not add a dot in front of the extension 
+as Dancer will do that. 
+Note 2: for backwords compatibility abstract class returns "tt" instead of throwing
+an exception 'method not implemented'.
 
 =item B<view($view)>
 
