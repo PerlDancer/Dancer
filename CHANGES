@@ -1,3 +1,31 @@
+Dancer 1.1901 (1.2RC1)
+
+    [ Franck Cuny ]
+    * implemented GH#120:
+      - methods {to,from}_{xml,json,yaml} accept more than one arguments. The
+        first argument is the data to transform. All the remainings arguments
+        are parameters to alter the behavior of the serializers. Refer to the
+        documentation for more informations.
+    * more tests added
+
+    [ Alexis Sukrieh ]
+    * load_plugin is DEPRECATED; 'use' should be used instead to load a plugin.
+      This is fixes the major issue with plugins about symbol exports that
+      didn't work well (issue #101).
+    * All paths built in a scaffolded application are dynamic, it's now
+      possible to move a scaffolded application after it's been generated.
+      (fixes issues #88, 
+    * The auto_reload feature is now disabled by default due to too many
+      unsolved issues (it works most of the time, but some race conditions are
+      still present) This feature is still being working on, but it's now
+      flagged "experimental").  
+    * Default log level in development environment is now 'core' in order to
+      provide more information.
+
+    [ Boris Shomodjvarac ] 
+    * Support for a clean way for Template engines to define their template
+      file extensions (issue #126).
+
 Dancer 1.1812
 
     [ Franck Cuny ]
