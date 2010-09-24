@@ -182,14 +182,6 @@ This is done with the B<pass> keyword, like in the following example
         "I say a number: ".params->{number};
     };
 
-=head1 ACTION RESPONSES
-
-The action's return value is always considered to be the content to render. So
-take care to your return value.
-
-In order to change the default behaviour of the rendering of an action, you can
-use the following keywords.
-
 =head1 ERROR HANDLING
 
 =head2 DEFAULT ERROR PAGES
