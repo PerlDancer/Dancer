@@ -344,7 +344,8 @@ WriteMakefile(
             <h3>Browse the documentation</h3>
 
             <ul class="links">
-              <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Cookbook.pod">Introduction</a></li>
+              <li><a
+              href="http://search.cpan.org/dist/Dancer/lib/Dancer/Introduction.pod">Introduction</a></li>
               <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Cookbook.pod">Cookbook</a></li>
               <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Deployment.pod">Deployment Guide</a></li>
             </ul>
@@ -395,27 +396,17 @@ WriteMakefile(
               it\'s just here to help you get started. The template used to
               generate this content is located in 
               <code>views/index.tt</code>.
-              
-              <p>
               You can add some routes to <tt>lib/'.$appname.'.pm</tt>. 
-              You can see lots of examples in the 
-              <a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Introduction.pod">Dancer::Introduction</a> guide</p>
+              </p>
             </li>
 
             <li>
-                <h2>Restart your application</h2>
+                <h2>Enjoy web development again</h2>
 
                 <p>
-                If you\'re using the standalone server (this is the case if you
-                just laucnhed <code>'.$appname.'.pl</code>) you will need to
-                restart it whenever you change the files located in the lib
-                directory (that\'s where you should put your routes).
-                </p>
-
-                <p>
-                If you want to be able to to change your routes on-the-fly, 
-                you can enable the auto_reload feature in
-                <code>environments/development.yml</code>.
+                With the <tt>auto_reload</tt> feature (which is enabled in the
+                <tt>development</tt> environment)
+                you don\'t even have to restart the standalone webserver to see your changes.
                 </p>
             </li>
 
@@ -670,7 +661,7 @@ line-height: 1.5em;
 margin: 1.6em 0;
 }
 
-code {
+code, tt {
     font-family: \'Andale Mono\', Monaco, \'Liberation Mono\', \'Bitstream Vera Sans Mono\', \'DejaVu Sans Mono\', monospace;
 }
 
@@ -678,6 +669,7 @@ code {
 clear: both;
 padding-top: 2em;
 text-align: center;
+padding-right: 160px;
 font-family: sans-serif;
 font-size: 10px;
 }
