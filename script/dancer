@@ -7,8 +7,7 @@ use File::Basename 'basename', 'dirname';
 use File::Spec::Functions;
 use Getopt::Long;
 use Dancer::Renderer;
-use IO::Socket::INET;
-use IO::Select;
+use LWP::UserAgent;
 use constant FILE => 1;
 
 # options
@@ -159,6 +158,9 @@ sub app_tree($) {
                 "perldancer-bg.jpg" => \&write_bg,
                 "perldancer.jpg" => \&write_logo,
             },
+            "javascripts" => {
+                "jquery.js" => \&download_jquery,
+            },
             "favicon.ico" => \&write_favicon,
         },
         "t" => {
@@ -222,51 +224,17 @@ sub write_data_to_file {
 
 sub send_http_request {
     my $url = shift;
-    my ($host, $path);
+    my $ua = LWP::UserAgent->new;
+    $ua->timeout(5);
 
-    if ($url =~ /https?:\/\/([^\/]+)(.*)/) {
-        ($host, $path) = ($1, $2);
+    my $response = $ua->get($url);
+
+    if ($response->is_success) {
+        return $response->content;
     }
     else {
-        die "unknown url: $url";
+        return;
     }
-
-    my $timeout = 2;
-    my $latest_version;
-
-    my $sock = IO::Socket::INET->new(PeerAddr => $host, PeerPort => 'http(80)', Proto => 'tcp');
-    return undef if not defined $sock;
-
-    my $req = "GET $path HTTP/1.0\x0d\x0aHost: $host\x0d\x0a\x0d\x0a";
-
-    $sock->send( $req );
-    my $select = IO::Select->new( $sock );
-
-    my $resp;
-    while ( $select->can_read( $timeout ) ) {
-        $resp = '';
-        my $ret = $sock->sysread( $resp, 4096, length($resp) );
-        $select->remove( $sock );
-    }
-    my @headers = split /\n/, $resp;
-    my $status_line = shift @headers;
-
-    # redirection handling
-    if ($status_line =~ /HTTP\/.*30[12]/) {
-        for my $header (@headers) {
-            if ($header =~ /Location: (\S+).*$/) {
-                my $path = $1;
-                if ($path =~ /^http:/) {
-                    return send_http_request($path);
-                }
-                else {
-                    return send_http_request("http://${host}${path}");
-                }
-            }
-            last if not $header;
-        }
-    }
-    return $resp;
 }
 
 sub version_check {
@@ -285,6 +253,22 @@ Please check http://search.cpan.org/dist/Dancer/ for updates.
 
 |;
     }
+}
+
+sub download_jquery {
+    my $path = shift;
+    download_file($path, 'http://code.jquery.com/jquery-1.4.2.min.js');
+}
+
+sub download_file {
+    my ($path, $url) = @_;
+    my $resp = send_http_request($url);
+    if ($resp) {
+        open my $fh, '>', $path or die "cannot open $path for writing: $!";
+        print $fh $resp;
+        close $fh
+    }
+    return 1;
 }
 
 sub templates($) {
@@ -375,7 +359,53 @@ WriteMakefile(
         <div id="getting-started">
           <h1>Getting started</h1>
           <h2>Here&rsquo;s how to get dancing:</h2>
-          
+                    
+          <h3><a href="#" id="about_env_link">About your application\'s environment</a></h3>
+
+          <div id="about-content" style="display: none;">
+            <table>
+                <tbody>
+                <tr>
+                    <td>Perl version</td>
+                    <td><tt>'.$].'</tt></td>
+                </tr>
+                <tr>
+                    <td>Dancer version</td>
+                    <td><tt>'.$DANCER_VERSION.'</tt></td>
+                </tr>
+                <tr>
+                    <td>Backend</td>
+                    <td><tt><% settings.apphandler %></tt></td>
+                </tr>
+                <tr>
+                    <td>Appdir</td>
+                    <td><tt>[% appdir %]</tt></td>
+                </tr>
+                <tr>
+                    <td>Template engine</td>
+                    <td><tt><% settings.template %></tt></td>
+                </tr>
+                <tr>
+                    <td>Logger engine</td>
+                    <td><tt><% settings.logger %></tt></td>
+                </tr>
+                <tr>
+                    <td>Running environment</td>
+                    <td><tt><% settings.environment %></tt></td>
+                </tr>
+                </tbody>
+            </table>
+          </div>
+
+    <script type="text/javascript">
+    $(\'#about_env_link\').click(function() {
+        $(\'#about-content\').slideToggle(\'fast\', function() {
+            // ok
+        });
+    });
+    </script>
+
+
           <ol>          
             <li>
               <h2>Tune your application</h2>
@@ -424,6 +454,7 @@ WriteMakefile(
 <title>'.$appname.'</title>
 <link rel="stylesheet" href="/css/style.css" />
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="/javascripts/jquery.js"></script> 
 </head>
 <body>
 <% content %>
