@@ -96,6 +96,41 @@ To start your application, just run plackup
 As you can see, the scaffolded Perl script for your app can be used as a PSGI
 startup file.
 
+=head4 Enabling content compression
+
+Content compression (gzip, deflate) can be easily enabled via a Plack
+middleware (see L<Plack#Plack::Middleware>): L<Plack::Middleware::Deflater>.
+It's a middleware to encode the response body in gzip or deflate, based on
+Accept-Encoding HTTP request header.
+
+Enable it as you would enable any Plack middleware. First you need to install
+L<Plack::Middleware::Deflater>, then in the configuration file (usually
+F<environments/development.yml>), add these lines:
+
+  plack_middlewares:
+    Plack::Middleware::Deflater: [  ]
+
+These lines tell Dancer to add L<Plack::Middleware::Deflater> to the list of
+middlewares to pass to L<Plack::Builder>, when wrapping the Dancer app. The
+syntax is :
+
+=over
+
+=item *
+
+as key: the name of the Plack middleware to use
+
+=item *
+
+as value: the options to pass it as a list. In our case, there is no option to
+specify to L<Plack::Middleware::Deflater>, so we use an empty YAML list.
+
+=back
+
+To test if content compression works, trace the HTTP request and response
+before and after enabling this middleware. Among other things, you should
+notice that the response is gzip or deflate encoded, and contains a header
+C<Content-Encoding> set to C<gzip> or C<deflate>
 
 =head3 Running multiple apps with Plack::Builder
 
