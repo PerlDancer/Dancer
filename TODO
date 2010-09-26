@@ -3,13 +3,4 @@
             
             This is the roadmap of upcoming developments
 
-* Route caching support
-
-    When a path is firstly resolved through the route tree, we should
-    cache the result for future calls.
-
-    The path would be the cache key, the first route the value.
-
-        1 - GET / -> first call, so browse the route tree
-        2 - GET / -> second call, return cache('/');
-
+ * see http://github.com/sukria/dancer/issues#issue/125
