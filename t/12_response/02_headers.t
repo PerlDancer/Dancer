@@ -59,14 +59,14 @@ $res = Dancer::Renderer::get_action_response();
 is($headers{'X-Foo'}, 'bar', "X-Foo looks good for /headers/more");
 is($headers{'X-Bar'}, 'schmuk', "X-Bar looks good for /headers/more");
 is($headers{'X-XXX'}, 'porn', "X-XXX looks good for /headers/more");
-is($headers{'Content-Type'}, 'text/html', "Content-Type looks good for /headers/more");
+is($headers{'Content-Type'}, 'text/css', "Content-Type looks good for /headers/more");
 
 # /headers/content_type
 $req = fake_request(GET => '/headers/content_type');
 Dancer::SharedData->request($req);
 $res = Dancer::Renderer::get_action_response();
 %headers = @{$res->{headers}};
-is($headers{'Content-Type'}, 'text/xml', "Content-Type looks good for /headers/content_type");
+is($headers{'Content-Type'}, 'text/css', "Content-Type looks good for /headers/content_type");
 
 
 # /headers/multiple
