@@ -468,17 +468,22 @@ Powered by <a href="http://perldancer.org/">Dancer</a> '.$DANCER_VERSION.'
 "dispatch.cgi" =>
 "$PERL_INTERPRETER
 use Plack::Runner;
-use Dancer ':syntax';
-my \$psgi = path(dirname(__FILE__), '..', '$DANCER_SCRIPT.pl');
+use Dancer;
+use FindBin '\$RealBin';
+use lib path(\$RealBin, '..', 'lib');
+
+my \$psgi = path(\$RealBin, '..', '$DANCER_SCRIPT.pl');
 Plack::Runner->run(\$psgi);
 ",
 
 "dispatch.fcgi" =>
 "$PERL_INTERPRETER
 use Plack::Handler::FCGI;
-use Dancer ':syntax';
+use Dancer;
+use FindBin '\$RealBin';
+use lib path(\$RealBin, '..', 'lib');
 
-my \$psgi = path(dirname(__FILE__), '..', '$DANCER_SCRIPT.pl');
+my \$psgi = path(\$RealBin, '..', '$DANCER_SCRIPT.pl');
 my \$app = do(\$psgi);
 my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 \$server->run(\$app);
@@ -488,8 +493,9 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 
 "$PERL_INTERPRETER
 use Dancer;
-use lib path(dirname(__FILE__), 'lib');
-load_app '$appname';
+use FindBin;
+use lib path(\$FindBin::RealBin, 'lib');
+use $appname;
 dance;
 ",
 
