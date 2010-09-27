@@ -452,9 +452,9 @@ WriteMakefile(
 <html>
 <head>
 <title>'.$appname.'</title>
-<link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" href="<% uri_base %>/css/style.css" />
 <meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
-<script type="text/javascript" src="/javascripts/jquery.js"></script> 
+<script type="text/javascript" src="<% uri_base %>/javascripts/jquery.js"></script> 
 </head>
 <body>
 <% content %>
@@ -505,6 +505,14 @@ dance;
 use Dancer ':syntax';
 
 our \$VERSION = '0.1';
+
+# This will help templates construct paths to static files if your app is served
+# via a webserver and not mounted under root (/). This is not necessary when
+# running standalone. Look in views/layouts/main.tt to see how uri_base is used.
+before_template sub {
+    my \$template_vars = shift;
+    \$template_vars->{uri_base} = request->base;
+};
 
 get '/' => sub {
     template 'index';
