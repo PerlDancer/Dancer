@@ -45,7 +45,7 @@ sub render {
       if !ref($template) && (!-f $template);
 
     my $content = "";
-    $_engine->process($template, $tokens, \$content) or die $_engine->error;
+    $_engine->process($template, $tokens, \$content, binmode => ':utf8') or die $_engine->error;
     return $content;
 }
 
