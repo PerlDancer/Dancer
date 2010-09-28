@@ -38,10 +38,13 @@ sub template {
     my $layout = $app->setting('layout');
     undef $layout unless $options->{layout};
 
+    # these are the default tokens provided for template processing
     $tokens ||= {};
+    $tokens->{dancer_version} = $Dancer::VERSION;
     $tokens->{settings} = Dancer::Config->settings;
     $tokens->{request} = Dancer::SharedData->request;
     $tokens->{params}  = Dancer::SharedData->request->params;
+
     if (setting('session')) {
         $tokens->{session} = Dancer::Session->get;
     }
