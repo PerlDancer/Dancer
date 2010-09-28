@@ -1,14 +1,14 @@
 Dancer 1.1902 (1.2RC2)
 
     [ Alexis Sukrieh ]
-    * Better design for the scaffolded app (logo, faviocn and background image
+    * Better design for the scaffolded app (logo, favicon and background image
       added)
-    * Environment info avaialbe on scaffolded app 
+    * Environment info available on scaffolded app 
     * LWP is used by the dancer helper to download files
     * jQuery 1.4.2 (minified) is included in the scaffolded app
     
     [ Sebastian de Castelberg ]
-    * The dancer helper is able to downlad files via a transparent proxy
+    * The dancer helper is able to download files via a transparent proxy
       (thanks to LWP).
 
     [ Adam J. Foxson ]
