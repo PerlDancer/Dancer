@@ -447,7 +447,7 @@ WriteMakefile(
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-type" content="text/html; charset=<% settings.charset %>" />
 <title>'.$appname.'</title>
 <link rel="stylesheet" href="<% request.base %>/css/style.css" />
 
@@ -797,8 +797,8 @@ pre.error {
 'config.yml' =>
 
 "layout: \"main\"
-logger: \"file\"
-charset: \"utf-8\"
+logger: \"console\"
+charset: \"utf8\"
 appname: \"$name\"
 
 ",
