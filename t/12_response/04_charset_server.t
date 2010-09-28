@@ -22,7 +22,7 @@ Test::TCP::test_tcp(
         my $res = $ua->request($req);
 
         is $res->content_type, 'text/html';
-        ok !$res->content_type_charset;
+        ok $res->content_type_charset; # we always have charset if the setting is set
         is $res->content, 'Your name: vasya';
 
         $req = HTTP::Request::Common::GET("http://127.0.0.1:$port/unicode");
