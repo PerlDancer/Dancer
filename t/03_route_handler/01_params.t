@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 20, import => ['!pass'];
+use Test::More tests => 17, import => ['!pass'];
 use Dancer::Test;
 
 use Dancer ':syntax';
@@ -21,12 +21,10 @@ my @tests = (
     {method => 'GET', path => '/hello/sukria', expected => 'sukria'},
     {method => 'GET', path => '/hello/joe/bar', expected => 'joe' },
     {method => 'POST', path => '/new/wine', expected => 'wine' },
-    {method => 'POST', path => '/allo', body => 'bye', expected => 'bye' },
-
 );
 
 foreach my $test (@tests) {
-    my $req = [$test->{method}, $test->{path}, {}, $test->{body}];
+    my $req = [$test->{method}, $test->{path}];
 
     route_exists $req, 
         "route handler found for path `".$test->{path}."'";
