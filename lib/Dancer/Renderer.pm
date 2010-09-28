@@ -16,6 +16,10 @@ use Dancer::SharedData;
 use Dancer::Logger;
 use MIME::Types;
 
+BEGIN {
+	MIME::Types->new(only_complete => 1);
+};
+
 sub render_file {
     return get_file_response();
 }
