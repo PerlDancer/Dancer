@@ -6,6 +6,11 @@ Dancer 1.1902 (1.2RC2)
     * Environment info avaialbe on scaffolded app 
     * LWP is used by the dancer helper to download files
     * jQuery 1.4.2 (minified) is included in the scaffolded app
+    * default layout uses <% request.base %> in order to support mounted apps
+      (Thanks to Naveed Massjouni and Franck Cuny for the concept/idea).
+    * The main.tt layout sources jQuery first from Google CDN and falls back to the 
+      local minified version if on offline mode.
+    * New default token provided to the "template" helper: dancer_version
     
     [ Sebastian de Castelberg ]
     * The dancer helper is able to downlad files via a transparent proxy
