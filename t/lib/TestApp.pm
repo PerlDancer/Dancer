@@ -63,6 +63,10 @@ put '/jsondata' => sub {
     request->body;
 };
 
+post '/form' => sub {
+    params->{foo};
+};
+
 get '/unicode' => sub {
     "cyrillic shcha \x{0429}",
 };
