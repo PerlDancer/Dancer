@@ -1,3 +1,34 @@
+Dancer 1.1902 (1.2RC2)
+
+    [ Alexis Sukrieh ]
+    * Better design for the scaffolded app (logo, faviocn and background image
+      added)
+    * Environment info avaialbe on scaffolded app 
+    * LWP is used by the dancer helper to download files
+    * jQuery 1.4.2 (minified) is included in the scaffolded app
+    
+    [ Sebastian de Castelberg ]
+    * The dancer helper is able to downlad files via a transparent proxy
+      (thanks to LWP).
+
+    [ Adam J. Foxson ]
+    * FIX for issue GH#136: 
+      "readline() on closed filehandle DATA" error that appears when running
+      the app with Starman
+    
+    [ Naveed Massjouni ]
+    * Dancer::Test function get_response is renamed to dancer_response
+      get_response still works but is deprecated
+
+    [ Franck Cuny ]
+    * FIX for issue GH#129 
+      don't add multiple content-type to headers
+    * fix broken tests (they were testing incorrect content type)
+
+    [ Damien Krotkine ]
+    * FIX for issue GH#115
+      documentation about compression in Dancer::Deployment 
+
 Dancer 1.1901 (1.2RC1)
 
     [ Franck Cuny ]
