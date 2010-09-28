@@ -226,6 +226,7 @@ sub send_http_request {
     my $url = shift;
     my $ua = LWP::UserAgent->new;
     $ua->timeout(5);
+    $ua->env_proxy();
 
     my $response = $ua->get($url);
 
