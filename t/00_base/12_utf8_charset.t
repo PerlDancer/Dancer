@@ -26,19 +26,21 @@ push @templates, 'tiny' if Dancer::ModuleLoader->load('Dancer::Template::Tiny');
 
 my @plack_servers = qw(plackup);
 push @plack_servers, 'Starman' if Dancer::ModuleLoader->load('Starman');
+my @charsets = qw(utf8 latin1);
 
 plan tests => scalar(@templates) * scalar(@plack_servers);
 
 my $app = sub {
     my $env = shift;
-    
-    setting views => File::Spec->rel2abs(path(dirname(__FILE__)));
+
+    setting views       => File::Spec->rel2abs(path(dirname(__FILE__)));
     setting apphandler  => 'PSGI';
     setting show_errors => 1;
     setting access_log  => 0;
-    setting charset => 'utf8';
+    setting charset     => 'utf8';
 
-    get '/' => sub { template 'test' };
+    get '/utf8' => sub { template "utf8" };
+    get '/latin1' => sub { template "latin1" };
 
     my $request = Dancer::Request->new($env);
     Dancer->dance($request);
@@ -50,18 +52,20 @@ for my $plack (@plack_servers) {
 
     for my $template (@templates) {
 
-        setting template    => $template;
-        
-        Plack::Test::test_psgi($app, sub {
-            my $cb = shift;
+        setting template => $template;
 
-            my $req = HTTP::Request->new(GET => "/");
-            my $res = $cb->($req);
+        Plack::Test::test_psgi(
+            $app,
+            sub {
+                my $cb = shift;
 
-            # Test!
-            is $res->content, "This is utf8: ’♣ ♤ ♥ ♦’\n",
-               "PSGI/$plack template/$template : UTF-8 string is rendered correctly";
-        });
+                my $req = HTTP::Request->new(GET => "/utf8");
+                my $res = $cb->($req);
+
+                # Test!
+                is $res->content, "utf8: ’♣ ♤ ♥ ♦’\n",
+                  "PSGI/$plack template/$template : UTF-8 string is rendered correctly";
+            }
+        );
     }
 }
-
