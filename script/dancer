@@ -336,7 +336,7 @@ WriteMakefile(
           </li>
 
           <li>
-            <h3>Your application’s environment</h3>
+            <h3>Your application\'s environment</h3>
 
             <ul>
                 <li>Location: <code>[% appdir %]</code></li>
