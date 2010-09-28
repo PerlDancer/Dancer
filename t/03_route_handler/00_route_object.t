@@ -1,4 +1,4 @@
-use Test::More 'tests' => 7, import => ['!pass'];
+use Test::More 'tests' => 8, import => ['!pass'];
 use strict;
 use warnings;
 
@@ -60,3 +60,16 @@ $response = $r2->run($req);
 
 is $response->{content}, 'this is r4',
     "route 2 passed, r3 skipped (dont match), r4 served the response";
+
+setting 'public' => 't/03_route_handler/public';
+
+my $r5 = Dancer::Route->new(
+    method  => 'get',
+    pattern => '/error',
+    code    => sub { send_error( "no", 404 ) }
+);
+$req = Dancer::Request->new_for_request( GET => '/error' );
+my $res = $r5->run($req);
+is( ( grep { /Content-Type/ } @{ $res->{headers} } ),
+    1, 'only one content-type' );
+
