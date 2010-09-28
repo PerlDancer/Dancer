@@ -88,12 +88,7 @@ sub render_response {
         my $charset = setting('charset');
         my $ctype   = $response->{content_type};
         
-        # if we have utf8 content, we must encode it in order to be sure 
-        # we send bytes rather than chars.
-        # Fear the Plack Policia! 
-        if ( $ctype && $charset && 
-                (( lc($charset) eq 'utf-8') || (lc($charset) eq 'utf8')) && 
-                (utf8::is_utf8($content)) ) {
+        if ($charset && $ctype) {
             $content = Encode::encode($charset, $content);
             $response->update_headers('Content-Type' => "$ctype; charset=$charset");
         }

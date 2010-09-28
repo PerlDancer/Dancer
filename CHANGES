@@ -1,6 +1,11 @@
 Dancer 1.1902 (1.2RC2)
 
     [ Alexis Sukrieh ]
+    * FIX for utf8 content in views
+      Dancer now handles correctly templates with non-ASCII characters in views.
+      All you have to do is to set the "charset" setting in your config. Your
+      content response will then be encoded appropriately on-the-fly by Dancer.
+    * Scaffolded app sets the charset to "utf8" by default.
     * Better design for the scaffolded app (logo, favicon and background image
       added)
     * Environment info available on scaffolded app 
