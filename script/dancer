@@ -488,8 +488,7 @@ my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 
 "$PERL_INTERPRETER
 use Dancer;
-use lib path(dirname(__FILE__), 'lib');
-load_app '$appname';
+use $appname;
 dance;
 ",
 
