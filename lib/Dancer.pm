@@ -213,7 +213,25 @@ sub import {
     }
 
     Dancer::GetOpt->process_args();
-    _init($script);
+
+    setting appdir => $ENV{DANCER_APPDIR}
+      || dirname(File::Spec->rel2abs($script));
+
+    setting confdir => $ENV{DANCER_CONFDIR} 
+      || setting('appdir');
+
+    setting public => $ENV{DANCER_PUBLIC} 
+      || path(setting('appdir'), 'public');
+
+    setting views => $ENV{DANCER_VIEWS} 
+      || path(setting('appdir'), 'views');
+
+    setting logger => 'console';
+    
+    eval "use lib path(dirname(File::Spec->rel2abs(\$script)), 'lib')";
+    die "unable to set libdir: $@" if $@;
+
+    Dancer::Config->load;
 }
 
 # Start/Run the application with the chosen apphandler
@@ -226,18 +244,6 @@ sub start {
         return Dancer::Handler->handle_request($request);
     }
     Dancer::Handler->get_handler()->dance;
-}
-
-# private
-
-sub _init {
-    my ($path) = @_;
-    setting appdir  => dirname(File::Spec->rel2abs($path));
-    setting public  => path(setting('appdir'), 'public');
-    setting views   => path(setting('appdir'), 'views');
-    setting logger  => 'file';
-    setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
-    Dancer::Config->load;
 }
 
 1;
