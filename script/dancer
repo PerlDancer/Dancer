@@ -130,11 +130,13 @@ sub app_tree($) {
     my ($appname) = @_;
 
     return {
-        "+$DANCER_SCRIPT.pl" => FILE,
         "Makefile.PL"        => FILE,
         lib                  => {
          $LIB_PATH => {
             $LIB_FILE => FILE,}
+        },
+        "bin" => {
+            "+app.pl" => FILE,
         },
         "config.yml"         => FILE,
         "environments"       => {
@@ -468,23 +470,25 @@ Powered by <a href="http://perldancer.org/">Dancer</a> <% dancer_version %>
 "dispatch.cgi" =>
 "$PERL_INTERPRETER
 use Plack::Runner;
-use Dancer ':syntax';
-my \$psgi = path(dirname(__FILE__), '..', '$DANCER_SCRIPT.pl');
+use Dancer;
+
+my \$psgi = path(setting('appdir'), 'bin', 'app.pl');
 Plack::Runner->run(\$psgi);
 ",
 
 "dispatch.fcgi" =>
 "$PERL_INTERPRETER
 use Plack::Handler::FCGI;
-use Dancer ':syntax';
+use Dancer;
 
-my \$psgi = path(dirname(__FILE__), '..', '$DANCER_SCRIPT.pl');
+my \$psgi = path(setting('appdir'), 'bin', 'app.pl');
 my \$app = do(\$psgi);
+
 my \$server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
 \$server->run(\$app);
 ",
 
-"$DANCER_SCRIPT.pl" =>
+"app.pl" =>
 
 "$PERL_INTERPRETER
 use Dancer;
