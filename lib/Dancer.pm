@@ -185,8 +185,10 @@ sub load_app {
     $app->prefix($options{prefix})     if $options{prefix};
     $app->settings($options{settings}) if $options{settings};
 
+
     # load the application
-    use lib path(dirname(File::Spec->rel2abs($0)), 'lib');
+    my ($package, $script) = caller;
+    _init($script);
     eval "use $app_name";
     die "unable to load application $app_name : $@" if $@;
 
@@ -234,7 +236,7 @@ sub _init {
     my $script = shift;
 
     setting appdir => $ENV{DANCER_APPDIR}
-      || dirname(File::Spec->rel2abs($script));
+      || path(dirname(File::Spec->rel2abs($script)), '..');
 
     setting confdir => $ENV{DANCER_CONFDIR} 
       || setting('appdir');
@@ -247,7 +249,7 @@ sub _init {
 
     setting logger => 'file';
     
-    eval "use lib path(dirname(File::Spec->rel2abs(\$script)), 'lib')";
+    eval "use lib path(setting('appdir'), 'lib')";
     die "unable to set libdir: $@" if $@;
 }
 
