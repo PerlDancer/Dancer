@@ -1,9 +1,9 @@
 use Test::More tests => 5, import => ['!pass'];
-use Dancer::Test;
 use strict;
 use warnings;
 
 use Dancer;
+use Dancer::Test;
 
 eval { load_app 'UnexistentApp' };
 like $@, qr/unable to load application UnexistentApp : Can't locate/, 
