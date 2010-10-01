@@ -50,7 +50,10 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
-    $options{appdir} ||= '..';
+    use File::Spec;
+    
+    $options{appdir} ||= File::Spec->rel2abs(dirname($script), $options{appdir} || '.');
+    $ENV{DANCER_APPDIR} = $options{appdir};
     Dancer::_init($options{appdir});
 }
 
