@@ -26,6 +26,7 @@ use Dancer::Handler;
 use Dancer::ModuleLoader;
 
 use File::Spec;
+use File::Basename 'basename';
 
 use base 'Exporter';
 
@@ -232,15 +233,23 @@ sub start {
     Dancer::Handler->get_handler()->dance;
 }
 
+
 sub _init {
     my $script = shift;
     my $script_path = File::Spec->rel2abs(path(dirname($script)));
 
-    my $layout = 2;
-    $layout = 1 if -f File::Spec->catfile($script_path, 'config.yml');
+    my $LAYOUT_PRE_DANCER_1_2 = 1;
+    $LAYOUT_PRE_DANCER_1_2 = 0 if (
+        basename($script) eq 'app.pl' ||
+        basename($script) eq 'dispatch.cgi' ||
+        basename($script) eq 'dispatch.fcgi');
 
     setting appdir => $ENV{DANCER_APPDIR}
-      ||  ($layout == 2 ? path($script_path, '..') : $script_path);
+      ||  (
+            $LAYOUT_PRE_DANCER_1_2 
+                ? $script_path 
+                : File::Spec->rel2abs(path($script_path, '..'))
+          );
 
     Dancer::Logger::core("inititlaizing appdir to: `".setting('appdir')."'");
 
