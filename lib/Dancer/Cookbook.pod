@@ -272,7 +272,7 @@ admin section, and want to maintain this in a different package:
     package myapp::admin;
     use Dancer ':syntax';
 
-    prefix 'admin';
+    prefix '/admin';
 
     get '/' => sub {...};
 
