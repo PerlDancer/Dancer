@@ -40,6 +40,7 @@ use vars '@EXPORT';
 
 sub import {
     my ($class, %options) = @_;
+    $options{appdir} ||= '..';
 
     # mimic PSGI env
     $ENV{SERVERNAME}        = 'localhost';
@@ -50,10 +51,6 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
-    use File::Spec;
-    
-    $options{appdir} ||= File::Spec->rel2abs(dirname($script), $options{appdir} || '.');
-    $ENV{DANCER_APPDIR} = $options{appdir};
     Dancer::_init($options{appdir});
 }
 

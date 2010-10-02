@@ -234,9 +234,15 @@ sub start {
 
 sub _init {
     my $script = shift;
+    my $script_path = File::Spec->rel2abs(path(dirname($script)));
+
+    my $layout = 2;
+    $layout = 1 if -f File::Spec->catfile($script_path, 'config.yml');
 
     setting appdir => $ENV{DANCER_APPDIR}
-      || path(dirname(File::Spec->rel2abs($script)), '..');
+      ||  ($layout == 2 ? path($script_path, '..') : $script_path);
+
+    Dancer::Logger::core("inititlaizing appdir to: `".setting('appdir')."'");
 
     setting confdir => $ENV{DANCER_CONFDIR} 
       || setting('appdir');
