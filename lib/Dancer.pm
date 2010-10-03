@@ -235,35 +235,39 @@ sub start {
 
 
 sub _init {
-    my $script = shift;
+    my $script      = shift;
     my $script_path = File::Spec->rel2abs(path(dirname($script)));
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
-    $LAYOUT_PRE_DANCER_1_2 = 0 if (
-        basename($script) eq 'app.pl' ||
-        basename($script) eq 'dispatch.cgi' ||
-        basename($script) eq 'dispatch.fcgi');
+    $LAYOUT_PRE_DANCER_1_2 = 0
+      if ( basename($script) eq 'app.pl'
+        || basename($script) eq 'dispatch.cgi'
+        || basename($script) eq 'dispatch.fcgi');
 
     setting appdir => $ENV{DANCER_APPDIR}
-      ||  (
-            $LAYOUT_PRE_DANCER_1_2 
-                ? $script_path 
-                : File::Spec->rel2abs(path($script_path, '..'))
-          );
+      || (
+          $LAYOUT_PRE_DANCER_1_2
+        ? $script_path
+        : File::Spec->rel2abs(path($script_path, '..'))
+      );
 
-    Dancer::Logger::core("inititlaizing appdir to: `".setting('appdir')."'");
+    # once the dancer_appdir have been defined, we export to env
+    $ENV{DANCER_APPDIR} = setting('appdir');
 
-    setting confdir => $ENV{DANCER_CONFDIR} 
+    Dancer::Logger::core(
+        "inititlaizing appdir to: `" . setting('appdir') . "'");
+
+    setting confdir => $ENV{DANCER_CONFDIR}
       || setting('appdir');
 
-    setting public => $ENV{DANCER_PUBLIC} 
+    setting public => $ENV{DANCER_PUBLIC}
       || path(setting('appdir'), 'public');
 
-    setting views => $ENV{DANCER_VIEWS} 
+    setting views => $ENV{DANCER_VIEWS}
       || path(setting('appdir'), 'views');
 
     setting logger => 'file';
-    
+
     eval "use lib path(setting('appdir'), 'lib')";
     die "unable to set libdir: $@" if $@;
 }
