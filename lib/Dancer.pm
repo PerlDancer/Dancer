@@ -255,7 +255,7 @@ sub _init {
     $ENV{DANCER_APPDIR} = setting('appdir');
 
     Dancer::Logger::core(
-        "inititlaizing appdir to: `" . setting('appdir') . "'");
+        "initializing appdir to: `" . setting('appdir') . "'");
 
     setting confdir => $ENV{DANCER_CONFDIR}
       || setting('appdir');
