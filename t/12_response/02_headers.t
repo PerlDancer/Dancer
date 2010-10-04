@@ -30,7 +30,7 @@ get '/headers/multiple' => sub {
     headers 'foo' => 1, 'foo' => 2, 'bar' => 3, 'foo' => 4;
 };
 
-plan tests => 9;
+plan tests => 10;
 
 # /header
 my $req = fake_request(GET => '/header');
@@ -81,3 +81,12 @@ is_deeply $res->{headers}, [
     'Content-Type' => 'text/html'
 ], 'multiple headers are kept';
 
+# Dancer::Response header's API
+$res = Dancer::Response->new(
+    status  => 200,
+    headers => [ 'Content-type', 'application/json' ],
+    content => "ok"
+);
+
+my $ct = $res->header('CONTENT-TYPE');
+is $ct, 'application/json';
