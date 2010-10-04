@@ -45,4 +45,4 @@ if ( Dancer::ModuleLoader->load('JSON') ) {
     $num_tests++;
 }
 
-done_testing($num_tests);
+plan tests => $num_tests;

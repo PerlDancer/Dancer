@@ -17,6 +17,8 @@ BEGIN {
 
 use Dancer;
 
+plan tests => 11;
+
 my $content_types = {'JSON' => 'application/json',};
 
 test_json();
@@ -67,4 +69,3 @@ sub test_json {
     );
 }
 
-done_testing;
