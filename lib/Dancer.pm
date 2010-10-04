@@ -3,7 +3,7 @@ package Dancer;
 use strict;
 use warnings;
 use Carp 'confess';
-use Cwd 'abs_path';
+use Cwd 'abs_path', 'realpath';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config;
@@ -127,7 +127,7 @@ sub logger    { set(logger => @_) }
 sub mime_type { Dancer::Config::mime_types(@_) }
 sub params    { Dancer::SharedData->request->params(@_) }
 sub pass      { Dancer::Response->pass }
-sub path      { Dancer::FileUtils::path(@_) }
+sub path      { realpath(Dancer::FileUtils::path(@_)) }
 sub post   { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix { Dancer::App->current->set_prefix(@_) }
 sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
