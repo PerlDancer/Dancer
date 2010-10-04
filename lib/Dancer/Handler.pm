@@ -86,11 +86,12 @@ sub render_response {
     unless (ref($content) eq 'GLOB') {
 
         my $charset = setting('charset');
-        my $ctype   = $response->{content_type};
-        
+        my $ctype   = $response->header('Content-Type');
+
         if ($charset && $ctype) {
             $content = Encode::encode($charset, $content);
-            $response->update_headers('Content-Type' => "$ctype; charset=$charset");
+            $response->update_headers(
+                'Content-Type' => "$ctype; charset=$charset");
         }
 
         $content = [$content];

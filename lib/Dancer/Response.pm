@@ -56,6 +56,19 @@ sub halt {
 
 sub halted { $CURRENT && $CURRENT->{halted} }
 
+sub header {
+    my ($self, $header) = @_;
+    my @headers = @{$self->{headers}};
+    my $value   = undef;
+    while (my $h = shift @headers) {
+        if (lc $h eq lc $header) {
+            $value = shift @headers;
+            last;
+        }
+    }
+    return $value;
+}
+
 sub headers {
     push @{$CURRENT->{headers}}, @_;
     $CURRENT->sanitize_headers;
