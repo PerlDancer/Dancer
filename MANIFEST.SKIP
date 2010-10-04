@@ -10,3 +10,4 @@ Makefile$
 ^.*\.log
 ^run_perltidy.sh$
 ^.*\.swp$
+lib/Dancer/Plugin/WebSocket.pm
