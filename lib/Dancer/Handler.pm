@@ -91,7 +91,8 @@ sub render_response {
         if ($charset && $ctype) {
             $content = Encode::encode($charset, $content);
             $response->update_headers(
-                'Content-Type' => "$ctype; charset=$charset");
+                'Content-Type' => "$ctype; charset=$charset")
+              if $ctype !~ /$charset/;
         }
 
         $content = [$content];
