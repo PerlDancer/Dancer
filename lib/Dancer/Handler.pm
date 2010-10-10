@@ -67,6 +67,10 @@ sub handle_request {
           || Dancer::Renderer->render_error(404);
     };
     if ($@) {
+        Dancer::Logger::core(
+            'request to ' . $request->path_info . " crashed: $@"
+        );
+
         my $error = Dancer::Error->new(
             code    => 500,
             title   => "Runtime Error",
