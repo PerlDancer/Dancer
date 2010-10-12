@@ -374,6 +374,7 @@ This can easily be handled with a before filter to check their session:
     get '/login' => sub {
         # Display a login page; the original URL they requested is available as
         # vars->{requested_path}, so could be put in a hidden field in the form
+        template 'login', { path => vars->{requested_path} };
     };
 
     post '/login' => sub {
@@ -385,6 +386,12 @@ This can easily be handled with a before filter to check their session:
             redirect '/login?failed=1';
         }
     };
+
+In your login page template, you'll want a text field named user, a password
+field named pass, and a hidden field named path, which will be populated with
+the path originally requested, so that it's sent back in the POST submission,
+and can be used by the post route to redirect onwards to the page originally
+requested once you're logged in.
 
 Of course, you'll probably want to validate your users against a database table,
 or maybe via IMAP/LDAP/SSH/POP3/local system accounts via PAM etc.
