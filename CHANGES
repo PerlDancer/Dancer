@@ -1,4 +1,4 @@
-Dancer 1.1902 (1.2RC2)
+Dancer 1.1999_01 (RC1)
 
     [ Alexis Sukrieh ]
     * FIX for utf8 content in views
@@ -45,7 +45,13 @@ Dancer 1.1902 (1.2RC2)
       template 'templatename', {}, { layout => 'layoutname' };
  
 
-Dancer 1.1901 (1.2RC1)
+    [ Philippe Bruhat ]
+	* Make sure a plugin refuse to register a keyword twice
+
+	[ SawyerX ]
+	* Lots of documentation updates
+
+Dancer 1.1901 (1.2RC0)
 
     [ Franck Cuny ]
     * implemented GH#120:
