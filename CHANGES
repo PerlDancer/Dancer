@@ -38,6 +38,12 @@ Dancer 1.1902 (1.2RC2)
     [ Damien Krotkine ]
     * FIX for issue GH#115
       documentation about compression in Dancer::Deployment 
+    
+    [ David Precious ]
+    * Make the 'layout' param to the template keyword work as you'd expect and
+      allow you to set a custom layout to use, e.g.:
+      template 'templatename', {}, { layout => 'layoutname' };
+ 
 
 Dancer 1.1901 (1.2RC1)
 
