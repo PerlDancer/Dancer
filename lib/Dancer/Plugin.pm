@@ -45,7 +45,8 @@ sub register($&) {
     }
     while (my ($plugin, $keywords) = each %$_keywords) {
         if (grep { $_->[0] eq $keyword } @$keywords) {
-            die "You can't use $keyword, this is a keyword reserved by $plugin";
+            die
+              "You can't use $keyword, this is a keyword reserved by $plugin";
         }
     }
 

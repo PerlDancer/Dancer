@@ -17,8 +17,8 @@ use Dancer::Logger;
 use MIME::Types;
 
 BEGIN {
-	MIME::Types->new(only_complete => 1);
-};
+    MIME::Types->new(only_complete => 1);
+}
 
 sub render_file {
     return get_file_response();
@@ -190,13 +190,15 @@ sub get_mime_type {
 # set of builtin templates needed by Dancer when rendering HTML pages
 sub templates {
     my $charset = setting('charset') || 'UTF-8';
-    {   default => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    {   default =>
+          '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <title><% title %></title>
 <link rel="stylesheet" href="/css/<% style %>.css" />
-<meta http-equiv="Content-type" content="text/html; charset='.$charset.'" />
+<meta http-equiv="Content-type" content="text/html; charset=' . $charset
+          . '" />
 </head>
 <body>
 <h1><% title %></h1>

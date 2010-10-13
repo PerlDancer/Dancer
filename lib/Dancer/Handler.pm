@@ -68,8 +68,7 @@ sub handle_request {
     };
     if ($@) {
         Dancer::Logger::core(
-            'request to ' . $request->path_info . " crashed: $@"
-        );
+            'request to ' . $request->path_info . " crashed: $@");
 
         my $error = Dancer::Error->new(
             code    => 500,
@@ -88,6 +87,7 @@ sub render_response {
 
     my $content = $response->{content};
     unless (ref($content) eq 'GLOB') {
+
         # when the request is considered as ajax,
         # we set the content type to text/xml
         if (   Dancer::SharedData->request
@@ -99,11 +99,11 @@ sub render_response {
         else {
             my $charset = setting('charset');
             my $ctype   = $response->header('Content-Type');
-            if (   $charset && $ctype ) {
+            if ($charset && $ctype) {
                 $content = Encode::encode($charset, $content);
                 $response->update_headers(
                     'Content-Type' => "$ctype; charset=$charset")
-                if $ctype !~ /$charset/;
+                  if $ctype !~ /$charset/;
             }
         }
         $content = [$content];

@@ -22,8 +22,9 @@ sub read_file_content {
     my $charset = Dancer::Config::setting('charset');
 
     my $open_flag = '<';
-    $open_flag = '<:encoding(UTF-8)' 
-        if lc($charset) eq 'utf-8' or lc($charset) eq 'utf8';
+    $open_flag = '<:encoding(UTF-8)'
+      if lc($charset) eq 'utf-8'
+          or lc($charset) eq 'utf8';
     if ($file && open($fh, $open_flag, $file)) {
         return read_glob_content($fh);
     }
@@ -37,7 +38,7 @@ sub read_glob_content {
 
     # we don't want to do that as we'll encode the stuff later
     # binmode $fh;
-    
+
     my @content = <$fh>;
     close $fh;
     my $content = join("", @content);

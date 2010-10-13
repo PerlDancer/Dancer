@@ -17,9 +17,9 @@ sub init {
       unless Dancer::ModuleLoader->load('Template');
 
     my $tt_config = {
-        ANYCASE   => 1,
-        ABSOLUTE  => 1,
-        ENCODING  => 'utf8',
+        ANYCASE  => 1,
+        ABSOLUTE => 1,
+        ENCODING => 'utf8',
         %{$self->config},
     };
 
@@ -45,7 +45,8 @@ sub render {
       if !ref($template) && (!-f $template);
 
     my $content = "";
-    $_engine->process($template, $tokens, \$content, binmode => ':utf8') or die $_engine->error;
+    $_engine->process($template, $tokens, \$content, binmode => ':utf8')
+      or die $_engine->error;
     return $content;
 }
 

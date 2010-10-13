@@ -18,7 +18,7 @@ sub new {
 sub clone {
     my ($self) = @_;
     die "The 'Clone' module is needed"
-        unless Dancer::ModuleLoader->load('Clone');
+      unless Dancer::ModuleLoader->load('Clone');
     return Clone::clone($self);
 }
 
