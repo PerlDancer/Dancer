@@ -26,11 +26,15 @@ with, let's make an incredibly simple "Hello World" example:
     dance;
 
 Yes - the above is a fully-functioning web app; running that script will launch
-a webserver listening on the default port (3000); you can point your browser at
-http://localhost:3000/hello/Bob (or the name of the machine you ran it on, if
-it's not your local system), and it will say hello.  The C<:name> part is a
-named parameter within the route specification, whose value is made available
-through C<params> - more on that later.
+a webserver listening on the default port (3000); now you can make a request
+
+    $ curl http://localhost:3000/hello/Bob
+    Why, hello there Bob
+
+(or the name of the machine you ran it on, if it's not your local system),
+and it will say hello.  The C<:name> part is a named parameter within the
+route specification, whose value is made available through C<params>
+- more on that later.
 
 Note that you don't need to use the C<strict> and C<warnings> pragma, they are
 already loaded by Dancer.
@@ -517,7 +521,7 @@ css, images and javascript:
 
     before_template sub {
         my $tokens = shift;
-        $tokens->{uri_base} = request->base;
+        $tokens->{uri_base} = request->base->path;
     };
 
 THen in your layout, modify your css inclusion as follows:
