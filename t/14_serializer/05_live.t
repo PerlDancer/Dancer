@@ -19,6 +19,8 @@ BEGIN {
 
 use Dancer;
 
+plan tests => 30;
+
 test_json();
 test_yaml();
 test_mutable();
@@ -194,4 +196,3 @@ sub test_mutable {
     );
 }
 
-done_testing;

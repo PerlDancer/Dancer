@@ -43,6 +43,12 @@ sub register($&) {
     if (grep { $_ eq $keyword } @Dancer::EXPORT) {
         die "You can't use $keyword, this is a reserved keyword";
     }
+    while (my ($plugin, $keywords) = each %$_keywords) {
+        if (grep { $_->[0] eq $keyword } @$keywords) {
+            die "You can't use $keyword, this is a keyword reserved by $plugin";
+        }
+    }
+
     $_keywords->{$plugin_name} ||= [];
     push @{$_keywords->{$plugin_name}}, [$keyword => $code];
 }

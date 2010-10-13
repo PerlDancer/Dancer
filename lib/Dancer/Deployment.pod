@@ -10,40 +10,45 @@ choices when deploying your Dancer app.
 
 =head2 Running as a cgi-script
 
-In providing ultimate flexibility in terms of deployment, your Dancer app can be run
-as a simple cgi-script out-of-the-box. No additional web-server configuration needed.
-Your web server should recognize .cgi files and be able to serve Perl scripts.
-The Perl module Plack::Runner is required. Access your app from the browser:
-
-    http://localhost/myapp/dispatch.cgi
-    500 Internal Server Error - Wrong
-    
-    http://localhost/myapp/dispatch.cgi/
-    200 OK - Right
+In providing ultimate flexibility in terms of deployment, your Dancer app can
+be run as a simple cgi-script out-of-the-box. No additional web-server
+configuration needed.  Your web server should recognize .cgi files and be able
+to serve Perl scripts.  The Perl module Plack::Runner is required.
 
 Start by adding the following to your apache configuration:
 
     <VirtualHost *:80>
-        ScriptAlias /myapp /path/to/app/public/dispatch.cgi/
+        ServerName your.server.domain
+
+        # The DocumentRoot should point to your "public" directory
+        DocumentRoot "/path/to/dancer/public"
+
+        <Directory "/path/to/dancer/public">
+            AllowOverride None
+            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch -Indexes
+            
+			Order allow,deny
+            Allow from all
+            AddHandler cgi-script .cgi
+        </Directory>
+
     </VirtualHost>
-    
+
 Enable Pretty-URLs if your web server supports .htaccess files and mod_rewrite.
-Place this code in a file called .htaccess in your application's root folder:
+Place this code in a file called .htaccess (or directly in your VirtualHost
+configuration) in your application's root folder:
 
     # BEGIN dancer application htaccess
-    DirectoryIndex dispatch.cgi/
-    AddHandler cgi-script .cgi
-    Options +ExecCGI +FollowSymLinks -Indexes
-    
     RewriteEngine On
     RewriteCond %{SCRIPT_FILENAME} !-d
     RewriteCond %{SCRIPT_FILENAME} !-f
     RewriteRule (.*) /dispatch.cgi/$1 [L]
     # END dancer application htaccess
 
-Now you can access your dancer application URLs as if you were using the embedded web server.
+Now you can access your dancer application URLs as if you were using the
+embedded web server.
 
-    http://localhost/myapp/
+    http://localhost/
 
 This option is a no-brainer, easy to setup, low maintenance but serves requests
 slower than all other options.
@@ -91,6 +96,41 @@ To start your application, just run plackup
 As you can see, the scaffolded Perl script for your app can be used as a PSGI
 startup file.
 
+=head4 Enabling content compression
+
+Content compression (gzip, deflate) can be easily enabled via a Plack
+middleware (see L<Plack#Plack::Middleware>): L<Plack::Middleware::Deflater>.
+It's a middleware to encode the response body in gzip or deflate, based on
+Accept-Encoding HTTP request header.
+
+Enable it as you would enable any Plack middleware. First you need to install
+L<Plack::Middleware::Deflater>, then in the configuration file (usually
+F<environments/development.yml>), add these lines:
+
+  plack_middlewares:
+    Plack::Middleware::Deflater: [  ]
+
+These lines tell Dancer to add L<Plack::Middleware::Deflater> to the list of
+middlewares to pass to L<Plack::Builder>, when wrapping the Dancer app. The
+syntax is :
+
+=over
+
+=item *
+
+as key: the name of the Plack middleware to use
+
+=item *
+
+as value: the options to pass it as a list. In our case, there is no option to
+specify to L<Plack::Middleware::Deflater>, so we use an empty YAML list.
+
+=back
+
+To test if content compression works, trace the HTTP request and response
+before and after enabling this middleware. Among other things, you should
+notice that the response is gzip or deflate encoded, and contains a header
+C<Content-Encoding> set to C<gzip> or C<deflate>
 
 =head3 Running multiple apps with Plack::Builder
 
@@ -278,7 +318,7 @@ following:
             Order allow,deny
             Allow from all
         </Directory>
-        
+
         <Location />
             SetHandler perl-script
             PerlHandler Plack::Handler::Apache2
@@ -327,29 +367,29 @@ If you want to deploy multiple applications under the same VirtualHost, using
 one application per directory for example, you can do the following.
 
 This example uses the FastCGI dispatcher that comes with Dancer, but you should
-be able to adapt this to use any other way of deployment described in this guide.
-The only purpose of this example is to show how to deploy multiple applications
-under the same base directory/virtualhost.
+be able to adapt this to use any other way of deployment described in this
+guide. The only purpose of this example is to show how to deploy multiple
+applications under the same base directory/virtualhost.
 
-	<VirtualHost *:80>
-		ServerName localhost
-		DocumentRoot "/path/to/rootdir"
-		RewriteEngine On
-		RewriteCond %{REQUEST_FILENAME} !-f
+    <VirtualHost *:80>
+        ServerName localhost
+        DocumentRoot "/path/to/rootdir"
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
 
-		<Directory "/path/to/rootdir">
-			AllowOverride None
-			Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-			Order allow,deny
-			Allow from all
-			AddHandler fastcgi-script .fcgi
-		</Directory>
+        <Directory "/path/to/rootdir">
+            AllowOverride None
+            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+            Order allow,deny
+            Allow from all
+            AddHandler fastcgi-script .fcgi
+        </Directory>
 
-		RewriteRule /App1(.*)$ /App1/public/dispatch.fcgi$1 [QSA,L]
-		RewriteRule /App2(.*)$ /App2/public/dispatch.fcgi$1 [QSA,L]
-		...
-		RewriteRule /AppN(.*)$ /AppN/public/dispatch.fcgi$1 [QSA,L]
-	</VirtualHost>
+        RewriteRule /App1(.*)$ /App1/public/dispatch.fcgi$1 [QSA,L]
+        RewriteRule /App2(.*)$ /App2/public/dispatch.fcgi$1 [QSA,L]
+        ...
+        RewriteRule /AppN(.*)$ /AppN/public/dispatch.fcgi$1 [QSA,L]
+    </VirtualHost>
 
 Of course, if your Apache configuration allows that, you can put the
 RewriteRules in a .htaccess file directly within the application's directory,
@@ -361,7 +401,7 @@ which lets you add a new application without changing the Apache configuration.
 It is very easy to configure lighttpd to deploy Dancer applications. Multiple
 applications can be deployed on the same server by setting up virtual hosts.
 You can configure name based virtual hosts with conditional blocks that start
-with: 
+with:
 
     $HTTP["host"] == "myapp.example.com" { ...
 
@@ -439,13 +479,13 @@ Your lighttpd configuration:
     $HTTP["url"] =~ "^/app" {
         fastcgi.server += (
             "/app" => (
-                "" => ( 
-                    "socket" => "/tmp/fcgi.sock",  
-                    "check-local" => "disable", 
+                "" => (
+                    "socket" => "/tmp/fcgi.sock",
+                    "check-local" => "disable",
                 )
             )
         )
-    } 
+    }
 
 Launch your application:
 

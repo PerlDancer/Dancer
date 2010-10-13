@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Dancer::Development - guide for developers interested in contributing
@@ -76,12 +77,24 @@ Clone your fork like the following:
 
 =item *
 
+Switch to the appropriate branch. If you're patch fix a bug a bug or
+update one of the documentation, you should work on the B<master>
+branch. For everything else, switch to the B<devel> branch.
+
+    $ git checkout devel
+
+=item *
+
 Apply your patch to your clone and then commit and push to your repository
 
     $ cd Dancer
     [ edit as many files as you need to build your patch ]
     $ git commit -m "DESCRIPTION OF THE PATCH"
     $ git push origin master
+
+If your patch fix an existing issue on our bugtracker, please specify the id of the issue in your commit message.
+
+    fixing GH #123; do this instead of that
 
 =item *
 

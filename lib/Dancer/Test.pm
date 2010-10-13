@@ -40,6 +40,7 @@ use vars '@EXPORT';
 
 sub import {
     my ($class, %options) = @_;
+    $options{appdir} ||= '..';
 
     # mimic PSGI env
     $ENV{SERVERNAME}        = 'localhost';
@@ -50,7 +51,6 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
-    $options{appdir} ||= '..';
     Dancer::_init($options{appdir});
 }
 
@@ -171,11 +171,29 @@ sub response_headers_are_deeply {
 sub dancer_response {
     my ($method, $path, $args) = @_;
     $args ||= {};
+
+    if ($method =~ /^(?:PUT|POST)$/ && $args->{body}) {
+        my $body = $args->{body};
+        my $l    = length $body;
+        open my $in, '<', \$body;
+        $ENV{'CONTENT_LENGTH'} = $l;
+        $ENV{'psgi.input'}     = $in;
+    }
+
     my ($params, $body, $headers) = @$args{qw(params body headers)};
+    if ($headers and (my @headers = @$headers)) {
+        while (my $h = shift @headers) {
+            if ($h =~ /content-type/i) {
+                $ENV{'CONTENT_TYPE'} = shift @headers;
+            }
+        }
+    }
+
     my $request = Dancer::Request->new_for_request(
         $method => $path,
         $params, $body, $headers
     );
+
     Dancer::SharedData->request($request);
     return Dancer::Renderer::get_action_response();
 }

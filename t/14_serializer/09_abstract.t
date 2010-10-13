@@ -2,6 +2,8 @@ use Test::More;
 
 use Dancer::Serializer::Abstract;
 
+plan tests => 7;
+
 eval { 
     Dancer::Serializer::Abstract->serialize()
 };
@@ -29,4 +31,4 @@ ok(Dancer::Serializer::Abstract->support_content_type('text/plain; charset=utf8'
 ok(! Dancer::Serializer::Abstract->support_content_type('application/json'),
     "application/json is not supported");
 
-done_testing;
+

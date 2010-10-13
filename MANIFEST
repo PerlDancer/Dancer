@@ -58,6 +58,7 @@ lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 LICENSE
+maint/image_to_data.pl
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
@@ -74,12 +75,14 @@ t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
 t/00_base/10_headers.t
 t/00_base/11_file_utils.t
+t/00_base/12_utf8_charset.t
 t/00_base/config.t
 t/00_base/dance_start.t
 t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
 t/00_base/uri_for.t
+t/00_base/utf8.tt
 t/01_config/01_settings.t
 t/01_config/02_mime_type.t
 t/01_config/03_logger.t
@@ -131,6 +134,7 @@ t/03_route_handler/24_named_captures.t
 t/03_route_handler/26_after_hook.t
 t/03_route_handler/27_issue_77_pass_breaks_routes.t
 t/03_route_handler/28_plack_mount.t
+t/03_route_handler/public/404.html
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t

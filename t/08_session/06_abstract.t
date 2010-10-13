@@ -3,6 +3,8 @@ use Dancer ':syntax';
 
 use Dancer::Session::Abstract;
 
+plan tests => 8;
+
 eval {
     Dancer::Session::Abstract->retrieve
 };
@@ -37,5 +39,3 @@ is $s->session_name, 'dancer.session', "default name is dancer.session";
 setting session_name => "foo_session";
 $s = Dancer::Session::Abstract->new;
 is $s->session_name, 'foo_session', 'setting session_name is used';
-
-done_testing;

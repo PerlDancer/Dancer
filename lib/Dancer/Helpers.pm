@@ -34,13 +34,21 @@ sub template {
 
     my $app = Dancer::App->current;
 
-    $options ||= {layout => 1};
-    my $layout = $app->setting('layout');
-    undef $layout unless $options->{layout};
+    # If 'layout' was given in the options hashref, use it if it's a true value,
+    # or don't use a layout if it was false (0, or undef); if layout wasn't
+    # given in the options hashref, go with whatever the current layout setting
+    # is.
+    my $layout = exists $options->{layout} ?
+        ($options->{layout} ? $options->{layout} : undef) : $app->setting('layout');
 
+
+    # these are the default tokens provided for template processing
     $tokens ||= {};
+    $tokens->{dancer_version} = $Dancer::VERSION;
+    $tokens->{settings} = Dancer::Config->settings;
     $tokens->{request} = Dancer::SharedData->request;
     $tokens->{params}  = Dancer::SharedData->request->params;
+
     if (setting('session')) {
         $tokens->{session} = Dancer::Session->get;
     }

@@ -18,6 +18,8 @@ BEGIN {
 use Plack::Builder; # should be loaded in BEGIN block, but it seems that it's not the case ...
 use HTTP::Server::Simple::PSGI;
 
+plan tests => 3;
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
@@ -56,5 +58,3 @@ Test::TCP::test_tcp(
         $server->run;
     },
 );
-
-done_testing;

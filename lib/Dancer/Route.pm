@@ -166,7 +166,12 @@ sub run {
     my $ct = $response->{content_type} || setting('content_type');
     my $st = $response->{status}       || 200;
     my $headers = [];
-    push @$headers, @{$response->{headers}}, 'Content-Type' => $ct;
+    push @$headers, @{$response->{headers}};
+
+    # content type may have already be set earlier
+    # (eg: with send_error)
+    push(@$headers, 'Content-Type' => $ct)
+      unless grep {/Content-Type/} @$headers;
 
     return $content if ref($content) eq 'Dancer::Response';
     return Dancer::Response->new(
@@ -188,6 +193,7 @@ sub find_next_matching_route {
 
 sub execute {
     my ($self) = @_;
+
     if (Dancer::Config::setting('warnings')) {
         my $warning;
         local $SIG{__WARN__} = sub { $warning = $_[0] };
@@ -214,14 +220,16 @@ sub _init_prefix {
         if ($regexp !~ /^$prefix/) {
             $self->{pattern} = qr{${prefix}${regexp}};
         }
-    }elsif($self->pattern eq '/') {
+    }
+    elsif ($self->pattern eq '/') {
+
         # if pattern is '/', we should match:
         # - /prefix/
         # - /prefix
         # this is done by creating a regex for this case
         my $pattern = $self->pattern;
-        my $regex = qr/$prefix(?:$pattern)?$/;
-        $self->{regexp} = $regex;
+        my $regex   = qr/$prefix(?:$pattern)?$/;
+        $self->{regexp}  = $regex;
         $self->{pattern} = $regex;
     }
     else {

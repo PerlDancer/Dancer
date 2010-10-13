@@ -50,14 +50,16 @@ $content =~ s/\n/\r\n/g;
 
 do {
     open my $in, '<', \$content;
-    my $req = Dancer::Request->new({
-        'psgi.input'   => $in,
-        CONTENT_LENGTH => length($content),
-        CONTENT_TYPE   => 'multipart/form-data; boundary=----BOUNDARY',
-        REQUEST_METHOD => 'POST',
-        SCRIPT_NAME    => '/',
-        SERVER_PORT    => 80,
-    });
+    my $req = Dancer::Request->new(
+        {
+            'psgi.input'   => $in,
+            CONTENT_LENGTH => length($content),
+            CONTENT_TYPE   => 'multipart/form-data; boundary=----BOUNDARY',
+            REQUEST_METHOD => 'POST',
+            SCRIPT_NAME    => '/',
+            SERVER_PORT    => 80,
+        }
+    );
     Dancer::SharedData->request($req);
 
     my @undef = $req->upload('undef');
@@ -67,42 +69,44 @@ do {
 
     my @uploads = upload('test_upload_file');
     like $uploads[0]->content, qr|^SHOGUN|,
-        "content for first upload is ok, via 'upload'";
-    like $uploads[1]->content, qr|^SHOGUN|,
-        "... content for second as well";
+      "content for first upload is ok, via 'upload'";
+    like $uploads[1]->content, qr|^SHOGUN|, "... content for second as well";
     is $req->uploads->{'test_upload_file4'}[0]->content, 'SHOGUN4',
-        "... content for other also good";
+      "... content for other also good";
 
     my $test_upload_file3 = $req->upload('test_upload_file3');
     is $test_upload_file3->content, 'SHOGUN3',
-        "content for upload #3 as a scalar is good, via req->upload";
+      "content for upload #3 as a scalar is good, via req->upload";
 
     my @test_upload_file6 = $req->upload('test_upload_file6');
     is $test_upload_file6[0]->content, 'SHOGUN6',
-        "content for upload #6 is good";
+      "content for upload #6 is good";
 
     my $upload = $req->upload('test_upload_file6');
     isa_ok $upload, 'Dancer::Request::Upload';
     is $upload->filename, 'yappo6.txt', 'filename is ok';
     ok $upload->file_handle, 'file handle is defined';
     is $req->params->{'test_upload_file6'}, 'yappo6.txt',
-        "filename is accessible via params";
+      "filename is accessible via params";
 
     # copy_to, link_to
-    my $dest_dir = File::Temp::tempdir(CLEANUP => 1);
-    my $dest_file = path($dest_dir, $upload->basename);
+    my $dest_dir = File::Temp::tempdir( CLEANUP => 1 );
+    my $dest_file = path( $dest_dir, $upload->basename );
     $upload->copy_to($dest_file);
-    ok((-f $dest_file), "file '$dest_file' has been copied");
+    ok( ( -f $dest_file ), "file '$dest_file' has been copied" );
 
-    $upload->link_to(path($dest_dir, "hardlink"));
-    ok((-f path($dest_dir, "hardlink")), "hardlink is created");
+  SKIP: {
+        skip "bogus upload tests on win32", 3 if ( $^O eq 'MSWin32' );
 
-    # make sure cleanup is performed when the HTTP::Body object is purged
-    my $file = $upload->tempname;
-    ok( (-f $file), 'temp file exists while HTTP::Body lives');
-    undef $req->{_http_body};
-    ok( (! -f $file), 'temp file is removed when HTTP::Body object dies');
+        $upload->link_to( path( $dest_dir, "hardlink" ) );
+        ok( ( -f path( $dest_dir, "hardlink" ) ), "hardlink is created" );
 
+        # make sure cleanup is performed when the HTTP::Body object is purged
+        my $file = $upload->tempname;
+        ok( ( -f $file ), 'temp file exists while HTTP::Body lives' );
+        undef $req->{_http_body};
+        ok( ( !-f $file ), 'temp file is removed when HTTP::Body object dies' );
+    }
 
 };
 

@@ -17,7 +17,14 @@ sub dirname { File::Basename::dirname(@_) }
 sub read_file_content {
     my ($file) = @_;
     my $fh;
-    if ($file && open($fh, '<', $file)) {
+
+    require Dancer::Config;
+    my $charset = Dancer::Config::setting('charset');
+
+    my $open_flag = '<';
+    $open_flag = '<:encoding(UTF-8)' 
+        if lc($charset) eq 'utf-8' or lc($charset) eq 'utf8';
+    if ($file && open($fh, $open_flag, $file)) {
         return read_glob_content($fh);
     }
     else {
@@ -27,10 +34,14 @@ sub read_file_content {
 
 sub read_glob_content {
     my ($fh) = @_;
-    binmode $fh;
+
+    # we don't want to do that as we'll encode the stuff later
+    # binmode $fh;
+    
     my @content = <$fh>;
     close $fh;
-    return join("", @content);
+    my $content = join("", @content);
+    return $content;
 }
 
 'Dancer::FileUtils';

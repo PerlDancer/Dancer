@@ -182,14 +182,6 @@ This is done with the B<pass> keyword, like in the following example
         "I say a number: ".params->{number};
     };
 
-=head1 ACTION RESPONSES
-
-The action's return value is always considered to be the content to render. So
-take care to your return value.
-
-In order to change the default behaviour of the rendering of an action, you can
-use the following keywords.
-
 =head1 ERROR HANDLING
 
 =head2 DEFAULT ERROR PAGES
@@ -248,6 +240,35 @@ give non-logged-in users a login page:
 
 The request keyword returns the current Dancer::Request object representing the
 incoming request. See the documentation of the L<Dancer::Request> module for details.
+
+=head2 After filters 
+
+C<after> filters are evaluated after the response has been built by a route
+handler, and can alter the response itself, just before it's sent to the
+client.
+
+The filter is given the response object as its first argument:
+
+    after sub {
+        my $response = shift;
+        $response->{content} = 'after filter got here!';
+    };
+
+
+=head2 Before template filters
+
+C<before_template> hooks are called whenever a template is going to be processed,
+they are passed the tokens hash which they can alter.
+
+    before_template sub {
+        my $tokens = shift;
+        $tokens->{foo} = 'bar';
+    }
+
+The tokens hash will then be passed to the template with all the modifications
+performed by the filter. This is a good way to setup some global vars you like
+to have in all your templates, like the name of the user logged in or a
+section name.
 
 =head1 CONFIGURATION AND ENVIRONMENTS
 

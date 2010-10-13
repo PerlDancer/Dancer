@@ -10,9 +10,13 @@ use base 'Dancer::Engine';
 # return: a string of $template's content processed with $tokens
 sub render { die "render not implemented" }
 
+sub default_tmpl_ext { "tt" };
+
 sub view {
     my ($self, $view) = @_;
-    $view .= ".tt" if $view !~ /\.tt$/;
+
+    my $def_tmpl_ext = $self->default_tmpl_ext();
+    $view .= ".$def_tmpl_ext" if $view !~ /\.${def_tmpl_ext}$/;
 
     my $app = Dancer::App->current;
     return path($app->setting('views'), $view);
@@ -22,7 +26,8 @@ sub layout {
     my ($self, $layout, $tokens, $content) = @_;
 
     my $app = Dancer::App->current;
-    $layout .= '.tt' if $layout !~ /\.tt/;
+    my $def_tmpl_ext = $self->default_tmpl_ext();
+    $layout .= ".$def_tmpl_ext" if $layout !~ /\.${def_tmpl_ext}$/;
     $layout = path($app->setting('views'), 'layouts', $layout);
 
     my $full_content =
@@ -55,6 +60,18 @@ The template engine can overload this method if some initialization stuff has to
 be done before the template engine is used.
 
 The base class provides a plain init() method that only returns true.
+
+=item B<default_tmpl_ext()>
+
+Template class that inherits this class should override this method to return a default template
+extension, example: for Template::Toolkit it returns "tt" and for HTML::Mason it returns "mason". 
+So when you call C<template 'index';> in your dispatch code, Dancer will look for a file 'index.tt'
+or 'index.mason' based on the template you use.
+
+Note 1: when returning the extension string, please do not add a dot in front of the extension 
+as Dancer will do that. 
+Note 2: for backwords compatibility abstract class returns "tt" instead of throwing
+an exception 'method not implemented'.
 
 =item B<view($view)>
 

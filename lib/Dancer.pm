@@ -3,7 +3,7 @@ package Dancer;
 use strict;
 use warnings;
 use Carp 'confess';
-use Cwd 'abs_path';
+use Cwd 'abs_path', 'realpath';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
 use Dancer::Config;
@@ -26,11 +26,12 @@ use Dancer::Handler;
 use Dancer::ModuleLoader;
 
 use File::Spec;
+use File::Basename 'basename';
 
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.1810';
+$VERSION   = '1.1999_01';
 @EXPORT    = qw(
   after
   any
@@ -126,7 +127,7 @@ sub logger    { set(logger => @_) }
 sub mime_type { Dancer::Config::mime_types(@_) }
 sub params    { Dancer::SharedData->request->params(@_) }
 sub pass      { Dancer::Response->pass }
-sub path      { Dancer::FileUtils::path(@_) }
+sub path      { realpath(Dancer::FileUtils::path(@_)) }
 sub post   { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix { Dancer::App->current->set_prefix(@_) }
 sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
@@ -185,8 +186,10 @@ sub load_app {
     $app->prefix($options{prefix})     if $options{prefix};
     $app->settings($options{settings}) if $options{settings};
 
+
     # load the application
-    use lib path(dirname(File::Spec->rel2abs($0)), 'lib');
+    my ($package, $script) = caller;
+    _init($script);
     eval "use $app_name";
     die "unable to load application $app_name : $@" if $@;
 
@@ -213,7 +216,9 @@ sub import {
     }
 
     Dancer::GetOpt->process_args();
+
     _init($script);
+    Dancer::Config->load;
 }
 
 # Start/Run the application with the chosen apphandler
@@ -228,16 +233,43 @@ sub start {
     Dancer::Handler->get_handler()->dance;
 }
 
-# private
 
 sub _init {
-    my ($path) = @_;
-    setting appdir  => dirname(File::Spec->rel2abs($path));
-    setting public  => path(setting('appdir'), 'public');
-    setting views   => path(setting('appdir'), 'views');
-    setting logger  => 'file';
-    setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
-    Dancer::Config->load;
+    my $script      = shift;
+    my $script_path = File::Spec->rel2abs(path(dirname($script)));
+
+    my $LAYOUT_PRE_DANCER_1_2 = 1;
+    $LAYOUT_PRE_DANCER_1_2 = 0
+      if ( basename($script) eq 'app.pl'
+        || basename($script) eq 'dispatch.cgi'
+        || basename($script) eq 'dispatch.fcgi');
+
+    setting appdir => $ENV{DANCER_APPDIR}
+      || (
+          $LAYOUT_PRE_DANCER_1_2
+        ? $script_path
+        : File::Spec->rel2abs(path($script_path, '..'))
+      );
+
+    # once the dancer_appdir have been defined, we export to env
+    $ENV{DANCER_APPDIR} = setting('appdir');
+
+    Dancer::Logger::core(
+        "initializing appdir to: `" . setting('appdir') . "'");
+
+    setting confdir => $ENV{DANCER_CONFDIR}
+      || setting('appdir');
+
+    setting public => $ENV{DANCER_PUBLIC}
+      || path(setting('appdir'), 'public');
+
+    setting views => $ENV{DANCER_VIEWS}
+      || path(setting('appdir'), 'views');
+
+    setting logger => 'file';
+
+    eval "use lib path(setting('appdir'), 'lib')";
+    die "unable to set libdir: $@" if $@;
 }
 
 1;

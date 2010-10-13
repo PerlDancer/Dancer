@@ -33,7 +33,7 @@ setting charset => 'utf-8';
 is_deeply(Dancer::Handler->render_response($res),
     [
         200,
-        [ 'Content-Type', 'text/plain' ],
+        [ 'Content-Type', 'text/plain; charset=utf-8' ],
         [ '123' ],
     ],
 );
@@ -60,7 +60,7 @@ SKIP: {
     is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
         [
             200,
-            [ 'Content-Type', 'application/json' ],
+            [ 'Content-Type', 'application/json; charset=utf-8' ],
             [ JSON::to_json({ key => 'value' }) ],
         ],
     );

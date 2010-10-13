@@ -1,10 +1,102 @@
+Dancer 1.1999_01 (RC1)
+
+    [ Alexis Sukrieh ]
+    * FIX for utf8 content in views
+      Dancer now handles correctly templates with non-ASCII characters in views.
+      All you have to do is to set the "charset" setting in your config. Your
+      content response will then be encoded appropriately on-the-fly by Dancer.
+    * Scaffolded app sets the charset to "utf8" by default.
+    * Better design for the scaffolded app (logo, favicon and background image
+      added)
+    * Environment info available on scaffolded app 
+    * LWP is used by the dancer helper to download files
+    * jQuery 1.4.2 (minified) is included in the scaffolded app
+    * default layout uses <% request.base %> in order to support mounted apps
+      (Thanks to Naveed Massjouni and Franck Cuny for the concept/idea).
+    * The main.tt layout sources jQuery first from Google CDN and falls back to
+      the local minified version if on offline mode.
+    * New default token provided to the "template" helper: dancer_version
+    
+    [ Sebastian de Castelberg ]
+    * The dancer helper is able to download files via a transparent proxy
+      (thanks to LWP).
+
+    [ Adam J. Foxson ]
+    * FIX for issue GH#136: 
+      "readline() on closed filehandle DATA" error that appears when running
+      the app with Starman
+    
+    [ Naveed Massjouni ]
+    * Dancer::Test function get_response is renamed to dancer_response
+      get_response still works but is deprecated
+
+    [ Franck Cuny ]
+    * FIX for issue GH#129 
+      don't add multiple content-type to headers
+    * fix broken tests (they were testing incorrect content type)
+
+    [ Damien Krotkine ]
+    * FIX for issue GH#115
+      documentation about compression in Dancer::Deployment 
+    
+    [ David Precious ]
+    * Make the 'layout' param to the template keyword work as you'd expect and
+      allow you to set a custom layout to use, e.g.:
+      template 'templatename', {}, { layout => 'layoutname' };
+ 
+    [ Philippe Bruhat ]
+	* Make sure a plugin refuse to register a keyword twice
+
+	[ SawyerX ]
+	* Lots of documentation updates
+    * Dancer now logs caught crashes in rendering
+      (easier to debug Ajax routes)
+
+Dancer 1.1901 (1.2RC0)
+
     [ Franck Cuny ]
     * implemented GH#120:
       - methods {to,from}_{xml,json,yaml} accept more than one arguments. The
         first argument is the data to transform. All the remainings arguments
         are parameters to alter the behavior of the serializers. Refer to the
         documentation for more informations.
-    * MOAR TESTS
+    * more tests added
+
+    [ Alexis Sukrieh ]
+    * load_plugin is DEPRECATED; 'use' should be used instead to load a plugin.
+      This is fixes the major issue with plugins about symbol exports that
+      didn't work well (issue #101).
+    * All paths built in a scaffolded application are dynamic, it's now
+      possible to move a scaffolded application after it's been generated.
+      (fixes issues #88, 
+    * The auto_reload feature is now disabled by default due to too many
+      unsolved issues (it works most of the time, but some race conditions are
+      still present) This feature is still being working on, but it's now
+      flagged "experimental").  
+    * Default log level in development environment is now 'core' in order to
+      provide more information.
+    * New scaffolded application design. More neutral and with lots of
+      information for a beginner, and links to useful material.
+      Based on the Ruby on Rails start page (kudos to the Rails team,
+      http://www.rubyonrails.org).
+
+    [ Boris Shomodjvarac ] 
+    * Support for a clean way for Template engines to define their template
+      file extensions (issue #126).
+
+Dancer 1.1812
+
+    [ Franck Cuny ]
+    * Skip bogus uploads test on Win32 (thanks to Alias for reporting)
+
+    [ Alexis Sukrieh ]
+    * Fix for scaffolded apps
+    * Dancer::Deployment cleanup (CGI section)
+    * Declare LWP explicitly (already implied by HTTP::Body and HTTP::Headers)
+
+    [ Sawyer X ]
+    * Nitpicking at tabs and spaces at end of lines
+>>>>>>> master
 
 Dancer 1.1811
 

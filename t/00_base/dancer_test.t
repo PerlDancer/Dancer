@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 18;
+use Test::More import => ['!pass'], tests => 19;
 
 use strict;
 use warnings;
@@ -56,3 +56,10 @@ response_content_is
     [GET => '/headers_again', { headers => ['X-Foo-Dancer' => 55] }], 55,
     "a request with headers looks good";
 
+response_content_is [
+    POST => '/form',
+    {
+        headers => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
+        body    => 'foo=bar'
+    }
+], 'bar', "a POST request with form urlencoded is ok";

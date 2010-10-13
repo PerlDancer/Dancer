@@ -11,6 +11,8 @@ BEGIN {
         unless Dancer::ModuleLoader->load('JSON');
 }
 
+plan tests => 17;
+
 ok(setting('serializer' => 'Mutable'), "serializer Mutable loaded");
 my $s = Dancer::Serializer->engine;
 
@@ -90,5 +92,3 @@ $req = Dancer::Request->new(\%ENV);
 Dancer::SharedData->request($req);
 $ct = $s->_find_content_type($req);
 is_deeply $ct, ['application/json', 'text/xml'];
-
-done_testing;
