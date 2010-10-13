@@ -17,17 +17,13 @@ my @tests = (
       expected => "view\n" },
     { path => '/full',
       expected => "start\nview\nstop\n" },
-    { path => '/nolayout',
-      expected => "view\n"},
-    { path => '/customlayout',
-      expected => "it's view\n different!"},
 );
 
 plan tests => scalar(@tests);
 
 SKIP: {
     Template->import;
-
+    
     get '/solo' => sub {
         template 't03';
     };
@@ -35,15 +31,6 @@ SKIP: {
     get '/full' => sub {
         layout 'main';
         template 't03';
-    };
-
-    get '/nolayout' => sub {
-        layout 'main';
-        template 't03', {}, {layout => undef};
-    };
-
-    get '/customlayout' => sub {
-        template 't03', {}, {layout => 'custom'};
     };
 
     foreach my $test (@tests) {
@@ -54,7 +41,7 @@ SKIP: {
 
         Dancer::SharedData->request($request);
         my $resp = Dancer::Renderer::get_action_response();
-
+    
         is($resp->{content}, $expected, "content rendered looks good for $path");
     }
-};
+}; 

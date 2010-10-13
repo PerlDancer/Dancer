@@ -770,11 +770,6 @@ For example, to disable the layout for a specific request:
         template 'index.tt', {}, { layout => undef };
     };
 
-It's also possible to specify a specific layout for a route:
-
-    get '/' => sub {
-        template 'index.tt', {}, { layout => 'blog' };
-    };
 
 =head2 to_dumper ($structure)
 
