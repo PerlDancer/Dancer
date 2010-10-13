@@ -1,15 +1,3 @@
-                                TODO
-
-            
-            This is the roadmap of upcoming developments
-
-* Route caching support
-
-    When a path is firstly resolved through the route tree, we should
-    cache the result for future calls.
-
-    The path would be the cache key, the first route the value.
-
-        1 - GET / -> first call, so browse the route tree
-        2 - GET / -> second call, return cache('/');
-
+* headers (a sane Dancer::Header class for all headers, for D::H::PSGI, * D::H::Standalone, D::Request, D::Response);
+* rework the concept of D::Engines so we can have multiple D::Serializers loaded at once
+* possibility to define a serializer for a route, a list of routes, in a route (locally), ...
