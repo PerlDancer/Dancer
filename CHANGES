@@ -36,9 +36,6 @@ Dancer 1.1809
     * fix bug in ajax query
     * more tests
 
-    [ Naveen ]
-    * support for route specific layouts 
-
     [ Alexis Sukrieh ]
     * fix plan for t/03_route_handler/24_named_captures.t
 
