@@ -190,8 +190,8 @@ sub load_app {
     # load the application
     my ($package, $script) = caller;
     _init($script);
-    eval "use $app_name";
-    die "unable to load application $app_name : $@" if $@;
+    my ($res, $error) = Dancer::ModuleLoader->load($app_name);
+    $res or die "unable to load application $app_name : $error";
 
     # restore the main application
     Dancer::App->set_running_app('main');
@@ -268,8 +268,8 @@ sub _init {
 
     setting logger => 'file';
 
-    eval "use lib path(setting('appdir'), 'lib')";
-    die "unable to set libdir: $@" if $@;
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(path(setting('appdir'), 'lib'));
+    $res or die "unable to set libdir : $error";
 }
 
 1;
