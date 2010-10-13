@@ -521,7 +521,7 @@ css, images and javascript:
 
     before_template sub {
         my $tokens = shift;
-        $tokens->{uri_base} = request->base;
+        $tokens->{uri_base} = request->base->path;
     };
 
 THen in your layout, modify your css inclusion as follows:
