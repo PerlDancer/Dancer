@@ -29,6 +29,8 @@ Dancer 1.1999_01 (RC1)
     [ Naveed Massjouni ]
     * Dancer::Test function get_response is renamed to dancer_response
       get_response still works but is deprecated
+    * dispatch.f?cgi scripts use FindBin to resolve their location.
+	  FIX a bug when using symlinks.
 
     [ Franck Cuny ]
     * FIX for issue GH#129 
