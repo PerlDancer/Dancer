@@ -57,6 +57,7 @@ lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 LICENSE
+maint/image_to_data.pl
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
@@ -75,9 +76,9 @@ t/00_base/10_headers.t
 t/00_base/11_file_utils.t
 t/00_base/12_utf8_charset.t
 t/00_base/dancer_test.t
-t/00_base/utf8.tt
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
+t/00_base/utf8.tt
 t/01_config/01_settings.t
 t/01_config/02_mime_type.t
 t/01_config/03_logger.t
@@ -140,6 +141,7 @@ t/05_views/002_view_rendering.t
 t/05_views/03_layout.t
 t/05_views/views/clock.tt
 t/05_views/views/index.tt
+t/05_views/views/layouts/custom.tt
 t/05_views/views/layouts/main.tt
 t/05_views/views/request.tt
 t/05_views/views/t03.tt

@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Dancer::Cookies;
-use Dancer::Config 'setting';
 use Dancer::Engine;
 
 # Singleton representing the session engine class to use
