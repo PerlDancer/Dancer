@@ -6,6 +6,7 @@ use Dancer::Template::Simple;
 use File::Basename 'basename', 'dirname';
 use File::Spec::Functions;
 use Getopt::Long;
+use Pod::Usage;
 use Dancer::Renderer;
 use LWP::UserAgent;
 use constant FILE => 1;
@@ -23,14 +24,17 @@ GetOptions(
     "h|help"          => \$help,
     "a|application=s" => \$name,
     "p|path=s"        => \$path,
-);
+) or pod2usage( -verbose => 1 );
+
+# simple on-line help
+pod2usage( -verbose => 1 ) if $help;
 
 # main
 my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 
-usage() and exit(0) if $help;
-usage() if not defined $name;
-usage() unless -d $path && -w $path;
+pod2usage( -verbose => 1 ) if $help;
+pod2usage( -verbose => 1 ) if not defined $name;
+pod2usage( -verbose => 1 ) unless -d $path && -w $path;
 
 validate_app_name($name);
 
@@ -48,23 +52,6 @@ safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
 # subs
-
-sub usage {
-    print <<'ENDUSAGE';
-Dancer Helper - bootstrap a Dancer application
-
-Usage:
-    dancer [options] -a <appname>
-
-    options are following :
-    -h, --help            : display this help message
-    -a, --application     : name of the application to create
-    -p, --path            : existing path where to create the application tree
-                            (current directory if not specified, must be writable)
-
-ENDUSAGE
-    exit 0;
-}
 
 sub validate_app_name {
     my $name = shift;
@@ -1300,23 +1287,23 @@ __END__
 
 dancer - helper script to create new Dancer applications
 
+=head1 SYNOPSIS
+
+dancer [options] -a <appname>
+
+=head1 OPTIONS
+
+    -h, --help            : print what you are currently reading
+    -a, --application     : the name of your application
+    -p, --path            : the path where to create your application
+                              (current directory if not specified)
+
+=back
+
 =head1 DESCRIPTION
 
 Helper script for providing a bootstrapping method to quickly and easily create
 the framework for a new Dancer application.
-
-=head1 USAGE
-
-dancer [options] -a <appname>
-
-=over
-
-=item -h, --help            : print what you are currently reading
-=item -a, --application     : the name of your application
-=item -p, --path            : the path where to create your application
-                              (current directory if not specified)
-
-=back
 
 =head1 EXAMPLE
 
