@@ -1,6 +1,7 @@
 package Dancer::Route::Registry;
 use strict;
 use warnings;
+use Carp;
 
 use base 'Dancer::Object';
 use Dancer::Logger;
@@ -129,7 +130,7 @@ sub any_add {
         $pattern = shift @rest;
     }
 
-    die "Syntax error, methods should be provided as an ARRAY ref"
+    croak "Syntax error, methods should be provided as an ARRAY ref"
       if grep {/^$pattern$/} @methods;
 
     $self->universal_add($_, $pattern, @rest) for @methods;

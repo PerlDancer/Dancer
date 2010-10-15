@@ -2,7 +2,7 @@ package Dancer;
 
 use strict;
 use warnings;
-use Carp 'confess';
+use Carp;
 use Cwd 'abs_path', 'realpath';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
@@ -133,7 +133,7 @@ sub prefix { Dancer::App->current->set_prefix(@_) }
 sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
 sub options { Dancer::App->current->registry->universal_add('options', @_) }
 sub put     { Dancer::App->current->registry->universal_add('put',     @_) }
-sub r { warn "'r' is DEPRECATED use qr{} instead"; return {regexp => $_[0]} }
+sub r { carp "'r' is DEPRECATED use qr{} instead"; return {regexp => $_[0]} }
 sub redirect  { Dancer::Helpers::redirect(@_) }
 sub request   { Dancer::SharedData->request }
 sub send_file { Dancer::Helpers::send_file(@_) }
@@ -191,7 +191,7 @@ sub load_app {
     my ($package, $script) = caller;
     _init($script);
     my ($res, $error) = Dancer::ModuleLoader->load($app_name);
-    $res or die "unable to load application $app_name : $error";
+    $res or croak "unable to load application $app_name : $error";
 
     # restore the main application
     Dancer::App->set_running_app('main');
@@ -269,7 +269,7 @@ sub _init {
     setting logger => 'file';
 
     my ($res, $error) = Dancer::ModuleLoader->use_lib(path(setting('appdir'), 'lib'));
-    $res or die "unable to set libdir : $error";
+    $res or croak "unable to set libdir : $error";
 }
 
 1;

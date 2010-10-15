@@ -2,6 +2,7 @@ package Dancer::Plugin::WebSocket;
 
 use strict;
 use warnings;
+use Carp;
 
 use Dancer ':syntax';
 use Dancer::Plugin;
@@ -9,7 +10,7 @@ use Dancer::Plugin;
 register websocket => \&websocket;
 
 BEGIN {
-    die "Plack is required for WebSocket support"
+    croak "Plack is required for WebSocket support"
       unless Dancer::ModuleLoader->load('Plack::Builder');
 }
 

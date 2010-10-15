@@ -12,6 +12,7 @@ use Dancer::App;
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
+use Dancer::Config;
 
 use base 'Exporter';
 use vars '@EXPORT';
@@ -51,6 +52,8 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
+    # set a default session engine for tests
+    setting 'session' => 'simple';
     Dancer::_init($options{appdir});
 }
 

@@ -1,6 +1,7 @@
 package Dancer::Headers;
 use strict;
 use warnings;
+use Carp;
 use base 'Dancer::Object';
 
 sub init {
@@ -31,7 +32,7 @@ sub init {
         $self->{_headers_type} = 'http_headers';
     }
     else {
-        die "unsupported headers: $headers";
+        croak "unsupported headers: $headers";
     }
 
     return $self;
