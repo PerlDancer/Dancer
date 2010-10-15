@@ -2,6 +2,7 @@ package Dancer::Error;
 
 use strict;
 use warnings;
+use Carp;
 
 use Dancer::Response;
 use Dancer::Renderer;
@@ -125,7 +126,7 @@ sub dumper {
 sub _censor {
     my $hash = shift;
     if (!$hash || ref $hash ne 'HASH') {
-        warn "_censor given incorrect input: $hash";
+        carp "_censor given incorrect input: $hash";
         return;
     }
 
