@@ -4,7 +4,7 @@ use File::Spec;
 use File::Slurp;
 use Template;
 
-set 'database' => File::Spec->tmpdir() . 'dancr.db';
+set 'database' => File::Spec->tmpdir() . '/dancr.db';
 set 'session' => 'Simple';
 set 'template' => 'template_toolkit';
 set 'logger' => 'console';
