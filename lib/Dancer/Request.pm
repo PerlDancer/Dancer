@@ -2,6 +2,8 @@ package Dancer::Request;
 
 use strict;
 use warnings;
+use Carp;
+
 use Dancer::Object;
 use Dancer::Headers;
 use Dancer::Request::Upload;
@@ -146,7 +148,7 @@ sub params {
         return $self->{_route_params};
     }
     else {
-        die "Unknown source params \"$source\".";
+        croak "Unknown source params \"$source\".";
     }
 }
 
@@ -269,7 +271,7 @@ sub _build_path {
         $path ||= $self->_url_decode($self->{request_uri});
     }
 
-    die "Cannot resolve path" if not $path;
+    croak "Cannot resolve path" if not $path;
     $self->{path} = $path;
 }
 
@@ -381,7 +383,7 @@ sub _read {
         return $buffer;
     }
     else {
-        die "Unknown error reading input: $!";
+        croak "Unknown error reading input: $!";
     }
 }
 

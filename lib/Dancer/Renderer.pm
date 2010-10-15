@@ -2,6 +2,7 @@ package Dancer::Renderer;
 
 use strict;
 use warnings;
+use Carp;
 
 use Dancer::Route;
 use Dancer::HTTP;
@@ -109,7 +110,7 @@ sub get_action_response {
     {
         $limit++;
         if ($limit > $MAX_RECURSIVE_LOOP) {
-            die "infinite loop detected, "
+            croak "infinite loop detected, "
               . "check your route/filters for "
               . $method . ' '
               . $path;

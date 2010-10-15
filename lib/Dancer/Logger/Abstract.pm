@@ -2,6 +2,7 @@ package Dancer::Logger::Abstract;
 
 use strict;
 use warnings;
+use Carp;
 use base 'Dancer::Engine';
 
 use Dancer::SharedData;
@@ -12,7 +13,7 @@ use Dancer::Config 'setting';
 # It receives the following arguments:
 # $msg_level, $msg_content, it gets called only if the configuration allows
 # a message of the given level to be logged.
-sub _log { die "_log not implemented" }
+sub _log { confess "_log not implemented" }
 
 sub _should {
     my ($self, $msg_level) = @_;
