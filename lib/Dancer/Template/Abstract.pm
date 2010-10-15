@@ -2,13 +2,14 @@ package Dancer::Template::Abstract;
 
 use strict;
 use warnings;
+use Carp;
 use Dancer::FileUtils 'path';
 use base 'Dancer::Engine';
 
 # Overloads this method to implement the rendering
 # args:   $self, $template, $tokens
 # return: a string of $template's content processed with $tokens
-sub render { die "render not implemented" }
+sub render { confess "render not implemented" }
 
 sub default_tmpl_ext { "tt" };
 

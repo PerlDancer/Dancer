@@ -1,6 +1,7 @@
 package Dancer::Logger::File;
 use strict;
 use warnings;
+use Carp;
 use base 'Dancer::Logger::Abstract';
 
 use File::Spec;
@@ -20,7 +21,7 @@ sub init {
 
     if (!-d $logdir) {
         if (not mkdir $logdir) {
-            warn "log directory $logdir doesn't exist, unable to create";
+            carp "log directory $logdir doesn't exist, unable to create";
             undef $logfile;
             return;
         }
@@ -31,7 +32,7 @@ sub init {
 
     my $fh;
     unless (open($fh, '>>', $logfile)) {
-        warn "Unable to open $logfile for writing, unable to log";
+        carp "Unable to open $logfile for writing, unable to log";
         undef $logfile;
     }
     close $fh;

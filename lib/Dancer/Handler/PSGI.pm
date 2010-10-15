@@ -2,6 +2,7 @@ package Dancer::Handler::PSGI;
 
 use strict;
 use warnings;
+use Carp;
 use base 'Dancer::Handler';
 
 use Dancer::GetOpt;
@@ -14,7 +15,7 @@ use Dancer::Logger;
 sub new {
     my $class = shift;
 
-    die "Plack::Request is needed by the PSGI handler"
+    croak "Plack::Request is needed by the PSGI handler"
       unless Dancer::ModuleLoader->load('Plack::Request');
 
     my $self = {};
@@ -34,7 +35,7 @@ sub dance {
 
     if (Dancer::Config::setting('plack_middlewares')) {
         my $middlewares = Dancer::Config::setting('plack_middlewares');
-        die "Plack::Builder is needed for middlewares support"
+        croak "Plack::Builder is needed for middlewares support"
           unless Dancer::ModuleLoader->load('Plack::Builder');
 
         my $builder = Plack::Builder->new();
