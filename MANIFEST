@@ -1,8 +1,15 @@
+.current_cover_stats
 .gitignore
 .perlcriticrc
 .perltidyrc
 AUTHORS
 CHANGES
+examples/dancr/dancr.pl
+examples/dancr/public/css/style.css
+examples/dancr/schema.sql
+examples/dancr/views/layouts/main.tt
+examples/dancr/views/login.tt
+examples/dancr/views/show_entries.tt
 lib/Dancer.pm
 lib/Dancer/App.pm
 lib/Dancer/Config.pm
@@ -57,6 +64,7 @@ lib/Dancer/Template/Simple.pm
 lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
+lib/Dancer/Tutorial.pod
 LICENSE
 maint/image_to_data.pl
 Makefile.PL
@@ -172,6 +180,7 @@ t/08_session/06_abstract.t
 t/08_session/07_session_expires.t
 t/08_session/08_simple.t
 t/08_session/09_session.t
+t/08_session/10_filter.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t
