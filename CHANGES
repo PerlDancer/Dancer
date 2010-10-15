@@ -1,3 +1,12 @@
+    [ Franck Cuny ]
+    * Dancer::Test load D::Session::Simple
+
+    [ Philippe Bruhat ]
+    * use Pod::Usage
+
+    [ Damien Krotkine ]
+    * replace all die and warn with croak and carp
+
 Dancer 1.1999_01 (RC1)
 
     [ Alexis Sukrieh ]
