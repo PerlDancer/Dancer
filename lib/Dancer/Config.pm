@@ -60,6 +60,10 @@ my $setters = {
             );
         }
     },
+    traces => sub {
+        my ($setting, $traces) = @_;
+        $Carp::Verbose = $traces ? 1 : 0;
+    },
 };
 
 # public accessor for get/set
@@ -142,6 +146,7 @@ sub load_default_settings {
     $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
+    $SETTINGS->{traces}       ||= $ENV{DANCER_TRACES}       || 0;
     $SETTINGS->{environment} 
       ||= $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
@@ -243,6 +248,11 @@ a matching template in the directory $appdir/views/layout.
 =head2 warnings (boolean)
 
 If set to true, tells Dancer to consider all warnings as blocking errors.
+
+=head2 traces (boolean)
+
+If set to true, Dancer will display full stack traces when a warning or a die
+occurs. (Internally sets Carp::Verbose). Default to false.
 
 =head2 log (enum)
 
