@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+<title>Dancr</title>
+<link rel=stylesheet type=text/css href="<% css_url %>">
+</head>
+<body>
+<div class=page>
+  <h1>Dancr</h1>
+  <div class=metanav>
+  <% IF not session.logged_in %>
+    <a href="<% login_url %>">log in</a>
+  <% ELSE %>
+    <a href="<% logout_url %>">log out</a>
+  <% END %>
+  </div>
+  <% IF msg %>
+    <div class=flash> <% msg %> </div>
+  <% END %>
+  <% content %>
+</div>
+</body>
+</html>
