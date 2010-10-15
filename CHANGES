@@ -1,3 +1,10 @@
+
+Dancer 1.1999_02 (RC2)
+
+    [ Mark Allen ]
+    * Add a tutorial (Dancer::Tutorial)
+    * example application 'Dancr', provided in example/
+
     [ Franck Cuny ]
     * Dancer::Test load D::Session::Simple
 
