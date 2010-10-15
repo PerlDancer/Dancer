@@ -1298,8 +1298,6 @@ dancer [options] -a <appname>
     -p, --path            : the path where to create your application
                               (current directory if not specified)
 
-=back
-
 =head1 DESCRIPTION
 
 Helper script for providing a bootstrapping method to quickly and easily create
