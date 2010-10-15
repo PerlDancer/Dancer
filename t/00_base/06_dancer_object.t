@@ -8,7 +8,7 @@ use Dancer::ModuleLoader;
 plan skip_all => "the Clone module is needed for this test"
     unless Dancer::ModuleLoader->load('Clone');
 
-plan tests => 11;
+plan tests => 12;
 
 use Dancer::Object;
 
@@ -35,3 +35,6 @@ is $p->sex, 'male', 'getting sex';
 my $p2 = $p->clone;
 isnt $p, $p2, "clone is not the same object";
 is $p->age, $p2->age, "clone values are OK";
+
+my $attrs = Person->get_attributes();
+is_deeply $attrs, ['name', 'age', 'sex'], "attributes are ok";
