@@ -1,6 +1,7 @@
 package Dancer::Plugin;
 use strict;
 use warnings;
+use Carp;
 
 use base 'Exporter';
 use Dancer::Config 'setting';
@@ -43,11 +44,11 @@ sub register($&) {
     my $plugin_name = caller();
 
     if (grep { $_ eq $keyword } @_reserved_keywords) {
-        die "You can't use $keyword, this is a reserved keyword";
+        croak "You can't use $keyword, this is a reserved keyword";
     }
     while (my ($plugin, $keywords) = each %$_keywords) {
         if (grep { $_->[0] eq $keyword } @$keywords) {
-            die "You can't use $keyword, this is a keyword reserved by $plugin";
+            croak "You can't use $keyword, this is a keyword reserved by $plugin";
         }
     }
 
@@ -70,7 +71,7 @@ sub register_plugin {
 
 sub load_plugin {
     my ($plugin) = @_;
-    die "load_plugin is DEPRECATED, you must use 'use' instead";
+    croak "load_plugin is DEPRECATED, you must use 'use' instead";
 }
 
 sub set_plugin_symbols {

@@ -1,3 +1,19 @@
+
+Dancer 1.1999_02 (RC2)
+
+    [ Mark Allen ]
+    * Add a tutorial (Dancer::Tutorial)
+    * example application 'Dancr', provided in example/
+
+    [ Franck Cuny ]
+    * Dancer::Test load D::Session::Simple
+
+    [ Philippe Bruhat ]
+    * use Pod::Usage
+
+    [ Damien Krotkine ]
+    * replace all die and warn with croak and carp
+
 Dancer 1.1999_01 (RC1)
 
     [ Alexis Sukrieh ]
@@ -29,6 +45,8 @@ Dancer 1.1999_01 (RC1)
     [ Naveed Massjouni ]
     * Dancer::Test function get_response is renamed to dancer_response
       get_response still works but is deprecated
+    * dispatch.f?cgi scripts use FindBin to resolve their location.
+	  FIX a bug when using symlinks.
 
     [ Franck Cuny ]
     * FIX for issue GH#129 

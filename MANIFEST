@@ -1,8 +1,15 @@
+.current_cover_stats
 .gitignore
 .perlcriticrc
 .perltidyrc
 AUTHORS
 CHANGES
+examples/dancr/dancr.pl
+examples/dancr/public/css/style.css
+examples/dancr/schema.sql
+examples/dancr/views/layouts/main.tt
+examples/dancr/views/login.tt
+examples/dancr/views/show_entries.tt
 lib/Dancer.pm
 lib/Dancer/App.pm
 lib/Dancer/Config.pm
@@ -56,7 +63,9 @@ lib/Dancer/Template/Simple.pm
 lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
+lib/Dancer/Tutorial.pod
 LICENSE
+maint/image_to_data.pl
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
@@ -75,9 +84,9 @@ t/00_base/10_headers.t
 t/00_base/11_file_utils.t
 t/00_base/12_utf8_charset.t
 t/00_base/dancer_test.t
-t/00_base/utf8.tt
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
+t/00_base/utf8.tt
 t/01_config/01_settings.t
 t/01_config/02_mime_type.t
 t/01_config/03_logger.t
@@ -140,6 +149,7 @@ t/05_views/002_view_rendering.t
 t/05_views/03_layout.t
 t/05_views/views/clock.tt
 t/05_views/views/index.tt
+t/05_views/views/layouts/custom.tt
 t/05_views/views/layouts/main.tt
 t/05_views/views/request.tt
 t/05_views/views/t03.tt
@@ -164,6 +174,7 @@ t/08_session/06_abstract.t
 t/08_session/07_session_expires.t
 t/08_session/08_simple.t
 t/08_session/09_session.t
+t/08_session/10_filter.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t

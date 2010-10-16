@@ -20,10 +20,22 @@ your app's config file, and taking care of ensuring the connection is still vali
 and reconnecting if not (useful in persistent environments).  Just calling the
 C<database> keyword gives you a connected and working database handle.
 
+=item L<Dancer::Plugin::DBIC>
+
+Provides easy acces to DBIx::Class database virtualization.
+
+=item L<Dancer::Plugin::Authorize>
+
+Dancer Authentication, Security and Role-Based Access Control Framework.
+
 =item L<Dancer::Plugin::Email>
 
 Provides easy email-sending powered by Email::Send - simply call the C<email>
 keyword.  Email sending settings can be taken from your app's config.
+
+=item L<Dancer::Plugin::Ajax>
+
+Provides easy way to add Ajax route handlers.
 
 =item L<Dancer::Plugin::REST>
 
@@ -34,10 +46,13 @@ Makes writing RESTful web services easy.
 Automatically provides site maps (as a HTML page, or as an XML sitemap ready for
 Google) based on the routes your app defines.
 
-
 =item L<Dancer::Plugin::Validation>
 
 Easy data validation powered by L<Oogly>.
+
+=item L<Dancer::Plugin::Params::Normalization>
+
+Provides different ways of normalizing parameters names
 
 =back
 

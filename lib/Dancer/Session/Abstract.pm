@@ -1,6 +1,7 @@
 package Dancer::Session::Abstract;
 use strict;
 use warnings;
+use Carp;
 
 use base 'Dancer::Engine';
 
@@ -20,25 +21,25 @@ __PACKAGE__->attributes('id');
 # receives a session id and should return a session object if found, or undef
 # otherwise.
 sub retrieve {
-    die "retrieve not implemented";
+    confess "retrieve not implemented";
 }
 
 # args: ($class)
 # create a new empty session, flush it and return it.
 sub create {
-    die "create not implemented";
+    confess "create not implemented";
 }
 
 # args: ($self)
 # write the (serialized) current session to the session storage
 sub flush {
-    die "flush not implemented";
+    confess "flush not implemented";
 }
 
 # args: ($self)
 # remove the session from the session storage
 sub destroy {
-    die "destroy not implemented";
+    confess "destroy not implemented";
 }
 
 

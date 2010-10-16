@@ -1,0 +1,20 @@
+  <% IF session.logged_in %>
+    <form action="<% add_entry_url %>" method=post class=add-entry>
+      <dl>
+        <dt>Title:
+        <dd><input type=text size=30 name=title>
+        <dt>Text:
+        <dd><textarea name=text rows=5 cols=40></textarea>
+        <dd><input type=submit value=Share>
+      </dl>
+    </form>
+  <% END %>
+  <ul class=entries>
+  <% IF entries.size %>
+    <% FOREACH id IN entries.keys.nsort %>
+      <li><h2><% entries.$id.title %></h2><% entries.$id.text %>
+    <% END %>
+  <% ELSE %>
+    <li><em>Unbelievable.  No entries here so far</em>
+  <% END %>
+  </ul>
