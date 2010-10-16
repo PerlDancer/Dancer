@@ -14,6 +14,12 @@ Dancer 1.1999_02 (RC2)
     [ Damien Krotkine ]
     * replace all die and warn with croak and carp
 
+	[ Alexis Sukrieh ]
+	* FIX for issue GH #151
+	  utf8 pragma is imported automatically when Dancer is loaded
+	  to allow the usage of UTF-8 strings in the application code.
+	  (Thanks to kocoureasy for the report).
+
 Dancer 1.1999_01 (RC1)
 
     [ Alexis Sukrieh ]
