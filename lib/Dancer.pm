@@ -210,6 +210,7 @@ sub import {
     my ($package, $script) = caller;
 
     strict->import;
+    utf8->import;
     $class->export_to_level(1, $class, @EXPORT);
 
     # if :syntax option exists, don't change settings
