@@ -535,10 +535,10 @@ any further modification of the css inclusion
 
 If you use L<Plack> and have some unicode problem with your Dancer application,
 don't forget to check if you have set your template engine to use unicode, and
-set the default charset to utf-8. So, if you are using template toolkit, your
-config.yaml will look like this:
+set the default charset to UTF-8. So, if you are using template toolkit, your
+config.yml will look like this:
 
-    charset: utf-8
+    charset: UTF-8
     engines:
       template_toolkit:
         ENCODING: utf8
