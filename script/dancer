@@ -791,7 +791,7 @@ pre.error {
 
 "layout: \"main\"
 logger: \"console\"
-charset: \"utf8\"
+charset: \"UTF-8\"
 appname: \"$name\"
 
 ",
