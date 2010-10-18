@@ -19,6 +19,9 @@ Dancer 1.1999_02 (RC2)
 	  utf8 pragma is imported automatically when Dancer is loaded
 	  to allow the usage of UTF-8 strings in the application code.
 	  (Thanks to kocoureasy for the report).
+	* FIX for "UTF-8" issues:
+	  - response content is encoded only if content_type is text
+	  - charset setting is normalized to UTF-8 when appropriate
 
 Dancer 1.1999_01 (RC1)
 
