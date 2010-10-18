@@ -66,9 +66,28 @@ my $setters = {
     },
 };
 
+my $normalizers = {
+    charset => sub {
+        my ($setting, $charset) = @_;
+        $charset = 'UTF-8' if $charset =~ /utf8/i;
+        return $charset;
+    },
+};
+
+sub normalize_setting {
+    my ($class, $setting, $value) = @_;
+    $value = $normalizers->{$setting}->($setting, $value) 
+        if exists $normalizers->{$setting};
+    return $value;
+}
+
 # public accessor for get/set
 sub setting {
     my ($setting, $value) = @_;
+
+    # normalize the value if needed
+    $value = Dancer::Config->normalize_setting($setting, $value)
+        if @_ == 2;
 
     # run the hook if setter
     $setters->{$setting}->(@_)
