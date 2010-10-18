@@ -28,7 +28,7 @@ my @plack_servers = qw(plackup);
 push @plack_servers, 'Starman' if Dancer::ModuleLoader->load('Starman');
 my @charsets = qw(utf8 latin1);
 
-plan tests => scalar(@templates) * scalar(@plack_servers);
+plan tests => scalar(@templates) * scalar(@plack_servers) + 1;
 
 my $app = sub {
     my $env = shift;
@@ -45,6 +45,11 @@ my $app = sub {
     my $request = Dancer::Request->new($env);
     Dancer->dance($request);
 };
+    
+# utf8 should be normalized to UTF-8
+setting charset     => 'utf8';
+is(setting('charset'), 'UTF-8', "charset is normalized to UTF-8");
+
 
 for my $plack (@plack_servers) {
 
