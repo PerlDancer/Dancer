@@ -92,7 +92,7 @@ sub render_response {
         my $charset = setting('charset');
         my $ctype   = $response->header('Content-Type');
 
-        if ($charset && $ctype) {
+        if ($charset && $ctype && _is_text($ctype)) {
             $content = Encode::encode($charset, $content);
             $response->update_headers(
                 'Content-Type' => "$ctype; charset=$charset")
@@ -105,6 +105,11 @@ sub render_response {
     Dancer::Logger::core("response: " . $response->{status});
     Dancer::SharedData->reset_all();
     return [$response->{status}, $response->{headers}, $content];
+}
+
+sub _is_text {
+    my ($content_type) = @_;
+    return $content_type =~ /(text|json)/;
 }
 
 # Fancy banner to print on startup
