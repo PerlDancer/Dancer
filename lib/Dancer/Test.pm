@@ -55,6 +55,7 @@ sub import {
     # set a default session engine for tests
     setting 'session' => 'simple';
     Dancer::_init($options{appdir});
+    Dancer::Config->load;
 }
 
 # Route Registry
