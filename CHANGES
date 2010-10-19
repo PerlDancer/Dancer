@@ -1,4 +1,8 @@
 
+    [ Naveen ]
+    * add --version to the dancer CLI
+    * changed the URI fetched by the dancer script to check Dancer's version
+
 Dancer 1.1999_02 (RC2)
 
     [ Mark Allen ]
