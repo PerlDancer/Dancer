@@ -154,7 +154,8 @@ sub load_settings_from_yaml {
         confess "Unable to parse the configuration file: $file: $@";
     }
 
-    @{$SETTINGS}{keys %$config} = values %$config;
+    setting($_, $config->{$_}) for (keys %{ $config });
+
     return scalar(keys %$config);
 }
 
