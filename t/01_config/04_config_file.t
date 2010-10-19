@@ -4,7 +4,7 @@ use Test::More import => ['!pass'];
 
 plan skip_all => "YAML needed to run this tests"
     unless Dancer::ModuleLoader->load('YAML');
-plan tests => 16;
+plan tests => 17;
 
 use File::Temp qw/tempdir/;
 use Dancer ':syntax';
