@@ -234,7 +234,6 @@ sub version_check {
     require Dancer;
 
     my $resp = send_http_request('http://cpansearch.perl.org/src/SUKRIA/?C=N;O=D');
-    print $resp;
     if ($resp && $resp =~ m/Dancer-(\d\.\d+)\//) {
         $latest_version = $1;
     }
