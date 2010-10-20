@@ -15,7 +15,7 @@ be run as a simple cgi-script out-of-the-box. No additional web-server
 configuration needed.  Your web server should recognize .cgi files and be able
 to serve Perl scripts.  The Perl module Plack::Runner is required.
 
-Start by adding the following to your apache configuration:
+Start by adding the following to your apache configuration (httpd.conf or sites-available/*site*):
 
     <VirtualHost *:80>
         ServerName your.server.domain
@@ -24,19 +24,19 @@ Start by adding the following to your apache configuration:
         DocumentRoot "/path/to/dancer/public"
 
         <Directory "/path/to/dancer/public">
-            AllowOverride None
-            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch -Indexes
-            
-			Order allow,deny
-            Allow from all
-            AddHandler cgi-script .cgi
+                AddHandler cgi-script .cgi .pl
+                Options ExecCGI FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                Allow from all
         </Directory>
-
     </VirtualHost>
 
 Enable Pretty-URLs if your web server supports .htaccess files and mod_rewrite.
-Place this code in a file called .htaccess (or directly in your VirtualHost
-configuration) in your application's root folder:
+To check if your server supports mod_rewrite type C<apache2 -l> to list modules. 
+To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in 
+a file called .htaccess (or directly in your VirtualHost configuration) in 
+your application's root folder:
 
     # BEGIN dancer application htaccess
     RewriteEngine On
@@ -60,7 +60,7 @@ webserver using HTTP::Simple::PSGI.
 
 Simply fire up your app:
 
-    $ perl ./mysuperwebapp.pl
+    $ perl bin/app.pl
     >> Listening on 0.0.0.0:3000
     == Entering the dance floor ...
 
@@ -89,9 +89,11 @@ C<Corona> is a C<Coro> based web server.
 
 =back
 
-To start your application, just run plackup
+To start your application, just run plackup (see L<Plack> and specific servers
+above for all available options):
 
-   $ plackup -s Twiggy -p 5000 <YOURAPP>.pl
+   $ plackup bin/app.pl
+   $ plackup -E deployment -s Starman --workers=10 -p 5001 -a bin/app.pl
 
 As you can see, the scaffolded Perl script for your app can be used as a PSGI
 startup file.
@@ -468,7 +470,7 @@ Your lighttpd configuration:
 
 Launch your application
 
-    plackup -s FCGI --port 8080 app.pl
+    plackup -s FCGI --port 8080 bin/app.pl
 
 =head4 Unix socket
 
@@ -489,4 +491,4 @@ Your lighttpd configuration:
 
 Launch your application:
 
-    plackup -s FCGI --listen /tmp/fcgi.sock app.pl
+    plackup -s FCGI --listen /tmp/fcgi.sock bin/app.pl
