@@ -3,6 +3,7 @@ package Dancer::Handler::Standalone;
 use strict;
 use warnings;
 
+use HTTP::Headers;
 use HTTP::Server::Simple::PSGI;
 use base 'Dancer::Handler', 'HTTP::Server::Simple::PSGI';
 
@@ -13,21 +14,11 @@ use Dancer::Headers;
 use Dancer::FileUtils qw(read_glob_content);
 use Dancer::SharedData;
 
-# we have to subclass headers, from HTTP::Server::Simple in order to catch them
-sub headers {
-    my ($self, $headers) = @_;
-
-    # first, save the headers
-    my $dh = Dancer::Headers->new(headers => $headers);
-    Dancer::SharedData->headers($dh);
-
-    # then, let the SUPER method do its job
-    $self->SUPER::headers($headers);
-}
-
 # in standalone mode, this method initializes the process
 # and start an HTTP server
 sub start {
+    my $self = shift;
+
     my $ipaddr = setting('server');
     my $port   = setting('port');
     my $dancer = Dancer::Handler::Standalone->new($port);
@@ -35,6 +26,7 @@ sub start {
 
     my $app = sub {
         my $env = shift;
+        $self->init_request_headers($env);
         my $req = Dancer::Request->new($env);
         $dancer->handle_request($req);
     };
@@ -55,5 +47,20 @@ sub start {
     }
 }
 
+sub init_request_headers {
+    my ($self, $env) = @_;
+
+    my $psgi_headers = HTTP::Headers->new(
+        map {
+            (my $field = $_) =~ s/^HTTPS?_//;
+            ($field => $env->{$_});
+          }
+          grep {/^(?:HTTP|CONTENT|COOKIE)/i} keys %$env
+    );
+    my $headers = Dancer::Headers->new(headers => $psgi_headers);
+    Dancer::SharedData->headers($headers);
+}
+
 sub dance { start(@_) }
+
 1;

@@ -23,7 +23,7 @@ sub new {
     return $self;
 }
 
-sub dance {
+sub start {
     my $self = shift;
 
     my $app = sub {
@@ -70,5 +70,7 @@ sub init_request_headers {
     my $headers = Dancer::Headers->new(headers => $plack->headers);
     Dancer::SharedData->headers($headers);
 }
+
+sub dance { start(@_) }
 
 1;
