@@ -9,6 +9,7 @@ plan skip_all => "Test::TCP is needed for this test"
 use LWP::UserAgent;
 
 plan tests => 4;
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
