@@ -5,10 +5,10 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
 
-plan skip_all => "LWP is needed for this test" 
-    unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP");
+
+use LWP::UserAgent;
 
 plan tests => 2;
 Test::TCP::test_tcp(

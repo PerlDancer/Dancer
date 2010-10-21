@@ -8,8 +8,6 @@ use strict;
 use warnings;
 
 # Requires
-plan skip_all => "LWP::UserAgent is needed to run this tests"
-    unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
 plan skip_all => "JSON needed for this test" 
@@ -17,6 +15,8 @@ plan skip_all => "JSON needed for this test"
 
 # Test
 plan tests => 3;
+
+use LWP::UserAgent;
 
 Test::TCP::test_tcp(
     client => sub {
