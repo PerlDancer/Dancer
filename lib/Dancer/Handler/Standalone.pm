@@ -24,12 +24,7 @@ sub start {
     my $dancer = Dancer::Handler::Standalone->new($port);
     $dancer->host($ipaddr);
 
-    my $app = sub {
-        my $env = shift;
-        $self->init_request_headers($env);
-        my $req = Dancer::Request->new($env);
-        $dancer->handle_request($req);
-    };
+    my $app = $self->psgi_app();
 
     $dancer->app($app);
 
@@ -60,7 +55,5 @@ sub init_request_headers {
     my $headers = Dancer::Headers->new(headers => $psgi_headers);
     Dancer::SharedData->headers($headers);
 }
-
-sub dance { start(@_) }
 
 1;

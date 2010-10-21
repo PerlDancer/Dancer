@@ -26,12 +26,7 @@ sub new {
 sub start {
     my $self = shift;
 
-    my $app = sub {
-        my $env = shift;
-        $self->init_request_headers($env);
-        my $request = Dancer::Request->new($env);
-        $self->handle_request($request);
-    };
+    my $app = $self->psgi_app();
 
     if (Dancer::Config::setting('plack_middlewares')) {
         my $middlewares = Dancer::Config::setting('plack_middlewares');
@@ -55,7 +50,5 @@ sub init_request_headers {
     my $headers = Dancer::Headers->new(headers => $plack->headers);
     Dancer::SharedData->headers($headers);
 }
-
-sub dance { start(@_) }
 
 1;
