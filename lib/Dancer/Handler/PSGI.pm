@@ -6,7 +6,6 @@ use Carp;
 use base 'Dancer::Handler';
 
 use Dancer::GetOpt;
-use Dancer::Headers;
 use Dancer::Config;
 use Dancer::ModuleLoader;
 use Dancer::SharedData;
@@ -45,10 +44,8 @@ sub start {
 
 sub init_request_headers {
     my ($self, $env) = @_;
-
     my $plack = Plack::Request->new($env);
-    my $headers = Dancer::Headers->new(headers => $plack->headers);
-    Dancer::SharedData->headers($headers);
+    Dancer::SharedData->headers($plack->headers);
 }
 
 1;
