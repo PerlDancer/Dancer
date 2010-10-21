@@ -5,20 +5,25 @@ use warnings;
 
 use Dancer::Config 'setting';
 use Dancer::HTTP;
+use Dancer::Headers;
+use HTTP::Headers;
 
 # constructor
 sub new {
     my ($class, %args) = @_;
+
+    my $h = delete $args{headers} || [];
+    my $headers = HTTP::Headers->new(@$h);
+
     my $self = {
         status  => 200,
-        headers => [],
+        headers => $headers,
         content => "",
         pass    => 0,
         %args,
     };
     bless $self, $class;
 
-    $self->sanitize_headers();
     return $self;
 }
 
@@ -35,10 +40,10 @@ sub current {
 
 # helpers for the route handlers
 sub exists { defined $CURRENT && length($CURRENT->{content}) }
-sub set          { $CURRENT                 = shift; }
-sub status       { $CURRENT->{status}       = Dancer::HTTP->status(shift) }
-sub content_type { $CURRENT->{content_type} = shift }
-sub pass         { $CURRENT->{pass}         = 1 }
+sub set { $CURRENT = shift; }
+sub status { $CURRENT->{status} = Dancer::HTTP->status(shift) }
+sub content_type { $CURRENT->header('Content-Type' => shift) }
+sub pass { $CURRENT->{pass} = 1 }
 
 sub halt {
     my ($class, $content) = @_;
@@ -57,51 +62,35 @@ sub halt {
 sub halted { $CURRENT && $CURRENT->{halted} }
 
 sub header {
-    my ($self, $header) = @_;
-    my @headers = @{$self->{headers}};
-    my $value   = undef;
-    while (my $h = shift @headers) {
-        if (lc $h eq lc $header) {
-            $value = shift @headers;
-            last;
+    my $self   = shift;
+    my $header = shift;
+
+    if (@_) {
+        $self->{headers}->header($header => @_);
+    }
+    else {
+        return $self->{headers}->header($header);
+    }
+}
+
+sub headers_to_array {
+    my $self = shift;
+
+    my @fields = $self->{headers}->header_field_names;
+    my @headers;
+    foreach my $f (@fields) {
+        my @values = $self->{headers}->header($f);
+        foreach (@values) {
+            push @headers, $f, $_;
         }
     }
-    return $value;
+    \@headers;
 }
 
 sub headers {
-    push @{$CURRENT->{headers}}, @_;
-    $CURRENT->sanitize_headers;
-}
-
-sub sanitize_headers {
-    my ($self) = @_;
-
-    my @headers   = @{$self->{headers}};
-    my @sanitized = ();
-    for (my $i = 0; $i < scalar(@headers); $i += 2) {
-        my ($key, $value) = ($headers[$i], $headers[$i + 1]);
-
-        # sanitize Location, protection from CRLF injections
-        if ($key eq 'Location') {
-            $value =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
-        }
-        push @sanitized, ($key => $value);
-    }
-    $self->{headers} = \@sanitized;
-}
-
-sub update_headers {
-    my ($self, %params) = @_;
-    my $headers = $self->{headers};
-    my @new_headers;
-
-    for (my $i = 0; $i < scalar(@$headers); $i += 2) {
-        my ($key, $value) = ($headers->[$i], $headers->[$i + 1]);
-        my $header_value = (exists $params{$key}) ? $params{$key} : $value;
-        push @new_headers, ($key => $header_value);
-    }
-    $self->{headers} = \@new_headers;
+    my $self = $CURRENT;
+    $self->{headers}->header(@_);
 }
 
 1;
+
