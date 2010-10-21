@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use Carp 'croak';
 
+use HTTP::Headers;
+
 use Dancer::Logger;
 use Dancer::GetOpt;
 use Dancer::SharedData;
@@ -93,6 +95,18 @@ sub psgi_app {
     };
 }
 
+sub init_request_headers {
+    my ($self, $env) = @_;
+
+    my $psgi_headers = HTTP::Headers->new(
+        map {
+            (my $field = $_) =~ s/^HTTPS?_//;
+            ($field => $env->{$_});
+          }
+          grep {/^(?:HTTP|CONTENT|COOKIE)/i} keys %$env
+    );
+    Dancer::SharedData->headers($psgi_headers);
+}
 
 # render a PSGI-formated response from a response built by
 # handle_request()
