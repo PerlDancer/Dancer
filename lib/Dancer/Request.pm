@@ -5,7 +5,6 @@ use warnings;
 use Carp;
 
 use Dancer::Object;
-use Dancer::Headers;
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Encode;
@@ -41,7 +40,7 @@ sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
 sub is_put                { $_[0]->{method} eq 'PUT' }
 sub is_delete             { $_[0]->{method} eq 'DELETE' }
-sub header                { $_[0]->{headers}->get($_[1]) }
+sub header                { $_[0]->{headers}->header($_[1]) }
 
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
@@ -91,7 +90,7 @@ sub new_for_request {
       $class->new({%ENV, PATH_INFO => $path, REQUEST_METHOD => $method});
     $req->{params} = {%{$req->{params}}, %{$params}};
     $req->{body} = $body if defined $body;
-    $req->{headers} = Dancer::Headers->new(headers => $headers) if $headers;
+    $req->{headers} = $headers if $headers;
 
     return $req;
 }
