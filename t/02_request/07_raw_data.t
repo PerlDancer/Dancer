@@ -4,10 +4,10 @@ use warnings;
 use Dancer::ModuleLoader;
 use Dancer;
 
-plan skip_all => "LWP is needed for this test" 
-    unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP");
+
+use LWP::UserAgent;
 
 use constant RAW_DATA => "var: 2; foo: 42; bar: 57\nHey I'm here.\r\n\r\n";
 

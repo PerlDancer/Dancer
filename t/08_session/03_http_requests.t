@@ -5,13 +5,13 @@ use warnings;
 BEGIN {
     use Dancer::ModuleLoader;
 
-    plan skip_all => "LWP::UserAgent is needed to run this tests"
-        unless Dancer::ModuleLoader->load('LWP::UserAgent');
     plan skip_all => 'Test::TCP is needed to run this test'
         unless Dancer::ModuleLoader->load('Test::TCP');
     plan skip_all => 'YAML is needed to run this test'
         unless Dancer::ModuleLoader->load('YAML');
 }
+
+use LWP::UserAgent;
 
 use File::Spec;
 use File::Temp 'tempdir';

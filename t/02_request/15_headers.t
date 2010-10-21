@@ -2,11 +2,10 @@ use Test::More import => ['!pass'];
 use strict;
 use warnings;
 
-plan skip_all => "LWP::UserAgent is needed to run this tests"
-    unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
 
+use LWP::UserAgent;
 
 my $plack_available = Dancer::ModuleLoader->load('Plack::Request');
 Dancer::ModuleLoader->load('Plack::Loader') if $plack_available;

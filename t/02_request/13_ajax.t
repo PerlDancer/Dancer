@@ -2,12 +2,12 @@ use Test::More import => ['!pass'];
 use strict;
 use warnings;
 
-plan skip_all => "LWP::UserAgent is needed to run this tests"
-    unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
 plan tests => 8;
 
+use LWP::UserAgent;
+use HTTP::Headers;
 use Dancer::Headers;
 
 Test::TCP::test_tcp(
@@ -47,10 +47,10 @@ my $request = Dancer::Request->new(\%ENV);
 is $request->method, 'GET';
 ok !$request->is_ajax, 'no headers';
 
-my $headers = Dancer::Headers->new(headers => ['foo' => 'bar']);
+my $headers = Dancer::Headers->new(headers => HTTP::Headers->new('foo' => 'bar'));
 $request->headers($headers);
 ok !$request->is_ajax, 'no requested_with headers';
 
-$headers = Dancer::Headers->new(headers => ['X-Requested-With' => 'XMLHttpRequest']);
+$headers = Dancer::Headers->new(headers => HTTP::Headers->new('X-Requested-With' => 'XMLHttpRequest'));
 $request->headers($headers);
 ok $request->is_ajax;
