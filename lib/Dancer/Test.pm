@@ -7,6 +7,7 @@ use warnings;
 use Test::More import => ['!pass'];
 
 use Carp;
+use HTTP::Headers;
 use Dancer ':syntax';
 use Dancer::App;
 use Dancer::Request;
@@ -185,6 +186,7 @@ sub dancer_response {
     }
 
     my ($params, $body, $headers) = @$args{qw(params body headers)};
+
     if ($headers and (my @headers = @$headers)) {
         while (my $h = shift @headers) {
             if ($h =~ /content-type/i) {
@@ -195,7 +197,7 @@ sub dancer_response {
 
     my $request = Dancer::Request->new_for_request(
         $method => $path,
-        $params, $body, $headers
+        $params, $body, HTTP::Headers->new(@$headers)
     );
 
     Dancer::SharedData->request($request);
