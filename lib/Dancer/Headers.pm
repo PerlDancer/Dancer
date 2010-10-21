@@ -5,31 +5,12 @@ use Carp;
 use base 'Dancer::Object';
 
 sub init {
-    my ($self, %params) = @_;
-    $self->{_headers}      = {};
-    $self->{_headers_type} = undef;
+    my ( $self, %params ) = @_;
 
     my $headers = $params{headers};
 
-    if (ref($headers) eq 'ARRAY') {
-        my $parsed = {};
-
-        for (my $i = 0; $i < scalar(@$headers); $i += 2) {
-            my ($key, $value) = ($headers->[$i], $headers->[$i + 1]);
-            if (defined $parsed->{$key}) {
-                $parsed->{$key} = [$parsed->{$key}];
-                push @{$parsed->{$key}}, $value;
-            }
-            else {
-                $parsed->{$key} = $value;
-            }
-        }
-        $self->{_headers}      = $parsed;
-        $self->{_headers_type} = 'standalone';
-    }
-    elsif (ref($headers) eq 'HTTP::Headers') {
-        $self->{_headers}      = $headers;
-        $self->{_headers_type} = 'http_headers';
+    if ( ref($headers) eq 'HTTP::Headers' ) {
+        $self->{_headers} = $headers;
     }
     else {
         croak "unsupported headers: $headers";
@@ -39,16 +20,8 @@ sub init {
 }
 
 sub get {
-    my ($self, $header) = @_;
-
-    my $value;
-
-    if ($self->{_headers_type} eq 'standalone') {
-        $value = $self->{_headers}{$header};
-    }
-    else {
-        $value = $self->{_headers}->header($header);
-    }
+    my ( $self, $header ) = @_;
+    my $value = $self->{_headers}->header($header);
 
     return unless defined $value;
     return $value unless ref($value);
@@ -58,15 +31,10 @@ sub get {
 sub get_all {
     my $self = shift;
 
-    if ($self->{_headers_type} eq 'standalone') {
-        return $self->{_headers};
-    }
-    else {
-        my $headers;
-        map { $headers->{$_} = $self->get($_) }
-          $self->{_headers}->header_field_names;
-        return $headers;
-    }
+    my $headers;
+    map { $headers->{$_} = $self->get($_) }
+        $self->{_headers}->header_field_names;
+    return $headers;
 }
 
 1;
