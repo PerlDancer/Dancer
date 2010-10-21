@@ -5,7 +5,6 @@ use warnings;
 
 use Dancer::Config 'setting';
 use Dancer::HTTP;
-use Dancer::Headers;
 use HTTP::Headers;
 
 # constructor
@@ -73,6 +72,8 @@ sub header {
     }
 }
 
+sub headers { $CURRENT->{headers}->header(@_); }
+
 sub headers_to_array {
     my $self = shift;
 
@@ -85,11 +86,6 @@ sub headers_to_array {
         }
     }
     \@headers;
-}
-
-sub headers {
-    my $self = $CURRENT;
-    $self->{headers}->header(@_);
 }
 
 1;
