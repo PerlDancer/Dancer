@@ -107,7 +107,7 @@ sub render_response {
         if (   Dancer::SharedData->request
             && Dancer::SharedData->request->is_ajax)
         {
-            $response->update_headers(
+            $response->header(
                 'Content-Type' => 'text/xml; charset=UTF-8');
         }
 
@@ -116,23 +116,15 @@ sub render_response {
 
         if ($charset && $ctype && _is_text($ctype)) {
             $content = Encode::encode($charset, $content);
-        }
-        else {
-            my $charset = setting('charset');
-            my $ctype   = $response->header('Content-Type');
-            if ($charset && $ctype) {
-                $content = Encode::encode($charset, $content);
-                $response->update_headers(
-                    'Content-Type' => "$ctype; charset=$charset")
-                  if $ctype !~ /$charset/;
-            }
+            $response->header('Content-Type' => "$ctype; charset=$charset")
+              if $ctype !~ /$charset/;
         }
         $content = [$content];
     }
 
     Dancer::Logger::core("response: " . $response->{status});
     Dancer::SharedData->reset_all();
-    return [$response->{status}, $response->{headers}, $content];
+    return [$response->{status}, $response->headers_to_array, $content];
 }
 
 sub _is_text {

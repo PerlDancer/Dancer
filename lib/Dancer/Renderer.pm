@@ -3,7 +3,7 @@ package Dancer::Renderer;
 use strict;
 use warnings;
 use Carp;
-
+use HTTP::Headers;
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Cookie;
@@ -55,17 +55,17 @@ sub render_error {
 sub response_with_headers {
     my $response = shift;
 
-    $response->{headers} ||= [];
-    push @{$response->{headers}},
-      ('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+    $response->{headers} ||= HTTP::Headers->new;
+    $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
 
     # add cookies
     foreach my $c (keys %{Dancer::Cookies->cookies}) {
         my $cookie = Dancer::Cookies->cookies->{$c};
         if (Dancer::Cookies->has_changed($cookie)) {
-            push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
+            $response->header('Set-Cookie' => $cookie->to_header);
         }
     }
+
     return $response;
 }
 

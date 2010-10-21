@@ -170,7 +170,7 @@ sub response_headers_are_deeply {
     $test_name ||= "headers are as expected for @$req";
 
     my $response = dancer_response(@$req);
-    is_deeply($response->{headers}, $expected, $test_name);
+    is_deeply($response->headers_to_array, $expected, $test_name);
 }
 
 sub dancer_response {
