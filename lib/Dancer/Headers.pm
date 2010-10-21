@@ -5,11 +5,11 @@ use Carp;
 use base 'Dancer::Object';
 
 sub init {
-    my ( $self, %params ) = @_;
+    my ($self, %params) = @_;
 
     my $headers = $params{headers};
 
-    if ( ref($headers) eq 'HTTP::Headers' ) {
+    if (ref($headers) eq 'HTTP::Headers') {
         $self->{_headers} = $headers;
     }
     else {
@@ -20,7 +20,7 @@ sub init {
 }
 
 sub get {
-    my ( $self, $header ) = @_;
+    my ($self, $header) = @_;
     my $value = $self->{_headers}->header($header);
 
     return unless defined $value;
@@ -33,7 +33,7 @@ sub get_all {
 
     my $headers;
     map { $headers->{$_} = $self->get($_) }
-        $self->{_headers}->header_field_names;
+      $self->{_headers}->header_field_names;
     return $headers;
 }
 
