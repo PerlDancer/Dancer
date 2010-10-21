@@ -70,6 +70,6 @@ my $r5 = Dancer::Route->new(
 );
 $req = Dancer::Request->new_for_request( GET => '/error' );
 my $res = $r5->run($req);
-is( ( grep { /Content-Type/ } @{ $res->{headers} } ),
+is( ( grep { /Content-Type/ } @{ $res->headers_to_array } ),
     1, 'only one content-type' );
 

@@ -28,8 +28,8 @@ response_content_is_deeply [GET => '/hash'], { a => 1, b => 2, c => 3};
 response_content_like $req, qr{Hello};
 response_content_unlike $req, qr{Goodbye};
 response_headers_are_deeply [GET => '/with_headers'], [
-    'X-Foo-Dancer' => 42,
     'Content-Type' => 'text/html',
+    'X-Foo-Dancer' => 42,
     ];
 
 {
