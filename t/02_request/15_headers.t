@@ -10,7 +10,7 @@ use LWP::UserAgent;
 my $plack_available = Dancer::ModuleLoader->load('Plack::Request');
 Dancer::ModuleLoader->load('Plack::Loader') if $plack_available;
 
-plan tests => $plack_available ? 6 : 3;
+plan tests => $plack_available ? 12 : 6;
 
 my @handlers = ('Standalone');
 push @handlers, 'PSGI' if $plack_available;
@@ -27,6 +27,9 @@ Test::TCP::test_tcp(
 
         my $res = $ua->request($request);
         ok($res->is_success, "$handler server responded");
+        is($res->header('X-Foo'), 2);
+        is($res->header('X-Bar'), 3);
+        is($res->header('Content-Type'), 'text/plain');
     },
     server => sub {
         my $port = shift;
@@ -37,11 +40,18 @@ Test::TCP::test_tcp(
         setting show_errors => 1;
         setting access_log => 0;
 
+        after sub {
+            my $response = shift;
+            $response->header('X-Foo', 2);
+        };
+        
         get '/req' => sub {
             is(request->header('X-User-Head1'), 42,
                 "header X-User-Head1 is ok");
             is(request->header('X-User-Head2'), 43,
                 "header X-User-Head2 is ok");
+            Dancer::Response::headers('X-Bar', 3);
+            content_type('text/plain');
         };
         
         if ($handler eq 'PSGI') {

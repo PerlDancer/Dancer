@@ -47,10 +47,10 @@ my $request = Dancer::Request->new(\%ENV);
 is $request->method, 'GET';
 ok !$request->is_ajax, 'no headers';
 
-my $headers = Dancer::Headers->new(headers => HTTP::Headers->new('foo' => 'bar'));
+my $headers = HTTP::Headers->new('foo' => 'bar');
 $request->headers($headers);
 ok !$request->is_ajax, 'no requested_with headers';
 
-$headers = Dancer::Headers->new(headers => HTTP::Headers->new('X-Requested-With' => 'XMLHttpRequest'));
+$headers = HTTP::Headers->new('X-Requested-With' => 'XMLHttpRequest');
 $request->headers($headers);
 ok $request->is_ajax;

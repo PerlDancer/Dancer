@@ -12,13 +12,10 @@ use LWP::UserAgent;
 
 Dancer::ModuleLoader->load('Plack::Loader');
 
-my $app = sub {
-    my $env = shift;
-    my $request = Dancer::Request->new($env);
-    Dancer->dance($request);
-};
+my $app = Dancer::Handler->psgi_app;
 
 plan tests => 3;
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;

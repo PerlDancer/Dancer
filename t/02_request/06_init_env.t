@@ -33,4 +33,3 @@ foreach my $http (@http_env) {
     is $req->{$key}, $custom_env->{$http}, "$http is found in request ($key)";
     is $req->$key, $custom_env->{$http}, "$key is an accessor";
 }
-
