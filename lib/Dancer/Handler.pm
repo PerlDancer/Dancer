@@ -107,8 +107,7 @@ sub render_response {
 
         if ($charset && $ctype && _is_text($ctype)) {
             $content = Encode::encode($charset, $content);
-            $response->update_headers(
-                'Content-Type' => "$ctype; charset=$charset")
+            $response->header('Content-Type' => "$ctype; charset=$charset")
               if $ctype !~ /$charset/;
         }
 
@@ -117,7 +116,7 @@ sub render_response {
 
     Dancer::Logger::core("response: " . $response->{status});
     Dancer::SharedData->reset_all();
-    return [$response->{status}, $response->{headers}, $content];
+    return [$response->{status}, $response->headers_to_array, $content];
 }
 
 sub _is_text {

@@ -167,7 +167,7 @@ sub run {
     my $ct = $response->{content_type} || setting('content_type');
     my $st = $response->{status}       || 200;
     my $headers = [];
-    push @$headers, @{$response->{headers}};
+    push @$headers, @{$response->headers_to_array};
 
     # content type may have already be set earlier
     # (eg: with send_error)
