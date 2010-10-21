@@ -17,7 +17,7 @@ is_deeply($psgi_res->[1], [ 'Content-Type' => 'text/html' ], 'default headers');
 is_deeply($psgi_res->[2], [''], 'default content');
 
 $res->{content_type} = 'text/plain';
-$res->update_headers('Content-Type' => $res->{content_type});
+$res->header('Content-Type' => $res->{content_type});
 $res->{content} = '123';
 
 is_deeply(Dancer::Handler->render_response($res),
@@ -55,7 +55,7 @@ SKIP: {
     setting serializer => 'JSON';
     $res->{content_type} = 'application/json';
     $res->{content} = { key => 'value' };
-    $res->update_headers('Content-Type' => $res->{content_type});
+    $res->header('Content-Type' => $res->{content_type});
 
     is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
         [
@@ -73,7 +73,7 @@ SKIP: {
     setting serializer => 'XML';
     $res->{content_type} = 'text/xml';
     $res->{content} = { key => "\x{0429}" };
-    $res->update_headers('Content-Type' => $res->{content_type}."; charset=utf-8");
+    $res->header('Content-Type' => $res->{content_type}."; charset=utf-8");
 
     is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
         [

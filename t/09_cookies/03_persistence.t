@@ -30,6 +30,7 @@ Test::TCP::test_tcp(
             "no cookies found for the client $client";
 
             $res = $ua->get("http://127.0.0.1:$port/set_cookie/$client/42");
+            # use YAML::Syck; warn Dump $res;
             ok($res->is_success, "set_cookie for client $client");
 
             $res = $ua->get("http://127.0.0.1:$port/cookies");

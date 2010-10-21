@@ -26,7 +26,7 @@ use t::lib::TestUtils;
 my $response = get_response_for_request(GET => '/data');
 ok(defined($response), "response found for /data");
 
-is_deeply( $response->{headers}, [ 'Content-Type' => 'application/json'],
+is_deeply( $response->headers_to_array, [ 'Content-Type' => 'application/json'],
     "headers have content_type set to application/json" );
 
 is( $response->{content}, $json,
