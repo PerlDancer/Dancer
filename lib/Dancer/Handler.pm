@@ -56,6 +56,7 @@ sub handle_request {
       if Dancer::App->current->setting('serializer');
 
     # read cookies from client
+
     Dancer::Cookies->init;
 
     if (Dancer::Config::setting('auto_reload')) {
@@ -81,6 +82,17 @@ sub handle_request {
     }
     return $self->render_response($response);
 }
+
+sub psgi_app {
+    my $self = shift;
+    sub {
+        my $env = shift;
+        $self->init_request_headers($env);
+        my $request = Dancer::Request->new($env);
+        $self->handle_request($request);
+    };
+}
+
 
 # render a PSGI-formated response from a response built by
 # handle_request()
@@ -135,5 +147,7 @@ sub print_banner {
         print "== Entering the $env dance floor ...\n";
     }
 }
+
+sub dance { (shift)->start(@_) }
 
 1;
