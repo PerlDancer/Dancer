@@ -1,8 +1,4 @@
 
-    [ Naveen ]
-    * add --version to the dancer CLI
-    * changed the URI fetched by the dancer script to check Dancer's version
-
 Dancer 1.1999_02 (RC2)
 
     [ Mark Allen ]
@@ -11,6 +7,9 @@ Dancer 1.1999_02 (RC2)
 
     [ Franck Cuny ]
     * Dancer::Test load D::Session::Simple
+    * rewrite how Dancer handle HTTP headers
+      - no more Dancer::Headers
+      - all headers are HTTP::Headers object
 
     [ Philippe Bruhat ]
     * use Pod::Usage
@@ -32,6 +31,10 @@ Dancer 1.1999_02 (RC2)
 	  least with our Deployment examples) so the dispatchers aren't aware of the 
 	  PSGI context if we don't tell them explicitly.
 	  This patch forces the dispatchers in PSGI mode.
+
+    [ Naveen ]
+    * add --version to the dancer CLI
+    * changed the URI fetched by the dancer script to check Dancer's version
 
 Dancer 1.1999_01 (RC1)
 
