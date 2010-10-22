@@ -77,15 +77,14 @@ sub headers { $CURRENT->{headers}->header(@_); }
 sub headers_to_array {
     my $self = shift;
 
-    my @fields = $self->{headers}->header_field_names;
-    my @headers;
-    foreach my $f (@fields) {
-        my @values = $self->{headers}->header($f);
-        foreach (@values) {
-            push @headers, $f, $_;
-        }
-    }
-    \@headers;
+    my $headers = [
+        map {
+            my $k = $_;
+            map { ($k => $_) } $self->{headers}->header($_);
+          } $self->{headers}->header_field_names
+    ];
+
+    return $headers;
 }
 
 1;
