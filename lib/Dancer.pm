@@ -234,7 +234,10 @@ sub start {
     if ($request) {
         return Dancer::Handler->handle_request($request);
     }
-    Dancer::Handler->get_handler()->dance;
+
+    my $handler = Dancer::Handler->get_handler;
+    Dancer::Logger::core("loading handler '".ref($handler)."'");
+    return $handler->dance;
 }
 
 
