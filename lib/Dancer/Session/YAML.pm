@@ -5,6 +5,7 @@ use warnings;
 use Carp;
 use base 'Dancer::Session::Abstract';
 
+use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils 'path';
@@ -27,7 +28,7 @@ sub init {
         mkdir $session_dir
           or croak "session_dir $session_dir cannot be created";
     }
-    Dancer::Logger->debug("session_dir : $session_dir");
+    Dancer::Logger::core("session_dir : $session_dir");
 }
 
 # create a new session and return the newborn object
