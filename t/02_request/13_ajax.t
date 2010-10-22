@@ -8,7 +8,6 @@ plan tests => 8;
 
 use LWP::UserAgent;
 use HTTP::Headers;
-use Dancer::Headers;
 
 Test::TCP::test_tcp(
     client => sub {
