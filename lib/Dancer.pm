@@ -151,6 +151,7 @@ sub setting {
 sub set_cookie { Dancer::Helpers::set_cookie(@_) }
 
 sub session {
+    croak "Must specify session engine in settings prior to using 'session' keyword" unless setting('session');
     if (@_ == 0) {
         return Dancer::Session->get;
     }

@@ -1,4 +1,8 @@
 
+    [ Naveen ]
+    * add --version to the dancer CLI
+    * changed the URI fetched by the dancer script to check Dancer's version
+
 Dancer 1.1999_02 (RC2)
 
     [ Mark Allen ]
@@ -19,6 +23,10 @@ Dancer 1.1999_02 (RC2)
 	  utf8 pragma is imported automatically when Dancer is loaded
 	  to allow the usage of UTF-8 strings in the application code.
 	  (Thanks to kocoureasy for the report).
+	* FIX for "UTF-8" issues (GH#153):
+	  - response content is encoded only if content_type is text
+	  - charset setting is normalized to UTF-8 when appropriate
+	  - automatically decode UTF-8 strings in params
 
 Dancer 1.1999_01 (RC1)
 

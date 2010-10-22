@@ -8,6 +8,7 @@ use Dancer::Object;
 use Dancer::Headers;
 use Dancer::Request::Upload;
 use Dancer::SharedData;
+use Encode;
 use HTTP::Body;
 use URI;
 use URI::Escape;
@@ -195,20 +196,35 @@ sub _init {
 # for this purpose
 sub _set_route_params {
     my ($self, $params) = @_;
+    $params = _decode_params($params);
     $self->{_route_params} = $params;
     $self->_build_params();
 }
 
 sub _set_body_params {
     my ($self, $params) = @_;
+    $params = _decode_params($params);
     $self->{_body_params} = $params;
     $self->_build_params();
 }
 
 sub _set_query_params {
     my ($self, $params) = @_;
+    $params = _decode_params($params);
     $self->{_query_params} = $params;
     $self->_build_params();
+}
+
+sub _decode_params {
+    my ($params) = @_;
+    require Dancer::Config;
+    my $cs = Dancer::Config::setting('charset');
+    if ($cs eq 'UTF-8') {
+        for my $p (keys %{$params}) {
+            $params->{$p} = decode('UTF-8', $params->{$p});
+        }
+    }
+    return $params;
 }
 
 sub _build_request_env {
@@ -251,6 +267,7 @@ sub _build_params {
         %$previous,                %{$self->{_query_params}},
         %{$self->{_route_params}}, %{$self->{_body_params}},
     };
+
 }
 
 # Written from PSGI specs:

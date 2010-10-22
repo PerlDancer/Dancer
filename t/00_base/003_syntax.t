@@ -6,22 +6,34 @@ my @keywords = qw(
     before
     before_template
     cookies
+    config
     content_type
     dance
     debug
+    del
     dirname
     error
     false
-    get 
+    from_dumper
+    from_json
+    from_yaml
+    from_xml
+    get
+    halt
+    header
+    headers
     layout
     load
     load_app
+    load_plugin
     logger
     mime_type
+    options
     params
     pass
     path
-    post 
+    post
+    prefix
     put
     r
     redirect
@@ -29,14 +41,21 @@ my @keywords = qw(
     send_file
     send_error
     set
+    setting
     set_cookie
     session
     splat
     status
+    start
     template
-    uri_for
-    upload
+    to_dumper
+    to_json
+    to_yaml
+    to_xml
     true
+    upload
+    captures
+    uri_for
     var
     vars
     warning

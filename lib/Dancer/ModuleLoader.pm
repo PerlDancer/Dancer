@@ -41,8 +41,10 @@ sub load_with_params {
     # From perlfunc : If no "import" method can be found then the call is
     # skipped, even if there is an AUTOLOAD method.
     if ($module->can('import')) {
+        # bump Exporter Level to import symbols in the caller
+        local $Exporter::ExportLevel = ( $Exporter::ExportLevel || 0 ) + 1;
         local $@;
-        $module->import(@args);
+        eval { $module->import(@args) };
         my $error = $@;
         $error and return wantarray ? (0, $error) : 0;
     }

@@ -169,7 +169,7 @@ sub setting {
 
     return
       (@_ == 3) ? $self->settings->{$name} =
-      $value
+      Dancer::Config->normalize_setting($name => $value)
       : (
         exists($self->settings->{$name}) ? $self->settings->{$name}
         : Dancer::Config::setting($name)
