@@ -80,7 +80,11 @@ sub headers_to_array {
     my $headers = [
         map {
             my $k = $_;
-            map { ($k => $_) } $self->{headers}->header($_);
+            map {
+                my $v = $_;
+                $v =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
+                ($k => $v)
+            } $self->{headers}->header($_);
           } $self->{headers}->header_field_names
     ];
 
