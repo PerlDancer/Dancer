@@ -5,7 +5,7 @@ package Dancer::Object;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 
 # constructor
 sub new {

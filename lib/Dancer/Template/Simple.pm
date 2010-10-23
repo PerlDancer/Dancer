@@ -1,7 +1,7 @@
 package Dancer::Template::Simple;
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 
 use base 'Dancer::Template::Abstract';
 Dancer::Template::Simple->attributes('start_tag', 'stop_tag');

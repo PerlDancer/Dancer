@@ -2,7 +2,7 @@ package Dancer::Route;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use base 'Dancer::Object';
 
 use Dancer::App;

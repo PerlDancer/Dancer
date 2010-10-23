@@ -2,7 +2,7 @@ package Dancer::Serializer::YAML;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use Dancer::ModuleLoader;
 use base 'Dancer::Serializer::Abstract';
 

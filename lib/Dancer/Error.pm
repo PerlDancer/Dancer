@@ -2,7 +2,7 @@ package Dancer::Error;
 
 use strict;
 use warnings;
-use Carp;
+use Carp qw(carp croak);
 
 use Dancer::Response;
 use Dancer::Renderer;

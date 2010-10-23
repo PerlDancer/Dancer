@@ -2,7 +2,7 @@ package Dancer::Template::Abstract;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'confess';
 use Dancer::FileUtils 'path';
 use base 'Dancer::Engine';
 

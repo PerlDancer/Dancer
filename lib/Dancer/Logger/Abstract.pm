@@ -2,7 +2,7 @@ package Dancer::Logger::Abstract;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'confess';
 use base 'Dancer::Engine';
 
 use Dancer::SharedData;

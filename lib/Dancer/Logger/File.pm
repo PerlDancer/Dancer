@@ -1,7 +1,7 @@
 package Dancer::Logger::File;
 use strict;
 use warnings;
-use Carp;
+use Carp 'carp';
 use base 'Dancer::Logger::Abstract';
 
 use File::Spec;

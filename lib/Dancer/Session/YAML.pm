@@ -2,7 +2,7 @@ package Dancer::Session::YAML;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use base 'Dancer::Session::Abstract';
 
 use Dancer::Logger;

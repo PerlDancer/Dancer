@@ -1,7 +1,7 @@
 package Dancer::Session::Abstract;
 use strict;
 use warnings;
-use Carp;
+use Carp 'confess';
 
 use base 'Dancer::Engine';
 

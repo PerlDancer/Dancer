@@ -2,7 +2,7 @@ package Dancer::Route::Cache;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use vars '$VERSION';
 
 use Dancer::Object;

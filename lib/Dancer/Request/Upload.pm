@@ -1,7 +1,7 @@
 package Dancer::Request::Upload;
 
 use File::Spec;
-use Carp;
+use Carp 'croak';
 
 use strict;
 use warnings;

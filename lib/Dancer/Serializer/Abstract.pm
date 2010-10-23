@@ -2,7 +2,7 @@ package Dancer::Serializer::Abstract;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'confess';
 use base 'Dancer::Engine';
 
 sub serialize   { confess 'must be implemented' }

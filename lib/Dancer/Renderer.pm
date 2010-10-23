@@ -2,7 +2,7 @@ package Dancer::Renderer;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use HTTP::Headers;
 use Dancer::Route;
 use Dancer::HTTP;
