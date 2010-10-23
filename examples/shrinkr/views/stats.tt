@@ -1,0 +1,27 @@
+<div class="nav">
+<% IF prevl %>
+<a href="<% base %><% prevl %>/stats">Previous</a> |&nbsp; 
+<% END %>
+<a href="<% base %>all_stats">All</a>&nbsp;|&nbsp;<a href="<% base %>">Home</a> 
+<% IF nextl %>
+&nbsp;| <a href="<% base %><% nextl %>/stats">Next</a>
+<% END %>
+</div>
+<% IF stats.size %>
+<table class="stats">
+  <tr>
+    <th>Link code</th>
+    <th>Visits</th>
+    <th>Link URL</th>
+  </tr>
+  <% FOREACH id IN stats.keys.nsort %>
+  <tr>
+    <td><a href="<% base %><% stats.$id.code %>/stats"><% stats.$id.code %></a></td>
+    <td><% stats.$id.count %></td>
+    <td><a href="<% base %><% stats.$id.code %>"><% stats.$id.url %></a></td>
+  </tr>
+  <% END %>
+</table>
+<% ELSE %>
+No links yet.
+<% END %>

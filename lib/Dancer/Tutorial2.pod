@@ -1,0 +1,523 @@
+=pod
+
+=head1 NAME
+
+Dancer::Tutorial2 - Another Dancer example app
+
+=head1 Another example?
+
+Sure, why not?
+
+Hopefully you've already read through the first tutorial L<Dancer::Tutorial>, 
+but if not, we'll walk through another example application.  Some of the
+routing techniques like regular expressions that I omitted from the 
+first tutorial I've tried to use here.
+
+This tutorial covers "Shrinkr" which is a URL shortener.
+
+=head1 Required Perl modules
+
+In addition to Dancer, you'll also need L<Template>, L<DBD::SQLite>, L<Math::Base36>, L<File::Slurp>.  You can install these using your CPAN client.
+ 
+ cpan Dancer Template DBD::SQLite Math::Base36 File::Slurp
+
+Because I'm using a regular expression named capture (one of my favorite 
+Python regex features) in this demo, you B<must> use Perl 5.10 or later to
+run this example.
+
+I've tested the application on Windows 7, Fedora 13 Linux, and Mac OS 10.6,
+so it should work "out of the box" for you. If not, patches are welcome!
+
+=head1 Setting defaults and configuration
+ 
+ set 'database' => File::Spec->tmpdir() . '/shrinkr.db';
+ set 'template' => 'template_toolkit';
+ set 'logger' => 'console';
+ set 'log' => 'debug';
+ set 'show_errors' => 1;
+
+ layout 'main';
+
+ before_template sub {
+   my $tokens = shift;
+
+   $tokens->{'base'} = request->base();
+   $tokens->{'css_url'} = 'css/style.css';
+ };
+
+For this tutorial, I've decided to put all of the configuration settings
+into the main application file.  For a more complex application it would
+be a better idea to use a seperate YAML file to hold the configuration
+directives.  (This technique is well documented in the primary Dancer docs.)
+
+The first line is not specific to Dancer, only to this application. It
+specifies the location of the SQLite database and mainly serves to point out
+that you can add your own arbitrary settings on top of the ones which Dancer
+already has defined.
+
+The second line tells Dancer to use L<Template Toolkit|Template> as its
+template engine because the default Dancer template engine is a bit too
+simple for most applications.  There are several other Dancer template
+engines if you prefer a different one.
+
+The third line tells Dancer to use the console for log output (instead of a
+file).  We want the logger to output at the 'debug' level or higher, so that's
+the fourth line. 
+
+In the last setting line, we tell Dancer to output errors directly to the 
+web client. This is a fantastic option for development as it gives you 
+a great stacktrace and loads of context around the error, but its probably 
+not a great option for production sites.
+
+There is also a C<layout> directive which tells Dancer to look in 
+C<views/layouts> for a file named F<main.tt>.  Once the template engine
+renders the specified layout template, it will insert a specific view into
+a tag named E<lt>% content %E<gt>.  This helps give your application a very
+consistent look and feel across all of the views in it.
+
+We also specify the default values for every template using the 
+C<before_template> directive which sets a value for a C<base> value
+and the C<css_url>.
+
+Note that the web-viewable location is C<css/style.css> but the file location
+is F<public/css/style.css> - make sure you omit the F<public> part of the 
+file path when you're constructing your templates or static page route
+handlers.
+
+=head1 Database set up
+
+ create table if not exists link (
+   id integer primary key,
+   code string not null,
+   url string not null,
+   count integer not null
+ );
+
+This is the schema for our database.  We have an C<id> field, a C<code> field,
+a C<url> field, and a C<count> field.  If this were a more sophisticated 
+application the C<count> field might a part of an C<analytics> table, but
+we're all about keeping things simple, so it's just tacked on to our simple
+table design here.
+
+Inside the application, the database routines are straightforward.
+
+ sub connect_db {
+   my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
+     die $DBI::errstr;
+
+   return $dbh;
+ }
+
+Here we define a routine to establish a connection to our database instance.
+Notice how the C<database> setting is consumed here.
+
+ my $id = 0;
+ sub init_db {
+   my $db = connect_db();
+
+   my $sql = read_file("./schema.sql");
+   $db->do($sql) or die $db->errstr;
+
+   $sql = "SELECT MAX(id) FROM link";
+   my $sth = $db->prepare($sql) or die $db->errstr;
+   $sth->execute() or die $sth->errstr;
+   ($id) = $sth->fetchrow_array() or die $sth->errstr;
+
+ }
+
+We define a global variable called C<$id> and then execute our initial 
+table set up and initialize the C<$id> variable as the largest ID value
+from the database.
+
+ sub get_next_id {
+   return ++$id;
+ }
+
+Here we set up a routine to return a new ID value when a prospective URL
+is entered by a user.  This is simple enough that it could be an inline
+function but we could enhance this function later with additional error
+checking or an alternate id generation scheme. 
+
+=head1 The '/' route handler
+
+Let's unpack the root URL (/) route handler line by line.
+
+ any ['get', 'post'] => '/' => sub {
+
+We tell Dancer that this route handler works with both GET and POST requests. Next we specify the '/' URL to match and finally, begin an anonymous subroutine
+to do something when the first two conditions are met.
+
+    my $msg;
+    my $err;
+
+    if ( request->method() eq "POST" ) {
+
+Here we're going to process POST requests - these requests will be the 
+user input from the form in the C<template> directive below.
+
+        my $uri = URI->new( params->{'url'} );
+
+        if ( $uri->scheme !~ 'http' ) {
+            $err = 'Error: Only HTTP or HTTPS URLs are accepted.';
+        }
+
+We check the supplied URL to make sure it's something we want to add to the
+database - if the user inputs something like C<ssh://example.com> we want
+to reject that input with a message explaining what we're looking for.
+
+        else {
+
+            my $nid = get_next_id();
+            my $code = encode_base36($nid);
+
+            my $sql = 'INSERT INTO link (id, code, url, count) VALUES (?, ?, ?, 0)';
+            my $db = connect_db();
+            my $sth = $db->prepare($sql) or die $db->errstr;
+            $sth->execute( $nid, $code, $uri->canonical() ) or die $sth->errstr;
+
+Hopefully this is all standard DBI programming for you. Nothing tremendously
+mysterious going on here.
+        
+            $msg = $uri->as_string . " has been shrunk to " . 
+                request->base() . $code;
+
+We want to send a message to our user telling her that the URL she supplied
+has been added to the database with whatever code was next in our ID 
+assignment scheme.
+
+       } 
+    }
+
+    template 'add.tt', {
+        'err' => $err,
+        'msg' => $msg,
+    };
+
+Here we use the C<template> directive to render the F<add.tt> view 
+supplying the C<err> and C<msg> values as appropriate.  If we fell through
+from our C<if> statement above, both values are blank (which is fine because
+the F<add.tt> template tests to see if C<err> or C<msg> have values 
+before they're rendered.)
+
+ };
+
+Note the semicolon after the closing curly brace. This is required because
+the subroutine above is actually a coderef.
+
+=head1 Processing a shortened URL
+
+Next we're going to write a route handler to do something when a user
+tries to use a shortened URL code.
+
+ get qr|\A\/(?<code>[A-Za-z0-9]+)\Z| => sub {
+
+Like all Dancer handlers, we start by stating which HTTP verb we want to
+handle, a GET in this case.  Next we define a regular expression the GET
+request must match.
+
+This regular expression specifies a route that starts with a '/' and is
+followed by one or more of the following characters 0-9, a-z, or A-Z. Notice
+the C<?E<lt>codeE<gt>> construction?  This is the syntax for creating a 
+named regular expression match in Perl 5.10 (or later) - instead of using the
+positional variables like C<$1> and the like, we can directly specify a
+name for the match we want to save. 
+
+    my $decode = decode_base36(uc captures->{'code'});
+
+In this example, the match (if any) is stored in a special hash 
+(C<%+> generally, or the C<captures> directive in Dancer) with a 
+key of C<code>. We make sure to upper case the code value because
+L<Math::Base36> uses only uppercase letters.
+
+    if ( $decode > $id ) {
+        send_error(404);
+    }
+
+If the decoded value is greater than the current id value, we know it
+won't exist in the database, so we send the user a 404 error instead of
+trying to process the request any further.
+
+    my $db = connect_db();
+    my $sql = 'SELECT url, count FROM link WHERE id = ?';
+    my $sth = $db->prepare($sql) or die $db->errstr;
+    $sth->execute($decode) or die $sth->errstr;
+
+    my ($url, $count) = $sth->fetchrow_array() or die $sth->errstr;
+
+    $sql = 'UPDATE link SET count = ? WHERE id = ?';
+    $sth = $db->prepare($sql) or die $db->errstr;
+    $sth->execute(++$count, $decode);
+
+More DBI programming, now. We update the database entry by incrementing the
+C<count> counter for this request.
+
+    redirect $url;
+ };
+
+Finally, we tell Dancer to redirect the user to the specified URL and 
+close the handler.
+
+=head1 Link stats
+
+Since we're collecting the number of visits to specific links, we need
+to display those to a user somehow.  Let's look at the handler for that.
+
+ get '/:code/stats' => sub {
+
+Another GET request, this time going to a special Dancer construction C<:code>
+which will match anything preceded by '/' and followed by a '/stats' pattern.  
+This is a much less restrictive regular expression than the one above, 
+but I wanted to show a different way to do the same thing - although to 
+be truly defensive here, much better parameter validation would be required 
+on the C<:code> input.
+
+    my $decode = decode_base36(uc params->{'code'});
+
+    if ( $decode > $id ) {
+        send_error(404);
+    }
+
+This is the same code block as above, except this time the C<:code> capture
+is stored inside of the the C<params> Dancer construction, rather than the
+C<captures> routine.
+
+    my $sql = 'SELECT id, code, url, count FROM link WHERE id = ?';
+    my $db = connect_db();
+    my $sth = $db->prepare($sql) or die $db->errstr;
+    $sth->execute($decode) or die $sth->errstr;
+
+This section retrieves the appropriate information from our database.
+
+    my $prevl;
+    my $nextl;
+
+    unless ( ( $decode - 1 ) < 0 ) {
+        $prevl = encode_base36( $decode - 1 );
+    }
+
+    unless ( ( $decode + 1 ) > $id ) {
+        $nextl = encode_base36( $decode + 1 );
+    }
+
+I wanted to put some navigation links in the statistical display so a user
+could move around in them.  This code section generates the appropriate
+bounded links to do that.
+
+    template 'stats.tt', {
+        'stats' => $sth->fetchall_hashref('id'),
+        'nextl' => $nextl,
+        'prevl' => $prevl,
+    };
+ };
+
+And here we call the C<template> method, and hand off the database query
+results, and the navigation links as appropriate.  The F<stats.tt> template
+will check to see if C<nextl> or C<prevl> have values before rendering them
+so it's ok to pass in a value which isn't defined.
+
+=head1 Showing all link stats
+
+I also wanted a way to show a user all of the links stored in the database,
+so this handler does that.
+
+ get '/all_stats' => sub {
+
+    my $sql = 'SELECT id, code, url, count FROM link';
+    my $db = connect_db();
+    my $sth = $db->prepare($sql) or die $db->errstr;
+    $sth->execute() or die $sth->errstr;
+
+    template 'stats.tt', {
+        'stats' => $sth->fetchall_hashref('id'),
+    };
+
+ };
+
+This handler is even simpler than the one above it but it does basically the
+same thing.  Notice I'm using the same template to display the data, the 
+main differences being that in the single link case, there's navigation
+links and there aren't any such links here.
+
+=head1 Putting it all together
+
+Here's the entire script from start to finish.
+
+ use 5.010_000;
+ use Dancer;
+ use Template;
+ use DBI;
+ use Math::Base36 ':all';
+ use File::Spec;
+ use File::Slurp;
+ use URI;
+ 
+ set 'database' => File::Spec->tmpdir() . '/shrinkr.db';
+ set 'template' => 'template_toolkit';
+ set 'logger' => 'console';
+ set 'log' => 'debug';
+ set 'show_errors' => 1;
+ 
+ layout 'main';
+ 
+ before_template sub {
+     my $tokens = shift;
+ 
+     $tokens->{'base'} = request->base();
+     $tokens->{'css_url'} = 'css/style.css';
+ };
+ 
+ sub connect_db {
+ 	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
+ 		die $DBI::errstr;
+ 
+ 	return $dbh;
+ }
+ 
+ my $id = 0;
+ sub init_db {
+     my $db = connect_db();
+ 
+     my $sql = read_file("./schema.sql");
+     $db->do($sql) or die $db->errstr;
+ 
+     $sql = "SELECT MAX(id) FROM link";
+     my $sth = $db->prepare($sql) or die $db->errstr;
+     $sth->execute() or die $sth->errstr;
+     ($id) = $sth->fetchrow_array() or die $sth->errstr;
+ 
+ }
+ 
+ sub get_next_id {
+     return ++$id;
+ }
+ 
+ any ['get', 'post'] => '/' => sub {
+ 
+     my $msg;
+     my $err;
+ 
+     if ( request->method() eq "POST" ) {
+         my $uri = URI->new( params->{'url'} );
+ 
+         if ( $uri->scheme !~ 'http' ) {
+             $err = 'Error: Only HTTP or HTTPS URLs are accepted.';
+         }
+         else {
+ 
+             my $nid = get_next_id();
+             my $code = encode_base36($nid);
+ 
+             my $sql = 'INSERT INTO link (id, code, url, count) VALUES (?, ?, ?, 0)';
+             my $db = connect_db();
+             my $sth = $db->prepare($sql) or die $db->errstr;
+             $sth->execute( $nid, $code, $uri->canonical() ) or die $sth->errstr;
+         
+             $msg = $uri->as_string . " has been shrunk to " . 
+                 request->base() . $code;
+        } 
+     }
+ 
+     template 'add.tt', {
+         'err' => $err,
+         'msg' => $msg,
+     };
+ 
+ };
+ 
+ get qr|\A\/(?<code>[A-Za-z0-9]+)\Z| => sub {
+ 
+     my $decode = decode_base36(uc captures->{'code'});
+ 
+     if ( $decode > $id ) {
+         send_error(404);
+     }
+ 
+     my $db = connect_db();
+     my $sql = 'SELECT url, count FROM link WHERE id = ?';
+     my $sth = $db->prepare($sql) or die $db->errstr;
+     $sth->execute($decode) or die $sth->errstr;
+ 
+     my ($url, $count) = $sth->fetchrow_array() or die $sth->errstr;
+ 
+     $sql = 'UPDATE link SET count = ? WHERE id = ?';
+     $sth = $db->prepare($sql) or die $db->errstr;
+     $sth->execute(++$count, $decode);
+ 
+     redirect $url;
+ };
+ 
+ get '/:code/stats' => sub {
+ 
+     my $decode = decode_base36(uc params->{'code'});
+ 
+     if ( $decode > $id ) {
+         send_error(404);
+     }
+ 
+     my $sql = 'SELECT id, code, url, count FROM link WHERE id = ?';
+     my $db = connect_db();
+     my $sth = $db->prepare($sql) or die $db->errstr;
+     $sth->execute($decode) or die $sth->errstr;
+ 
+     my $prevl;
+     my $nextl;
+ 
+     unless ( ( $decode - 1 ) < 0 ) {
+         $prevl = encode_base36( $decode - 1 );
+     }
+ 
+     unless ( ( $decode + 1 ) > $id ) {
+         $nextl = encode_base36( $decode + 1 );
+     }
+ 
+     template 'stats.tt', {
+         'stats' => $sth->fetchall_hashref('id'),
+         'nextl' => $nextl,
+         'prevl' => $prevl,
+     };
+ };
+ 
+ get '/all_stats' => sub {
+ 
+     my $sql = 'SELECT id, code, url, count FROM link';
+     my $db = connect_db();
+     my $sth = $db->prepare($sql) or die $db->errstr;
+     $sth->execute() or die $sth->errstr;
+ 
+     template 'stats.tt', {
+         'stats' => $sth->fetchall_hashref('id'),
+     };
+ 
+ };
+ 
+ init_db();
+ start;
+
+=head1 SEE ALSO
+
+=over 4
+
+=item *
+
+http://perldancer.org
+
+=item *
+
+http://github.com/sukria/Dancer
+
+=item * 
+
+http://search.cpan.org/~sukria/Dancer/lib/Dancer/Plugins.pod
+
+=item *
+
+L<Dancer::Tutorial>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE 
+
+Copyright (C) 2010 by Mark R. Allen. 
+
+This is free software; you can redistribute it and/or modify it under the terms of either the Artistic License 2.0 or the GNU Public License version 2.
+

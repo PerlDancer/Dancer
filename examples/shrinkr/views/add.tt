@@ -1,0 +1,14 @@
+<% IF err %>
+<div class="error"><strong><% err %></strong></div>
+<% END %>
+<% IF msg %>
+<div class="msg"><% msg %></div>
+<% END %>
+<div class="nav"><a href="<% base %>all_stats">Stats</a></div>
+<form class="add" action="/" method=post>
+	<dl>
+		<dt>Add URL:</dt>
+		<dd><input size=70 type=text name=url></dd>
+	</dl>
+	<input type=submit value="Shrink!">
+</form>

@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+<head>
+  <title>Shrinkr</title>
+  <link rel=stylesheet type=text/css href="<% base %><% css_url %>">
+</head>
+<body>
+<h1>Shrinkr</h1>
+<h2>im in ur urls shrinkin ur typin</h2>
+<% content %>
+</body>
+</html>

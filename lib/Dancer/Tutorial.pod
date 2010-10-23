@@ -433,7 +433,7 @@ Here's the complete dancr.pl script from start to finish.
  use File::Slurp;
  use Template;
  
- set 'database' => File::Spec->tmpdir() . 'dancr.db';
+ set 'database' => File::Spec->tmpdir() . '/dancr.db';
  set 'session' => 'Simple';
  set 'template' => 'template_toolkit';
  set 'logger' => 'console';
