@@ -6,7 +6,7 @@ package Dancer::Engine;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use Dancer::ModuleLoader;
 use base 'Dancer::Object';
 

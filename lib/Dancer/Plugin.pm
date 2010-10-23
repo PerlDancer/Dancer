@@ -1,7 +1,7 @@
 package Dancer::Plugin;
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 
 use base 'Exporter';
 use Dancer::Config 'setting';

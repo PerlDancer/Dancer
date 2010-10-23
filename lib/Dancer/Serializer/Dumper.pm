@@ -2,7 +2,7 @@ package Dancer::Serializer::Dumper;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use base 'Dancer::Serializer::Abstract';
 use Data::Dumper;
 

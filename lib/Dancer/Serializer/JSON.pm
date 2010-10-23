@@ -2,7 +2,7 @@ package Dancer::Serializer::JSON;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use base 'Dancer::Serializer::Abstract';

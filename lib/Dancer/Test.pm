@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-use Carp;
+use Carp 'carp';
 use HTTP::Headers;
 use Dancer ':syntax';
 use Dancer::App;

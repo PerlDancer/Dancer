@@ -2,7 +2,7 @@ package Dancer::App;
 
 use strict;
 use warnings;
-use Carp;
+use Carp qw(carp croak);
 use base 'Dancer::Object';
 
 use Dancer::Config;

@@ -2,7 +2,7 @@ package Dancer::Plugin::WebSocket;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 
 use Dancer ':syntax';
 use Dancer::Plugin;

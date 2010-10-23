@@ -2,7 +2,7 @@ package Dancer::Template::TemplateToolkit;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';

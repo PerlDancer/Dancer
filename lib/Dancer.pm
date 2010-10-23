@@ -2,7 +2,7 @@ package Dancer;
 
 use strict;
 use warnings;
-use Carp;
+use Carp qw(carp croak);
 use Cwd 'abs_path', 'realpath';
 use vars qw($VERSION $AUTHORITY @EXPORT);
 

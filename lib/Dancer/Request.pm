@@ -2,7 +2,7 @@ package Dancer::Request;
 
 use strict;
 use warnings;
-use Carp;
+use Carp 'croak';
 
 use Dancer::Object;
 use Dancer::Request::Upload;
