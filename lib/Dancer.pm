@@ -69,6 +69,7 @@ $VERSION   = '1.1999_01';
   put
   r
   redirect
+  render_with_layout
   request
   send_file
   send_error
@@ -135,6 +136,7 @@ sub options { Dancer::App->current->registry->universal_add('options', @_) }
 sub put     { Dancer::App->current->registry->universal_add('put',     @_) }
 sub r { warn "'r' is DEPRECATED use qr{} instead"; return {regexp => $_[0]} }
 sub redirect  { Dancer::Helpers::redirect(@_) }
+sub render_with_layout { Dancer::Helpers::render_with_layout(@_); }
 sub request   { Dancer::SharedData->request }
 sub send_file { Dancer::Helpers::send_file(@_) }
 sub set       { goto &setting }
@@ -657,6 +659,27 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
     get '/old/:resource', sub {
         redirect '/new/'.params->{resource}, 301;
     };
+
+=head2 render_with_layout
+
+Allows a handler to provide plain HTML (or other content), but have it rendered
+within the layout still.
+
+For example:
+
+    get '/foo' => sub {
+        # Do something which generates HTML directly (maybe using
+        # HTML::Table::FromDatabase or something)
+        my $content = ...;
+        render_with_layout $content;
+    };
+
+It works very similarly to C<template> in that you can pass tokens to be used in
+the layout, and/or options to control the way the layout is rendered.  For
+instance, to use a custom layout:
+
+    render_with_layout $content, {}, { layout => 'layoutname' };
+
 
 =head2 request
 

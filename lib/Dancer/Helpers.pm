@@ -55,24 +55,47 @@ sub template {
         $tokens->{session} = Dancer::Session->get;
     }
 
-    $view = Dancer::Template->engine->view($view);
+    my $content;
+    if ($view) {
+        $view = Dancer::Template->engine->view($view);
 
-    if (!-r $view) {
-        my $error = Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        );
-        return Dancer::Response::set($error->render);
+        if (!-r $view) {
+            my $error = Dancer::Error->new(
+                code    => 404,
+                message => "Page not found",
+            );
+            return Dancer::Response::set($error->render);
+        }
+
+        $_->($tokens) for (@{$app->registry->hooks->{before_template}});
+
+        $content = Dancer::Template->engine->render($view, $tokens);
+        return $content if not defined $layout;
+    } else {
+        # No view name specified; look for an option named content, and,
+        # if found, use that as the content, putting the layout around it.
+        if (exists $options->{content}) {
+            $content = delete $options->{content};
+            return $content if not defined $layout;
+        } else {
+            my $error = Dancer::Error->new(
+                code    => 404,
+                message => "Page not found",
+            );
+            return Dancer::Response::set($error->render);
+        }
     }
-
-    $_->($tokens) for (@{$app->registry->hooks->{before_template}});
-
-    my $content = Dancer::Template->engine->render($view, $tokens);
-    return $content if not defined $layout;
 
     my $full_content =
       Dancer::Template->engine->layout($layout, $tokens, $content);
     return $full_content;
+}
+
+sub render_with_layout {
+    my ($content, $tokens, $options) = @_;
+    $options ||= {};
+    $options->{content} = $content;
+    return template('', $tokens, $options);
 }
 
 sub error {
