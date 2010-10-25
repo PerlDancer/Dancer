@@ -26,7 +26,7 @@ Test::TCP::test_tcp(
         
         $req = HTTP::Request->new(GET => "http://127.0.0.1:$port/without_errors");
         $res = $ua->request($req);
-        like($res->content, qr{ unknown method foo});
+        like($res->content, qr{An internal error occured});
     },
 
     server => sub {
