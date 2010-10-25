@@ -166,7 +166,7 @@ sub safe_mkdir {
     my ($dir) = @_;
     if (not -d $dir) {
         print "+ $dir\n";
-        mkdir $dir;
+        mkdir $dir or die $!;
     }
     else {
         print "  $dir\n";
