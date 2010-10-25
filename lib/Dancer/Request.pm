@@ -472,6 +472,24 @@ use the current request object.
 
 Return the HTTP method used by the client to access the application.
 
+Also available are the following convenience methods:
+
+=over 4
+
+=item C<is_head>
+
+=item C<is_post>
+
+=item C<is_get>
+
+=item C<is_put>
+
+=item C<is_delete>
+
+=back
+
+All of these methods return true or false values.
+
 =head2 path()
 
 Return the path requested by the client.
