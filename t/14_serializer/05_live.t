@@ -81,6 +81,7 @@ sub test_json {
             Dancer::Config->load;
             setting access_log => 0;
             setting port       => $port;
+            setting show_errors => 1;
             Dancer->dance();
         },
     );
@@ -139,6 +140,7 @@ sub test_yaml {
             Dancer::Config->load;
             setting port       => $port;
             setting access_log => 0;
+            setting show_errors => 1;
             Dancer->dance();
         },
     );
