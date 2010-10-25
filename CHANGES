@@ -31,6 +31,9 @@ Dancer 1.1999_02 (RC2)
 	  least with our Deployment examples) so the dispatchers aren't aware of the 
 	  PSGI context if we don't tell them explicitly.
 	  This patch forces the dispatchers in PSGI mode.
+    * FIX (unknown bug)
+	  When a serializer is set and show_errors is true, don't expose internal
+      errors caught.
 
     [ Naveen ]
     * add --version to the dancer CLI
