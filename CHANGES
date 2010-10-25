@@ -17,22 +17,22 @@ Dancer 1.1999_02 (RC2)
     [ Damien Krotkine ]
     * replace all die and warn with croak and carp
 
-    [ Alexis Sukrieh ]
-    * FIX for issue GH #151
-      utf8 pragma is imported automatically when Dancer is loaded
-      to allow the usage of UTF-8 strings in the application code.
-      (Thanks to kocoureasy for the report).
-    * FIX for "UTF-8" issues (GH#153):
-      - response content is encoded only if content_type is text
-      - charset setting is normalized to UTF-8 when appropriate
-      - automatically decode UTF-8 strings in params
-    * FIX scaffolded dispatchers (script/dancer)
-      The PLACK_ENV variable is not propagated by Apoache to the dispatchers (at 
-      least with our Deployment examples) so the dispatchers aren't aware of the 
-      PSGI context if we don't tell them explicitly.
-      This patch forces the dispatchers in PSGI mode.
+	[ Alexis Sukrieh ]
+	* FIX for issue GH #151
+	  utf8 pragma is imported automatically when Dancer is loaded
+	  to allow the usage of UTF-8 strings in the application code.
+	  (Thanks to kocoureasy for the report).
+	* FIX for "UTF-8" issues (GH#153):
+	  - response content is encoded only if content_type is text
+	  - charset setting is normalized to UTF-8 when appropriate
+	  - automatically decode UTF-8 strings in params
+	* FIX scaffolded dispatchers (script/dancer)
+	  The PLACK_ENV variable is not propagated by Apoache to the dispatchers (at 
+	  least with our Deployment examples) so the dispatchers aren't aware of the 
+	  PSGI context if we don't tell them explicitly.
+	  This patch forces the dispatchers in PSGI mode.
     * FIX (unknown bug)
-      When a serializer is set and show_errors is true, don't expose internal
+	  When a serializer is set and show_errors is true, don't expose internal
       errors caught.
 
     [ Naveen ]
