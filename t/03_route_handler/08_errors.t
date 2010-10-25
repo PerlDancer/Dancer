@@ -7,6 +7,8 @@ use Dancer ':syntax';
 use Dancer::Error;
 use Dancer::ModuleLoader;
 
+set show_errors => 1;
+
 my $error = Dancer::Error->new(code => 500);
 ok(defined($error), "error is defined");
 ok($error->title, "title is set");
