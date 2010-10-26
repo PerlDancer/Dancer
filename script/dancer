@@ -211,7 +211,6 @@ sub write_data_to_file {
     close $fh;
 }
 
-# LWP, File::Fetch and other high level interfaces are not avaiable to us in perl 5.8.5.
 
 sub send_http_request {
     my $url = shift;
