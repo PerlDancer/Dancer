@@ -118,6 +118,14 @@ sub get_action_response {
         return get_action_response();
     }
 
+    # redirect immediately - skip route execution
+    if ($Dancer::Response::CURRENT->{status}){
+        if ($Dancer::Response::CURRENT->{status} == 302 ||
+            $Dancer::Response::CURRENT->{status} == 301) {
+                return serialize_response_if_needed(Dancer::Response->current);
+        }
+    }
+
     # execute the action
     if ($handler) {
 
