@@ -27,7 +27,8 @@ sub new {
 }
 
 # a singleton to store the current response
-my $CURRENT = Dancer::Response->new();
+# made public so status can be checked, etc
+our $CURRENT = Dancer::Response->new();
 
 # the accessor returns a copy of the singleton
 # after having purged it.
