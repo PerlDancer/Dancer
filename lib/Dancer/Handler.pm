@@ -17,7 +17,6 @@ use Encode;
 
 # This is where we choose which application handler to return
 sub get_handler {
-    my $handler = 'Dancer::Handler::Standalone';
 
     # force PSGI is PLACK_ENV is set
     if ($ENV{'PLACK_ENV'}) {
@@ -26,9 +25,9 @@ sub get_handler {
         setting('environment' => $ENV{'PLACK_ENV'});
     }
 
-    # if Plack is detected or set by conf, use the PSGI handler
-    $handler = 'Dancer::Handler::PSGI' 
-        if (setting('apphandler') eq 'PSGI');
+    # build the apphandler class, based on settings
+    my $apphandler = setting('apphandler') || 'Standalone';    
+    my $handler = "Dancer::Handler::$apphandler";
 
     # load the app handler
     my ($loaded, $error) = Dancer::ModuleLoader->load($handler);
