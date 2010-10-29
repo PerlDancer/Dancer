@@ -24,19 +24,10 @@ sub new {
 
 sub start {
     my $self = shift;
-
     my $app = $self->psgi_app();
 
     if (Dancer::Config::setting('plack_middlewares')) {
-        my $middlewares = Dancer::Config::setting('plack_middlewares');
-        croak "Plack::Builder is needed for middlewares support"
-          unless Dancer::ModuleLoader->load('Plack::Builder');
-
-        my $builder = Plack::Builder->new();
-        for my $m (keys %$middlewares) {
-            $builder->add_middleware($m, @{$middlewares->{$m}});
-        }
-        $app = $builder->to_app($app);
+        $app = $self->apply_plack_middlewares($app);
     }
 
     return $app;
@@ -44,9 +35,9 @@ sub start {
 
 sub apply_plack_middlewares {
     my ($self, $app) = @_;
-
     my $middlewares = Dancer::Config::setting('plack_middlewares');
-    die "Plack::Builder is needed for middlewares support"
+
+    croak "Plack::Builder is needed for middlewares support"
       unless Dancer::ModuleLoader->load('Plack::Builder');
 
     my $builder = Plack::Builder->new();
@@ -54,7 +45,8 @@ sub apply_plack_middlewares {
         $builder->add_middleware($m, @{$middlewares->{$m}});
     }
     $app = $builder->to_app($app);
-    $app;
+
+    return $app;
 }
 
 sub init_request_headers {
