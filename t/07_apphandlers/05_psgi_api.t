@@ -9,7 +9,7 @@ BEGIN {
     use Dancer ':syntax';
 }
 
-plan tests => 9;
+plan tests => 7;
 
 Dancer::ModuleLoader->require('Dancer::Handler::PSGI');
 
@@ -23,8 +23,6 @@ my %ENV = (
 );
 
 $handler->init_request_headers( \%ENV );
-ok my $headers = Dancer::SharedData->headers;
-isa_ok $headers->{_headers}, 'HTTP::Headers';
 
 my $app = sub {
     my $env     = shift;

@@ -19,9 +19,10 @@ is(ref($app), 'Dancer::Handler::PSGI', 'got expected handler');
 $ENV{'PLACK_ENV'} = 1;
 set apphandler => 'Standalone';
 $app = Dancer::Handler->get_handler;
-is(ref($app), 'Dancer::Handler::PSGI', ',got expected handler');
+is(ref($app), 'Dancer::Handler::PSGI', 'got expected handler');
 delete $ENV{'PLACK_ENV'};
 
 set apphandler => 'Null';
-$app = Dancer::Handler->get_handler;
-is(ref($app), 'Dancer::Handler::Standalone', 'got expected handler');
+eval { Dancer::Handler->get_handler };
+like $@, qr{Unable to load app handler `Dancer::Handler::Null}, 
+    "invalid apphandler is detected";

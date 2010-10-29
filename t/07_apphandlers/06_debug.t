@@ -9,23 +9,19 @@ plan skip_all => "Test::Output is needed for this test"
 plan tests => 3;
 
 use Dancer;
-use Dancer::Request;
-use Dancer::SharedData;
 
 set access_log => false;
 set apphandler => 'Debug';
 get '/' => sub { 42 };
 
-my $req = Dancer::Request->new_for_request(get => '/');
-my $psgi = Dancer->start($req);
-is $psgi->[0], 200, "psgi response";
+my $handler = Dancer::Handler->get_handler;
+isa_ok $handler, 'Dancer::Handler::Debug';
 
-$req = Dancer::Request->new_for_request(get => '/');
-$psgi = Dancer->dance($req);
-is $psgi->[0], 200, "psgi response";
-
-Dancer::SharedData->request($req);
-$req = Dancer::Request->new_for_request(get => '/');
-Test::Output::stdout_like(sub { Dancer->dance() }, 
+@ARGV = (GET => '/', 'foo=42');
+my $psgi;
+Test::Output::stdout_like(
+sub { $psgi = Dancer->start }, 
     qr{X-Powered-By: Perl Dancer.*42}sm, 
-    "start with no request given");
+    "output looks good");
+
+is $psgi->[0], 200, "psgi response is ok";
