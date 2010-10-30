@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use Encode;
 use Test::More import => ['!pass'];
 use Dancer::ModuleLoader;
 use LWP::UserAgent;
@@ -18,13 +19,13 @@ Test::TCP::test_tcp(
         my $res;
     
         $res = _get_http_response(GET => '/string', $port);
-        is $res->content, "\x{1A9}", "response is unicode";
+        is d($res->content), "\x{1A9}", "response is unicode";
 
         $res = _get_http_response(GET => "/param/\x{1A9}", $port);
-        is $res->content, "\x{1A9}", "response is unicode";
+        is d($res->content), "\x{1A9}", "response is unicode";
         
         $res = _get_http_response(GET => "/view", $port);
-        is $res->content, "\x{1A9}", "response is unicode";
+        is d($res->content), "token=\x{1A9}\nplain=\x{1A9}\n", "response is unicode";
     },
     server => sub {
         my $port = shift;
@@ -40,12 +41,18 @@ Test::TCP::test_tcp(
     },
 );
 
+sub u {
+    encode('UTF-8', $_[0]);
+}
+
+sub d {
+    decode('UTF-8', $_[0]);
+}
 
 sub _get_http_response {
     my ($method, $path, $port) = @_;
     
     my $ua = LWP::UserAgent->new;
-
     my $req = HTTP::Request->new($method => "http://127.0.0.1:${port}${path}");
     return $ua->request($req);
 }
