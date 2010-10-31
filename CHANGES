@@ -1,3 +1,10 @@
+Dancer 1.1999_03 (RC3)
+    [Alexis Sukrieh]
+    * Transparent unicode support
+	  Dancer now takes care transparently of decoding unicode strings
+	  used within route handlers and encoding them back before sending
+	  a response content. Once the 'charset' setting is set, the user
+	  has nothing more to do to have a working unicode-aware application.
 
 Dancer 1.1999_02 (RC2)
 
