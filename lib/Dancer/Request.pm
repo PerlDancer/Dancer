@@ -132,6 +132,17 @@ sub uri_for {
 
 sub params {
     my ($self, $source) = @_;
+
+    my @caller = caller;
+
+    if (not $self->{_params_are_decoded}) {
+        $self->{params} = _decode($self->{params});
+        $self->{_body_params} = _decode($self->{_body_params});
+        $self->{_query_params} = _decode($self->{_query_params});
+        $self->{_route_params} = _decode($self->{_route_params});
+        $self->{_params_are_decoded} = 1;
+    }
+
     return %{$self->{params}} if wantarray && @_ == 1;
     return $self->{params} if @_ == 1;
 
@@ -150,6 +161,28 @@ sub params {
     else {
         croak "Unknown source params \"$source\".";
     }
+}
+
+sub _decode {
+    my ($h) = @_;
+    return if not defined $h;
+
+    if (not ref($h)) {
+        return decode('UTF-8', $h);
+    }
+
+    if (ref($h) eq 'HASH') {
+        while (my ($k, $v) = each(%$h)) {
+            $h->{$k} = _decode($v);
+        }
+        return $h;
+    }
+
+    if (ref($h) eq 'ARRAY') {
+        return [ map { _decode($_) } @$h ];
+    }
+
+    return $h;
 }
 
 sub is_ajax {
@@ -195,35 +228,20 @@ sub _init {
 # for this purpose
 sub _set_route_params {
     my ($self, $params) = @_;
-    $params = _decode_params($params);
     $self->{_route_params} = $params;
     $self->_build_params();
 }
 
 sub _set_body_params {
     my ($self, $params) = @_;
-    $params = _decode_params($params);
     $self->{_body_params} = $params;
     $self->_build_params();
 }
 
 sub _set_query_params {
     my ($self, $params) = @_;
-    $params = _decode_params($params);
     $self->{_query_params} = $params;
     $self->_build_params();
-}
-
-sub _decode_params {
-    my ($params) = @_;
-    require Dancer::Config;
-    my $cs = Dancer::Config::setting('charset');
-    if ($cs eq 'UTF-8') {
-        for my $p (keys %{$params}) {
-            $params->{$p} = decode('UTF-8', $params->{$p});
-        }
-    }
-    return $params;
 }
 
 sub _build_request_env {
@@ -252,21 +270,21 @@ sub _build_headers {
 
 sub _build_params {
     my ($self) = @_;
-
+    
     # params may have been populated by before filters
     # _before_ we get there, so we have to save it first
-    my $previous = $self->params;
+    my $previous = $self->{params};
 
     # now parse environement params...
     $self->_parse_get_params();
     $self->_parse_post_params();
+
 
     # and merge everything
     $self->{params} = {
         %$previous,                %{$self->{_query_params}},
         %{$self->{_route_params}}, %{$self->{_body_params}},
     };
-
 }
 
 # Written from PSGI specs:
