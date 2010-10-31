@@ -35,6 +35,10 @@ sub format_message {
     my ($self, $level, $message) = @_;
     chomp $message;
 
+    if (setting('charset')) {
+        $message = Encode::encode(setting('charset'), $message);
+    }
+
     $level = 'warn' if $level eq 'warning';
     $level = sprintf('%5s', $level);
 
