@@ -10,7 +10,10 @@ Dancer 1.1999_03 (RC3)
       are documented. A pod coverage test has been added for this
       module.
     * Documentation update The deployment documentation is more precise about
-      cgi/fast-cgi deployment under Apache.
+	  cgi/fast-cgi deployment under Apache.
+	* FIX for issue GH#171
+	  Scaffolded configuration files are fully commented in order to quickly
+	  guide the user in her first steps.
 
 Dancer 1.1999_02 (RC2)
 
