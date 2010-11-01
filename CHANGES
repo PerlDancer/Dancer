@@ -9,6 +9,8 @@ Dancer 1.1999_03 (RC3)
       More documentation added to Dancer::Request, all public method
       are documented. A pod coverage test has been added for this
       module.
+    * Documentation update The deployment documentation is more precise about
+      cgi/fast-cgi deployment under Apache.
 
 Dancer 1.1999_02 (RC2)
 
