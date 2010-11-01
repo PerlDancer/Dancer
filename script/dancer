@@ -865,7 +865,7 @@ show_errors: 1
 # 
 # Be aware it's unstable and may cause a memory leak.
 # DO NOT EVER USE THAT FEATURE IN PRODUCTION 
-# OR TINY KITTEN SHALL DIE WITH LOTS OF SUFFERING
+# OR TINY KITTENS SHALL DIE WITH LOTS OF SUFFERING
 auto_reload: 0
 ",
 
