@@ -486,9 +486,47 @@ use the current request object.
 
 =head1 PUBLIC INTERFACE
 
+=head2 new($env)
+
+The constructor of the class, used internally by Dancer's core to create request
+objects. It uses the environment hash table given to build the request object.
+
+=head2 new_for_request($method, $path, $params, $body, $headers)
+
+An alternate constructor convinient for test scripts which creates a request
+object with the arguments given.
+
+=head2 to_string()
+
+Return a string represeting the request object (eg: C<"GET /some/path">)
+
 =head2 method()
 
 Return the HTTP method used by the client to access the application.
+
+While this method returns the method string as provided by the environment, it's
+better to use one of the following boolean accessors if you want to inspect the
+requested method.
+
+=head2 is_get()
+
+Return true if the method requested by the client is 'GET'
+
+=head2 is_head()
+
+Return true if the method requested by the client is 'HEAD'
+
+=head2 is_post()
+
+Return true if the method requested by the client is 'POST'
+
+=head2 is_put()
+
+Return true if the method requested by the client is 'PUT'
+
+=head2 is_delete()
+
+Return true if the method requested by the client is 'DELETE'
 
 =head2 path()
 
@@ -546,6 +584,18 @@ returned.
 
 If another value is given for C<$source>, then an exception is triggered.
 
+=head2 Vars
+
+Alias to the C<params> accessor, for backward-compatibility with C<CGI> interface.
+
+=head2 request_method
+
+Alias to the C<method> accessor, for backward-compatibility with C<CGI> interface.
+
+=head2 input_handle
+
+Alias to the PSGI input handle (C<< <request->env->{psgi.input}> >>)
+
 =head2 content_type()
 
 Return the content type of the request.
@@ -582,7 +632,29 @@ Returns a reference to a hash containing uploads. Values can be either a
 L<Dancer::Request::Upload> object, or an arrayref of L<Dancer::Request::Upload>
 objects.
 
-=head2 HTTP environment variables
+You should probably use the C<upload($name)> accessor instead of manually accessing the
+C<uploads> hash table.
+
+=head2 upload($name)
+
+Context-aware accessor for uploads. It's a wrapper around an access to the hash
+table provided by C<uploads()>. It looks at the calling context and returns a
+corresponding value.
+
+If you have many file uploads under the same name, and call C<upload('name')> in
+an array context, the accesor will unroll the ARRA ref for you:
+
+    my @uploads = request->upload('many_uploads'); # OK
+
+Whereas with a manual access to the hash table, you'll end up with one element
+in @uploads, being the ARRAY ref:
+
+    my @uploads = request->uploads->{'many_uploads'}; # $uploads[0]: ARRAY(0xXXXXX)
+
+That is why this accessor should be used instead of a manual access to
+C<uploads>.
+
+=head1 HTTP environment variables
 
 All HTTP environment variables that are in %ENV will be provided in the
 Dancer::Request object through specific accessors, here are those supported:
@@ -590,6 +662,8 @@ Dancer::Request object through specific accessors, here are those supported:
 =over 4
 
 =item C<user_agent>
+
+=item C<agent> (alias for C<user_agent>)
 
 =item C<host>
 
@@ -604,6 +678,10 @@ Dancer::Request object through specific accessors, here are those supported:
 =item C<connection>
 
 =item C<accept>
+
+=item C<forwarded_for_address>
+
+=item C<remote_address>
 
 =back
 
