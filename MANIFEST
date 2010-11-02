@@ -195,10 +195,13 @@ t/14_serializer/08_error.t
 t/14_serializer/09_abstract.t
 t/14_serializer/10_dumper.t
 t/14_serializer/11_bug_57829.t
+t/14_serializer/12_bug_gh106.t
+t/14_serializer/13_xml.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t
 t/15_plugins/03_namespace.t
+t/15_plugins/04_apps_and_plugins.t
 t/16_timer/00_base.t
 t/16_timer/02_hires.t
 t/17_apps/00_base.t
@@ -212,6 +215,7 @@ t/lib/LinkBlocker.pm
 t/lib/MyApp.pm
 t/lib/MyAppFoo.pm
 t/lib/TestApp.pm
+t/lib/TestPlugin.pm
 t/lib/TestSerializer.pm
 t/lib/TestUtils.pm
 t/manifest.t
