@@ -13,7 +13,7 @@ use Carp 'confess';
 @EXPORT_OK = qw(setting mime_types);
 
 # mergeable settings
-my %MERGEABLE = map { ($_ => 1) } qw( plugins );
+my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
 
 # singleton for storing settings
 my $SETTINGS = {
