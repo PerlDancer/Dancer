@@ -134,7 +134,6 @@ sub load {
     confess "Configuration file found but YAML is not installed"
       unless Dancer::ModuleLoader->load('YAML');
 
-    load_default_settings();
     load_settings_from_yaml(conffile);
 
     my $env = environment_file;
