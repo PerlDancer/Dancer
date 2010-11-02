@@ -1,3 +1,8 @@
+Dancer 1.1902
+
+    [ Adam J. Foxson ]
+    * Addresses issue #136: "readline() on closed filehandle DATA"
+
 Dancer 1.1901 (1.2RC1)
 
     [ Franck Cuny ]
