@@ -12,6 +12,9 @@ use Carp 'confess';
 
 @EXPORT_OK = qw(setting mime_types);
 
+# mergeable settings
+my %MERGEABLE = map { ($_ => 1) } qw( plugins );
+
 # singleton for storing settings
 my $SETTINGS = {
 
@@ -154,7 +157,16 @@ sub load_settings_from_yaml {
         confess "Unable to parse the configuration file: $file: $@";
     }
 
-    setting($_, $config->{$_}) for (keys %{ $config });
+    for my $key (keys %{$config}) {
+        if ($MERGEABLE{$key}) {
+            my $setting = setting($key);
+            $setting->{$_} = $config->{$key}{$_}
+              for keys %{$config->{$key}};
+        }
+        else {
+            setting($key, $config->{$key});
+        }
+    }
 
     return scalar(keys %$config);
 }
@@ -176,6 +188,7 @@ sub load_default_settings {
       || $ENV{PLACK_ENV}
       || 'development';
 
+    setting $_              => {} for keys %MERGEABLE;
     setting template        => 'simple';
     setting import_warnings => 1;
 }
