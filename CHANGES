@@ -1,3 +1,8 @@
+Dancer 1.1903
+    [ SawyerX, Franck Cuny ]
+    * XML::Simple needs either XML::SAX or XML::Parser.
+      (fixed test fails from Dancer::Serializer::XML)
+
 Dancer 1.1902
 
     [ Adam J. Foxson ]
