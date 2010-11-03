@@ -7,7 +7,6 @@ use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use base 'Dancer::Serializer::Abstract';
 
-
 # helpers
 
 sub from_json {
@@ -55,52 +54,63 @@ sub deserialize {
 sub content_type {'application/json'}
 
 1;
+
 __END__
 
 =head1 NAME
 
-Dancer::Serializer::JSON - serializer for handling JSON data
+Dancer::Serializer::JSON - JSON serializer
 
 =head1 SYNOPSIS
 
+    use Dancer::Serializer::JSON;
+
+    my $serializer = Data::Serializer::JSON->new;
+    my $json       = $serializer->serialize( { name => 'John Doe' } );
+    my $hash       = $serializer->deserialize($json);
+
 =head1 DESCRIPTION
 
-This class is an interface between Dancer's serializer engine abstraction layer
-and the L<JSON> module.
+This engine allows you to serialize your data to L<JSON> and deserialize from
+L<JSON>.
 
-In order to use this engine, use the template setting:
+You can configure it in your C<config.yml> file:
 
     serializer: JSON
 
-This can be done in your config.yml file or directly in your app code with the
-B<set> keyword. This serializer will also be used when the serializer is set
-to B<mutable> and the correct Accept headers are supplied.
+or directly in your app code with the B<set> keyword.
 
-The L<JSON> module has 2 configuration variables that can be useful when working
-with ORM's like L<DBIx::Class>: B<allow_blessed> and B<convert_blessed>.
+    set serializer => 'JSON';
+
+The L<JSON> module has two configuration variables that can be useful when
+working with ORM's like L<DBIx::Class>: B<allow_blessed> and B<convert_blessed>.
 Please consult the L<JSON> documentation for more information. You can add
 extra settings to the B<engines> configuration to turn these on.
 
     engines:
         JSON:
-            allow_blessed: '1'
+            allow_blessed:   '1'
             convert_blessed: '1'
 
+=head2 AUTO RECOGNIZE
+
+This serializer will also be used when the serializer is set to B<mutable> and
+the correct Accept headers are supplied.
+
+See also L<Dancer::Serializer::Mutable> for more information on the mutable
+engine.
 
 =head2 METHODS
 
-=over 4
-
-=item B<serialize>
+=head3 serialize
 
 Serialize a data structure to a JSON structure.
 
-=item B<deserialize>
+=head3 deserialize
 
 Deserialize a JSON structure to a data structure
 
-=item B<content_type>
+=head3 content_type
 
 Return 'application/json'
 
-=back
