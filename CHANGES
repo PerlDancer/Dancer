@@ -43,8 +43,8 @@ Dancer 1.1999_02 (RC2)
       - charset setting is normalized to UTF-8 when appropriate
       - automatically decode UTF-8 strings in params
     * FIX scaffolded dispatchers (script/dancer)
-      The PLACK_ENV variable is not propagated by Apoache to the dispatchers (at 
-      least with our Deployment examples) so the dispatchers aren't aware of the 
+      The PLACK_ENV variable is not propagated by Apoache to the dispatchers (at
+      least with our Deployment examples) so the dispatchers aren't aware of the
       PSGI context if we don't tell them explicitly.
       This patch forces the dispatchers in PSGI mode.
     * FIX (unknown bug)
@@ -110,6 +110,16 @@ Dancer 1.1999_01 (RC1)
 	* Lots of documentation updates
     * Dancer now logs caught crashes in rendering
       (easier to debug Ajax routes)
+
+Dancer 1.1903
+    [ SawyerX, Franck Cuny ]
+    * XML::Simple needs either XML::SAX or XML::Parser.
+      (fixed test fails from Dancer::Serializer::XML)
+
+Dancer 1.1902
+
+    [ Adam J. Foxson ]
+    * Addresses issue #136: "readline() on closed filehandle DATA"
 
 Dancer 1.1901 (1.2RC0)
 
