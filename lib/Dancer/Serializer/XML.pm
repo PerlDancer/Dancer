@@ -22,7 +22,14 @@ sub to_xml {
 
 # class definition
 
-sub loaded { Dancer::ModuleLoader->load('XML::Simple') }
+sub loaded {
+    # we need either XML::Parser or XML::Sax too
+    Dancer::ModuleLoader->load('XML::Simple') &&
+        (
+          Dancer::ModuleLoader->load('XML::Parser') or
+          Dancer::ModuleLoader->load('XML::Sax')
+        );
+}
 
 sub init {
     my ($self) = @_;
