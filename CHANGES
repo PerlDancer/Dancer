@@ -10,10 +10,10 @@ Dancer 1.1999_03 (RC3)
       are documented. A pod coverage test has been added for this
       module.
     * Documentation update The deployment documentation is more precise about
-	  cgi/fast-cgi deployment under Apache.
-	* FIX for issue GH#171
-	  Scaffolded configuration files are fully commented in order to quickly
-	  guide the user in her first steps.
+      cgi/fast-cgi deployment under Apache.
+    * FIX for issue GH#171
+      Scaffolded configuration files are fully commented in order to quickly
+      guide the user in her first steps.
 
 Dancer 1.1999_02 (RC2)
 
@@ -87,7 +87,7 @@ Dancer 1.1999_01 (RC1)
     * Dancer::Test function get_response is renamed to dancer_response
       get_response still works but is deprecated
     * dispatch.f?cgi scripts use FindBin to resolve their location.
-	  FIX a bug when using symlinks.
+      FIX a bug when using symlinks.
 
     [ Franck Cuny ]
     * FIX for issue GH#129 
@@ -104,15 +104,20 @@ Dancer 1.1999_01 (RC1)
       template 'templatename', {}, { layout => 'layoutname' };
  
     [ Philippe Bruhat ]
-	* Make sure a plugin refuse to register a keyword twice
+    * Make sure a plugin refuse to register a keyword twice
 
-	[ SawyerX ]
-	* Lots of documentation updates
+    [ Sawyer X ]
+    * Lots of documentation updates
     * Dancer now logs caught crashes in rendering
       (easier to debug Ajax routes)
 
+Dancer 1.1904
+    [ Sawyer X, Franck Cuny ]
+    * SAX, not Sax.
+    * Check for XML::Parser or XML::SAX in test as well.
+
 Dancer 1.1903
-    [ SawyerX, Franck Cuny ]
+    [ Sawyer X, Franck Cuny ]
     * XML::Simple needs either XML::SAX or XML::Parser.
       (fixed test fails from Dancer::Serializer::XML)
 
