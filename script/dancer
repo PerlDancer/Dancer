@@ -211,7 +211,6 @@ sub write_data_to_file {
     close $fh;
 }
 
-# LWP, File::Fetch and other high level interfaces are not avaiable to us in perl 5.8.5.
 
 sub send_http_request {
     my $url = shift;
@@ -807,33 +806,86 @@ pre.error {
 
 'config.yml' =>
 
-"layout: \"main\"
-logger: \"console\"
-charset: \"UTF-8\"
+"# This is the main configuration file of your Dancer app
+# env-related settings should go to environments/\$env.yml
+# all the settings in this file will be loaded at Dancer's startup.
+
+# Your application's name
 appname: \"$name\"
+
+# The default layout to use for your application (located in
+# views/layouts/main.tt)
+layout: \"main\"
+
+# when the charset is set to UTF-8 Dancer will handle for you
+# all the magic of encoding and decoding. You should not care
+# about unicode within your app when this setting is set (recommended).
+charset: \"UTF-8\"
+
+# template engine
+# simple: default and very basic template engine
+# template_toolkit: TT
+
+template: \"simple\"
+
+# template: \"template_toolkit\"
+# engines:
+#   template_toolkit:
+#     ENCODING: 'utf8'
+#     START_TAG: '[%'
+#     END_TAG: '%]
 
 ",
 
 'jquery.js' => jquery_minified(),
 
 'development.yml' =>
-"log: \"core\"
+"# configuration file for development environment
+
+# the logger engine to use
+# console: log messages to STDOUT (your console where you started the
+#          application server)
+# file:    log message to a file in log/
+logger: \"console\"
+
+# the log level for this environement
+# core is the lowest, it shows Dancer's core log messages as well as yours
+# (debug, warning and error)
+log: \"core\"
+
+# shoud Dancer consider warnings as critical errors?
 warnings: 1
+
+# should Dancer show a stacktrace when an error is caught?
 show_errors: 1
 
-# auto_reload is a development feature
+# auto_reload is a development and experimental feature
 # you should enable it by yourself if you want it
-# Module::Refresh is needed
+# Module::Refresh is needed 
+# 
+# Be aware it's unstable and may cause a memory leak.
+# DO NOT EVER USE THAT FEATURE IN PRODUCTION 
+# OR TINY KITTENS SHALL DIE WITH LOTS OF SUFFERING
 auto_reload: 0
 ",
 
 'production.yml' =>
-'log: "warning"
+'# configuration file for production environment
+
+# only log warning and error messsages
+log: "warning"
+
+# log message to a file in logs/
+logger: "file"
+
+# don\'t consider warnings critical
 warnings: 0
+
+# hide errors 
 show_errors: 0
+
+# cache route resolution for maximum performance
 route_cache: 1
-# never enable auto_reload in production
-auto_reload: 0
 
 ',
 

@@ -132,6 +132,17 @@ sub uri_for {
 
 sub params {
     my ($self, $source) = @_;
+
+    my @caller = caller;
+
+    if (not $self->{_params_are_decoded}) {
+        $self->{params} = _decode($self->{params});
+        $self->{_body_params} = _decode($self->{_body_params});
+        $self->{_query_params} = _decode($self->{_query_params});
+        $self->{_route_params} = _decode($self->{_route_params});
+        $self->{_params_are_decoded} = 1;
+    }
+
     return %{$self->{params}} if wantarray && @_ == 1;
     return $self->{params} if @_ == 1;
 
@@ -150,6 +161,28 @@ sub params {
     else {
         croak "Unknown source params \"$source\".";
     }
+}
+
+sub _decode {
+    my ($h) = @_;
+    return if not defined $h;
+
+    if (not ref($h)) {
+        return decode('UTF-8', $h);
+    }
+
+    if (ref($h) eq 'HASH') {
+        while (my ($k, $v) = each(%$h)) {
+            $h->{$k} = _decode($v);
+        }
+        return $h;
+    }
+
+    if (ref($h) eq 'ARRAY') {
+        return [ map { _decode($_) } @$h ];
+    }
+
+    return $h;
 }
 
 sub is_ajax {
@@ -195,35 +228,20 @@ sub _init {
 # for this purpose
 sub _set_route_params {
     my ($self, $params) = @_;
-    $params = _decode_params($params);
     $self->{_route_params} = $params;
     $self->_build_params();
 }
 
 sub _set_body_params {
     my ($self, $params) = @_;
-    $params = _decode_params($params);
     $self->{_body_params} = $params;
     $self->_build_params();
 }
 
 sub _set_query_params {
     my ($self, $params) = @_;
-    $params = _decode_params($params);
     $self->{_query_params} = $params;
     $self->_build_params();
-}
-
-sub _decode_params {
-    my ($params) = @_;
-    require Dancer::Config;
-    my $cs = Dancer::Config::setting('charset');
-    if ($cs eq 'UTF-8') {
-        for my $p (keys %{$params}) {
-            $params->{$p} = decode('UTF-8', $params->{$p});
-        }
-    }
-    return $params;
 }
 
 sub _build_request_env {
@@ -252,21 +270,21 @@ sub _build_headers {
 
 sub _build_params {
     my ($self) = @_;
-
+    
     # params may have been populated by before filters
     # _before_ we get there, so we have to save it first
-    my $previous = $self->params;
+    my $previous = $self->{params};
 
     # now parse environement params...
     $self->_parse_get_params();
     $self->_parse_post_params();
+
 
     # and merge everything
     $self->{params} = {
         %$previous,                %{$self->{_query_params}},
         %{$self->{_route_params}}, %{$self->{_body_params}},
     };
-
 }
 
 # Written from PSGI specs:
@@ -468,9 +486,47 @@ use the current request object.
 
 =head1 PUBLIC INTERFACE
 
+=head2 new($env)
+
+The constructor of the class, used internally by Dancer's core to create request
+objects. It uses the environment hash table given to build the request object.
+
+=head2 new_for_request($method, $path, $params, $body, $headers)
+
+An alternate constructor convinient for test scripts which creates a request
+object with the arguments given.
+
+=head2 to_string()
+
+Return a string represeting the request object (eg: C<"GET /some/path">)
+
 =head2 method()
 
 Return the HTTP method used by the client to access the application.
+
+While this method returns the method string as provided by the environment, it's
+better to use one of the following boolean accessors if you want to inspect the
+requested method.
+
+=head2 is_get()
+
+Return true if the method requested by the client is 'GET'
+
+=head2 is_head()
+
+Return true if the method requested by the client is 'HEAD'
+
+=head2 is_post()
+
+Return true if the method requested by the client is 'POST'
+
+=head2 is_put()
+
+Return true if the method requested by the client is 'PUT'
+
+=head2 is_delete()
+
+Return true if the method requested by the client is 'DELETE'
 
 =head2 path()
 
@@ -528,6 +584,18 @@ returned.
 
 If another value is given for C<$source>, then an exception is triggered.
 
+=head2 Vars
+
+Alias to the C<params> accessor, for backward-compatibility with C<CGI> interface.
+
+=head2 request_method
+
+Alias to the C<method> accessor, for backward-compatibility with C<CGI> interface.
+
+=head2 input_handle
+
+Alias to the PSGI input handle (C<< <request->env->{psgi.input}> >>)
+
 =head2 content_type()
 
 Return the content type of the request.
@@ -564,7 +632,29 @@ Returns a reference to a hash containing uploads. Values can be either a
 L<Dancer::Request::Upload> object, or an arrayref of L<Dancer::Request::Upload>
 objects.
 
-=head2 HTTP environment variables
+You should probably use the C<upload($name)> accessor instead of manually accessing the
+C<uploads> hash table.
+
+=head2 upload($name)
+
+Context-aware accessor for uploads. It's a wrapper around an access to the hash
+table provided by C<uploads()>. It looks at the calling context and returns a
+corresponding value.
+
+If you have many file uploads under the same name, and call C<upload('name')> in
+an array context, the accesor will unroll the ARRA ref for you:
+
+    my @uploads = request->upload('many_uploads'); # OK
+
+Whereas with a manual access to the hash table, you'll end up with one element
+in @uploads, being the ARRAY ref:
+
+    my @uploads = request->uploads->{'many_uploads'}; # $uploads[0]: ARRAY(0xXXXXX)
+
+That is why this accessor should be used instead of a manual access to
+C<uploads>.
+
+=head1 HTTP environment variables
 
 All HTTP environment variables that are in %ENV will be provided in the
 Dancer::Request object through specific accessors, here are those supported:
@@ -572,6 +662,8 @@ Dancer::Request object through specific accessors, here are those supported:
 =over 4
 
 =item C<user_agent>
+
+=item C<agent> (alias for C<user_agent>)
 
 =item C<host>
 
@@ -586,6 +678,10 @@ Dancer::Request object through specific accessors, here are those supported:
 =item C<connection>
 
 =item C<accept>
+
+=item C<forwarded_for_address>
+
+=item C<remote_address>
 
 =back
 

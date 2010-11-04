@@ -1,81 +1,62 @@
 use strict;
 use warnings;
 
+use utf8;
+use Encode;
 use Test::More import => ['!pass'];
-
-use LWP::UserAgent;
-use HTTP::Request;
 use Dancer::ModuleLoader;
-use Dancer::Request;
-use Dancer;
-use File::Spec;
-plan skip_all => 'Plack::Test is needed for this test'
-    unless Dancer::ModuleLoader->load('Plack::Test');
+use LWP::UserAgent;
 
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP");
 
-plan skip_all => "Plack::Test is needed for this test"
-    unless Dancer::ModuleLoader->load("Plack::Test");
+plan tests => 3;
 
-my @templates = qw(simple);
-
-push @templates, 'template_toolkit' if Dancer::ModuleLoader->load('Template');
-push @templates, 'tiny' if Dancer::ModuleLoader->load('Dancer::Template::Tiny');
-
-my @plack_servers = qw(plackup);
-push @plack_servers, 'Starman' if Dancer::ModuleLoader->load('Starman');
-my @charsets = qw(utf8 latin1);
-
-plan tests => scalar(@templates) * 2 * scalar(@plack_servers) + 1;
-
-my $app = sub {
-    my $env = shift;
-
-    setting views       => File::Spec->rel2abs(path(dirname(__FILE__)));
-    setting apphandler  => 'PSGI';
-    setting show_errors => 1;
-    setting access_log  => 0;
-    setting charset     => 'utf8';
-
-    get '/utf8' => sub { template "utf8" };
-    get '/latin1' => sub { template "latin1" };
-    get '/param/:string' => sub { params->{'string'} };
-
-    my $request = Dancer::Request->new($env);
-    Dancer->dance($request);
-};
+Test::TCP::test_tcp(
+    client => sub {
+        my $port = shift;
+        my $res;
     
-# utf8 should be normalized to UTF-8
-setting charset     => 'utf8';
-is(setting('charset'), 'UTF-8', "charset is normalized to UTF-8");
+        $res = _get_http_response(GET => '/string', $port);
+        is d($res->content), "\x{1A9}", "utf8 static response";
 
+        $res = _get_http_response(GET => "/param/".u("\x{1A9}"), $port);
+        is d($res->content), "\x{1A9}", "utf8 route param";
+        
+        $res = _get_http_response(GET => "/view?string1=".u("\x{E9}"), $port);
+        is d($res->content), "sigma: 'Ʃ'\npure_token: 'Ʃ'\nparam_token: '\x{E9}'\n",
+            "params and tokens are valid unicode";
+    },
+    server => sub {
+        my $port = shift;
 
-for my $plack (@plack_servers) {
+        use Dancer;
+        use t::lib::TestAppUnicode;
 
-    $ENV{PLACK_SERVER} = $plack;
+        setting charset => 'utf8';
+        setting port => $port;
+        set show_errors => 1;
+        setting access_log => 0;
+        set 'log' => 'debug';
+        set logger => 'console';
 
-    for my $template (@templates) {
+        Dancer->dance();
+    },
+);
 
-        setting template => $template;
-
-        Plack::Test::test_psgi(
-            $app,
-            sub {
-                my $cb = shift;
-
-                my $req = HTTP::Request->new(GET => "/utf8");
-                my $res = $cb->($req);
-                is $res->content, "utf8: ’♣ ♤ ♥ ♦’\n",
-                  "PSGI/$plack template/$template : UTF-8 string is rendered correctly";
-    
-                my $utf8_crap = '♣Pondělí♤';
-                $req = HTTP::Request->new('GET' => "/param/$utf8_crap");
-                $res = $cb->($req);
-                is $res->content, $utf8_crap,
-                  "PSGI/$plack utf8 params are decoded";
-
-            }
-        );
-    }
+sub u {
+    encode('UTF-8', $_[0]);
 }
+
+sub d {
+    decode('UTF-8', $_[0]);
+}
+
+sub _get_http_response {
+    my ($method, $path, $port) = @_;
+    
+    my $ua = LWP::UserAgent->new;
+    my $req = HTTP::Request->new($method => "http://127.0.0.1:$port${path}");
+    return $ua->request($req);
+}
+
