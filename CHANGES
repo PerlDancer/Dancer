@@ -1,5 +1,10 @@
+Dancer 1.1904
+    [ Sawyer X, Franck Cuny ]
+    * SAX, not Sax.
+    * Check for XML::Parser or XML::SAX in test as well.
+
 Dancer 1.1903
-    [ SawyerX, Franck Cuny ]
+    [ Sawyer X, Franck Cuny ]
     * XML::Simple needs either XML::SAX or XML::Parser.
       (fixed test fails from Dancer::Serializer::XML)
 
