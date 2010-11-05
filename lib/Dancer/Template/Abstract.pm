@@ -17,6 +17,10 @@ sub view {
     my ($self, $view) = @_;
 
     # $view can be:
+    # - a coderef, that returns something to further check
+    $view = $view->() if ref $view eq 'CODE';
+
+    # now, $view can be:
     # - a string: assume it's a filename
     if ( !ref $view ) {
         # add the extension if needed
@@ -104,7 +108,8 @@ and always return a reference to a scalar containing the template source code.
 
 C<$view> can be: a filename (extension optional) for a template to be looked
 for in the C<$appdir/views> directory; a IO object, from which the template
-source will be read; or a scalar reference, that will be returned as is.
+source will be read; or a scalar reference, that will be returned as is,
+a code reference that, when executed, returns any of the above.
 
 =item B<layout($layout, $tokens, $content)>
 
