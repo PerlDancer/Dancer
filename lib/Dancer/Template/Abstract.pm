@@ -16,11 +16,34 @@ sub default_tmpl_ext {"tt"}
 sub view {
     my ($self, $view) = @_;
 
-    my $def_tmpl_ext = $self->default_tmpl_ext();
-    $view .= ".$def_tmpl_ext" if $view !~ /\.${def_tmpl_ext}$/;
+    # $view can be:
+    # - a string: assume it's a filename
+    if ( !ref $view ) {
+        # add the extension if needed
+        my $def_tmpl_ext = $self->default_tmpl_ext();
+        $view .= ".$def_tmpl_ext" if $view !~ /\.${def_tmpl_ext}$/;
 
-    my $app = Dancer::App->current;
-    return path($app->setting('views'), $view);
+        # pick up the file
+        $view = path(Dancer::App->current->setting('views'), $view);
+        return if !-r $view;
+
+        # get a filehandle to pass on
+        open my $fh, '<', $view or return;
+        $view = $fh;
+    }
+
+    # now, $view can be:
+    # - a glob
+    return \join '', <$view> if ref $view eq 'GLOB';
+
+    # - some sort of object
+    return \join '', $view->getlines() if eval { $view->can('getlines') };
+
+    # - a scalarref
+    return $view if ref $view eq 'SCALAR';
+
+    # - something we can't handle
+    return;
 }
 
 sub layout {
@@ -76,7 +99,12 @@ an exception 'method not implemented'.
 
 =item B<view($view)>
 
-The default behavior of this method is to return the path of the given view.
+This method accepts different types of objects for the C<$view> parameter,
+and always return a reference to a scalar containing the template source code.
+
+C<$view> can be: a filename (extension optional) for a template to be looked
+for in the C<$appdir/views> directory; a IO object, from which the template
+source will be read; or a scalar reference, that will be returned as is.
 
 =item B<layout($layout, $tokens, $content)>
 

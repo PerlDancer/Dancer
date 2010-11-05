@@ -59,7 +59,7 @@ sub template {
     if ($view) {
         $view = Dancer::Template->engine->view($view);
 
-        if (!-r $view) {
+        if (!$view) {
             my $error = Dancer::Error->new(
                 code    => 404,
                 message => "Page not found",
@@ -72,7 +72,7 @@ sub template {
         $content = Dancer::Template->engine->render($view, $tokens);
         return $content if not defined $layout;
     } else {
-        # No view name specified; look for an option named content, and,
+        # No view specified; look for an option named content, and,
         # if found, use that as the content, putting the layout around it.
         if (exists $options->{content}) {
             $content = delete $options->{content};
