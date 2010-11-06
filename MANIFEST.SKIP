@@ -1,4 +1,5 @@
 ^\.git\/
+maint
 ^tags$
 .last_cover_stats
 Makefile$

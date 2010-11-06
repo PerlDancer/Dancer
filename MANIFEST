@@ -64,7 +64,6 @@ lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 lib/Dancer/Tutorial.pod
 LICENSE
-maint/image_to_data.pl
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
@@ -90,6 +89,7 @@ t/01_config/02_mime_type.t
 t/01_config/03_logger.t
 t/01_config/04_config_file.t
 t/01_config/05_serialiers.t
+t/01_config/06_stack_trace.t
 t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
 t/02_request/01_load.t
@@ -208,6 +208,7 @@ t/14_serializer/10_dumper.t
 t/14_serializer/11_bug_57829.t
 t/14_serializer/12_bug_gh106.t
 t/14_serializer/13_xml.t
+t/14_serializer/14_show_errors.t
 t/14_serializer/handler-helper.t
 t/15_plugins/01_register.t
 t/15_plugins/02_config.t
@@ -220,6 +221,8 @@ t/17_apps/01_settings.t
 t/17_apps/02_load_app.t
 t/17_apps/03_prefix.t
 t/17_apps/04_issue_91.t
+t/18_main_dsl/01_config.t
+t/18_main_dsl/uri_for.t
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm

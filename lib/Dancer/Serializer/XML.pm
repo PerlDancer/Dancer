@@ -23,12 +23,22 @@ sub to_xml {
 
 # class definition
 
-sub loaded { Dancer::ModuleLoader->load('XML::Simple') }
+sub loaded_xmlsimple {
+    Dancer::ModuleLoader->load('XML::Simple');
+}
+
+sub loaded_xmlbackends {
+    # we need either XML::Parser or XML::SAX too
+    Dancer::ModuleLoader->load('XML::Parser') or
+    Dancer::ModuleLoader->load('XML::SAX');
+}
 
 sub init {
     my ($self) = @_;
-    croak 'XML::Simple is needed and is not installed'
-      unless $self->loaded;
+    die 'XML::Simple is needed and is not installed'
+      unless $self->loaded_xmlsimple;
+    die 'XML::Simple needs XML::Parser or XML::SAX and neither is installed'
+      unless $self->loaded_xmlbackends;
     $_xs = XML::Simple->new();
 }
 

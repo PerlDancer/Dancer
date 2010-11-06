@@ -1,3 +1,19 @@
+Dancer 1.1999_03 (RC3)
+    [Alexis Sukrieh]
+    * Transparent unicode support
+      Dancer now takes care transparently of decoding unicode strings
+      used within route handlers and encoding them back before sending
+      a response content. Once the 'charset' setting is set, the user
+      has nothing more to do to have a working unicode-aware application.
+    * FIX for issue #172
+      More documentation added to Dancer::Request, all public method
+      are documented. A pod coverage test has been added for this
+      module.
+    * Documentation update The deployment documentation is more precise about
+      cgi/fast-cgi deployment under Apache.
+    * FIX for issue GH#171
+      Scaffolded configuration files are fully commented in order to quickly
+      guide the user in her first steps.
 
 Dancer 1.1999_02 (RC2)
 
@@ -17,22 +33,22 @@ Dancer 1.1999_02 (RC2)
     [ Damien Krotkine ]
     * replace all die and warn with croak and carp
 
-	[ Alexis Sukrieh ]
-	* FIX for issue GH #151
-	  utf8 pragma is imported automatically when Dancer is loaded
-	  to allow the usage of UTF-8 strings in the application code.
-	  (Thanks to kocoureasy for the report).
-	* FIX for "UTF-8" issues (GH#153):
-	  - response content is encoded only if content_type is text
-	  - charset setting is normalized to UTF-8 when appropriate
-	  - automatically decode UTF-8 strings in params
-	* FIX scaffolded dispatchers (script/dancer)
-	  The PLACK_ENV variable is not propagated by Apoache to the dispatchers (at 
-	  least with our Deployment examples) so the dispatchers aren't aware of the 
-	  PSGI context if we don't tell them explicitly.
-	  This patch forces the dispatchers in PSGI mode.
+    [ Alexis Sukrieh ]
+    * FIX for issue GH #151
+      utf8 pragma is imported automatically when Dancer is loaded
+      to allow the usage of UTF-8 strings in the application code.
+      (Thanks to kocoureasy for the report).
+    * FIX for "UTF-8" issues (GH#153):
+      - response content is encoded only if content_type is text
+      - charset setting is normalized to UTF-8 when appropriate
+      - automatically decode UTF-8 strings in params
+    * FIX scaffolded dispatchers (script/dancer)
+      The PLACK_ENV variable is not propagated by Apoache to the dispatchers (at
+      least with our Deployment examples) so the dispatchers aren't aware of the
+      PSGI context if we don't tell them explicitly.
+      This patch forces the dispatchers in PSGI mode.
     * FIX (unknown bug)
-	  When a serializer is set and show_errors is true, don't expose internal
+      When a serializer is set and show_errors is true, don't expose internal
       errors caught.
 
     [ Naveen ]
@@ -71,7 +87,7 @@ Dancer 1.1999_01 (RC1)
     * Dancer::Test function get_response is renamed to dancer_response
       get_response still works but is deprecated
     * dispatch.f?cgi scripts use FindBin to resolve their location.
-	  FIX a bug when using symlinks.
+      FIX a bug when using symlinks.
 
     [ Franck Cuny ]
     * FIX for issue GH#129 
@@ -88,12 +104,27 @@ Dancer 1.1999_01 (RC1)
       template 'templatename', {}, { layout => 'layoutname' };
  
     [ Philippe Bruhat ]
-	* Make sure a plugin refuse to register a keyword twice
+    * Make sure a plugin refuse to register a keyword twice
 
-	[ SawyerX ]
-	* Lots of documentation updates
+    [ Sawyer X ]
+    * Lots of documentation updates
     * Dancer now logs caught crashes in rendering
       (easier to debug Ajax routes)
+
+Dancer 1.1904
+    [ Sawyer X, Franck Cuny ]
+    * SAX, not Sax.
+    * Check for XML::Parser or XML::SAX in test as well.
+
+Dancer 1.1903
+    [ Sawyer X, Franck Cuny ]
+    * XML::Simple needs either XML::SAX or XML::Parser.
+      (fixed test fails from Dancer::Serializer::XML)
+
+Dancer 1.1902
+
+    [ Adam J. Foxson ]
+    * Addresses issue #136: "readline() on closed filehandle DATA"
 
 Dancer 1.1901 (1.2RC0)
 
