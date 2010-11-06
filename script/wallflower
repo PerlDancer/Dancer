@@ -1,0 +1,48 @@
+#!perl
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use Config;
+use File::Basename ();
+use Cwd qw( realpath );
+
+# must cleanup the dance floor long before Dancer starts moving
+my %option;
+
+BEGIN {
+
+    # some defaults
+    %option = (index => 'index.html',);
+
+    # command-line parameters
+    GetOptions(\%option, 'application=s', 'include|I=s', 'environment=s',
+        'destination=s', 'index=s', 'help', 'manual')
+      or pod2usage(-verbose => 1);
+
+    # simple on-line help
+    pod2usage(-verbose => 1) if $option{help};
+    pod2usage(-verbose => 2) if $option{manual};
+
+    # add include dirs to @INC
+    my $path_sep = $Config::Config{path_sep} || ';';
+    unshift @INC, split /\Q$path_sep\E/, $option{include}
+      if defined $option{include};
+
+    # load the application
+    die "no app" if !defined $option{application};
+    eval "use $option{application}; 1;"
+      or die "Unable to load application '$option{application}': $@";
+}
+
+# Dancer hits the stage
+use Dancer;
+set apphandler => 'Wallflower';
+set environment => $option{environment} || 'production';
+exists $option{$_} and setting('handlers')->{wallflower}{$_} = $option{$_}
+  for qw( destination index );
+
+# I'm just hanging on to my friend's purse
+dance;
+
+__END__
