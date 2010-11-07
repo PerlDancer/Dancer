@@ -443,11 +443,11 @@ WriteMakefile(
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=<% settings.charset %>" />
 <title>'.$appname.'</title>
-<link rel="stylesheet" href="<% request.base %>/css/style.css" />
+<link rel="stylesheet" href="/css/style.css" />
 
 <!-- Grab Google CDN\'s jQuery. fall back to local if necessary -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script>!window.jQuery && document.write(\'<script src="<% request.base%>/javascripts/jquery.js"><\/script>\')</script>
+<script>!window.jQuery && document.write(\'<script src="/javascripts/jquery.js"><\/script>\')</script>
 
 </head>
 <body>
