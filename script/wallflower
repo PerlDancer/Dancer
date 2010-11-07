@@ -19,8 +19,8 @@ BEGIN {
     # command-line parameters
     GetOptions(
         \%option,        'application=s', 'include|I=s', 'environment=s',
-        'destination=s', 'index=s',       'log=s',       'help',
-        'manual'
+        'destination=s', 'index=s',       'log=s',       'vhost=s',
+        'help',          'manual'
     ) or pod2usage(-verbose => 1);
 
     # simple on-line help
@@ -92,6 +92,10 @@ while (<>) {
         # absolute paths have the empty string as their first path_segment
         my (undef, @segments) = $url->path_segments;
 
+        # create a vhost directory if required
+        unshift @segments, eval { $url->host } || $option{vhost}
+          if defined $option{vhost};
+
         # assume directory
         push @segments, $option{index} if $segments[-1] !~ /\./;
 
@@ -147,7 +151,8 @@ wallflower - Sorry I can't dance, I'm hanging on to my friend's purse
  --include     <path>       Library paths to include
  --environment <name>       Application environment (default: production)
  --index       <filename>   Default name for index file (default: index.html)
- --log         <level>      Dancer log level
+ --log         <level>      Dancer log level (default: warning)
+ --vhost       <vhost>      Default vhost, enforce vhost dir creation
 
  --help                     Print a short online help and exit
  --manual                   Print the full manual page and exit
