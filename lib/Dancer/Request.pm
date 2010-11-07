@@ -109,7 +109,8 @@ sub base {
     my $uri = URI->new;
     $uri->scheme($scheme);
     $uri->authority($host || "$server:$port");
-    $uri->path($path      || '/');
+    ($path ||= '/') =~ s/\/$//;
+    $uri->path($path);
 
     return $uri->canonical;
 }
