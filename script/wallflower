@@ -17,9 +17,11 @@ BEGIN {
     %option = (index => 'index.html');
 
     # command-line parameters
-    GetOptions(\%option, 'application=s', 'include|I=s', 'environment=s',
-        'destination=s', 'index=s', 'log=s', 'help', 'manual')
-      or pod2usage(-verbose => 1);
+    GetOptions(
+        \%option,        'application=s', 'include|I=s', 'environment=s',
+        'destination=s', 'index=s',       'log=s',       'help',
+        'manual'
+    ) or pod2usage(-verbose => 1);
 
     # simple on-line help
     pod2usage(-verbose => 1) if $option{help};
@@ -41,7 +43,7 @@ use Dancer;
 use Dancer::Handler;
 
 set environment => $option{environment} || 'production';
-set log => $option{log} || 'warning';
+set log         => $option{log}         || 'warning';
 
 # some basic verification
 my $wwwdocs = $option{destination};
