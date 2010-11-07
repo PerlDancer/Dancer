@@ -64,7 +64,7 @@ while (<>) {
     $log = "$status $url";
 
     # require an absolute path
-    next if $url !~ /\//;
+    next if $url->path !~ /^\//;
 
     # fake a minimal environment
     local $ENV{SERVER_NAME} = 'wallflower';
