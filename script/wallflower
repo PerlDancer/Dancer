@@ -70,7 +70,7 @@ while (<>) {
     $request->headers(
         HTTP::Headers->new(
             Accept => '*/*',
-            $url->host ? (Host => $url->host_port) : (),
+            $url->can('host_port') ? (Host => $url->host_port) : (),
         )
     );
 
