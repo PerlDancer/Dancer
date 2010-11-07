@@ -5,6 +5,7 @@ use Getopt::Long;
 use Pod::Usage;
 use Config;
 use File::Basename ();
+use File::Path 'mkpath';
 use Cwd qw( realpath );
 
 # must cleanup the dance floor long before Dancer starts moving
@@ -13,11 +14,11 @@ my %option;
 BEGIN {
 
     # some defaults
-    %option = (index => 'index.html',);
+    %option = (index => 'index.html');
 
     # command-line parameters
     GetOptions(\%option, 'application=s', 'include|I=s', 'environment=s',
-        'destination=s', 'index=s', 'help', 'manual')
+        'destination=s', 'index=s', 'log=s', 'help', 'manual')
       or pod2usage(-verbose => 1);
 
     # simple on-line help
@@ -37,12 +38,136 @@ BEGIN {
 
 # Dancer hits the stage
 use Dancer;
-set apphandler => 'Wallflower';
+use Dancer::Handler;
+
 set environment => $option{environment} || 'production';
-exists $option{$_} and setting('handlers')->{wallflower}{$_} = $option{$_}
-  for qw( destination index );
+set log => $option{log} || 'warning';
+
+# some basic verification
+my $wwwdocs = $option{destination};
+die "Destination not defined" if !defined $wwwdocs;
+die "Invalid destination '$wwwdocs'" if !-e $wwwdocs || !-d $wwwdocs;
 
 # I'm just hanging on to my friend's purse
-dance;
+my $log;
+while (<>) {
+
+    # ignore blank lines and comments
+    next if /^\s*(#|$)/;
+    chomp;
+
+    # strip everything but the path
+    my $url = URI->new(URI->new($_)->path);
+
+    # default values
+    my ($status, $file, $bytes) = (500, '-', '-');
+    $log = "$status $url";
+
+    # require an absolute path
+    next if $url !~ /\//;
+
+    # fake a minimal environment
+    local $ENV{SERVER_NAME} = 'wallflower';
+    local $ENV{SERVER_PORT} = '80';
+
+    # create a new request object
+    my $request = Dancer::Request->new_for_request(
+        GET => $url    # method path params body headers
+    );
+
+    # obtain a response
+    my $response = Dancer::Handler->handle_request($request);
+    ($status, my $content) = @{$response}[0, 2];
+    $log = "$status $url";
+
+    # save successes to the appropriate file
+    if ($status eq '200') {
+
+        # absolute paths have the empty string as their first path_segment
+        my (undef, @segments) = $url->path_segments;
+
+        # assume directory
+        push @segments, $option{index} if $segments[-1] !~ /\./;
+
+        # generate target file name
+        my $file = File::Spec->catfile($wwwdocs, @segments);
+        pop @segments;
+        my $dir = File::Spec->catdir($wwwdocs, @segments);
+
+        # ensure the subdirectory exists
+        mkpath $dir if !-e $dir;
+        open my $fh, '>', $file or die "Can't open $file for writing: $!";
+
+        # copy content to the file
+        if (ref $content eq 'ARRAY') {
+            print $fh @$content;
+        }
+        elsif (ref $content eq 'GLOB') {
+            print {$fh} <$content>;
+        }
+        elsif (eval { $content->can('getlines') }) {
+            print {$fh} $content->getlines;
+        }
+        else {
+            die "Don't know how to handle $content";
+        }
+
+        # finish
+        close $fh;
+        $bytes = -s $file;
+        $log .= " => $file [$bytes]";
+    }
+}
+continue {
+    print "$log\n" if $log;
+    $log = '';
+}
 
 __END__
+
+=head1 NAME
+
+wallflower - Sorry I can't dance, I'm hanging on to my friend's purse
+
+=head1 SYNOPSIS
+
+wallflower [options]
+
+=head1 DESCRIPTION
+
+B<wallflower> turns your Dancer application into a static web site.
+
+While not suitable for all applications, there are a number of use cases
+where this makes sense. Most web sites are in essence static. Without a
+way for user to update information on the site (via forms, comments, etc)
+the only changes in the web site come from sources that you control
+(including the database) and that are accessible in your development
+environment.
+
+Using Dancer for a static web site actually makes a lot of sense,
+just because if gives you access to all the features of the framework
+for that site. Think of it as I<extreme caching>.
+
+So, forms could be processed on your development server
+(e.g. to update a local database), and the pages to be I<published>
+would be a subset of all the URL that the application supports.
+
+Turning such an application into a real static site (a set of pages
+to upload to a static web server) is just a matter of generating all
+possible URL for the static site and saving them to files.
+
+B<wallflower> does exactly that. It reads a list of URL, strips them
+from their query strings, turn them into C<GET> requests and saves the
+body response to a file whose name matches the request pathinfo.
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK)
+
+=head1 LICENSE
+
+This module is free software and is published under the same
+terms as Perl itself.
+
+=cut
+
