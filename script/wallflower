@@ -208,7 +208,7 @@ The complete list of URL needed to view the site is:
 
 Passing this list to B<wallflower> gives the following result:
 
-    $ wallflower -a mywebapp urls.txt
+    $ wallflower -a mywebapp -d /tmp/output urls.txt
     200 / => /tmp/output/index.html [5257]
     200 /css/error.css => /tmp/output/css/error.css [1210]
     200 /css/style.css => /tmp/output/css/style.css [2972]
