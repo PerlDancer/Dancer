@@ -36,6 +36,11 @@ BEGIN {
     die "no app" if !defined $option{application};
     eval "use $option{application}; 1;"
       or die "Unable to load application '$option{application}': $@";
+
+    # compute the location of the application
+    (my $module = $option{application} . '.pm') =~ s<::></>;
+    $ENV{DANCER_APPDIR} ||= realpath(
+        File::Spec->catdir(File::Basename::dirname($INC{$module}), '..'));
 }
 
 # Dancer hits the stage
