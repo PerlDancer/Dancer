@@ -132,7 +132,20 @@ wallflower - Sorry I can't dance, I'm hanging on to my friend's purse
 
 =head1 SYNOPSIS
 
-wallflower [options]
+ wallflower [options]
+
+=head1 OPTIONS
+
+ --application <name>       Name of the Dancer application
+ --destination <path>       Destination directory for the files
+
+ --include     <path>       Library paths to include
+ --environment <name>       Application environment (default: production)
+ --index       <filename>   Default name for index file (default: index.html)
+ --log         <level>      Dancer log level
+
+ --help                     Print a short online help and exit
+ --manual                   Print the full manual page and exit
 
 =head1 DESCRIPTION
 
