@@ -95,3 +95,39 @@ sub dance {
 1;
 
 __END__
+
+=head1 NAME
+
+Dancer::Handler::Wallflower - A static handler for Dancer
+
+=head1 SYNOPSIS
+
+    # recommended usage is through the wallflower script
+
+=head1 DESCRIPTION
+
+There are a number of websites that are in essence static, but that could
+be written as a Dancer application, because it enables the author to do
+more with less code.  Forms could be processed on the development server
+(e.g. to update a local database), and the pages to be I<published>
+would be a subset of all the URL that the application supports.
+
+Turning such an application into a real static site (a set of pages
+to upload to a static web server) is just a matter of generating all
+possible URL for the static site and saving them to files.
+
+This handler only handles GET requests, strips them from their query
+string and saves the body response to a file whose name matches the
+request pathinfo.
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK)
+
+=head1 LICENSE
+
+This module is free software and is published under the same
+terms as Perl itself.
+
+=cut
+
