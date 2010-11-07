@@ -71,6 +71,12 @@ while (<>) {
     # require an absolute path
     next if $url->path !~ /^\//;
 
+    # fake a minimal environment
+    local $ENV{SERVER_NAME} = 'localhost';
+    local $ENV{SERVER_PORT} = '80';
+    local $ENV{HTTP_HOST} = eval { $url->host } || $option{vhost}
+      if defined $option{vhost};
+
     # create a new request object
     # strip everything but the path
     my $request = Dancer::Request->new_for_request(GET => $url->path);
