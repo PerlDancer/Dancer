@@ -56,23 +56,22 @@ while (<>) {
     next if /^\s*(#|$)/;
     chomp;
 
-    # strip everything but the path
-    my $url = URI->new(URI->new($_)->path);
-
     # default values
+    my $url = URI->new($_);
     my ($status, $file, $bytes) = (500, '-', '-');
     $log = "$status $url";
 
     # require an absolute path
     next if $url->path !~ /^\//;
 
-    # fake a minimal environment
-    local $ENV{SERVER_NAME} = 'wallflower';
-    local $ENV{SERVER_PORT} = '80';
-
     # create a new request object
-    my $request = Dancer::Request->new_for_request(
-        GET => $url    # method path params body headers
+    # strip everything but the path
+    my $request = Dancer::Request->new_for_request(GET => $url->path);
+    $request->headers(
+        HTTP::Headers->new(
+            Accept => '*/*',
+            $url->host ? (Host => $url->host_port) : (),
+        )
     );
 
     # obtain a response
