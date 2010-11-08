@@ -25,6 +25,9 @@ Dancer 1.1999_03 (RC3)
    * Dancer::Logger::Abstract: turn _should() into a closure, and avoid
      setting up the hash again and agai
 
+   [Franck  Cuny]
+   * Closes issue 181 (unknown log level)
+
 Dancer 1.1999_02 (RC2)
 
     [ Mark Allen ]
