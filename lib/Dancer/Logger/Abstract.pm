@@ -22,6 +22,7 @@ my $levels = {
 
     # levels > 0 are for end-users only
     debug   => 1,
+    warn    => 2,
     warning => 2,
     error   => 3,
 };
@@ -29,6 +30,12 @@ my $levels = {
 sub _should {
     my ($self, $msg_level) = @_;
     my $conf_level = setting('log') || 'debug';
+
+    if (!exists $levels->{$conf_level}) {
+        setting('log' => 'debug');
+        $conf_level = 'debug';
+    }
+
     return $levels->{$conf_level} <= $levels->{$msg_level};
 }
 
