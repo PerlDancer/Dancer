@@ -15,6 +15,12 @@ Dancer 1.1999_03 (RC3)
       Scaffolded configuration files are fully commented in order to quickly
       guide the user in her first steps.
 
+   [Damien Krotkine]
+   * Fix Dancer::Plugin OO issue
+
+   [Danijel Tasov]
+   * Fixed expires in cookies + tests
+
 Dancer 1.1999_02 (RC2)
 
     [ Mark Allen ]
