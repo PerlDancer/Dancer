@@ -16,12 +16,12 @@ foreach my $dir ( qw/ public logs views lib / ) {
 	);
 
 	ok(
-		-d $new_dir or mkpath($new_dir),
+		( -d $new_dir or mkpath($new_dir) ),
 		"Created $new_dir",
 	);
 	
 	ok(
-		-d $newer_dir or mkpath($newer_dir),
+		( -d $newer_dir or mkpath($newer_dir) ),
 		"Created $newer_dir",
 	);
 }
