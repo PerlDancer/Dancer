@@ -1,4 +1,4 @@
-package t::lib::LinkBlocker;
+package LinkBlocker;
 use Dancer ':syntax';
 use Dancer::Plugin;
 

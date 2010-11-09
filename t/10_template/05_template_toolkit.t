@@ -6,7 +6,9 @@ use warnings;
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 
-use t::lib::EasyMocker;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use EasyMocker;
 
 BEGIN { 
     plan skip_all => "need Template to run this test" 

@@ -36,7 +36,9 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
-        use t::lib::TestApp;
+        use File::Spec;
+        use lib File::Spec->catdir( 't', 'lib' );
+        use TestApp;
         use Dancer;
         setting apphandler  => 'PSGI';
         setting environment => 'production';

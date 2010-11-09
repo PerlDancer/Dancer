@@ -1,4 +1,4 @@
-package t::lib::TestPlugin;
+package TestPlugin;
 
 use strict;
 use warnings;
