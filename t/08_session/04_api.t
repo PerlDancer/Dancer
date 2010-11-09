@@ -4,7 +4,9 @@ use Dancer::Session::YAML;
 
 plan tests => '4';
 
-use t::lib::EasyMocker;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use EasyMocker;
 
 my $fake_session = bless { foo => 42 }, 'Dancer::Session::YAML';
 

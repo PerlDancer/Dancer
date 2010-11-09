@@ -4,8 +4,10 @@
 use strict;
 use warnings;
 use Test::More import => ['!pass'], tests => 4;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
 
-use t::lib::TestUtils;
+use TestUtils;
 
 {
     package Foo;

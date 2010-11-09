@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 use Test::More tests => 17, import => ['!pass'];
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 use Dancer ':syntax';
 
@@ -43,7 +45,7 @@ my @routes = (
 # making sure response are OK
 foreach my $route (@routes) {
     foreach my $method (@{ $route->{methods} }) {
-        my $request = t::lib::TestUtils::fake_request($method => $route->{path});
+        my $request = TestUtils::fake_request($method => $route->{path});
         Dancer::SharedData->request($request);
         my $response = Dancer::Renderer::get_action_response();
         ok(defined($response), 
@@ -62,7 +64,7 @@ my @failed = (
 
 foreach my $route (@failed) {
     foreach my $method (@{ $route->{methods} }) {
-        my $request = t::lib::TestUtils::fake_request($method => $route->{path});
+        my $request = TestUtils::fake_request($method => $route->{path});
         Dancer::SharedData->request($request);
         my $response = Dancer::Renderer::get_action_response();
         ok(!defined($response), 

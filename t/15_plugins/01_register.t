@@ -2,8 +2,10 @@ use strict;
 use warnings;
 use Test::More 'import' => ['!pass'], tests => 2;
 
-use t::lib::TestUtils;
-use t::lib::TestApp;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
+use TestApp;
 
 $ENV{HTTP_REFERER} = 'http://www.google.com';
 my $response = get_response_for_request(GET => '/');

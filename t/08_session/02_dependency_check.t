@@ -5,7 +5,9 @@ use Test::More import => ['!pass'];
 plan tests => 5;
 
 use Dancer ':syntax';
-use t::lib::EasyMocker;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use EasyMocker;
 
 {
     # checking that EasyMocker works

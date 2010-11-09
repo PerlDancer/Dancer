@@ -3,7 +3,9 @@ use strict;
 use warnings;
 
 use Dancer ':syntax';
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 set views => path(dirname(__FILE__), 'views');
 

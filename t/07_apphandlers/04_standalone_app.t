@@ -31,7 +31,9 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         use Dancer;
-        use t::lib::TestApp;
+        use File::Spec;
+        use lib File::Spec->catdir( 't', 'lib' );
+        use TestApp;
         Dancer::Config->load;
 
         setting environment => 'production';
