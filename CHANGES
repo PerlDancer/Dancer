@@ -31,6 +31,10 @@ Dancer 1.1999_03 (RC3)
     [ Sawyer X ]
     * Overhaul tests to use lib t/lib instead of t::lib::.
       (fixes Windows test fails)
+    * PSGI envs on Windows is in capital letters.
+      (fixes Windows test fails)
+    * Add tests on every required directory to create a fake environment.
+      (realpath() on Windows fails when path doesn't exist)
 
 Dancer 1.1999_02 (RC2)
 
