@@ -42,6 +42,8 @@ my $result = $engine->render(
       bar => 'two',
       baz => 'three'});
 
+$result =~ s/\r//g;
+
 my $expected = 'this is var1="1" and var2=2'."\n\nanother line\n\n one two three\n\n1/1\n";
 is $result, $expected, "processed a template given as a file name";
 
