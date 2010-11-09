@@ -131,7 +131,9 @@ L<Plack::Middleware::Deflater>, then in the configuration file (usually
 F<environments/development.yml>), add these lines:
 
   plack_middlewares:
-    Plack::Middleware::Deflater: [  ]
+    -
+      - Plack::Middleware::Deflater
+      - ...
 
 These lines tell Dancer to add L<Plack::Middleware::Deflater> to the list of
 middlewares to pass to L<Plack::Builder>, when wrapping the Dancer app. The

@@ -29,12 +29,26 @@ sub start {
 
     if (Dancer::Config::setting('plack_middlewares')) {
         my $middlewares = Dancer::Config::setting('plack_middlewares');
+
         croak "Plack::Builder is needed for middlewares support"
           unless Dancer::ModuleLoader->load('Plack::Builder');
 
         my $builder = Plack::Builder->new();
-        for my $m (keys %$middlewares) {
-            $builder->add_middleware($m, @{$middlewares->{$m}});
+
+
+        # XXX remove this after 1.2
+        if (ref $middlewares eq 'HASH') {
+            carp
+              "Listing Plack middlewares as a hash ref is DEPRECATED. Must be listed as an array ref.";
+            for my $m (keys %$middlewares) {
+                $builder->add_middleware($m, @{$middlewares->{$m}});
+            }
+        }
+        else {
+            map {
+                Dancer::Logger::core "add middleware " . $_->[0];
+                $builder->add_middleware(@$_)
+            } @$middlewares;
         }
         $app = $builder->to_app($app);
     }
