@@ -25,4 +25,5 @@ is($headers{'Content-Type'}, 'text/plain', 'mime_type is kept');
 is(ref($resp->{content}), 'GLOB', "content is a File handle");
 
 my $content = read_glob_content($resp->{content});
+$content =~ s/\r//g;
 is_deeply( [split(/\n/, $content)], [1,2,3], 'send_file worked as expected');
