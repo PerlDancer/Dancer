@@ -5,8 +5,10 @@ plan tests => 1;
 
 {
     use Dancer ':syntax';
-    use t::lib::TestPlugin;
+    use File::Spec;
+    use lib File::Spec->catdir( 't', 'lib' );
+    use TestPlugin;
     
-    load_app 't::lib::Forum';
+    load_app 'Forum';
     is(some_plugin_keyword(), 42, 'plugin keyword is exported');
 }

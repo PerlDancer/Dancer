@@ -1,8 +1,8 @@
-package t::lib::TestApp;
+package TestApp;
 
 use Dancer;
 use Data::Dumper;
-use t::lib::LinkBlocker;
+use LinkBlocker;
 
 block_links_from "www.foo.com";
 

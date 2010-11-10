@@ -1,5 +1,5 @@
 Dancer 1.1999_03 (RC3)
-    [Alexis Sukrieh]
+    [ Alexis Sukrieh ]
     * Transparent unicode support
       Dancer now takes care transparently of decoding unicode strings
       used within route handlers and encoding them back before sending
@@ -15,26 +15,34 @@ Dancer 1.1999_03 (RC3)
       Scaffolded configuration files are fully commented in order to quickly
       guide the user in her first steps.
 
-   [Damien Krotkine]
-   * Fix Dancer::Plugin OO issue
+    [ Damien Krotkine ]
+    * Fix Dancer::Plugin OO issue
 
-   [Danijel Tasov]
-   * Fixed expires in cookies + tests
+    [ Danijel Tasov ]
+    * Fixed expires in cookies + tests
 
-   [ Philippe Bruhat ]
-   * Dancer::Logger::Abstract: turn _should() into a closure, and avoid
-     setting up the hash again and agai
+    [ Philippe Bruhat ]
+    * Dancer::Logger::Abstract: turn _should() into a closure, and avoid
+      setting up the hash again and agai
 
-   [Al Newkirk]
-   * fixed redirect to redirect immediately (+ refactoring by franck)
+    [ Franck Cuny ]
+    * Closes issue 181 (unknown log level)
+    * Plack middlewares must be listed in an arrayref (listing them in a
+      hashref is now deprecated)
 
-   [Franck  Cuny]
-   * Closes issue 181 (unknown log level)
-   * Plack middlewares must be listed in an arrayref (listing them in a
-     hashref is now deprecated)
+    [ Al Newkirk ]
+    * fixed redirect to redirect immediately (+ refactoring by franck)
 
-   [Dave Doyle]
-   * clarify Pod as to how before_template works 
+    [ Dave Doyle ]
+    * clarify Pod as to how before_template works 
+
+    [ Sawyer X ]
+    * Overhaul tests to use lib t/lib instead of t::lib::.
+      (fixes Windows test fails)
+    * PSGI envs on Windows is in capital letters.
+      (fixes Windows test fails)
+    * Add tests on every required directory to create a fake environment.
+      (realpath() on Windows fails when path doesn't exist)
 
 Dancer 1.1999_02 (RC2)
 

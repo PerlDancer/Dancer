@@ -6,7 +6,9 @@ use warnings;
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 
-use t::lib::EasyMocker;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use EasyMocker;
 
 BEGIN { 
     plan skip_all => "need Template to run this test" 
@@ -39,6 +41,8 @@ my $result = $engine->render(
       foo => 'one',
       bar => 'two',
       baz => 'three'});
+
+$result =~ s/\r//g;
 
 my $expected = 'this is var1="1" and var2=2'."\n\nanother line\n\n one two three\n\n1/1\n";
 is $result, $expected, "processed a template given as a file name";

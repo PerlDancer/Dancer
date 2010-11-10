@@ -4,7 +4,9 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
 
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 use Test::More import => ['!pass'];
 
 plan tests => 7;

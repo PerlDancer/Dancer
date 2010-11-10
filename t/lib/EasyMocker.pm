@@ -1,4 +1,4 @@
-package t::lib::EasyMocker;
+package EasyMocker;
 # I want an easy to use mocker, with pretty explicit syntax
 
 use strict;
