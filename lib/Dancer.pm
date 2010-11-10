@@ -387,11 +387,13 @@ them.
 Defines a before_template filter:
 
     before_template sub {
+        my $tokens = shift;
         # do something with request, vars or params
     };
 
 The anonymous function which is given to C<before_template> will be executed
-before sending data and tokens to the template.
+before sending data and tokens to the template. Receives a hashref of the
+tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
 
