@@ -25,8 +25,13 @@ Dancer 1.1999_03 (RC3)
    * Dancer::Logger::Abstract: turn _should() into a closure, and avoid
      setting up the hash again and agai
 
+   [Al Newkirk]
+   * fixed redirect to redirect immediately (+ refactoring by franck)
+
    [Franck  Cuny]
    * Closes issue 181 (unknown log level)
+   * Plack middlewares must be listed in an arrayref (listing them in a
+     hashref is now deprecated)
 
 Dancer 1.1999_02 (RC2)
 
