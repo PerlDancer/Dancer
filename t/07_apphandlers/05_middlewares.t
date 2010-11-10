@@ -5,6 +5,8 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
 use Plack::Loader;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
 
 plan skip_all => "Test::TCP is needed for this test"
   unless Dancer::ModuleLoader->load("Test::TCP");
@@ -36,7 +38,7 @@ foreach my $c (@$confs) {
         server => sub {
             my $port = shift;
 
-            use t::lib::TestApp;
+            use TestApp;
             Dancer::Config->load;
 
             setting environment       => 'production';

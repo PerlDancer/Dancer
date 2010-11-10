@@ -170,6 +170,7 @@ t/07_apphandlers/01_base.t
 t/07_apphandlers/02_apache2_plack.t
 t/07_apphandlers/03_psgi_app.t
 t/07_apphandlers/04_standalone_app.t
+t/07_apphandlers/05_middlewares.t
 t/08_session/000_create_fake_env.t
 t/08_session/01_load.t
 t/08_session/02_dependency_check.t
