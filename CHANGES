@@ -33,6 +33,9 @@ Dancer 1.1999_03 (RC3)
    * Plack middlewares must be listed in an arrayref (listing them in a
      hashref is now deprecated)
 
+   [Dave Doyle]
+   * clarify Pod as to how before_template works 
+
 Dancer 1.1999_02 (RC2)
 
     [ Mark Allen ]
