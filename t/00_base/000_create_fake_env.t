@@ -4,24 +4,17 @@ use warnings;
 use File::Spec;
 use File::Path;
 use File::Basename;
-use Test::More tests => 4 * 2, import => ['!pass'];
+use Test::More tests => 4 * 3, import => ['!pass'];
 
-foreach my $dir ( qw/ public logs views lib / ) {
-    my $new_dir = File::Spec->catdir(
-        dirname($0), $dir
-    );
+my @dirs = map {
+    $_,
+    File::Spec->catdir( dirname($0), $_ ),
+    File::Spec->catdir( 't', 'lib', $_ ),
+} qw/ public logs views lib /;
 
-    my $newer_dir = File::Spec->catdir(
-        't', 'lib', $dir
-    );
-
+foreach my $dir (@dirs) {
     ok(
-        ( -d $new_dir or mkpath($new_dir) ),
-        "Created $new_dir",
-    );
-
-    ok(
-        ( -d $newer_dir or mkpath($newer_dir) ),
-        "Created $newer_dir",
+        ( -d $dir or mkpath($dir) ),
+        "Created $dir",
     );
 }
