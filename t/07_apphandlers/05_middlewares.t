@@ -4,7 +4,8 @@ use warnings;
 
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
-use Plack::Loader;
+use LWP::UserAgent;
+
 use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 
@@ -13,7 +14,7 @@ plan skip_all => "Test::TCP is needed for this test"
 plan skip_all => "Plack is needed to run this test"
   unless Dancer::ModuleLoader->load('Plack::Request');
 
-use LWP::UserAgent;
+Dancer::ModuleLoader->load('Plack::Loader');
 
 # XXX the first test will be useless when we will remove support
 # for hashref middlewares list
