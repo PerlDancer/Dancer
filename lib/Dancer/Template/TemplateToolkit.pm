@@ -11,6 +11,8 @@ use base 'Dancer::Template::Abstract';
 
 my $_engine;
 
+sub get_engine { $_engine }
+
 sub init {
     my ($self) = @_;
 
