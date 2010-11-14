@@ -1,3 +1,10 @@
+Dancer 1.1999_04 (RC4)
+    [ Sawyer X ]
+    * Load Plack::Loader dynamically in test.
+
+    [ Yanick Champoux ]
+    * Doc fix.
+
 Dancer 1.1999_03 (RC3)
     [ Alexis Sukrieh ]
     * Transparent unicode support
