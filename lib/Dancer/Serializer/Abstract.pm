@@ -2,10 +2,11 @@ package Dancer::Serializer::Abstract;
 
 use strict;
 use warnings;
+use Carp;
 use base 'Dancer::Engine';
 
-sub serialize   { die 'must be implemented' }
-sub deserialize { die 'must be implemented' }
+sub serialize   { confess 'must be implemented' }
+sub deserialize { confess 'must be implemented' }
 
 # must be implemented to delcare if the serializer can be used or not
 # most of the time, just use :

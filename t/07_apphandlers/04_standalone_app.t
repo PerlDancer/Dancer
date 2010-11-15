@@ -3,12 +3,13 @@ use strict;
 use warnings;
 use Dancer::ModuleLoader;
 
-plan skip_all => "LWP is needed for this test" 
-    unless Dancer::ModuleLoader->load('LWP::UserAgent');
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP");
 
+use LWP::UserAgent;
+
 plan tests => 4;
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
@@ -30,7 +31,9 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         use Dancer;
-        use t::lib::TestApp;
+        use File::Spec;
+        use lib File::Spec->catdir( 't', 'lib' );
+        use TestApp;
         Dancer::Config->load;
 
         setting environment => 'production';

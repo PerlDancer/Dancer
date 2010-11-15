@@ -1,13 +1,13 @@
 package Dancer::Logger::File;
 use strict;
 use warnings;
+use Carp;
 use base 'Dancer::Logger::Abstract';
 
 use File::Spec;
 use Dancer::Config 'setting';
 use Dancer::FileUtils 'path';
-
-my $logfile;
+use IO::File;
 
 sub logdir {
     my $appdir = setting('appdir');
@@ -16,35 +16,37 @@ sub logdir {
 }
 
 sub init {
+    my ($self) = @_;
     my $logdir = logdir();
 
     if (!-d $logdir) {
         if (not mkdir $logdir) {
-            warn "log directory $logdir doesn't exist, unable to create";
-            undef $logfile;
+            carp "log directory $logdir doesn't exist, unable to create";
             return;
         }
     }
 
-    $logfile = setting('environment');
+    my $logfile = setting('environment');
     $logfile = path($logdir, "$logfile.log");
 
-    my $fh;
-    unless (open($fh, '>>', $logfile)) {
-        warn "Unable to open $logfile for writing, unable to log";
-        undef $logfile;
+    my $fh = IO::File->new;
+    unless ($fh->open($logfile, '>>')) {
+        carp "Unable to open $logfile for writing, unable to log";
     }
-    close $fh;
+
+    $fh->autoflush;
+    $self->{logfile} = $logfile;
+    $self->{fh} = $fh;
 }
 
 sub _log {
     my ($self, $level, $message) = @_;
-    return unless defined $logfile;
+    my $fh = $self->{fh};
 
-    if (open(my $fh, '>>', $logfile)) {
-        print $fh $self->format_message($level => $message);
-        close $fh;
-    }
+    return unless(ref $fh && $fh->opened);
+
+    $fh->print($self->format_message($level => $message))
+        or carp "writing to logfile $self->{logfile} failed";
 }
 
 1;

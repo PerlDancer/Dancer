@@ -1,5 +1,7 @@
 use Test::More import => ['!pass'];
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 use Dancer ':syntax';
 
 get '/' => sub {
@@ -26,7 +28,7 @@ foreach my $test (@tests) {
     my $response = Dancer::Renderer::get_action_response();
 
     ok(defined($response), "route handler found for ".$test->{path});
-    my %headers = @{$response->{headers}};
+    my %headers = @{$response->headers_to_array};
     is($headers{'Content-Type'}, 
         $test->{expected}, 
         "content_type looks good for ".$test->{path}); 

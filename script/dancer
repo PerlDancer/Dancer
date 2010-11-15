@@ -4,8 +4,10 @@ use strict;
 use warnings;
 use Dancer::Template::Simple;
 use File::Basename 'basename', 'dirname';
+use File::Path 'mkpath';
 use File::Spec::Functions;
 use Getopt::Long;
+use Pod::Usage;
 use Dancer::Renderer;
 use LWP::UserAgent;
 use constant FILE => 1;
@@ -23,14 +25,19 @@ GetOptions(
     "h|help"          => \$help,
     "a|application=s" => \$name,
     "p|path=s"        => \$path,
-);
+    "v|version"       => \&version,
+) or pod2usage( -verbose => 1 );
+
+# simple on-line help
+pod2usage( -verbose => 1 ) if $help;
 
 # main
 my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 
-usage() and exit(0) if $help;
-usage() if not defined $name;
-usage() unless -d $path && -w $path;
+pod2usage( -verbose => 1 ) if $help;
+pod2usage( -verbose => 1 ) if not defined $name;
+pod2usage( -verbose => 1 ) unless -d $path && -w $path;
+sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
 
 validate_app_name($name);
 
@@ -48,23 +55,6 @@ safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
 # subs
-
-sub usage {
-    print <<'ENDUSAGE';
-Dancer Helper - bootstrap a Dancer application
-
-Usage:
-    dancer [options] -a <appname>
-
-    options are following :
-    -h, --help            : display this help message
-    -a, --application     : name of the application to create
-    -p, --path            : existing path where to create the application tree
-                            (current directory if not specified, must be writable)
-
-ENDUSAGE
-    exit 0;
-}
 
 sub validate_app_name {
     my $name = shift;
@@ -177,7 +167,7 @@ sub safe_mkdir {
     my ($dir) = @_;
     if (not -d $dir) {
         print "+ $dir\n";
-        mkdir $dir;
+        mkpath $dir or die "could not mkpath $dir: $!";
     }
     else {
         print "  $dir\n";
@@ -222,7 +212,6 @@ sub write_data_to_file {
     close $fh;
 }
 
-# LWP, File::Fetch and other high level interfaces are not avaiable to us in perl 5.8.5.
 
 sub send_http_request {
     my $url = shift;
@@ -244,14 +233,16 @@ sub version_check {
     my $latest_version = 0;
     require Dancer;
 
-    my $resp = send_http_request('http://search.cpan.org/dist/Dancer/CHANGES');
-    if ($resp && $resp =~ m/Dancer (\d\.\d+)/) {
+    my $resp = send_http_request('http://cpansearch.perl.org/src/SUKRIA/?C=N;O=D');
+    if ($resp && $resp =~ m/Dancer-(\d\.\d+)\//) {
         $latest_version = $1;
     }
 
+    return if $DANCER_VERSION =~  m/_/;
+
     if ($latest_version > $DANCER_VERSION) {
         print qq|
-The latest Dancer release is $latest_version, you are currently using $DANCER_VERSION.
+The latest stable Dancer release is $latest_version, you are currently using $DANCER_VERSION.
 Please check http://search.cpan.org/dist/Dancer/ for updates.
 
 |;
@@ -330,6 +321,9 @@ WriteMakefile(
               href="http://search.cpan.org/dist/Dancer/lib/Dancer/Introduction.pod">Introduction</a></li>
               <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Cookbook.pod">Cookbook</a></li>
               <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Deployment.pod">Deployment Guide</a></li>
+              <li><a
+              href="http://search.cpan.org/dist/Dancer/lib/Dancer/Tutorial.pod"
+              title="a tutorial to build a small blog engine with Dancer">Tutorial</a></li>
             </ul>
           </li>
 
@@ -432,9 +426,8 @@ WriteMakefile(
                 <h2>Enjoy web development again</h2>
 
                 <p>
-                With the <tt>auto_reload</tt> feature (which is enabled in the
-                <tt>development</tt> environment)
-                you don\'t even have to restart the standalone webserver to see your changes.
+                Once you\'ve made your changes, restart your standalone server
+                (bin/app.pl) and you\'re ready to test your web application.
                 </p>
             </li>
 
@@ -473,6 +466,12 @@ use Dancer ':syntax';
 use FindBin '\$RealBin';
 use Plack::Runner;
 
+# For some reason Apache SetEnv directives dont propagate
+# correctly to the dispatchers, so forcing PSGI and env here 
+# is safer.
+set apphandler => 'PSGI';
+set environment => 'production';
+
 my \$psgi = path(\$RealBin, '..', 'bin', 'app.pl');
 Plack::Runner->run(\$psgi);
 ",
@@ -483,6 +482,12 @@ Plack::Runner->run(\$psgi);
 use Dancer ':syntax';
 use FindBin '\$RealBin';
 use Plack::Handler::FCGI;
+
+# For some reason Apache SetEnv directives dont propagate
+# correctly to the dispatchers, so forcing PSGI and env here 
+# is safer.
+set apphandler => 'PSGI';
+set environment => 'production';
 
 my \$psgi = path(\$RealBin, '..', 'bin', 'app.pl');
 my \$app = do(\$psgi);
@@ -802,33 +807,86 @@ pre.error {
 
 'config.yml' =>
 
-"layout: \"main\"
-logger: \"console\"
-charset: \"utf8\"
+"# This is the main configuration file of your Dancer app
+# env-related settings should go to environments/\$env.yml
+# all the settings in this file will be loaded at Dancer's startup.
+
+# Your application's name
 appname: \"$name\"
+
+# The default layout to use for your application (located in
+# views/layouts/main.tt)
+layout: \"main\"
+
+# when the charset is set to UTF-8 Dancer will handle for you
+# all the magic of encoding and decoding. You should not care
+# about unicode within your app when this setting is set (recommended).
+charset: \"UTF-8\"
+
+# template engine
+# simple: default and very basic template engine
+# template_toolkit: TT
+
+template: \"simple\"
+
+# template: \"template_toolkit\"
+# engines:
+#   template_toolkit:
+#     ENCODING: 'utf8'
+#     START_TAG: '[%'
+#     END_TAG: '%]
 
 ",
 
 'jquery.js' => jquery_minified(),
 
 'development.yml' =>
-"log: \"core\"
+"# configuration file for development environment
+
+# the logger engine to use
+# console: log messages to STDOUT (your console where you started the
+#          application server)
+# file:    log message to a file in log/
+logger: \"console\"
+
+# the log level for this environement
+# core is the lowest, it shows Dancer's core log messages as well as yours
+# (debug, warning and error)
+log: \"core\"
+
+# shoud Dancer consider warnings as critical errors?
 warnings: 1
+
+# should Dancer show a stacktrace when an error is caught?
 show_errors: 1
 
-# auto_reload is a development feature
+# auto_reload is a development and experimental feature
 # you should enable it by yourself if you want it
-# Module::Refresh is needed
+# Module::Refresh is needed 
+# 
+# Be aware it's unstable and may cause a memory leak.
+# DO NOT EVER USE THAT FEATURE IN PRODUCTION 
+# OR TINY KITTENS SHALL DIE WITH LOTS OF SUFFERING
 auto_reload: 0
 ",
 
 'production.yml' =>
-'log: "warning"
+'# configuration file for production environment
+
+# only log warning and error messsages
+log: "warning"
+
+# log message to a file in logs/
+logger: "file"
+
+# don\'t consider warnings critical
 warnings: 0
+
+# hide errors 
 show_errors: 0
+
+# cache route resolution for maximum performance
 route_cache: 1
-# never enable auto_reload in production
-auto_reload: 0
 
 ',
 
@@ -1300,23 +1358,22 @@ __END__
 
 dancer - helper script to create new Dancer applications
 
+=head1 SYNOPSIS
+
+dancer [options] -a <appname>
+
+=head1 OPTIONS
+
+    -h, --help            : print what you are currently reading
+    -a, --application     : the name of your application
+    -p, --path            : the path where to create your application
+                              (current directory if not specified)
+    -v, --version         : print the version of dancer being used
+
 =head1 DESCRIPTION
 
 Helper script for providing a bootstrapping method to quickly and easily create
 the framework for a new Dancer application.
-
-=head1 USAGE
-
-dancer [options] -a <appname>
-
-=over
-
-=item -h, --help            : print what you are currently reading
-=item -a, --application     : the name of your application
-=item -p, --path            : the path where to create your application
-                              (current directory if not specified)
-
-=back
 
 =head1 EXAMPLE
 

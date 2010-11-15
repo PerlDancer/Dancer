@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 12;
 use Dancer::Cookie;
 
 my $c = Dancer::Cookie->new(
@@ -14,15 +14,28 @@ is(ref($c), 'Dancer::Cookie',
 is($c->to_header, 'dancer.slot=42; path=/; HttpOnly',
     "simple cookie header looks good");
 
-my $time = 1256392307;
-$c = Dancer::Cookie->new(
-    name  => 'dancer.slot',
-    value => 42,
-    expires => $time,
+my %tests = (
+    1288817656 => "Wed, 03-Nov-2010 20:54:16 GMT",
+    1288731256 => "Tue, 02-Nov-2010 20:54:16 GMT",
+    1288644856 => "Mon, 01-Nov-2010 20:54:16 GMT",
+    1288558456 => "Sun, 31-Oct-2010 20:54:16 GMT",
+    1288472056 => "Sat, 30-Oct-2010 20:54:16 GMT",
+    1288385656 => "Fri, 29-Oct-2010 20:54:16 GMT",
+    1288299256 => "Thu, 28-Oct-2010 20:54:16 GMT",
+    1288212856 => "Wed, 27-Oct-2010 20:54:16 GMT",
 );
-is($c->to_header, 
-    'dancer.slot=42; path=/; expires=Sat, 24-Oct-2009 13:51:47 GMT; HttpOnly',
-    "header with expires looks good");
+
+while(my ($time, $expected) = each %tests) {
+    $c = Dancer::Cookie->new(
+        name  => 'dancer.slot',
+        value => 42,
+        expires => $time,
+    );
+
+    is($c->to_header, 
+        "dancer.slot=42; path=/; expires=$expected; HttpOnly",
+        "header with expires looks good ($time)");
+}
 
 $c = Dancer::Cookie->new(
     name => 'dancer.slot',

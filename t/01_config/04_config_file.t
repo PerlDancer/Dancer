@@ -4,11 +4,13 @@ use Test::More import => ['!pass'];
 
 plan skip_all => "YAML needed to run this tests"
     unless Dancer::ModuleLoader->load('YAML');
-plan tests => 16;
+plan tests => 17;
 
 use File::Temp qw/tempdir/;
 use Dancer ':syntax';
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 my $dir = tempdir(CLEANUP => 1);
 set appdir => $dir;
@@ -24,6 +26,7 @@ ok(Dancer::Config->load, 'Config load works without conffile');
 my $conf = '
 port: 4500
 access_log: 0
+charset: "utf8"
 logger: file
 ';
 write_file($conffile => $conf);
@@ -36,6 +39,10 @@ is(setting('access_log'), 0,
     'setting access_log looks good');
 is(setting('logger'), 'file',
     'setting logger looks good');
+
+# issue GH#153
+is(setting('charset'), 'UTF-8',
+    "charset setting is normalized");
 
 ok(defined(Dancer::Logger->logger), 'logger is defined');
 

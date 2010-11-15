@@ -2,7 +2,8 @@ package Dancer::Renderer;
 
 use strict;
 use warnings;
-
+use Carp;
+use HTTP::Headers;
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Cookie;
@@ -17,8 +18,8 @@ use Dancer::Logger;
 use MIME::Types;
 
 BEGIN {
-	MIME::Types->new(only_complete => 1);
-};
+    MIME::Types->new(only_complete => 1);
+}
 
 sub render_file {
     return get_file_response();
@@ -54,17 +55,17 @@ sub render_error {
 sub response_with_headers {
     my $response = shift;
 
-    $response->{headers} ||= [];
-    push @{$response->{headers}},
-      ('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+    $response->{headers} ||= HTTP::Headers->new;
+    $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
 
     # add cookies
     foreach my $c (keys %{Dancer::Cookies->cookies}) {
         my $cookie = Dancer::Cookies->cookies->{$c};
         if (Dancer::Cookies->has_changed($cookie)) {
-            push @{$response->{headers}}, ('Set-Cookie' => $cookie->to_header);
+            $response->header('Set-Cookie' => $cookie->to_header);
         }
     }
+
     return $response;
 }
 
@@ -109,12 +110,19 @@ sub get_action_response {
     {
         $limit++;
         if ($limit > $MAX_RECURSIVE_LOOP) {
-            die "infinite loop detected, "
+            croak "infinite loop detected, "
               . "check your route/filters for "
               . $method . ' '
               . $path;
         }
         return get_action_response();
+    }
+
+    # redirect immediately - skip route execution
+    if (my $status = Dancer::Response::status) {
+        if ($status == 302 || $status == 301) {
+            return serialize_response_if_needed(Dancer::Response->current);
+        }
     }
 
     # execute the action
@@ -190,13 +198,15 @@ sub get_mime_type {
 # set of builtin templates needed by Dancer when rendering HTML pages
 sub templates {
     my $charset = setting('charset') || 'UTF-8';
-    {   default => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    {   default =>
+          '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
 <title><% title %></title>
 <link rel="stylesheet" href="/css/<% style %>.css" />
-<meta http-equiv="Content-type" content="text/html; charset='.$charset.'" />
+<meta http-equiv="Content-type" content="text/html; charset=' . $charset
+          . '" />
 </head>
 <body>
 <h1><% title %></h1>

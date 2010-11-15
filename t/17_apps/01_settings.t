@@ -37,7 +37,9 @@ is $app->setting('foo'), 42,
 
     };
 
-    load_app 't::lib::TestApp', 
+    use File::Spec;
+    use lib File::Spec->catdir( 't', 'lib' );
+    load_app 'TestApp', 
         settings => { 
             foo => 'testapp',
             onlyapp => '43',

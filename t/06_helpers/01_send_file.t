@@ -1,5 +1,7 @@
 use Test::More import => ['!pass'];
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 use Dancer ':syntax';
 use Dancer::FileUtils 'read_glob_content';
 
@@ -18,9 +20,10 @@ my $resp = Dancer::Renderer->get_action_response();
 
 
 ok(defined($resp), "route handler found for /cat/file.txt");
-my %headers = @{$resp->{headers}};
+my %headers = @{$resp->headers_to_array};
 is($headers{'Content-Type'}, 'text/plain', 'mime_type is kept');
 is(ref($resp->{content}), 'GLOB', "content is a File handle");
 
 my $content = read_glob_content($resp->{content});
+$content =~ s/\r//g;
 is_deeply( [split(/\n/, $content)], [1,2,3], 'send_file worked as expected');

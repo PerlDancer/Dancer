@@ -8,41 +8,49 @@ Dancer has been designed to be flexible, and this flexibility extends to your
 choices when deploying your Dancer app.
 
 
-=head2 Running as a cgi-script
+=head2 Running as a cgi-script (or fast-cgi)
 
 In providing ultimate flexibility in terms of deployment, your Dancer app can
 be run as a simple cgi-script out-of-the-box. No additional web-server
 configuration needed.  Your web server should recognize .cgi files and be able
 to serve Perl scripts.  The Perl module Plack::Runner is required.
 
-Start by adding the following to your apache configuration:
+Start by adding the following to your apache configuration (httpd.conf or
+sites-available/*site*):
 
     <VirtualHost *:80>
-        ServerName your.server.domain
+        ServerName www.example.com
+        DocumentRoot /srv/www.example.com/public
+    	ServerAdmin you@example.com
 
-        # The DocumentRoot should point to your "public" directory
-        DocumentRoot "/path/to/dancer/public"
+   		<Directory "/srv/www.example.com/public">
+           AllowOverride None
+           Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+           Order allow,deny
+           Allow from all
+           AddHandler cgi-script .cgi
+   		</Directory>
 
-        <Directory "/path/to/dancer/public">
-            AllowOverride None
-            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch -Indexes
-            
-			Order allow,deny
-            Allow from all
-            AddHandler cgi-script .cgi
-        </Directory>
+   		RewriteEngine On
+   		RewriteCond %{REQUEST_FILENAME} !-f
+   		RewriteRule ^(.*)$ /dispatch.fcgi$1 [QSA,L]
 
-    </VirtualHost>
+        ErrorLog  /var/log/apache2/www.example.com-error.log
+        CustomLog /var/log/apache2/www.example.com-access_log common
+	</VirtualHost>
 
-Enable Pretty-URLs if your web server supports .htaccess files and mod_rewrite.
-Place this code in a file called .htaccess (or directly in your VirtualHost
-configuration) in your application's root folder:
+Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's configuration. 
+But if your web server supports .htaccess files, you can drop those lines in a .htaccess file.
+
+To check if your server supports mod_rewrite type C<apache2 -l> to list modules. 
+To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in 
+a file called .htaccess in your application's root folder:
 
     # BEGIN dancer application htaccess
     RewriteEngine On
     RewriteCond %{SCRIPT_FILENAME} !-d
     RewriteCond %{SCRIPT_FILENAME} !-f
-    RewriteRule (.*) /dispatch.cgi/$1 [L]
+    RewriteRule (.*) /dispatch.cgi$1 [L]
     # END dancer application htaccess
 
 Now you can access your dancer application URLs as if you were using the
@@ -53,6 +61,19 @@ embedded web server.
 This option is a no-brainer, easy to setup, low maintenance but serves requests
 slower than all other options.
 
+You can use the same technique to deploy with FastCGI, by just changing the line:
+	
+	AddHandler cgi-script .cgi
+
+By:
+
+	AddHandler fastcgi-script .fcgi
+	
+Of course remember to update your rewrite rules, if you have set any:
+
+    RewriteRule (.*) /dispatch.fcgi$1 [L]
+
+
 =head2 Running stand-alone
 
 At the simplest, your Dancer app can run standalone, operating as its own
@@ -60,7 +81,7 @@ webserver using HTTP::Simple::PSGI.
 
 Simply fire up your app:
 
-    $ perl ./mysuperwebapp.pl
+    $ perl bin/app.pl
     >> Listening on 0.0.0.0:3000
     == Entering the dance floor ...
 
@@ -89,9 +110,11 @@ C<Corona> is a C<Coro> based web server.
 
 =back
 
-To start your application, just run plackup
+To start your application, just run plackup (see L<Plack> and specific servers
+above for all available options):
 
-   $ plackup -s Twiggy -p 5000 <YOURAPP>.pl
+   $ plackup bin/app.pl
+   $ plackup -E deployment -s Starman --workers=10 -p 5001 -a bin/app.pl
 
 As you can see, the scaffolded Perl script for your app can be used as a PSGI
 startup file.
@@ -108,7 +131,9 @@ L<Plack::Middleware::Deflater>, then in the configuration file (usually
 F<environments/development.yml>), add these lines:
 
   plack_middlewares:
-    Plack::Middleware::Deflater: [  ]
+    -
+      - Plack::Middleware::Deflater
+      - ...
 
 These lines tell Dancer to add L<Plack::Middleware::Deflater> to the list of
 middlewares to pass to L<Plack::Builder>, when wrapping the Dancer app. The
@@ -337,30 +362,6 @@ To set the environment you want to use for your application (production or devel
         ...
     </VirtualHost>
 
-=head3 Running from Apache via FastCGI
-
-You can run your Dancer app from Apache via FastCGI using the dispatch.fcgi
-script written by the dancer helper script when you create your application
-scaffolding:
-
-    <VirtualHost *:80>
-        ServerName localhost
-        DocumentRoot "/tmp/TestApp/public"
-
-        <Directory "/tmp/TestApp/public">
-            AllowOverride None
-            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-            Order allow,deny
-            Allow from all
-            AddHandler fastcgi-script .fcgi
-        </Directory>
-
-        RewriteEngine On
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^(.*)$ /dispatch.fcgi [QSA,L]
-    </VirtualHost>
-
-
 =head3 Running from Apache under appdir
 
 If you want to deploy multiple applications under the same VirtualHost, using
@@ -468,7 +469,7 @@ Your lighttpd configuration:
 
 Launch your application
 
-    plackup -s FCGI --port 8080 app.pl
+    plackup -s FCGI --port 8080 bin/app.pl
 
 =head4 Unix socket
 
@@ -489,4 +490,4 @@ Your lighttpd configuration:
 
 Launch your application:
 
-    plackup -s FCGI --listen /tmp/fcgi.sock app.pl
+    plackup -s FCGI --listen /tmp/fcgi.sock bin/app.pl

@@ -4,11 +4,10 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-plan skip_all => "LWP::UserAgent is needed to run this tests"
-    unless Dancer::ModuleLoader->load('LWP::UserAgent');
-
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
+
+use LWP::UserAgent;
 
 plan tests => 26;
 

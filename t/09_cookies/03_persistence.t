@@ -5,12 +5,11 @@ use Test::More import => ['!pass'];
 BEGIN {
     use Dancer::ModuleLoader;
 
-    plan skip_all => "LWP::UserAgent is needed to run this tests"
-        unless Dancer::ModuleLoader->load('LWP::UserAgent');
     plan skip_all => 'Test::TCP is needed to run this test'
         unless Dancer::ModuleLoader->load('Test::TCP');
 };
 
+use LWP::UserAgent;
 use Dancer;
 
 use File::Spec;
@@ -31,6 +30,7 @@ Test::TCP::test_tcp(
             "no cookies found for the client $client";
 
             $res = $ua->get("http://127.0.0.1:$port/set_cookie/$client/42");
+            # use YAML::Syck; warn Dump $res;
             ok($res->is_success, "set_cookie for client $client");
 
             $res = $ua->get("http://127.0.0.1:$port/cookies");
@@ -43,7 +43,9 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
-        use t::lib::TestApp;
+        use File::Spec;
+        use lib File::Spec->catdir( 't', 'lib' );
+        use TestApp;
         Dancer::Config->load;
 
         setting access_log => 0;

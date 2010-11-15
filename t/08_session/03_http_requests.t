@@ -5,13 +5,13 @@ use warnings;
 BEGIN {
     use Dancer::ModuleLoader;
 
-    plan skip_all => "LWP::UserAgent is needed to run this tests"
-        unless Dancer::ModuleLoader->load('LWP::UserAgent');
     plan skip_all => 'Test::TCP is needed to run this test'
         unless Dancer::ModuleLoader->load('Test::TCP');
     plan skip_all => 'YAML is needed to run this test'
         unless Dancer::ModuleLoader->load('YAML');
 }
+
+use LWP::UserAgent;
 
 use File::Spec;
 use File::Temp 'tempdir';
@@ -59,7 +59,9 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
-        use t::lib::TestApp;
+        use File::Spec;
+        use lib File::Spec->catdir( 't', 'lib' );
+        use TestApp;
         Dancer::Config->load;
 
         setting appdir => $tempdir;

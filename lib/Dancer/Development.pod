@@ -158,11 +158,11 @@ perform a dynamic loading. Dancer has a class dedicated to that job:
 L<Dancer::ModuleLoader>. Here is an example of how to use it:
 
     package Dancer::Some::Thing;
-    
+    use Carp;
+
     sub init {
-        unless (Dancer::ModuleLoader->load('Some::Deps')) {
-            die "the feature provided by Dancer::Some::Thing needs Some::Deps";
-        }
+        Dancer::ModuleLoader->load('Some::Deps')
+            or croak "the feature provided by Dancer::Some::Thing needs Some::Deps";
     }
 
 That way, an optional feature doesn't block Dancer from being installed as the

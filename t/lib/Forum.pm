@@ -1,7 +1,7 @@
-package t::lib::Forum;
+package Forum;
 
 use Dancer ':syntax';
-use t::lib::TestPlugin;
+use TestPlugin;
 
 get '/' => sub { "root" };
 get '/index' => sub { 'forum index' };

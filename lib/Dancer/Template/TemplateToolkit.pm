@@ -2,6 +2,7 @@ package Dancer::Template::TemplateToolkit;
 
 use strict;
 use warnings;
+use Carp;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
@@ -13,7 +14,7 @@ my $_engine;
 sub init {
     my ($self) = @_;
 
-    die "Template is needed by Dancer::Template::TemplateToolkit"
+    croak "Template is needed by Dancer::Template::TemplateToolkit"
       unless Dancer::ModuleLoader->load('Template');
 
     my $tt_config = {
@@ -41,11 +42,11 @@ sub init {
 
 sub render {
     my ($self, $template, $tokens) = @_;
-    die "'$template' is not a regular file"
+    croak "'$template' is not a regular file"
       if !ref($template) && (!-f $template);
 
     my $content = "";
-    $_engine->process($template, $tokens, \$content, binmode => ':utf8') or die $_engine->error;
+    $_engine->process($template, $tokens, \$content, binmode => ':utf8') or croak $_engine->error;
     return $content;
 }
 

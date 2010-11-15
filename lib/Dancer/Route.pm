@@ -2,6 +2,7 @@ package Dancer::Route;
 
 use strict;
 use warnings;
+use Carp;
 use base 'Dancer::Object';
 
 use Dancer::App;
@@ -34,7 +35,7 @@ sub init {
     $self->{'_compiled_regexp'} = undef;
 
     if (!$self->pattern) {
-        die "cannot create Dancer::Route without a pattern";
+        croak "cannot create Dancer::Route without a pattern";
     }
 
     $self->check_options();
@@ -120,7 +121,7 @@ sub check_options {
     return 1 unless defined $self->options;
 
     for my $opt (keys %{$self->options}) {
-        die "Not a valid option for route matching: `$opt'"
+        croak "Not a valid option for route matching: `$opt'"
           if not(    (grep {/^$opt$/} @{$_supported_options[0]})
                   || (grep {/^$opt$/} keys(%_options_aliases)));
     }
@@ -151,7 +152,7 @@ sub run {
             return $next_route->run($request);
         }
         else {
-            die "Last matching route passed";
+            croak "Last matching route passed";
         }
     }
 
@@ -166,7 +167,7 @@ sub run {
     my $ct = $response->{content_type} || setting('content_type');
     my $st = $response->{status}       || 200;
     my $headers = [];
-    push @$headers, @{$response->{headers}};
+    push @$headers, @{$response->headers_to_array};
 
     # content type may have already be set earlier
     # (eg: with send_error)

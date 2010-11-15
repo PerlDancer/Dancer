@@ -2,6 +2,7 @@ package Dancer::Route::Cache;
 
 use strict;
 use warnings;
+use Carp;
 use vars '$VERSION';
 
 use Dancer::Object;
@@ -72,7 +73,7 @@ sub route_from_path {
     my ($self, $method, $path) = @_;
 
     $method && $path
-      or die "Missing method or path";
+      or croak "Missing method or path";
 
     return $self->{'cache'}{$method}{$path} || undef;
 }
@@ -81,7 +82,7 @@ sub store_path {
     my ($self, $method, $path, $route) = @_;
 
     $method && $path && $route
-      or die "Missing method, path or route";
+      or croak "Missing method, path or route";
 
     $self->{'cache'}{$method}{$path} = $route;
 

@@ -2,6 +2,7 @@ package Dancer::Serializer::Dumper;
 
 use strict;
 use warnings;
+use Carp;
 use base 'Dancer::Serializer::Abstract';
 use Data::Dumper;
 
@@ -31,7 +32,7 @@ sub serialize {
 sub deserialize {
     my ($self, $content) = @_;
     my $res = eval "my \$VAR1; $content";
-    die "unable to deserialize : $@" if $@;
+    croak "unable to deserialize : $@" if $@;
     return $res;
 }
 

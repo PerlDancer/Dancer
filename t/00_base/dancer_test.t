@@ -5,7 +5,11 @@ use warnings;
 
 use Dancer ':syntax';
 use Dancer::Test;
-load_app 't::lib::TestApp';
+use File::Spec;
+
+use lib File::Spec->catdir( 't', 'lib' );
+
+load_app 'TestApp';
 
 # in t::lib::TestApp, we have 
 # get '/' => sub { "Hello, this is the home" };
@@ -28,8 +32,8 @@ response_content_is_deeply [GET => '/hash'], { a => 1, b => 2, c => 3};
 response_content_like $req, qr{Hello};
 response_content_unlike $req, qr{Goodbye};
 response_headers_are_deeply [GET => '/with_headers'], [
-    'X-Foo-Dancer' => 42,
     'Content-Type' => 'text/html',
+    'X-Foo-Dancer' => 42,
     ];
 
 {

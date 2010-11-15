@@ -6,6 +6,10 @@ use Dancer;
 plan skip_all => "XML::Simple is needed to run this tests"
     unless Dancer::ModuleLoader->load('XML::Simple');
 
+plan skip_all => "XML::Parser or XML::SAX are needed to run this tests"
+    unless Dancer::ModuleLoader->load('XML::Parser') or
+           Dancer::ModuleLoader->load('XML::SAX');
+
 plan tests => 13;
 
 ok(setting('serializer' => 'XML'), "serializer XML loaded");

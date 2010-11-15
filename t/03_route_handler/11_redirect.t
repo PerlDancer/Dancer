@@ -26,9 +26,9 @@ response_content_is [GET => '/'], "home";
 get '/redirect' => sub { header 'X-Foo' => 'foo'; redirect '/'; };
 
 my $expected_headers = [
-    'X-Foo' => 'foo',
     'Location' => 'http://localhost/',
     'Content-Type' => 'text/html',
+    'X-Foo' => 'foo',
 ];
 response_headers_are_deeply [GET => '/redirect'], $expected_headers;
 

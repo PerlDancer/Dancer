@@ -5,20 +5,26 @@
 === ABOUT ===
 
 This project is inspired by  Ruby's Sinatra framework: a framework for building
-web applications with minimal-effort, allowing a simple webapp to be created with
+web applications with minimal effort, allowing a simple webapp to be created with
 very few lines of code, but allowing the flexibility to scale to much more
-complex applications.
+complex applications.  Dancer supports plugins to add various extra
+functionality you may want, whilst keeping the core streamlined.
 
 
 === NEWS === 
 
-Dancer's development moves very fast, to stay tuned follow 
-sukria on Twitter: http://twitter.com/sukria or his blog
-http://sukria.net/fr/tag/Dancer
+Dancer's development moves very quickly, to stay tuned follow PerlDancer on
+Twitter: http://twitter.com/PerlDancer
+
+See also Sukria's blog: http://www.sukria.net/fr/archives/tag/dancer/
 
 See also the project on Github for the latest changes:
 
 http://github.com/sukria/Dancer
+
+To keep even more up to date and talk to the developers, join us in #dancer on
+irc.perl.org (if you don't have an IRC client, use http://www.perldancer.org/irc
+for easy access).
 
 === EXAMPLE ===
 
@@ -66,6 +72,8 @@ Then it's possible to access any route defined in the script:
 
     $ curl http://localhost:3000/
     Hello There!
+
+For a more in-depth example, see examples/dancr
 
 
 === DEPENDENCIES ===
@@ -129,7 +137,8 @@ http://github.com/sukria/Dancer/issues
 
 === CONTACT ===
 
-You can reach the development team on IRC: irc://irc.perl.org/#dancer
+You can reach the development team on IRC: irc://irc.perl.org/#dancer or
+http://www.perldancer.org/irc for a web-based IRC client.
 
 
 

@@ -4,7 +4,9 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
 
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 use Test::More import => ['!pass'];
 
 plan tests => 7;
@@ -19,7 +21,7 @@ Dancer::SharedData->request($request);
 my $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
 
-my %headers = @{$resp->{headers}};
+my %headers = @{$resp->headers_to_array};
 like($headers{'Content-Type'}, qr/text\/plain/, 
     "$path is sent as text/plain");
 
@@ -29,7 +31,7 @@ Dancer::SharedData->request($request);
 $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
 
-%headers = @{$resp->{headers}};
+%headers = @{$resp->headers_to_array};
 is_deeply(\%headers, 
     {'Content-Type' => 'text/foo'}, 
     "$path is sent as text/foo");
@@ -40,7 +42,7 @@ $request = fake_request(GET => $path);
 Dancer::SharedData->request($request);
 $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
-%headers = @{$resp->{headers}};
+%headers = @{$resp->headers_to_array};
 is_deeply(\%headers, 
     {'Content-Type' => 'text/plain'}, 
     "$path is sent as text/plain");

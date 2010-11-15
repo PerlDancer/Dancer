@@ -5,12 +5,12 @@ use Dancer::ModuleLoader;
 use Dancer;
 use Encode;
 
-plan skip_all => "LWP is needed for this test"
-    unless Dancer::ModuleLoader->load('LWP::UserAgent', '5.827');
 plan skip_all => "HTTP::Request::Common is needed for this test"
     unless Dancer::ModuleLoader->load('HTTP::Request::Common');
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP");
+
+use LWP::UserAgent;
 
 plan tests => 6;
 

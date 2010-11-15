@@ -1,0 +1,11 @@
+  <h2>Login</h2>
+  <% IF err %><p class=error><strong>Error:</strong> <% err %><% END %>
+  <form action="<% login_url %>" method=post>
+    <dl>
+      <dt>Username:
+      <dd><input type=text name=username>
+      <dt>Password:
+      <dd><input type=password name=password>
+      <dd><input type=submit value=Login>
+    </dl>
+  </form>
