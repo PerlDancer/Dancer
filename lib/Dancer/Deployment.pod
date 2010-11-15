@@ -397,63 +397,19 @@ RewriteRules in a .htaccess file directly within the application's directory,
 which lets you add a new application without changing the Apache configuration.
 
 
-=head2 Running on lighttpd
+=head2 Running on lighttpd (CGI)
 
-It is very easy to configure lighttpd to deploy Dancer applications. Multiple
-applications can be deployed on the same server by setting up virtual hosts.
-You can configure name based virtual hosts with conditional blocks that start
-with:
+To run as a CGI app on lighttpd, just create a soft link to the dispatch.cgi
+script (created when you run dancer -a MyApp) inside your system's cgi-bin
+folder. Make sure mod_cgi is enabled.
 
-    $HTTP["host"] == "myapp.example.com" { ...
+    ln -s /path/to/MyApp/public/dispatch.cgi /usr/lib/cgi-bin/mycoolapp.cgi
 
-Or you can configure port based virtual hosts:
+=head2 Running on lighttpd (FastCGI)
 
-    $SERVER["socket"] == ":5000" { ...
+Make sure mod_fcgi is enabled. You also must have L<FCGI> installed.
 
-There is no need to explicitly set the document root for the following examples.
-It will be set to the public folder implicitly, since that is where the dispatch
-scripts live. If you would like your document root to be elsewhere, you can add
-this line inside of the conditional block:
-
-    server.document-root = "/somewhere/else/"
-
-
-=head3 Running on lighttpd (CGI)
-
-Make sure mod_cgi is enabled. This example uses a name based virtual host.
-
-    cgi.assign = ( ".cgi" => "" )
-    $HTTP["host"] == "myapp.example.com" {
-        alias.url += ("" => "/path/to/myapp/public/dispatch.cgi")
-    }
-
-
-=head3 Running on lighttpd (FastCGI)
-
-Make sure mod_fcgi is enabled. You also must install the FCGI module from
-CPAN.
-
-=head4 Script
-
-This example uses a script based virtual host.
-
-Your lighttpd configuration:
-
-    $HTTP["url"] == "^/app" {
-        fastcgi.server += (
-            ".fcgi" => ((
-                "bin-path" => "/path/to/myapp/public/dispatch.fcgi",
-                "socket" => "/tmp/fcgi.sock",
-            ))
-        )
-        alias.url += ("" => "/path/to/myapp/public/dispatch.fcgi")
-    }
-
-=head4 TCP/IP
-
-This example uses TCP/IP.
-
-Your lighttpd configuration:
+This example configuration uses TCP/IP:
 
     $HTTP["url"] == "^/app" {
         fastcgi.server += (
@@ -463,19 +419,15 @@ Your lighttpd configuration:
                     "port" => "5000",
                     "check-local" => "disable",
                 )
-           )
-       )
-   }
+            )
+        )
+    }
 
-Launch your application
+Launch your application:
 
     plackup -s FCGI --port 8080 bin/app.pl
 
-=head4 Unix socket
-
-This example uses a socket.
-
-Your lighttpd configuration:
+This example configuration uses a socket:
 
     $HTTP["url"] =~ "^/app" {
         fastcgi.server += (
@@ -491,3 +443,4 @@ Your lighttpd configuration:
 Launch your application:
 
     plackup -s FCGI --listen /tmp/fcgi.sock bin/app.pl
+
