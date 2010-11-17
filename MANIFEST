@@ -90,7 +90,7 @@ t/01_config/01_settings.t
 t/01_config/02_mime_type.t
 t/01_config/03_logger.t
 t/01_config/04_config_file.t
-t/01_config/05_serialiers.t
+t/01_config/05_serializers.t
 t/01_config/06_stack_trace.t
 t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
