@@ -5,14 +5,23 @@ use warnings;
 
 use File::Basename ();
 use File::Spec;
+use Carp;
 
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(path dirname read_file_content read_glob_content);
+@EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
 
 sub path    { File::Spec->catfile(@_) }
 sub dirname { File::Basename::dirname(@_) }
+
+sub open_file {
+    my ($mode, $filename) = @_;
+    my $charset = Dancer::Config::setting('charset');
+    my $open_flag = $charset eq 'UTF-8' ? $mode . ':encoding(UTF-8)' : $mode;
+    open(my $fh, $open_flag, $filename) or croak $!;
+    return $fh;
+}
 
 sub read_file_content {
     my ($file) = @_;
@@ -21,10 +30,8 @@ sub read_file_content {
     require Dancer::Config;
     my $charset = Dancer::Config::setting('charset');
 
-    my $open_flag = '<';
-    $open_flag = '<:encoding(UTF-8)' 
-        if $charset eq 'UTF-8';
-    if ($file && open($fh, $open_flag, $file)) {
+    if ($file) {
+        $fh = open_file('<', $file);
         return read_glob_content($fh);
     }
     else {

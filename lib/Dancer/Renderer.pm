@@ -12,7 +12,7 @@ use Dancer::Request;
 use Dancer::Response;
 use Dancer::Serializer;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path dirname read_file_content);
+use Dancer::FileUtils qw(path dirname read_file_content open_file);
 use Dancer::SharedData;
 use Dancer::Logger;
 use MIME::Types;
@@ -165,7 +165,7 @@ sub get_file_response_for_path {
     $status ||= 200;
 
     if (-f $static_file) {
-        open my $fh, "<", $static_file;
+        my $fh = open_file('<', $static_file);
         binmode $fh;
 
         return Dancer::Response->new(
