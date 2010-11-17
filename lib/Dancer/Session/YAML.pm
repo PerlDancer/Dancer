@@ -66,7 +66,8 @@ sub destroy {
 
 sub flush {
     my $self = shift;
-    open(my $sessionfh, '>', yaml_file($self->id)) or croak $!;
+    my $open_flag = setting('charset') eq 'UTF-8' ? '>:encoding(UTF-8)' : '>';
+    open(my $sessionfh, $open_flag, yaml_file($self->id)) or croak $!;
     print {$sessionfh} YAML::Dump($self);
     close $sessionfh;
     return $self;
