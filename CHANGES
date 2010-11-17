@@ -1,5 +1,12 @@
+Dancer 1.1999_04 (RC4)
+    [ Sawyer X ]
+    * Load Plack::Loader dynamically in test.
+
+    [ Yanick Champoux ]
+    * Doc fix.
+
 Dancer 1.1999_03 (RC3)
-    [Alexis Sukrieh]
+    [ Alexis Sukrieh ]
     * Transparent unicode support
       Dancer now takes care transparently of decoding unicode strings
       used within route handlers and encoding them back before sending
@@ -10,10 +17,39 @@ Dancer 1.1999_03 (RC3)
       are documented. A pod coverage test has been added for this
       module.
     * Documentation update The deployment documentation is more precise about
-	  cgi/fast-cgi deployment under Apache.
-	* FIX for issue GH#171
-	  Scaffolded configuration files are fully commented in order to quickly
-	  guide the user in her first steps.
+      cgi/fast-cgi deployment under Apache.
+    * FIX for issue GH#171
+      Scaffolded configuration files are fully commented in order to quickly
+      guide the user in her first steps.
+
+    [ Damien Krotkine ]
+    * Fix Dancer::Plugin OO issue
+
+    [ Danijel Tasov ]
+    * Fixed expires in cookies + tests
+
+    [ Philippe Bruhat ]
+    * Dancer::Logger::Abstract: turn _should() into a closure, and avoid
+      setting up the hash again and agai
+
+    [ Franck Cuny ]
+    * Closes issue 181 (unknown log level)
+    * Plack middlewares must be listed in an arrayref (listing them in a
+      hashref is now deprecated)
+
+    [ Al Newkirk ]
+    * fixed redirect to redirect immediately (+ refactoring by franck)
+
+    [ Dave Doyle ]
+    * clarify Pod as to how before_template works 
+
+    [ Sawyer X ]
+    * Overhaul tests to use lib t/lib instead of t::lib::.
+      (fixes Windows test fails)
+    * PSGI envs on Windows is in capital letters.
+      (fixes Windows test fails)
+    * Add tests on every required directory to create a fake environment.
+      (realpath() on Windows fails when path doesn't exist)
 
 Dancer 1.1999_02 (RC2)
 
@@ -87,7 +123,7 @@ Dancer 1.1999_01 (RC1)
     * Dancer::Test function get_response is renamed to dancer_response
       get_response still works but is deprecated
     * dispatch.f?cgi scripts use FindBin to resolve their location.
-	  FIX a bug when using symlinks.
+      FIX a bug when using symlinks.
 
     [ Franck Cuny ]
     * FIX for issue GH#129 
@@ -104,15 +140,20 @@ Dancer 1.1999_01 (RC1)
       template 'templatename', {}, { layout => 'layoutname' };
  
     [ Philippe Bruhat ]
-	* Make sure a plugin refuse to register a keyword twice
+    * Make sure a plugin refuse to register a keyword twice
 
-	[ SawyerX ]
-	* Lots of documentation updates
+    [ Sawyer X ]
+    * Lots of documentation updates
     * Dancer now logs caught crashes in rendering
       (easier to debug Ajax routes)
 
+Dancer 1.1904
+    [ Sawyer X, Franck Cuny ]
+    * SAX, not Sax.
+    * Check for XML::Parser or XML::SAX in test as well.
+
 Dancer 1.1903
-    [ SawyerX, Franck Cuny ]
+    [ Sawyer X, Franck Cuny ]
     * XML::Simple needs either XML::SAX or XML::Parser.
       (fixed test fails from Dancer::Serializer::XML)
 

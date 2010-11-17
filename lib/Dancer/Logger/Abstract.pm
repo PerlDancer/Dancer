@@ -15,19 +15,27 @@ use Dancer::Config 'setting';
 # a message of the given level to be logged.
 sub _log { confess "_log not implemented" }
 
+my $levels = {
+
+    # levels < 0 are for core only
+    core => -10,
+
+    # levels > 0 are for end-users only
+    debug   => 1,
+    warn    => 2,
+    warning => 2,
+    error   => 3,
+};
+
 sub _should {
     my ($self, $msg_level) = @_;
     my $conf_level = setting('log') || 'debug';
-    my $levels = {
 
-        # levels < 0 are for core only
-        core => -10,
+    if (!exists $levels->{$conf_level}) {
+        setting('log' => 'debug');
+        $conf_level = 'debug';
+    }
 
-        # levels > 0 are for end-users only
-        debug   => 1,
-        warning => 2,
-        error   => 3,
-    };
     return $levels->{$conf_level} <= $levels->{$msg_level};
 }
 

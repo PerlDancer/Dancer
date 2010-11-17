@@ -8,7 +8,9 @@ plan tests => 17;
 
 use File::Temp qw/tempdir/;
 use Dancer ':syntax';
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 my $dir = tempdir(CLEANUP => 1);
 set appdir => $dir;

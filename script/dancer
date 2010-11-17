@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Dancer::Template::Simple;
 use File::Basename 'basename', 'dirname';
+use File::Path 'mkpath';
 use File::Spec::Functions;
 use Getopt::Long;
 use Pod::Usage;
@@ -166,7 +167,7 @@ sub safe_mkdir {
     my ($dir) = @_;
     if (not -d $dir) {
         print "+ $dir\n";
-        mkdir $dir or die $!;
+        mkpath $dir or die "could not mkpath $dir: $!";
     }
     else {
         print "  $dir\n";

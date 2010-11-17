@@ -9,7 +9,9 @@ plan tests => 5;
 
 use Dancer ':syntax';
 use Dancer::Config;
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 use File::Temp qw/tempdir/;
 

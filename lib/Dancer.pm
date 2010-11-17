@@ -31,7 +31,7 @@ use File::Basename 'basename';
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.1999_02';
+$VERSION   = '1.1999_04';
 @EXPORT    = qw(
   after
   any
@@ -387,11 +387,13 @@ them.
 Defines a before_template filter:
 
     before_template sub {
+        my $tokens = shift;
         # do something with request, vars or params
     };
 
 The anonymous function which is given to C<before_template> will be executed
-before sending data and tokens to the template.
+before sending data and tokens to the template. Receives a hashref of the
+tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
 
@@ -661,6 +663,16 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
 
     get '/old/:resource', sub {
         redirect '/new/'.params->{resource}, 301;
+    };
+    
+It is important to note that issuing a redirect by itself does not exit and
+redirect immediately, redirection is deferred until after the current route
+or filter has been processed. To exit and redirect immediately, use the return
+function, e.g.
+
+    get '/restricted', sub {
+        return redirect '/login' if accessDenied();
+        return 'Welcome to the restricted section';
     };
 
 =head2 request

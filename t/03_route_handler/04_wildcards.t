@@ -2,7 +2,9 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 use Dancer ':syntax';
 use Dancer::Route; 

@@ -1,7 +1,9 @@
 use Test::More 'no_plan', import => ['!pass'];
 
 use Dancer ':syntax';
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 my $routes = path('t', '06_helpers', 'routes.pl');
 

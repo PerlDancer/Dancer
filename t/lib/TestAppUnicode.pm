@@ -1,4 +1,4 @@
-package t::lib::TestAppUnicode;
+package TestAppUnicode;
 use Dancer;
 
 get '/string' => sub {
