@@ -70,6 +70,10 @@ SKIP: {
     skip "XML::Simple is needed for this test" , 1
         unless Dancer::ModuleLoader->load('XML::Simple');
 
+    skip "XML::Parser or XML::SAX are needed to run this test", 1
+        unless Dancer::ModuleLoader->load('XML::Parser') or
+               Dancer::ModuleLoader->load('XML::SAX');
+
     setting serializer => 'XML';
     $res->{content_type} = 'text/xml';
     $res->{content} = { key => "\x{0429}" };
