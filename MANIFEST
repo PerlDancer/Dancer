@@ -140,6 +140,7 @@ t/03_route_handler/26_after_hook.t
 t/03_route_handler/27_issue_77_pass_breaks_routes.t
 t/03_route_handler/28_plack_mount.t
 t/03_route_handler/29_redirect_immediatly.t
+t/03_route_handler/30_bug_gh190.t
 t/03_route_handler/public/404.html
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
