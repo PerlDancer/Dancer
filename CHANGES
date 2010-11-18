@@ -1,3 +1,18 @@
+Dancer 1.200
+    ** 1.2 is a stable release of Dancer **
+    ** We assure consistency and stability for this release and the following **
+    ** 1.2xx releases; you should not have issues updating to any 1.2xx       **
+    ** version because of it.                                                 **
+
+    ++ A very special thanks goes to the Dancer community who improved and    ++
+    ++ perfected this release and worked hard on reporting bugs, fixing them, ++
+    ++ improving the stability, providing important features and everything   ++
+    ++ else which makes Dancer so attractive - and above all: its community   ++
+    ++ so thank you!                                                          ++
+
+    [ Sawyer X ]
+    * Fixing some more XML tests with missing preqreqs.
+
 Dancer 1.1999_04 (RC4)
     [ Sawyer X ]
     * Load Plack::Loader dynamically in test.
