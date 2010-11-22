@@ -174,18 +174,17 @@ sub load_settings_from_yaml {
     my $config;
 
     eval { $config = YAML::LoadFile($file) };
-    if ( my $err = $@ || (!$config)) {
+    if (my $err = $@ || (!$config)) {
         confess "Unable to parse the configuration file: $file: $@";
     }
 
     for my $key (keys %{$config}) {
         if ($MERGEABLE{$key}) {
             my $setting = setting($key);
-            $setting->{$_} = $config->{$key}{$_}
-              for keys %{$config->{$key}};
+            $setting->{$_} = $config->{$key}{$_} for keys %{$config->{$key}};
         }
         else {
-            setting($key, $config->{$key});
+            _set_setting($key, $config->{$key});
         }
     }
 
@@ -208,7 +207,7 @@ sub load_default_settings {
       || $ENV{PLACK_ENV}
       || 'development';
 
-    setting $_              => {} for keys %MERGEABLE;
+    setting $_ => {} for keys %MERGEABLE;
     setting template        => 'simple';
     setting import_warnings => 1;
 }
