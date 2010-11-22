@@ -12,6 +12,9 @@ use Carp 'confess';
 
 @EXPORT_OK = qw(setting mime_types);
 
+# mergeable settings
+my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
+
 # singleton for storing settings
 my $SETTINGS = {
 
@@ -153,7 +156,6 @@ sub load {
     confess "Configuration file found but YAML is not installed"
       unless Dancer::ModuleLoader->load('YAML');
 
-    load_default_settings();
     load_settings_from_yaml(conffile);
 
     my $env = environment_file;
@@ -169,9 +171,23 @@ sub load {
 sub load_settings_from_yaml {
     my ($file) = @_;
 
-    my $config = YAML::LoadFile($file)
-      or confess "Unable to parse the configuration file: $file";
-    _set_setting($_, $config->{$_}) for (keys %{$config});
+    my $config;
+
+    eval { $config = YAML::LoadFile($file) };
+    if ( my $err = $@ || (!$config)) {
+        confess "Unable to parse the configuration file: $file: $@";
+    }
+
+    for my $key (keys %{$config}) {
+        if ($MERGEABLE{$key}) {
+            my $setting = setting($key);
+            $setting->{$_} = $config->{$key}{$_}
+              for keys %{$config->{$key}};
+        }
+        else {
+            setting($key, $config->{$key});
+        }
+    }
 
     return scalar(keys %$config);
 }
@@ -192,6 +208,7 @@ sub load_default_settings {
       || $ENV{PLACK_ENV}
       || 'development';
 
+    setting $_              => {} for keys %MERGEABLE;
     setting template        => 'simple';
     setting import_warnings => 1;
 }

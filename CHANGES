@@ -247,6 +247,10 @@ Dancer 1.1809
     * update Deployement.pod and Cookbook.pod
     * fix bug in route building with prefix
     * don't use app.psgi anymore in generated scripts
+    * fix GH#106: serializer
+    * fix bug in PSGI handler using HTTP::Headers when using some header
+    * fix bug in ajax query
+    * more tests
 
     [ Alexis Sukrieh ]
     * fix plan for t/03_route_handler/24_named_captures.t

@@ -18,18 +18,25 @@ use File::Temp qw/tempdir/;
 my $dir = tempdir(CLEANUP => 1);
 set(appdir => $dir);
 set(confdir => $dir);
+mkdir File::Spec->catdir( $dir, 'environments' );
+set(environment => 'test' );
 
 my $conffile = Dancer::Config->conffile;
-
-my $conf = '
+write_file( $conffile => << 'CONF' );
 plugins:
   Test:
     foo: bar
   My::Other::Plugin:
     path: /
-';
+CONF
 
-write_file( $conffile => $conf );
+my $envfile = Dancer::Config->environment_file;
+write_file( $envfile => << 'CONF' );
+plugins:
+  Test:
+    foo: baz
+CONF
+
 ok( Dancer::Config->load, 'Config load works with a conffile' );
 
 {
@@ -52,7 +59,7 @@ ok( Dancer::Config->load, 'Config load works with a conffile' );
 }
 
 ok my $plugin_conf = Dancer::Plugin::Test::conf(), 'got config for plugin';
-is_deeply $plugin_conf, { foo => 'bar' }, 'config is valid';
+is_deeply $plugin_conf, { foo => 'baz' }, 'config is valid';
 
 ok $plugin_conf = My::Other::Plugin::conf(), 'got config for plugin';
 is_deeply $plugin_conf, { path => '/' }, 'config is valid';

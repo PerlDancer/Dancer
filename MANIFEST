@@ -23,6 +23,7 @@ lib/Dancer/Error.pm
 lib/Dancer/FileUtils.pm
 lib/Dancer/GetOpt.pm
 lib/Dancer/Handler.pm
+lib/Dancer/Handler/Debug.pm
 lib/Dancer/Handler/PSGI.pm
 lib/Dancer/Handler/Standalone.pm
 lib/Dancer/Helpers.pm
@@ -81,16 +82,22 @@ t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
 t/00_base/11_file_utils.t
 t/00_base/12_utf8_charset.t
+t/00_base/config.t
+t/00_base/dance_start.t
 t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
 t/00_base/utf8.tt
 t/00_base/views/unicode.tt
+t/00_base/uri_for.t
+t/00_base/utf8.tt
 t/01_config/01_settings.t
 t/01_config/02_mime_type.t
 t/01_config/03_logger.t
 t/01_config/04_config_file.t
 t/01_config/05_serializers.t
+t/01_config/05_serialiers.t
+t/01_config/06_config_api.t
 t/01_config/06_stack_trace.t
 t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
@@ -173,6 +180,7 @@ t/07_apphandlers/03_psgi_app.t
 t/07_apphandlers/04_standalone_app.t
 t/07_apphandlers/05_middlewares.t
 t/08_session/000_create_fake_env.t
+t/07_apphandlers/05_psgi_api.t
 t/08_session/01_load.t
 t/08_session/02_dependency_check.t
 t/08_session/03_http_requests.t
@@ -223,6 +231,7 @@ t/14_serializer/10_dumper.t
 t/14_serializer/11_bug_57829.t
 t/14_serializer/12_bug_gh106.t
 t/14_serializer/13_xml.t
+t/14_serializer/14_api.t
 t/14_serializer/14_show_errors.t
 t/14_serializer/handler-helper.t
 t/15_plugins/000_create_fake_env.t
@@ -231,6 +240,8 @@ t/15_plugins/02_config.t
 t/15_plugins/03_namespace.t
 t/15_plugins/04_apps_and_plugins.t
 t/15_plugins/05_plugins_and_OO.t
+t/15_plugins/05_keywords.t
+t/15_plugins/06_hook.t
 t/16_timer/00_base.t
 t/16_timer/02_hires.t
 t/17_apps/000_create_fake_env.t

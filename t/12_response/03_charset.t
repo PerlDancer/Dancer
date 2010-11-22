@@ -83,7 +83,8 @@ SKIP: {
         [
             200,
             [ 'Content-Type', 'text/xml; charset=utf-8' ],
-            [ Encode::encode('utf-8', XML::Simple::XMLout( { key => "\x{0429}" } )) ],
+            [ Encode::encode('utf-8', XML::Simple::XMLout( { key => "\x{0429}"
+                    }, RootName => 'data' )) ],
         ],
     );
 }
