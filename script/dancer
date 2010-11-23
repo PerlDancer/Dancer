@@ -59,8 +59,10 @@ create_node( app_tree($name), $DANCER_APP_DIR );
 sub validate_app_name {
     my $name = shift;
     if ($name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
-        warn "Error: Invalid application name.\n";
-        usage();
+        print STDERR "Error: Invalid application name.\n";
+        print STDERR "Application names must not contain colons,"
+            ." dots  or start with a number.\n";
+        exit;
     }
 }
 
