@@ -6,9 +6,6 @@ use Carp;
 use base 'Dancer::Serializer::Abstract';
 use Data::Dumper;
 
-# we want to eval serialized strings
-$Data::Dumper::Purity = 1;
-
 sub from_dumper {
     my ($string) = @_;
     my $s = Dancer::Serializer::Dumper->new;
