@@ -9,6 +9,7 @@ use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::Logger;
 use Dancer::Session;
+use Dancer::FileUtils qw( open_file );
 
 sub new {
     my ($class, %params) = @_;
