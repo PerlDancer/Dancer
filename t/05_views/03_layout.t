@@ -21,11 +21,11 @@ my @tests = (
       expected => "view\n" },
     { path => '/layoutchanged',
       expected => "customstart\nview\ncustomstop\n" },
-    { path => '/render_with_layout/default_layout',
+    { path => '/apply_layout/default_layout',
       expected => "start\ncontent\nstop\n" },
-    { path => '/render_with_layout/no_layout',
+    { path => '/apply_layout/no_layout',
       expected => "content\n" },
-    { path => '/render_with_layout/custom_layout',
+    { path => '/apply_layout/custom_layout',
       expected => "customstart\ncontent\ncustomstop\n" },
 );
 
@@ -52,18 +52,18 @@ SKIP: {
         template 't03', {}, { layout => 'custom' };
     };
 
-    get '/render_with_layout/default_layout' => sub {
-        render_with_layout("content\n");
+    get '/apply_layout/default_layout' => sub {
+        apply_layout("content\n");
     };
 
-    # Yes, render_with_layout without a layout is kind of pointless, but let's
+    # Yes, apply_layout without a layout is kind of pointless, but let's
     # be thorough :)
-    get '/render_with_layout/no_layout' => sub {
-        render_with_layout("content\n", {}, { layout => undef });
+    get '/apply_layout/no_layout' => sub {
+        apply_layout("content\n", {}, { layout => undef });
     };
 
-    get '/render_with_layout/custom_layout' => sub {
-        render_with_layout("content\n", {}, { layout => 'custom' });
+    get '/apply_layout/custom_layout' => sub {
+        apply_layout("content\n", {}, { layout => 'custom' });
     };
 
     foreach my $test (@tests) {

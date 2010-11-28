@@ -35,6 +35,8 @@ $VERSION   = '1.1999_02';
 @EXPORT    = qw(
   after
   any
+  apply_layout
+  apply_renderer
   before
   before_template
   cookies
@@ -98,6 +100,8 @@ $VERSION   = '1.1999_02';
 
 sub after           { Dancer::Route::Registry->hook('after',           @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
+sub apply_layout    { Dancer::Helpers::apply_layout(@_) }
+sub apply_renderer  { Dancer::Helpers::apply_renderer(@_) }
 sub before          { Dancer::Route::Registry->hook('before',          @_) }
 sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
@@ -368,6 +372,55 @@ Or even, a route handler that would match any HTTP methods:
     any '/myaction' => sub {
         # code
     };
+
+=head2 apply_layout
+
+It is the second part of what C<template> does internally. Basically,
+C<template> is C<apply_renderer> + C<apply_layout>.
+
+C<apply_layout> allows a handler to provide plain HTML (or other content), but
+have it rendered within the layout still.
+
+For example:
+
+    get '/foo' => sub {
+        # Do something which generates HTML directly (maybe using
+        # HTML::Table::FromDatabase or something)
+        my $content = ...;
+        apply_layout $content;
+    };
+
+
+You can pass tokens to be used in the layout, and/or options to control the way
+the layout is rendered. For instance, to set a 'foo' token to 'bar', and use a
+custom layout:
+
+    apply_layout $content, { foo => 'bar' }, { layout => 'layoutname' };
+
+Remember, C<apply_layout> doesn't generates the content, it only applies the
+layout around it. So, C<$content> should be something semi final, like HTML. If
+you need to generate the content from a view, you should use C<template>, or
+C<apply_renderer>.
+
+=head2 apply_renderer
+
+It is the first part of what C<template> does internally. Basically,
+C<template> is C<apply_renderer> + C<apply_layout>.
+
+C<apply_renderer> generates content from a view, but doesn't apply the layout.
+
+For example:
+
+    get '/foo' => sub {
+        my $content = apply_renderer('home');
+        # $content now contains the rendered 'home' view
+        # .. do something with $content
+    };
+
+You can pass tokens to be used in the view. For instance, to set a 'foo' token
+to 'bar':
+
+    apply_renderer $content, { foo => 'bar'};
 
 =head2 before
 
@@ -667,24 +720,7 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
 
 =head2 render_with_layout
 
-Allows a handler to provide plain HTML (or other content), but have it rendered
-within the layout still.
-
-For example:
-
-    get '/foo' => sub {
-        # Do something which generates HTML directly (maybe using
-        # HTML::Table::FromDatabase or something)
-        my $content = ...;
-        render_with_layout $content;
-    };
-
-It works very similarly to C<template> in that you can pass tokens to be used in
-the layout, and/or options to control the way the layout is rendered.  For
-instance, to use a custom layout:
-
-    render_with_layout $content, {}, { layout => 'layoutname' };
-
+B<DEPRECATED> : this keyword is B<deprecated>. Please use C<apply_layout> instead.
 
 =head2 request
 
@@ -813,7 +849,9 @@ underscores as a separator for blanks.
 
 =head2 template
 
-Tells the route handler to build a response with the current template engine:
+Basically, C<template> is C<apply_renderer> + C<apply_layout>.
+
+C<template> tells the route handler to build a response with the current template engine:
 
     get '/' => sub {
         ...
@@ -824,10 +862,11 @@ The first parameter should be a template available in the views directory, the
 second one (optional) is a hashref of tokens to interpolate, and the third
 (again optional) is a hashref of options.
 
-For example, to disable the layout for a specific request:
+For example, to set the 'foo' token to 'bar', but disable the layout for a
+specific request:
 
     get '/' => sub {
-        template 'index.tt', {}, { layout => undef };
+        template 'index.tt', { foo => bar }, { layout => undef };
     };
 
 
