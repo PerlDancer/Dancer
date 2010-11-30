@@ -835,8 +835,8 @@ template: \"simple\"
 # engines:
 #   template_toolkit:
 #     ENCODING: 'utf8'
-#     START_TAG: '[%'
-#     END_TAG: '%]
+#     start_tag: '[%'
+#     end_tag: '%]'
 
 ",
 
