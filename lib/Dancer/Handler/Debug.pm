@@ -8,7 +8,6 @@ use HTTP::Server::Simple::PSGI;
 use base 'Dancer::Object', 'Dancer::Handler', 'HTTP::Server::Simple::PSGI';
 
 use Dancer::Config 'setting';
-use Dancer::Headers;
 use Dancer::SharedData;
 
 sub run {
