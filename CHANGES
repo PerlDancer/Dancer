@@ -7,15 +7,11 @@ Dancer 1.2001
       run before all configuration is read. That also crashes D::S::Cookie.
       As a side effect we now have a refactored _set_setting() which does not
       trigger any engine hooks (unlike setting()).
+    * fix failing test t/07_apphandlers/06_debug.t
 
     [ David Precious ]
     * Doc fixes. Clarifications to Cookbook's REST section.
     * Don't crash if application name is invalid and provide better information.
-
-    [ Damien Krotkine ]
-    * Better check of keyword.
-    * Check for reserved keywords in Dancer::EXPORT_OK as well.
-    * Remove sigil if used in Dancer::EXPORT{_OK}
 
 Dancer 1.2000
     ** 1.2 is a stable release of Dancer **
