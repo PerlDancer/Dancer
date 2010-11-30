@@ -100,9 +100,9 @@ in case it failed to open the file.
     open my $fh, '<', $file or die "$!\n";
     my $content = read_glob_content($fh);
 
-Same as I<read_file_content>, only it accepts a file handler.
+Same as I<read_file_content>, only it accepts a file handle.
 
-Returns the content and B<closes the file handler>.
+Returns the content and B<closes the file handle>.
 
 =head1 EXPORT
 

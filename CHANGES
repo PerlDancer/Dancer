@@ -1,3 +1,18 @@
+Dancer 1.2001
+    [ Sawyer X ]
+    * Fix clash with KiokuDB because of Dancer::Serializer::Dumper.
+
+    [ Franck Cuny ]
+    * Refactoring engine triggers. This resolves an issue of engine inits being
+      run before all configuration is read. That also crashes D::S::Cookie.
+      As a side effect we now have a refactored _set_setting() which does not
+      trigger any engine hooks (unlike setting()).
+    * Fix failing test t/07_apphandlers/06_debug.t
+
+    [ David Precious ]
+    * Doc fixes. Clarifications to Cookbook's REST section.
+    * Don't crash if application name is invalid and provide better information.
+
 Dancer 1.2000
     ** 1.2 is a stable release of Dancer **
     ** We assure consistency and stability for this release and the following **
