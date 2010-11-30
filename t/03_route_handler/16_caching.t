@@ -3,7 +3,9 @@ use strict;
 use warnings;
 
 use Test::More tests => 105, import => ['!pass'];
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 use Dancer ':syntax';
 setting route_cache => 1;
@@ -48,7 +50,7 @@ my %reqs = (
 
 foreach my $method ( qw/get post/ ) {
     foreach my $path ( '/in', '/out', '/err' ) {
-        my $req = t::lib::TestUtils::fake_request( $method => $path );
+        my $req = TestUtils::fake_request( $method => $path );
         Dancer::SharedData->request($req);
         my $res = Dancer::Renderer::get_action_response();
 
@@ -113,7 +115,7 @@ $cache->{'cache_array'} = [];
     }
 
     foreach my $path (@paths) {
-        my $req = t::lib::TestUtils::fake_request( get => "/$path" );
+        my $req = TestUtils::fake_request( get => "/$path" );
         Dancer::SharedData->request($req);
         my $res = Dancer::Renderer::get_action_response();
 
@@ -160,7 +162,7 @@ SKIP: {
     }
 
     foreach my $path (@paths) {
-        my $req = t::lib::TestUtils::fake_request( get => $path );
+        my $req = TestUtils::fake_request( get => $path );
         Dancer::SharedData->request($req);
         my $res = Dancer::Renderer::get_action_response();
 

@@ -255,7 +255,7 @@ This module provides test heplers for testing Dancer apps.
 =head1 CONFIGURATON
 
 When importing Dancer::Test, the appdir is set by defaut to '..', assuming that
-your test scrtipt is directly in your t/ directory. If you put your test scrtipt
+your test script is directly in your t/ directory. If you put your test script
 deeper in the 't/' hierarchy (like in 't/routes/01_some_test.t') you'll have to
 tell Dancer::Test that the appdir is one step upper.
 

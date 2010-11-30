@@ -8,7 +8,9 @@ BEGIN {
 };
 
 use Dancer ':syntax';
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 set views => path(dirname(__FILE__), 'views');
 
@@ -21,6 +23,12 @@ my @tests = (
       expected => "view\n" },
     { path => '/layoutchanged',
       expected => "customstart\nview\ncustomstop\n" },
+    { path => '/render_with_layout/default_layout',
+      expected => "start\ncontent\nstop\n" },
+    { path => '/render_with_layout/no_layout',
+      expected => "content\n" },
+    { path => '/render_with_layout/custom_layout',
+      expected => "customstart\ncontent\ncustomstop\n" },
 );
 
 plan tests => scalar(@tests);
@@ -44,6 +52,20 @@ SKIP: {
 
     get '/layoutchanged' => sub {
         template 't03', {}, { layout => 'custom' };
+    };
+
+    get '/render_with_layout/default_layout' => sub {
+        render_with_layout("content\n");
+    };
+
+    # Yes, render_with_layout without a layout is kind of pointless, but let's
+    # be thorough :)
+    get '/render_with_layout/no_layout' => sub {
+        render_with_layout("content\n", {}, { layout => undef });
+    };
+
+    get '/render_with_layout/custom_layout' => sub {
+        render_with_layout("content\n", {}, { layout => 'custom' });
     };
 
     foreach my $test (@tests) {

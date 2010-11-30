@@ -29,7 +29,7 @@ sub _epoch_to_gmtstring {
 
     my ($sec, $min, $hour, $mday, $mon, $year, $wday) = gmtime($epoch);
     my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-    my @days   = qw(- Mon Tue Wed Thu Fri Sat Sun);
+    my @days   = qw(Sun Mon Tue Wed Thu Fri Sat);
 
     return sprintf "%s, %02d-%s-%d %02d:%02d:%02d GMT",
       $days[$wday],

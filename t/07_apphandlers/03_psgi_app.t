@@ -20,11 +20,11 @@ Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua = LWP::UserAgent->new;
-        
+
         my $res = $ua->get("http://127.0.0.1:$port/env");
-        like $res->content, qr/psgi\.version/, 
+        like $res->content, qr/psgi\.version/,
             'content looks good for /env';
-        
+
         $res = $ua->get("http://127.0.0.1:$port/name/bar");
         like $res->content, qr/Your name: bar/,
             'content looks good for /name/bar';
@@ -36,7 +36,9 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
 
-        use t::lib::TestApp;
+        use File::Spec;
+        use lib File::Spec->catdir( 't', 'lib' );
+        use TestApp;
         use Dancer;
         setting apphandler  => 'PSGI';
         setting environment => 'production';

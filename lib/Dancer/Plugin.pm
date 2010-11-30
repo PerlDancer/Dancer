@@ -18,8 +18,6 @@ use vars qw(@EXPORT);
 
 sub register($&);
 
-my @_reserved_keywords = @Dancer::EXPORT;
-
 my $_keywords = {};
 
 sub add_hook { Dancer::Route::Registry->hook(@_) }
@@ -43,7 +41,7 @@ sub register($&) {
     my ($keyword, $code) = @_;
     my $plugin_name = caller();
 
-    if (grep { $_ eq $keyword } @_reserved_keywords) {
+    if (grep { $_ eq $keyword } @Dancer::EXPORT) {
         croak "You can't use $keyword, this is a reserved keyword";
     }
     while (my ($plugin, $keywords) = each %$_keywords) {
@@ -63,8 +61,9 @@ sub register_plugin {
     my @symbols = set_plugin_symbols($plugin);
     {
         no strict 'refs';
-        @{"${plugin}::ISA"} = ('Exporter', 'Dancer::Plugin');
-        @{"${plugin}::EXPORT"} = @symbols;
+        # tried to use unshift, but it yields an undef warning on $plugin (perl v5.12.1)
+        @{"${plugin}::ISA"} = ('Exporter', 'Dancer::Plugin', @{"${plugin}::ISA"});
+        push @{"${plugin}::EXPORT"}, @symbols;
     }
     return 1;
 }

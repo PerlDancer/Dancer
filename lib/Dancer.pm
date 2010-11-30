@@ -31,7 +31,7 @@ use File::Basename 'basename';
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.1999_02';
+$VERSION   = '1.2000_02';
 @EXPORT    = qw(
   after
   any
@@ -69,6 +69,7 @@ $VERSION   = '1.1999_02';
   put
   r
   redirect
+  render_with_layout
   request
   send_file
   send_error
@@ -135,6 +136,7 @@ sub options { Dancer::App->current->registry->universal_add('options', @_) }
 sub put     { Dancer::App->current->registry->universal_add('put',     @_) }
 sub r { carp "'r' is DEPRECATED use qr{} instead"; return {regexp => $_[0]} }
 sub redirect  { Dancer::Helpers::redirect(@_) }
+sub render_with_layout { Dancer::Helpers::render_with_layout(@_); }
 sub request   { Dancer::SharedData->request }
 sub send_file { Dancer::Helpers::send_file(@_) }
 sub set       { goto &setting }
@@ -387,11 +389,13 @@ them.
 Defines a before_template filter:
 
     before_template sub {
+        my $tokens = shift;
         # do something with request, vars or params
     };
 
 The anonymous function which is given to C<before_template> will be executed
-before sending data and tokens to the template.
+before sending data and tokens to the template. Receives a hashref of the
+tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
 
@@ -662,6 +666,37 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
     get '/old/:resource', sub {
         redirect '/new/'.params->{resource}, 301;
     };
+    
+It is important to note that issuing a redirect by itself does not exit and
+redirect immediately, redirection is deferred until after the current route
+or filter has been processed. To exit and redirect immediately, use the return
+function, e.g.
+
+    get '/restricted', sub {
+        return redirect '/login' if accessDenied();
+        return 'Welcome to the restricted section';
+    };
+
+=head2 render_with_layout
+
+Allows a handler to provide plain HTML (or other content), but have it rendered
+within the layout still.
+
+For example:
+
+    get '/foo' => sub {
+        # Do something which generates HTML directly (maybe using
+        # HTML::Table::FromDatabase or something)
+        my $content = ...;
+        render_with_layout $content;
+    };
+
+It works very similarly to C<template> in that you can pass tokens to be used in
+the layout, and/or options to control the way the layout is rendered.  For
+instance, to use a custom layout:
+
+    render_with_layout $content, {}, { layout => 'layoutname' };
+
 
 =head2 request
 

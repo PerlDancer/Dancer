@@ -43,8 +43,10 @@ sub init {
 }
 
 sub serialize {
-    my $self = shift;
-    $_xs->XMLout(@_);
+    my $self    = shift;
+    my $entity  = shift;
+    my %options = (RootName => 'data', @_);
+    $_xs->XMLout($entity, %options);
 }
 
 sub deserialize {

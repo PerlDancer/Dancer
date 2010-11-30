@@ -45,7 +45,7 @@ sub header                { $_[0]->{headers}->header($_[1]) }
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
 sub Vars           { params(@_) }
-sub input_handle   { $_[0]->{env}->{'psgi.input'} }
+sub input_handle   { $_[0]->{env}->{'psgi.input'} || $_[0]->{env}->{'PSGI.INPUT'} }
 
 sub new {
     my ($class, $env) = @_;
@@ -285,6 +285,7 @@ sub _build_params {
         %$previous,                %{$self->{_query_params}},
         %{$self->{_route_params}}, %{$self->{_body_params}},
     };
+
 }
 
 # Written from PSGI specs:

@@ -27,6 +27,7 @@ sub new {
 }
 
 # a singleton to store the current response
+# made public so status can be checked, etc
 my $CURRENT = Dancer::Response->new();
 
 # the accessor returns a copy of the singleton
@@ -40,7 +41,16 @@ sub current {
 # helpers for the route handlers
 sub exists { defined $CURRENT && length($CURRENT->{content}) }
 sub set { $CURRENT = shift; }
-sub status { $CURRENT->{status} = Dancer::HTTP->status(shift) }
+
+sub status {
+    if (scalar @_ > 0) {
+        return $CURRENT->{status} = Dancer::HTTP->status(shift);
+    }
+    else {
+        return $CURRENT->{status};
+    }
+}
+
 sub content_type { $CURRENT->header('Content-Type' => shift) }
 sub pass { $CURRENT->{pass} = 1 }
 

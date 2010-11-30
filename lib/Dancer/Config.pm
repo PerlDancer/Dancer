@@ -12,12 +12,16 @@ use Carp 'confess';
 
 @EXPORT_OK = qw(setting mime_types);
 
+# mergeable settings
+my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
+
 # singleton for storing settings
 my $SETTINGS = {
 
     # user defined mime types
     mime_types => {},
 };
+
 sub settings {$SETTINGS}
 
 my $setters = {
@@ -76,8 +80,10 @@ my $normalizers = {
 
 sub normalize_setting {
     my ($class, $setting, $value) = @_;
-    $value = $normalizers->{$setting}->($setting, $value) 
-        if exists $normalizers->{$setting};
+
+    $value = $normalizers->{$setting}->($setting, $value)
+      if exists $normalizers->{$setting};
+
     return $value;
 }
 
@@ -85,18 +91,37 @@ sub normalize_setting {
 sub setting {
     my ($setting, $value) = @_;
 
+    if (@_ == 2) {
+        $value = _set_setting($setting, $value);
+        _trigger_hooks($setting, $value);
+        return $value;
+    }
+    else {
+        return _get_setting($setting);
+    }
+}
+
+sub _trigger_hooks {
+    my ($setting, $value) = @_;
+
+    $setters->{$setting}->(@_) if defined $setters->{$setting};
+}
+
+sub _set_setting {
+    my ($setting, $value) = @_;
+
+    return unless @_ == 2;
+
     # normalize the value if needed
-    $value = Dancer::Config->normalize_setting($setting, $value)
-        if @_ == 2;
+    $value = Dancer::Config->normalize_setting($setting, $value);
+    $SETTINGS->{$setting} = $value;
+    return $value;
+}
 
-    # run the hook if setter
-    $setters->{$setting}->(@_)
-      if (@_ == 2) && defined $setters->{$setting};
+sub _get_setting {
+    my $setting = shift;
 
-    # setter/getter
-    (@_ == 2)
-      ? $SETTINGS->{$setting} = $value
-      : $SETTINGS->{$setting};
+    return $SETTINGS->{$setting};
 }
 
 sub mime_types {
@@ -131,7 +156,6 @@ sub load {
     confess "Configuration file found but YAML is not installed"
       unless Dancer::ModuleLoader->load('YAML');
 
-    load_default_settings();
     load_settings_from_yaml(conffile);
 
     my $env = environment_file;
@@ -147,14 +171,25 @@ sub load {
 sub load_settings_from_yaml {
     my ($file) = @_;
 
-    my $config = YAML::LoadFile($file)
-      or confess "Unable to parse the configuration file: $file";
+    my $config;
 
-    setting($_, $config->{$_}) for (keys %{ $config });
+    eval { $config = YAML::LoadFile($file) };
+    if (my $err = $@ || (!$config)) {
+        confess "Unable to parse the configuration file: $file: $@";
+    }
+
+    for my $key (keys %{$config}) {
+        if ($MERGEABLE{$key}) {
+            my $setting = setting($key);
+            $setting->{$_} = $config->{$key}{$_} for keys %{$config->{$key}};
+        }
+        else {
+            _set_setting($key, $config->{$key});
+        }
+    }
 
     return scalar(keys %$config);
 }
-
 
 sub load_default_settings {
     $SETTINGS->{server}       ||= $ENV{DANCER_SERVER}       || '0.0.0.0';
@@ -172,6 +207,7 @@ sub load_default_settings {
       || $ENV{PLACK_ENV}
       || 'development';
 
+    setting $_ => {} for keys %MERGEABLE;
     setting template        => 'simple';
     setting import_warnings => 1;
 }

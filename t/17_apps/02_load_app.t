@@ -3,12 +3,14 @@ use strict;
 use warnings;
 
 use Dancer::Test;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
 
 {
     use Dancer;
 
-    load_app 't::lib::TestApp';
-    load_app 't::lib::Forum', prefix => '/forum';
+    load_app 'TestApp';
+    load_app 'Forum', prefix => '/forum';
 
     get '/' => sub { "home" };
 }
@@ -17,12 +19,12 @@ my $apps = [ Dancer::App->applications ];
 is scalar(@$apps), 3, "3 applications exist";
 
 my $main     = Dancer::App->get('main');
-my $test_app = Dancer::App->get('t::lib::TestApp');
-my $forum    = Dancer::App->get('t::lib::Forum');
+my $test_app = Dancer::App->get('TestApp');
+my $forum    = Dancer::App->get('Forum');
 
 ok defined($main), "app 'main' is defined";
-ok defined($test_app), "app 't::lib::TestApp' is defined";
-ok defined($forum), "app 't::lib::Forum' is defined";
+ok defined($test_app), "app 'TestApp' is defined";
+ok defined($forum), "app 'Forum' is defined";
 
 is @{ $main->registry->routes->{'get'} }, 1, 
     "one route is defined in main app";

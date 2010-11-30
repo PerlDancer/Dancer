@@ -18,9 +18,9 @@ sub init {
       unless Dancer::ModuleLoader->load('Template');
 
     my $tt_config = {
-        ANYCASE   => 1,
-        ABSOLUTE  => 1,
-        ENCODING  => 'utf8',
+        ANYCASE  => 1,
+        ABSOLUTE => 1,
+        ENCODING => 'utf8',
         %{$self->config},
     };
 

@@ -1,7 +1,9 @@
 use Test::More tests => 2, import => ['!pass'];
 
 use Dancer ':syntax';
-use t::lib::TestUtils;
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use TestUtils;
 
 set show_errors => 1;
 

@@ -1,5 +1,42 @@
+Dancer 1.2001
+    [ Sawyer X ]
+    * Fix clash with KiokuDB because of Dancer::Serializer::Dumper.
+
+    [ Franck Cuny ]
+    * Refactoring engine triggers. This resolves an issue of engine inits being
+      run before all configuration is read. That also crashes D::S::Cookie.
+      As a side effect we now have a refactored _set_setting() which does not
+      trigger any engine hooks (unlike setting()).
+    * Fix failing test t/07_apphandlers/06_debug.t
+
+    [ David Precious ]
+    * Doc fixes. Clarifications to Cookbook's REST section.
+    * Don't crash if application name is invalid and provide better information.
+
+Dancer 1.2000
+    ** 1.2 is a stable release of Dancer **
+    ** We assure consistency and stability for this release and the following **
+    ** 1.2xxx releases; you should not have issues updating to any 1.2xxx     **
+    ** version because of it.                                                 **
+
+    ++ A very special thanks goes to the Dancer community who improved and    ++
+    ++ perfected this release and worked hard on reporting bugs, fixing them, ++
+    ++ improving the stability, providing important features and everything   ++
+    ++ else which makes Dancer so attractive - and above all: its community   ++
+    ++ so thank you!                                                          ++
+
+    [ Sawyer X ]
+    * Fixing some more XML tests with missing preqreqs.
+
+Dancer 1.1999_04 (RC4)
+    [ Sawyer X ]
+    * Load Plack::Loader dynamically in test.
+
+    [ Yanick Champoux ]
+    * Doc fix.
+
 Dancer 1.1999_03 (RC3)
-    [Alexis Sukrieh]
+    [ Alexis Sukrieh ]
     * Transparent unicode support
       Dancer now takes care transparently of decoding unicode strings
       used within route handlers and encoding them back before sending
@@ -14,6 +51,35 @@ Dancer 1.1999_03 (RC3)
     * FIX for issue GH#171
       Scaffolded configuration files are fully commented in order to quickly
       guide the user in her first steps.
+
+    [ Damien Krotkine ]
+    * Fix Dancer::Plugin OO issue
+
+    [ Danijel Tasov ]
+    * Fixed expires in cookies + tests
+
+    [ Philippe Bruhat ]
+    * Dancer::Logger::Abstract: turn _should() into a closure, and avoid
+      setting up the hash again and agai
+
+    [ Franck Cuny ]
+    * Closes issue 181 (unknown log level)
+    * Plack middlewares must be listed in an arrayref (listing them in a
+      hashref is now deprecated)
+
+    [ Al Newkirk ]
+    * fixed redirect to redirect immediately (+ refactoring by franck)
+
+    [ Dave Doyle ]
+    * clarify Pod as to how before_template works 
+
+    [ Sawyer X ]
+    * Overhaul tests to use lib t/lib instead of t::lib::.
+      (fixes Windows test fails)
+    * PSGI envs on Windows is in capital letters.
+      (fixes Windows test fails)
+    * Add tests on every required directory to create a fake environment.
+      (realpath() on Windows fails when path doesn't exist)
 
 Dancer 1.1999_02 (RC2)
 
@@ -196,6 +262,10 @@ Dancer 1.1809
     * update Deployement.pod and Cookbook.pod
     * fix bug in route building with prefix
     * don't use app.psgi anymore in generated scripts
+    * fix GH#106: serializer
+    * fix bug in PSGI handler using HTTP::Headers when using some header
+    * fix bug in ajax query
+    * more tests
 
     [ Alexis Sukrieh ]
     * fix plan for t/03_route_handler/24_named_captures.t

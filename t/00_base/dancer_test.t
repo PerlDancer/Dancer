@@ -5,7 +5,11 @@ use warnings;
 
 use Dancer ':syntax';
 use Dancer::Test;
-load_app 't::lib::TestApp';
+use File::Spec;
+
+use lib File::Spec->catdir( 't', 'lib' );
+
+load_app 'TestApp';
 
 # in t::lib::TestApp, we have 
 # get '/' => sub { "Hello, this is the home" };
