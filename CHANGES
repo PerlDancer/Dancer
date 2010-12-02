@@ -1,3 +1,10 @@
+Dancer 1.2001_01
+    [ David Precious, Ivan Bessarabov ]
+    * Fixing TT example config.
+
+    [ Danijel Tasov ]
+    * Default layout now validates.
+
 Dancer 1.2001
     [ Sawyer X ]
     * Fix clash with KiokuDB because of Dancer::Serializer::Dumper.

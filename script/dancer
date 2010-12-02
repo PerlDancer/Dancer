@@ -442,15 +442,17 @@ WriteMakefile(
 'main.tt'   =>
 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=<% settings.charset %>" />
 <title>'.$appname.'</title>
 <link rel="stylesheet" href="<% request.base %>/css/style.css" />
 
 <!-- Grab Google CDN\'s jQuery. fall back to local if necessary -->
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script>!window.jQuery && document.write(\'<script src="<% request.base%>/javascripts/jquery.js"><\/script>\')</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">/* <![CDATA[ */
+    !window.jQuery && document.write(\'<script type="text/javascript" src="<% request.base%>/javascripts/jquery.js"><\/script>\')
+/* ]]> */</script>
 
 </head>
 <body>
@@ -834,9 +836,9 @@ template: \"simple\"
 # template: \"template_toolkit\"
 # engines:
 #   template_toolkit:
-#     ENCODING: 'utf8'
-#     START_TAG: '[%'
-#     END_TAG: '%]
+#     encoding:  'utf8'
+#     start_tag: '[%'
+#     end_tag:   '%]'
 
 ",
 
