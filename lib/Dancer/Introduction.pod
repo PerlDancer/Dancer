@@ -217,7 +217,7 @@ variables which will be accessible in the action blocks with the keyword 'var'.
 
     before sub {
         var note => 'Hi there';
-        request->path('/foo/oversee')
+        request->path_info('/foo/oversee')
     };
 
     get '/foo/*' => sub {
