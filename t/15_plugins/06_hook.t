@@ -6,6 +6,8 @@ use Dancer::Test;
 
 use lib 't/lib';
 
+plan tests => 4;
+
 use LinkBlocker;
 
 ok(
@@ -20,6 +22,3 @@ ok(
 route_exists [ GET => '/test' ];
 response_content_is( [ GET => '/test' ], 'no content' );
 response_status_is( [ GET => '/test' ], 202 );
-
-done_testing;
-
