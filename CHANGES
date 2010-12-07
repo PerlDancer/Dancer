@@ -2,6 +2,9 @@ Dancer 1.2003
     [ Bolangi ]
     * Code fixes in documentation (Dancer::Session, Dancer::Introduction).
 
+    [ Franck Cuny ]
+    * Fix test failures on old machines with Test::More without done_testing.
+
 Dancer 1.2002
     * Productionized! :)
 
