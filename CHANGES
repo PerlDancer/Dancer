@@ -1,5 +1,5 @@
-Dancer 1.2003
-    [ Bolangi ]
+Dancer 1.2002_01
+    [ Joel Roth ]
     * Code fixes in documentation (Dancer::Session, Dancer::Introduction).
 
     [ Franck Cuny ]
