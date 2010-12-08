@@ -50,7 +50,10 @@ sub template {
     $tokens->{settings}       = Dancer::Config->settings;
     $tokens->{request}        = Dancer::SharedData->request;
     $tokens->{params}         = Dancer::SharedData->request->params;
-    $tokens->{layout_vars}    = Dancer::SharedData->layout_vars;
+    $tokens->{layout_vars}    = {
+        %{ Dancer::SharedData->layout_vars },
+        $tokens->{layout_vars} ? %{ $tokens->{layout_vars} } : (),
+    };
 
     if (setting('session')) {
         $tokens->{session} = Dancer::Session->get;

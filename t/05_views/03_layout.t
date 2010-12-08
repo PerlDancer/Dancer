@@ -34,6 +34,8 @@ my @tests = (
       expected => "content\n" },
     { path => '/layouttokens',
       expected => "start\nStaticDynamic\ncontent\nstop" },
+    { path => '/layouttokens/from_handler',
+      expected => "start\nDynamic\nview\nstop" },
 );
 
 plan tests => scalar(@tests);
@@ -79,6 +81,10 @@ SKIP: {
 
     get '/layouttokens' => sub {
         template 'layouttokens', { title => 'Dynamic' }, { layout => 'layouttokens' };
+    };
+
+    get '/layouttokens/from_handler' => sub {
+        template 't03', { layout_vars => { title => 'Dynamic' } }, { layout => 'layouttokens' };
     };
 
     foreach my $test (@tests) {
