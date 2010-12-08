@@ -1,0 +1,3 @@
+start
+<% layout_vars.title %>
+<% content %>stop

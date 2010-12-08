@@ -1,0 +1,1 @@
+<% layout_vars.title = 'Static' _ title %>content

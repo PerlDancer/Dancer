@@ -27,9 +27,14 @@ my $_timer;
 sub timer { $_timer ||= Dancer::Timer->new }
 sub reset_timer { $_timer = Dancer::Timer->new }
 
+# layout tokens
+my $_layout_vars = {};
+sub layout_vars { (@_ == 2) ? $_layout_vars = $_[1] : $_layout_vars }
+
 # purging accessor
 sub reset_all {
     $vars = {};
+    $_layout_vars = {};
     undef $_request;
     undef $_timer;
     undef $_headers;

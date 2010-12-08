@@ -13,6 +13,7 @@ use lib File::Spec->catdir( 't', 'lib' );
 use TestUtils;
 
 set views => path(dirname(__FILE__), 'views');
+set template => 'template_toolkit';
 
 my @tests = (
     { path => '/solo',
@@ -29,6 +30,10 @@ my @tests = (
       expected => "content\n" },
     { path => '/render_with_layout/custom_layout',
       expected => "customstart\ncontent\ncustomstop\n" },
+    { path => '/layouttokens/no_layout',
+      expected => "content\n" },
+    { path => '/layouttokens',
+      expected => "start\nStaticDynamic\ncontent\nstop" },
 );
 
 plan tests => scalar(@tests);
@@ -66,6 +71,14 @@ SKIP: {
 
     get '/render_with_layout/custom_layout' => sub {
         render_with_layout("content\n", {}, { layout => 'custom' });
+    };
+
+    get '/layouttokens/no_layout' => sub {
+        template 'layouttokens', { title => 'Dynamic' }, { layout => undef };
+    };
+
+    get '/layouttokens' => sub {
+        template 'layouttokens', { title => 'Dynamic' }, { layout => 'layouttokens' };
     };
 
     foreach my $test (@tests) {
