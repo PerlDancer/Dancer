@@ -1,3 +1,11 @@
+Dancer 1.2002_02
+    [ Danijel Tasov ]
+    * Correct HTTP.pm POD's 503 entry with 403.
+
+    [ Paul Tomlin ]
+    * Tests for URI object in uri_for.
+    * Update Plack middleware tests compatibility.
+
 Dancer 1.2002_01
     [ Joel Roth ]
     * Code fixes in documentation (Dancer::Session, Dancer::Introduction).
