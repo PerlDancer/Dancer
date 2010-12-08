@@ -1,7 +1,7 @@
 use Test::More;
 use Dancer::Request;
 
-plan tests => 8;
+plan tests => 10;
 
 my $env = {
     'psgi.url_scheme' => 'http',
@@ -22,6 +22,8 @@ is $req->uri_for('bar', { baz => 'baz' }),
     'http://localhost:5000/foo/bar?baz=baz';
 
 is $req->uri_for('/bar'), 'http://localhost:5000/foo/bar';
+ok $req->uri_for('/bar')->isa('URI'), 'uri_for returns a URI';
+ok $req->uri_for('/bar', undef, 1)->isa('URI'), 'uri_for returns a URI (with $dont_escape)';
 
 is $req->request_uri, '/foo/bar/baz';
 is $req->path_info, '/bar/baz';

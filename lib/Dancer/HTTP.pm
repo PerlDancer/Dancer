@@ -103,6 +103,10 @@ from a Dancer script.
 
 returns 200 OK, alias : 'ok'
 
+=head2 403
+
+returns 403 Forbidden, alias 'forbidden'
+
 =head2 404
 
 returns 404 Not Found, alias : 'not_found'
@@ -110,10 +114,6 @@ returns 404 Not Found, alias : 'not_found'
 =head2 500
 
 returns 500 Internal Server Error, alias: 'error'
-
-=head2 503
-
-returns 503 Forbidden, alias 'forbidden'
 
 =head1 AUTHOR
 

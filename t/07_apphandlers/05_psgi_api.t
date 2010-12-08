@@ -30,7 +30,7 @@ my $app = sub {
     $handler->handle_request($request);
 };
 
-setting 'plack_middlewares' => { 'Runtime' => [], };
+setting 'plack_middlewares' => [['Runtime']];
 setting 'public' => '.';
 
 ok $app = $handler->apply_plack_middlewares($app);
