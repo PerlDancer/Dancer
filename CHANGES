@@ -1,3 +1,6 @@
+Dancer 1.2003
+    * Production release.
+
 Dancer 1.2002_02
     [ Danijel Tasov ]
     * Correct HTTP.pm POD's 503 entry with 403.
