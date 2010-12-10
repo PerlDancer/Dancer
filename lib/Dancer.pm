@@ -31,7 +31,7 @@ use File::Basename 'basename';
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.2002_02';
+$VERSION   = '1.2003';
 @EXPORT    = qw(
   after
   any
