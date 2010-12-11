@@ -8,6 +8,7 @@ use File::Spec;
 use Dancer::Config 'setting';
 use Dancer::FileUtils ('path', 'open_file');
 use IO::File;
+use POSIX qw( strftime );
 
 sub logdir {
     my $appdir = setting('appdir');
@@ -19,12 +20,7 @@ sub init {
     my ($self) = @_;
     my $logdir = logdir();
 
-    if (!-d $logdir) {
-        if (not mkdir $logdir) {
-            carp "log directory $logdir doesn't exist, unable to create";
-            return;
-        }
-    }
+    carp "log directory $logdir does not exists" if (!-d $logdir);
 
     my $logfile = setting('environment');
     $logfile = path($logdir, "$logfile.log");
@@ -36,11 +32,19 @@ sub init {
     $self->{fh} = $fh;
 }
 
+sub format_message {
+    my ($self, $level, $message) = @_;
+    chomp $message;
+
+    my ($package, $file, $line) = map { $_ || '-'} caller(3);
+
+    return sprintf("%s $$ $level $package $line $message\n", strftime("%Y-%m-%d %H:%M:%S", localtime(time)));
+}
+
+
 sub _log {
     my ($self, $level, $message) = @_;
     my $fh = $self->{fh};
-
-    return unless(ref $fh && $fh->opened);
 
     $fh->print($self->format_message($level => $message))
         or carp "writing to logfile $self->{logfile} failed";

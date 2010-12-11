@@ -26,8 +26,6 @@ sub new {
 
         $self->{message} = $html_output;
     }
-
-    Dancer::Logger::core("new Error object: [".$self->code."] ".$self->message);
     return $self;
 }
 
