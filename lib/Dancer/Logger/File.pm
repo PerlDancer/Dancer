@@ -21,7 +21,7 @@ sub init {
 
     if (!-d $logdir) {
 		require 'Carp';
-      carp "log directory $logdir does not exists";
+      Carp::croak("log directory $logdir does not exists");
     }
 
     my $logfile = setting('environment');
@@ -50,7 +50,7 @@ sub _log {
     my $fh = $self->{fh};
 
     $fh->print($self->format_message($level => $message))
-        or do { require 'Carp'; carp "writing to logfile $self->{logfile} failed" };
+        or do { require 'Carp'; Carp::croak("writing to logfile $self->{logfile} failed") };
 }
 
 1;
