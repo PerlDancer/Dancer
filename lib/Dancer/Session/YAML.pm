@@ -59,7 +59,8 @@ sub yaml_file {
 sub destroy {
     my ($self) = @_;
     use Dancer::Logger;
-    Dancer::Logger::core("trying to remove session file: ".yaml_file($self->id));
+    Dancer::Logger::core(
+        "trying to remove session file: " . yaml_file($self->id));
     unlink yaml_file($self->id) if -f yaml_file($self->id);
 }
 

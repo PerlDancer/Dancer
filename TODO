@@ -1,3 +1,10 @@
+                                TODO
+
+
+            This is the roadmap of upcoming developments
+
+* see http://github.com/sukria/dancer/issues#issue/125
+
 * headers (a sane Dancer::Header class for all headers, for D::H::PSGI, * D::H::Standalone, D::Request, D::Response);
 * rework the concept of D::Engines so we can have multiple D::Serializers loaded at once
 * possibility to define a serializer for a route, a list of routes, in a route (locally), ...

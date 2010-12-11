@@ -1,3 +1,46 @@
+Dancer 1.2003
+    * Production release.
+
+Dancer 1.2002_02
+    [ Danijel Tasov ]
+    * Correct HTTP.pm POD's 503 entry with 403.
+
+    [ Paul Tomlin ]
+    * Tests for URI object in uri_for.
+    * Update Plack middleware tests compatibility.
+
+Dancer 1.2002_01
+    [ Joel Roth ]
+    * Code fixes in documentation (Dancer::Session, Dancer::Introduction).
+
+    [ Franck Cuny ]
+    * Fix test failures on old machines with Test::More without done_testing.
+
+Dancer 1.2002
+    * Productionized! :)
+
+Dancer 1.2001_01
+    [ David Precious, Ivan Bessarabov ]
+    * Fixing TT example config.
+
+    [ Danijel Tasov ]
+    * Default layout now validates.
+
+Dancer 1.2001
+    [ Sawyer X ]
+    * Fix clash with KiokuDB because of Dancer::Serializer::Dumper.
+
+    [ Franck Cuny ]
+    * Refactoring engine triggers. This resolves an issue of engine inits being
+      run before all configuration is read. That also crashes D::S::Cookie.
+      As a side effect we now have a refactored _set_setting() which does not
+      trigger any engine hooks (unlike setting()).
+    * Fix failing test t/07_apphandlers/06_debug.t
+
+    [ David Precious ]
+    * Doc fixes. Clarifications to Cookbook's REST section.
+    * Don't crash if application name is invalid and provide better information.
+
 Dancer 1.2000
     ** 1.2 is a stable release of Dancer **
     ** We assure consistency and stability for this release and the following **
@@ -247,6 +290,10 @@ Dancer 1.1809
     * update Deployement.pod and Cookbook.pod
     * fix bug in route building with prefix
     * don't use app.psgi anymore in generated scripts
+    * fix GH#106: serializer
+    * fix bug in PSGI handler using HTTP::Headers when using some header
+    * fix bug in ajax query
+    * more tests
 
     [ Alexis Sukrieh ]
     * fix plan for t/03_route_handler/24_named_captures.t

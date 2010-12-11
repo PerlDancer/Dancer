@@ -47,7 +47,8 @@ sub _find_content_type {
         $content_types{$request->{accept_type}} = 1;
     }
 
-    $content_types{'application/json'} = 0;
+    $content_types{'application/json'} = 0
+      unless defined $content_types{'application/json'};
 
     return [
         sort { $content_types{$b} <=> $content_types{$a} }

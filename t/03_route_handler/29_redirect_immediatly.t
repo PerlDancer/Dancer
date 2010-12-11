@@ -7,6 +7,8 @@ use Dancer::Test;
 
 use Dancer ':syntax';
 
+plan tests => 5;
+
 my $pass = 0;
 
 before sub {
@@ -25,5 +27,3 @@ response_exists [ GET => '/false' ];
 response_headers_are_deeply [GET => '/false'], ['Location'=>'http://localhost/'];
 
 is $pass, 0;
-
-done_testing;

@@ -666,7 +666,8 @@ Just call  C<debug>, C<warning> or C<error> with your message:
 
 =head2 Writing a REST application
 
-With Dancer, it's easy to write REST application. Dancer provides helpers to serialize and deserialize for the following data format:
+With Dancer, it's easy to write REST applications. Dancer provides helpers to 
+serialize and deserialize for the following data formats:
 
 =over 4
 
@@ -680,11 +681,18 @@ With Dancer, it's easy to write REST application. Dancer provides helpers to ser
 
 =back
 
-To activate this feature, you only have to write this:
+To activate this feature, you only have to set the C<serializer> setting to the
+format you require, for instance in your config.yml:
 
-   serializer => 'JSON'
+   serializer: JSON
 
-From now, all hash ref or array ref returned by a route will be serialized to JSON. And all data receive from B<POST> or B<PUT> will be deserialized from JSON.
+Or right in your code:
+
+   set serializer => 'JSON';
+
+From now, all hash ref or array ref returned by a route will be serialized to 
+the format you chose, and all data received from B<POST> or B<PUT> requests 
+will be automatically deserialized.
 
     get '/hello/:name' => sub {
         # this structure will be returned to the client as
@@ -692,9 +700,14 @@ From now, all hash ref or array ref returned by a route will be serialized to JS
         return {name => params->{name}};
     };
 
-It's possible to let the client choose which serializer he want to use. For this, use the B<mutable> serializer, and an appropriate serializer will be chosen from the B<Content-Type> header.
+It's possible to let the client choose which serializer he want to use. For 
+this, use the B<mutable> serializer, and an appropriate serializer will be 
+chosen from the B<Content-Type> header.
 
-It's also possible to return custom error, using the C<send_error> function. When you don't use a serializer, the C<send_error> function will take a string as first parameter (the message), and an optional HTTP code. When using a serializer, the message can be a string, an arrayref or a hashref:
+It's also possible to return custom error, using the C<send_error> function. 
+When you don't use a serializer, the C<send_error> function will take a string 
+as first parameter (the message), and an optional HTTP code. When using a 
+serializer, the message can be a string, an arrayref or a hashref:
 
     get '/hello/:name' => sub {
         if (...) {
