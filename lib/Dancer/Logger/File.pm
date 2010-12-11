@@ -35,10 +35,11 @@ sub init {
 sub format_message {
     my ($self, $level, $message) = @_;
     chomp $message;
-
     my ($package, $file, $line) = map { $_ || '-'} caller(3);
+    my $r = Dancer::SharedData->request;
+    my $host = $r->{host};
 
-    return sprintf("%s $$ $level $package $line $message\n", strftime("%Y-%m-%d %H:%M:%S", localtime(time)));
+    return sprintf("%s $$ $host $level $package $line $message\n", strftime("%Y-%m-%d %H:%M:%S", localtime(time)));
 }
 
 
