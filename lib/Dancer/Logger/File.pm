@@ -1,7 +1,6 @@
 package Dancer::Logger::File;
 use strict;
 use warnings;
-use Carp;
 use base 'Dancer::Logger::Abstract';
 
 use File::Spec;
@@ -51,7 +50,7 @@ sub _log {
     my $fh = $self->{fh};
 
     $fh->print($self->format_message($level => $message))
-        or carp "writing to logfile $self->{logfile} failed";
+        or do { require 'Carp'; carp "writing to logfile $self->{logfile} failed" };
 }
 
 1;
