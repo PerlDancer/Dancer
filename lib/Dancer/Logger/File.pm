@@ -37,7 +37,7 @@ sub format_message {
     chomp $message;
     my ($package, $file, $line) = map { $_ || '-'} caller(3);
     my $r = Dancer::SharedData->request;
-    my $host = $r->{host};
+    my $host = defined $r ? $r->env->{'HTTP_X_REAL_IP'} || $r->env->{'REMOTE_ADDR'} : '-';
 
     return sprintf("%s $$ $host $level $package $line $message\n", strftime("%Y-%m-%d %H:%M:%S", localtime(time)));
 }
