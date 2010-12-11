@@ -20,7 +20,10 @@ sub init {
     my ($self) = @_;
     my $logdir = logdir();
 
-    carp "log directory $logdir does not exists" if (!-d $logdir);
+    if (!-d $logdir) {
+		require 'Carp';
+      carp "log directory $logdir does not exists";
+    }
 
     my $logfile = setting('environment');
     $logfile = path($logdir, "$logfile.log");
