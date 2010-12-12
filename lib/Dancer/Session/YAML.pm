@@ -8,7 +8,7 @@ use base 'Dancer::Session::Abstract';
 use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
-use Dancer::FileUtils 'path';
+use Dancer::FileUtils 'path', 'open_file';
 
 # static
 
@@ -66,8 +66,7 @@ sub destroy {
 
 sub flush {
     my $self = shift;
-    my $open_flag = setting('charset') eq 'UTF-8' ? '>:encoding(UTF-8)' : '>';
-    open(my $sessionfh, $open_flag, yaml_file($self->id)) or croak $!;
+    my $sessionfh = open_file('>', yaml_file($self->id));
     print {$sessionfh} YAML::Dump($self);
     close $sessionfh;
     return $self;

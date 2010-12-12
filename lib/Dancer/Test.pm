@@ -14,6 +14,7 @@ use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Config;
+use Dancer::FileUtils qw(open_file);
 
 use base 'Exporter';
 use vars '@EXPORT';
