@@ -9,6 +9,7 @@ use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::Logger;
 use Dancer::Session;
+use Dancer::FileUtils qw( open_file );
 
 sub new {
     my ($class, %params) = @_;
@@ -53,8 +54,7 @@ sub backtrace {
     return $message unless ($file and $line);
 
     # file and line are located, let's read the source Luke!
-    my $fh;
-    open $fh, '<', $file or return $message;
+    my $fh = open_file('<', $file) or return $message;
     my @lines = <$fh>;
     close $fh;
 
