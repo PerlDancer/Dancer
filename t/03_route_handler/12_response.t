@@ -10,15 +10,15 @@ is $r->{status}, 200, "status looks good";
 
 is ref(Dancer::Response->current), 'Dancer::Response', 
     "->current returned an object";
-Dancer::Response::status(500);
-Dancer::Response::content_type("text/plain");
-Dancer::Response::headers('X-Bar' => 3);
-Dancer::Response::pass();
+Dancer::Response->status(500);
+Dancer::Response->content_type("text/plain");
+Dancer::Response->headers('X-Bar' => 3);
+Dancer::Response->pass();
 
 $r = Dancer::Response->current;
-is($r->{status}, 500, "status looks good");
+is($r->status(), 500, "status looks good");
 is($r->header('content_type'), "text/plain", "content_type looks good");
-is($r->{pass}, 1, "pass flag looks good");
+is($r->has_passed, 1, "pass flag looks good");
 
 $r->header('X-Foo' => 1, 'X-Foo' => 2);
 

@@ -50,7 +50,7 @@ Test::TCP::test_tcp(
                 "header X-User-Head1 is ok");
             is(request->header('X-User-Head2'), 43,
                 "header X-User-Head2 is ok");
-            Dancer::Response::headers('X-Bar', 3);
+            Dancer::Response->headers('X-Bar', 3);
             content_type('text/plain');
         };
         
