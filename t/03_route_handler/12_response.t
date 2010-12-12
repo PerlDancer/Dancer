@@ -1,4 +1,4 @@
-use Test::More tests => 23;
+use Test::More tests => 25;
 
 use strict;
 use warnings;
@@ -62,3 +62,7 @@ is $r->status, 500;
 is $r->content, 'this is not ok';
 is $r->halted, 1;
                        
+Dancer::Response->new(content => 'this is ok');
+Dancer::Response->set($r);
+is(Dancer::Response->status, 500);
+is(Dancer::Response->content, 'this is not ok');
