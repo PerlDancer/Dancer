@@ -27,6 +27,23 @@ my $levels = {
     error   => 3,
 };
 
+my $log_formats = {
+    simple  => '[%P] %L @%D> %m in %f l. %l',
+    with_id => '[%P] %L @%D> [hit #%i] %m %f l. %l',
+};
+
+sub _log_format {
+    my $config = setting('logger_format');
+
+    if ( !$config ) {
+        return $log_formats->{simple};
+    }
+
+    exists $log_formats->{$config}
+      ? return $log_formats->{$config}
+      : return $config;
+}
+
 sub _should {
     my ($self, $msg_level) = @_;
     my $conf_level = setting('log') || 'debug';
@@ -49,23 +66,49 @@ sub format_message {
 
     $level = 'warn' if $level eq 'warning';
     $level = sprintf('%5s', $level);
+    
+    my $r     = Dancer::SharedData->request;
+    my @stack = caller(3);
 
-    my ($package, $file, $line) = caller(3);
-    $package ||= '-';
-    $file    ||= '-';
-    $line    ||= '-';
+    my $chars_mapping = {
+        h => sub {
+            defined $r
+              ? $r->env->{'HTTP_X_REAL_IP'} || $r->env->{'REMOTE_ADDR'}
+              : '-';
+        },
+        t => sub {POSIX::strftime("%d/%b/%Y %H:%M:%S", localtime)},
+        P => sub { $$ },
+        L => sub { $level },
+        D => sub {
+            my $time = Dancer::SharedData->timer->tick;
+            return $time;
+        },
+        m => sub { $message },
+        f => sub { $stack[1] || '-' },
+        l => sub { $stack[2] || '-' },
+        i => sub { $r->id },
+    };
 
-    my $time = Dancer::SharedData->timer->tick;
-    my $r    = Dancer::SharedData->request;
-    if (defined $r) {
-        return
-            "[$$] $level \@$time> [hit #"
-          . $r->id
-          . "] $message in $file l. $line\n";
-    }
-    else {
-        return "[$$] $level \@$time> $message in $file l. $line\n";
-    }
+    my $char_mapping = sub {
+        my $char = shift;
+
+        my $cb = $chars_mapping->{$char};
+        unless ($cb) {
+            Carp::carp "\%$char not supported.";
+            return "-";
+        }
+        $cb->($char);
+    };
+
+    my $fmt = $self->_log_format();
+
+    $fmt =~ s{
+        (?:
+         \%([a-zA-Z])
+        )
+    }{ $char_mapping->($1) }egx;
+
+    return $fmt."\n";
 }
 
 sub core    { $_[0]->_should('core')    and $_[0]->_log('core',    $_[1]) }
@@ -87,6 +130,68 @@ Dancer::Logger::Abstract - Abstract logging engine for Dancer
 
 This is an abstract logging engine that provides loggers with basic
 functionality and some sanity checking.
+
+=head1 CONFIGURATION
+
+=head2 logger_format
+
+This is a format string (or a preset name) to specify the log format.
+
+The possible values are:
+
+=over 4
+
+=item %h
+
+host emiting the request
+
+=item %t
+
+date (formated like %d/%b/%Y %H:%M:%S)
+
+=item %P
+
+PID
+
+=item %L
+
+log level
+
+=item %D
+
+timer
+
+=item %m
+
+message
+
+=item %f
+
+file name that emit the message
+
+=item %l
+
+line from the file
+
+=item %i
+
+request ID
+
+=back
+
+There is two preset possible:
+
+=over 4
+
+=item simple
+
+will format the message like: [%P] %L @%D> %m in %f l. %l
+
+=item with_id
+
+will format the message like: [%P] %L @%D> [hit #%i] %m in %f l. %l
+
+=back
 
 =head1 METHODS
 
