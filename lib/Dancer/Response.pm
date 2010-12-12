@@ -2,8 +2,10 @@ package Dancer::Response;
 
 use strict;
 use warnings;
+use Carp;
 
 use Dancer::Config 'setting';
+use Scalar::Util qw/blessed/;
 use Dancer::HTTP;
 use HTTP::Headers;
 
@@ -22,7 +24,6 @@ sub new {
         %args,
     };
     bless $self, $class;
-
     return $self;
 }
 
@@ -32,32 +33,77 @@ my $CURRENT = Dancer::Response->new();
 
 # the accessor returns a copy of the singleton
 # after having purged it.
+# XXX why do we need to purge it ?
 sub current {
     my $cp = $CURRENT;
     $CURRENT = Dancer::Response->new();
     return $cp;
 }
 
+sub _get_object {
+    my $current;
+    if (blessed($_[0]) && $_[0]->isa('Dancer::Response')) {
+        $current = shift;
+    }else{
+        $current = $CURRENT;
+    }
+    return $current;
+}
+
 # helpers for the route handlers
-sub exists { defined $CURRENT && length($CURRENT->{content}) }
-sub set { $CURRENT = shift; }
+sub exists { blessed($CURRENT) && length($CURRENT->content()) }
+
+# this is a classe method
+sub set {
+    my $class = shift;
+    if ( blessed( $class ) ) {
+        Carp::croak("you can't call 'set' on a Dancer::Response object");
+    }
+    $CURRENT = shift;
+}
+
+sub content {
+    my $current = _get_object(shift);
+    return $current->{content};
+}
 
 sub status {
+    my $current = _get_object(shift);;
+
     if (scalar @_ > 0) {
-        return $CURRENT->{status} = Dancer::HTTP->status(shift);
+        return $current->{status} = Dancer::HTTP->status(shift);
     }
     else {
-        return $CURRENT->{status};
+        return $current->{status};
     }
 }
 
-sub content_type { $CURRENT->header('Content-Type' => shift) }
-sub pass { $CURRENT->{pass} = 1 }
+sub content_type {
+    my $current = _get_object(shift);
 
+    if (scalar @_ > 0) {
+        $current->header('Content-Type' => shift)
+    }else{
+        return $current->header('Content-Type');
+    }
+}
+
+sub pass {
+    my $current = _get_object(shift);
+    $current->{pass} = 1
+}
+
+sub has_passed {
+    my $current = _get_object(shift);
+    $current->{pass};
+}
+
+# XXX WTF
 sub halt {
-    my ($class, $content) = @_;
+    my $current = _get_object(shift);
+    my $content = shift;
 
-    if (ref($content) && ref($content) eq 'Dancer::Response') {
+    if (blessed($content) && $content->isa('Dancer::Response')) {
         $CURRENT = $content;
     }
     else {
@@ -68,24 +114,29 @@ sub halt {
     return $content;
 }
 
+# XXX
 sub halted { $CURRENT && $CURRENT->{halted} }
 
+
 sub header {
-    my $self   = shift;
+    my $current = _get_object(shift);
     my $header = shift;
 
     if (@_) {
-        $self->{headers}->header($header => @_);
+        $current->{headers}->header($header => @_);
     }
     else {
-        return $self->{headers}->header($header);
+        return $current->{headers}->header($header);
     }
 }
 
-sub headers { $CURRENT->{headers}->header(@_); }
+sub headers {
+    my $current = _get_object(shift);
+    $current->{headers}->header(@_);
+}
 
 sub headers_to_array {
-    my $self = shift;
+    my $current = _get_object(shift);
 
     my $headers = [
         map {
@@ -94,8 +145,8 @@ sub headers_to_array {
                 my $v = $_;
                 $v =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
                 ($k => $v)
-            } $self->{headers}->header($_);
-          } $self->{headers}->header_field_names
+            } $current->{headers}->header($_);
+          } $current->{headers}->header_field_names
     ];
 
     return $headers;
