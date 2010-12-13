@@ -8,7 +8,7 @@ use base 'Dancer::Session::Abstract';
 use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
-use Dancer::FileUtils 'path', 'open_file';
+use Dancer::FileUtils qw(path open_file);
 
 # static
 

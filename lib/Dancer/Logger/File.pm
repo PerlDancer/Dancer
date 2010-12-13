@@ -6,7 +6,7 @@ use base 'Dancer::Logger::Abstract';
 
 use File::Spec;
 use Dancer::Config 'setting';
-use Dancer::FileUtils ('path', 'open_file');
+use Dancer::FileUtils qw(path open_file);
 use IO::File;
 
 sub logdir {
