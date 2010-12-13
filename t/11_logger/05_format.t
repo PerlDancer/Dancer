@@ -18,9 +18,9 @@ is $fmt, '(%L) %m';
 # no log format defined
 setting logger_format => undef;
 $fmt = $l->_log_format();
-is $fmt, '[%P] %L @%D> %m in %f l. %l';
+is $fmt, '[%P] %L @%D> %i%m in %f l. %l';
 
 # log format from preset
-setting logger_format => 'with_id';
+setting logger_format => 'simple';
 $fmt = $l->_log_format();
-is $fmt, '[%P] %L @%D> [hit #%i] %m %f l. %l';
+is $fmt, '[%P] %L @%D> %i%m in %f l. %l';

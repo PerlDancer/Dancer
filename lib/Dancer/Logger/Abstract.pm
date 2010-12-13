@@ -28,8 +28,7 @@ my $levels = {
 };
 
 my $log_formats = {
-    simple  => '[%P] %L @%D> %m in %f l. %l',
-    with_id => '[%P] %L @%D> [hit #%i] %m %f l. %l',
+    simple  => '[%P] %L @%D> %i%m in %f l. %l',
 };
 
 sub _log_format {
@@ -76,7 +75,7 @@ sub format_message {
               ? $r->env->{'HTTP_X_REAL_IP'} || $r->env->{'REMOTE_ADDR'}
               : '-';
         },
-        t => sub {POSIX::strftime("%d/%b/%Y %H:%M:%S", localtime)},
+        t => sub { POSIX::strftime( "%d/%b/%Y %H:%M:%S", localtime ) },
         P => sub { $$ },
         L => sub { $level },
         D => sub {
@@ -86,7 +85,9 @@ sub format_message {
         m => sub { $message },
         f => sub { $stack[1] || '-' },
         l => sub { $stack[2] || '-' },
-        i => sub { $r->id },
+        i => sub {
+            defined $r ? "[hit #" . $r->id . "]" : "";
+        },
     };
 
     my $char_mapping = sub {
