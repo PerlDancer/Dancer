@@ -282,9 +282,26 @@ Default value is 'text/html'.
 
 =head2 charset (string)
 
-The default charset of outgoing content. Unicode bodies in HTTP
-responses of C<text/*> types will be encoded to this charset. Also,
-C<charset=> item will be added to Content-Type response header.
+This setting does 3 things:
+
+=over
+
+=item *
+
+It sets the default charset of outgoing content. C<charset=> item will be
+added to Content-Type response header.
+
+=item *
+
+It makes Unicode bodies in HTTP responses of C<text/*> types to be encoded to
+this charset.
+
+=item *
+
+It also indicates to Dancer in which charset the static files and templates are
+encoded.
+
+=back
 
 Default value is empty which means don't do anything. HTTP responses
 without charset will be interpreted as ISO-8859-1 by most clients.
