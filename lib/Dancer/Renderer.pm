@@ -197,7 +197,8 @@ sub get_mime_type {
 
 # set of builtin templates needed by Dancer when rendering HTML pages
 sub templates {
-    my $charset = setting('charset') || 'UTF-8';
+    my $charset = setting('charset') || '';
+    my $charset_string = length($charset) ? "; charset=$charset" : '';
     {   default =>
           '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -205,7 +206,7 @@ sub templates {
 <head>
 <title><% title %></title>
 <link rel="stylesheet" href="/css/<% style %>.css" />
-<meta http-equiv="Content-type" content="text/html; charset=' . $charset
+<meta http-equiv="Content-type" content="text/html' . $charset_string
           . '" />
 </head>
 <body>
