@@ -17,6 +17,7 @@ sub dirname { File::Basename::dirname(@_) }
 
 sub open_file {
     my ($mode, $filename) = @_;
+    require Dancer::Config;
     my $charset = Dancer::Config::setting('charset');
     length($charset || '')
       and $mode .= ":encoding($charset)";
@@ -28,9 +29,6 @@ sub open_file {
 sub read_file_content {
     my ($file) = @_;
     my $fh;
-
-    require Dancer::Config;
-    my $charset = Dancer::Config::setting('charset');
 
     if ($file) {
         $fh = open_file('<', $file);
