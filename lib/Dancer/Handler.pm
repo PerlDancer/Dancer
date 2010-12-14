@@ -123,7 +123,7 @@ sub render_response {
             && Dancer::SharedData->request->is_ajax)
         {
             $response->header(
-                'Content-Type' => 'text/xml; charset=UTF-8');
+                'Content-Type' => 'text/xml');
         }
 
         my $charset = setting('charset');
