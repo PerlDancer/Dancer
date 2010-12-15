@@ -5,6 +5,8 @@ use warnings;
 
 use Dancer::Config 'setting';
 use Getopt::Long;
+use FindBin;
+use File::Spec;
 
 my $options = {
     port        => setting('port'),
@@ -35,8 +37,9 @@ sub process_args {
 sub usage_and_exit { print_usage() && exit(0) }
 
 sub print_usage {
+    my $app = File::Spec->catfile( $FindBin::RealBin, $FindBin::RealScript );
     print <<EOF
-\$ ./yourdancerapp.pl [options]
+\$ $app [options]
 
  Options:
    --daemon             Run in background (false)
