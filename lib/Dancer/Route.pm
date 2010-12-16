@@ -93,6 +93,9 @@ sub match {
 
     return unless @values;
 
+    # save the route pattern that matched
+    $request->route_pattern($self->pattern);
+
     # named tokens
     my @tokens = @{$self->{_params} || []};
 
