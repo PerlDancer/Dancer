@@ -484,7 +484,7 @@ Defines a route for HTTP B<GET> requests to the given path:
 Sets a response object with the content given.
 
 When used as a return value from a filter, this breaks the execution flow and
-renders the response immediatly:
+renders the response immediately:
 
     before sub {
         if ($some_condition) {
