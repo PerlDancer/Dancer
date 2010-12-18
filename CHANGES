@@ -1,11 +1,14 @@
 Dancer 1.2003_01
 
-    [Damien Krotkine ]
+    [ Damien Krotkine ]
     * Better check of keywords used in plugins.
 
     [ jamhed ]
     Fix some unicode issues, refactored all file openings in one function in
-    Dancer::FileUtils
+    Dancer::FileUtils.
+
+    [ Gabor Szabo ]
+    * Adding test for multi-leveled scaffolding.
 
 Dancer 1.2003
     * Production release.
