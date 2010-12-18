@@ -146,7 +146,7 @@ inside encrypted cookies (this engine doesn't use a server-side storage).
 
 =head1 DEPENDENCY
 
-Dancer::Session may depends on third-party modules, depending on the session
+Dancer::Session may depend on third-party modules, depending on the session
 engine used. See the session engine module for details.
 
 
