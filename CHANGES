@@ -1,5 +1,4 @@
 Dancer 1.2003_01
-
     [ Damien Krotkine ]
     * Better check of keywords used in plugins.
 
@@ -12,6 +11,10 @@ Dancer 1.2003_01
 
     [ Maurice Mengel (mokko) ]
     * Skip file upload tests on Cygwin, not just win32.
+
+    [ Alan Haggai ]
+    * Fixing up typos in various places.
+    * Show the correct filename in usage.
 
 Dancer 1.2003
     * Production release.
