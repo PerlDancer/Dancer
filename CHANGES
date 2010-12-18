@@ -10,6 +10,9 @@ Dancer 1.2003_01
     [ Gabor Szabo ]
     * Adding test for multi-leveled scaffolding.
 
+    [ Maurice Mengel (mokko) ]
+    * Skip file upload tests on Cygwin, not just win32.
+
 Dancer 1.2003
     * Production release.
 
