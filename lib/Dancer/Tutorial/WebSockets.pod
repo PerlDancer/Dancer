@@ -8,11 +8,21 @@ Dancer::Tutorial::WebSockets - How to build WebSocket apps with Dancer
 
 This tutorial will demonstrate building a simple WebSocket enabled app using
 Dancer and Web::Hippie.
-For the example to work, you will need a recent version of Dancer installed.
-You will also need to install L<AnyMQ>, L<PlacK> and L<Web::Hippie>.
+WebSockets are what all the cook kids are talking about these days.
+They make it possible to create push based applications.
+Instead of polling a server repeatedly for updates, the server pushes data to
+you as soon as it is available.
+Given Dancer's "light core" philosophy, WebSockets are not built in.
+So we will use a Plack Middleware called L<Web::Hippie> to do the hard work for
+us.
 
 =head1 Example
 
+For this example to work, you will need a recent version of Dancer installed.
+You will also need to install L<Plack> and L<Web::Hippie>.
+This example has only be tested on the Chrome web browser.
+Firefox does not support WebSockets by default as of the publication of this
+tutorial.
 This example requires 2 files. First, create ./wsdemo.pl:
 
     #!/usr/bin/env perl
@@ -63,7 +73,8 @@ Now create the template file ./views/index.tt:
             var data = JSON.parse(e.data);
             console.log(data);
             if (data.msg) {
-                $('ul').prepend('<li>' + Date() + ': ' + data.msg + '</li>');
+                var time = Date();
+                $('ul').prepend('<li>' + time + ': ' + data.msg + '</li>');
             }
         };
     });
@@ -97,7 +108,7 @@ To test your app, just run:
 
 Now visit http://localhost:5000 in your browser.
 Clicking the Send Message button should add messages to the webpage.
-Now open a second browser window and open the same url, http://localhost:5000.
+Open a second browser window and open the same url, http://localhost:5000.
 Clicking the Send Message button should add the same message to both windows.
 
 =head1 REST Interface
@@ -115,7 +126,7 @@ Now you can send messages to your app with any http client:
 
     $ curl -d msg=shalom http://localhost:5000/send_msg
 
-or
+Or
 
     $ curl http://localhost:5000/send_msg?msg=salaam
 
