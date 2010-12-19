@@ -20,7 +20,7 @@ us.
 
 For this example to work, you will need a recent version of Dancer installed.
 You will also need to install L<Plack> and L<Web::Hippie>.
-This example has only be tested on the Chrome web browser.
+This example has only been tested on the Chrome web browser.
 Firefox does not support WebSockets by default as of the publication of this
 tutorial.
 This example requires 2 files. First, create ./wsdemo.pl:
