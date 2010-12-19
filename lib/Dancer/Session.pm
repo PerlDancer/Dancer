@@ -95,7 +95,7 @@ You can either look for an existing item in the session storage or modify one.
 Here is a simple example of two route handlers that implement a basic C</login> and
 C</home> actions using the session engine. 
 
-    post '/login' => {
+    post '/login' => sub {
         # look for params and authenticate the user
         # ...
         if ($user) {
@@ -103,7 +103,7 @@ C</home> actions using the session engine.
         }
     };
 
-    get '/home' => {
+    get '/home' => sub {
         # if a user is present in the session, let him go, otherwise redirect to
         # /login
         if (not session('user_id')) {

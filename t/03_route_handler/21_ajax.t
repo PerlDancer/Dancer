@@ -9,7 +9,7 @@ plan skip_all => 'Test::TCP is needed to run this test'
 
 use LWP::UserAgent;
 
-plan tests => 26;
+plan tests => 29;
 
 ok(Dancer::App->current->registry->is_empty,
     "registry is empty");
@@ -44,6 +44,7 @@ Test::TCP::test_tcp(
             if ( $query->{success} == 1) {
                 ok $res->is_success;
                 is $res->content, $query->{content};
+                like $res->header('Content-Type'), qr/text\/xml/ if $query->{ajax} == 1;
             }
             else {
                 ok !$res->is_success;

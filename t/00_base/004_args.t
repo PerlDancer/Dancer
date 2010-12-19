@@ -21,6 +21,10 @@ my @tests = (
 
     { args => ['--confdir=/tmp/foo'],
       expected => sub { setting('confdir') eq '/tmp/foo'} },
+    { args => ['--restart=1'],
+      expected => sub { setting('auto_reload') == 1}},
+    { args => ['--restart=0'],
+      expected => sub { setting('auto_reload') == 0}},
 );
 
 plan tests => scalar(@tests) + 1;

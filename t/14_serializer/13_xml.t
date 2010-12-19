@@ -33,7 +33,7 @@ is $s->content_type, 'text/xml', 'content type is ok';
 # helpers
 
 $xml = to_xml($data);
-like $xml, qr/opt foo="42"/, "data is correctly serialized";
+like $xml, qr/data foo="42"/, "data is correctly serialized";
 
 $data2 = from_xml($xml);
 is_deeply $data, {foo => 42}, "data is correctly deserialized";

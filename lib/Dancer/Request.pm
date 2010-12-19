@@ -285,6 +285,7 @@ sub _build_params {
         %$previous,                %{$self->{_query_params}},
         %{$self->{_route_params}}, %{$self->{_body_params}},
     };
+
 }
 
 # Written from PSGI specs:

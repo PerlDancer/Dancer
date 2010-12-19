@@ -11,7 +11,7 @@ use base 'Dancer::Engine';
 # return: a string of $template's content processed with $tokens
 sub render { confess "render not implemented" }
 
-sub default_tmpl_ext { "tt" };
+sub default_tmpl_ext {"tt"}
 
 sub view {
     my ($self, $view) = @_;
@@ -26,7 +26,7 @@ sub view {
 sub layout {
     my ($self, $layout, $tokens, $content) = @_;
 
-    my $app = Dancer::App->current;
+    my $app          = Dancer::App->current;
     my $def_tmpl_ext = $self->default_tmpl_ext();
     $layout .= ".$def_tmpl_ext" if $layout !~ /\.${def_tmpl_ext}$/;
     $layout = path($app->setting('views'), 'layouts', $layout);

@@ -27,8 +27,9 @@ sub get_handler {
     }
 
     # if Plack is detected or set by conf, use the PSGI handler
-    $handler = 'Dancer::Handler::PSGI' 
-        if (setting('apphandler') eq 'PSGI');
+    if ( defined setting('apphandler') ) {
+        $handler = 'Dancer::Handler::' . setting('apphandler');
+    }
 
     # load the app handler
     my ($loaded, $error) = Dancer::ModuleLoader->load($handler);
@@ -116,6 +117,15 @@ sub render_response {
     my $content = $response->{content};
     unless (ref($content) eq 'GLOB') {
 
+        # when the request is considered as ajax,
+        # we set the content type to text/xml
+        if (   Dancer::SharedData->request
+            && Dancer::SharedData->request->is_ajax)
+        {
+            $response->header(
+                'Content-Type' => 'text/xml; charset=UTF-8');
+        }
+
         my $charset = setting('charset');
         my $ctype   = $response->header('Content-Type');
 
@@ -124,7 +134,6 @@ sub render_response {
             $response->header('Content-Type' => "$ctype; charset=$charset")
               if $ctype !~ /$charset/;
         }
-
         $content = [$content];
     }
 

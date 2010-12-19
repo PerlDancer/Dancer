@@ -35,8 +35,8 @@ given ($action) {
             exit 1;
         }
 
-        if (system("git checkout -b $name devel") == 0) {
-            say "FAIL";
+        if (system("git checkout -b $name devel") != 0) {
+            say "ERROR: unable to branch from devel";
             exit 2;
         }
 
