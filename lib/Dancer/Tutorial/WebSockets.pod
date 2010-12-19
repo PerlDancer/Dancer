@@ -71,7 +71,6 @@ Now create the template file ./views/index.tt:
         };
         socket.onmessage = function(e) {
             var data = JSON.parse(e.data);
-            console.log(data);
             if (data.msg) {
                 var time = Date();
                 $('ul').prepend('<li>' + time + ': ' + data.msg + '</li>');
