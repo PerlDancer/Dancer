@@ -19,7 +19,7 @@ us.
 =head1 Example
 
 For this example to work, you will need a recent version of Dancer installed.
-You will also need to install L<Plack> and L<Web::Hippie>.
+You will also need to install L<Plack>, L<Web::Hippie> and L<Twiggy>.
 This example has only been tested on the Chrome web browser.
 Firefox does not support WebSockets by default as of the publication of this
 tutorial.
@@ -103,7 +103,7 @@ Now create the template file ./views/index.tt:
 
 To test your app, just run:
 
-    plackup wsdemo.pl
+    plackup -s Twiggy wsdemo.pl
 
 Now visit http://localhost:5000 in your browser.
 Clicking the Send Message button should add messages to the webpage.
