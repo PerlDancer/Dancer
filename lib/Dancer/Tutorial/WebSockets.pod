@@ -1,0 +1,125 @@
+=pod
+
+=head1 NAME
+
+Dancer::Tutorial::WebSockets - How to build WebSocket apps with Dancer
+
+=head1 DESCRIPTION
+
+This tutorial will demonstrate building a simple WebSocket enabled app using
+Dancer and Web::Hippie.
+For the example to work, you will need a recent version of Dancer installed.
+You will also need to install L<AnyMQ>, L<PlacK> and L<Web::Hippie>.
+
+=head1 Example
+
+This example requires 2 files. First, create ./wsdemo.pl:
+
+    #!/usr/bin/env perl
+    use Dancer;
+    use AnyMQ;
+    use Plack::Builder;
+
+    my $bus = AnyMQ->new;
+    my $topic = $bus->topic('demo');
+
+    get '/' => sub { template 'index' };
+
+    # Web::Hippie routes
+    get '/new_listener' => sub {
+        request->env->{'hippie.listener'}->subscribe($topic);
+    };
+    get '/message' => sub {
+        my $msg = request->env->{'hippie.message'};
+        $topic->publish($msg);
+    };
+
+    builder {
+        mount '/' => dance;
+        mount '/_hippie' => builder {
+            enable '+Web::Hippie';
+            enable '+Web::Hippie::Pipe', bus => $bus;
+            dance;
+        };
+    };
+
+Now create the template file ./views/index.tt:
+
+    <html>
+    <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+    <script>
+    var socket;
+
+    $(function() {
+        // ws_path should be of the form ws://host/_hippie/ws
+        var ws_path = "ws:<% request.base.opaque %>_hippie/ws";
+        socket = new WebSocket(ws_path);
+        socket.onopen = function() {
+            $('#connection-status').text("Connected");
+        };
+        socket.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            console.log(data);
+            if (data.msg) {
+                $('ul').prepend('<li>' + Date() + ': ' + data.msg + '</li>');
+            }
+        };
+    });
+
+    function send_msg(message) {
+        socket.send(JSON.stringify({ msg: message }));
+    }
+    </script>
+    </head>
+
+    <body>
+
+    <h1 id="title">Dancer WebSocket Demo</h1>
+    Connection Status:
+    <span id="connection-status"> Disconnected </span>
+
+    <div>
+    <input value="Send Message" type=button onclick="send_msg('hello')"/>
+    <input value="clear" type=button onclick="$('ul').empty()"/>
+    </div>
+
+    <span style="font-weight:bold"> Messages </span>
+    <ul id="list"></ul>
+
+    </body>
+    </html>
+
+To test your app, just run:
+
+    plackup wsdemo.pl
+
+Now visit http://localhost:5000 in your browser.
+Clicking the Send Message button should add messages to the webpage.
+Now open a second browser window and open the same url, http://localhost:5000.
+Clicking the Send Message button should add the same message to both windows.
+
+=head1 REST Interface
+
+You can interact with your app from external clients as well.
+Just add this route to your ./wsdemo.pl file right after the '/' route:
+
+    any '/send_msg' => sub {
+        $topic->publish({ msg => params->{msg} });
+        return "sent message\n";
+    };
+
+Restart your application.
+Now you can send messages to your app with any http client:
+
+    $ curl -d msg=shalom http://localhost:5000/send_msg
+
+or
+
+    $ curl http://localhost:5000/send_msg?msg=salaam
+
+Or just open the url http://localhost:5000/send_msg?msg=howdy in another
+browser window.
+
+=cut
