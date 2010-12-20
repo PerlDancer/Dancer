@@ -56,7 +56,7 @@ sub exists {
     blessed($current) && length($current->{content});
 }
 
-# this is a classe method
+# this is a class method
 sub set {
     my $class = shift;
     if ( blessed( $class ) ) {
@@ -110,7 +110,14 @@ sub halt {
     my $current = _get_object(shift);
     my $content = shift;
 
-    $current->{halted} = 1;
+    if ( blessed($content) && $content->isa('Dancer::Response') ) {
+        $CURRENT = $content;
+    }
+    else {
+        my $resp = Dancer::Response->new(content => $content);
+         $CURRENT = $resp;
+    }
+    $CURRENT->{halted} = 1;
     return $content;
 }
 
