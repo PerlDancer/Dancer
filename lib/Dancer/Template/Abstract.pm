@@ -13,11 +13,16 @@ sub render { confess "render not implemented" }
 
 sub default_tmpl_ext { "tt" }
 
+sub _template_name {
+    my ( $self, $view ) = @_;
+    my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
+    $view .= ".$def_tmpl_ext" if $view !~ /\.${def_tmpl_ext}$/;
+}
+
 sub view {
     my ($self, $view) = @_;
 
-    my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
-    $view .= ".$def_tmpl_ext" if $view !~ /\.${def_tmpl_ext}$/;
+    $view = $self->_template_name($view);
 
     my $app = Dancer::App->current;
     return path($app->setting('views'), $view);
@@ -27,9 +32,7 @@ sub layout {
     my ($self, $layout, $tokens, $content) = @_;
 
     my $app          = Dancer::App->current;
-    my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
-
-    $layout .= ".$def_tmpl_ext" if $layout !~ /\.${def_tmpl_ext}$/;
+    $layout = $self->_template_name($layout);
     $layout = path($app->setting('views'), 'layouts', $layout);
 
     my $full_content =
