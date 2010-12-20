@@ -178,7 +178,6 @@ sub run {
         status       => $st,
         headers      => $headers,
         content      => $content,
-        content_type => $ct,
     );
 }
 
