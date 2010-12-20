@@ -103,7 +103,7 @@ sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
-sub content_type    { Dancer::Response::content_type(@_) }
+sub content_type    { Dancer::Response->content_type(@_) }
 sub dance           { Dancer::start(@_) }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
@@ -120,7 +120,7 @@ sub get {
     Dancer::App->current->registry->universal_add('get',  @_);
 }
 sub halt      { Dancer::Response->halt(@_) }
-sub headers   { Dancer::Response::headers(@_); }
+sub headers   { Dancer::Response->headers(@_); }
 sub header    { goto &headers; }                            # goto ftw!
 sub layout    { set(layout => shift) }
 sub load      { require $_ for @_ }
@@ -164,7 +164,7 @@ sub session {
     }
 }
 sub splat     { @{Dancer::SharedData->request->params->{splat}} }
-sub status    { Dancer::Response::status(@_) }
+sub status    { Dancer::Response->status(@_) }
 sub template  { Dancer::Helpers::template(@_) }
 sub true      {1}
 sub to_dumper { Dancer::Serializer::Dumper::to_dumper(@_) }
