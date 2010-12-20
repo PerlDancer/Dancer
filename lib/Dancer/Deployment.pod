@@ -233,6 +233,18 @@ under a specified dir:
     ProxyPass /mywebapp/ http://localhost:3000/
     ProxyPassReverse /mywebapp/ http://localhost:3000/
 
+It is important for you to note that the Apache2 modules mod_proxy and mod_proxy_http 
+must be enabled. 
+
+    a2enmod proxy
+    a2enmod proxy_http
+
+It is also important to set permissions for proxying for security purposes, below is an example.
+
+    <Proxy *>
+      Order allow,deny
+      Allow from all
+    </Proxy>
 
 =head4 Using perlbal
 
