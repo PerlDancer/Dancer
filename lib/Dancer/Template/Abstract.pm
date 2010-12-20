@@ -11,12 +11,12 @@ use base 'Dancer::Engine';
 # return: a string of $template's content processed with $tokens
 sub render { confess "render not implemented" }
 
-sub default_tmpl_ext {"tt"}
+sub default_tmpl_ext { "tt" }
 
 sub view {
     my ($self, $view) = @_;
 
-    my $def_tmpl_ext = $self->default_tmpl_ext();
+    my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
     $view .= ".$def_tmpl_ext" if $view !~ /\.${def_tmpl_ext}$/;
 
     my $app = Dancer::App->current;
@@ -27,7 +27,8 @@ sub layout {
     my ($self, $layout, $tokens, $content) = @_;
 
     my $app          = Dancer::App->current;
-    my $def_tmpl_ext = $self->default_tmpl_ext();
+    my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
+
     $layout .= ".$def_tmpl_ext" if $layout !~ /\.${def_tmpl_ext}$/;
     $layout = path($app->setting('views'), 'layouts', $layout);
 
@@ -73,6 +74,15 @@ Note 1: when returning the extension string, please do not add a dot in front of
 as Dancer will do that. 
 Note 2: for backwords compatibility abstract class returns "tt" instead of throwing
 an exception 'method not implemented'.
+
+User would be able to change the default extension using the
+C<<extension>> configuration variable on the template
+configuration. For example, for the default (C<Simple>) engine:
+
+     template: "simple"
+     engines:
+       simple:
+         extension: 'tmpl'
 
 =item B<view($view)>
 
