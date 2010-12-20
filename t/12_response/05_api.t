@@ -4,7 +4,7 @@ use warnings;
 use Test::More;
 use Dancer::Response;
 
-plan tests => 10;
+plan tests => 9;
 
 ok my $response = Dancer::Response->new();
 is $response->status, 200;
@@ -24,9 +24,6 @@ ok $response->exists;
 
 $response->pass;
 ok $response->has_passed;
-
-$response->halt('we stop');
-ok $response->halted;
 
 my $psgi_headers = $response->headers_to_array();
 is_deeply $psgi_headers, ['Content-Type', 'text/html'];
