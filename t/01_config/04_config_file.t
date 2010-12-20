@@ -26,7 +26,7 @@ ok(Dancer::Config->load, 'Config load works without conffile');
 my $conf = '
 port: 4500
 access_log: 0
-charset: "utf8"
+charset: "UTF8"
 logger: file
 ';
 write_file($conffile => $conf);
@@ -41,7 +41,7 @@ is(setting('logger'), 'file',
     'setting logger looks good');
 
 # issue GH#153
-is(setting('charset'), 'UTF-8',
+is(setting('charset'), 'utf8',
     "charset setting is normalized");
 
 ok(defined(Dancer::Logger->logger), 'logger is defined');

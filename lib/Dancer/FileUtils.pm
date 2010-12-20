@@ -17,18 +17,18 @@ sub dirname { File::Basename::dirname(@_) }
 
 sub open_file {
     my ($mode, $filename) = @_;
+    require Dancer::Config;
     my $charset = Dancer::Config::setting('charset');
-    my $open_flag = $charset eq 'UTF-8' ? $mode . ':encoding(UTF-8)' : $mode;
-    open(my $fh, $open_flag, $filename) or croak $!;
+    length($charset || '')
+      and $mode .= ":encoding($charset)";
+    open(my $fh, $mode, $filename)
+      or croak "$! while opening '$filename' using mode '$mode'";
     return $fh;
 }
 
 sub read_file_content {
     my ($file) = @_;
     my $fh;
-
-    require Dancer::Config;
-    my $charset = Dancer::Config::setting('charset');
 
     if ($file) {
         $fh = open_file('<', $file);
@@ -74,6 +74,14 @@ uses. Developers may use it instead of writing their own little subroutines or
 use additional modules.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 open_file
+
+    use Dancer::FileUtils 'open_file';
+    my $fh = open_file('<', $file) or die $message;
+
+Calls open and returns a filehandle. Takes in account the 'charset' setting to
+open the file in the proper encoding.
 
 =head2 path
 
