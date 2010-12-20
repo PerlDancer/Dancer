@@ -110,14 +110,7 @@ sub halt {
     my $current = _get_object(shift);
     my $content = shift;
 
-    if (blessed($content) && $content->isa('Dancer::Response')) {
-        $CURRENT = $content;
-    }
-    else {
-        $CURRENT = Dancer::Response->new;
-        $CURRENT->{content} = $content;
-    }
-    $CURRENT->{halted} = 1;
+    $current->{halted} = 1;
     return $content;
 }
 
