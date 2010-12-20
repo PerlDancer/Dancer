@@ -1,0 +1,240 @@
+#!perl
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use Config;
+use File::Basename ();
+use File::Path 'mkpath';
+use Cwd qw( realpath );
+
+# must cleanup the dance floor long before Dancer starts moving
+my %option;
+
+BEGIN {
+
+    # some defaults
+    %option = (index => 'index.html');
+
+    # command-line parameters
+    GetOptions(
+        \%option,        'application=s', 'include|I=s', 'environment=s',
+        'destination=s', 'index=s',       'log=s',       'vhost=s',
+        'help',          'manual'
+    ) or pod2usage(-verbose => 1);
+
+    # simple on-line help
+    pod2usage(-verbose => 1) if $option{help};
+    pod2usage(-verbose => 2) if $option{manual};
+
+    # add include dirs to @INC
+    my $path_sep = $Config::Config{path_sep} || ';';
+    unshift @INC, split /\Q$path_sep\E/, $option{include}
+      if defined $option{include};
+
+    # load the application
+    die "no app" if !defined $option{application};
+    eval "use $option{application}; 1;"
+      or die "Unable to load application '$option{application}': $@";
+
+    # compute the location of the application
+    (my $module = $option{application} . '.pm') =~ s<::></>;
+    $ENV{DANCER_APPDIR} ||= realpath(
+        File::Spec->catdir(File::Basename::dirname($INC{$module}), '..'));
+}
+
+# Dancer hits the stage
+use Dancer;
+use Dancer::Handler;
+
+set environment => $option{environment} || 'production';
+set log         => $option{log}         || 'warning';
+
+# some basic verification
+my $wwwdocs = $option{destination};
+die "Destination not defined" if !defined $wwwdocs;
+die "Invalid destination '$wwwdocs'" if !-e $wwwdocs || !-d $wwwdocs;
+
+# I'm just hanging on to my friend's purse
+my $log;
+while (<>) {
+
+    # ignore blank lines and comments
+    next if /^\s*(#|$)/;
+    chomp;
+
+    # default values
+    my $url = URI->new($_);
+    my ($status, $file, $bytes) = (500, '-', '-');
+    $log = "$status $url";
+
+    # require an absolute path
+    next if $url->path !~ /^\//;
+
+    # fake a minimal environment
+    local $ENV{SERVER_NAME} = 'localhost';
+    local $ENV{SERVER_PORT} = '80';
+    local $ENV{HTTP_HOST} = eval { $url->host } || $option{vhost}
+      if defined $option{vhost};
+
+    # create a new request object
+    # strip everything but the path
+    my $request = Dancer::Request->new_for_request(GET => $url->path);
+    $request->headers(
+        HTTP::Headers->new(
+            Accept => '*/*',
+            $url->can('host_port') ? (Host => $url->host_port) : (),
+        )
+    );
+
+    # obtain a response
+    my $response = Dancer::Handler->handle_request($request);
+    ($status, my $content) = @{$response}[0, 2];
+    $log = "$status $url";
+
+    # save successes to the appropriate file
+    if ($status eq '200') {
+
+        # absolute paths have the empty string as their first path_segment
+        my (undef, @segments) = $url->path_segments;
+
+        # create a vhost directory if required
+        unshift @segments, eval { $url->host } || $option{vhost}
+          if defined $option{vhost};
+
+        # assume directory
+        push @segments, $option{index} if $segments[-1] !~ /\./;
+
+        # generate target file name
+        my $file = File::Spec->catfile($wwwdocs, @segments);
+        pop @segments;
+        my $dir = File::Spec->catdir($wwwdocs, @segments);
+
+        # ensure the subdirectory exists
+        mkpath $dir if !-e $dir;
+        open my $fh, '>', $file or die "Can't open $file for writing: $!";
+
+        # copy content to the file
+        if (ref $content eq 'ARRAY') {
+            print $fh @$content;
+        }
+        elsif (ref $content eq 'GLOB') {
+            print {$fh} <$content>;
+        }
+        elsif (eval { $content->can('getlines') }) {
+            print {$fh} $content->getlines;
+        }
+        else {
+            die "Don't know how to handle $content";
+        }
+
+        # finish
+        close $fh;
+        $bytes = -s $file;
+        $log .= " => $file [$bytes]";
+    }
+}
+continue {
+    print "$log\n" if $log;
+    $log = '';
+}
+
+__END__
+
+=head1 NAME
+
+wallflower - Sorry I can't dance, I'm hanging on to my friend's purse
+
+=head1 SYNOPSIS
+
+ wallflower [options]
+
+=head1 OPTIONS
+
+ --application <name>       Name of the Dancer application
+ --destination <path>       Destination directory for the files
+
+ --include     <path>       Library paths to include
+ --environment <name>       Application environment (default: production)
+ --index       <filename>   Default name for index file (default: index.html)
+ --log         <level>      Dancer log level (default: warning)
+ --vhost       <vhost>      Default vhost, enforce vhost dir creation
+
+ --help                     Print a short online help and exit
+ --manual                   Print the full manual page and exit
+
+=head1 DESCRIPTION
+
+B<wallflower> turns your Dancer application into a static web site.
+
+While not suitable for all applications, there are a number of use cases
+where this makes sense. Most web sites are in essence static. Without a
+way for user to update information on the site (via forms, comments, etc)
+the only changes in the web site come from sources that you control
+(including the database) and that are accessible in your development
+environment.
+
+Using Dancer for a static web site actually makes a lot of sense,
+just because if gives you access to all the features of the framework
+for that site. Think of it as I<extreme caching>.
+
+So, forms could be processed on your development server
+(e.g. to update a local database), and the pages to be I<published>
+would be a subset of all the URL that the application supports.
+
+Turning such an application into a real static site (a set of pages
+to upload to a static web server) is just a matter of generating all
+possible URL for the static site and saving them to files.
+
+B<wallflower> does exactly that. It reads a list of URL, strips them
+from their query strings, turn them into C<GET> requests and saves the
+body response to a file whose name matches the request pathinfo.
+
+B<wallflower> is not a generic offline browsing tool.
+
+=head1 EXAMPLE
+
+The web site created by C<dancer -a mywebapp> is the perfect example.
+The complete list of URL needed to view the site is:
+
+    /
+    /css
+    /css/error.css
+    /css/style.css
+    /favicon.ico
+    /images/perldancer-bg.jpg
+    /images/perldancer.jpg
+    /javascripts/jquery.js
+
+Passing this list to B<wallflower> gives the following result:
+
+    $ wallflower -a mywebapp -d /tmp/output urls.txt
+    200 / => /tmp/output/index.html [5257]
+    200 /css/error.css => /tmp/output/css/error.css [1210]
+    200 /css/style.css => /tmp/output/css/style.css [2972]
+    200 /favicon.ico => /tmp/output/favicon.ico [1406]
+    200 /images/perldancer-bg.jpg => /tmp/output/images/perldancer-bg.jpg [7125]
+    200 /images/perldancer.jpg => /tmp/output/images/perldancer.jpg [2240]
+    200 /javascripts/jquery.js => /tmp/output/javascripts/jquery.js [72174]
+
+Note that URL with a path ending with a C</> or a name without an extension
+will be considered to be a directory, and have the default "index" filename
+appended.
+
+Any URL resulting in a status different than 200 will be logged, 
+but not saved:
+
+    404 /css
+    500 foo/bar
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK)
+
+=head1 LICENSE
+
+This program is free software and is published under the same
+terms as Perl itself.
+
+=cut
+
