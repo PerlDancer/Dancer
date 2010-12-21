@@ -144,6 +144,13 @@ remove your local and remote I<pr/$name> branch:
     git br -D pr/$name
     git push origin :pr/$name
 
+And then, of course, you need to sync your local devel branch with the upstream:
+
+    git pull upstream devel
+    git push origin devel
+
+You're now ready to start working on a new pull request!
+
 =back
 
 =head1 About the releases cycle
