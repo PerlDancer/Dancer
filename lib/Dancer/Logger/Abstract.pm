@@ -8,6 +8,7 @@ use base 'Dancer::Engine';
 use Dancer::SharedData;
 use Dancer::Timer;
 use Dancer::Config 'setting';
+use POSIX qw/strftime/;
 
 # This is the only method to implement if logger engines.
 # It receives the following arguments:
@@ -69,6 +70,20 @@ sub format_message {
     my $r     = Dancer::SharedData->request;
     my @stack = caller(3);
 
+    my $block_handler = sub {
+        my ( $block, $type ) = @_;
+        if ( $type eq 't' ) {
+            return "[" . strftime( $block, localtime ) . "]";
+        }
+        elsif ( $type eq 'h' ) {
+            return scalar $r->header($block) || '-';
+        }
+        else {
+            Carp::carp("{$block}$type not supported");
+            return "-";
+        }
+    };
+
     my $chars_mapping = {
         h => sub {
             defined $r
@@ -105,9 +120,10 @@ sub format_message {
 
     $fmt =~ s{
         (?:
-         \%([a-zA-Z])
+            \%\{(.+?)\}([a-z])|
+            \%([a-zA-Z])
         )
-    }{ $char_mapping->($1) }egx;
+    }{ $1 ? $block_handler->($1, $2) : $char_mapping->($3) }egx;
 
     return $fmt."\n";
 }
@@ -126,6 +142,16 @@ __END__
 Dancer::Logger::Abstract - Abstract logging engine for Dancer
 
 =head1 SYNOPSIS
+
+In your configuration file:
+
+    # default
+    logger_format: simple
+    # [1234] debug @0.12> [hit #123]message from your log in File.pm line 12
+
+    # custom
+    logger_format: %m %{%H:%M} [%{accept_type}h]
+    # message from your log [11:59] [text/html]
 
 =head1 DESCRIPTION
 
@@ -177,6 +203,14 @@ line from the file
 =item %i
 
 request ID
+
+=item %{$fmt}t
+
+timer formatted with a valid time format
+
+=item %{header}h
+
+header value
 
 =back
 
