@@ -87,39 +87,62 @@ Clone your fork like the following:
 As a contributor, you should B<always> work on the C<devel> branch of
 your clone (C<master> is used only for building releases).
 
-	$ git remote add sukria https://github.com/sukria/Dancer.git
-    $ git checkout -b devel sukria/devel
+	$ git remote add upstream https://github.com/sukria/Dancer.git
+    $ git checkout -b devel upstream/devel
 
 This will create a local branch in your clone named C<devel> and that
 will track the offical C<devel> branch. That way, if you have more or
-less commits than sukria's repo, you'll be imediatly notified by git.
+less commits than the upstream repo, you'll be immediatly notified by git.
+
+=item * 
+
+You want to isolate all your commits in a I<topic> branch, this will make the
+reviewing much easier for the core team and will allow you to continue working
+on your clone without worrying about different commits mixing together.
+
+To do that, first create a local branch to build your pull request:
+
+    # you should be in devel here
+    git co -b pr/$name
+
+Now you have created a local branch named I<pr/$name> where I<$name> is the
+name you want (it should describe the purpose of the pull request you're
+preparing).
+
+In that branch, do all the commits you need (the more the better) and when
+done, push the branch on your fork:
+
+    # ... commits ...
+    git push origin pr/$name
+
+You are now ready to send a pull request.
 
 =item *
 
-Apply your patch to your clone and then commit and push to your repository
-
-    [ edit as many files as you need to build your patch ]
-	[ commit as much as possible, with small and related commits ]
-    $ git push origin devel
-
-If your patch fixes an existing issue on our bugtracker, please specify
-the id of the issue in your commit message.
-
-    fix GH #123: some explanation of the fix
-
-If your patch fixes a RT issue, do the same:
-
-    fix RT #123: some explanation of the fix
-
-=item *
-
-Send a I<pull request> via the GitHub interface.
+Send a I<pull request> via the GitHub interface. Make sure your pull request is
+based on the I<pr/$name> branch you've just pushed.
 
 It's also a good idea to summarize your work in a report sent to the users
 mailing list, in order to make sure the team is aware of it.
 
 At least, you can notify the core team on IRC, on C<irc.perl.org>,
 chan C<#dancer>.
+
+=item * 
+
+When the core team review your pull request, either it will be accepted (and
+then merged into I<devel>) or refused.
+
+If it's refused, make sure to understand the reasons explained by the team for
+the denial. Most of the time, communicating with the core team is enough to
+understand what was the mistake. 
+
+If your pull-request is merged into I<devel>, then all you have to do is to
+remove your local and remote I<pr/$name> branch:
+
+    git co devel
+    git br -D pr/$name
+    git push origin :pr/$name
 
 =back
 
