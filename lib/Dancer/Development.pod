@@ -103,7 +103,7 @@ on your clone without worrying about different commits mixing together.
 To do that, first create a local branch to build your pull request:
 
     # you should be in devel here
-    git co -b pr/$name
+    git checkout -b pr/$name
 
 Now you have created a local branch named I<pr/$name> where I<$name> is the
 name you want (it should describe the purpose of the pull request you're
@@ -140,8 +140,8 @@ understand what was the mistake.
 If your pull-request is merged into I<devel>, then all you have to do is to
 remove your local and remote I<pr/$name> branch:
 
-    git co devel
-    git br -D pr/$name
+    git checkout devel
+    git branch -D pr/$name
     git push origin :pr/$name
 
 And then, of course, you need to sync your local devel branch with the upstream:
