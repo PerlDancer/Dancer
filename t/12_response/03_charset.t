@@ -48,7 +48,7 @@ is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response(
 );
 
 SKIP: {
-    skip "JSON is needed for this test" , 1
+    skip "JSON is needed for this test" , 3
         unless Dancer::ModuleLoader->load('JSON');
 
     setting serializer => 'JSON';
