@@ -150,7 +150,7 @@ In your configuration file:
     # [1234] debug @0.12> [hit #123]message from your log in File.pm line 12
 
     # custom
-    logger_format: %m %{%H:%M} [%{accept_type}h]
+    logger_format: %m %{%H:%M}t [%{accept_type}h]
     # message from your log [11:59] [text/html]
 
 =head1 DESCRIPTION
