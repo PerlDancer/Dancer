@@ -36,7 +36,7 @@ sub instance {
     $class->init($instance);
 
     # save and return it
-    $instances{$class} = instance;
+    $instances{$class} = $instance;
     return $instance;
 }
 
