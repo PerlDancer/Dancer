@@ -2,7 +2,7 @@ package Dancer::Route::Registry;
 use strict;
 use warnings;
 use Carp;
-
+use Dancer::Route;
 use base 'Dancer::Object';
 use Dancer::Logger;
 
@@ -19,7 +19,7 @@ sub init {
     my ($self) = @_;
 
     unless (defined $self->{id}) {
-        $self->{id} = $id++;
+        $self->id($id++);
     }
     $self->{routes} = {};
     $self->{hooks}  = {};
@@ -29,8 +29,8 @@ sub init {
 
 sub is_empty {
     my ($self) = @_;
-    for my $method (keys %{$self->{routes}}) {
-        return 0 if scalar(@{$self->{routes}{$method}});
+    for my $method ( keys %{ $self->routes } ) {
+        return 0 if $self->routes($method);
     }
     return 1;
 }
@@ -59,7 +59,7 @@ sub add_hook {
             return Dancer::halt($err->render);
         }
     };
-    push @{$self->{hooks}->{$position}}, $compiled_filter;
+    push @{$self->hooks->{$position}}, $compiled_filter;
     return $compiled_filter;
 }
 
@@ -78,7 +78,7 @@ sub routes {
 sub add_route {
     my ($self, $route) = @_;
     $self->{routes}{$route->method} ||= [];
-    my @registered = @{$self->{routes}{$route->method}};
+    my @registered = @{$self->routes($route->method)};
     my $last       = $registered[-1];
     $route->set_previous($last) if defined $last;
 
@@ -87,10 +87,10 @@ sub add_route {
     # get '/' => sub {} and ajax '/' => sub {}
     # and the user won't have to declare the ajax route before the get
     if (keys %{$route->{options}}) {
-        unshift @{$self->{routes}{$route->method}}, $route;
+        unshift @{$self->routes($route->method)}, $route;
     }
     else {
-        push @{$self->{routes}{$route->method}}, $route;
+        push @{$self->routes($route->method)}, $route;
     }
     return $route;
 }
@@ -103,7 +103,7 @@ sub register_route {
     # look if the caller (where the route is declared) exists as a Dancer::App
     # object
     my ($package) = caller(2);
-    if (Dancer::App->app_exists($package)) {
+    if ($package && Dancer::App->app_exists($package)) {
         my $app = Dancer::App->get($package);
         my $route = Dancer::Route->new(prefix => $app->prefix, %args);
         return $app->registry->add_route($route);
@@ -131,7 +131,7 @@ sub any_add {
     }
 
     croak "Syntax error, methods should be provided as an ARRAY ref"
-      if grep {/^$pattern$/} @methods;
+      if grep {$_ eq $pattern} @methods;
 
     $self->universal_add($_, $pattern, @rest) for @methods;
     return scalar(@methods);
