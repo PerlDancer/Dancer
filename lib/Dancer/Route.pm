@@ -93,6 +93,14 @@ sub match {
 
     return unless @values;
 
+    # save the route pattern that matched
+    # TODO : as soon as we have proper Dancer::Internal, we should remove 
+    # that, it's just a quick hack for plugins to access the matching 
+    # pattern.
+    # NOTE: YOU SHOULD NOT USE THAT, OR IF YOU DO, YOU MUST KNOW
+    # IT WILL MOVE VERY SOON
+    $request->{_route_pattern} = $self->pattern;
+
     # named tokens
     my @tokens = @{$self->{_params} || []};
 
