@@ -3,7 +3,8 @@ Dancer 1.3000_01
     [ Damien Krotkine ]
     * Better check of keywords used in plugins.
     * internal refactoring:
-      - Dancer::Object::Singleton
+      - Dancer::Object::Singleton added to refactor engines later
+      - Support of inheritance in attributes declared with Dancer::Object
 
     [ jamhed ]
     * Fix some unicode issues, refactored all file openings in one function in
@@ -25,6 +26,15 @@ Dancer 1.3000_01
       to contribute pull-requests to the core team.
     * New documentation for integrators: Dancer::Development::Integration
       describes precisely how integrators should handle pull-requests.
+
+    [ Naveen ]
+    * add a --no-check switch to script/dancer to disable remote check of new
+      Dancer versions.
+
+    [ Philippe Bruhat ]
+    * add script/wallflower, helper to turn a Dancer application into a static
+      web site.
+    * better behaviour for plugin_setting (better search, more user-friendly)
 
 Dancer 1.2003
     * Production release.
