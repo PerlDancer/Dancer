@@ -39,7 +39,7 @@ Dancer 1.3000_01
     [ Franck Cuny ]
     * Support for configurable log format in logger engines
     * Refactoring of Dancer::Route, some optimisations and code cleanup
-    * Add several tests to increase the coverage
+    * Add several tests to increase the coverage (reached 92.4%, for 1399 tests)
 
 Dancer 1.2003
     * Production release.
