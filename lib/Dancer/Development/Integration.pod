@@ -123,6 +123,65 @@ remote.
 
     $ git push origin devel
 
+=head1 RELEASE CYCLES
+
+We have one main release cycle. This is the release cycle based on the I<devel>
+branch. We use this branch to build new releases, with new stuff all the new
+shiny commits we want.
+
+Those release are built with git-flow (with C<git-flow release>) and are then
+uploaded to CPAN.
+
+Since Dancer 1.2, we also have another parallell release cycle which is what we
+call the I<frozen> branch. It's a maintenance-only release cycle. That branch is
+created from the tag of the first release of a I<stable> version (namely a
+release series with an even minor number).
+
+This branch must be used only for bug-fixing the stable releases. Nothing new
+should occur in that branch.
+
+Let's take an example with Dancer 1.2003 and Dancer 1.3002.
+
+=over 4
+
+=item *
+
+Dancer 1.2003 is the last stable release of Dancer. Its codebase is handled in
+the I<frozen> branch, that has been created from the tag C<1.2000>.
+
+=item *
+
+Dancer 1.3002 is the last release of Dancer. As it belongs to a development
+series, it can provide new features, code refactoring and deprecations. Its
+codebase is handled by the integration branch, C<devel>.
+
+=item * 
+
+When a bug is found in 1.2xxx, it's fixed in the C<frozen> branch, and a new
+release is built from here and then uploaded to CPAN.
+
+=item *
+
+Whenever the team wants to, they can release new versions of 1.3xxx from the
+devel branch, using C<git-flow release start>.
+
+=item *
+
+When the team finds that the current state of devel (namely, the last version of
+1.3xxx) is stable and mature enough. They can decide it will be the new stable
+version.
+
+Then, a release 1.4000_01 is built from devel, an upload is done to CPAN, and
+when ready, the 1.40001 can be uploaded the same way.
+
+From that moment, the master branch is merged into frozen in order to be able to
+hotfix the frozen branch in the future.
+
+It's now possible for the team to continue working on new stuff in devel,
+bumping the version number to 1.5000_01
+
+=back
+
 =head1 AUTHOR
 
 This documentation has been written by Alexis Sukrieh C<< <sukria@sukria.net> >>.
