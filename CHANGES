@@ -36,6 +36,11 @@ Dancer 1.3000_01
       web site.
     * better behaviour for plugin_setting (better search, more user-friendly)
 
+    [ Franck Cuny ]
+    * Support for configurable log format in logger engines
+    * Refactoring of Dancer::Route, some optimisations and code cleanup
+    * Add several tests to increase the coverage
+
 Dancer 1.2003
     * Production release.
 
