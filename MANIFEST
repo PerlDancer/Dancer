@@ -18,6 +18,7 @@ lib/Dancer/Cookie.pm
 lib/Dancer/Cookies.pm
 lib/Dancer/Deployment.pod
 lib/Dancer/Development.pod
+lib/Dancer/Development/Integration.pod
 lib/Dancer/Engine.pm
 lib/Dancer/Error.pm
 lib/Dancer/FileUtils.pm
@@ -35,6 +36,7 @@ lib/Dancer/Logger/Console.pm
 lib/Dancer/Logger/File.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
+lib/Dancer/Object/Singleton.pm
 lib/Dancer/Plugin.pm
 lib/Dancer/Plugin/Ajax.pm
 lib/Dancer/Plugins.pod
@@ -64,12 +66,14 @@ lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 lib/Dancer/Tutorial.pod
+lib/Dancer/Tutorial/WebSockets.pod
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
 README
 script/dancer
+script/wallflower
 t/00_base/000_create_fake_env.t
 t/00_base/001_load.t
 t/00_base/002_strict_and_warnings.t
@@ -82,6 +86,7 @@ t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
 t/00_base/11_file_utils.t
 t/00_base/12_utf8_charset.t
+t/00_base/13_dancer_singleton.t
 t/00_base/config.t
 t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
@@ -143,7 +148,7 @@ t/03_route_handler/24_named_captures.t
 t/03_route_handler/26_after_hook.t
 t/03_route_handler/27_issue_77_pass_breaks_routes.t
 t/03_route_handler/28_plack_mount.t
-t/03_route_handler/29_redirect_immediatly.t
+t/03_route_handler/29_redirect_immediately.t
 t/03_route_handler/30_bug_gh190.t
 t/03_route_handler/public/404.html
 t/03_route_handler/views/hello.tt
@@ -208,11 +213,13 @@ t/11_logger/01_abstract.t
 t/11_logger/02_factory.t
 t/11_logger/03_file.t
 t/11_logger/04_console.t
+t/11_logger/05_format.t
 t/12_response/000_create_fake_env.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t
 t/12_response/03_charset.t
 t/12_response/04_charset_server.t
+t/12_response/05_api.t
 t/13_engines/00_load.t
 t/13_engines/02_template_init.t
 t/14_serializer/000_create_fake_env.t
@@ -248,9 +255,11 @@ t/17_apps/01_settings.t
 t/17_apps/02_load_app.t
 t/17_apps/03_prefix.t
 t/17_apps/04_issue_91.t
+t/17_apps/05_api.t
 t/18_main_dsl/000_create_fake_env.t
 t/18_main_dsl/01_config.t
 t/18_main_dsl/uri_for.t
+t/19_dancer/01_script.t
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm

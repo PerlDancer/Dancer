@@ -24,25 +24,20 @@ sub add_hook { Dancer::Route::Registry->hook(@_) }
 
 sub plugin_setting {
     my $plugin_orig_name = caller();
-    my ($plugin_name) = $plugin_orig_name =~ s/Dancer::Plugin:://;
+    (my $plugin_name = $plugin_orig_name) =~ s/Dancer::Plugin:://;
 
-    my $settings = setting('plugins');
-
-    foreach ($plugin_name, $plugin_orig_name, lc $plugin_name,
-        lc $plugin_orig_name)
-    {
-        return $settings->{$_}
-          if (exists $settings->{$_});
-    }
-    return;
+    return setting('plugins')->{$plugin_name} ||= {};
 }
 
 sub register($&) {
     my ($keyword, $code) = @_;
     my $plugin_name = caller();
 
-    if (grep { $_ eq $keyword } @Dancer::EXPORT) {
-        croak "You can't use $keyword, this is a reserved keyword";
+    $keyword =~ /^[a-zA-Z_]+[a-zA-Z0-9_]*$/
+      or croak "You can't use '$keyword', it is an invalid name (it should match ^[a-zA-Z_]+[a-zA-Z0-9_]*$ )";
+
+    if (grep { $_ eq $keyword } map { s/^(?:\$|%|&|@|\*)//; $_ } (@Dancer::EXPORT, @Dancer::EXPORT_OK)) {
+        croak "You can't use '$keyword', this is a reserved keyword";
     }
     while (my ($plugin, $keywords) = each %$_keywords) {
         if (grep { $_->[0] eq $keyword } @$keywords) {

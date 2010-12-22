@@ -12,7 +12,7 @@ use Dancer::Request;
 use Dancer::Response;
 use Dancer::Serializer;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path dirname read_file_content);
+use Dancer::FileUtils qw(path dirname read_file_content open_file);
 use Dancer::SharedData;
 use Dancer::Logger;
 use MIME::Types;
@@ -119,7 +119,7 @@ sub get_action_response {
     }
 
     # redirect immediately - skip route execution
-    if (my $status = Dancer::Response::status) {
+    if (my $status = Dancer::Response->status) {
         if ($status == 302 || $status == 301) {
             return serialize_response_if_needed(Dancer::Response->current);
         }
@@ -147,7 +147,7 @@ sub get_action_response {
 sub serialize_response_if_needed {
     my ($response) = @_;
     $response = Dancer::Serializer->process_response($response)
-      if Dancer::App->current->setting('serializer') && $response->{content};
+      if Dancer::App->current->setting('serializer') && $response->content();
     return $response;
 }
 
@@ -165,7 +165,7 @@ sub get_file_response_for_path {
     $status ||= 200;
 
     if (-f $static_file) {
-        open my $fh, "<", $static_file;
+        my $fh = open_file('<', $static_file);
         binmode $fh;
 
         return Dancer::Response->new(

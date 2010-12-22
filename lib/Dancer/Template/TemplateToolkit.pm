@@ -17,10 +17,13 @@ sub init {
     croak "Template is needed by Dancer::Template::TemplateToolkit"
       unless Dancer::ModuleLoader->load('Template');
 
+    my $charset = setting('charset') || '';
+    my @encoding = length($charset) ? ( ENCODING => $charset ) : ();
+
     my $tt_config = {
         ANYCASE  => 1,
         ABSOLUTE => 1,
-        ENCODING => 'utf8',
+        @encoding,
         %{$self->config},
     };
 
@@ -46,7 +49,9 @@ sub render {
       if !ref($template) && (!-f $template);
 
     my $content = "";
-    $_engine->process($template, $tokens, \$content, binmode => ':utf8') or croak $_engine->error;
+    my $charset = setting('charset') || '';
+    my @options = length($charset) ? ( binmode => ":encoding($charset)" ) : ();
+    $_engine->process($template, $tokens, \$content, @options) or croak $_engine->error;
     return $content;
 }
 

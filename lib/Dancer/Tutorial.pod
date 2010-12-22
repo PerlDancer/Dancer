@@ -13,7 +13,7 @@ that type of traffic to that specific URL.
   use Dancer;
 
   get '/' => sub {
-	return 'Hello World!";
+	return 'Hello World!';
   };
 
   start;

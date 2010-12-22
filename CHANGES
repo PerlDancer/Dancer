@@ -1,3 +1,46 @@
+Dancer 1.3000_01
+
+    [ Damien Krotkine ]
+    * Better check of keywords used in plugins.
+    * internal refactoring:
+      - Dancer::Object::Singleton added to refactor engines later
+      - Support of inheritance in attributes declared with Dancer::Object
+
+    [ jamhed ]
+    * Fix some unicode issues, refactored all file openings in one function in
+      Dancer::FileUtils.
+
+    [ Gabor Szabo ]
+    * Adding test for multi-leveled scaffolding.
+
+    [ Maurice Mengel (mokko) ]
+    * Skip file upload tests on Cygwin, not just win32.
+
+    [ Alan Haggai ]
+    * Fixing up typos in various places.
+    * Show the correct filename in usage.
+
+    [ Alexis Sukrieh ]
+    * Update documentation for developers. Dancer::Development reflects the new
+      releases startegy since 1.2 is out. Also better explaining about how 
+      to contribute pull-requests to the core team.
+    * New documentation for integrators: Dancer::Development::Integration
+      describes precisely how integrators should handle pull-requests.
+
+    [ Naveen ]
+    * add a --no-check switch to script/dancer to disable remote check of new
+      Dancer versions.
+
+    [ Philippe Bruhat ]
+    * add script/wallflower, helper to turn a Dancer application into a static
+      web site.
+    * better behaviour for plugin_setting (better search, more user-friendly)
+
+    [ Franck Cuny ]
+    * Support for configurable log format in logger engines
+    * Refactoring of Dancer::Route, some optimisations and code cleanup
+    * Add several tests to increase the coverage (reached 92.4%, for 1399 tests)
+
 Dancer 1.2003
     * Production release.
 
@@ -99,7 +142,7 @@ Dancer 1.1999_03 (RC3)
     * fixed redirect to redirect immediately (+ refactoring by franck)
 
     [ Dave Doyle ]
-    * clarify Pod as to how before_template works 
+    * clarify Pod as to how before_template works
 
     [ Sawyer X ]
     * Overhaul tests to use lib t/lib instead of t::lib::.
@@ -159,7 +202,7 @@ Dancer 1.1999_01 (RC1)
     * Scaffolded app sets the charset to "utf8" by default.
     * Better design for the scaffolded app (logo, favicon and background image
       added)
-    * Environment info available on scaffolded app 
+    * Environment info available on scaffolded app
     * LWP is used by the dancer helper to download files
     * jQuery 1.4.2 (minified) is included in the scaffolded app
     * default layout uses <% request.base %> in order to support mounted apps
@@ -167,16 +210,16 @@ Dancer 1.1999_01 (RC1)
     * The main.tt layout sources jQuery first from Google CDN and falls back to
       the local minified version if on offline mode.
     * New default token provided to the "template" helper: dancer_version
-    
+
     [ Sebastian de Castelberg ]
     * The dancer helper is able to download files via a transparent proxy
       (thanks to LWP).
 
     [ Adam J. Foxson ]
-    * FIX for issue GH#136: 
+    * FIX for issue GH#136:
       "readline() on closed filehandle DATA" error that appears when running
       the app with Starman
-    
+
     [ Naveed Massjouni ]
     * Dancer::Test function get_response is renamed to dancer_response
       get_response still works but is deprecated
@@ -184,19 +227,19 @@ Dancer 1.1999_01 (RC1)
       FIX a bug when using symlinks.
 
     [ Franck Cuny ]
-    * FIX for issue GH#129 
+    * FIX for issue GH#129
       don't add multiple content-type to headers
     * fix broken tests (they were testing incorrect content type)
 
     [ Damien Krotkine ]
     * FIX for issue GH#115
-      documentation about compression in Dancer::Deployment 
-    
+      documentation about compression in Dancer::Deployment
+
     [ David Precious ]
     * Make the 'layout' param to the template keyword work as you'd expect and
       allow you to set a custom layout to use, e.g.:
       template 'templatename', {}, { layout => 'layoutname' };
- 
+
     [ Philippe Bruhat ]
     * Make sure a plugin refuse to register a keyword twice
 
@@ -236,11 +279,11 @@ Dancer 1.1901 (1.2RC0)
       didn't work well (issue #101).
     * All paths built in a scaffolded application are dynamic, it's now
       possible to move a scaffolded application after it's been generated.
-      (fixes issues #88, 
+      (fixes issues #88,
     * The auto_reload feature is now disabled by default due to too many
       unsolved issues (it works most of the time, but some race conditions are
       still present) This feature is still being working on, but it's now
-      flagged "experimental").  
+      flagged "experimental").
     * Default log level in development environment is now 'core' in order to
       provide more information.
     * New scaffolded application design. More neutral and with lots of
@@ -248,7 +291,7 @@ Dancer 1.1901 (1.2RC0)
       Based on the Ruby on Rails start page (kudos to the Rails team,
       http://www.rubyonrails.org).
 
-    [ Boris Shomodjvarac ] 
+    [ Boris Shomodjvarac ]
     * Support for a clean way for Template engines to define their template
       file extensions (issue #126).
 
@@ -301,7 +344,7 @@ Dancer 1.1809
 Dancer 1.1808
 
     [ Alexis Sukrieh ]
-    * FIX test failures 
+    * FIX test failures
       - t/08_session/07_session_expires.t
       - t/08_session/07_session_expires.t
 
@@ -314,15 +357,15 @@ Dancer 1.1807
     * Global rewrite of Dancer's core to allow support for
       sub-application, better route resolution and a better design.
     * Support for mountable applications via "load_app".
-      Mounted applications can have their own settings registry and 
+      Mounted applications can have their own settings registry and
       can be mounted under a given prefix.
-    
+
     [ Franck Cuny ]
     * Support for new hooks:
       - after: to allow response post-processing
       - before_template: to allow defaut tokens to be given at anytime
         to the template function.
-    * Fix and test for bug  RT#57829 
+    * Fix and test for bug  RT#57829
       (Custom response headers lost when using JSON serializer)
     * FIX PSGI compatibility layer (request->path_info is used when appropriate
       instead of request->path)
@@ -337,7 +380,7 @@ Dancer 1.1807
     [ jamhed ]
     * Support for new setting "session_expire" in order to allow
       session cookies to expire before the browser is closed.
-     
+
     [ Naveed Massjouni ]
     * Dancer::Test can now test requests with a body
 
@@ -381,7 +424,7 @@ Dancer 1.1806_01
       It's possible to enable/disable middlewares right from Dancer's config files.
       Thanks to Tatsuiko Miyagawa and Franck Cuny for their help.
 
-    [jbarratt] 
+    [jbarratt]
     * Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
       options.
 
@@ -397,7 +440,7 @@ Dancer 1.1805
     * Fix for GH#72
       New keyword 'load_plugin' for loading a plugin in the current namespace.
       Plugins can be used anywhere thanks to that method.
-    
+
     [ Minty ]
     * Update Introduction pod with (required) -a dancer opt (Murray, 5 hours ago)
     * Bump HTTP::Body dependency to 1.07 (Murray, 6 hours ago)
@@ -409,7 +452,7 @@ Dancer 1.804
     [ David Precious ]
     * Fix test failures with old Plack versions (Issue 73).
     * Don't surround content with <p> tags in layout.
-    * Add $ENV{REMOTE_ADDR} in core log messages 
+    * Add $ENV{REMOTE_ADDR} in core log messages
 
     [ SawyerX ]
     * Fix issue #75, reported by nanis.
@@ -419,10 +462,10 @@ Dancer 1.804
     * FIX for issue #80
       Make sure the tempfiles created during uploads are removed when the
       request object dies.
-    
+
     [ Alexis Sukrieh ]
     * FIX for bug RT#58355
-      Rewrite of Dancer::Template::Simple's parser, now more robust, 
+      Rewrite of Dancer::Template::Simple's parser, now more robust,
       based on Perl's regexp engine.
     * FIX a warning when remote_address is undefined
 
@@ -446,7 +489,7 @@ Dancer 1.1801
     [ Alexis Sukrieh ]
     * FIX issue #69
       Error are trapped even if occuring from Dancer's source code.
-      auto_reload is set to false in scaffolded applications to 
+      auto_reload is set to false in scaffolded applications to
       prevent errors if Module::Refresh is not installed.
 
 Dancer 1.1800
@@ -508,7 +551,7 @@ Dancer 1.175
     * Documentation for Dancer::Error.
 
     [ Alexis Sukrieh ]
-    * fixed t/15_plugins/02_config.t when YAML is not installed 
+    * fixed t/15_plugins/02_config.t when YAML is not installed
 
 Dancer 1.174
     [ Gabor Szabo ]
@@ -532,12 +575,12 @@ Dancer 1.173_01 (Developer release)
     * Cleaning up tests
 
     [ Alexis Sukrieh ]
-    * New serializer: Dumper for easily output dumped variable 
+    * New serializer: Dumper for easily output dumped variable
       in text/plain.
     * Before filters can now access route params
     * Support for '.' as a token separator in params parsing
-    * The standalone server respect the 'access_log' setting, 
-      the starting banner is printed on STDERR only if the 
+    * The standalone server respect the 'access_log' setting,
+      the starting banner is printed on STDERR only if the
       setting is set to true.
 
     [ Sawyer X ]
@@ -590,7 +633,7 @@ Dancer 1.170
     * Route::Cache store_route = store_path, beefed up docs
     * Changed names of limits in settings
     * Added documentation for it in Dancer.pm
-    * More documentation about Module::Refresh dependency 
+    * More documentation about Module::Refresh dependency
       (closes bug #48)
     * uri_for now accepts a boolean for not escaping URIs,
       and redirect calls uri_for with that boolean.
@@ -640,13 +683,13 @@ Dancer 1.160
       for the setting "daemon").
     * Config and command-line arguments are parsed and loaded at import time,
       rather than when the handler is initialized.
-    * Routes are compiled at startup instead of being compiled whenever a 
+    * Routes are compiled at startup instead of being compiled whenever a
       request is handled.  This can increase performances up to 50%.
     * FIX Params are not polluted anymore by the 'splat' keyword when no capture
       is needed by the pattern.
     * New feature 'auto_page' (closes: #41)
-      Lets the user have automatic route resolution for 
-      requests that match an existing template in the views dir. Thanks to 
+      Lets the user have automatic route resolution for
+      requests that match an existing template in the views dir. Thanks to
       David Precious for the idea and his help.
 
     [ Daniel Tasov ]
@@ -669,9 +712,9 @@ Dancer 1.150
     * Each core template engine now uses start_tag/stop_tag from the
       configuration instead of harcoding '<%' and '%>'.
     * FIX for issue #34
-      Cookies can now be used when the application is ran under a Plack 
+      Cookies can now be used when the application is ran under a Plack
       server.
-    
+
     [ David Precious ]
     * Lots of documentation cleaning and fixes.
     * Make the session available to the views, if possible.
@@ -705,7 +748,7 @@ Dancer 1.140
 
     * Dancer now depends on HTTP::Server::Simple::PSGI in
       order to rely on a PSGI environement even when running
-      the app with the standalone server 
+      the app with the standalone server
       (Thanks to Tatsuiko Miyagawa).
     * Dancer::Request object enhancements:
         + Dancer::Request now provide an accesor to the raw body
@@ -715,16 +758,16 @@ Dancer 1.140
           params, query string params and body params so the
           user can chose from which source they want to access
           params instead of dealing with a mixed structure.
-        + Added accessors to referer and remote_address 
-    * The Standalone server now uses the setting 'server' to 
+        + Added accessors to referer and remote_address
+    * The Standalone server now uses the setting 'server' to
       bind itself to the IP address given by the setting.
       Default value is 0.0.0.0
 
 Dancer 1.130
-    * Fix a memory leak that could occur between two 
-      requests under mod_perl (Thanks to Nicolas Rennert for 
+    * Fix a memory leak that could occur between two
+      requests under mod_perl (Thanks to Nicolas Rennert for
       the report and diagnosis).
-    * remove all optional modules from the core, they are now 
+    * remove all optional modules from the core, they are now
       shipped as separate CPAN distributions:
       - Dancer::Template::MicroTemplate
       - Dancer::Session::Cookie
@@ -732,20 +775,20 @@ Dancer 1.130
       - Dancer::Logger::LogHandler
       - Dancer::Logger::Syslog
     * support for the `header' keyword in Dancer's syntax.
-      The user is now able to alter response-headers in route 
+      The user is now able to alter response-headers in route
       handlers.
     * support for `prefix' keyword in Dancer's syntax.
       A prefix can be set by the user before defining routes handlers.
       All route defined then will be automatically prefixed accordingly.
-      
+
 Dancer 1.122
 
     * Fix the test suite under Perl 5.8.x
-    * Security Fix: protection from CRLF injection in 
+    * Security Fix: protection from CRLF injection in
       response headers (thanks to Mark Stosberg for the report).
     * Support for multi-valued params in GET/POST data (thanks to
       Mark Stosberg for the report).
-    * Backward compatibility with old app.psgi files, don't die 
+    * Backward compatibility with old app.psgi files, don't die
       when a request is initialized with a CGI::PSGI object.
 
 Dancer 1.121
@@ -755,12 +798,12 @@ Dancer 1.121
 
 Dancer 1.120
 
-    * ROADMAP updated 
+    * ROADMAP updated
     * Dancer is now compliant with Plack::Server::Apache2
     * Remove the CGI.pm dependency, huge refactoring
     * POD typo fixes (Naveed)
     * Support for syntax-only importation (Sawyer X)
-    * Remove the example/ directory, useless and deprecated 
+    * Remove the example/ directory, useless and deprecated
     * New logger engine: Log::Handler (franck cuny)
     * New template engine Text::Microtemplate (franck cuny)
     * Remove compilation-time warnings catching (issue #14)
@@ -779,7 +822,7 @@ Dancer 1.100
         + option for disabling the layout in the template helper.
     * New session engine based on encrypted cookies (Alex Kapranof)
     * More HTTP codes supported for a better REST compat (Nate Jones)
-    * Documentation updates 
+    * Documentation updates
     * script/dancer now requires an appname
     * New Makefile.PL with better metadata (CPAN Service)
 
@@ -792,8 +835,8 @@ Dancer 1.000
     * Lots of tests (more than 80% of the code is covered)
 
 Dancer 0.9906
-    
-    * move from File::MimeInfo to File::MimeInfo::Simple for 
+
+    * move from File::MimeInfo to File::MimeInfo::Simple for
       smooth run on Mac OSX and Win32 systems.
 
 Dancer 0.9005

@@ -27,7 +27,7 @@ Dancer::Request->attributes(
     'content_type', 'content_length',
     'body',         'id',      'request_uri',
     'uploads',      'headers', 'path_info',
-    'ajax',
+    'ajax', 
     @http_env_keys,
 );
 

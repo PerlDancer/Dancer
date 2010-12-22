@@ -6,7 +6,7 @@ use base 'Dancer::Logger::Abstract';
 
 use File::Spec;
 use Dancer::Config 'setting';
-use Dancer::FileUtils 'path';
+use Dancer::FileUtils qw(path open_file);
 use IO::File;
 
 sub logdir {
@@ -29,10 +29,7 @@ sub init {
     my $logfile = setting('environment');
     $logfile = path($logdir, "$logfile.log");
 
-    my $fh = IO::File->new;
-    unless ($fh->open($logfile, '>>')) {
-        carp "Unable to open $logfile for writing, unable to log";
-    }
+    my $fh = open_file('>>', $logfile);
 
     $fh->autoflush;
     $self->{logfile} = $logfile;

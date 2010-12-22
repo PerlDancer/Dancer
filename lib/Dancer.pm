@@ -31,7 +31,7 @@ use File::Basename 'basename';
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.2003';
+$VERSION   = '1.3000_01';
 @EXPORT    = qw(
   after
   any
@@ -103,7 +103,7 @@ sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
-sub content_type    { Dancer::Response::content_type(@_) }
+sub content_type    { Dancer::Response->content_type(@_) }
 sub dance           { Dancer::start(@_) }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
@@ -120,7 +120,7 @@ sub get {
     Dancer::App->current->registry->universal_add('get',  @_);
 }
 sub halt      { Dancer::Response->halt(@_) }
-sub headers   { Dancer::Response::headers(@_); }
+sub headers   { Dancer::Response->headers(@_); }
 sub header    { goto &headers; }                            # goto ftw!
 sub layout    { set(layout => shift) }
 sub load      { require $_ for @_ }
@@ -164,7 +164,7 @@ sub session {
     }
 }
 sub splat     { @{Dancer::SharedData->request->params->{splat}} }
-sub status    { Dancer::Response::status(@_) }
+sub status    { Dancer::Response->status(@_) }
 sub template  { Dancer::Helpers::template(@_) }
 sub true      {1}
 sub to_dumper { Dancer::Serializer::Dumper::to_dumper(@_) }
@@ -484,7 +484,7 @@ Defines a route for HTTP B<GET> requests to the given path:
 Sets a response object with the content given.
 
 When used as a return value from a filter, this breaks the execution flow and
-renders the response immediatly:
+renders the response immediately:
 
     before sub {
         if ($some_condition) {

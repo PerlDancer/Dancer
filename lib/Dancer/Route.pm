@@ -93,6 +93,14 @@ sub match {
 
     return unless @values;
 
+    # save the route pattern that matched
+    # TODO : as soon as we have proper Dancer::Internal, we should remove 
+    # that, it's just a quick hack for plugins to access the matching 
+    # pattern.
+    # NOTE: YOU SHOULD NOT USE THAT, OR IF YOU DO, YOU MUST KNOW
+    # IT WILL MOVE VERY SOON
+    $request->{_route_pattern} = $self->pattern;
+
     # named tokens
     my @tokens = @{$self->{_params} || []};
 
@@ -145,8 +153,7 @@ sub run {
     my $content  = $self->execute();
     my $response = Dancer::Response->current;
 
-    if ($response->{pass}) {
-
+    if ($response->has_passed) {
         if ($self->next) {
             my $next_route = $self->find_next_matching_route($request);
             return $next_route->run($request);
@@ -164,8 +171,8 @@ sub run {
     $content = '' if $request->is_head;
 
     # init response headers
-    my $ct = $response->{content_type} || setting('content_type');
-    my $st = $response->{status}       || 200;
+    my $ct = $response->content_type() || setting('content_type');
+    my $st = $response->status()       || 200;
     my $headers = [];
     push @$headers, @{$response->headers_to_array};
 
@@ -179,7 +186,6 @@ sub run {
         status       => $st,
         headers      => $headers,
         content      => $content,
-        content_type => $ct,
     );
 }
 

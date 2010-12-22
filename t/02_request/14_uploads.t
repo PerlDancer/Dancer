@@ -96,7 +96,7 @@ do {
     ok( ( -f $dest_file ), "file '$dest_file' has been copied" );
 
   SKIP: {
-        skip "bogus upload tests on win32", 3 if ( $^O eq 'MSWin32' );
+        skip "bogus upload tests on win32", 3 if ( $^O eq 'MSWin32' or $^O eq 'cygwin'  );
 
         $upload->link_to( path( $dest_dir, "hardlink" ) );
         ok( ( -f path( $dest_dir, "hardlink" ) ), "hardlink is created" );

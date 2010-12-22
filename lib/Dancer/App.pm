@@ -17,8 +17,8 @@ my $_apps = {};
 sub applications { values %$_apps }
 
 sub app_exists {
-    my ($self, $name) = @_;
-    grep /^$name$/, keys %$_apps;
+    my ( $self, $name ) = @_;
+    grep { $_ eq $name } keys %$_apps;
 }
 
 sub set_running_app {

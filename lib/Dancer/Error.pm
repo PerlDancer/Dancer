@@ -9,6 +9,7 @@ use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::Logger;
 use Dancer::Session;
+use Dancer::FileUtils qw(open_file);
 
 sub new {
     my ($class, %params) = @_;
@@ -53,8 +54,7 @@ sub backtrace {
     return $message unless ($file and $line);
 
     # file and line are located, let's read the source Luke!
-    my $fh;
-    open $fh, '<', $file or return $message;
+    my $fh = open_file('<', $file) or return $message;
     my @lines = <$fh>;
     close $fh;
 
@@ -267,7 +267,7 @@ Dancer::Error - class for representing fatal errors
         message => "No such file: `$path'"
     );
 
-    Dancer::Response::set($error->render);
+    Dancer::Response->set($error->render);
 
 =head1 DESCRIPTION
 
@@ -360,6 +360,7 @@ C<dumper> calls this method to censor things like passwords and such.
 
 Internal method to encode entities that are illegal in (X)HTML. We output as
 UTF-8, so no need to encode all non-ASCII characters or use a module.
+FIXME : this is not true anymore, output can be any charset. Need fixing.
 
 =head1 AUTHOR
 

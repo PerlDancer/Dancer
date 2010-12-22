@@ -61,7 +61,13 @@ IRC.
 =head2 Patch submission
 
 The Dancer's development team uses GitHub to collaborate. Any contribution must
-be submited via GitHub. Here is the workflow for submitting a patch:
+be submited via GitHub. 
+
+In order to make the life of Dancer's integrator easier, git-flow is
+used to handle pull-requests, that means each contributor must work on
+their C<devel> branch rather than on their C<master>.
+
+Here is the workflow for submitting a patch:
 
 =over 4 
 
@@ -74,36 +80,109 @@ Fork the repository L<http://github.com/sukria/Dancer>
 Clone your fork like the following:
 
     $ git clone <PATH_TOUR_GIT_CLONE>
-
-=item *
-
-Switch to the appropriate branch. If you're patch fix a bug a bug or
-update one of the documentation, you should work on the B<master>
-branch. For everything else, switch to the B<devel> branch.
-
-    $ git checkout devel
-
-=item *
-
-Apply your patch to your clone and then commit and push to your repository
-
     $ cd Dancer
-    [ edit as many files as you need to build your patch ]
-    $ git commit -m "DESCRIPTION OF THE PATCH"
-    $ git push origin master
-
-If your patch fix an existing issue on our bugtracker, please specify the id of the issue in your commit message.
-
-    fixing GH #123; do this instead of that
 
 =item *
 
-Send a I<pull request> via the GitHub interface.
+As a contributor, you should B<always> work on the C<devel> branch of
+your clone (C<master> is used only for building releases).
+
+	$ git remote add upstream https://github.com/sukria/Dancer.git
+    $ git checkout -b devel upstream/devel
+
+This will create a local branch in your clone named C<devel> and that
+will track the offical C<devel> branch. That way, if you have more or
+less commits than the upstream repo, you'll be immediatly notified by git.
+
+=item * 
+
+You want to isolate all your commits in a I<topic> branch, this will make the
+reviewing much easier for the core team and will allow you to continue working
+on your clone without worrying about different commits mixing together.
+
+To do that, first create a local branch to build your pull request:
+
+    # you should be in devel here
+    git checkout -b pr/$name
+
+Now you have created a local branch named I<pr/$name> where I<$name> is the
+name you want (it should describe the purpose of the pull request you're
+preparing).
+
+In that branch, do all the commits you need (the more the better) and when
+done, push the branch on your fork:
+
+    # ... commits ...
+    git push origin pr/$name
+
+You are now ready to send a pull request.
+
+=item *
+
+Send a I<pull request> via the GitHub interface. Make sure your pull request is
+based on the I<pr/$name> branch you've just pushed.
 
 It's also a good idea to summarize your work in a report sent to the users
 mailing list, in order to make sure the team is aware of it.
 
+At least, you can notify the core team on IRC, on C<irc.perl.org>,
+chan C<#dancer>.
+
+=item * 
+
+When the core team review your pull request, either it will be accepted (and
+then merged into I<devel>) or refused.
+
+If it's refused, make sure to understand the reasons explained by the team for
+the denial. Most of the time, communicating with the core team is enough to
+understand what was the mistake. 
+
+If your pull-request is merged into I<devel>, then all you have to do is to
+remove your local and remote I<pr/$name> branch:
+
+    git checkout devel
+    git branch -D pr/$name
+    git push origin :pr/$name
+
+And then, of course, you need to sync your local devel branch with the upstream:
+
+    git pull upstream devel
+    git push origin devel
+
+You're now ready to start working on a new pull request!
+
 =back
+
+=head1 About the releases cycle
+
+Since version 1.2, the team has decided to take a step further toward
+production concerns: Dancer now promises to provide an API-stable and
+feature frozen release, whose updates will only be about bugfixes and
+documentation updates.
+
+After some discussion with the core-team members, it has been agreed
+that the 1.2xx releases serie will be the first of this kind, and will
+live as long as 1.3xx lives.
+
+As soon as the last 1.3xx release is mature enough and tha the core
+team is happy with, it will be uploaded as the first version of the
+1.4xx series, and 1.2xx will become obsolete.
+
+This let us evolves quickly in our main track (devel in GitHub will
+contain all the daily work we want to make 1.3xx better) but as well,
+it lets us assure maintainability for thr 1.2 series, as we will
+propably have to fix a bug somewhere in 1.2 without merging with new
+stuff contained in the devel branch.
+
+That's why a maintenance branch is added to the repo. To be very
+clear, this branch is named "I<frozen>", to reflect the idea that the
+source-code in this branch is not meant to evolve regarding features.
+It should only contains fixes for bug or documentation updates.
+
+If you want to submit a pull-request to the frozen branch (that means
+1.3xx is out and you've found a bug in 1.2xx) you need to base your
+work on the C<frozen> branch. Use the same procdure explained before,
+but with the C<frozen> branch.
 
 =head1 RESOURCES FOR DEVELOPERS
 

@@ -5,25 +5,33 @@ use warnings;
 
 use File::Basename ();
 use File::Spec;
+use Carp;
 
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(path dirname read_file_content read_glob_content);
+@EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
 
 sub path    { File::Spec->catfile(@_) }
 sub dirname { File::Basename::dirname(@_) }
+
+sub open_file {
+    my ($mode, $filename) = @_;
+    require Dancer::Config;
+    my $charset = Dancer::Config::setting('charset');
+    length($charset || '')
+      and $mode .= ":encoding($charset)";
+    open(my $fh, $mode, $filename)
+      or croak "$! while opening '$filename' using mode '$mode'";
+    return $fh;
+}
 
 sub read_file_content {
     my ($file) = @_;
     my $fh;
 
-    require Dancer::Config;
-    my $charset = Dancer::Config::setting('charset');
-
-    my $open_flag = '<';
-    $open_flag = '<:encoding(UTF-8)' if $charset eq 'UTF-8';
-    if ($file && open($fh, $open_flag, $file)) {
+    if ($file) {
+        $fh = open_file('<', $file);
         return read_glob_content($fh);
     }
     else {
@@ -66,6 +74,14 @@ uses. Developers may use it instead of writing their own little subroutines or
 use additional modules.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 open_file
+
+    use Dancer::FileUtils 'open_file';
+    my $fh = open_file('<', $file) or die $message;
+
+Calls open and returns a filehandle. Takes in account the 'charset' setting to
+open the file in the proper encoding.
 
 =head2 path
 

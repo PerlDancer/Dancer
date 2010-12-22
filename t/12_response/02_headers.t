@@ -32,7 +32,7 @@ get '/headers/multiple' => sub {
     headers 'foo' => 1, 'foo' => 2, 'bar' => 3, 'foo' => 4;
 };
 
-plan tests => 10;
+plan tests => 12;
 
 # /header
 my $req = fake_request(GET => '/header');
@@ -91,3 +91,6 @@ $res = Dancer::Response->new(
 
 my $ct = $res->header('CONTENT-TYPE');
 is $ct, 'application/json';
+
+ok(Dancer::Response->set($res));
+is(Dancer::Response->header('Content-Type'), 'application/json');

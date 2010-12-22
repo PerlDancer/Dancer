@@ -14,6 +14,7 @@ use constant FILE => 1;
 
 # options
 my $help = 0;
+my $nocheck = 0;
 my $name = undef;
 my $path = '.';
 
@@ -25,11 +26,9 @@ GetOptions(
     "h|help"          => \$help,
     "a|application=s" => \$name,
     "p|path=s"        => \$path,
+    "x|no-check"      => \$nocheck,
     "v|version"       => \&version,
 ) or pod2usage( -verbose => 1 );
-
-# simple on-line help
-pod2usage( -verbose => 1 ) if $help;
 
 # main
 my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
@@ -50,7 +49,7 @@ my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
 require Dancer;
 my $DANCER_VERSION   = $Dancer::VERSION;
 
-version_check();
+version_check() if $nocheck;
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
@@ -858,7 +857,7 @@ logger: \"console\"
 # (debug, warning and error)
 log: \"core\"
 
-# shoud Dancer consider warnings as critical errors?
+# should Dancer consider warnings as critical errors?
 warnings: 1
 
 # should Dancer show a stacktrace when an error is caught?
@@ -1372,6 +1371,7 @@ dancer [options] -a <appname>
     -a, --application     : the name of your application
     -p, --path            : the path where to create your application
                               (current directory if not specified)
+    -x, --no-check        : don't check for the latest version of Dancer
     -v, --version         : print the version of dancer being used
 
 =head1 DESCRIPTION

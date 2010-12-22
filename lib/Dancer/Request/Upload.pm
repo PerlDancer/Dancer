@@ -6,6 +6,7 @@ use Carp;
 use strict;
 use warnings;
 use base 'Dancer::Object';
+use Dancer::FileUtils qw(open_file);
 
 Dancer::Request::Upload->attributes(
     qw(
@@ -16,7 +17,7 @@ Dancer::Request::Upload->attributes(
 sub file_handle {
     my ($self) = @_;
     return $self->{_fh} if defined $self->{_fh};
-    open my $fh, '<', $self->tempname
+    my $fh = open_file('<', $self->tempname) 
       or croak "Can't open `" . $self->tempname . "' for reading: $!";
     $self->{_fh} = $fh;
 }
