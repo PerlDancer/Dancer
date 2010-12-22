@@ -122,9 +122,8 @@ sub app_tree($) {
 
     return {
         "Makefile.PL"        => FILE,
-        lib                  => {
-         $LIB_PATH => {
-            $LIB_FILE => FILE,}
+        "lib"                  => {
+            $LIB_FILE => FILE,
         },
         "bin" => {
             "+app.pl" => FILE,
