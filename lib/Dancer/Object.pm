@@ -28,7 +28,35 @@ sub init {1}
 
 # meta information about classes
 my $_attrs_per_class = {};
-sub get_attributes { $_attrs_per_class->{$_[0]} }
+sub get_attributes {
+    my ($class, $visited_parents) = @_;
+    # $visited_parents keeps track of parent classes we already handled, to
+    # avoid infinite recursion (in case of dependancies loop). It's not stored as class singleton, otherwise
+    # get_attributes wouldn't be re-entrant.
+    $visited_parents ||= {};
+    my @attributes = @{$_attrs_per_class->{$class} || [] };
+    my @parents;
+    { no strict 'refs';
+      @parents = @{"$class\::ISA"}; }
+    foreach my $parent (@parents) {
+        # cleanup $parent
+        $parent =~ s/'/::/g;
+        $parent =~ /^::/
+          and $parent = 'main' . $parent;
+
+        # check we didn't visited it already
+        $visited_parents->{$parent}++
+          and next;
+
+        # check it's a Dancer::Object
+        $parent->isa(__PACKAGE__)
+          or next;
+
+        # merge parents attributes
+        push @attributes, @{$parent->get_attributes($visited_parents)};
+    }
+    return \@attributes;
+}
 
 # accessors builder
 sub attributes {
