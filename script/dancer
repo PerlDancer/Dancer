@@ -49,7 +49,8 @@ my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
 require Dancer;
 my $DANCER_VERSION   = $Dancer::VERSION;
 
-version_check() if $nocheck;
+$nocheck
+  or version_check();
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
@@ -1372,6 +1373,7 @@ dancer [options] -a <appname>
     -p, --path            : the path where to create your application
                               (current directory if not specified)
     -x, --no-check        : don't check for the latest version of Dancer
+                              (checking version implies internet connection)
     -v, --version         : print the version of dancer being used
 
 =head1 DESCRIPTION
