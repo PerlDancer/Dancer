@@ -8,7 +8,7 @@ use Dancer::ModuleLoader;
 plan skip_all => "the Clone module is needed for this test"
     unless Dancer::ModuleLoader->load('Clone');
 
-plan tests => 12;
+plan tests => 18;
 
 use Dancer::Object;
 
@@ -38,3 +38,19 @@ is $p->age, $p2->age, "clone values are OK";
 
 my $attrs = Person->get_attributes();
 is_deeply $attrs, ['name', 'age', 'sex'], "attributes are ok";
+
+{
+    package Person::Child;
+    use base 'Person';
+    __PACKAGE__->attributes('parent');
+}
+
+my $child = Person::Child->new();
+ok $child->parent($p), 'setting parent';
+ok $child->name('bob'), 'setting child name';
+ok $child->age(5), 'setting child age';
+
+is $child->age, 5, 'age is ok';
+is $child->parent->sex, 'male', 'age is ok';
+my $child_attrs = Person::Child->get_attributes();
+is_deeply $child_attrs, ['parent', 'name', 'age', 'sex'], "attributes are ok";
