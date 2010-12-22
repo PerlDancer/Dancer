@@ -26,10 +26,10 @@ ok defined($main), "app 'main' is defined";
 ok defined($test_app), "app 'TestApp' is defined";
 ok defined($forum), "app 'Forum' is defined";
 
-is @{ $main->registry->routes->{'get'} }, 1, 
+is @{ $main->registry->routes('get') }, 1,
     "one route is defined in main app";
 
-is @{ $test_app->registry->routes->{'get'} }, 12, 
+is @{ $test_app->registry->routes('get') }, 12,
     "12 routes are defined in test app";
 
 response_content_is [GET => "/forum/index"], "forum index"; 

@@ -30,7 +30,7 @@ sub init {
 sub is_empty {
     my ($self) = @_;
     for my $method (keys %{$self->{routes}}) {
-        return 0 if scalar(@{$self->{routes}{$method}});
+        return 0 if scalar(@{$self->routes($method)});
     }
     return 1;
 }

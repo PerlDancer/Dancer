@@ -38,7 +38,7 @@ sub set_prefix {
 
 sub routes {
     my ($self, $method) = @_;
-    map { $_->pattern } @{$self->registry->{'routes'}{$method}};
+    map { $_->pattern } @{$self->registry->routes($method)};
 }
 
 sub reload_apps {
