@@ -21,6 +21,7 @@ sub new {
         headers => $headers,
         content => "",
         pass    => 0,
+        forward => "",
         %args,
     };
     bless $self, $class;
@@ -99,6 +100,11 @@ sub content_type {
 sub pass {
     my $current = _get_object(shift);
     $current->{pass} = 1
+}
+
+sub forward {
+    my $current = _get_object(shift);
+    $current->{forward} = $_[0];
 }
 
 sub has_passed {
