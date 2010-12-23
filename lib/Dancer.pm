@@ -46,6 +46,7 @@ $VERSION   = '1.3000_01';
   dirname
   error
   false
+  forward
   from_dumper
   from_json
   from_yaml
@@ -110,6 +111,7 @@ sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub send_error      { Dancer::Helpers->error(@_) }
 sub false           {0}
+sub forward         { Dancer::Response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
@@ -454,6 +456,35 @@ Logs a message of error level:
 =head2 false
 
 Constant that returns a false value (0).
+
+=head2 forward
+
+Runs an internal redirect of the current request to another request. This helps
+you avoid having to redirect the user using HTTP and set another request to your
+application.
+
+It effectively lets you chain routes together in a clean manner.
+
+    get qr{ /demo/articles/(.+) }x => sub {
+        my ($article_id) = splat;
+
+        # you'll have to implement this next sub yourself :)
+        change_the_main_database_to_demo();
+
+        forward '/articles/$article_id';
+    };
+
+In the above example, the users that reach I</demo/articles/30> will actually
+reach I</articles/30> but we've changed the database to demo before.
+
+This is pretty cool because it lets us retain our paths and offer a demo
+database by merely going to I</demo/...>.
+
+You'll notice that in the example we didn't indicate whether it was B<GET> or
+B<POST>. That is because C<forward> chains the same type of route the user
+reached. If it was a B<GET>, it will remain a B<GET>.
+
+Broader functionality might be added in the future.
 
 =head2 from_dumper ($structure)
 

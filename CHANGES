@@ -1,3 +1,11 @@
+Dancer 1.3000_02
+
+    [ Sawyer X ]
+    * Added forward() functionality (incl. tests and docs)
+
+    [ Damien Krotkine ]
+    * FIX for --no-check switch in script/dancer
+
 Dancer 1.3000_01
 
     [ Damien Krotkine ]
