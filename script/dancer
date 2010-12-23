@@ -14,7 +14,7 @@ use constant FILE => 1;
 
 # options
 my $help = 0;
-my $nocheck = 0;
+my $do_check_dancer_version = 1;
 my $name = undef;
 my $path = '.';
 
@@ -26,7 +26,7 @@ GetOptions(
     "h|help"          => \$help,
     "a|application=s" => \$name,
     "p|path=s"        => \$path,
-    "x|no-check"      => \$nocheck,
+    "x|no-check"      => sub { $do_check_dancer_version = 0 },
     "v|version"       => \&version,
 ) or pod2usage( -verbose => 1 );
 
@@ -49,8 +49,7 @@ my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
 require Dancer;
 my $DANCER_VERSION   = $Dancer::VERSION;
 
-$nocheck
-  or version_check();
+version_check() if $do_check_dancer_version;
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
