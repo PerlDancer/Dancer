@@ -77,20 +77,38 @@ sub routes {
 
 sub add_route {
     my ($self, $route) = @_;
-    $self->{routes}{$route->method} ||= [];
-    my @registered = @{$self->{routes}{$route->method}};
-    my $last       = $registered[-1];
-    $route->set_previous($last) if defined $last;
 
-    # if the route have options, we store the route at the begining
-    # of the routes. This way, we can have the following routes:
-    # get '/' => sub {} and ajax '/' => sub {}
-    # and the user won't have to declare the ajax route before the get
-    if (keys %{$route->{options}}) {
-        unshift @{$self->{routes}{$route->method}}, $route;
+    # This will point to the same array as $self->{routes}{$route->method}
+    # so can be used for all mangling activities
+    my $routes = $self->{routes}{$route->method} ||= [];
+
+    if ($route->isa('Dancer::Route::Default')) {
+        # eliminate previous default if any
+        pop @$routes
+            if @$routes && $routes->[-1]->isa('Dancer::Route::Default');
+        $route->set_previous($routes->[-1]) if @$routes;
+        push @$routes, $route; # default always goes at the end
+    }
+    elsif ($route->has_options()) {
+        # if the route have options, we store the route at the begining
+        # of the routes. This way, we can have the following routes:
+        # get '/' => sub {} and ajax '/' => sub {}
+        # and the user won't have to declare the ajax route before the get
+        $routes->[0]->set_previous($route) if @$routes;
+        unshift @$routes, $route;
     }
     else {
-        push @{$self->{routes}{$route->method}}, $route;
+        my $default;
+        $default = pop @$routes
+            if @$routes&& $routes->[-1]->isa('Dancer::Route::Default');
+        $route->set_previous($routes->[-1]) if @$routes;
+        push @$routes, $route;
+        # re-push the $default at the end if any default was present,
+        # updating the linked list stuff
+        if (defined $default) {
+            $default->set_previous($route);
+            push @$routes, $default;
+        }
     }
     return $route;
 }
@@ -99,19 +117,20 @@ sub add_route {
 
 sub register_route {
     my ($self, %args) = @_;
+    my $route_class = delete $args{class} || 'Dancer::Route';
 
     # look if the caller (where the route is declared) exists as a Dancer::App
     # object
     my ($package) = caller(2);
     if (Dancer::App->app_exists($package)) {
         my $app = Dancer::App->get($package);
-        my $route = Dancer::Route->new(prefix => $app->prefix, %args);
+        my $route = $route_class->new(prefix => $app->prefix, %args);
         return $app->registry->add_route($route);
     }
     else {
 
         # FIXME maybe this code is useless, drop it later if so
-        my $route = Dancer::Route->new(%args);
+        my $route = $route_class->new(%args);
         return $self->add_route($route);
     }
 }
@@ -158,6 +177,32 @@ sub universal_add {
         pattern => $pattern,
     );
 
+    return $self->register_route(%route_args);
+}
+
+sub set_default {
+    my ($self, $method, @rest) = @_;
+
+    my %options;
+    my $code;
+
+    if (@rest == 1) {
+        $code = $rest[0];
+    }
+    else {
+        %options = %{$rest[0]};
+        $code    = $rest[1];
+    }
+
+    my %route_args = (
+        method  => $method,
+        code    => $code,
+        options => \%options,
+        pattern => qr/.?/,
+        class   => 'Dancer::Route::Default',
+    );
+
+    require Dancer::Route::Default;
     return $self->register_route(%route_args);
 }
 
