@@ -57,13 +57,13 @@ my $setters = {
         my ($setting, $auto_page) = @_;
         if ($auto_page) {
             require Dancer::App;
-            Dancer::App->current->registry->universal_add(
-                'get', '/:page',
+            my $action =
                 sub {
-                    my $params = Dancer::SharedData->request->params;
-                    Dancer::Helpers::template($params->{'page'});
-                }
-            );
+                    (my $path = Dancer::SharedData->request->path()) =~ s{^/}{}mxs;
+                    Dancer::Helpers::template($path);
+                };
+            Dancer::App->current->registry->set_default(get => $action);
+            Dancer::App->current->registry->set_default(head => $action);
         }
     },
     traces => sub {

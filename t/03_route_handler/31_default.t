@@ -3,7 +3,7 @@
 # takes care of rendering it.
 use strict;
 use warnings;
-use Test::More import => ['!pass'], tests => 14;
+use Test::More import => ['!pass'], tests => 12;
 use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 
@@ -14,22 +14,17 @@ use Dancer::Test;
     use Dancer;
 
     set views => path(dirname(__FILE__), 'views');
-    set auto_page => true;
 
     get '/' => sub { "here comes /\n" };
     get '/simple' => sub { "here comes /simple\n" };
     get '/path/to' => sub { "here comes /path/to\n" };
+    default sub { return scalar reverse request->path() };
 }
 
 my $resp = dancer_response('GET' => '/hello');
 ok( defined($resp), "response found for /hello");
 is $resp->{status}, 200, "response is 200";
-is $resp->{content}, "Hello\n", "content looks good";
-
-$resp = dancer_response('GET' => '/falsepage');
-ok( defined($resp), "response found for non existent page");
-
-is $resp->{status}, 404, "response is 404";
+is $resp->{content}, "olleh/", "content looks good";
 
 for my $path ( qw( / /simple /path/to ) ) {
    my $resp = dancer_response(GET => $path);

@@ -42,6 +42,7 @@ $VERSION   = '1.3000_01';
   content_type
   dance
   debug
+  default
   del
   dirname
   error
@@ -106,6 +107,11 @@ sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::Response->content_type(@_) }
 sub dance           { Dancer::start(@_) }
 sub debug           { goto &Dancer::Logger::debug }
+
+sub default {
+    Dancer::App->current->registry->set_default('head', @_);
+    Dancer::App->current->registry->set_default('get',  @_);
+}
 sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub send_error      { Dancer::Helpers->error(@_) }
@@ -438,6 +444,14 @@ Alias for the C<start> keyword.
 Logs a message of debug level:
 
     debug "This is a debug message";
+
+=head2 default
+
+Sets a default behaviour when no route can be selected for HTTP methods GET and HEAD:
+
+    default sub {
+        template 'error.tt';
+    };
 
 =head2 dirname
 
