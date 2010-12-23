@@ -107,6 +107,11 @@ sub forward {
     $current->{forward} = $_[0];
 }
 
+sub is_forwarded { 
+    my $current = _get_object(shift);
+    $current->{forward};
+}
+
 sub has_passed {
     my $current = _get_object(shift);
     $current->{pass};
