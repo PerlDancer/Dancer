@@ -10,7 +10,6 @@ use Dancer::Config;
 use Dancer::ModuleLoader;
 use Dancer::SharedData;
 use Dancer::Logger;
-use Plack::App::URLMap;
 
 sub new {
     my $class = shift;
@@ -39,6 +38,12 @@ sub start {
 
 sub apply_plack_middlewares_map {
     my ($self, $app) = @_;
+
+    foreach my $req (qw(Plack::App::URLMap Plack::Builder)) {
+        croak "$req is needed to use apply_plack_middlewares_map"
+            unless Dancer::ModuleLoader->load($req);
+    }
+
     my $mw_map = Dancer::Config::setting('plack_middlewares_map');
     my $urlmap = Plack::App::URLMap->new;
     while (my ($url, $mw) = each %$mw_map) {
@@ -46,7 +51,7 @@ sub apply_plack_middlewares_map {
         foreach (@$mw) { $builder->add_middleware(@$_) }
         $urlmap->map($url => $builder->to_app($app));
     }
-    $urlmap->map('/' => $app) unless grep $_ eq '/' keys %$mw_map;
+    $urlmap->map('/' => $app) unless $mw_map->{'/'};
     return $urlmap->to_app;
 }
 
