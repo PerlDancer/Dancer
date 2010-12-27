@@ -30,6 +30,21 @@ sub init {1}
 my $_attrs_per_class = {};
 sub get_attributes { $_attrs_per_class->{$_[0]} }
 
+# accessor code for normal objects
+# (overloaded in D::O::Singleton for instance)
+sub _setter_code {
+    my ($class, $attr) = @_;
+    sub {
+        my ($self, $value) = @_;
+        if (@_ == 1) {
+            return $self->{$attr};
+        }
+        else {
+            return $self->{$attr} = $value;
+        }
+    };
+}
+
 # accessors builder
 sub attributes {
     my ($class, @attributes) = @_;
@@ -39,15 +54,7 @@ sub attributes {
 
     # define setters and getters for each attribute
     foreach my $attr (@attributes) {
-        my $code = sub {
-            my ($self, $value) = @_;
-            if (@_ == 1) {
-                return $self->{$attr};
-            }
-            else {
-                return $self->{$attr} = $value;
-            }
-        };
+        my $code = $class->_setter_code($attr);
         my $method = "${class}::${attr}";
         { no strict 'refs'; *$method = $code; }
     }

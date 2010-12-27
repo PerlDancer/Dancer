@@ -6,16 +6,15 @@ use Dancer::ModuleLoader;
 use Dancer::Engine;
 
 # singleton for the current template engine
-my $engine;
-sub engine {$engine}
+my $_engine;
+sub engine { $_engine }
 
-# init the engine according to the settings
-# the template engine module will take from the
-# setting name.
+# init the engine according to the settings the template engine module will
+# take from the setting name.
 sub init {
     my ($class, $name, $config) = @_;
     $name ||= 'simple';
-    $engine = Dancer::Engine->build(template => $name, $config);
+    $_engine = Dancer::Engine->build(template => $name, $config);
 }
 
 1;
