@@ -12,28 +12,37 @@ BEGIN {
 use Dancer::Plugin;
 use AnyMQ;
 
-my $bus = AnyMQ->new;
-my $topic = $bus->topic('dancer-plugin-websocket');
+my $bus;
+sub _bus {
+    return $bus if $bus;
+    return $bus = AnyMQ->new;
+}
+
+my $topic;
+sub _topic {
+    return $topic if $topic;
+    return $topic = _bus->topic('dancer-plugin-websocket');
+}
 
 set plack_middlewares_map => {
     '/_hippie' => [
         [ '+Web::Hippie' ],
-        [ '+Web::Hippie::Pipe', bus => $bus ],
+        [ '+Web::Hippie::Pipe', bus => _bus ],
     ]
 };
 
 # Web::Hippie routes
 get '/new_listener' => sub {
-    request->env->{'hippie.listener'}->subscribe($topic);
+    request->env->{'hippie.listener'}->subscribe(_topic);
 };
 get '/message' => sub {
     my $msg = request->env->{'hippie.message'};
-    $topic->publish($msg);
+    _topic->publish($msg);
 };
 
 register websocket_send => sub {
     my $msg = shift;
-    $topic->publish({ msg => $msg });
+    _topic->publish({ msg => $msg });
 };
 
 register_plugin;
@@ -100,10 +109,16 @@ Dancer::Plugin::WebSocket - a plugin for easily creating WebSocket apps
 
 =head1 DESCRIPTION
 
-This plugin provides the keyword websocket_send.
-It takes 1 argument, the message you would like to send.
-It requires that you have L<Plack> and L<Web::Hippie> installed.
+This plugin provides the keyword websocket_send, which takes 1 argument,
+the message to send to the websocket.
+This plugin is built on top of L<Web::Hippie>, but it abstracts that out for
+you.
+You should be aware that it registers 2 routes that Web::Hippie needs:
+get('/new_listener') and get('/message').
+Be careful to not define those routes in your app.
+This requires that you have L<Plack> and L<Web::Hippie> installed.
 It also requires that you run your app via L<Twiggy>.
+I'm not sure why.
 For example:
 
     plackup -s Twiggy bin/app.pl
