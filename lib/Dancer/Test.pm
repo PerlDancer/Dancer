@@ -251,7 +251,7 @@ Dancer::Test - Test helpers to test a Dancer application
 
 =head1 DESCRIPTION
 
-This module provides test heplers for testing Dancer apps.
+This module provides test helpers for testing Dancer apps.
 
 =head1 CONFIGURATON
 
