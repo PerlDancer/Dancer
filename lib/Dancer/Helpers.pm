@@ -30,11 +30,6 @@ sub send_file {
     Dancer::Response->set($error->render);
 }
 
-sub engine {
-    my ($engine_type) = @_;
-    Dancer::Engine->engine($engine_type);
-}
-
 sub template {
     my ($view, $tokens, $options) = @_;
 

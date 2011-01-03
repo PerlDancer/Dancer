@@ -109,7 +109,7 @@ sub content_type    { Dancer::Response->content_type(@_) }
 sub dance           { Dancer::start(@_) }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
-sub engine          { Dancer::Helpers::engine(@_) }
+sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub send_error      { Dancer::Helpers->error(@_) }
 sub false           {0}
