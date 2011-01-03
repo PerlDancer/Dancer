@@ -26,11 +26,36 @@ sub start {
     my $self = shift;
     my $app  = $self->psgi_app();
 
-    if (Dancer::Config::setting('plack_middlewares')) {
-        $app = $self->apply_plack_middlewares($app);
+    foreach my $setting (qw/plack_middlewares plack_middlewares_map/) {
+        if (Dancer::Config::setting($setting)) {
+            my $method = 'apply_'.$setting;
+            $app = $self->$method($app);
+        }
     }
 
     return $app;
+}
+
+sub apply_plack_middlewares_map {
+    my ($self, $app) = @_;
+
+    my $mw_map = Dancer::Config::setting('plack_middlewares_map');
+
+    foreach my $req (qw(Plack::App::URLMap Plack::Builder)) {
+        croak "$req is needed to use apply_plack_middlewares_map"
+          unless Dancer::ModuleLoader->load($req);
+    }
+
+    my $urlmap = Plack::App::URLMap->new;
+
+    while ( my ( $path, $mw ) = each %$mw_map ) {
+        my $builder = Plack::Builder->new();
+        map { $builder->add_middleware(@$_) } @$mw;
+        $urlmap->map( $path => $builder->to_app($app) );
+    }
+
+    $urlmap->map('/' => $app) unless $mw_map->{'/'};
+    return $urlmap->to_app;
 }
 
 sub apply_plack_middlewares {
@@ -44,13 +69,12 @@ sub apply_plack_middlewares {
     my $builder = Plack::Builder->new();
 
     # XXX remove this after 1.2
-    if (ref $middlewares eq 'HASH') {
-        carp 'Listing Plack middlewares as a hash ref is DEPRECATED. ' .
-             'Must be listed as an array ref.';
+    if ( ref $middlewares eq 'HASH' ) {
+        carp 'Listing Plack middlewares as a hash ref is DEPRECATED. '
+          . 'Must be listed as an array ref.';
 
-        for my $m (keys %$middlewares) {
-            $builder->add_middleware($m, @{$middlewares->{$m}});
-        }
+        map { $builder->add_middleware( $_, @{ $middlewares->{$_} } ) }
+          keys %$middlewares;
     }
     else {
         map {

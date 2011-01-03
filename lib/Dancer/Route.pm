@@ -153,6 +153,24 @@ sub run {
     my $content  = $self->execute();
     my $response = Dancer::Response->current;
 
+    if ( $response->is_forwarded ) {
+        my $new_req = Dancer::Request->new_for_request(
+            $request->method,
+            $response->{forward},
+            $request->params,
+            $request->body,
+            $request->headers,
+        );
+
+        my $marshalled = Dancer::Handler->handle_request($new_req);
+
+        return Dancer::Response->new(
+            status  => $marshalled->[0],
+            headers => $marshalled->[1],
+            content => @{ $marshalled->[2] },
+        );
+    }
+
     if ($response->has_passed) {
         if ($self->next) {
             my $next_route = $self->find_next_matching_route($request);

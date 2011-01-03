@@ -14,7 +14,7 @@ use constant FILE => 1;
 
 # options
 my $help = 0;
-my $nocheck = 0;
+my $do_check_dancer_version = 1;
 my $name = undef;
 my $path = '.';
 
@@ -26,7 +26,7 @@ GetOptions(
     "h|help"          => \$help,
     "a|application=s" => \$name,
     "p|path=s"        => \$path,
-    "x|no-check"      => \$nocheck,
+    "x|no-check"      => sub { $do_check_dancer_version = 0 },
     "v|version"       => \&version,
 ) or pod2usage( -verbose => 1 );
 
@@ -49,7 +49,7 @@ my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
 require Dancer;
 my $DANCER_VERSION   = $Dancer::VERSION;
 
-version_check() if $nocheck;
+version_check() if $do_check_dancer_version;
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
@@ -1372,6 +1372,7 @@ dancer [options] -a <appname>
     -p, --path            : the path where to create your application
                               (current directory if not specified)
     -x, --no-check        : don't check for the latest version of Dancer
+                              (checking version implies internet connection)
     -v, --version         : print the version of dancer being used
 
 =head1 DESCRIPTION
@@ -1385,17 +1386,33 @@ Here is an application created with dancer:
 
     $ dancer -a mywebapp
     + mywebapp
+    + mywebapp/bin
+    + mywebapp/bin/app.pl
     + mywebapp/config.yml
+    + mywebapp/environments
+    + mywebapp/environments/development.yml
+    + mywebapp/environments/production.yml
     + mywebapp/views
+    + mywebapp/views/index.tt
     + mywebapp/views/layouts
     + mywebapp/views/layouts/main.tt
-    + mywebapp/views/index.tt
-    + mywebapp/environments
-    + mywebapp/environments/production.yml
-    + mywebapp/environments/development.yml
-    + mywebapp/mywebapp.pm
-    + mywebapp/mywebapp.pl
-    + mywebapp/favicon.ico
+    + mywebapp/lib
+    + mywebapp/lib/mywebapp.pm
+    + mywebapp/public
+    + mywebapp/public/css
+    + mywebapp/public/css/style.css
+    + mywebapp/public/css/error.css
+    + mywebapp/public/images
+    + mywebapp/public/500.html
+    + mywebapp/public/404.html
+    + mywebapp/public/dispatch.fcgi
+    + mywebapp/public/dispatch.cgi
+    + mywebapp/public/javascripts
+    + mywebapp/public/javascripts/jquery.js
+    + mywebapp/Makefile.PL
+    + mywebapp/t
+    + mywebapp/t/002_index_route.t
+    + mywebapp/t/001_base.t
 
 The application is ready to serve:
 

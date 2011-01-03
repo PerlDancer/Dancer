@@ -174,7 +174,7 @@ the request with the next matching route.
 This is done with the B<pass> keyword, like in the following example
 
     get '/say/:word' => sub {
-        pass if (params->{word} =~ /^\d+$/);
+        return pass if (params->{word} =~ /^\d+$/);
         "I say a word: ".params->{word};
     };
 

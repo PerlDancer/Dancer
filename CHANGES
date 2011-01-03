@@ -1,3 +1,20 @@
+Dancer 1.3000_02
+
+    [ Sawyer X ]
+    * Added forward() functionality (incl. tests and docs)
+
+    [ Damien Krotkine ]
+    * FIX for --no-check switch in script/dancer
+    * Refactoring of Dancer::Template::Abstract
+      - add support of apply_layout and apply_renderer
+      - deprecation of render_with_layout (now handled better)
+      - add an accessor "engine" to the DSL to access any engine singleton
+      - better interface for Dancer::Object and Dancer::Object::Singleton
+      - updated tests accordingly
+
+    [ Jonathan Otsuka ]
+    * Bring dancer application creation pod up-to-date 1.2003
+
 Dancer 1.3000_01
 
     [ Damien Krotkine ]
