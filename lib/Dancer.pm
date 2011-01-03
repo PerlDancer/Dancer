@@ -45,6 +45,7 @@ $VERSION   = '1.3000_01';
   del
   dirname
   error
+  engine
   false
   forward
   from_dumper
@@ -108,6 +109,7 @@ sub content_type    { Dancer::Response->content_type(@_) }
 sub dance           { Dancer::start(@_) }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
+sub engine          { Dancer::Helpers::engine(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub send_error      { Dancer::Helpers->error(@_) }
 sub false           {0}
@@ -447,6 +449,14 @@ Returns the dirname of the path given:
 
     my $dir = dirname($some_path);
 
+=head2 engine
+
+Given an namespace, returns the current engine object
+
+    my $template_engine = engine 'template';
+    my $html = $template_engine->apply_renderer(...);
+    $template_engine->apply_layout($html);
+
 =head2 error
 
 Logs a message of error level:
@@ -713,13 +723,19 @@ function, e.g.
 Allows a handler to provide plain HTML (or other content), but have it rendered
 within the layout still.
 
-For example:
+This method is B<DEPRECATED>, and will be removed soon. Instead, you should be
+using the C<engine> keyword:
 
     get '/foo' => sub {
         # Do something which generates HTML directly (maybe using
         # HTML::Table::FromDatabase or something)
         my $content = ...;
-        render_with_layout $content;
+
+        # get the template engine
+        my $template_engine = engine 'template';
+
+        # apply the layout (not the renderer), and return the result
+        $template_engine->apply_layout($content)
     };
 
 It works very similarly to C<template> in that you can pass tokens to be used in

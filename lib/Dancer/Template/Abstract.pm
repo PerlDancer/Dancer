@@ -24,21 +24,81 @@ sub view {
 
     $view = $self->_template_name($view);
 
-    my $app = Dancer::App->current;
-    return path($app->setting('views'), $view);
+    return path(Dancer::App->current->setting('views'), $view);
 }
 
 sub layout {
     my ($self, $layout, $tokens, $content) = @_;
 
-    my $app          = Dancer::App->current;
-    $layout = $self->_template_name($layout);
-    $layout = path($app->setting('views'), 'layouts', $layout);
+    my $layout_name = $self->_template_name($layout);
+    my $layout_path = path(Dancer::App->current->setting('views'), 'layouts', $layout_name);
 
     my $full_content =
-      Dancer::Template->engine->render($layout,
+      Dancer::Template->engine->render($layout_path,
         {%$tokens, content => $content});
     $full_content;
+}
+
+sub apply_renderer {
+    my ($self, $view, $tokens) = @_;
+
+    ($tokens, undef) = _prepare_tokens_options($tokens);
+
+    $view = $self->view($view);
+    -r $view or return;
+
+    $_->($tokens) for (@{Dancer::App->current->registry->hooks->{before_template}});
+
+    my $content = $self->render($view, $tokens);
+
+    # make sure to avoid ( undef ) in list context return
+    defined $content
+      and return $content;
+    return;
+}
+
+sub apply_layout {
+    my ($self, $content, $tokens, $options) = @_;
+
+    ($tokens, $options) = _prepare_tokens_options($tokens, $options);
+
+    # If 'layout' was given in the options hashref, use it if it's a true value,
+    # or don't use a layout if it was false (0, or undef); if layout wasn't
+    # given in the options hashref, go with whatever the current layout setting
+    # is.
+    my $layout =
+      exists $options->{layout}
+      ? ($options->{layout} ? $options->{layout} : undef)
+      : Dancer::App->current->setting('layout');
+
+    defined $content or return;
+
+    defined $layout or return $content;
+
+    my $full_content =
+      $self->layout($layout, $tokens, $content);
+    # make sure to avoid ( undef ) in list context return
+    defined $full_content
+      and return $full_content;
+    return;
+}
+
+sub _prepare_tokens_options {
+    my ($tokens, $options) = @_;
+
+    $options ||= {};
+
+    # these are the default tokens provided for template processing
+    $tokens ||= {};
+    $tokens->{dancer_version} = $Dancer::VERSION;
+    $tokens->{settings}       = Dancer::Config->settings;
+    $tokens->{request}        = Dancer::SharedData->request;
+    $tokens->{params}         = Dancer::SharedData->request->params;
+
+    Dancer::App->current->setting('session')
+      and $tokens->{session} = Dancer::Session->get;
+
+    return ($tokens, $options);
 }
 
 1;

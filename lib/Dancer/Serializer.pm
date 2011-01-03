@@ -12,18 +12,21 @@ use Dancer::SharedData;
 my $_engine;
 
 sub engine {
-    return $_engine if $_engine;
-
+    $_engine
+      and return $_engine;
     # don't create a new serializer unless it's defined in the config
     # (else it's created using json, and that's *not* what we want)
-    my $serializer = Dancer::App->current->setting('serializer');
-    Dancer::Serializer->init($serializer) if $serializer;
+    my $serializer_name = Dancer::App->current->setting('serializer');
+    $serializer_name
+      and return Dancer::Serializer->init($serializer_name);
+    return;
 }
 
 sub init {
     my ($class, $name, $config) = @_;
     $name ||= 'JSON';
     $_engine = Dancer::Engine->build('serializer' => $name, $config);
+    return $_engine;
 }
 
 # takes a response object and checks whether or not it should be
