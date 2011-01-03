@@ -35,11 +35,8 @@ END {
 my $cmd = "$^X -I "                                       .
           File::Spec->catdir(  $cwd, 'blib',   'lib'    ) . '  ' .
           File::Spec->catfile( $cwd, 'script', 'dancer' );
-diag $cmd;
-
 chomp( my $version = qx{$cmd -v} );
 is($version, "Dancer $Dancer::VERSION", "dancer -v");
-diag "Version: $version";
 
 my $nothing = qx{$cmd};
 like($nothing, qr{Usage: .* dancer .* options}sx, 'dancer (without parameters)');
