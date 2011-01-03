@@ -148,6 +148,7 @@ t/03_route_handler/24_named_captures.t
 t/03_route_handler/26_after_hook.t
 t/03_route_handler/27_issue_77_pass_breaks_routes.t
 t/03_route_handler/28_plack_mount.t
+t/03_route_handler/29_forward.t
 t/03_route_handler/29_redirect_immediately.t
 t/03_route_handler/30_bug_gh190.t
 t/03_route_handler/public/404.html
@@ -183,6 +184,7 @@ t/07_apphandlers/04_standalone_app.t
 t/07_apphandlers/05_middlewares.t
 t/07_apphandlers/05_psgi_api.t
 t/07_apphandlers/06_debug.t
+t/07_apphandlers/07_middleware_map.t
 t/08_session/000_create_fake_env.t
 t/08_session/01_load.t
 t/08_session/02_dependency_check.t
