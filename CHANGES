@@ -5,6 +5,12 @@ Dancer 1.3000_02
 
     [ Damien Krotkine ]
     * FIX for --no-check switch in script/dancer
+    * Refactoring of Dancer::Template::Abstract
+      - add support of apply_layout and apply_renderer
+      - deprecation of render_with_layout (now handled better)
+      - add an accessor "engine" to the DSL to access any engine singleton
+      - better interface for Dancer::Object and Dancer::Object::Singleton
+      - updated tests accordingly
 
 Dancer 1.3000_01
 

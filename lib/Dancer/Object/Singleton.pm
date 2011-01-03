@@ -40,6 +40,23 @@ sub instance {
     return $instance;
 }
 
+# accessor code for singleton objects
+# (overloaded from Dancer::Object)
+sub _setter_code {
+    my ($class, $attr) = @_;
+    sub {
+        my ($class_or_instance, $value) = @_;
+        my $instance = ref $class_or_instance ?
+          $class_or_instance : $class_or_instance->instance;
+        if (@_ == 1) {
+            return $instance->{$attr};
+        }
+        else {
+            return $instance->{$attr} = $value;
+        }
+    };
+}
+
 1;
 
 __END__
