@@ -63,7 +63,8 @@ sub template {
 # DEPRECATED
 sub render_with_layout {
     my ($content, $tokens, $options) = @_;
-    carp "'render_with_layout' is DEPRECATED, use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result";
+    carp "'render_with_layout' is DEPRECATED, use the 'engine' keyword "
+       . "to get the template engine, and use 'apply_layout' on the result";
 
     my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
 
