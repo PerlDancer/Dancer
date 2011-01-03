@@ -27,7 +27,7 @@ sub send_file {
         code    => 404,
         message => "No such file: `$path'"
     );
-    Dancer::Response::set($error->render);
+    Dancer::Response->set($error->render);
 }
 
 sub engine {
@@ -47,7 +47,7 @@ sub template {
                 code    => 404,
                 message => "Page not found",
             );
-            return Dancer::Response::set($error->render);
+            return Dancer::Response->set($error->render);
         }
     } else {
         $options ||= {};
@@ -86,7 +86,7 @@ sub error {
     my ($class, $content, $status) = @_;
     $status ||= 500;
     my $error = Dancer::Error->new(code => $status, message => $content);
-    Dancer::Response::set($error->render);
+    Dancer::Response->set($error->render);
 }
 
 sub redirect {
@@ -97,8 +97,8 @@ sub redirect {
         my $request = Dancer::SharedData->request;
         $destination = $request->uri_for($destination, {}, 1);
     }
-    Dancer::Response::status($status || 302);
-    Dancer::Response::headers('Location' => $destination);
+    Dancer::Response->status($status || 302);
+    Dancer::Response->headers('Location' => $destination);
 }
 
 #

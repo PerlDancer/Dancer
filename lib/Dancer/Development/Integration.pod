@@ -1,0 +1,189 @@
+=head1 NAME
+
+Dancer::Development::Integration - guide for Dancer's core-team members
+
+=head1 DESCRIPTION
+
+This documentation describes the procedure used for integrators to review and
+merge contributions sent via pull-requests.
+
+Every core-team member should read and apply the procedures described
+here. This will allow for a better history and more consitency in our
+ways of handling the (increasing number!) of pull requests.
+
+=head1 TERMS
+
+We will first define the most important terms used in this
+documentation:
+
+=over 
+
+=item * B<PR> 
+
+Acronym for B<P>ull B<R>equest
+
+=item * Contributor
+
+A GitHub user who had forked and cloned the official Dancer's repo, and
+who has sent a PR.
+
+=item * Integration branch
+
+This branch is the branch used to merge all contributions. This is a
+git-flow convention. In Dancer, our integration branch is C<devel>.
+
+As explained in L<Dancer::Development>, every PR should be based on
+the integration branch. If not, this is enough to refuse the PR (it
+makes the life of the integrator much harder if this is not the case).
+
+=item * Integrator
+
+A member of Dancer's core-team who is responsible for reviewing and
+either rejecting the PR, or merging it into the integration branch.
+
+=back
+
+=head1 PROCEDURES
+
+=head2 Processing a Pull Request
+
+This procedure describes how an integrator should process a PR. 
+
+Let's say the user I<$user> has sent a PR, he has followed the
+instructions described in L<Dancer::Development> so his work is based
+on the integration branch (C<devel>).
+
+All the procedure described here is designed to avoid unecessary
+recursive-merge, in order to keep a clean and flat history in the
+integration branch.
+
+Of course, we could just pull from I<$user> into our C<devel> branch,
+but this would shift the history because of recursive merge, most of
+the time.
+
+To avoid that, we're going to pull the commits of I<$user> into a
+temporary branch, and then cherry-pick the commits we want.
+
+In order to have a clean history, like the one we got with git-flow
+when working on a feature, we're going to do that in a topic branch,
+named C<review/$user>. Then, this branch will be merged into C<devel>
+and we will just have to drop it.
+
+
+First, we make sure we are in sync with C<origin/devel>
+
+    git checkout devel
+    git pull origin devel 
+
+Then, from that branch we create a I<temp> sandbox
+
+    git co -b temp
+
+We pull here from I<$user>
+
+    git pull <user repo> <pr/branch>
+
+Here, either the pull was run as a fast-forward or as a recursive
+merge. If we have a FF, we can forget about the I<temp> branch and do the
+pull directly in C<devel>. If not, we'll have to cherry-pick the
+commits by hand.
+
+From devel, we first create the final C<review> branch:
+
+    git co devel
+    git co -b review/$user
+
+Then we cherry-pick all the commits we want. To know them, we just
+have to go into I<temp> and inspect the history (with C<git log>).
+
+When we have the list of commits we want:
+
+    for commit in C1 C2 C3 ... CN
+    do
+        git cherry-pick $commit
+    done
+
+(Another option is to use C<git rebase -i> to manually select the list
+of commits to cherry-pick/rebase.)
+
+Then we can review the code, do whatever we want, maybe add some
+commits to change something.
+
+When we're happy with the change set, we can merge into devel:
+
+    git co devel
+    git merge --no-ff review/$user
+
+Note the C<--no-ff> switch is used to make sure we'll see a nice
+commit named C<< Merge branch 'review/$user' into devel >>. This is on
+purpose and mimic the behaviour of git-flow.
+
+Your local C<devel> branch is now merged, and can be pushed to the
+remote.
+
+    $ git push origin devel
+
+=head1 RELEASE CYCLES
+
+We have one main release cycle. This is the release cycle based on the I<devel>
+branch. We use this branch to build new releases, with new stuff all the new
+shiny commits we want.
+
+Those release are built with git-flow (with C<git-flow release>) and are then
+uploaded to CPAN.
+
+Since Dancer 1.2, we also have another parallell release cycle which is what we
+call the I<frozen> branch. It's a maintenance-only release cycle. That branch is
+created from the tag of the first release of a I<stable> version (namely a
+release series with an even minor number).
+
+This branch must be used only for bug-fixing the stable releases. Nothing new
+should occur in that branch.
+
+Let's take an example with Dancer 1.2003 and Dancer 1.3002.
+
+=over 4
+
+=item *
+
+Dancer 1.2003 is the last stable release of Dancer. Its codebase is handled in
+the I<frozen> branch, that has been created from the tag C<1.2000>.
+
+=item *
+
+Dancer 1.3002 is the last release of Dancer. As it belongs to a development
+series, it can provide new features, code refactoring and deprecations. Its
+codebase is handled by the integration branch, C<devel>.
+
+=item * 
+
+When a bug is found in 1.2xxx, it's fixed in the C<frozen> branch, and a new
+release is built from here and then uploaded to CPAN.
+
+=item *
+
+Whenever the team wants to, they can release new versions of 1.3xxx from the
+devel branch, using C<git-flow release start>.
+
+=item *
+
+When the team finds that the current state of devel (namely, the last version of
+1.3xxx) is stable and mature enough. They can decide it will be the new stable
+version.
+
+Then, a release 1.4000_01 is built from devel, an upload is done to CPAN, and
+when ready, the 1.40001 can be uploaded the same way.
+
+From that moment, the master branch is merged into frozen in order to be able to
+hotfix the frozen branch in the future.
+
+It's now possible for the team to continue working on new stuff in devel,
+bumping the version number to 1.5000_01
+
+=back
+
+=head1 AUTHOR
+
+This documentation has been written by Alexis Sukrieh C<< <sukria@sukria.net> >>.
+
+=cut

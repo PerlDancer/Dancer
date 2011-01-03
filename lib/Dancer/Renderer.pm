@@ -119,7 +119,7 @@ sub get_action_response {
     }
 
     # redirect immediately - skip route execution
-    if (my $status = Dancer::Response::status) {
+    if (my $status = Dancer::Response->status) {
         if ($status == 302 || $status == 301) {
             return serialize_response_if_needed(Dancer::Response->current);
         }
@@ -147,7 +147,7 @@ sub get_action_response {
 sub serialize_response_if_needed {
     my ($response) = @_;
     $response = Dancer::Serializer->process_response($response)
-      if Dancer::App->current->setting('serializer') && $response->{content};
+      if Dancer::App->current->setting('serializer') && $response->content();
     return $response;
 }
 

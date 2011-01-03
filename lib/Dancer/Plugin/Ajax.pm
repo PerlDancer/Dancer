@@ -8,6 +8,12 @@ use Dancer::Plugin;
 
 register 'ajax' => \&ajax;
 
+before sub {
+    if (request->is_ajax) {
+        content_type('text/xml');
+    }
+};
+
 sub ajax {
     my ($pattern, @rest) = @_;
 
@@ -15,14 +21,13 @@ sub ajax {
     for my $e (@rest) { $code = $e if (ref($e) eq 'CODE') }
 
     my $ajax_route = sub {
-        my $layout = setting('layout');
-
         # must be an XMLHttpRequest
         if (not request->is_ajax) {
             pass and return 0;
         }
 
         # disable layout
+        my $layout = setting('layout');
         setting('layout' => undef);
         my $response = $code->();
         setting('layout' => $layout);

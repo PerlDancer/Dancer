@@ -1,11 +1,19 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16, import => ['!pass'];
+use Test::More tests => 17, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
 my $i = 0;
+
+ok(
+    before(
+        sub {
+            content_type('text/xhtml');
+        }
+    )
+);
 
 ok(
     before(
@@ -59,6 +67,7 @@ response_content_is $request, 'index',
 
 response_headers_are_deeply [GET => '/redirect_from'], [
     'Location' => 'http://localhost/redirect_to',
+    'Content-Type' => 'text/xhtml',
 ];
 
 is $i, 0, 'never gone to redirect_from';

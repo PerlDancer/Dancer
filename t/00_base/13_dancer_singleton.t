@@ -21,10 +21,10 @@ my $test_counter = 0;
 }
 
 eval { MySingleton->new() };
-like $@, qr/you can call 'new'/, 'new unauthorized';
+like $@, qr/you can't call 'new'/, 'new unauthorized';
 
 eval { MySingleton->clone() };
-like $@, qr/you can call 'clone'/, 'clone unauthorized';
+like $@, qr/you can't call 'clone'/, 'clone unauthorized';
 
 can_ok 'MySingleton', 'foo';
 

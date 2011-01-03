@@ -15,12 +15,12 @@ my %instances;
 # constructor
 sub new {
     my ($class) = @_;
-    croak "you can call 'new' on $class, as it's a singleton. Try to call 'instance'";
+    croak "you can't call 'new' on $class, as it's a singleton. Try to call 'instance'";
 }
 
 sub clone {
     my ($class) = @_;
-    croak "you can call 'clone' on $class, as it's a singleton. Try to call 'instance'";
+    croak "you can't call 'clone' on $class, as it's a singleton. Try to call 'instance'";
 }
 
 sub instance {

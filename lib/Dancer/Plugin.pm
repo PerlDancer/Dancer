@@ -24,17 +24,9 @@ sub add_hook { Dancer::Route::Registry->hook(@_) }
 
 sub plugin_setting {
     my $plugin_orig_name = caller();
-    my ($plugin_name) = $plugin_orig_name =~ s/Dancer::Plugin:://;
+    (my $plugin_name = $plugin_orig_name) =~ s/Dancer::Plugin:://;
 
-    my $settings = setting('plugins');
-
-    foreach ($plugin_name, $plugin_orig_name, lc $plugin_name,
-        lc $plugin_orig_name)
-    {
-        return $settings->{$_}
-          if (exists $settings->{$_});
-    }
-    return;
+    return setting('plugins')->{$plugin_name} ||= {};
 }
 
 sub register($&) {

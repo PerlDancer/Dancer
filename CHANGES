@@ -1,11 +1,22 @@
+Dancer 1.3000_02
+
+    [ Sawyer X ]
+    * Added forward() functionality (incl. tests and docs)
+
+    [ Damien Krotkine ]
+    * FIX for --no-check switch in script/dancer
+
 Dancer 1.3000_01
 
     [ Damien Krotkine ]
     * Better check of keywords used in plugins.
+    * internal refactoring:
+      - Dancer::Object::Singleton added to refactor engines later
+      - Support of inheritance in attributes declared with Dancer::Object
 
     [ jamhed ]
-    Fix some unicode issues, refactored all file openings in one function in
-    Dancer::FileUtils.
+    * Fix some unicode issues, refactored all file openings in one function in
+      Dancer::FileUtils.
 
     [ Gabor Szabo ]
     * Adding test for multi-leveled scaffolding.
@@ -16,6 +27,27 @@ Dancer 1.3000_01
     [ Alan Haggai ]
     * Fixing up typos in various places.
     * Show the correct filename in usage.
+
+    [ Alexis Sukrieh ]
+    * Update documentation for developers. Dancer::Development reflects the new
+      releases startegy since 1.2 is out. Also better explaining about how 
+      to contribute pull-requests to the core team.
+    * New documentation for integrators: Dancer::Development::Integration
+      describes precisely how integrators should handle pull-requests.
+
+    [ Naveen ]
+    * add a --no-check switch to script/dancer to disable remote check of new
+      Dancer versions.
+
+    [ Philippe Bruhat ]
+    * add script/wallflower, helper to turn a Dancer application into a static
+      web site.
+    * better behaviour for plugin_setting (better search, more user-friendly)
+
+    [ Franck Cuny ]
+    * Support for configurable log format in logger engines
+    * Refactoring of Dancer::Route, some optimisations and code cleanup
+    * Add several tests to increase the coverage (reached 92.4%, for 1399 tests)
 
 Dancer 1.2003
     * Production release.
