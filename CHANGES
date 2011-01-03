@@ -12,6 +12,9 @@ Dancer 1.3000_02
       - better interface for Dancer::Object and Dancer::Object::Singleton
       - updated tests accordingly
 
+    [ Jonathan Otsuka ]
+    * Bring dancer application creation pod up-to-date 1.2003
+
 Dancer 1.3000_01
 
     [ Damien Krotkine ]
