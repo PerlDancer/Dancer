@@ -777,6 +777,8 @@ Lets the current route handler send a file to the client.
 The content-type will be set depending on the current mime-types definition
 (see C<mime_type> if you want to define your own).
 
+The path of the file must be relative to the B<public> directory.
+
 =head2 set
 
 Defines a setting:
