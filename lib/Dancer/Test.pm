@@ -174,35 +174,43 @@ sub response_headers_are_deeply {
     is_deeply($response->headers_to_array, $expected, $test_name);
 }
 
-sub dancer_response {
-    my ($method, $path, $args) = @_;
-    $args ||= {};
+{
+    my $after_routes_hooks_fired;
+    sub dancer_response {
+        my ($method, $path, $args) = @_;
+        $args ||= {};
 
-    if ($method =~ /^(?:PUT|POST)$/ && $args->{body}) {
-        my $body = $args->{body};
-        my $l    = length $body;
-        open my $in, '<', \$body;
-        $ENV{'CONTENT_LENGTH'} = $l;
-        $ENV{'psgi.input'}     = $in;
-    }
+        if (! $after_routes_hooks_fired) {
+            Dancer::fire_after_routes_hooks();
+            $after_routes_hooks_fired = 1;
+        }
 
-    my ($params, $body, $headers) = @$args{qw(params body headers)};
+        if ($method =~ /^(?:PUT|POST)$/ && $args->{body}) {
+            my $body = $args->{body};
+            my $l    = length $body;
+            open my $in, '<', \$body;
+            $ENV{'CONTENT_LENGTH'} = $l;
+            $ENV{'psgi.input'}     = $in;
+        }
 
-    if ($headers and (my @headers = @$headers)) {
-        while (my $h = shift @headers) {
-            if ($h =~ /content-type/i) {
-                $ENV{'CONTENT_TYPE'} = shift @headers;
+        my ($params, $body, $headers) = @$args{qw(params body headers)};
+
+        if ($headers and (my @headers = @$headers)) {
+            while (my $h = shift @headers) {
+                if ($h =~ /content-type/i) {
+                    $ENV{'CONTENT_TYPE'} = shift @headers;
+                }
             }
         }
+
+        my $request = Dancer::Request->new_for_request(
+            $method => $path,
+            $params, $body, HTTP::Headers->new(@$headers)
+        );
+
+        Dancer::SharedData->request($request);
+        return Dancer::Renderer::get_action_response();
     }
-
-    my $request = Dancer::Request->new_for_request(
-        $method => $path,
-        $params, $body, HTTP::Headers->new(@$headers)
-    );
-
-    Dancer::SharedData->request($request);
-    return Dancer::Renderer::get_action_response();
 }
 
 sub get_response {
