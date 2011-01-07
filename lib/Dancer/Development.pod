@@ -87,7 +87,7 @@ Clone your fork like the following:
 As a contributor, you should B<always> work on the C<devel> branch of
 your clone (C<master> is used only for building releases).
 
-	$ git remote add upstream https://github.com/sukria/Dancer.git
+    $ git remote add upstream https://github.com/sukria/Dancer.git
     $ git checkout -b devel upstream/devel
 
 This will create a local branch in your clone named C<devel> and that
