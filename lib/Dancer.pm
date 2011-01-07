@@ -34,9 +34,11 @@ $AUTHORITY = 'SUKRIA';
 $VERSION   = '1.3000_02';
 @EXPORT    = qw(
   after
+  after_routes
   any
   before
   before_template
+  catchall
   cookies
   config
   content_type
@@ -99,9 +101,20 @@ $VERSION   = '1.3000_02';
 # Dancer's syntax
 
 sub after           { Dancer::Route::Registry->hook('after',           @_) }
+
+sub after_routes {
+    Dancer::App->current->registry->push_hook('after_routes', @_);
+}
 sub any             { Dancer::App->current->registry->any_add(@_) }
 sub before          { Dancer::Route::Registry->hook('before',          @_) }
 sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
+sub catchall        {
+    my ($method, $action) = @_;
+    after_routes sub {
+        my ($app) = @_;
+        $app->registry->universal_add($method, qr{.?}, $action);
+    };
+}
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
@@ -230,9 +243,19 @@ sub import {
 }
 
 # Start/Run the application with the chosen apphandler
+sub fire_after_routes_hooks {
+    # Execute the after_routes hooks in every app
+    for my $app (Dancer::App->applications()) {
+        $_->($app) for $app->registry->hooks_for('after_routes');
+    }
+    return;
+}
+
 sub start {
     my ($class, $request) = @_;
     Dancer::Config->load;
+
+    fire_after_routes_hooks();
 
     # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
     if ($request) {
@@ -359,6 +382,24 @@ You can define multiple after filters, using the C<after> helper as
 many times as you wish; each filter will be executed, in the order you added
 them.
 
+=head2 after_routes
+
+Add a hook at the B<after_routes> position:
+
+    after_routes sub {
+        # Do last-minute route stuff, e.g. defining low-priority routes
+        # like this
+        #
+        #    get "/some/path" => sub { ... };
+    };
+
+This hook can execute code just after all the routes are registered and
+before the application server is started.
+
+You can define multiple after_routes filters, using the C<after_routes>
+helper as many times as you wish; each filter will be executed, in the order
+you added them.
+
 =head2 any
 
 Defines a route for multiple HTTP methods at once:
@@ -402,6 +443,25 @@ before sending data and tokens to the template. Receives a hashref of the
 tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
+
+=head2 catchall
+
+Sets a default behaviour when no route can be selected:
+
+    catchall get => sub {
+        template 'error.tt';
+    };
+
+This actually installs a lower-priority route for the specified method that
+gets called when every other route fails. It is equivalent to defining the
+following route I<after any other route>:
+
+    get qr{.?} => sub {
+        template 'error.tt';
+    }
+
+but easier to use and less error-prone because you can put the call to
+C<catchall> wherever you want.
 
 =head2 cookies
 
