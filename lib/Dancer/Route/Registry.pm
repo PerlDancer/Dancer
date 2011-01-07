@@ -59,8 +59,21 @@ sub add_hook {
             return Dancer::halt($err->render);
         }
     };
-    push @{$self->hooks->{$position}}, $compiled_filter;
+    $self->push_hook($position, $compiled_filter);
     return $compiled_filter;
+}
+
+sub push_hook {
+    my ($self, $position, $filter) = @_;
+    push @{$self->hooks->{$position}}, $filter;
+    return $filter;
+}
+
+sub hooks_for {
+    my ($self, $position) = @_;
+    my $hooks = $self->hooks->{$position} ||= [];
+    return $hooks unless wantarray();
+    return @$hooks;
 }
 
 sub routes {
