@@ -6,7 +6,7 @@ Dancer::Development - guide for developers interested in contributing
 =head1 DESCRIPTION
 
 This guide has been written to help developers of the project in their daily
-needs. This guide is the reference for any developer working on Dancer. 
+needs. This guide is the reference for any developer working on Dancer.
 
 If you want to contribute code to Dancer you should first start by reading this
 guide.
@@ -14,33 +14,33 @@ guide.
 
 =head1 HOW TO CONTRIBUTE
 
-There are many ways to contribute to the project. Dancer is a young yet avtice
+There are many ways to contribute to the project! Dancer is a young yet active
 project and any kind of help is appreciated.
 
 =head2 Marketing
 
-You don't have to start by hacking the code, spreadign the good words in
-valuable as well. If you have a blog, just feel free to speak about Dancer.
+You don't have to start by hacking the code, spreading the word is valuable as
+well. If you have a blog, just feel free to speak about Dancer.
 
 If you're a twitter user, you can tweet about it with the hashtag C<#perl>.
 
 =head2 Documentation
 
-We do give lots of importance to documentation, but it's difficult to keep it
-up-to-date and error-prone. If you find a typo or an error in a documentation
-you can submit a patch with your fix (see "Patch submission").
+We do value documentation very much, but it's difficult to keep it up-to-date.
+If you find a typo or an error in the documentation you can submit a patch with
+your fix (see "Patch submission").
 
 =head2 Quality Assurance
 
-We call "Quality Assurance" the fact that we keep in mind that Dancer should ne
-able to install into all version of Perl since Perl 5.8, on any platforms.
+We call "Quality Assurance" the fact that we keep in mind that Dancer should be
+able to install for all Perl versions since 5.8, on any platform.
 
-We should avoid as much as possible regressions and backward compatibility
-should be always in mind when refactoring.
+We should avoid regressions as much as possible and preserve backward
+compatibility should be always in mind when refactoring.
 
 =head2 Quality supervision
 
-Our weapon for being aware of our quality is the CPAN testers platform: 
+Our weapon for being aware of our quality is the CPAN testers platform:
 L<http://www.cpantesters.org>.
 
 A good way to help the project is to find a failing build log on the CPAN
@@ -55,21 +55,21 @@ We prefer to have all our bug reports on GitHub, in the issues section:
 <http://github.com/sukria/Dancer/issues>. It's possible though to report bugs
 on RT as well: L<https://rt.cpan.org/Dist/Display.html?Queue=Dancer>
 
-Please make sure the bug you're reporting is not yet present, in doubt ask on
-IRC.
+Please make sure the bug you're reporting does not yet exist. In doubt please
+ask on IRC.
 
 =head2 Patch submission
 
 The Dancer's development team uses GitHub to collaborate. Any contribution must
-be submited via GitHub. 
+be submited via GitHub.
 
-In order to make the life of Dancer's integrator easier, git-flow is
-used to handle pull-requests, that means each contributor must work on
-their C<devel> branch rather than on their C<master>.
+In order to make the developing Dancer easier, git-flow is used to handle
+pull-requests, that means contributors must work on their C<devel> branch
+rather than on their C<master>.
 
 Here is the workflow for submitting a patch:
 
-=over 4 
+=over 4
 
 =item *
 
@@ -77,10 +77,9 @@ Fork the repository L<http://github.com/sukria/Dancer>
 
 =item *
 
-Clone your fork like the following:
+Clone your fork like the following, e.g.:
 
-    $ git clone <PATH_TOUR_GIT_CLONE>
-    $ cd Dancer
+    $ git clone git://github.com/myname/Dancer.git
 
 =item *
 
@@ -94,7 +93,7 @@ This will create a local branch in your clone named C<devel> and that
 will track the offical C<devel> branch. That way, if you have more or
 less commits than the upstream repo, you'll be immediatly notified by git.
 
-=item * 
+=item *
 
 You want to isolate all your commits in a I<topic> branch, this will make the
 reviewing much easier for the core team and will allow you to continue working
@@ -123,19 +122,19 @@ Send a I<pull request> via the GitHub interface. Make sure your pull request is
 based on the I<pr/$name> branch you've just pushed.
 
 It's also a good idea to summarize your work in a report sent to the users
-mailing list, in order to make sure the team is aware of it.
+mailing list (see below), in order to make sure the team is aware of it.
 
-At least, you can notify the core team on IRC, on C<irc.perl.org>,
+At least, you should notify the core team on IRC, on C<irc.perl.org>,
 chan C<#dancer>.
 
-=item * 
+=item *
 
-When the core team review your pull request, either it will be accepted (and
-then merged into I<devel>) or refused.
+When the core team reviews your pull request, it will either accept (and
+then merge into I<devel>) or refuse your request.
 
 If it's refused, make sure to understand the reasons explained by the team for
 the denial. Most of the time, communicating with the core team is enough to
-understand what was the mistake. 
+understand what was the mistake.
 
 If your pull-request is merged into I<devel>, then all you have to do is to
 remove your local and remote I<pr/$name> branch:
@@ -198,10 +197,10 @@ You can reach the development team on irc.perl.org, chan #dancer.
 =head2 Repositories
 
 The official repository is hosted on GitHub at the following location:
-L<http://github.com/sukria/Dancer>. 
+L<http://github.com/sukria/Dancer>.
 
 Official developers have write access to this repository, contributors are
-invited to fork it if they want to submit patches, as explained in the 
+invited to fork it if they want to submit patches, as explained in the
 I<Patch submission> section.
 
 The repository layout is organized as follows:
@@ -211,12 +210,12 @@ The repository layout is organized as follows:
 =item * C<master>
 
 This branch is dedicated to prepare CPAN releases. We push to that branch only
-for packaging a new release. Every CPAN version are made from this branch. 
+for packaging a new release. Every CPAN version are made from this branch.
 
 =item * C<devel>
 
 This is the development branch. Every new feature are supposed to be first
-pushed to that branch. 
+pushed to that branch.
 
 =back
 
@@ -225,9 +224,10 @@ pushed to that branch.
 
 =head2 About dependencies
 
-Dancer is intended to be a micro-framework. That means among other things that it should remain
-lightweight. For this reason we try very hard to keep the dependency bag as low
-as possible. But we don't want either to reinvent the wheel. 
+Dancer is intended to be a micro-framework. That means among other things that
+it should remain lightweight. For this reason we try very hard to keep the
+dependency bag as low as possible. But we don't want to reinvent the wheel
+either.
 
 The balance is not easy to do but you can keep in mind that unless a very good
 reason, the team won't accept a new dependency to be added to the core.
@@ -271,9 +271,9 @@ completed before this version is released.
 
 =over 4
 
-=item * 
+=item *
 
-=item * 
+=item *
 
 =back
 
