@@ -8,7 +8,12 @@ Dancer::Development - guide for developers interested in contributing
 This guide has been written to help anyone interested in contributing to the
 development of Dancer.
 
-Please read this guide before contributing to Dancer.
+First of all - thank you for your interest in the project!  It's the community
+of helpful contributors who've helped Dancer experience phenominal growth to get
+to where it is today.
+
+Please read this guide before contributing to Dancer, to avoid wasted effort and
+maximise the chances of your contributions being used.
 
 =head1 WAYS TO CONTRIBUTE
 
@@ -22,17 +27,38 @@ valuable as well!
 
 If you have a blog, just feel free to speak about Dancer.
 
-If you're a twitter user, you can tweet about it with the hashtag C<#perl>.
+If you're a Twitter user, you can tweet about it with the hashtag C<#perl> (and
+feel free to follow C<@PerlDancer> for news and updates on Dancer!).
 
-Of course, dissemination efforts don't have to limited to blogs or twitter.
+Of course, dissemination efforts don't have to limited to blogs or Twitter.
 Feel free to spread the word in whatever way you consider fit and drop us a
-line at Dancer user mailing list, see below.
+line on the Dancer user mailing list, see below.
+
+
+=head2 Mailing list / IRC community
+
+Subscribing to the mailing list and/or hanging our on our IRC channel and
+providing assistance to new users is incredibly valuable.
+
+=over 4
+
+=item *
+
+Mailing list: L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users> to
+subscribe or view archives
+
+=item *
+
+IRC: C<#dancer> on C<irc.perl.org>, or L<http://www.perldancer.org/irc> for
+quick web client.
+
+=back
 
 =head2 Documentation
 
 We do value documentation very much, but it's difficult to keep it up-to-date.
-If you find a typo or an error in the documentation you can submit a patch with
-your fix (see "Patch Submission").
+If you find a typo or an error in the documentation please do let us know -
+ideally, by submitting a patch with your fix (see "Patch Submission").
 
 =head2 Contribute to CPAN Testers
 
@@ -82,12 +108,16 @@ ask on IRC.
 
 =head2 Patch Submission
 
-The Dancer's development team uses GitHub to collaborate. Any contribution must
-be submited via GitHub.
+The Dancer's development team uses GitHub to collaborate.  We greatly appreciate
+contributions submitted via GitHub, as it makes tracking these contributions and
+applying them much, much easier - therefore giving a much better chance of your
+contribution being integrated into Dancer quickly!
 
-In order to make the developing Dancer easier, git-flow is used to handle
-pull-requests, that means contributors must work on their C<devel> branch
-rather than on their C<master>.
+To help us achieve high-quality, stable releases, git-flow workflow is used to 
+handle pull-requests, that means contributors must work on their C<devel> branch
+rather than on their C<master>.  (Master should be touched only by the core dev
+team when preparing a release to CPAN; all ongoing development happens in
+branches which are merged to the C<devel> branch.)
 
 Here is the workflow for submitting a patch:
 
@@ -95,7 +125,7 @@ Here is the workflow for submitting a patch:
 
 =item *
 
-Fork the repository L<http://github.com/sukria/Dancer>
+Fork the repository L<http://github.com/sukria/Dancer> (click "Fork")
 
 =item *
 
@@ -108,8 +138,8 @@ Clone your fork like the following, e.g.:
 As a contributor, you should B<always> work on the C<devel> branch of
 your clone (C<master> is used only for building releases).
 
-	$ git remote add upstream https://github.com/sukria/Dancer.git
-	$ git fetch upstream
+    $ git remote add upstream https://github.com/sukria/Dancer.git
+    $ git fetch upstream
     $ git checkout -b devel upstream/devel
 
 This will create a local branch in your clone named C<devel> and that
@@ -142,13 +172,14 @@ You are now ready to send a pull request.
 =item *
 
 Send a I<pull request> via the GitHub interface. Make sure your pull request is
-based on the I<pr/$name> branch you've just pushed.
+based on the I<pr/$name> branch you've just pushed, so that it incorporates the
+appropriate commits only.
 
 It's also a good idea to summarize your work in a report sent to the users
 mailing list (see below), in order to make sure the team is aware of it.
 
-At least, you should notify the core team on IRC, on C<irc.perl.org>,
-chan C<#dancer>.
+You could also notify the core team on IRC, on C<irc.perl.org>, chan C<#dancer>
+or L<http://www.perldancer.org/irc>.
 
 =item *
 
@@ -157,7 +188,7 @@ then merge into I<devel>) or refuse your request.
 
 If it's refused, make sure to understand the reasons explained by the team for
 the denial. Most of the time, communicating with the core team is enough to
-understand what was the mistake.
+understand what was the mistake.  Above all, please don't be offended.
 
 If your pull-request is merged into I<devel>, then all you have to do is to
 remove your local and remote I<pr/$name> branch:
@@ -175,7 +206,7 @@ You're now ready to start working on a new pull request!
 
 =back
 
-=head1 About the Releases Cycle
+=head1 About the Release Cycle
 
 Since version 1.2, the team has decided to take a step further toward
 production concerns: Dancer now promises to provide an API-stable and
@@ -183,7 +214,7 @@ feature frozen release, whose updates will only be about bugfixes and
 documentation updates.
 
 After some discussion with the core-team members, it has been agreed
-that the 1.2xx releases serie will be the first of this kind, and will
+that the 1.2xx release series will be the first of this kind, and will
 live as long as 1.3xx lives.
 
 As soon as the last 1.3xx release is mature enough and tha the core
@@ -192,8 +223,8 @@ team is happy with, it will be uploaded as the first version of the
 
 This let us evolves quickly in our main track (devel in GitHub will
 contain all the daily work we want to make 1.3xx better) but as well,
-it lets us assure maintainability for thr 1.2 series, as we will
-propably have to fix a bug somewhere in 1.2 without merging with new
+it lets us assure maintainability for the 1.2 series, as we will
+probably have to fix a bug somewhere in 1.2 without merging with new
 stuff contained in the devel branch.
 
 That's why a maintenance branch is added to the repo. To be very
@@ -203,7 +234,7 @@ It should only contains fixes for bug or documentation updates.
 
 If you want to submit a pull-request to the frozen branch (that means
 1.3xx is out and you've found a bug in 1.2xx) you need to base your
-work on the C<frozen> branch. Use the same procdure explained before,
+work on the C<frozen> branch. Use the same procedure explained before,
 but with the C<frozen> branch.
 
 =head1 RESOURCES FOR DEVELOPERS
@@ -215,7 +246,9 @@ L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
 
 =head2 IRC Channels
 
-You can reach the development team on irc.perl.org, chan #dancer.
+You can reach the development team on irc.perl.org, chan #dancer or via a web
+chat interface at L<http://www.perldancer.org/irc>.  We're always happy to hear
+from users and contributors.
 
 =head2 Repositories
 
@@ -237,8 +270,8 @@ for packaging a new release. Every CPAN version are made from this branch.
 
 =item * C<devel>
 
-This is the development branch. Every new feature are supposed to be first
-pushed to that branch.
+This is the development branch. New features are pushed here, and will be merged
+to master when the next release is being prepared.
 
 =back
 
@@ -254,8 +287,8 @@ it should remain lightweight. For this reason we try very hard to keep the
 dependency bag as low as possible. But we don't want to reinvent the wheel
 either.
 
-The balance is not easy to do but you can keep in mind that unless a very good
-reason, the team won't accept a new dependency to be added to the core.
+The balance is not easy to do but you can keep in mind that unless for a very 
+good reason, the team won't accept a new dependency to be added to the core.
 
 If a patch provides a new feature that depends on a module, the solution is to
 perform a dynamic loading. Dancer has a class dedicated to that job:
