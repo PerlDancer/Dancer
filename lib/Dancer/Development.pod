@@ -108,7 +108,7 @@ ask on IRC.
 
 =head2 Patch Submission
 
-The Dancer's development team uses GitHub to collaborate.  We greatly appreciate
+The Dancer development team uses GitHub to collaborate.  We greatly appreciate
 contributions submitted via GitHub, as it makes tracking these contributions and
 applying them much, much easier - therefore giving a much better chance of your
 contribution being integrated into Dancer quickly!
