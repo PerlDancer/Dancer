@@ -11,8 +11,9 @@ use IO::File;
 
 sub logdir {
     my $appdir = setting('appdir');
+    my $altpath = setting('log_path');
     my $logroot = $appdir || File::Spec->tmpdir();
-    return path($logroot, 'logs');
+    return ($altpath ? $altpath : path($logroot, 'logs'));
 }
 
 sub init {
