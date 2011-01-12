@@ -34,6 +34,11 @@ Of course, dissemination efforts don't have to limited to blogs or Twitter.
 Feel free to spread the word in whatever way you consider fit and drop us a
 line on the Dancer user mailing list, see below.
 
+Also, if you're using and enjoying Dancer,
+L<http://cpanratings.perl.org/dist/Dancer|rating us on cpanratings.perl.org>
+explaining what you like about Dancer is another very valuable contribution, to
+help other new users find us!
+
 
 =head2 Mailing list / IRC community
 
