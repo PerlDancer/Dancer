@@ -125,7 +125,8 @@ be defined explicitly with C<qr{}>, like the following:
 
 =head2 CONDITIONAL MATCHING
 
-Routes may include some matching conditions (on the useragent and the hostname at the moment):
+Routes may include some matching conditions, like on the useragent or
+the hostname.
 
     get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
       'foo method for songbird'
@@ -134,6 +135,12 @@ Routes may include some matching conditions (on the useragent and the hostname a
     get '/foo' => sub {
       'all browsers except songbird'
     }
+
+You can also check specific script parameter values:
+
+   get '/foo', { 'params.username' => 'admin' } => sub {
+     'foo method for administrators'
+   }
 
 =head2 PREFIX
 

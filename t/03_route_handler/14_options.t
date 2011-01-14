@@ -4,7 +4,7 @@ use warnings;
 use Test::More import => ['!pass'];
 use Dancer::Test;
 
-plan tests => 26;
+plan tests => 30;
 use Dancer ':syntax';
 use Dancer::Route;
 
@@ -25,6 +25,9 @@ use Dancer::Route;
 
     ok( get('/welcome' => sub { "hello" }),
         'route /welcome without options defined');
+
+    ok( get( '/', { 'params.user' => 'foo' } => sub {'user foo'} ),
+        'route / for user foo defined' );
 }
 
 eval { get '/fail', { false_option => 42 } => sub { } };
@@ -33,11 +36,13 @@ like $@, qr/Not a valid option for route matching: `false_option'/,
 
 my @tests = (
     {method => 'GET', path => '/',    expected => 'agent foo', agent => 'foo'},
-    {method => 'GET', path => '/',    expected => 'agent bar',  agent => 'bar'},
+    {method => 'GET', path => '/',    expected => 'agent bar', agent => 'bar'},
     {method => 'GET', path => '/',    expected => 'all agents'},
     
     {method => 'GET', path => '/foo', expected => 'foo only',  agent => 'foo'},
     
+    {method => 'GET', path => '/'   , expected => 'user foo', params => { user => 'foo' }},
+
     {   method   => 'GET',
         path     => '/welcome',
         expected => 'hey Mozilla!',
@@ -49,6 +54,9 @@ my @tests = (
 
 foreach my $test (@tests) {
     $ENV{HTTP_USER_AGENT} = $test->{agent} || undef;
+    if ($test->{params}) {
+        $ENV{QUERY_STRING} = join("&", map { "$_=>$test->{params}{$_}" } keys %{$test->{params}});
+    }
     my $req = [$test->{method} => $test->{path}];
     
     route_exists $req;

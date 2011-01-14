@@ -27,7 +27,12 @@ Dancer::Route->attributes(
 );
 
 # supported options and aliases
-my @_supported_options = Dancer::Request->get_attributes();
+my @_supported_options =
+  (
+   qr/^params\./,
+   @{Dancer::Request->get_attributes()},
+  );
+
 my %_options_aliases = (agent => 'user_agent');
 
 sub init {
@@ -129,9 +134,11 @@ sub check_options {
     return 1 unless defined $self->options;
 
     for my $opt (keys %{$self->options}) {
-        croak "Not a valid option for route matching: `$opt'"
-          if not(    (grep {/^$opt$/} @{$_supported_options[0]})
-                  || (grep {/^$opt$/} keys(%_options_aliases)));
+        my $matched = 0;
+        for (@_supported_options, keys(%_options_aliases)) {
+            $matched = 1 if ($opt =~ $_ && ref($_) eq "Regexp") || $opt eq $_;
+        }
+        croak "Not a valid option for route matching: `$opt'" unless $matched;
     }
     return 1;
 }
@@ -142,7 +149,15 @@ sub validate_options {
     while (my ($option, $value) = each %{$self->options}) {
         $option = $_options_aliases{$option}
           if exists $_options_aliases{$option};
-        return 0 if (not $request->$option) || ($request->$option !~ $value);
+
+        if ($option =~ /^(.+)\.(.+)$/) {
+            my ($key1, $key2) = ($1, $2);
+            return 0 if ((not exists $request->{$key1}) ||
+                         (not exists $request->{$key1}{$key2}) ||
+                         ($request->{$key1}{$key2} !~ $value));
+        } else {
+            return 0 if (not $request->$option) || ($request->$option !~ $value);
+        }
     }
     return 1;
 }
