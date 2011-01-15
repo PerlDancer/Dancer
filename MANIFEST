@@ -66,7 +66,6 @@ lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 lib/Dancer/Tutorial.pod
-lib/Dancer/Tutorial/WebSockets.pod
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
