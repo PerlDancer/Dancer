@@ -426,7 +426,7 @@ sub _read {
 sub _build_uploads {
     my ($self) = @_;
 
-    my $uploads = $self->{_http_body}->upload;
+    my $uploads = _decode($self->{_http_body}->upload);
     my %uploads;
 
     for my $name (keys %{$uploads}) {
