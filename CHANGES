@@ -1,3 +1,9 @@
+Dancer 1.3000_03
+
+	[ Flavio Poletti ]
+	* Added "git fetch upstream" for remote tracking
+	* turned a tab into the right number of spaces
+
 Dancer 1.3000_02
 
     [ Sawyer X ]
