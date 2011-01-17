@@ -23,11 +23,16 @@ sub parse_cookie_from_env {
     return {} unless defined $env_str;
 
     my $cookies = {};
-    foreach my $cookie (split('; ', $env_str)) {
-        my ($name, $value) = split('=', $cookie);
+    foreach my $cookie ( split( '; ', $env_str ) ) {
+        my ( $name, $value ) = split( '=', $cookie );
+        my @values;
+        if ( $value ne '' ) {
+            @values = map uri_unescape($_), split( /[&;]/, $value );
+        }
         $cookies->{$name} =
-          Dancer::Cookie->new(name => $name, value => uri_unescape($value));
+          Dancer::Cookie->new( name => $name, value => \@values );
     }
+
     return $cookies;
 }
 
