@@ -8,6 +8,11 @@ use Dancer::Config 'setting';
 use Scalar::Util qw/blessed/;
 use Dancer::HTTP;
 use HTTP::Headers;
+use MIME::Types;
+
+# do not like the idea to create a new object everytime I need it.
+my $_mimetypes = MIME::Types->new();
+my %_mimetype_aliases = ( ); # in case it gets needed
 
 # constructor
 sub new {
@@ -91,7 +96,18 @@ sub content_type {
     my $current = _get_object(shift);
 
     if (scalar @_ > 0) {
-        $current->header('Content-Type' => shift)
+        my $content_type = shift;
+
+        $content_type = $_mimetype_aliases{$content_type}
+          if exists $_mimetype_aliases{$content_type};
+
+        # expect it not to be a "final" content_type type unless it slashes
+        if ($content_type !~ m!/!) {
+            my $type_def = $_mimetypes->mimeTypeOf(lc $content_type);
+            $content_type = $type_def->type if $type_def;
+        }
+
+        $current->header('Content-Type' => $content_type)
     }else{
         return $current->header('Content-Type');
     }
