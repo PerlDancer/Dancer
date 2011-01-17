@@ -18,6 +18,8 @@ Dancer 1.3000_03
 	[ mokko ]
 	* typos and a little more substatial changes to Development.pod 
 
+	[ Hagen Fuchs ]
+	* Request.pm Decode HTTP::Request's uploads
 
 Dancer 1.3000_02
 
