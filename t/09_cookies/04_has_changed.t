@@ -20,7 +20,7 @@ ok(Dancer::Cookies->init, "Dancer::Cookies->init");
 is_deeply(Dancer::Cookies->cookies, { 
     test_cookie => bless { 
         name => 'test_cookie', 
-        value => 42,
+        value => [42],
         path => '/'}, 'Dancer::Cookie'}, 
     "cookies look good");
 
