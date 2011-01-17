@@ -438,6 +438,14 @@ Sets the B<content-type> rendered, for the current route handler:
         # here we can dump the contents of params->{txtfile}
     };
 
+You can use abreviations for content types. For instance:
+
+    get '/svg/:id' => sub {
+        content_type 'svg;
+
+        # here we can dump the image with id params->{id}
+    };
+
 Note that if you want to change the default content-type for every route, you
 have to change the setting C<content_type> instead.
 
