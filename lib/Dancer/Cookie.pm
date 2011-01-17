@@ -2,6 +2,8 @@ package Dancer::Cookie;
 use strict;
 use warnings;
 
+use URI::Escape;
+
 use base 'Dancer::Object';
 __PACKAGE__->attributes('name', 'value', 'expires', 'domain', 'path');
 
@@ -17,7 +19,7 @@ sub init {
 sub to_header {
     my $self   = shift;
     my $header = '';
-    $header .= $self->name . '=' . $self->value . '; ';
+    $header .= $self->name . '=' . uri_escape($self->value) . '; ';
     $header .= "path=" . $self->path . "; " if $self->path;
     $header .= "expires=" . $self->expires . "; " if $self->expires;
     $header .= "domain=" . $self->domain . "; " if $self->domain;
