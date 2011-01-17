@@ -4,6 +4,21 @@ Dancer 1.3000_03
 	* Added "git fetch upstream" for remote tracking
 	* turned a tab into the right number of spaces
 
+	[ Franck Cuny ]
+	* uri_(un)escape cookie value; closes GH-248 
+	* remove websocket tutorial (it has its own distro now)
+	* add a new tests to make sure unknown templates produce a warning 
+	* path for send_file must be relative from the public directory 
+
+	[ David Precious ]
+	* Point people towards D::P::Database in the tutorial.
+	* Mention leaving ratings on cpanratings. 
+	* Some minor typo fixed in the documentations.
+	
+	[ mokko ]
+	* typos and a little more substatial changes to Development.pod 
+
+
 Dancer 1.3000_02
 
     [ Sawyer X ]
