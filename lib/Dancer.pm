@@ -346,6 +346,9 @@ L<Dancer::Cookbook>.
 If you want to see configuration examples of different deployment solutions
 involving Dancer and Plack, see L<Dancer::Deployment>.
 
+You can find out more about the many useful plugins available for Dancer in
+L<Dancer::Plugins>.
+
 =head1 METHODS
 
 =head2 after
