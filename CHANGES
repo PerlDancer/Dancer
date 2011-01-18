@@ -9,6 +9,8 @@ Dancer 1.3000_03
 	* remove websocket tutorial (it has its own distro now)
 	* add a new tests to make sure unknown templates produce a warning 
 	* path for send_file must be relative from the public directory 
+	* Support for complex values in cookies (scalars, flat arrays and 
+	  flat hashes). Fixes issue GH#249
 
 	[ David Precious ]
 	* Point people towards D::P::Database in the tutorial.
@@ -20,6 +22,12 @@ Dancer 1.3000_03
 
 	[ Hagen Fuchs ]
 	* Request.pm Decode HTTP::Request's uploads
+
+	[ Alberto Simoes ]
+	* Support for aliases for content_type and refactoring of 
+	  mime-types handling, with a new class Dancer::MIME
+	  (closes issue GH #124)
+	* Deprecation of Dancer::Config::mime_types (now handled by Dancer::MIME).
 
 Dancer 1.3000_02
 

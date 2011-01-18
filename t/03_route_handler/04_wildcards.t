@@ -9,7 +9,11 @@ use TestUtils;
 use Dancer ':syntax';
 use Dancer::Route; 
 
-my @paths = ('/hello/*', '/hello/*/welcome/*', '/download/*.*');
+my @paths = (
+    '/hello/*', 
+    '/hello/*/welcome/*', 
+    '/download/*.*', 
+    '/optional/?*?');
 
 my @tests = ( 
     {path => '/hello/sukria', 
@@ -20,6 +24,10 @@ my @tests = (
 
     {path => '/download/wolverine.pdf',
      expected => ['wolverine', 'pdf']},
+
+     { path => '/optional/alexis', expected => ['alexis'] },
+     { path => '/optional/', expected => [] },
+     { path => '/optional', expected => [] },
 );
 
 my $nb_tests = (scalar(@paths)) + (scalar(@tests) * 2);
