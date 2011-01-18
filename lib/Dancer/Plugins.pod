@@ -56,6 +56,13 @@ Easy data validation powered by L<Oogly>.
 
 Provides different ways of normalizing parameter names
 
+=item L<Dancer::Plugin::SimpleCRUD>
+
+Provides easy CRUD (create, read, update, delete) facilities, automatically
+creating routes to display, add, edit and delete data from a database table.
+
+
+
 =back
 
 More plugins are appearing on CPAN all the time - just search for
