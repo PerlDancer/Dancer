@@ -334,11 +334,11 @@ Dancer apps can be used with a an embedded web server (great for easy testing),
 and can run under PSGI/Plack for easy deployment in a variety of webserver
 environments.
 
-=head1 DISCLAIMER
+=head1 MORE DOCUMENTATION
 
 This documentation describes all the exported symbols of Dancer. If you want
 a quick start guide to discover the framework, you should look at
-L<Dancer::Introduction>.
+L<Dancer::Introduction>, or L<Dancer::Tutorial> to learn by example.
 
 If you want to have specific examples of code for real-life problems, see the
 L<Dancer::Cookbook>.
@@ -1049,6 +1049,9 @@ L<http://github.com/sukria/Dancer>
 
 The Dancer development team can be found on #dancer on irc.perl.org:
 L<irc://irc.perl.org/dancer>
+
+If you don't have an IRC client installed/configured, there is a simple web chat
+client at L<http://www.perldancer.org/irc> for you.
 
 There is also a Dancer users mailing list available - subscribe at:
 
