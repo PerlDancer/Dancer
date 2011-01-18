@@ -24,7 +24,7 @@ use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::ModuleLoader;
-
+use Dancer::MIME;
 use File::Spec;
 use File::Basename 'basename';
 
@@ -129,7 +129,12 @@ sub header    { goto &headers; }                            # goto ftw!
 sub layout    { set(layout => shift) }
 sub load      { require $_ for @_ }
 sub logger    { set(logger => @_) }
-sub mime_type { Dancer::Config::mime_types(@_) }
+sub mime_type {
+    my $mime = Dancer::MIME->instance();
+    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
+    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
+    else                  { $mime->aliases           }
+}
 sub params    { Dancer::SharedData->request->params(@_) }
 sub pass      { Dancer::Response->pass }
 sub path      { realpath(Dancer::FileUtils::path(@_)) }
@@ -436,6 +441,14 @@ Sets the B<content-type> rendered, for the current route handler:
         content_type 'text/plain';
 
         # here we can dump the contents of params->{txtfile}
+    };
+
+You can use abreviations for content types. For instance:
+
+    get '/svg/:id' => sub {
+        content_type 'svg;
+
+        # here we can dump the image with id params->{id}
     };
 
 Note that if you want to change the default content-type for every route, you
