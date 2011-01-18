@@ -70,6 +70,11 @@ communications over a long-lived socket connection.
 
 Cache page responses or individual items of data with memcached for performance.
 
+=item L<Dancer::Plugin::MobileDevice>
+
+Quickly determine whether the client is a mobile browser, in order to offer a
+simplified layout, or otherwise customise features.
+
 =back
 
 More plugins are appearing on CPAN all the time - just search for
