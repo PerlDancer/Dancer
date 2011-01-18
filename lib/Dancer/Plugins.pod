@@ -66,6 +66,10 @@ creating routes to display, add, edit and delete data from a database table.
 Supports building apps using Web Sockets for bi-directional, full-duplex
 communications over a long-lived socket connection.
 
+=item L<Dancer::Plugin::Memcached>
+
+Cache page responses or individual items of data with memcached for performance.
+
 =back
 
 More plugins are appearing on CPAN all the time - just search for
