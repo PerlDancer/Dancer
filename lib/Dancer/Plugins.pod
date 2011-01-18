@@ -61,7 +61,10 @@ Provides different ways of normalizing parameter names
 Provides easy CRUD (create, read, update, delete) facilities, automatically
 creating routes to display, add, edit and delete data from a database table.
 
+=item L<Dancer::Plugin::WebSocket>
 
+Supports building apps using Web Sockets for bi-directional, full-duplex
+communications over a long-lived socket connection.
 
 =back
 
