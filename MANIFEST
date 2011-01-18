@@ -34,6 +34,7 @@ lib/Dancer/Logger.pm
 lib/Dancer/Logger/Abstract.pm
 lib/Dancer/Logger/Console.pm
 lib/Dancer/Logger/File.pm
+lib/Dancer/MIME.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
 lib/Dancer/Object/Singleton.pm

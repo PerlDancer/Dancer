@@ -24,7 +24,7 @@ use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::ModuleLoader;
-
+use Dancer::MIME;
 use File::Spec;
 use File::Basename 'basename';
 
@@ -129,7 +129,12 @@ sub header    { goto &headers; }                            # goto ftw!
 sub layout    { set(layout => shift) }
 sub load      { require $_ for @_ }
 sub logger    { set(logger => @_) }
-sub mime_type { Dancer::Config::mime_types(@_) }
+sub mime_type {
+    my $mime = Dancer::MIME->instance();
+    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
+    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
+    else                  { $mime->aliases           }
+}
 sub params    { Dancer::SharedData->request->params(@_) }
 sub pass      { Dancer::Response->pass }
 sub path      { realpath(Dancer::FileUtils::path(@_)) }
