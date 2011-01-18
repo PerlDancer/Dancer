@@ -34,7 +34,8 @@ sub mime_type_for {
     $content_type = $self->aliases->{$content_type}
       if exists($self->aliases->{$content_type});
 
-    # expect it not to be a "final" content_type type unless it slashes
+    # expect it not to be a "final" content_type type unless it contains
+    # at least one slash
     if ($content_type !~ m!/!) {
         my $type_def = $self->mime_type->mimeTypeOf(lc $content_type);
         if ($type_def) {
