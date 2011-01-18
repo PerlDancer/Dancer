@@ -77,8 +77,10 @@ sub match {
           . "/");
 
     my @values = $path =~ $self->{_compiled_regexp};
-    Dancer::Logger::core("  --> got @values") if @values;
-
+    Dancer::Logger::core("  --> got ".
+        map { defined $_ ? $_ : 'undef' } @values) 
+        if @values;
+    
     # if some named captures found, return captures
     # no warnings is for perl < 5.10
     if (my %captures =
