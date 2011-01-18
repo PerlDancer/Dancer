@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 17, import => ['!pass'];
+use Test::More tests => 28, import => ['!pass'];
 use Dancer::Test;
 
 use Dancer ':syntax';
@@ -24,7 +24,7 @@ my @tests = (
     {method => 'GET', path => '/hello/joe/bar', expected => 'joe' },
     {method => 'POST', path => '/new/wine', expected => 'wine' },
 
-    { method => 'GET', path => '/opt/', expected => undef},
+    { method => 'GET', path => '/opt/', expected => ''},
     { method => 'GET', path => '/opt/placeholder', expected => 'placeholder'},
     { method => 'GET', path => '/opt/alexis/sukrieh', expected => "alexis sukrieh"},
 );
