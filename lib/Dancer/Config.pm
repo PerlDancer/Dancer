@@ -12,17 +12,12 @@ use Carp;
 
 use Encode;
 
-@EXPORT_OK = qw(setting mime_types);
+@EXPORT_OK = qw(setting);
+
+my $SETTINGS = {};
 
 # mergeable settings
 my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
-
-# singleton for storing settings
-my $SETTINGS = {
-
-    # user defined mime types
-    mime_types => {},
-};
 
 sub settings {$SETTINGS}
 
@@ -133,16 +128,6 @@ sub _get_setting {
     my $setting = shift;
 
     return $SETTINGS->{$setting};
-}
-
-sub mime_types {
-    my ($ext, $content_type) = @_;
-    $SETTINGS->{mime_types} ||= {};
-    return $SETTINGS->{mime_types} if @_ == 0;
-
-    return (@_ == 2)
-      ? $SETTINGS->{mime_types}{$ext} = $content_type
-      : $SETTINGS->{mime_types}{$ext};
 }
 
 sub conffile { path(setting('confdir') || setting('appdir'), 'config.yml') }

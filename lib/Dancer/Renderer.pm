@@ -15,11 +15,7 @@ use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path dirname read_file_content open_file);
 use Dancer::SharedData;
 use Dancer::Logger;
-use MIME::Types;
-
-BEGIN {
-    MIME::Types->new(only_complete => 1);
-}
+use Dancer::MIME;
 
 sub render_file {
     return get_file_response();
@@ -181,18 +177,10 @@ sub get_file_response_for_path {
 
 sub get_mime_type {
     my ($filename) = @_;
-    my @tokens = reverse(split(/\./, $filename));
-    my $ext = $tokens[0];
+    my ($ext) = reverse(split(/\./, $filename));
 
-    # first check user configured mime types
-    my $mime = Dancer::Config::mime_types($ext);
-    return $mime if defined $mime;
-
-    # user has not specified a mime type, so ask MIME::Types
-    $mime = MIME::Types->new(only_complete => 1)->mimeTypeOf($ext);
-
-    # default to text/plain
-    return defined($mime) ? $mime : 'text/plain';
+    my $mime = Dancer::MIME->instance();
+    return $mime->mime_type_for($ext);
 }
 
 # set of builtin templates needed by Dancer when rendering HTML pages
