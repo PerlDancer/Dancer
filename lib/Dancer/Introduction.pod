@@ -110,6 +110,13 @@ be set in the params hashref.
         "Hey ".params->{name}.", welcome here!";
     };
 
+Tokens can be made optional, for instance:
+
+    get '/hello/:name?' => sub {
+        "Hello there " . params->{name} || "whoever you are!";
+    };
+
+
 =head2 WILDCARDS MATCHING
 
 A route can contain a wildcard (represented by a '*'). Each wildcard match will
