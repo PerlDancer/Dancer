@@ -412,6 +412,14 @@ Accesses cookies values, which returns a hashref of L<Dancer::Cookie> objects:
         return $cookie->value;
     };
 
+In the case you have stored something else than a scalar in your cookie:
+
+    get '/some_action' => sub {
+        my $cookie = cookies->{oauth};
+        my %values = $cookie->value;
+        return ($values{token}, $values{token_secret});
+    };
+
 =head2 config
 
 Accesses the configuration of the application:
@@ -802,6 +810,18 @@ Creates or updates cookie values:
     };
 
 In the example above, only 'name' and 'value' are mandatory.
+
+You can also store more complex structure in your cookies:
+
+    get '/some_auth' => sub {
+        set_cookie oauth => {
+            token        => $twitter->request_token,
+            token_secret => $twitter->secret_token,
+            ...
+        };
+    };
+
+You can't store more complex structure than this. All your keys in your hash should be scalar.
 
 =head2 session
 
