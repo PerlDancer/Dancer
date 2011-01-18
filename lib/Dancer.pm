@@ -143,7 +143,7 @@ sub prefix { Dancer::App->current->set_prefix(@_) }
 sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
 sub options { Dancer::App->current->registry->universal_add('options', @_) }
 sub put     { Dancer::App->current->registry->universal_add('put',     @_) }
-sub r { carp "'r' is DEPRECATED use qr{} instead"; return {regexp => $_[0]} }
+sub r { croak "'r' is DEPRECATED use qr{} instead"; }
 sub redirect  { Dancer::Helpers::redirect(@_) }
 sub render_with_layout { Dancer::Helpers::render_with_layout(@_); }
 sub request   { Dancer::SharedData->request }
