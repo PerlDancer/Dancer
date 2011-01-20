@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6, import => ['!pass'];
+use Test::More tests => 8, import => ['!pass'];
 
 use Dancer ':syntax';
 
@@ -18,3 +18,7 @@ ok($mime->add_mime_type(foo => 'text/foo'), 'define text/foo');
 is_deeply($mime->aliases, {foo => 'text/foo'}, 'text/foo is saved');
 
 is($mime->mime_type_for('foo'), 'text/foo', 'mime type foo is found');
+
+ok($mime->add_mime_type(bar => 'foo'), 'define bar as alias to foo');
+is($mime->mime_type_for('bar'), 'text/foo', 'mime type bar is found');
+
