@@ -5,18 +5,11 @@ use Test::More tests => 10, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-{
-   
-    my $warn;
-    local $SIG{__WARN__} = sub { $warn = shift };
-
-    get r('/foo') => sub {
-        "foo";
-    };
- 
-    like $warn, qr/'r' is DEPRECATED use qr{} instead/,
-        "DEPRECATED warning triggered by r()";
-}
+eval { 
+    get r('/foo') => sub { "foo" };
+};
+like $@, qr/'r' is DEPRECATED use qr{} instead/,
+    "DEPRECATED exception triggered by r()";
 
 ok(get(qr{/hello/([\w]+)} => sub { [splat] }), 'first route set');
 ok(get(qr{/show/([\d]+)} => sub { [splat] }), 'second route set');
