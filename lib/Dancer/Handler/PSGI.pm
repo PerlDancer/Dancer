@@ -70,11 +70,8 @@ sub apply_plack_middlewares {
 
     # XXX remove this after 1.2
     if ( ref $middlewares eq 'HASH' ) {
-        carp 'Listing Plack middlewares as a hash ref is DEPRECATED. '
+        croak 'Listing Plack middlewares as a hash ref is DEPRECATED. '
           . 'Must be listed as an array ref.';
-
-        map { $builder->add_middleware( $_, @{ $middlewares->{$_} } ) }
-          keys %$middlewares;
     }
     else {
         map {

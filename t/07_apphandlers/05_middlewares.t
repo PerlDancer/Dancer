@@ -16,14 +16,10 @@ plan skip_all => "Plack is needed to run this test"
 
 Dancer::ModuleLoader->load('Plack::Loader');
 
-# XXX the first test will be useless when we will remove support
-# for hashref middlewares list
-my $confs = [ [ [ ['Runtime'] ] ], [ { 'Runtime' => [] } ] ];
+my $confs = [ [ [ ['Runtime'] ] ] ];
 
-plan tests => (2 * scalar @$confs) + 1;
+plan tests => (2 * scalar @$confs);
 
-my $warn;
-local $SIG{__WARN__} = sub { $warn = shift };
 
 foreach my $c (@$confs) {
     Test::TCP::test_tcp(
@@ -48,9 +44,6 @@ foreach my $c (@$confs) {
             setting access_log        => 0;
             setting plack_middlewares => $c->[0];
             my $app = Dancer::Handler->get_handler()->dance;
-            if (ref $c->[0] eq 'HASH') {
-                like $warn, qr/DEPRECATED/;
-            }
             Plack::Loader->auto( port => $port )->run($app);
         },
     );
