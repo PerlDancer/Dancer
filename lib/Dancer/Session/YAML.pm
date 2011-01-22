@@ -30,6 +30,7 @@ sub init {
         mkdir $session_dir
           or croak "session_dir $session_dir cannot be created";
     }
+    Dancer::Logger::core("session_dir : $session_dir");
 }
 
 # create a new session and return the newborn object
@@ -73,7 +74,6 @@ sub destroy {
 sub flush {
     my $self = shift;
     my ($fh, $tmpname) = tempfile( $self->id . '.XXXXXXXX', DIR => setting('session_dir') );
-	print STDERR $tmpname;
     print {$fh} YAML::Dump($self);
     close $fh;
     move($tmpname, yaml_file($self->id));
