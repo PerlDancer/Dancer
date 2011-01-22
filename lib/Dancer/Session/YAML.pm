@@ -10,6 +10,7 @@ use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path open_file);
 use File::Copy;
+use File::Temp qw(tempfile);
 
 # static
 
@@ -29,7 +30,6 @@ sub init {
         mkdir $session_dir
           or croak "session_dir $session_dir cannot be created";
     }
-    Dancer::Logger::core("session_dir : $session_dir");
 }
 
 # create a new session and return the newborn object
@@ -72,10 +72,11 @@ sub destroy {
 
 sub flush {
     my $self = shift;
-    my $sessionfh = open_file('>', tmp_yaml_file($self->id));
-    print {$sessionfh} YAML::Dump($self);
-    close $sessionfh;
-    move(tmp_yaml_file($self->id), yaml_file($self->id));
+    my ($fh, $tmpname) = tempfile( $self->id . '.XXXXXXXX', DIR => setting('session_dir') );
+	print STDERR $tmpname;
+    print {$fh} YAML::Dump($self);
+    close $fh;
+    move($tmpname, yaml_file($self->id));
     return $self;
 }
 
