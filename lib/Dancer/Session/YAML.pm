@@ -10,6 +10,7 @@ use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path open_file);
 use File::Copy;
+use File::Temp qw(tempfile);
 
 # static
 
@@ -72,10 +73,10 @@ sub destroy {
 
 sub flush {
     my $self = shift;
-    my $sessionfh = open_file('>', tmp_yaml_file($self->id));
-    print {$sessionfh} YAML::Dump($self);
-    close $sessionfh;
-    move(tmp_yaml_file($self->id), yaml_file($self->id));
+    my ($fh, $tmpname) = tempfile( $self->id . '.XXXXXXXX', DIR => setting('session_dir') );
+    print {$fh} YAML::Dump($self);
+    close $fh;
+    move($tmpname, yaml_file($self->id));
     return $self;
 }
 
