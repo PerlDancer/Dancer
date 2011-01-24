@@ -90,7 +90,7 @@ sub format_message {
               ? $r->env->{'HTTP_X_REAL_IP'} || $r->env->{'REMOTE_ADDR'}
               : '-';
         },
-        t => sub { POSIX::strftime( "%d/%b/%Y %H:%M:%S", localtime ) },
+        t => sub { Encode::decode(setting('charset'), POSIX::strftime( "%d/%b/%Y %H:%M:%S", localtime )) },
         P => sub { $$ },
         L => sub { $level },
         D => sub {
