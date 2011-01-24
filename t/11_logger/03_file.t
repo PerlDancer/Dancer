@@ -1,4 +1,4 @@
-use Test::More tests => 9, import => ['!pass'];
+use Test::More tests => 13, import => ['!pass'];
 
 use strict;
 use warnings;
@@ -26,5 +26,14 @@ ok($l->_log(debug => "Perl Dancer test message"), "_log works");
 ok($l->debug("Perl Dancer test message 2/4"), "debug works");
 ok($l->warning("Perl Dancer test message 3/4"), "warning works");
 ok($l->error("Perl Dancer test message 4/4"), "error works");
+
+#Create a new tmp directory to test log_path option
+my $dir2 = tempdir(CLEANUP => 1);
+setting log_path => $dir2;
+
+ok($l->_log(debug => "Perl Dancer test message with log_path setting"), "_log works");
+ok($l->debug("Perl Dancer test message with log_path setting 2/4"), "debug works");
+ok($l->warning("Perl Dancer test message with log_path setting  3/4"), "warning works");
+ok($l->error("Perl Dancer test message with log_path setting 4/4"), "error works");
 
 File::Temp::cleanup();
