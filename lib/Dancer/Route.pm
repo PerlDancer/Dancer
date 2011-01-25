@@ -201,7 +201,7 @@ sub execute {
         my $content = $self->code->();
         if ($warning) {
             return Dancer::Error->new(
-                status  => 500,
+                code    => 500,
                 message => "Warning caught during route execution: $warning",
             )->render;
         }
