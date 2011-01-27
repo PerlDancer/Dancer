@@ -3,6 +3,9 @@ Dancer 1.3000_03
 	[ Flavio Poletti ]
 	* Added "git fetch upstream" for remote tracking
 	* turned a tab into the right number of spaces
+	* Fix weird Plack error "status code needs to be an integer greater than
+	  or equal to 100", because of a typo in a call to Dancer::Error
+	  (Closes issue GH#264)
 
 	[ Franck Cuny ]
 	* uri_(un)escape cookie value; closes GH-248 
