@@ -1,3 +1,7 @@
+        [ Franck Cuny ]
+        * to_json and from_json accept options as hashref instead of hash.
+          PASSING ARGUMENTS AS HASH IS DEPRECATED
+
 Dancer 1.3001
 
 	[ Flavio Poletti ]
