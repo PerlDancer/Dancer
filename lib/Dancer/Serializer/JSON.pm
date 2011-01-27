@@ -25,13 +25,17 @@ sub to_json {
 sub loaded { Dancer::ModuleLoader->load('JSON') }
 
 sub init {
-    my ($self) = @_;
+    my ($self, %p) = @_;
     croak 'JSON is needed and is not installed'
       unless $self->loaded;
+
+    $self->{options} = $p{config};
 }
 
 sub serialize {
     my ($self, $entity, %options) = @_;
+
+    %options = (%{ $self->{options} }, %options) if $self->{options}; 
 
     # Why doesn't $self->config have this?
     my $config = setting('engines') || {};
@@ -86,6 +90,9 @@ extra settings to the B<engines> configuration to turn these on.
             allow_blessed: '1'
             convert_blessed: '1'
 
+To set these options in your app code, use
+
+    set serializer => [ 'JSON', { convert_blessed => 1 } ];
 
 =head2 METHODS
 

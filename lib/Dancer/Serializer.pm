@@ -24,6 +24,10 @@ sub engine {
 
 sub init {
     my ($class, $name, $config) = @_;
+    if (ref $name eq 'ARRAY') {
+        $config = { engines => { $name->[0] => $name->[1] } };
+        $name   = $name->[0];
+    }
     $name ||= 'JSON';
     $_engine = Dancer::Engine->build('serializer' => $name, $config);
     return $_engine;

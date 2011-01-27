@@ -5,7 +5,7 @@ use Dancer;
 
 plan skip_all => "JSON is needed to run this tests"
     unless Dancer::ModuleLoader->load('JSON');
-plan tests => 14;
+plan tests => 16;
 
 eval {
     setting serializer => 'FooBar';
@@ -41,6 +41,15 @@ $json = to_json($data, pretty => 1);
 like $json, qr/"foo" : {/, "data is pretty!";
 $data2 = from_json($json);
 is_deeply($data2, $data, "data is correctly deserialized");
+
+
+ok(setting('serializer' => [ 'JSON' => { allow_blessed => 1, convert_blessed => 1 } ]), "serializer JSON loaded with options");
+sub TO_JSON { +{ %{shift()} } }
+$s = Dancer::Serializer->engine;
+$data = bless { foo => 'bar' };
+$json = $s->serialize($data);
+is $json, '{"foo":"bar"}', "data is correctly serialized";
+
 
 my $config = {
     engines => {
