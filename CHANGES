@@ -32,6 +32,10 @@ Dancer 1.3001
 	  (closes issue GH #124)
 	* Deprecation of Dancer::Config::mime_types (now handled by Dancer::MIME).
 
+	[ jahmed ]
+	* Fix a bug in YAML session backend, during the creation of the session
+	  file.
+
 Dancer 1.3000_02
 
 	[ Sawyer X ]
