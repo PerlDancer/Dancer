@@ -1,7 +1,12 @@
-Dancer 1.2003_01
+Dancer 1.2004
 
 	[ Jonathan Otsuka ]
 	* Bring dancer application creation pod up-to-date
+
+	[ Flavio Polleti ]
+	* Fix weird Plack error "status code needs to be an integer greater than
+	  or equal to 100", because of a typo in a call to Dancer::Error
+	  (Closes issue GH#264)
 
 Dancer 1.2003
     * Production release.
