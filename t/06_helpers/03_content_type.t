@@ -13,11 +13,24 @@ get '/text' => sub {
     "text";
 };
 
+get '/svg' => sub {
+    content_type 'svg';
+    "<svg/>";
+};
+
+get '/png' => sub {
+    content_type 'png';
+    "blergh";
+};
+
+
 my @tests = (
-    { path => '/', expected => setting('content_type')},
+    { path => '/',     expected => setting('content_type')},
     { path => '/text', expected => 'text/plain'},
-    { path => '/', expected => setting('content_type')},
+    { path => '/',     expected => setting('content_type')},
     { path => '/text', expected => 'text/plain'},
+    { path => '/svg',  expected => 'image/svg+xml'},
+    { path => '/png',  expected => 'image/png'},
 );
 
 plan tests => scalar(@tests) * 2;

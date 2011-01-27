@@ -24,14 +24,14 @@ use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::ModuleLoader;
-
+use Dancer::MIME;
 use File::Spec;
 use File::Basename 'basename';
 
 use base 'Exporter';
 
 $AUTHORITY = 'SUKRIA';
-$VERSION   = '1.3000_02';
+$VERSION   = '1.3001';
 @EXPORT    = qw(
   after
   any
@@ -129,7 +129,12 @@ sub header    { goto &headers; }                            # goto ftw!
 sub layout    { set(layout => shift) }
 sub load      { require $_ for @_ }
 sub logger    { set(logger => @_) }
-sub mime_type { Dancer::Config::mime_types(@_) }
+sub mime_type {
+    my $mime = Dancer::MIME->instance();
+    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
+    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
+    else                  { $mime->aliases           }
+}
 sub params    { Dancer::SharedData->request->params(@_) }
 sub pass      { Dancer::Response->pass }
 sub path      { realpath(Dancer::FileUtils::path(@_)) }
@@ -138,7 +143,7 @@ sub prefix { Dancer::App->current->set_prefix(@_) }
 sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
 sub options { Dancer::App->current->registry->universal_add('options', @_) }
 sub put     { Dancer::App->current->registry->universal_add('put',     @_) }
-sub r { carp "'r' is DEPRECATED use qr{} instead"; return {regexp => $_[0]} }
+sub r { croak "'r' is DEPRECATED use qr{} instead"; }
 sub redirect  { Dancer::Helpers::redirect(@_) }
 sub render_with_layout { Dancer::Helpers::render_with_layout(@_); }
 sub request   { Dancer::SharedData->request }
@@ -329,17 +334,20 @@ Dancer apps can be used with a an embedded web server (great for easy testing),
 and can run under PSGI/Plack for easy deployment in a variety of webserver
 environments.
 
-=head1 DISCLAIMER
+=head1 MORE DOCUMENTATION
 
 This documentation describes all the exported symbols of Dancer. If you want
 a quick start guide to discover the framework, you should look at
-L<Dancer::Introduction>.
+L<Dancer::Introduction>, or L<Dancer::Tutorial> to learn by example.
 
 If you want to have specific examples of code for real-life problems, see the
 L<Dancer::Cookbook>.
 
 If you want to see configuration examples of different deployment solutions
 involving Dancer and Plack, see L<Dancer::Deployment>.
+
+You can find out more about the many useful plugins available for Dancer in
+L<Dancer::Plugins>.
 
 =head1 METHODS
 
@@ -412,6 +420,14 @@ Accesses cookies values, which returns a hashref of L<Dancer::Cookie> objects:
         return $cookie->value;
     };
 
+In the case you have stored something else than a scalar in your cookie:
+
+    get '/some_action' => sub {
+        my $cookie = cookies->{oauth};
+        my %values = $cookie->value;
+        return ($values{token}, $values{token_secret});
+    };
+
 =head2 config
 
 Accesses the configuration of the application:
@@ -428,6 +444,14 @@ Sets the B<content-type> rendered, for the current route handler:
         content_type 'text/plain';
 
         # here we can dump the contents of params->{txtfile}
+    };
+
+You can use abbreviations for content types. For instance:
+
+    get '/svg/:id' => sub {
+        content_type 'svg';
+
+        # here we can dump the image with id params->{id}
     };
 
 Note that if you want to change the default content-type for every route, you
@@ -777,6 +801,8 @@ Lets the current route handler send a file to the client.
 The content-type will be set depending on the current mime-types definition
 (see C<mime_type> if you want to define your own).
 
+The path of the file must be relative to the B<public> directory.
+
 =head2 set
 
 Defines a setting:
@@ -800,6 +826,18 @@ Creates or updates cookie values:
     };
 
 In the example above, only 'name' and 'value' are mandatory.
+
+You can also store more complex structure in your cookies:
+
+    get '/some_auth' => sub {
+        set_cookie oauth => {
+            token        => $twitter->request_token,
+            token_secret => $twitter->secret_token,
+            ...
+        };
+    };
+
+You can't store more complex structure than this. All your keys in your hash should be scalar.
 
 =head2 session
 
@@ -1014,6 +1052,9 @@ L<http://github.com/sukria/Dancer>
 
 The Dancer development team can be found on #dancer on irc.perl.org:
 L<irc://irc.perl.org/dancer>
+
+If you don't have an IRC client installed/configured, there is a simple web chat
+client at L<http://www.perldancer.org/irc> for you.
 
 There is also a Dancer users mailing list available - subscribe at:
 

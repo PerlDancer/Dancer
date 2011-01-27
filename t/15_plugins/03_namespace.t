@@ -1,7 +1,7 @@
 # issue #72
 # http://github.com/sukria/Dancer/issues#issue/72
 
-use Test::More tests => 3, import => ['!pass'];
+use Test::More tests => 2, import => ['!pass'];
 
 {
     use Dancer;
@@ -10,11 +10,6 @@ use Test::More tests => 3, import => ['!pass'];
     use TestPlugin;
     use TestAppExt;
     
-    eval { load_plugin 'TestPlugin' };
-
-    like $@, qr{load_plugin is DEPRECATED, you must use 'use' instead},
-        "load_plugin is deprecated";
-
     is(test_plugin_symbol(), "test_plugin_symbol",
         "plugin symbol is exported in current namespace");
 

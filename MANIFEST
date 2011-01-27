@@ -34,6 +34,7 @@ lib/Dancer/Logger.pm
 lib/Dancer/Logger/Abstract.pm
 lib/Dancer/Logger/Console.pm
 lib/Dancer/Logger/File.pm
+lib/Dancer/MIME.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
 lib/Dancer/Object/Singleton.pm
@@ -66,7 +67,6 @@ lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 lib/Dancer/Tutorial.pod
-lib/Dancer/Tutorial/WebSockets.pod
 LICENSE
 Makefile.PL
 MANIFEST			This list of files

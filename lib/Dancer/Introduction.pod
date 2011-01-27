@@ -8,6 +8,15 @@ Installation of Dancer is simple:
 
     # perl -MCPAN -e 'install Dancer'
 
+Thanks to the magic of cpanminus, if you do not have CPAN.pm configured, or just
+want a quickfire way to get running, the following should work, at least on
+Unix-like systems:
+
+    # wget -O - http://cpanmin.us | sudo perl - Dancer
+
+(If you don't have root access, omit the 'sudo', and cpanminus will install
+Dancer and prereqs into C<~/perl5>.)
+
 =head1 SETUP
 
 Create a web application using the dancer script:
@@ -100,6 +109,13 @@ be set in the params hashref.
     get '/hello/:name' => sub {
         "Hey ".params->{name}.", welcome here!";
     };
+
+Tokens can be made optional, for instance:
+
+    get '/hello/:name?' => sub {
+        "Hello there " . params->{name} || "whoever you are!";
+    };
+
 
 =head2 WILDCARDS MATCHING
 

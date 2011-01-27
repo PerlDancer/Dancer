@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 19;
+use Test::More import => ['!pass'], tests => 18;
 
 use strict;
 use warnings;
@@ -36,17 +36,9 @@ response_headers_are_deeply [GET => '/with_headers'], [
     'X-Foo-Dancer' => 42,
     ];
 
-{
-    my $warn;
-    local $SIG{__WARN__} = sub { $warn = shift };
-
-    my $resp = get_response($req);
-    is $resp->{status}, 200, "response status from get_response looks good";
-
-    like $warn, qr/get_response.*is deprecated. use dancer_response.*instead/i,
-        "DEPRECATED warning triggered by get_response()";
-}
-
+eval { get_response($req) };
+like $@, qr/get_response.*is deprecated. use dancer_response.*instead/i,
+     "DEPRECATED warning triggered by get_response()";
 my $resp = dancer_response(@$req);
 is $resp->{status}, 200, "response status from dancer_response looks good";
 

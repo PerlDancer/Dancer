@@ -7,6 +7,7 @@ use Carp;
 use Dancer::Config 'setting';
 use Scalar::Util qw/blessed/;
 use Dancer::HTTP;
+use Dancer::MIME;
 use HTTP::Headers;
 
 # constructor
@@ -91,7 +92,8 @@ sub content_type {
     my $current = _get_object(shift);
 
     if (scalar @_ > 0) {
-        $current->header('Content-Type' => shift)
+        my $mimetype = Dancer::MIME->instance();
+        $current->header('Content-Type' => $mimetype->mime_type_for(shift));
     }else{
         return $current->header('Content-Type');
     }

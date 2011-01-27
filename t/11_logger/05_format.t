@@ -5,7 +5,7 @@ use Dancer::Config qw/setting/;
 use Dancer::Logger::File;
 use Dancer::Request;
 
-plan tests => 7;
+plan tests => 8;
 
 setting logger_format => '(%L) %m';
 my $l = Dancer::Logger::File->new;
@@ -54,3 +54,9 @@ Dancer::SharedData->request($request);
 setting logger_format => '[%{accept_type}h] %m';
 $str = $l->format_message('debug', 'this is debug');
 like $str, qr/\[text\/html\] this is debug/;
+
+my $warn;
+local $SIG{__WARN__} = sub { $warn = $_[0] };
+setting logger_format => '%y';
+$str = $l->format_message('debug', 'this is sparta');
+like $warn, qr/%y not supported/;

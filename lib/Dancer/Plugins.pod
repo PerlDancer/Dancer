@@ -18,7 +18,9 @@ This document provides a quick summary of some recommended plugins.
 Provides easy database access via DBI, reading the DB connection details from
 your app's config file, and taking care of ensuring the connection is still valid
 and reconnecting if not (useful in persistent environments).  Just calling the
-C<database> keyword gives you a connected and working database handle.
+C<database> keyword gives you a connected and working database handle. It also
+provides some helpful keywords to make inserting/updating data as simple as it
+should be.
 
 =item L<Dancer::Plugin::DBIC>
 
@@ -52,7 +54,26 @@ Easy data validation powered by L<Oogly>.
 
 =item L<Dancer::Plugin::Params::Normalization>
 
-Provides different ways of normalizing parameters names
+Provides different ways of normalizing parameter names
+
+=item L<Dancer::Plugin::SimpleCRUD>
+
+Provides easy CRUD (create, read, update, delete) facilities, automatically
+creating routes to display, add, edit and delete data from a database table.
+
+=item L<Dancer::Plugin::WebSocket>
+
+Supports building apps using Web Sockets for bi-directional, full-duplex
+communications over a long-lived socket connection.
+
+=item L<Dancer::Plugin::Memcached>
+
+Cache page responses or individual items of data with memcached for performance.
+
+=item L<Dancer::Plugin::MobileDevice>
+
+Quickly determine whether the client is a mobile browser, in order to offer a
+simplified layout, or otherwise customise features.
 
 =back
 

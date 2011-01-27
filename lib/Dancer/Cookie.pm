@@ -2,11 +2,14 @@ package Dancer::Cookie;
 use strict;
 use warnings;
 
+use URI::Escape;
+
 use base 'Dancer::Object';
-__PACKAGE__->attributes('name', 'value', 'expires', 'domain', 'path');
+__PACKAGE__->attributes('name', 'expires', 'domain', 'path');
 
 sub init {
-    my $self = shift;
+    my ($self, %args) = @_;
+    $self->value($args{value});
     if ($self->expires) {
         $self->expires(_epoch_to_gmtstring($self->expires))
           if $self->expires =~ /^\d+$/;
@@ -17,11 +20,25 @@ sub init {
 sub to_header {
     my $self   = shift;
     my $header = '';
-    $header .= $self->name . '=' . $self->value . '; ';
+
+    my $value = join('&', map {uri_escape($_)} $self->value);
+    $header .= $self->name . '=' . $value . '; ';    
     $header .= "path=" . $self->path . "; " if $self->path;
     $header .= "expires=" . $self->expires . "; " if $self->expires;
     $header .= "domain=" . $self->domain . "; " if $self->domain;
     $header .= 'HttpOnly';
+}
+
+sub value {
+    my ( $self, $value ) = @_;
+    if ( defined $value ) {
+        my @values =
+            ref $value eq 'ARRAY' ? @$value
+          : ref $value eq 'HASH'  ? %$value
+          :                         ($value);
+        $self->{'value'} = [@values];
+    }
+    return wantarray ? @{ $self->{'value'} } : $self->{'value'}->[0];
 }
 
 sub _epoch_to_gmtstring {

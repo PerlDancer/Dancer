@@ -206,8 +206,7 @@ sub dancer_response {
 }
 
 sub get_response {
-    carp "get_response() is DEPRECATED. Use dancer_response() instead.";
-    return dancer_response(@{$_[0]});
+    croak "get_response() is DEPRECATED. Use dancer_response() instead.";
 }
 
 # private

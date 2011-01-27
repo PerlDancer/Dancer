@@ -14,15 +14,10 @@ use Encode;
 
 @EXPORT_OK = qw(setting mime_types);
 
+my $SETTINGS = {};
+
 # mergeable settings
 my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
-
-# singleton for storing settings
-my $SETTINGS = {
-
-    # user defined mime types
-    mime_types => {},
-};
 
 sub settings {$SETTINGS}
 
@@ -89,6 +84,14 @@ my $normalizers = {
     },
 };
 
+sub mime_types {
+    carp "DEPRECATED: use 'mime_type' from Dancer.pm";
+    my $mime = Dancer::MIME->instance();
+    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
+    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
+    else                  { $mime->aliases           }
+}
+
 sub normalize_setting {
     my ($class, $setting, $value) = @_;
 
@@ -133,16 +136,6 @@ sub _get_setting {
     my $setting = shift;
 
     return $SETTINGS->{$setting};
-}
-
-sub mime_types {
-    my ($ext, $content_type) = @_;
-    $SETTINGS->{mime_types} ||= {};
-    return $SETTINGS->{mime_types} if @_ == 0;
-
-    return (@_ == 2)
-      ? $SETTINGS->{mime_types}{$ext} = $content_type
-      : $SETTINGS->{mime_types}{$ext};
 }
 
 sub conffile { path(setting('confdir') || setting('appdir'), 'config.yml') }

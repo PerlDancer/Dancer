@@ -63,11 +63,6 @@ sub register_plugin {
     return 1;
 }
 
-sub load_plugin {
-    my ($plugin) = @_;
-    croak "load_plugin is DEPRECATED, you must use 'use' instead";
-}
-
 sub set_plugin_symbols {
     my ($plugin) = @_;
 
