@@ -66,9 +66,12 @@ sub _options_as_hashref {
     if ( scalar @_ == 1 ) {
         return shift;
     }
+    elsif ( scalar @_ % 2 ) {
+        carp "options for to_json/from_json must be key value pairs (as a hashref)";
+    }
     else {
         carp "options as hash for to_json/from_json is DEPRECATED. please pass a hashref.";
-        return \@_;
+        return { @_ };
     }
 }
 

@@ -67,5 +67,5 @@ undef $warn;
 $s->_options_as_hashref({foo => 'bar'});
 ok !$warn, 'no deprecation warning';
 
-to_json({foo => 'bar'}, pretty => 1);
+to_json({foo => 'bar'}, indent => 0);
 ok $warn, 'deprecation warning';
