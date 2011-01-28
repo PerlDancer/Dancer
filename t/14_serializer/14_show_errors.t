@@ -36,6 +36,7 @@ Test::TCP::test_tcp(
         setting port => $port;
         setting access_log => 0;
         setting serializer => 'JSON';
+        set environment => 'production';
 
         get '/with_errors' => sub {
             setting show_errors => 1;
