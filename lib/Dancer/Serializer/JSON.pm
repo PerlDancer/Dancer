@@ -34,7 +34,7 @@ sub serialize {
     my $self   = shift;
     my $entity = shift;
 
-    my $options = $self->_options_as_hashref(@_);
+    my $options = $self->_options_as_hashref(@_) || {};
 
     # Why doesn't $self->config have this?
     my $config = setting('engines') || {};
@@ -45,6 +45,10 @@ sub serialize {
     }
     if ( $config->{convert_blessed} ) {
         $options->{convert_blessed} = $config->{convert_blessed};
+    }
+
+    if (setting('environment') eq 'development' and not defined $options->{pretty}) {
+        $options->{pretty} = 1;
     }
 
     JSON::to_json( $entity, $options );

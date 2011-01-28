@@ -23,7 +23,7 @@ isa_ok($s, $_) for qw(
 can_ok $s, qw(serialize deserialize);
 
 my $data = { foo => 42 };
-my $json = $s->serialize($data);
+my $json = $s->serialize($data, { pretty => 0 });
 is $json, '{"foo":42}', "data is correctly serialized";
 my $data2 = $s->deserialize($json);
 is_deeply $data2, $data, "data is correctly deserialized";
@@ -31,7 +31,10 @@ is_deeply $data2, $data, "data is correctly deserialized";
 # helpers
 
 $json = to_json($data);
-is $json, '{"foo":42}', "data is correctly serialized";
+is $json, '{
+   "foo" : 42
+}
+', "data is correctly serialized";
 
 $data2 = from_json($json);
 is_deeply($data2, $data, "data is correctly deserialized");
@@ -47,6 +50,7 @@ my $config = {
         JSON => {
             allow_blessed   => 1,
             convert_blessed => 1,
+            pretty          => 0,
         }
     }
 };
