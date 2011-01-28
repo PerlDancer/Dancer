@@ -1,6 +1,20 @@
-        [ Franck Cuny ]
-        * to_json and from_json accept options as hashref instead of hash.
-          PASSING ARGUMENTS AS HASH IS DEPRECATED
+Dancer 1.3002
+
+	[ API CHANGES ]
+	
+	* to_json and from_json accept options as hashref instead of hash.
+	  Passing arguments as hash is deprecated 
+	  (Franck Cuny).
+
+	[ BUGFIXES ]
+	
+	[ ENHANCEMENTS ]
+
+	* In development, pretty-print JSON serializations for easier development 
+	  (Ask Bjørn Hansen)
+
+	[ DOCUMENTATION ]
+
 
 Dancer 1.3001
 
