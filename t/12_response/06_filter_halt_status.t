@@ -9,6 +9,7 @@ use Test::More;
     use Dancer;
 
     set serializer => 'JSON';
+    set environment => 'production';
 
     before sub {
         if (params->{'troll'}) {
