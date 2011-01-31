@@ -39,4 +39,5 @@ foreach my $test (@tests) {
 		"response looks good for ".$test->{path});
 }
 
+Dancer::Logger::logger->{fh}->close;
 File::Temp::cleanup();

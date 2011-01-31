@@ -29,4 +29,5 @@ foreach my $method qw(debug warning error) {
     ok(Dancer::Logger->$method("test"), "$method works");
 }
 
+Dancer::Logger::logger->{fh}->close;
 File::Temp::cleanup();

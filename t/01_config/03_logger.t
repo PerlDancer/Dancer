@@ -50,5 +50,6 @@ ok(!debug($message), 'debug message is dropped');
 ok(warning($message), 'warning message is logged');
 ok(error($message), 'error message is logged');
 
+Dancer::Logger::logger->{fh}->close;
 unlink $logfile;
 File::Temp::cleanup();

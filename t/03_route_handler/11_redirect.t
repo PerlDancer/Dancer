@@ -39,4 +39,5 @@ $expected_headers = [
 ];
 response_headers_are_deeply [GET => '/redirect_querystring'], $expected_headers;
 
+Dancer::Logger::logger->{fh}->close;
 File::Temp::cleanup();
