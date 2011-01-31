@@ -7,6 +7,9 @@ Dancer 1.3002
 	  (Franck Cuny).
 
 	[ BUGFIXES ]
+
+	* status is kept even when halt is used in a before filter
+	  (Alexis Sukrieh)
 	
 	[ ENHANCEMENTS ]
 
