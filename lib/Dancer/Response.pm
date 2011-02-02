@@ -127,8 +127,13 @@ sub halt {
         $CURRENT = $content;
     }
     else {
-        my $resp = Dancer::Response->new(content => $content);
-         $CURRENT = $resp;
+        # FIXME we probably want to do better here, I think this class really deserves a
+        # complete rewrite ;-)
+        my $resp = Dancer::Response->new(
+        status => ($CURRENT->{status} || 200),
+        content => $content,
+        );
+        $CURRENT = $resp;
     }
     $CURRENT->{halted} = 1;
     return $content;

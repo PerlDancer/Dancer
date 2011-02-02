@@ -222,6 +222,7 @@ t/12_response/02_headers.t
 t/12_response/03_charset.t
 t/12_response/04_charset_server.t
 t/12_response/05_api.t
+t/12_response/06_filter_halt_status.t
 t/13_engines/00_load.t
 t/13_engines/02_template_init.t
 t/14_serializer/000_create_fake_env.t

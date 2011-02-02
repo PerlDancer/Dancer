@@ -1,3 +1,21 @@
+Dancer 1.3002
+
+	[ API CHANGES ]
+	
+	* to_json and from_json accept options as hashref instead of hash.
+	  Passing arguments as hash is deprecated 
+	  (Franck Cuny).
+
+	[ BUGFIXES ]
+
+	* status is kept even when halt is used in a before filter
+	  (Alexis Sukrieh)
+	
+	[ ENHANCEMENTS ]
+
+	* In development, pretty-print JSON serializations for easier development 
+	  (Ask Bjørn Hansen)
+
 Dancer 1.3001
 
 	[ Flavio Poletti ]
