@@ -39,6 +39,7 @@ use base 'Exporter';
   any
   before
   before_template
+  before_serialization
   cookies
   config
   content_type
@@ -103,6 +104,7 @@ use base 'Exporter';
 sub after           { Dancer::Route::Registry->hook('after',           @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
 sub before          { Dancer::Route::Registry->hook('before',          @_) }
+sub before_serialization {Dancer::Route::Registry->hook('before_serialization', @_) }
 sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
@@ -412,6 +414,18 @@ before sending data and tokens to the template. Receives a hashref of the
 tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
+
+=head2 before_serialization
+
+Defines a before_serialization filter:
+
+    before_serialization sub {
+        my $content = shift;
+        $content->{finished_at} = time();
+    };
+
+The anonymous function which is given to C<before_serialization> will be executed
+before sending data to the serializers. Receives a hashref or arrayref.
 
 =head2 cookies
 

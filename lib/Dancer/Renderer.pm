@@ -142,11 +142,16 @@ sub get_action_response {
 
 sub serialize_response_if_needed {
     my ($response) = @_;
-    $response = Dancer::Serializer->process_response($response)
-      if Dancer::App->current->setting('serializer') && $response->content();
+
+    if ( Dancer::App->current->setting('serializer') && $response->content() ) {
+        my $app = Dancer::App->current;
+        $_->( $response )
+          for @{ $app->registry->hooks->{before_serialization} };
+        $response = Dancer::Serializer->process_response($response);
+    }
+
     return $response;
 }
-
 
 sub get_file_response {
     my $request     = Dancer::SharedData->request;
