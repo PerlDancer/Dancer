@@ -2,7 +2,7 @@ package Dancer::Serializer::JSON;
 
 use strict;
 use warnings;
-use Carp;
+use Carp qw(croak cluck);
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use base 'Dancer::Serializer::Abstract';
@@ -71,10 +71,10 @@ sub _options_as_hashref {
         return shift;
     }
     elsif ( scalar @_ % 2 ) {
-        carp "options for to_json/from_json must be key value pairs (as a hashref)";
+        cluck "options for to_json/from_json must be key value pairs (as a hashref)";
     }
     else {
-        carp "options as hash for to_json/from_json is DEPRECATED. please pass a hashref.";
+        cluck "options as hash for to_json/from_json is DEPRECATED. please pass a hashref.";
         return { @_ };
     }
 }
