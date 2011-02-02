@@ -4,7 +4,11 @@ use strict;
 use warnings;
 use Carp;
 use Cwd 'abs_path', 'realpath';
+
 use vars qw($VERSION $AUTHORITY @EXPORT);
+
+$VERSION   = '1.3002';
+$AUTHORITY = 'SUKRIA';
 
 use Dancer::Config;
 use Dancer::FileUtils;
@@ -30,8 +34,6 @@ use File::Basename 'basename';
 
 use base 'Exporter';
 
-$AUTHORITY = 'SUKRIA';
-$VERSION   = '1.3001';
 @EXPORT    = qw(
   after
   any
