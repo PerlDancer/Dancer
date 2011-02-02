@@ -16,9 +16,6 @@ Dancer 1.3002
 	* In development, pretty-print JSON serializations for easier development 
 	  (Ask Bjørn Hansen)
 
-	[ DOCUMENTATION ]
-
-
 Dancer 1.3001
 
 	[ Flavio Poletti ]
