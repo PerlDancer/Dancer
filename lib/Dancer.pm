@@ -178,7 +178,7 @@ sub splat     {
     my $splat = Dancer::SharedData->request->params->{splat};
     return ref $splat ? @$splat : (); 
 }
-sub status    { Dancer::Response::status(@_) }
+sub status    { Dancer::Response->status(@_) }
 sub template  { Dancer::Helpers::template(@_) }
 sub true      {1}
 sub to_dumper { Dancer::Serializer::Dumper::to_dumper(@_) }
