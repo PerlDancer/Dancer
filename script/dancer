@@ -263,6 +263,10 @@ sub download_file {
 
 sub templates($) {
     my $appname = shift;
+    my $appfile = $appname;
+
+    $appfile =~ s{::}{/}g;
+
     return {
 
 'Makefile.PL' =>
@@ -273,7 +277,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME                => '$appname',
     AUTHOR              => q{YOUR NAME <youremail\@example.com>},
-    VERSION_FROM        => 'lib/$appname.pm',
+    VERSION_FROM        => 'lib/$appfile.pm',
     ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
     (\$ExtUtils::MakeMaker::VERSION >= 6.3002
       ? ('LICENSE'=> 'perl')
