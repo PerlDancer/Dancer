@@ -10,6 +10,8 @@ Dancer 1.3002
 
 	* status is kept even when halt is used in a before filter
 	  (Alexis Sukrieh)
+    * Elminate test warnings on Windows.
+      (Gabor Szabo)
 	
 	[ ENHANCEMENTS ]
 

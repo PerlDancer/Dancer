@@ -27,4 +27,5 @@ ok($l->debug("Perl Dancer test message 2/4"), "debug works");
 ok($l->warning("Perl Dancer test message 3/4"), "warning works");
 ok($l->error("Perl Dancer test message 4/4"), "error works");
 
+$l->{fh}->close;
 File::Temp::cleanup();

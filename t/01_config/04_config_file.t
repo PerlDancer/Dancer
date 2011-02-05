@@ -72,6 +72,7 @@ is(setting('log'), 'warning', 'log setting looks good');
 is(setting('foo_prod'), '42', 'random setting set'); 
 is(setting('access_log'), '0', 'access_log setting looks good'); 
 
+Dancer::Logger::logger->{fh}->close;
 unlink Dancer::Config->environment_file;
 unlink $conffile;
 File::Temp::cleanup();
