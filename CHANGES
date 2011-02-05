@@ -12,6 +12,9 @@ Dancer 1.3002
 	  (Alexis Sukrieh)
     * Elminate test warnings on Windows.
       (Gabor Szabo)
+        * Proper handling of temporary file creation using File::Temp module
+          instead of homebrew solution. (jahmed)
+        * Logger::Abstract unicode bug fix. (jahmed)
 	
 	[ ENHANCEMENTS ]
 
