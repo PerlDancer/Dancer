@@ -234,9 +234,16 @@ sub version_check {
     my $latest_version = 0;
     require Dancer;
 
-    my $resp = send_http_request('http://cpansearch.perl.org/src/SUKRIA/?C=N;O=D');
-    if ($resp && $resp =~ m/Dancer-(\d\.\d+)\//) {
-        $latest_version = $1;
+    my $resp = send_http_request('http://search.cpan.org/api/module/Dancer');
+
+    if ($resp) {
+        my $data;
+        eval { $data = Dancer::from_json($resp) };
+        $data or die "Can't understand search.cpan.org's reply.\n";
+
+        $latest_version = $data->{'version'};
+    } else {
+        die "Could not get version, are you online?\n";
     }
 
     return if $DANCER_VERSION =~  m/_/;
