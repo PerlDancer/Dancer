@@ -1,10 +1,10 @@
 1.2005  05.02.2011
 
-	[ BUGFIX ]
-	* GH#271 - use correct VERSION_FROM in scaffolded application.
-	  (Sawyer X)
-	* GH#260 - send_file doesn't clobber existing headers anymore
-	  (Alexis Sukrieh)
+    [ BUGFIX ]
+    * GH#271 - use correct VERSION_FROM in scaffolded application.
+      (Sawyer X)
+    * GH#260 - send_file doesn't clobber existing headers anymore
+      (Alexis Sukrieh)
     * GH#281 - splat doesn't fail if there was no match
       (David Precious)
 
