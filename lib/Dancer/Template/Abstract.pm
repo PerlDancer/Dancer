@@ -16,7 +16,8 @@ sub default_tmpl_ext { "tt" }
 sub _template_name {
     my ( $self, $view ) = @_;
     my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
-    $view .= ".$def_tmpl_ext" if $view !~ /\.${def_tmpl_ext}$/;
+    $view .= ".$def_tmpl_ext" if $view !~ /\.\Q$def_tmpl_ext\E$/;
+    return $view;
 }
 
 sub view {
