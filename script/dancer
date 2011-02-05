@@ -242,8 +242,6 @@ sub version_check {
         $data or die "Can't understand search.cpan.org's reply.\n";
 
         $latest_version = $data->{'version'};
-    } else {
-        die "Could not get version, are you online?\n";
     }
 
     return if $DANCER_VERSION =~  m/_/;
