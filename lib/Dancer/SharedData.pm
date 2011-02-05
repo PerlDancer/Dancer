@@ -22,6 +22,10 @@ sub headers { (@_ == 2) ? $_headers = $_[1] : $_headers }
 my $_request;
 sub request { (@_ == 2) ? $_request = $_[1] : $_request }
 
+# response singleton
+my $_response;
+sub response { (@_ == 2) ? $_response = $_[1] : $_response }
+
 # request timer
 my $_timer;
 sub timer { $_timer ||= Dancer::Timer->new }
