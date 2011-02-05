@@ -70,6 +70,11 @@ sub halt {
 
 sub halted { $CURRENT && $CURRENT->{halted} }
 
+sub content {
+    $CURRENT->{content} = $_[0] 
+        if defined $CURRENT;
+}
+
 sub header {
     my $self   = shift;
     my $header = shift;

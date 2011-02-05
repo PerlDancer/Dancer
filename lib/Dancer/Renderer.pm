@@ -171,7 +171,8 @@ sub get_file_response_for_path {
         Dancer::Response::status($status);
         Dancer::Response::content_type(
             get_mime_type($static_file));
-        return $fh;
+        Dancer::Response::content($fh);
+        return Dancer::Response->current;
     }
     return;
 }

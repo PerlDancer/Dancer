@@ -163,6 +163,7 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
+sub status    { Dancer::Response::status(@_) }
 sub splat     {
     my $splat = Dancer::SharedData->request->params->{splat};
     return ref $splat ? @$splat : (); 
