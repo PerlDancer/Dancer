@@ -1,3 +1,28 @@
+1.3003  05.02.2011
+
+    [ BUG FIXES ]
+    
+    * Eliminate test warnings on Windows.
+      (Gabor Szabo)
+    
+    * GH#271 - use correct VERSION_FROM in scaffolded application.
+      (Sawyer X)
+    
+    * GH#260 - send_file doesn't clobber existing headers
+      (Alexis Sukrieh)
+    
+    * logger unicode bugfix in the formated date
+      (jahmed)
+    
+    * GH#281 - Don't crash if splat is used with no captures
+      (David Precious)
+    
+    [ ENHANCEMENTS ]
+    
+    * New setting log_path to allow for alternalte logging path in logger
+      "file".
+      (Natal Ngétal)
+
 Dancer 1.3002
 
 	[ API CHANGES ]
@@ -10,8 +35,6 @@ Dancer 1.3002
 
 	* status is kept even when halt is used in a before filter
 	  (Alexis Sukrieh)
-    * Elminate test warnings on Windows.
-      (Gabor Szabo)
         * Proper handling of temporary file creation using File::Temp module
           instead of homebrew solution. (jahmed)
         * Logger::Abstract unicode bug fix. (jahmed)
