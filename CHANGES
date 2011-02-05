@@ -1,7 +1,7 @@
 1.2005  05.02.2011
 
     [ BUGFIX ]
-    * use correct VERSION_FROM in scaffolded application 
+    * GH#271: use correct VERSION_FROM in scaffolded application.
       (Sawyer X)
 
 Dancer 1.2004
