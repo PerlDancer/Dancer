@@ -144,6 +144,11 @@ sub halted {
     $current && $current->{halted}
 }
 
+sub content {
+    $CURRENT->{content} = $_[0] 
+        if defined $CURRENT;
+}
+
 sub header {
     my $current = _get_object(shift);
     my $header = shift;
