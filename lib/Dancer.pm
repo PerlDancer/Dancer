@@ -163,8 +163,10 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
-sub splat     { @{Dancer::SharedData->request->params->{splat}} }
-sub status    { Dancer::Response::status(@_) }
+sub splat     {
+    my $splat = Dancer::SharedData->request->params->{splat};
+    return ref $splat ? @$splat : (); 
+}
 sub template  { Dancer::Helpers::template(@_) }
 sub true      {1}
 sub to_dumper { Dancer::Serializer::Dumper::to_dumper(@_) }
