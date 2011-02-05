@@ -5,6 +5,8 @@
 	  (Sawyer X)
 	* GH#260 - send_file clobbers existing headers
 	  (Alexis Sukrieh)
+    * GH#281 - splat doesn't fail if there was no match
+      (David Precious)
 
 Dancer 1.2004
 
