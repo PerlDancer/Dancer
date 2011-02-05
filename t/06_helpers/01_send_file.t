@@ -8,7 +8,7 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 5;
+plan tests => 6;
 
 ok(get('/cat/:file', sub {
     send_file(params->{file});
