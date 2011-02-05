@@ -125,6 +125,7 @@ t/03_route_handler/06_regexp.t
 t/03_route_handler/07_compilation_warning.t
 t/03_route_handler/08_errors.t
 t/03_route_handler/09_status.t
+t/03_route_handler/10_splat_with_nothing.t
 t/03_route_handler/11_redirect.t
 t/03_route_handler/11_redirect_no_content.t
 t/03_route_handler/12_response.t
@@ -202,6 +203,7 @@ t/10_template/03_simple.t
 t/10_template/05_template_toolkit.t
 t/10_template/06_before_template_hook.t
 t/10_template/index.txt
+t/10_template/template.t
 t/10_template/views/index.tt
 t/11_logger/000_create_fake_env.t
 t/11_logger/01_abstract.t
@@ -251,6 +253,7 @@ t/17_apps/04_issue_91.t
 t/18_main_dsl/000_create_fake_env.t
 t/18_main_dsl/01_config.t
 t/18_main_dsl/uri_for.t
+t/19_dancer/02_script_version_from.t
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm
