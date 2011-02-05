@@ -73,7 +73,9 @@ file.
 =head2 logdir
 
 Returns the log directory, decided by "logs" either in "appdir" setting or in a
-temp directory.
+temp directory. It's also possible to specify a logs directory with the log_path option.
+
+  setting log_path => $dir;
 
 =head2 _log
 
