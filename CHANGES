@@ -1,7 +1,9 @@
 1.3003  05.02.2011
 
+    [ API CHANGES ]
+    * Remove load_plugin from the core's DSL (was deprecated).
+
     [ BUG FIXES ]
-    
     * Eliminate test warnings on Windows.
       (Gabor Szabo)
     * GH#271 - use correct VERSION_FROM in scaffolded application.
@@ -16,7 +18,6 @@
       (Alexis Sukrieh)
     
     [ ENHANCEMENTS ]
-    
     * New setting log_path to allow for alternalte logging path in logger
       "file".
       (Natal Ngétal)
