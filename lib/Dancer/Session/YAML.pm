@@ -73,7 +73,8 @@ sub destroy {
 
 sub flush {
     my $self = shift;
-    my ($fh, $tmpname) = tempfile( $self->id . '.XXXXXXXX', DIR => setting('session_dir') );
+    my ( $fh, $tmpname ) =
+      tempfile( $self->id . '.XXXXXXXX', DIR => setting('session_dir') );
     print {$fh} YAML::Dump($self);
     close $fh;
     move($tmpname, yaml_file($self->id));
