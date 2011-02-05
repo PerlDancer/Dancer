@@ -61,7 +61,6 @@ use base 'Exporter';
   layout
   load
   load_app
-  load_plugin
   logger
   mime_type
   options
@@ -212,10 +211,6 @@ sub load_app {
 
     # restore the main application
     Dancer::App->set_running_app('main');
-}
-
-sub load_plugin {
-    goto &Dancer::Plugin::load_plugin;
 }
 
 # When importing the package, strict and warnings pragma are loaded,
@@ -614,16 +609,6 @@ C<./lib> directory:
 Note that a package loaded using load_app B<must> import Dancer with the
 C<:syntax> option, in order not to change the application directory
 (which has been previously set for the caller script).
-
-=head2 load_plugin
-
-Loads a plugin in the current namespace. As with load_app, the method takes
-care to set the libdir to the current C<./lib> directory:
-
-    package MyWebApp;
-    use Dancer;
-
-    load_plugin 'Dancer::Plugin::Database';
 
 =head2 mime_type
 
