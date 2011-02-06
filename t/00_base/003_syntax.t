@@ -25,7 +25,6 @@ my @keywords = qw(
     layout
     load
     load_app
-    load_plugin
     logger
     mime_type
     options

@@ -1,3 +1,31 @@
+1.3003  06.02.2011
+
+    [ API CHANGES ]
+    * Remove load_plugin from the core's DSL (was deprecated).
+
+    [ BUG FIXES ]
+    * Eliminate test warnings on Windows.
+      (Gabor Szabo)
+    * GH#271 - use correct VERSION_FROM in scaffolded application.
+      (Sawyer X)
+    * GH#260 - send_file doesn't clobber existing headers
+      (Alexis Sukrieh)
+    * logger unicode bugfix in the formated date
+      (jahmed)
+    * GH#281 - Don't crash if splat is used with no captures
+      (David Precious)
+    * Possible to given "template" a view name with the extenstion.
+      (Alexis Sukrieh)
+    
+    [ ENHANCEMENTS ]
+    * New setting log_path to allow for alternalte logging path in logger
+      "file".
+      (Natal Ngétal)
+    * GH#289: Add more aliases on the ENV, provide more smart accessors to Plack env
+      entries
+      (Franck Cuny)
+    
+
 Dancer 1.3002
 
 	[ API CHANGES ]
@@ -10,6 +38,9 @@ Dancer 1.3002
 
 	* status is kept even when halt is used in a before filter
 	  (Alexis Sukrieh)
+        * Proper handling of temporary file creation using File::Temp module
+          instead of homebrew solution. (jahmed)
+        * Logger::Abstract unicode bug fix. (jahmed)
 	
 	[ ENHANCEMENTS ]
 
