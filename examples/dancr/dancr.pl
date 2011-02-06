@@ -94,12 +94,12 @@ any ['get', 'post'] => '/login' => sub {
 		else {
 			session 'logged_in' => true;
 			set_flash('You are logged in.');
-			redirect '/';
+			return redirect '/';
 		}
 	}
 
 	# display login form
-	template 'login.tt', { 
+	template 'login.tt', {
 		'err' => $err,
 	};
 

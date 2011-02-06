@@ -721,7 +721,7 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
     get '/old/:resource', sub {
         redirect '/new/'.params->{resource}, 301;
     };
-    
+
 It is important to note that issuing a redirect by itself does not exit and
 redirect immediately, redirection is deferred until after the current route
 or filter has been processed. To exit and redirect immediately, use the return
