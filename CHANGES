@@ -1,4 +1,4 @@
-1.3003  05.02.2011
+1.3003  06.02.2011
 
     [ API CHANGES ]
     * Remove load_plugin from the core's DSL (was deprecated).
@@ -21,6 +21,10 @@
     * New setting log_path to allow for alternalte logging path in logger
       "file".
       (Natal Ngétal)
+    * GH#289: Add more aliases on the ENV, provide more smart accessors to Plack env
+      entries
+      (Franck Cuny)
+    
 
 Dancer 1.3002
 
