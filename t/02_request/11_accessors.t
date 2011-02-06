@@ -1,4 +1,4 @@
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 use strict;
 use warnings;
@@ -13,6 +13,7 @@ my $env = {
     'X_FORWARDED_FOR' => '192.168.0.3',
     'HTTP_USER_AGENT' => 'Mozy',
     'HTTP_HOST'       => 'foo.bar.com',
+    'REMOTE_USER' => 'franck',
 };
 
 my $r = Dancer::Request->new($env);
@@ -28,3 +29,4 @@ is $r->agent, 'Mozy', 'agent looks good';
 is $r->host, 'foo.bar.com', 'host looks good';
 is $r->remote_address, '192.168.0.2', 'remote address looks good';
 is $r->forwarded_for_address, '192.168.0.3', 'forwarded address looks good';
+is $r->user, 'franck',  'remote user looks good';
