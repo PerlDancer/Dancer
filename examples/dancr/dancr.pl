@@ -94,7 +94,7 @@ any ['get', 'post'] => '/login' => sub {
 		else {
 			session 'logged_in' => true;
 			set_flash('You are logged in.');
-			redirect '/';
+			return redirect '/';
 		}
 	}
 
