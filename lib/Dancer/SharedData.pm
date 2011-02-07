@@ -3,6 +3,7 @@ package Dancer::SharedData;
 use strict;
 use warnings;
 use Dancer::Timer;
+use Dancer::Response;
 
 # shared variables
 my $vars = {};
@@ -24,7 +25,15 @@ sub request { (@_ == 2) ? $_request = $_[1] : $_request }
 
 # response singleton
 my $_response;
-sub response { (@_ == 2) ? $_response = $_[1] : $_response }
+sub response {
+    if (@_ == 2) {
+        $_response = $_[1];
+    }else{
+        $_response = Dancer::Response->new() if !defined $_response;
+        return $_response;
+    }
+}
+sub reset_response { $_response = undef }
 
 # request timer
 my $_timer;
@@ -37,6 +46,7 @@ sub reset_all {
     undef $_request;
     undef $_timer;
     undef $_headers;
+    undef $_response;
 }
 
 
