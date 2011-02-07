@@ -138,7 +138,7 @@ sub mime_type {
 }
 sub params    { Dancer::SharedData->request->params(@_) }
 sub pass      { Dancer::Response->pass }
-sub path      { realpath(Dancer::FileUtils::path($_[0])) }
+sub path      { realpath(Dancer::FileUtils::path(@_)) }
 sub post   { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix { Dancer::App->current->set_prefix(@_) }
 sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
