@@ -71,4 +71,17 @@ get '/unicode' => sub {
     "cyrillic shcha \x{0429}",
 };
 
+after_action_error sub {
+      my $error = shift;
+        $error->{code} = 599;
+};
+
+get '/send_error' => sub {
+       send_error('Ouch!','500'); 
+};
+
+get '/die' => sub {
+        die 'mein Leben';
+};
+
 true;

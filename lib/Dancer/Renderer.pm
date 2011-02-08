@@ -83,6 +83,21 @@ sub html_page {
 }
 
 sub get_action_response {
+    my $response = eval { determine_action_response() };
+    if ($@) {
+        my $request = Dancer::SharedData->request;
+        Dancer::Logger::core('requested action ' . $request->path_info . " crashed: $@");
+        my $error = Dancer::Error->new(
+            code    => 500,
+            title   => "Action Runtime Error",
+            message => $@
+        );
+        $response = $error->render;
+    }
+    return $response;
+}
+
+sub determine_action_response {
     my $response;
 
     # save the request before the filters are ran

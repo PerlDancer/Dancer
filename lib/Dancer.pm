@@ -36,6 +36,7 @@ use base 'Exporter';
 
 @EXPORT    = qw(
   after
+  after_action_error
   any
   before
   before_template
@@ -100,6 +101,7 @@ use base 'Exporter';
 # Dancer's syntax
 
 sub after           { Dancer::Route::Registry->hook('after',           @_) }
+sub after_action_error { Dancer::Route::Registry->hook('after_action_error', @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
 sub before          { Dancer::Route::Registry->hook('before',          @_) }
 sub before_template { Dancer::Route::Registry->hook('before_template', @_) }

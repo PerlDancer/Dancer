@@ -16,6 +16,8 @@ sub new {
     my $self = \%params;
     bless $self, $class;
 
+    $_->( $self ) for @{ Dancer::App->current->registry->hooks->{after_action_error} };
+
     $self->{title} ||= "Error " . $self->code;
     $self->{type}  ||= "runtime error";
 
