@@ -48,4 +48,5 @@ foreach my $test (@tests) {
     is_deeply(
         $response->{content}, $expected, 
         "match data for path `$path' looks good");
+    Dancer::SharedData->reset_all();
 }

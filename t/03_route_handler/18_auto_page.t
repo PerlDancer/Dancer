@@ -22,7 +22,7 @@ use TestUtils;
 my $resp = get_response_for_request('GET' => '/hello');
 ok( defined($resp), "response found for /hello");
 is $resp->{content}, "Hello\n", "content looks good";
-
+Dancer::SharedData->reset_response();
 $resp = get_response_for_request('GET' => '/falsepage');
 ok( defined($resp), "response found for non existent page");
 

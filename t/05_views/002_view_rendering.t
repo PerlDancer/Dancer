@@ -60,5 +60,6 @@ foreach my $test (@tests) {
     Dancer::SharedData->request($request);
     
     my $resp = Dancer::Renderer::get_action_response();
-    is($resp->{content}, $expected, "content rendered looks good for $path");
+    is($resp->content, $expected, "content rendered looks good for $path");
+    Dancer::SharedData->reset_all;
 }
