@@ -578,14 +578,16 @@ Return the path requested by the client.
 
 =head2 base()
 
-Returns an absolute URI for the base of the application
+Returns an absolute URI for the base of the application.  Returns a L<URI>
+object (which stringifies to the URL, as you'd expect).
 
 =head2 uri_for(path, params)
 
 Constructs a URI from the base and the passed path.  If params (hashref) is
 supplied, these are added to the query string of the uri.  If the base is
 C<http://localhost:5000/foo>, C<< request->uri_for('/bar', { baz => 'baz' }) >>
-would return C<http://localhost:5000/foo/bar?baz=baz>.
+would return C<http://localhost:5000/foo/bar?baz=baz>.  Returns a L<URI> object
+(which stringifies to the URL, as you'd expect).
 
 =head2 params($source)
 
