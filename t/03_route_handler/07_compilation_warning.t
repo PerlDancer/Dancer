@@ -34,7 +34,7 @@ foreach my $test (@tests) {
 	Dancer::SharedData->request($req);
 
 	my $response = Dancer::Renderer::get_action_response();
-	like($response->{content}, 
+	like($response->content, 
 		$test->{expected}, 
 		"response looks good for ".$test->{path});
 }

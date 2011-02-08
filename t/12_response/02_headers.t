@@ -32,7 +32,7 @@ get '/headers/multiple' => sub {
     headers 'foo' => 1, 'foo' => 2, 'bar' => 3, 'foo' => 4;
 };
 
-plan tests => 12;
+plan tests => 10;
 
 # /header
 my $req = fake_request(GET => '/header');
@@ -62,6 +62,7 @@ is($headers{'X-Foo'}, 'bar', "X-Foo looks good for /headers/more");
 is($headers{'X-Bar'}, 'schmuk', "X-Bar looks good for /headers/more");
 is($headers{'X-XXX'}, 'porn', "X-XXX looks good for /headers/more");
 is($headers{'Content-Type'}, 'text/css', "Content-Type looks good for /headers/more");
+Dancer::SharedData->reset_all();
 
 # /headers/content_type
 $req = fake_request(GET => '/headers/content_type');
@@ -69,6 +70,7 @@ Dancer::SharedData->request($req);
 $res = Dancer::Renderer::get_action_response();
 %headers = @{$res->headers_to_array};
 is($headers{'Content-Type'}, 'text/css', "Content-Type looks good for /headers/content_type");
+Dancer::SharedData->reset_all();
 
 # /headers/multiple
 $req = fake_request(GET => '/headers/multiple');
@@ -81,6 +83,7 @@ is_deeply $res->headers_to_array, [
     Foo => 2, 
     Foo => 4,
 ], 'multiple headers are kept';
+Dancer::SharedData->reset_all();
 
 # Dancer::Response header's API
 $res = Dancer::Response->new(
@@ -91,6 +94,3 @@ $res = Dancer::Response->new(
 
 my $ct = $res->header('CONTENT-TYPE');
 is $ct, 'application/json';
-
-ok(Dancer::Response->set($res));
-is(Dancer::Response->header('Content-Type'), 'application/json');

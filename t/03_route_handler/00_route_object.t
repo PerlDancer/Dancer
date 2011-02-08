@@ -56,8 +56,9 @@ is_deeply $match, $expected_match,
 
 $r2->match_data($match);
 Dancer::SharedData->request($req);
-$response = $r2->run($req);
+$r2->run($req);
 
+$response = Dancer::SharedData->response;
 is $response->{content}, 'this is r4',
     "route 2 passed, r3 skipped (dont match), r4 served the response";
 
