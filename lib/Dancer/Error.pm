@@ -16,6 +16,8 @@ sub new {
     my $self = \%params;
     bless $self, $class;
 
+    $_->( $self ) for @{ $app->registry->hooks->{on_error} };
+
     $self->{title} ||= "Error " . $self->code;
     $self->{type}  ||= "runtime error";
 
