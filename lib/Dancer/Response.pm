@@ -25,7 +25,7 @@ sub new {
         headers => $headers,
         content => "",
         pass    => 0,
-        halt    => 0,
+        halted    => 0,
         forward => "",
         %args,
     };
@@ -103,20 +103,19 @@ sub is_forwarded {
 
 sub halt {
     my ($self, $content) = @_;
-    $self->content($content);
-    $self->{halted} = 1;
-    # if ( blessed($content) && $content->isa('Dancer::Response') ) {
-    #     Dancer::SharedData->response($content);
-    # }
-    # else {
-    #     my $resp = Dancer::Response->new(
-    #         status => ($self->status || 200),
-    #         content => $content,
-    #     );
-    #     $resp->{halted} = 1;
-    #     Dancer::SharedData->response($resp);
-    # }
-    # return $content;
+
+    if ( blessed($content) && $content->isa('Dancer::Response') ) {
+        $content->{halted} = 1;
+        Dancer::SharedData->response($content);
+    }
+    else {
+        Dancer::Response->new(
+            status => ($self->status || 200),
+            content => $content,
+            halted => 1,
+        );
+    }
+    return $content;
 }
 
 sub halted {
