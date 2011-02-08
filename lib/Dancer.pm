@@ -104,39 +104,33 @@ sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
-sub content_type    { Dancer::Response->content_type(@_) }
+sub content_type    { Dancer::SharedData->response->content_type(@_) }
 sub dance           { Dancer::start(@_) }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
-sub send_error {
-    my ( $content, $status ) = @_;
-    $status ||= 500;
-    my $error = Dancer::Error->new( code => $status, message => $content );
-    Dancer::Response->set( $error->render );
-}
 sub false           { 0 }
-sub forward         { Dancer::Response->forward(shift) }
+sub forward         { Dancer::SharedData->response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
-sub halt            { Dancer::Response->halt(@_) }
-sub headers         { Dancer::Response->headers(@_) }
 sub header          { goto &headers }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
 sub logger          { set(logger => @_) }
-sub mime_type       {
+sub halt            { Dancer::SharedData->response->halt(@_) }
+sub headers         { Dancer::SharedData->response->headers(@_); }
+sub mime_type {
     my $mime = Dancer::MIME->instance();
     if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
     elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
     else                  { $mime->aliases           }
 }
 sub params          { Dancer::SharedData->request->params(@_) }
-sub pass            { Dancer::Response->pass }
+sub pass            { Dancer::SharedData->response->pass }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
@@ -144,6 +138,9 @@ sub del             { Dancer::App->current->registry->universal_add('delete',  @
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
 sub r               { croak "'r' is DEPRECATED, use qr{} instead" }
+sub r { croak "'r' is DEPRECATED use qr{} instead"; }
+sub request   { Dancer::SharedData->request }
+sub set       { goto &setting }
 sub redirect  {
     my ($destination, $status) = @_;
     if ($destination =~ m!^(\w://)?/!) {
@@ -151,8 +148,9 @@ sub redirect  {
         my $request = Dancer::SharedData->request;
         $destination = $request->uri_for($destination, {}, 1);
     }
-    Dancer::Response->status($status || 302);
-    Dancer::Response->headers('Location' => $destination);
+        my $response = Dancer::SharedData->response;
+    $response->status($status || 302);
+    $response->headers('Location' => $destination);
 }
 sub render_with_layout {
         my ($content, $tokens, $options) = @_;
@@ -162,15 +160,19 @@ sub render_with_layout {
     my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
 
     if (! defined $full_content) {
-        my $error = Dancer::Error->new(
+          return Dancer::Error->new(
             code    => 404,
             message => "Page not found",
-        );
-        return Dancer::Response::set($error->render);
+        )->render();
     }
     return $full_content;
 }
 sub request         { Dancer::SharedData->request }
+sub send_error {
+    my ( $content, $status ) = @_;
+    $status ||= 500;
+    Dancer::Error->new( code => $status, message => $content )->render();
+}
 sub send_file {
     my ($path) = @_;
 
@@ -180,11 +182,11 @@ sub send_file {
     my $resp = Dancer::Renderer::get_file_response();
     return $resp if $resp;
 
-    my $error = Dancer::Error->new(
+    Dancer::Error->new(
         code    => 404,
         message => "No such file: `$path'"
-    );
-    Dancer::Response->set($error->render);
+    )->render();
+    
 }
 sub set             { goto &setting }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
@@ -210,7 +212,7 @@ sub session {
     }
 }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
-sub status          { Dancer::Response->status(@_) }
+sub status    { Dancer::SharedData->response->status(@_) }
 sub template {
     my ( $view, $tokens, $options ) = @_;
 
@@ -219,11 +221,10 @@ sub template {
     if ($view) {
         $content = Dancer::Template->engine->apply_renderer( $view, $tokens );
         if ( !defined $content ) {
-            my $error = Dancer::Error->new(
+                  return Dancer::Error->new(
                 code    => 404,
                 message => "Page not found",
-            );
-            return Dancer::Response->set( $error->render );
+            )->render();
         }
     }
     else {
@@ -236,11 +237,10 @@ sub template {
     defined $full_content
       and return $full_content;
 
-    my $error = Dancer::Error->new(
+    Dancer::Error->new(
         code    => 404,
         message => "Page not found",
-    );
-    return Dancer::Response::set( $error->render );
+    )->render();
 }
 sub true            { 1 }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
