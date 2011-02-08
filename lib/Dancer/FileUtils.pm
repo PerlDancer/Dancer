@@ -32,7 +32,8 @@ sub read_file_content {
 
     if ($file) {
         $fh = open_file('<', $file);
-        return read_glob_content($fh);
+        
+        return wantarray ? read_glob_content($fh) : scalar read_glob_content($fh);
     }
     else {
         return;
@@ -47,8 +48,8 @@ sub read_glob_content {
 
     my @content = <$fh>;
     close $fh;
-    my $content = join("", @content);
-    return $content;
+
+    return wantarray ? @content : join("", @content);
 }
 
 'Dancer::FileUtils';
