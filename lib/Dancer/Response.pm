@@ -97,20 +97,19 @@ sub is_forwarded {
 
 sub halt {
     my ($self, $content) = @_;
-
+    $self->content($content);
+    $self->{halted} = 1;
     # if ( blessed($content) && $content->isa('Dancer::Response') ) {
-    #     $CURRENT = $content;
+    #     Dancer::SharedData->response($content);
     # }
     # else {
-    #     # FIXME we probably want to do better here, I think this class really deserves a
-    #     # complete rewrite ;-)
     #     my $resp = Dancer::Response->new(
-    #     status => ($CURRENT->{status} || 200),
-    #     content => $content,
+    #         status => ($self->status || 200),
+    #         content => $content,
     #     );
-    #     $CURRENT = $resp;
+    #     $resp->{halted} = 1;
+    #     Dancer::SharedData->response($resp);
     # }
-    # $CURRENT->{halted} = 1;
     # return $content;
 }
 
