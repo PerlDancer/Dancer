@@ -71,4 +71,13 @@ get '/unicode' => sub {
     "cyrillic shcha \x{0429}",
 };
 
+on_error sub {
+  my $error = shift;
+  $error->{code} = 599;
+};
+
+get '/error' => sub {
+   send_error('500','Ouch!'); 
+};
+
 true;
