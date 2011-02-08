@@ -17,17 +17,16 @@ use Dancer::Template;
 sub send_file {
     my ($path) = @_;
 
-    my $request = Dancer::Request->new_for_request('GET' => $path);
+    my $request = Dancer::Request->new_for_request( 'GET' => $path );
     Dancer::SharedData->request($request);
 
     my $resp = Dancer::Renderer::get_file_response();
     return $resp if $resp;
 
-    my $error = Dancer::Error->new(
+    Dancer::Error->new(
         code    => 404,
         message => "No such file: `$path'"
-    );
-    Dancer::Response->set($error->render);
+    )->render();
 }
 
 sub template {
@@ -38,11 +37,10 @@ sub template {
     if ($view) {
         $content = Dancer::Template->engine->apply_renderer($view, $tokens);
         if (! defined $content) {
-            my $error = Dancer::Error->new(
+            return Dancer::Error->new(
                 code    => 404,
                 message => "Page not found",
-            );
-            return Dancer::Response->set($error->render);
+            )->render();
         }
     } else {
         $options ||= {};
@@ -53,11 +51,10 @@ sub template {
     defined $full_content
       and return $full_content;
 
-    my $error = Dancer::Error->new(
+    Dancer::Error->new(
         code    => 404,
         message => "Page not found",
-    );
-    return Dancer::Response::set($error->render);
+    )->render();
 }
 
 # DEPRECATED
@@ -69,11 +66,10 @@ sub render_with_layout {
     my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
 
     if (! defined $full_content) {
-        my $error = Dancer::Error->new(
+        return Dancer::Error->new(
             code    => 404,
             message => "Page not found",
-        );
-        return Dancer::Response::set($error->render);
+        )->render();
     }
     return $full_content;
 }
@@ -81,8 +77,7 @@ sub render_with_layout {
 sub error {
     my ($class, $content, $status) = @_;
     $status ||= 500;
-    my $error = Dancer::Error->new(code => $status, message => $content);
-    Dancer::Response->set($error->render);
+    Dancer::Error->new(code => $status, message => $content)->render();
 }
 
 sub redirect {
@@ -93,8 +88,10 @@ sub redirect {
         my $request = Dancer::SharedData->request;
         $destination = $request->uri_for($destination, {}, 1);
     }
-    Dancer::Response->status($status || 302);
-    Dancer::Response->headers('Location' => $destination);
+    my $response = Dancer::SharedData->response;;
+    $response->status($status || 302);
+    $response->headers('Location' => $destination);
+    return;
 }
 
 #
