@@ -107,7 +107,7 @@ sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
-sub content_type    { Dancer::Response->content_type(@_) }
+sub content_type    { Dancer::SharedData->response->content_type(@_) }
 sub dance           { Dancer::start(@_) }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
@@ -115,7 +115,7 @@ sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub send_error      { Dancer::Helpers->error(@_) }
 sub false           {0}
-sub forward         { Dancer::Response->forward(shift) }
+sub forward         { Dancer::SharedData->response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
@@ -125,8 +125,8 @@ sub get {
     Dancer::App->current->registry->universal_add('head', @_);
     Dancer::App->current->registry->universal_add('get',  @_);
 }
-sub halt      { Dancer::Response->halt(@_) }
-sub headers   { Dancer::Response->headers(@_); }
+sub halt      { Dancer::SharedData->response->halt(@_) }
+sub headers   { Dancer::SharedData->response->headers(@_); }
 sub header    { goto &headers; }                            # goto ftw!
 sub layout    { set(layout => shift) }
 sub load      { require $_ for @_ }
@@ -138,7 +138,7 @@ sub mime_type {
     else                  { $mime->aliases           }
 }
 sub params    { Dancer::SharedData->request->params(@_) }
-sub pass      { Dancer::Response->pass }
+sub pass      { Dancer::SharedData->response->pass }
 sub path      { realpath(Dancer::FileUtils::path(@_)) }
 sub post   { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix { Dancer::App->current->set_prefix(@_) }
@@ -178,7 +178,7 @@ sub splat     {
     my $splat = Dancer::SharedData->request->params->{splat};
     return ref $splat ? @$splat : (); 
 }
-sub status    { Dancer::Response->status(@_) }
+sub status    { Dancer::SharedData->response->status(@_) }
 sub template  { Dancer::Helpers::template(@_) }
 sub true      {1}
 sub to_dumper { Dancer::Serializer::Dumper::to_dumper(@_) }
