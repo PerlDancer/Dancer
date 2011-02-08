@@ -17,14 +17,12 @@ use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
 
-sub render_file {
-    return get_file_response();
-}
+sub render_file { get_file_response() }
 
 sub render_action {
     my $resp = get_action_response();
     return (defined $resp)
-      ? response_with_headers($resp)
+      ? response_with_headers()
       : undef;
 }
 
@@ -49,10 +47,10 @@ sub render_error {
 
 # Takes a response object and add default headers
 sub response_with_headers {
-    my $response = shift;
+    my $response = Dancer::SharedData->response();
 
-    $response->{headers} ||= HTTP::Headers->new;
-    $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+   $response->{headers} ||= HTTP::Headers->new;
+   $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
 
     # add cookies
     my @cookies = ();
@@ -67,7 +65,7 @@ sub response_with_headers {
         $response->header('Set-Cookie' => $header);
     }
     
-    return $response;
+    return 1;
 }
 
 sub html_page {
@@ -118,25 +116,25 @@ sub get_action_response {
     }
 
     # redirect immediately - skip route execution
-    if (my $status = Dancer::Response->status) {
+    my $response = Dancer::SharedData->response();
+    if (defined $response && (my $status = $response->status)) {
         if ($status == 302 || $status == 301) {
-            return serialize_response_if_needed(Dancer::Response->current);
+            serialize_response_if_needed();
+            return $response;
         }
     }
 
     # execute the action
     if ($handler) {
-
         # a response may exist, produced by a before filter
-        return serialize_response_if_needed(Dancer::Response->current)
-          if Dancer::Response->exists;
-
+        return serialize_response_if_needed() if defined $response && $response->exists;
         # else, get the route handler's response
         Dancer::App->current($handler->app);
-        my $response = $handler->run($request);
-        $response = serialize_response_if_needed($response);
-        $_->($response) for (@{$app->registry->hooks->{after}});
-        return $response;
+        $handler->run($request);
+        serialize_response_if_needed();
+        my $resp = Dancer::SharedData->response();
+        $_->($resp) for (@{$app->registry->hooks->{after}});
+        return $resp;
     }
     else {
         return;    # 404
@@ -144,12 +142,11 @@ sub get_action_response {
 }
 
 sub serialize_response_if_needed {
-    my ($response) = @_;
+    my $response = Dancer::SharedData->response();
     $response = Dancer::Serializer->process_response($response)
       if Dancer::App->current->setting('serializer') && $response->content();
     return $response;
 }
-
 
 sub get_file_response {
     my $request     = Dancer::SharedData->request;
