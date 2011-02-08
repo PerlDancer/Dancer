@@ -411,7 +411,7 @@ The anonymous function which is given to C<before_template> will be executed
 before sending data and tokens to the template. Receives a hashref of the
 tokens that will be inserted into the template.
 
-This filter works as the C<before> and C<after> filter.
+This filter works as the C<before>, C<on_error> and C<after> filter.
 
 =head2 cookies
 
@@ -625,6 +625,25 @@ Behaves as a setter/getter when given parameters
 
     # get a mime-type
     my $m = mime_types 'foo';
+
+=head2 on_error
+
+Defines an on_error filter:
+
+    on_error sub {
+        my $error = shift;
+        # change the error code
+        $error->{code} = 599;
+    };
+
+The anonymous function which is given to C<on_error> will be executed right
+after a C<send_error> has been called, but before the error is actually
+propagated, thus giving the user the chance to alter the error.
+
+This anonymous function will receive a C<Dancer::Error> object. It doesn't need to
+return anything, as it's supposed to alter the received object in place.
+
+This filter works as the C<before>, C<before_template> and C<after> filter.
 
 =head2 params
 
