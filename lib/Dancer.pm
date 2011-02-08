@@ -63,6 +63,7 @@ use base 'Exporter';
   load_app
   logger
   mime_type
+  on_error
   options
   params
   pass
@@ -142,6 +143,7 @@ sub path      { realpath(Dancer::FileUtils::path(@_)) }
 sub post   { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix { Dancer::App->current->set_prefix(@_) }
 sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
+sub on_error { Dancer::Route::Registry->hook('on_error', @_) }
 sub options { Dancer::App->current->registry->universal_add('options', @_) }
 sub put     { Dancer::App->current->registry->universal_add('put',     @_) }
 sub r { croak "'r' is DEPRECATED use qr{} instead"; }
