@@ -267,10 +267,12 @@ sub download_file {
 }
 
 sub templates($) {
-    my $appname = shift;
-    my $appfile = $appname;
+    my $appname    = shift;
+    my $appfile    = $appname;
+    my $cleanfiles = $appname;
 
-    $appfile =~ s{::}{/}g;
+    $appfile    =~ s{::}{/}g;
+    $cleanfiles =~ s{::}{-}g;
 
     return {
 
@@ -294,7 +296,7 @@ WriteMakefile(
         'Dancer'     => [% dancer_version %],
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => '$appname-*' },
+    clean               => { FILES => '$cleanfiles-*' },
 );
 ",
 'index.tt'  => 
