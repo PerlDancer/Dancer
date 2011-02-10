@@ -99,9 +99,9 @@ use base 'Exporter';
 
 # Dancer's syntax
 
-sub after           { Dancer::Route::Registry->hook('after',           @_) }
+sub after           { Dancer::Route::Registry->hook('after', @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Route::Registry->hook('before',          @_) }
+sub before          { Dancer::Route::Registry->hook('before', @_) }
 sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
@@ -173,22 +173,19 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
-sub splat     {
-    my $splat = Dancer::SharedData->request->params->{splat};
-    return ref $splat ? @$splat : (); 
-}
-sub status    { Dancer::Response->status(@_) }
-sub template  { Dancer::Helpers::template(@_) }
-sub true      {1}
-sub to_dumper { Dancer::Serializer::Dumper::to_dumper(@_) }
-sub to_json   { Dancer::Serializer::JSON::to_json(@_) }
-sub to_yaml   { Dancer::Serializer::YAML::to_yaml(@_) }
-sub to_xml    { Dancer::Serializer::XML::to_xml(@_) }
-sub upload    { Dancer::SharedData->request->upload(@_) }
-sub uri_for   { Dancer::SharedData->request->uri_for(@_) }
-sub var       { Dancer::SharedData->var(@_) }
-sub vars      { Dancer::SharedData->vars }
-sub warning   { goto &Dancer::Logger::warning }
+sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
+sub status          { Dancer::Response->status(@_) }
+sub template        { Dancer::Helpers::template(@_) }
+sub true            { 1 }
+sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
+sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
+sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
+sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
+sub upload          { Dancer::SharedData->request->upload(@_) }
+sub uri_for         { Dancer::SharedData->request->uri_for(@_) }
+sub var             { Dancer::SharedData->var(@_) }
+sub vars            { Dancer::SharedData->vars }
+sub warning         { goto &Dancer::Logger::warning }
 
 # FIXME handle previous usage of load_app with multiple app names
 sub load_app {
