@@ -520,6 +520,21 @@ reached. If it was a B<GET>, it will remain a B<GET>.
 
 Broader functionality might be added in the future.
 
+It is important to note that issuing a forward by itself does not exit and
+forward immediately, forwarding is deferred until after the current route
+or filter has been processed. To exit and forward immediately, use the return
+function, e.g.
+
+    get '/some/path => sub {
+        if ($condition) {
+            return forward '/articles/$article_id';
+        }
+
+        more_stuff();
+    };
+
+You probably always want to use C<return> with forward.
+
 =head2 from_dumper ($structure)
 
 Deserializes a Data::Dumper structure.
