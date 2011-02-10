@@ -252,13 +252,16 @@ sub start {
 
 sub _init {
     my $script      = shift;
-    my $script_path = File::Spec->rel2abs(path(dirname($script)));
+    my ($script_vol,$script_dirs,$script_name) = File::Spec->splitpath(File::Spec->rel2abs($script));
+    my @script_dirs = File::Spec->splitdir($script_dirs); # last element is script parent dir
+    my $script_path = File::Spec->catdir($script_vol,$script_dirs);
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
     $LAYOUT_PRE_DANCER_1_2 = 0
-      if ( basename($script) eq 'app.pl'
-        || basename($script) eq 'dispatch.cgi'
-        || basename($script) eq 'dispatch.fcgi');
+      if ($script_dirs[$#script_dirs] eq 'bin'
+        && ($script_name eq 'app.pl'
+        || $script_name eq 'dispatch.cgi'
+        || $script_name eq 'dispatch.fcgi'));
 
     setting appdir => $ENV{DANCER_APPDIR}
       || (
@@ -277,14 +280,14 @@ sub _init {
       || setting('appdir');
 
     setting public => $ENV{DANCER_PUBLIC}
-      || path(setting('appdir'), 'public');
+      || File::Spec->canonpath(setting('appdir'), 'public');
 
     setting views => $ENV{DANCER_VIEWS}
-      || path(setting('appdir'), 'views');
+      || File::Spec->canonpath(setting('appdir'), 'views');
 
     setting logger => 'file';
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(path(setting('appdir'), 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(File::Spec->canonpath(setting('appdir'), 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
