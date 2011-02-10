@@ -32,7 +32,8 @@ sub read_file_content {
 
     if ($file) {
         $fh = open_file('<', $file);
-        return read_glob_content($fh);
+        
+        return wantarray ? read_glob_content($fh) : scalar read_glob_content($fh);
     }
     else {
         return;
@@ -47,8 +48,8 @@ sub read_glob_content {
 
     my @content = <$fh>;
     close $fh;
-    my $content = join("", @content);
-    return $content;
+
+    return wantarray ? @content : join("", @content);
 }
 
 'Dancer::FileUtils';
@@ -66,12 +67,13 @@ Dancer::FileUtils - helper providing file utilities
     use Dancer::FileUtils qw/path read_file_content/;
 
     my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
+    my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
 
 =head1 DESCRIPTION
 
-Dancer::FileUtils encompasses a few utilities that relate to files which Dancer
-uses. Developers may use it instead of writing their own little subroutines or
-use additional modules.
+Dancer::FileUtils includes a few file related utilities related that Dancer
+uses internally. Developers may use it instead of writing their own
+file reading subroutines or using additional modules.
 
 =head1 SUBROUTINES/METHODS
 
@@ -105,9 +107,13 @@ a path.
     use Dancer::FileUtils 'read_file_content';
 
     my $content = read_file_content($file);
+    my @content = read_file_content($file);
 
-Returns either the content of a file (whose filename is the input) or I<undef>
-in case it failed to open the file.
+Returns either the content of a file (whose filename is the input), I<undef>
+if the file could not be opened.
+
+In array context it returns each line (as defined by $/) as a seperate element
+Scalar context returns the entire contents of the file.
 
 =head2 read_glob_content
 
@@ -115,6 +121,7 @@ in case it failed to open the file.
 
     open my $fh, '<', $file or die "$!\n";
     my $content = read_glob_content($fh);
+    my @content = read_glob_content($fh);
 
 Same as I<read_file_content>, only it accepts a file handle.
 

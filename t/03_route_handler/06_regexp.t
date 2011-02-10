@@ -8,7 +8,7 @@ use Dancer::Test;
 eval { 
     get r('/foo') => sub { "foo" };
 };
-like $@, qr/'r' is DEPRECATED use qr{} instead/,
+like $@, qr/'r' is DEPRECATED, use qr{} instead/,
     "DEPRECATED exception triggered by r()";
 
 ok(get(qr{/hello/([\w]+)} => sub { [splat] }), 'first route set');

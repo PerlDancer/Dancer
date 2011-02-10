@@ -25,7 +25,7 @@ Dancer::Request->attributes(
     # query
     'env',          'path',    'method',
     'content_type', 'content_length',
-    'body',         'id',      'request_uri',
+    'body',         'id',
     'uploads',      'headers', 'path_info',
     'ajax', 
     @http_env_keys,
@@ -33,8 +33,18 @@ Dancer::Request->attributes(
 
 # aliases
 sub agent                 { $_[0]->user_agent }
-sub remote_address        { $_[0]->{env}->{'REMOTE_ADDR'} }
-sub forwarded_for_address { $_[0]->{env}->{'X_FORWARDED_FOR'} }
+sub remote_address        { $_[0]->address }
+sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
+sub address               { $_[0]->env->{REMOTE_ADDR} }
+sub remote_host           { $_[0]->env->{REMOTE_HOST} }
+sub protocol              { $_[0]->env->{SERVER_PROTOCOL} }
+sub port                  { $_[0]->env->{SERVER_PORT} }
+sub request_uri           { $_[0]->env->{REQUEST_URI} }
+sub user                  { $_[0]->env->{REMOTE_USER} }
+sub script_name           { $_[0]->env->{SCRIPT_NAME} }
+sub scheme                { $_[0]->env->{'psgi.url_scheme'} }
+sub secure                { $_[0]->scheme eq 'https' }
+
 sub is_head               { $_[0]->{method} eq 'HEAD' }
 sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
@@ -45,7 +55,7 @@ sub header                { $_[0]->{headers}->header($_[1]) }
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
 sub Vars           { params(@_) }
-sub input_handle   { $_[0]->{env}->{'psgi.input'} || $_[0]->{env}->{'PSGI.INPUT'} }
+sub input_handle   { $_[0]->env->{'psgi.input'} || $_[0]->env->{'PSGI.INPUT'} }
 
 sub new {
     my ($class, $env) = @_;
@@ -102,7 +112,7 @@ sub base {
       SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
     );
 
-    my ($server, $host, $port, $path, $scheme) = @{$self->{env}}{@env_names};
+    my ($server, $host, $port, $path, $scheme) = @{$self->env}{@env_names};
 
     $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'};    # Windows
 
@@ -212,8 +222,8 @@ sub _init {
     $self->_build_headers();
     $self->_build_request_env();
     $self->_build_path()      unless $self->path;
-    $self->_build_method()    unless $self->method;
     $self->_build_path_info() unless $self->path_info;
+    $self->_build_method()    unless $self->method;
 
     $self->{_http_body} =
       HTTP::Body->new($self->content_type, $self->content_length);
@@ -250,17 +260,17 @@ sub _build_request_env {
    # Don't refactor that, it's called whenever a request object is needed, that
    # means at least once per request. If refactored in a loop, this will cost 4
    # times more than the following static map.
-    $self->{user_agent}       = $self->{env}{HTTP_USER_AGENT};
-    $self->{host}             = $self->{env}{HTTP_HOST};
-    $self->{accept_language}  = $self->{env}{HTTP_ACCEPT_LANGUAGE};
-    $self->{accept_charset}   = $self->{env}{HTTP_ACCEPT_CHARSET};
-    $self->{accept_encoding}  = $self->{env}{HTTP_ACCEPT_ENCODING};
-    $self->{keep_alive}       = $self->{env}{HTTP_KEEP_ALIVE};
-    $self->{connection}       = $self->{env}{HTTP_CONNECTION};
-    $self->{accept}           = $self->{env}{HTTP_ACCEPT};
-    $self->{accept_type}      = $self->{env}{HTTP_ACCEPT_TYPE};
-    $self->{referer}          = $self->{env}{HTTP_REFERER};
-    $self->{x_requested_with} = $self->{env}{HTTP_X_REQUESTED_WITH};
+    $self->{user_agent}       = $self->env->{HTTP_USER_AGENT};
+    $self->{host}             = $self->env->{HTTP_HOST};
+    $self->{accept_language}  = $self->env->{HTTP_ACCEPT_LANGUAGE};
+    $self->{accept_charset}   = $self->env->{HTTP_ACCEPT_CHARSET};
+    $self->{accept_encoding}  = $self->env->{HTTP_ACCEPT_ENCODING};
+    $self->{keep_alive}       = $self->env->{HTTP_KEEP_ALIVE};
+    $self->{connection}       = $self->env->{HTTP_CONNECTION};
+    $self->{accept}           = $self->env->{HTTP_ACCEPT};
+    $self->{accept_type}      = $self->env->{HTTP_ACCEPT_TYPE};
+    $self->{referer}          = $self->env->{HTTP_REFERER};
+    $self->{x_requested_with} = $self->env->{HTTP_X_REQUESTED_WITH};
 }
 
 sub _build_headers {
@@ -294,16 +304,13 @@ sub _build_path {
     my ($self) = @_;
     my $path = "";
 
-    $path .= $self->{env}{'SCRIPT_NAME'}
-      if defined $self->{env}->{'SCRIPT_NAME'};
-    $path .= $self->{env}->{'PATH_INFO'}
-      if defined $self->{env}->{'PATH_INFO'};
+    $path .= $self->script_name if defined $self->script_name;
+    $path .= $self->env->{PATH_INFO} if defined $self->env->{PATH_INFO};
 
     # fallback to REQUEST_URI if nothing found
     # we have to decode it, according to PSGI specs.
-    if (defined $self->{env}->{REQUEST_URI}) {
-        $self->{request_uri} = $self->{env}->{REQUEST_URI};
-        $path ||= $self->_url_decode($self->{request_uri});
+    if (defined $self->request_uri) {
+        $path ||= $self->_url_decode($self->request_uri);
     }
 
     croak "Cannot resolve path" if not $path;
@@ -312,7 +319,7 @@ sub _build_path {
 
 sub _build_path_info {
     my ($self) = @_;
-    my $info = $self->{env}->{'PATH_INFO'};
+    my $info = $self->env->{PATH_INFO};
     if (defined $info) {
 
         # Empty path info will be interpreted as "root".
@@ -326,7 +333,7 @@ sub _build_path_info {
 
 sub _build_method {
     my ($self) = @_;
-    $self->{method} = $self->{env}->{REQUEST_METHOD}
+    $self->{method} = $self->env->{REQUEST_METHOD}
       || $self->{request}->request_method();
 }
 
@@ -351,7 +358,7 @@ sub _parse_get_params {
     return $self->{_query_params} if defined $self->{_query_params};
     $self->{_query_params} = {};
 
-    my $source = $self->{env}{QUERY_STRING} || '';
+    my $source = $self->env->{QUERY_STRING} || '';
     foreach my $token (split /[&;]/, $source) {
         my ($key, $val) = split(/=/, $token);
         next unless defined $key;
@@ -402,7 +409,7 @@ sub _has_something_to_read {
 # taken from Miyagawa's Plack::Request::BodyParser
 sub _read {
     my ($self,)   = @_;
-    my $remaining = $self->{env}->{CONTENT_LENGTH} - $self->{_read_position};
+    my $remaining = $self->content_length - $self->{_read_position};
     my $maxlength = $self->{_chunk_size};
 
     return if ($remaining <= 0);
@@ -509,6 +516,42 @@ While this method returns the method string as provided by the environment, it's
 better to use one of the following boolean accessors if you want to inspect the
 requested method.
 
+=head2 address()
+
+Return the IP address of the client.
+
+=head2 remote_host()
+
+Return the remote host of the client.
+
+=head2 protocol()
+
+Return the protocol (HTTP/1.0 or HTTP/1.1) used for the request.
+
+=head2 port()
+
+Return the port of the server.
+
+=head2 request_uri
+
+Return the raw, undecoded request URI path.
+
+=head2 user
+
+Return remote user if defined.
+
+=head2 script_name
+
+Return script_name from the environment.
+
+=head2 scheme
+
+Return the scheme of the request
+
+=head2 secure
+
+Return true of false, indicating wether the connection is secure
+
 =head2 is_get()
 
 Return true if the method requested by the client is 'GET'
@@ -535,14 +578,16 @@ Return the path requested by the client.
 
 =head2 base()
 
-Returns an absolute URI for the base of the application
+Returns an absolute URI for the base of the application.  Returns a L<URI>
+object (which stringifies to the URL, as you'd expect).
 
 =head2 uri_for(path, params)
 
 Constructs a URI from the base and the passed path.  If params (hashref) is
 supplied, these are added to the query string of the uri.  If the base is
 C<http://localhost:5000/foo>, C<< request->uri_for('/bar', { baz => 'baz' }) >>
-would return C<http://localhost:5000/foo/bar?baz=baz>.
+would return C<http://localhost:5000/foo/bar?baz=baz>.  Returns a L<URI> object
+(which stringifies to the URL, as you'd expect).
 
 =head2 params($source)
 

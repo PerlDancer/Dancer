@@ -279,7 +279,7 @@ handler for the C</login> route.
        else {
          session 'logged_in' => true;
          set_flash('You are logged in.');
-         redirect '/';
+         return redirect '/';
        }
     }
 
@@ -528,7 +528,7 @@ Here's the complete dancr.pl script from start to finish.
  		else {
  			session 'logged_in' => true;
  			set_flash('You are logged in.');
- 			redirect '/';
+ 			return redirect '/';
  		}
 	}
 

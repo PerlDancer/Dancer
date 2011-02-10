@@ -29,13 +29,15 @@ sub start {
     if (setting('daemon')) {
         my $pid = $dancer->background();
         print STDERR
-          ">> Dancer server $pid listening on http://$ipaddr:$port\n"
-          if setting('access_log');
+            ">> Dancer $Dancer::VERSION server $pid listening"
+            . "on http://$ipaddr:$port\n"
+                if setting('access_log');
         return $pid;
     }
     else {
-        print STDERR ">> Dancer server $$ listening on http://$ipaddr:$port\n"
-          if setting('access_log');
+        print STDERR ">> Dancer $Dancer::VERSION server $$ listening"
+            ." on http://$ipaddr:$port\n"
+                if setting('access_log');
         $dancer->run();
     }
 }

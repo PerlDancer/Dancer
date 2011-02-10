@@ -67,6 +67,12 @@ sub set {
     $CURRENT = shift;
 }
 
+# FIXME this whole class needs to be rewritten
+sub set_current_content {
+    $CURRENT->{content} = $_[0] 
+        if defined $CURRENT;
+}
+
 sub content {
     my $current = _get_object(shift);
     my $content = shift;
@@ -143,6 +149,7 @@ sub halted {
     my $current = _get_object(shift);
     $current && $current->{halted}
 }
+
 
 sub header {
     my $current = _get_object(shift);

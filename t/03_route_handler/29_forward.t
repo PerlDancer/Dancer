@@ -46,5 +46,6 @@ response_content_is [ POST => '/bounce/' ], 'post-home';
 
 response_headers_are_deeply [ POST => '/bounce/' ], $expected_headers;
 
+Dancer::Logger::logger->{fh}->close;
 File::Temp::cleanup();
 
