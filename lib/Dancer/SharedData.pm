@@ -23,7 +23,7 @@ sub headers { (@_ == 2) ? $_headers = $_[1] : $_headers }
 my $_request;
 sub request { (@_ == 2) ? $_request = $_[1] : $_request }
 
-# response singleton
+# current response
 my $_response;
 sub response {
     if (@_ == 2) {
@@ -44,10 +44,9 @@ sub reset_timer { $_timer = Dancer::Timer->new }
 sub reset_all {
     $vars = {};
     undef $_request;
-    undef $_timer;
     undef $_headers;
-    undef $_response;
+    reset_timer();
+    reset_response();
 }
-
 
 'Dancer::SharedData';
