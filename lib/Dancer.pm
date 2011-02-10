@@ -67,6 +67,7 @@ use base 'Exporter';
   params
   pass
   path
+  path_noverifylast
   post
   prefix
   put
@@ -139,6 +140,7 @@ sub mime_type {
 sub params    { Dancer::SharedData->request->params(@_) }
 sub pass      { Dancer::Response->pass }
 sub path      { realpath(Dancer::FileUtils::path(@_)) }
+sub path_noverifylast { File::Spec->canonpath(Dancer::FileUtils::path_noverifylast(@_) ) }
 sub post   { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix { Dancer::App->current->set_prefix(@_) }
 sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
@@ -252,13 +254,16 @@ sub start {
 
 sub _init {
     my $script      = shift;
-    my $script_path = File::Spec->rel2abs(path(dirname($script)));
+    my ($script_vol,$script_dirs,$script_name) = File::Spec->splitpath(File::Spec->rel2abs($script));
+    my @script_dirs = File::Spec->splitdir($script_dirs); # last element is script parent dir
+    my $script_path = File::Spec->catdir($script_vol,$script_dirs);
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
     $LAYOUT_PRE_DANCER_1_2 = 0
-      if ( basename($script) eq 'app.pl'
-        || basename($script) eq 'dispatch.cgi'
-        || basename($script) eq 'dispatch.fcgi');
+      if ($script_dirs[$#script_dirs - 1] eq 'bin'
+        && ($script_name eq 'app.pl'
+        || $script_name eq 'dispatch.cgi'
+        || $script_name eq 'dispatch.fcgi'));
 
     setting appdir => $ENV{DANCER_APPDIR}
       || (
@@ -277,14 +282,14 @@ sub _init {
       || setting('appdir');
 
     setting public => $ENV{DANCER_PUBLIC}
-      || path(setting('appdir'), 'public');
+	  || path_noverifylast(setting('appdir'), 'public');
 
     setting views => $ENV{DANCER_VIEWS}
-      || path(setting('appdir'), 'views');
+	  || path_noverifylast(setting('appdir'), 'views');
 
     setting logger => 'file';
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(path(setting('appdir'), 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(path_noverifylast(setting('appdir'), 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
@@ -665,6 +670,12 @@ Concatenates multiple path together, without worrying about the underlying
 operating system:
 
     my $path = path(dirname($0), 'lib', 'File.pm');
+
+=head2 path_noverifylast
+
+The same as path, but the last argument can optionally not exist:
+
+    my $possiblepath = path_noverifylast(dirname($0), 'lib', 'File.pm');
 
 =head2 post
 

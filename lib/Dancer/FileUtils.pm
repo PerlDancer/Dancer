@@ -10,10 +10,11 @@ use Carp;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
+@EXPORT_OK = qw(path path_noverifylast dirname read_file_content read_glob_content open_file);
 
-sub path    { File::Spec->catfile(@_) }
-sub dirname { File::Basename::dirname(@_) }
+sub path              { File::Spec->catfile(@_) }
+sub path_noverifylast { File::Spec->catdir($_[0]).File::Spec->catdir('').$_[1] } # [0]=path(must exist), [1]=file(maybe exists)
+sub dirname           { File::Basename::dirname(@_) }
 
 sub open_file {
     my ($mode, $filename) = @_;
@@ -64,10 +65,12 @@ Dancer::FileUtils - helper providing file utilities
 
 =head1 SYNOPSIS
 
-    use Dancer::FileUtils qw/path read_file_content/;
+    use Dancer::FileUtils qw/path path_noverifylast read_file_content/;
 
     my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
     my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
+
+    my $optional_xtra = path_noverifylast( 'folder', 'folder', 'maybe_existing_file' );
 
 =head1 DESCRIPTION
 
