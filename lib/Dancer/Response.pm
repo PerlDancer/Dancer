@@ -6,12 +6,13 @@ use Carp;
 
 use base 'Dancer::Object';
 
-use Dancer::Config 'setting';
 use Scalar::Util qw/blessed/;
 use Dancer::HTTP;
 use Dancer::MIME;
 use HTTP::Headers;
 use Dancer::SharedData;
+
+__PACKAGE__->attributes(qw/content/);
 
 # constructor
 sub new {
@@ -25,10 +26,11 @@ sub new {
         headers => $headers,
         content => "",
         pass    => 0,
-        halted    => 0,
+        halted  => 0,
         forward => "",
         %args,
     };
+
     bless $self, $class;
 
     Dancer::SharedData->response($self);
@@ -40,17 +42,6 @@ sub new {
 sub exists {
     my $self = shift;
     return length($self->content);
-}
-
-sub content {
-    my $self = shift;
-
-    my $content = shift;
-    if (defined $content) {
-        $self->{content} = $content;
-    }else{
-        return $self->{content};
-    }
 }
 
 sub status {
