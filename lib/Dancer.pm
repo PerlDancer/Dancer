@@ -282,10 +282,10 @@ sub _init {
       || setting('appdir');
 
     setting public => $ENV{DANCER_PUBLIC}
-	  || path_noverifylast(setting('appdir'), 'public');
+      || path_noverifylast(setting('appdir'), 'public');
 
     setting views => $ENV{DANCER_VIEWS}
-	  || path_noverifylast(setting('appdir'), 'views');
+      || path_noverifylast(setting('appdir'), 'views');
 
     setting logger => 'file';
 
