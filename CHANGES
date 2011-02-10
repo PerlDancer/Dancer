@@ -1,9 +1,26 @@
-${{NEXT}}
+1.3010  10.02.2011
+
+    [ BUG FIXES ]
+    * GH#303: Generated Makefile.PL's clean is done correctly now.
+      (Sawyer X)
+    * Minimum version of HTTP::Headers to avoid test fails.
+      (LoonyPandora)
+    * Do not require JSON to get version number (fixes tests).
+      (Sawyer X)
 
     [ ENHANCEMENTS ]
+    * Allow read_file DWIMishness using wantarray.
+      (LoonyPandora)
     * Tidy up Dancer.pm
       (Damien Krotkine)
-
+    * Document forward should use return.
+      (Sawyer X)
+    * GH#290: Use return with redirect examples in docs.
+      (Damien Krotkine)
+    * Document that base() returns a URI object.
+      (David Precious)
+    * Show version when starting standalone server.
+      (David Precious)
 
 1.3003  06.02.2011
 
