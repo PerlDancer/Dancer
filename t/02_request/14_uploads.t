@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-    
+
 use Dancer ':syntax';
 use Dancer::Request;
 use Test::More 'import' => ['!pass'];
@@ -95,8 +95,10 @@ do {
     $upload->copy_to($dest_file);
     ok( ( -f $dest_file ), "file '$dest_file' has been copied" );
 
+
+  #gh 220
   SKIP: {
-        skip "bogus upload tests on win32", 3 if ( $^O eq 'MSWin32' or $^O eq 'cygwin'  );
+        skip "bogus upload tests on win32/mac", 3 if ( $^O =~ /MSWin32|cygwin|darwin/ );
 
         $upload->link_to( path( $dest_dir, "hardlink" ) );
         ok( ( -f path( $dest_dir, "hardlink" ) ), "hardlink is created" );
