@@ -1,3 +1,10 @@
+${{NEXT}}
+
+    [ ENHANCEMENTS ]
+    * Tidy up Dancer.pm
+      (Damien Krotkine)
+
+
 1.3003  06.02.2011
 
     [ API CHANGES ]

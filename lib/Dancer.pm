@@ -100,9 +100,9 @@ use base 'Exporter';
 
 # Dancer's syntax
 
-sub after           { Dancer::Route::Registry->hook('after',           @_) }
+sub after           { Dancer::Route::Registry->hook('after', @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Route::Registry->hook('before',          @_) }
+sub before          { Dancer::Route::Registry->hook('before', @_) }
 sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
@@ -114,55 +114,42 @@ sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub send_error      { Dancer::Helpers->error(@_) }
-sub false           {0}
+sub false           { 0 }
 sub forward         { Dancer::Response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
-
-sub get {
-    Dancer::App->current->registry->universal_add('head', @_);
-    Dancer::App->current->registry->universal_add('get',  @_);
-}
-sub halt      { Dancer::Response->halt(@_) }
-sub headers   { Dancer::Response->headers(@_); }
-sub header    { goto &headers; }                            # goto ftw!
-sub layout    { set(layout => shift) }
-sub load      { require $_ for @_ }
-sub logger    { set(logger => @_) }
-sub mime_type {
+sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
+sub halt            { Dancer::Response->halt(@_) }
+sub headers         { Dancer::Response->headers(@_) }
+sub header          { goto &headers }
+sub layout          { set(layout => shift) }
+sub load            { require $_ for @_ }
+sub logger          { set(logger => @_) }
+sub mime_type       {
     my $mime = Dancer::MIME->instance();
     if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
     elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
     else                  { $mime->aliases           }
 }
-sub params    { Dancer::SharedData->request->params(@_) }
-sub pass      { Dancer::Response->pass }
-sub path      { realpath(Dancer::FileUtils::path(@_)) }
+sub params          { Dancer::SharedData->request->params(@_) }
+sub pass            { Dancer::Response->pass }
+sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub path_noverifylast { File::Spec->canonpath(Dancer::FileUtils::path_noverifylast(@_) ) }
-sub post   { Dancer::App->current->registry->universal_add('post', @_) }
-sub prefix { Dancer::App->current->set_prefix(@_) }
-sub del     { Dancer::App->current->registry->universal_add('delete',  @_) }
-sub options { Dancer::App->current->registry->universal_add('options', @_) }
-sub put     { Dancer::App->current->registry->universal_add('put',     @_) }
-sub r { croak "'r' is DEPRECATED use qr{} instead"; }
-sub redirect  { Dancer::Helpers::redirect(@_) }
-sub render_with_layout { Dancer::Helpers::render_with_layout(@_); }
-sub request   { Dancer::SharedData->request }
-sub send_file { Dancer::Helpers::send_file(@_) }
-sub set       { goto &setting }
-
-sub setting {
-    if (Dancer::App->applications) {
-        return Dancer::App->current->setting(@_);
-    }
-    else {
-        return Dancer::Config::setting(@_);
-    }
-}
-
-sub set_cookie { Dancer::Helpers::set_cookie(@_) }
+sub post            { Dancer::App->current->registry->universal_add('post', @_) }
+sub prefix          { Dancer::App->current->set_prefix(@_) }
+sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
+sub options         { Dancer::App->current->registry->universal_add('options', @_) }
+sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
+sub r               { croak "'r' is DEPRECATED, use qr{} instead" }
+sub redirect        { Dancer::Helpers::redirect(@_) }
+sub render_with_layout { Dancer::Helpers::render_with_layout(@_) }
+sub request         { Dancer::SharedData->request }
+sub send_file       { Dancer::Helpers::send_file(@_) }
+sub set             { goto &setting }
+sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
+sub set_cookie      { Dancer::Helpers::set_cookie(@_) }
 
 sub session {
     croak "Must specify session engine in settings prior to using 'session' keyword" unless setting('session');
@@ -175,22 +162,19 @@ sub session {
           : Dancer::Session->write(@_);
     }
 }
-sub splat     {
-    my $splat = Dancer::SharedData->request->params->{splat};
-    return ref $splat ? @$splat : (); 
-}
-sub status    { Dancer::Response->status(@_) }
-sub template  { Dancer::Helpers::template(@_) }
-sub true      {1}
-sub to_dumper { Dancer::Serializer::Dumper::to_dumper(@_) }
-sub to_json   { Dancer::Serializer::JSON::to_json(@_) }
-sub to_yaml   { Dancer::Serializer::YAML::to_yaml(@_) }
-sub to_xml    { Dancer::Serializer::XML::to_xml(@_) }
-sub upload    { Dancer::SharedData->request->upload(@_) }
-sub uri_for   { Dancer::SharedData->request->uri_for(@_) }
-sub var       { Dancer::SharedData->var(@_) }
-sub vars      { Dancer::SharedData->vars }
-sub warning   { goto &Dancer::Logger::warning }
+sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
+sub status          { Dancer::Response->status(@_) }
+sub template        { Dancer::Helpers::template(@_) }
+sub true            { 1 }
+sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
+sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
+sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
+sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
+sub upload          { Dancer::SharedData->request->upload(@_) }
+sub uri_for         { Dancer::SharedData->request->uri_for(@_) }
+sub var             { Dancer::SharedData->var(@_) }
+sub vars            { Dancer::SharedData->vars }
+sub warning         { goto &Dancer::Logger::warning }
 
 # FIXME handle previous usage of load_app with multiple app names
 sub load_app {
