@@ -26,7 +26,7 @@ should be.
 
 Provides easy acces to DBIx::Class database virtualization.
 
-=item L<Dancer::Plugin::Authorize>
+=item L<Dancer::Plugin::Auth::RBAC>
 
 Dancer Authentication, Security and Role-Based Access Control Framework.
 
