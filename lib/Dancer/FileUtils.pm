@@ -13,7 +13,7 @@ use vars '@EXPORT_OK';
 @EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
 
 sub path           { File::Spec->catfile(@_) }
-sub path_no_verify { File::Spec->catdir(@_[0...$#_-1]).File::Spec->catdir('').$_[$#_] } # [0->?] path(must exist),[last] file(maybe exists)
+sub path_no_verify { File::Spec->catdir(@_[0...$#_-1]).File::Spec->catdir('').$_[-1] } # [0->?] path(must exist),[last] file(maybe exists)
 sub dirname        { File::Basename::dirname(@_) }
 
 sub open_file {
