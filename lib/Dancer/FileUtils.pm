@@ -102,7 +102,8 @@ Provides comfortable path resolving, internally using L<File::Spec>.
 
     my $path = path_noverifylast( 'folder', 'folder', 'filename');
 
-The same as path(), without requiring the final filename to be present.
+The same as path, but the last argument can optionally not exist on the
+filesystem.
 
 =head2 dirname
 
