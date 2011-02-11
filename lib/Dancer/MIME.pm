@@ -6,6 +6,15 @@ use base 'Dancer::Object::Singleton';
 
 use MIME::Types;
 
+# Initialise MIME::Types at compile time, to ensure it's done before
+# the fork in a preforking webserver like mod_perl or Starman. Not
+# doing this leads to all MIME types being returned as "text/plain",
+# as MIME::Types fails to load its mappings from the DATA handle. See
+# t/04_static_file/003_mime_types_reinit.t and GH#136.
+BEGIN {
+        MIME::Types->new(only_complete => 1);
+}
+
 __PACKAGE__->attributes( qw/mime_type aliases/ );
 
 sub init {
