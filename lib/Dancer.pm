@@ -261,14 +261,14 @@ sub _init {
       || setting('appdir');
 
     setting public => $ENV{DANCER_PUBLIC}
-      || path(setting('appdir'), 'public');
+      || path_no_verify(setting('appdir'), 'public');
 
     setting views => $ENV{DANCER_VIEWS}
-      || path(setting('appdir'), 'views');
+      || path_no_verify(setting('appdir'), 'views');
 
     setting logger => 'file';
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(path(setting('appdir'), 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(path_no_verify(setting('appdir'), 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
