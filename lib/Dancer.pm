@@ -657,7 +657,8 @@ operating system:
 
 =head2 path_noverifylast
 
-The same as path, but the last argument can optionally not exist:
+The same as path, but the last argument can optionally not exist on the
+filesystem:
 
     my $possiblepath = path_noverifylast(dirname($0), 'lib', 'File.pm');
 
