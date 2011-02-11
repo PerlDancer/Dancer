@@ -13,7 +13,7 @@ use vars '@EXPORT_OK';
 @EXPORT_OK = qw(path path_noverifylast dirname read_file_content read_glob_content open_file);
 
 sub path              { File::Spec->catfile(@_) }
-sub path_noverifylast { File::Spec->catdir($_[0]).File::Spec->catdir('').$_[1] } # [0]=path(must exist), [1]=file(maybe exists)
+sub path_noverifylast { File::Spec->catdir(@_[0...$#_ - 1]).File::Spec->catdir('').$_[$#_] } # [0..?]=path(must exist), [1]=file(maybe exists)
 sub dirname           { File::Basename::dirname(@_) }
 
 sub open_file {
@@ -95,6 +95,14 @@ open the file in the proper encoding.
     my $path = path( 'folder', 'folder', 'filename');
 
 Provides comfortable path resolving, internally using L<File::Spec>.
+
+=head2 path_noverifylast
+
+    use Dancer::FileUtils 'path_noverifylast';
+
+    my $path = path_noverifylast( 'folder', 'folder', 'filename');
+
+The same as path(), without requiring the final filename to be present.
 
 =head2 dirname
 
