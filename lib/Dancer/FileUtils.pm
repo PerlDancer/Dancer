@@ -13,9 +13,19 @@ use vars '@EXPORT_OK';
 
 @EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
 
-sub path           { File::Spec->catfile(@_) }
-sub path_no_verify { realpath(File::Spec->catdir(@_[0..$#_-1])).'/'.$_[-1] } # [0->?] path(must exist),[last] file(maybe exists)
-sub dirname        { File::Basename::dirname(@_) }
+sub path {
+    File::Spec->catfile(@_);
+}
+
+sub path_no_verify {
+    my @nodes = @_;
+
+    # [0->?] path(must exist),[last] file(maybe exists)
+    return realpath(File::Spec->catdir(@nodes[0 .. ($#nodes - 1)])) . '/'
+      . $nodes[-1];
+}
+
+sub dirname { File::Basename::dirname(@_) }
 
 sub open_file {
     my ($mode, $filename) = @_;
