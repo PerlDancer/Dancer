@@ -235,17 +235,19 @@ sub start {
 
 
 sub _init {
-    my $script      = shift;
-    my ($script_vol,$script_dirs,$script_name) = File::Spec->splitpath(File::Spec->rel2abs($script));
+    my $script = shift;
+    
+    my ($script_vol, $script_dirs, $script_name) =
+      File::Spec->splitpath(File::Spec->rel2abs($script));
     my @script_dirs = File::Spec->splitdir($script_dirs);
-    my $script_path = File::Spec->catdir($script_vol,$script_dirs);
+    my $script_path = File::Spec->catdir($script_vol, $script_dirs);
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
+
+    # in bin/ or public/ we need to go one level upper to find the appdir
     $LAYOUT_PRE_DANCER_1_2 = 0
-      if ($script_dirs[$#script_dirs-1] eq 'bin'
-        && ($script_name eq 'app.pl'
-        || $script_name eq 'dispatch.cgi'
-        || $script_name eq 'dispatch.fcgi'));
+      if ($script_dirs[$#script_dirs - 1] eq 'bin')
+      or ($script_dirs[$#script_dirs - 1] eq 'public');
 
     setting appdir => $ENV{DANCER_APPDIR}
       || (
