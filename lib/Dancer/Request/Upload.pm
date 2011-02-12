@@ -110,7 +110,7 @@ Returns a scalar containing the contents of the temporary file.
 Copies the temporary file using File::Copy. Returns true for success,
 false for failure.
 
-    $upload->copy_to('/path/to/targe')
+    $upload->copy_to('/path/to/target')
 
 =back
 

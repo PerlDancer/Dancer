@@ -1,3 +1,26 @@
+1.3010_01	12.02.2011
+
+    [ BUG FIXES ]
+    * GH#136: fix again Mime::Type issues in preforking environment
+      (Chris Andrews)
+	* GH#220: fix for path issues under MacOS X and Windows platforms.
+	  A new function is provided by Dancer::FileUtils: path_no_verify()
+	  (Rowan Thorpe)
+	* Fix for infinite loops detection in before filters
+	  (Flavio Poletti)
+	
+	[ ENHANCEMENTS ]
+	* Better detection of the application layout under non-UNIX platforms.
+	  (Rowan Thorpe, Alexis Sukrieh)
+
+	[ DOCUMENTATION ]
+	* Fix a typo in Dancer::Request::Upload's POD
+	  (Rowan Thorpe)
+	* Better documentation for the before filters, explanations about the
+	  potential infinite loops that can happen when using before filters (and 
+	  what Dancer does in that case).
+	  (Flavio Poletti)
+
 1.3010  10.02.2011
 
     [ BUG FIXES ]

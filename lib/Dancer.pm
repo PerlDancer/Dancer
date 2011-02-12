@@ -7,7 +7,7 @@ use Cwd 'abs_path', 'realpath';
 
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
-$VERSION   = '1.3010';
+$VERSION   = '1.3010_01';
 $AUTHORITY = 'SUKRIA';
 
 use Dancer::Config;
@@ -235,14 +235,19 @@ sub start {
 
 
 sub _init {
-    my $script      = shift;
-    my $script_path = File::Spec->rel2abs(path(dirname($script)));
+    my $script = shift;
+    
+    my ($script_vol, $script_dirs, $script_name) =
+      File::Spec->splitpath(File::Spec->rel2abs($script));
+    my @script_dirs = File::Spec->splitdir($script_dirs);
+    my $script_path = File::Spec->catdir($script_vol, $script_dirs);
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
+
+    # in bin/ or public/ we need to go one level upper to find the appdir
     $LAYOUT_PRE_DANCER_1_2 = 0
-      if ( basename($script) eq 'app.pl'
-        || basename($script) eq 'dispatch.cgi'
-        || basename($script) eq 'dispatch.fcgi');
+      if ($script_dirs[$#script_dirs - 1] eq 'bin')
+      or ($script_dirs[$#script_dirs - 1] eq 'public');
 
     setting appdir => $ENV{DANCER_APPDIR}
       || (
@@ -261,14 +266,14 @@ sub _init {
       || setting('appdir');
 
     setting public => $ENV{DANCER_PUBLIC}
-      || path(setting('appdir'), 'public');
+      || Dancer::FileUtils::path_no_verify(setting('appdir'), 'public');
 
     setting views => $ENV{DANCER_VIEWS}
-      || path(setting('appdir'), 'views');
+      || Dancer::FileUtils::path_no_verify(setting('appdir'), 'views');
 
     setting logger => 'file';
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(path(setting('appdir'), 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify(setting('appdir'), 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
@@ -374,7 +379,16 @@ Defines a before filter:
     };
 
 The anonymous function which is given to C<before> will be executed before
-looking for a route handler to handle the request.
+executing a route handler to handle the request.
+
+If the function modifies the request's C<path_info> or C<method>, a new
+search for a matching route is performed and the filter is re-executed
+again. Considering that this can lead to an infinite loop, this mechanism
+is stopped after 10 times with an exception.
+
+The before filter can set a response with a redirection code (either
+301 or 302): in this case the matched route (if any) will be ignored and the
+redirection will be performed immediately.
 
 You can define multiple before filters, using the C<before> helper as
 many times as you wish; each filter will be executed in the order you added
