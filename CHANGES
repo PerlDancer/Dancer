@@ -3,6 +3,9 @@ ${{NEXT}}
     [ BUG FIXES ]
     * GH#136: fix again Mime::Type issues in preforking environment
       (Chris Andrews)
+	* GH#220: fix for path issues under MacOS X and Windows platforms.
+	  A new function is provided by Dancer::FileUtils: path_no_verify()
+	  (Rowan Thorpe)
 
 
 1.3010  10.02.2011
