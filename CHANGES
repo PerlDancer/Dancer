@@ -1,4 +1,4 @@
-${{NEXT}}
+1.3010_01	12.02.2011
 
     [ BUG FIXES ]
     * GH#136: fix again Mime::Type issues in preforking environment
