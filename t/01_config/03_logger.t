@@ -1,8 +1,11 @@
 use Test::More tests => 15, import => ['!pass'];
 
 use Dancer ':syntax';
+use Dancer::FileUtils;
 
 use File::Temp qw/tempdir/;
+use File::Spec qw/catfile/;
+
 my $dir = tempdir(CLEANUP => 1);
 set appdir => $dir;
 
@@ -17,10 +20,10 @@ ok(debug($message), "debug sent");
 ok(warning($message), "warning sent");
 ok(error($message), "error sent");
 
-my $logdir = path(setting('appdir'), 'logs');
+my $logdir = Dancer::FileUtils::path_no_verify(setting('appdir'), 'logs');
 ok((-d $logdir), "log directory exists");
 
-my $logfile = path($logdir, "development.log");
+my $logfile = Dancer::FileUtils::d_catfile($logdir, "development.log");
 ok((-r $logfile), "logfile exists");
 
 open LOGFILE, '<', $logfile;
@@ -36,13 +39,12 @@ unlink $logfile;
 set environment => 'test';
 logger 'file';
 
-$logfile = path($logdir, "test.log");
+$logfile = Dancer::FileUtils::d_catfile($logdir, "test.log");
 ok((-r $logfile), "environment logfile exists");
 
 open LOGFILE, '<', $logfile;
 @content = <LOGFILE>;
 close LOGFILE;
-
 
 ok(set(log => 'warning'), 'log level set to warning');
 
