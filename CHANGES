@@ -11,6 +11,10 @@ ${{NEXT}}
 	* Better detection of the application layout under non-UNIX platforms.
 	  (Rowan Thorpe, Alexis Sukrieh)
 
+	[ DOCUMENTATION ]
+	* Fix a typo in Dancer::Request::Upload's POD
+	  (Rowan Thorpe)
+
 1.3010  10.02.2011
 
     [ BUG FIXES ]
