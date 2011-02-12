@@ -151,10 +151,12 @@ t/03_route_handler/28_plack_mount.t
 t/03_route_handler/29_forward.t
 t/03_route_handler/29_redirect_immediately.t
 t/03_route_handler/30_bug_gh190.t
+t/03_route_handler/31_infinite_loop.t
 t/03_route_handler/public/404.html
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/002_mime_types.t
+t/04_static_file/003_mime_types_reinit.t
 t/04_static_file/03_get_mime_type.t
 t/04_static_file/static/hello.foo
 t/04_static_file/static/hello.txt
