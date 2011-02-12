@@ -379,7 +379,16 @@ Defines a before filter:
     };
 
 The anonymous function which is given to C<before> will be executed before
-looking for a route handler to handle the request.
+executing a route handler to handle the request.
+
+If the function modifies the request's C<path_info> or C<method>, a new
+search for a matching route is performed and the filter is re-executed
+again. Considering that this can lead to an infinite loop, this mechanism
+is stopped after 10 times with an exception.
+
+The before filter can set a response with a redirection code (either
+301 or 302): in this case the matched route (if any) will be ignored and the
+redirection will be performed immediately.
 
 You can define multiple before filters, using the C<before> helper as
 many times as you wish; each filter will be executed in the order you added
