@@ -6,7 +6,10 @@ ${{NEXT}}
 	* GH#220: fix for path issues under MacOS X and Windows platforms.
 	  A new function is provided by Dancer::FileUtils: path_no_verify()
 	  (Rowan Thorpe)
-
+	
+	[ ENHANCEMENTS ]
+	* Better detection of the application layout under non-UNIX platforms.
+	  (Rowan Thorpe, Alexis Sukrieh)
 
 1.3010  10.02.2011
 
