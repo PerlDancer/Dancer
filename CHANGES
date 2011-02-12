@@ -16,6 +16,10 @@ ${{NEXT}}
 	[ DOCUMENTATION ]
 	* Fix a typo in Dancer::Request::Upload's POD
 	  (Rowan Thorpe)
+	* Better documentation for the before filters, explanations about the
+	  potential infinite loops that can happen when using before filters (and 
+	  what Dancer does in that case).
+	  (Flavio Poletti)
 
 1.3010  10.02.2011
 
