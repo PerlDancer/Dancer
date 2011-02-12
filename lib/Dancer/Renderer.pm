@@ -83,7 +83,7 @@ sub html_page {
 }
 
 sub get_action_response {
-    my $response;
+    my $depth = shift || 1;
 
     # save the request before the filters are ran
     my $request = Dancer::SharedData->request;
@@ -99,19 +99,17 @@ sub get_action_response {
     $_->() for @{$app->registry->hooks->{before}};
 
     # recurse if something has changed
-    my $limit              = 0;
     my $MAX_RECURSIVE_LOOP = 10;
     if (   ($path ne Dancer::SharedData->request->path_info)
         || ($method ne Dancer::SharedData->request->method))
     {
-        $limit++;
-        if ($limit > $MAX_RECURSIVE_LOOP) {
+        if ($depth > $MAX_RECURSIVE_LOOP) {
             croak "infinite loop detected, "
               . "check your route/filters for "
               . $method . ' '
               . $path;
         }
-        return get_action_response();
+        return get_action_response($depth + 1);
     }
 
     # redirect immediately - skip route execution
@@ -130,7 +128,7 @@ sub get_action_response {
 
         # else, get the route handler's response
         Dancer::App->current($handler->app);
-        $response = $handler->run($request);
+        my $response = $handler->run($request);
         $response = serialize_response_if_needed($response);
         $_->($response) for (@{$app->registry->hooks->{after}});
         return $response;
