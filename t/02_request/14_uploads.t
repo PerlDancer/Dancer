@@ -3,6 +3,7 @@ use warnings;
     
 use Dancer ':syntax';
 use Dancer::Request;
+use Dancer::FileUtils;
 use Test::More 'import' => ['!pass'];
 
 
@@ -95,8 +96,8 @@ do {
     $upload->copy_to($dest_file);
     ok( ( -f $dest_file ), "file '$dest_file' has been copied" );
 
-    $upload->link_to( path_no_verify( $dest_dir, "hardlink" ) );
-    ok( ( -f path_no_verify( $dest_dir, "hardlink" ) ), "hardlink is created" );
+    $upload->link_to( Dancer::FileUtils::path_no_verify( $dest_dir, "hardlink" ) );
+    ok( ( -f Dancer::FileUtils::path_no_verify( $dest_dir, "hardlink" ) ), "hardlink is created" );
 
   SKIP: {
         skip "bogus upload tests on win32", 2 if ( $^O eq 'MSWin32' or $^O eq 'cygwin'  );
