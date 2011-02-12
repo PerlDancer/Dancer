@@ -236,7 +236,7 @@ sub start {
 
 sub _init {
     my $script      = shift;
-    my ($script_path,$script_dirs,$script_name) = File::Spec->splitpath(File::Spec->rel2abs($script));
+    my ($script_vol,$script_dirs,$script_name) = File::Spec->splitpath(File::Spec->rel2abs($script));
     my @script_dirs = File::Spec->splitdir($script_dirs);
     my $script_path = File::Spec->catdir($script_vol,$script_dirs);
 
