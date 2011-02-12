@@ -7,7 +7,7 @@ use Cwd 'abs_path', 'realpath';
 
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
-$VERSION   = '1.3010';
+$VERSION   = '1.3010_01';
 $AUTHORITY = 'SUKRIA';
 
 use Dancer::Config;
