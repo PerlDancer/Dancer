@@ -30,7 +30,6 @@ use Dancer::Handler;
 use Dancer::ModuleLoader;
 use Dancer::MIME;
 use File::Spec;
-use File::Basename 'basename';
 
 use base 'Exporter';
 
