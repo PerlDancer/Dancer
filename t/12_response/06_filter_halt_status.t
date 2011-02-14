@@ -1,6 +1,9 @@
 use strict;
 use warnings;
-use Test::More;
+use Test::More import => ['!pass'];;
+
+plan skip_all => "JSON is needed to run this tests"
+    unless Dancer::ModuleLoader->load('JSON');
 
 # make sure we keep the status when halt is used
 

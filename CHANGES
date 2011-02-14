@@ -1,14 +1,16 @@
 {{$NEXT}}
 
-	[ BUG FIXES ]
+    [ BUG FIXES ]
     * Set binmode in write_data_to_file() to fix image corruption in
       Windows
       (Rowan Thorpe)
     * GH#319, GH#278, GH#276, GH#217: Fix file issues on Cygwin and 
       Win32 platforms
-	  (Rowan Thorpe)
+      (Rowan Thorpe)
     * GH#322: Detect errors in scaffolded dispatchers
       (Alberto Simões)
+    * Fix tests so that they don't fail if JSON is not installed
+      (Damien Krotkine)
     
     [ DOCUMENTATION ]
     * Small spaces fix (Alberto Simões).
