@@ -1,4 +1,4 @@
-{{$NEXT}}
+1.3011    14.02.2011
 
     [ BUG FIXES ]
     * Set binmode in write_data_to_file() to fix image corruption in
