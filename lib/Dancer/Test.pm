@@ -327,7 +327,7 @@ Asserts that the response content is equal to the C<$expected> string.
 
 Asserts that the response content is not equal to the C<$not_expected> string.
 
-    response_content_is [GET => '/'], "Hello, World", 
+    response_content_isnt [GET => '/'], "Hello, World", 
         "got expected response content for GET /";
 
 =head2 response_content_is_deeply([$method, $path], $expected_struct, $test_name)

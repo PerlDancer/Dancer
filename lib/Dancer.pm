@@ -3,11 +3,11 @@ package Dancer;
 use strict;
 use warnings;
 use Carp;
-use Cwd 'abs_path', 'realpath';
+use Cwd 'realpath';
 
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
-$VERSION   = '1.3010_01';
+$VERSION   = '1.3011';
 $AUTHORITY = 'SUKRIA';
 
 use Dancer::Config;
@@ -30,7 +30,6 @@ use Dancer::Handler;
 use Dancer::ModuleLoader;
 use Dancer::MIME;
 use File::Spec;
-use File::Basename 'basename';
 
 use base 'Exporter';
 
@@ -186,7 +185,6 @@ sub load_app {
     $app->prefix($options{prefix})     if $options{prefix};
     $app->settings($options{settings}) if $options{settings};
 
-
     # load the application
     my ($package, $script) = caller;
     _init($script);
@@ -240,7 +238,7 @@ sub _init {
     my ($script_vol, $script_dirs, $script_name) =
       File::Spec->splitpath(File::Spec->rel2abs($script));
     my @script_dirs = File::Spec->splitdir($script_dirs);
-    my $script_path = File::Spec->catdir($script_vol, $script_dirs);
+    my $script_path = Dancer::FileUtils::d_catdir($script_vol, $script_dirs);
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
 

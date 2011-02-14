@@ -13,16 +13,37 @@ use vars '@EXPORT_OK';
 
 @EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
 
-sub path {
-    File::Spec->catfile(@_);
+# Undo UNC special-casing catfile-voodoo on cygwin in the next three functions
+sub d_catfile {
+    my $root = shift;
+    $root =~ s{^[/\\]+([/\\])}{$1};
+    File::Spec->catfile($root, @_);
 }
+sub d_catdir {
+    my $root = shift;
+    $root =~ s{^[/\\]+([/\\])}{$1};
+    File::Spec->catdir($root, @_);
+}
+sub d_canonpath {
+    my $root = shift;
+    $root =~ s{^[/\\]+([/\\])}{$1};
+    File::Spec->canonpath($root, @_);
+}
+
+sub path { d_catfile(@_) }
 
 sub path_no_verify {
     my @nodes = @_;
+    my $path = '';
 
     # [0->?] path(must exist),[last] file(maybe exists)
-    return realpath(File::Spec->catdir(@nodes[0 .. ($#nodes - 1)])) . '/'
-      . $nodes[-1];
+    if($#nodes > 0) {
+        $path = realpath(d_catdir(@nodes[0 .. ($#nodes - 1)])).'/';
+    } elsif(not File::Spec->file_name_is_absolute($nodes[0])) {
+        $path = Cwd::cwd.'/';
+    }
+    $path .= d_canonpath($nodes[$#nodes]);
+    return $path;
 }
 
 sub dirname { File::Basename::dirname(@_) }
@@ -44,7 +65,7 @@ sub read_file_content {
 
     if ($file) {
         $fh = open_file('<', $file);
-        
+
         return wantarray ? read_glob_content($fh) : scalar read_glob_content($fh);
     }
     else {

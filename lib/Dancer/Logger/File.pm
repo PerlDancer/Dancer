@@ -6,31 +6,43 @@ use base 'Dancer::Logger::Abstract';
 
 use File::Spec;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path open_file);
+use Dancer::FileUtils qw(open_file);
 use IO::File;
 
 sub logdir {
-    my $appdir = setting('appdir');
     my $altpath = setting('log_path');
-    my $logroot = $appdir || File::Spec->tmpdir();
-    return ($altpath ? $altpath : path($logroot, 'logs'));
+    return $altpath if($altpath);
+    my $appdir = setting('appdir');
+    my $logroot = $appdir;
+    unless($logroot) {
+        $logroot = Dancer::FileUtils::d_canonpath(File::Spec->tmpdir().'/dancer-'.$$);
+        if (!-d $logroot and not mkdir $logroot) {
+            carp "log directory $logroot doesn't exist, unable to create";
+            return;
+        }
+    }
+    return Dancer::FileUtils::path_no_verify($logroot, 'logs');
 }
 
 sub init {
     my ($self) = @_;
     my $logdir = logdir();
 
-    if (!-d $logdir) {
-        if (not mkdir $logdir) {
-            carp "log directory $logdir doesn't exist, unable to create";
-            return;
-        }
+    if (!-d $logdir && not mkdir $logdir) {
+        carp "log directory $logdir doesn't exist, unable to create";
+        return;
+    }
+    if (!-w $logdir or !-x $logdir) {
+        my $perm = (stat $logdir)[2] & 07777;
+        chmod($perm | 0700, $logdir);
+        carp "log directory $logdir isn't writable/executable, can't chmod it";
+        return;
     }
 
     my $logfile = setting('environment');
-    $logfile = path($logdir, "$logfile.log");
+    $logfile = Dancer::FileUtils::path_no_verify($logdir, "$logfile.log");
 
-    my $fh = open_file('>>', $logfile);
+    my $fh = open_file('>>', $logfile) or carp "unable to create or append to $logfile";
 
     $fh->autoflush;
     $self->{logfile} = $logfile;
