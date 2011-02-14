@@ -2,7 +2,10 @@
 
 	[ BUG FIXES ]
     * Set binmode in write_data_to_file() to fix image corruption in
-	  Windows
+      Windows
+      (Rowan Thorpe)
+    * GH#319, GH#278, GH#276, GH#217: Fix file issues on Cygwin and 
+      Win32 platforms
 	  (Rowan Thorpe)
     
     [ DOCUMENTATION ]
