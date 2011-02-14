@@ -100,7 +100,7 @@ do {
     ok( ( -f Dancer::FileUtils::path_no_verify( $dest_dir, "hardlink" ) ), "hardlink is created" );
 
   SKIP: {
-        skip "bogus upload tests on win32", 2 if ( $^O eq 'MSWin32' or $^O eq 'cygwin'  );
+        skip "bogus upload tests on win32", 2 if ( $^O eq 'MSWin32' );
 
         # make sure cleanup is performed when the HTTP::Body object is purged
         my $file = $upload->tempname;
