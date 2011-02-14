@@ -3,6 +3,8 @@
     [ ENHANCEMENTS ]
     * Add Dancer::Logger::Null.
       (Sawyer X)
+    * Add Dancer::Logger::Diag.
+      (Sawyer X)
 
 1.3011    14.02.2011
 
