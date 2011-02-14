@@ -1,5 +1,10 @@
 {{$NEXT}}
 
+	[ BUG FIXES ]
+    * Set binmode in write_data_to_file() to fix image corruption in
+	  Windows
+	  (Rowan Thorpe)
+    
     [ DOCUMENTATION ]
     * Small spaces fix (Alberto Simões).
 

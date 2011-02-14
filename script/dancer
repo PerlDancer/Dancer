@@ -209,6 +209,7 @@ sub write_data_to_file {
     my ($data, $path) = @_;
     open(my $fh, '>', $path)
       or warn "Failed to write favicon to $path - $!" and return;
+    binmode($fh);
     print {$fh} unpack 'u*', $data;
     close $fh;
 }
