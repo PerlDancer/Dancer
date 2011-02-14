@@ -4,7 +4,7 @@ use warnings;
 use Carp;
 use base 'Dancer::Logger::Abstract';
 
-use File::Spec;
+use File::Temp qw/tempdir/;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(open_file);
 use IO::File;
@@ -12,12 +12,19 @@ use IO::File;
 sub logdir {
     my $altpath = setting('log_path');
     return $altpath if($altpath);
-    my $appdir = setting('appdir');
-    my $logroot = $appdir;
+    my $logroot = setting('appdir');
     unless($logroot) {
-        $logroot = Dancer::FileUtils::d_canonpath(File::Spec->tmpdir().'/dancer-'.$$);
-        if (!-d $logroot and not mkdir $logroot) {
-            carp "log directory $logroot doesn't exist, unable to create";
+        $logroot = Dancer::FileUtils::d_catdir(tempdir()); # don't do CLEANUP => 1 here...
+        if (!$logroot || ( !-d $logroot && not mkdir $logroot )) {
+            carp "log directory $logroot doesn't exist, am unable to create it";
+            return;
+        }
+    }
+    if (!-w $logroot or !-x $logroot) {
+        my $perm = (stat $logroot)[2] & 07777;
+        chmod($perm | 0700, $logroot);
+        if (!-w $logroot or !-x $logroot) {
+            carp "log directory $logroot isn't writable/executable and can't chmod it";
             return;
         }
     }
@@ -28,14 +35,7 @@ sub init {
     my ($self) = @_;
     my $logdir = logdir();
 
-    if (!-d $logdir && not mkdir $logdir) {
-        carp "log directory $logdir doesn't exist, unable to create";
-        return;
-    }
-    if (!-w $logdir or !-x $logdir) {
-        my $perm = (stat $logdir)[2] & 07777;
-        chmod($perm | 0700, $logdir);
-        carp "log directory $logdir isn't writable/executable, can't chmod it";
+    if (!$logdir) {
         return;
     }
 
