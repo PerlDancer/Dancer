@@ -7,6 +7,8 @@
     * GH#319, GH#278, GH#276, GH#217: Fix file issues on Cygwin and 
       Win32 platforms
 	  (Rowan Thorpe)
+    * GH#322: Detect errors in scaffolded dispatchers
+      (Alberto Simões)
     
     [ DOCUMENTATION ]
     * Small spaces fix (Alberto Simões).
