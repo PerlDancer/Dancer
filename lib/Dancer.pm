@@ -238,7 +238,12 @@ sub _init {
     my ($script_vol, $script_dirs, $script_name) =
       File::Spec->splitpath(File::Spec->rel2abs($script));
     my @script_dirs = File::Spec->splitdir($script_dirs);
-    my $script_path = Dancer::FileUtils::d_catdir($script_vol, $script_dirs);
+    my $script_path;
+    if ($script_vol) {
+        $script_path = path($script_vol, $script_dirs);
+    } else {
+        $script_path = path($script_dirs);
+    }
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
 
