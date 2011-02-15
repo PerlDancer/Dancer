@@ -532,23 +532,23 @@ Return the protocol (HTTP/1.0 or HTTP/1.1) used for the request.
 
 Return the port of the server.
 
-=head2 request_uri
+=head2 request_uri()
 
 Return the raw, undecoded request URI path.
 
-=head2 user
+=head2 user()
 
 Return remote user if defined.
 
-=head2 script_name
+=head2 script_name()
 
 Return script_name from the environment.
 
-=head2 scheme
+=head2 scheme()
 
 Return the scheme of the request
 
-=head2 secure
+=head2 secure()
 
 Return true of false, indicating wether the connection is secure
 
@@ -707,29 +707,36 @@ Dancer::Request object through specific accessors, here are those supported:
 
 =over 4
 
-=item C<user_agent>
-
-=item C<agent> (alias for C<user_agent>)
-
-=item C<host>
-
-=item C<accept_language>
+=item C<accept>
 
 =item C<accept_charset>
 
 =item C<accept_encoding>
 
-=item C<keep_alive>
+=item C<accept_language>
+
+=item C<accept_type>
+
+=item C<agent> (alias for C<user_agent>)
 
 =item C<connection>
 
-=item C<accept>
-
 =item C<forwarded_for_address>
+
+=item C<host>
+
+=item C<keep_alive>
+
+=item C<path_info>
+
+=item C<referer>
 
 =item C<remote_address>
 
+=item C<user_agent>
+
 =back
+
 
 =head1 AUTHORS
 
