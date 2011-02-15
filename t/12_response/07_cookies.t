@@ -25,10 +25,10 @@ plan tests => 2;
 my $req = fake_request(GET => '/onecookie');
 Dancer::SharedData->request($req);
 my $headers = Dancer::Renderer::render_action();
-ok($headers->header('Set-Cookie') eq 'A=thevalueofA; path=/; HttpOnly');
+is($headers->header('Set-Cookie'), 'A=thevalueofA; path=/; HttpOnly');
 
 # /twocookies
 $req = fake_request(GET => '/twocookies');
 Dancer::SharedData->request($req);
 $headers = Dancer::Renderer::render_action();
-ok($headers->header('Set-Cookie') eq 'A=thevalueofA; path=/; HttpOnly, B=thevalueofB; path=/; HttpOnly');
+is($headers->header('Set-Cookie'), 'A=thevalueofA; path=/; HttpOnly, B=thevalueofB; path=/; HttpOnly');
