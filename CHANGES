@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * Fix cookies disappearing when more than one is set.
+      (Chris Andrews)
+
     [ ENHANCEMENTS ]
     * Add Dancer::Logger::Null.
       (Sawyer X)
