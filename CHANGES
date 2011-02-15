@@ -6,6 +6,10 @@
     * Add Dancer::Logger::Diag.
       (Sawyer X)
 
+    [ DOCUMENTATION ]
+    * Add missing methods (e.g. "referer"), sorting, clean up.
+      (Flavio Poletti)
+
 1.3011    14.02.2011
 
     [ BUG FIXES ]
