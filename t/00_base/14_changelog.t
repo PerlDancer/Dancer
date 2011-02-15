@@ -17,16 +17,17 @@ my @possible_sections = ('API CHANGES', 'BUG FIXES', 'ENHANCEMENTS', 'DOCUMENTAT
 #################
 
 
+# beware : below are some crazy paranoid testing
 
 my $possible_sections = join('|', @possible_sections);
 
 open(my $fh, '<', $changelog_filename);
-
 my @lines = map { chomp; $_ } <$fh>;
 
 my $tests_count = 0;
 while (1) { $lines[$tests_count++] !~ /^\Q$stop_checking_version\E/ or last }
 
+# test count = number of lines + 1
 plan tests => $tests_count;
 
 my @struct;
@@ -160,7 +161,8 @@ END_CHANGES:
 } # end scoping
 
 
-#print STDERR Dumper(@struct); use Data::Dumper;
+# we are doing advanced testing in a subtest because we couldn't compute the
+# number of test upfront. But now we can
 
 subtest 'Advanced testing of changelog' => sub {
 
