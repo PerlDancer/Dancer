@@ -32,7 +32,7 @@ WriteMakefile1(
     },
 
     BUILD_REQUIRES => {
-        'Test::More'             => '0.88',
+        'Test::More'             => '0.94',
     },
 
     PREREQ_PM => {
