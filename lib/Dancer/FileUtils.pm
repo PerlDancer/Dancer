@@ -16,17 +16,17 @@ use vars '@EXPORT_OK';
 # Undo UNC special-casing catfile-voodoo on cygwin in the next three functions
 sub d_catfile {
     my $root = shift;
-    $root =~ s{^[/\\]+([/\\])}{$1};
+    $root =~ s{^[/\\]+([/\\])}{$1} if ($^O eq 'cygwin');
     File::Spec->catfile($root, @_);
 }
 sub d_catdir {
     my $root = shift;
-    $root =~ s{^[/\\]+([/\\])}{$1};
+    $root =~ s{^[/\\]+([/\\])}{$1} if ($^O eq 'cygwin');
     File::Spec->catdir($root, @_);
 }
 sub d_canonpath {
     my $root = shift;
-    $root =~ s{^[/\\]+([/\\])}{$1};
+    $root =~ s{^[/\\]+([/\\])}{$1} if ($^O eq 'cygwin');
     File::Spec->canonpath($root, @_);
 }
 
