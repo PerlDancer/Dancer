@@ -5,6 +5,8 @@
       (Chris Andrews)
 
     [ ENHANCEMENTS ]
+    * Introduce changelog test of hell.
+      (Damien Krotkine)
     * Add Dancer::Logger::Null.
       (Sawyer X)
     * Add Dancer::Logger::Diag.
