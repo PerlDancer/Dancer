@@ -44,6 +44,7 @@ sub user                  { $_[0]->env->{REMOTE_USER} }
 sub script_name           { $_[0]->env->{SCRIPT_NAME} }
 sub scheme                { $_[0]->env->{'psgi.url_scheme'} }
 sub secure                { $_[0]->scheme eq 'https' }
+sub uri                   { $_[0]->request_uri }
 
 sub is_head               { $_[0]->{method} eq 'HEAD' }
 sub is_post               { $_[0]->{method} eq 'POST' }
