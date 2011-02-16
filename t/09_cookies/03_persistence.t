@@ -14,7 +14,7 @@ use Dancer;
 
 use File::Spec;
 use File::Temp 'tempdir';
-my $tempdir = tempdir('Dancer.XXXXXX', DIR => File::Spec->curdir, CLEANUP => 1);
+my $tempdir = tempdir(CLEANUP => 1, TMPDIR => 1);
 
 plan tests => 9;
 Test::TCP::test_tcp(

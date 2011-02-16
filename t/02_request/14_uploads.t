@@ -4,6 +4,7 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::Request;
 use Dancer::FileUtils;
+use File::Temp qw(tempdir);
 use Test::More 'import' => ['!pass'];
 
 
@@ -91,23 +92,24 @@ do {
       "filename is accessible via params";
 
     # copy_to, link_to
-    my $dest_dir = File::Temp::tempdir( CLEANUP => 1 );
+    my $dest_dir = tempdir(CLEANUP => 1, TMPDIR => 1);
     my $dest_file = File::Spec->catfile( $dest_dir, $upload->basename );
     $upload->copy_to($dest_file);
     ok( ( -f $dest_file ), "file '$dest_file' has been copied" );
 
-    $upload->link_to( Dancer::FileUtils::path_no_verify( $dest_dir, "hardlink" ) );
-    ok( ( -f Dancer::FileUtils::path_no_verify( $dest_dir, "hardlink" ) ), "hardlink is created" );
+    my $dest_file_link = File::Spec->catfile( $dest_dir, "hardlink" );
+    $upload->link_to( $dest_file_link );
+    ok( ( -f $dest_file_link ), "hardlink '$dest_file_link' has been created" );
 
-  SKIP: {
-        skip "bogus upload tests on win32", 2 if ( $^O eq 'MSWin32' or $^O eq 'cygwin'  );
-
-        # make sure cleanup is performed when the HTTP::Body object is purged
-        my $file = $upload->tempname;
-        ok( ( -f $file ), 'temp file exists while HTTP::Body lives' );
-        undef $req->{_http_body};
+    # make sure cleanup is performed when the HTTP::Body object is purged
+    my $file = $upload->tempname;
+    ok( ( -f $file ), 'temp file exists while HTTP::Body lives' );
+    undef $req->{_http_body};
+    SKIP: {
+        skip "Win32 can't remove file/link while open, deadlock with HTTP::Body", 1 if ($^O eq 'MSWin32');
         ok( ( !-f $file ), 'temp file is removed when HTTP::Body object dies' );
     }
 
+    unlink($file) if ($^O eq 'MSWin32');
 };
 

@@ -16,7 +16,7 @@ eval {
 
 like $@, qr/Unable to parse the configuration file/;
 
-my $dir = tempdir(CLEANUP => 1);
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 
 my $config_file = File::Spec->catfile($dir, 'settings.yml');
 
