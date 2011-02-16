@@ -1,4 +1,4 @@
-use Test::More tests => 12;
+use Test::More tests => 14;
 
 use strict;
 use warnings;
@@ -7,13 +7,14 @@ use Dancer::Request;
 my $env = {
     'REQUEST_METHOD'  => 'GET',
     'PATH_INFO'       => '/',
+    'REQUEST_URI'     => '/',
     'CONTENT_TYPE'    => 'text/plain',
     'REMOTE_ADDR'     => '192.168.0.2',
     'CONTENT_LENGTH'  => 42,
     'X_FORWARDED_FOR' => '192.168.0.3',
     'HTTP_USER_AGENT' => 'Mozy',
     'HTTP_HOST'       => 'foo.bar.com',
-    'REMOTE_USER' => 'franck',
+    'REMOTE_USER'     => 'franck',
 };
 
 my $r = Dancer::Request->new($env);
@@ -30,3 +31,5 @@ is $r->host, 'foo.bar.com', 'host looks good';
 is $r->remote_address, '192.168.0.2', 'remote address looks good';
 is $r->forwarded_for_address, '192.168.0.3', 'forwarded address looks good';
 is $r->user, 'franck',  'remote user looks good';
+is $r->request_uri, '/', 'request_uri looks good';
+is $r->uri, $r->request_uri, '->uri is an alis on ->request_uri';
