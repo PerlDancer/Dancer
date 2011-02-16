@@ -5,6 +5,8 @@
       (Chris Andrews)
 
     [ ENHANCEMENTS ]
+    * removes Dancer::Helpers, refactor Dancer.pm accordingly
+      (Franck Cuny)
     * Add Dancer::Logger::Null.
       (Sawyer X)
     * Add Dancer::Logger::Diag.
