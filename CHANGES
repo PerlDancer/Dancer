@@ -5,6 +5,8 @@
       (Chris Andrews)
 
     [ ENHANCEMENTS ]
+    * add a new accessor to Dancer::Request: ->uri (it's an alias to ->request_uri)
+      (Franck Cuny)
     * removes Dancer::Helpers, refactor Dancer.pm accordingly
       (Franck Cuny)
     * Introduce changelog test of hell.

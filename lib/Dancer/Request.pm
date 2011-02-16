@@ -44,6 +44,7 @@ sub user                  { $_[0]->env->{REMOTE_USER} }
 sub script_name           { $_[0]->env->{SCRIPT_NAME} }
 sub scheme                { $_[0]->env->{'psgi.url_scheme'} }
 sub secure                { $_[0]->scheme eq 'https' }
+sub uri                   { $_[0]->request_uri }
 
 sub is_head               { $_[0]->{method} eq 'HEAD' }
 sub is_post               { $_[0]->{method} eq 'POST' }
@@ -531,6 +532,10 @@ Return the protocol (HTTP/1.0 or HTTP/1.1) used for the request.
 =head2 port()
 
 Return the port of the server.
+
+=head2 uri()
+
+An alias to request_uri()
 
 =head2 request_uri()
 
