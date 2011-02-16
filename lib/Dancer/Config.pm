@@ -56,7 +56,7 @@ my $setters = {
                 'get', '/:page',
                 sub {
                     my $params = Dancer::SharedData->request->params;
-                    Dancer::Helpers::template($params->{'page'});
+                    Dancer::template($params->{'page'});
                 }
             );
         }

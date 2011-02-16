@@ -14,7 +14,6 @@ use Dancer::Config;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
-use Dancer::Helpers;
 use Dancer::Logger;
 use Dancer::Plugin;
 use Dancer::Renderer;
@@ -111,7 +110,12 @@ sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
-sub send_error      { Dancer::Helpers->error(@_) }
+sub send_error {
+    my ( $content, $status ) = @_;
+    $status ||= 500;
+    my $error = Dancer::Error->new( code => $status, message => $content );
+    Dancer::Response->set( $error->render );
+}
 sub false           { 0 }
 sub forward         { Dancer::Response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
@@ -140,14 +144,60 @@ sub del             { Dancer::App->current->registry->universal_add('delete',  @
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
 sub r               { croak "'r' is DEPRECATED, use qr{} instead" }
-sub redirect        { Dancer::Helpers::redirect(@_) }
-sub render_with_layout { Dancer::Helpers::render_with_layout(@_) }
+sub redirect  {
+    my ($destination, $status) = @_;
+    if ($destination =~ m!^(\w://)?/!) {
+        # no absolute uri here, build one, RFC 2616 forces us to do so
+        my $request = Dancer::SharedData->request;
+        $destination = $request->uri_for($destination, {}, 1);
+    }
+    Dancer::Response->status($status || 302);
+    Dancer::Response->headers('Location' => $destination);
+}
+sub render_with_layout {
+        my ($content, $tokens, $options) = @_;
+    carp "'render_with_layout' is DEPRECATED, use the 'engine' keyword "
+       . "to get the template engine, and use 'apply_layout' on the result";
+
+    my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
+
+    if (! defined $full_content) {
+        my $error = Dancer::Error->new(
+            code    => 404,
+            message => "Page not found",
+        );
+        return Dancer::Response::set($error->render);
+    }
+    return $full_content;
+}
 sub request         { Dancer::SharedData->request }
-sub send_file       { Dancer::Helpers::send_file(@_) }
+sub send_file {
+    my ($path) = @_;
+
+    my $request = Dancer::Request->new_for_request('GET' => $path);
+    Dancer::SharedData->request($request);
+
+    my $resp = Dancer::Renderer::get_file_response();
+    return $resp if $resp;
+
+    my $error = Dancer::Error->new(
+        code    => 404,
+        message => "No such file: `$path'"
+    );
+    Dancer::Response->set($error->render);
+}
 sub set             { goto &setting }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
-sub set_cookie      { Dancer::Helpers::set_cookie(@_) }
-
+# set_cookie name => value,
+#     expires => time() + 3600, domain => '.foo.com'
+sub set_cookie {
+    my ( $name, $value, %options ) = @_;
+    Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
+        name  => $name,
+        value => $value,
+        %options
+    );
+}
 sub session {
     croak "Must specify session engine in settings prior to using 'session' keyword" unless setting('session');
     if (@_ == 0) {
@@ -161,7 +211,37 @@ sub session {
 }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
 sub status          { Dancer::Response->status(@_) }
-sub template        { Dancer::Helpers::template(@_) }
+sub template {
+    my ( $view, $tokens, $options ) = @_;
+
+    my $content;
+
+    if ($view) {
+        $content = Dancer::Template->engine->apply_renderer( $view, $tokens );
+        if ( !defined $content ) {
+            my $error = Dancer::Error->new(
+                code    => 404,
+                message => "Page not found",
+            );
+            return Dancer::Response->set( $error->render );
+        }
+    }
+    else {
+        $options ||= {};
+        $content = delete $options->{content};
+    }
+
+    my $full_content =
+      Dancer::Template->engine->apply_layout( $content, $tokens, $options );
+    defined $full_content
+      and return $full_content;
+
+    my $error = Dancer::Error->new(
+        code    => 404,
+        message => "Page not found",
+    );
+    return Dancer::Response::set( $error->render );
+}
 sub true            { 1 }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
@@ -172,7 +252,6 @@ sub uri_for         { Dancer::SharedData->request->uri_for(@_) }
 sub var             { Dancer::SharedData->var(@_) }
 sub vars            { Dancer::SharedData->vars }
 sub warning         { goto &Dancer::Logger::warning }
-
 # FIXME handle previous usage of load_app with multiple app names
 sub load_app {
     my ($app_name, %options) = @_;
