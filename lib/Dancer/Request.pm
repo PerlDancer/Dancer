@@ -533,6 +533,10 @@ Return the protocol (HTTP/1.0 or HTTP/1.1) used for the request.
 
 Return the port of the server.
 
+=head2 uri()
+
+An alias to request_uri()
+
 =head2 request_uri()
 
 Return the raw, undecoded request URI path.
