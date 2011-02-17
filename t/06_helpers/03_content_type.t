@@ -45,6 +45,5 @@ foreach my $test (@tests) {
     is($headers{'Content-Type'}, 
         $test->{expected}, 
         "content_type looks good for ".$test->{path}); 
-    Dancer::SharedData->reset_all();
 }
 

@@ -153,9 +153,9 @@ sub run {
     my ($self, $request) = @_;
 
     my $content  = $self->execute();
-    my $response = Dancer::SharedData->response;
+    my $response = Dancer::Response->current;
 
-    if ( $response && $response->is_forwarded ) {
+    if ( $response->is_forwarded ) {
         my $new_req = Dancer::Request->new_for_request(
             $request->method,
             $response->{forward},
@@ -173,8 +173,7 @@ sub run {
         );
     }
 
-    if ($response && $response->has_passed) {
-        $response->{pass} = 0;
+    if ($response->has_passed) {
         if ($self->next) {
             my $next_route = $self->find_next_matching_route($request);
             return $next_route->run($request);
@@ -191,15 +190,11 @@ sub run {
     # drop content if HEAD request
     $content = '' if $request->is_head;
 
-    my $ct =
-      ( defined $response && defined $response->content_type )
-      ? $response->content_type()
-      : setting('content_type');
-
-    my $st = defined $response ? $response->status : 200;
-
+    # init response headers
+    my $ct = $response->content_type() || setting('content_type');
+    my $st = $response->status()       || 200;
     my $headers = [];
-    push @$headers, @{ $response->headers_to_array } if defined $response;
+    push @$headers, @{$response->headers_to_array};
 
     # content type may have already be set earlier
     # (eg: with send_error)

@@ -51,7 +51,6 @@ foreach my $route (@routes) {
         ok(defined($response), 
             "route handler found for method $method, path ".$route->{path});
         is $response->{content}, $route->{expected}, "response content is ok";
-        Dancer::SharedData->reset_response();
     }
 }
 
@@ -70,6 +69,5 @@ foreach my $route (@failed) {
         my $response = Dancer::Renderer::get_action_response();
         ok(!defined($response), 
             "route handler not found for method $method, path ".$route->{path});
-        Dancer::SharedData->reset_response();
     }
 }

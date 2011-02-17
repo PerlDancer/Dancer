@@ -80,7 +80,7 @@ Dancer::MIME - Singleton object to handle MimeTypes
     # get mime type for standard or non standard types
     $nonstandard_type = $mime->mime_type_for('foo');
     $standard_type = $mime->mime_type_for('svg');
-    my $response = Dancer::SharedData->response->status(200);
+    Dancer::Response->status; # 200
 
 =head1 PUBLIC API
 

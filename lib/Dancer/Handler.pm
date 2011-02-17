@@ -45,7 +45,6 @@ sub handle_request {
     my ($self, $request) = @_;
     my $ip_addr = $request->remote_address || '-';
 
-    Dancer::SharedData->reset_response();
     Dancer::SharedData->reset_timer;
     Dancer::Logger::core("request: "
           . $request->method . " "
@@ -67,8 +66,9 @@ sub handle_request {
         Dancer::App->reload_apps;
     }
 
+    my $response;
     eval {
-        Dancer::Renderer->render_file
+             $response = Dancer::Renderer->render_file
           || Dancer::Renderer->render_action
           || Dancer::Renderer->render_error(404);
     };
@@ -76,13 +76,14 @@ sub handle_request {
         Dancer::Logger::core(
             'request to ' . $request->path_info . " crashed: $@");
 
-        Dancer::Error->new(
+        my $error = Dancer::Error->new(
             code    => 500,
             title   => "Runtime Error",
             message => $@
-        )->render();
+        );
+        $response = $error->render;
     }
-    return $self->render_response();
+    return $self->render_response($response);
 }
 
 sub psgi_app {
@@ -111,11 +112,10 @@ sub init_request_headers {
 # render a PSGI-formated response from a response built by
 # handle_request()
 sub render_response {
-    my $self     = shift;
-    my $response = Dancer::SharedData->response();
+    my ($self, $response) = @_;
 
-    my $content = $response->content;
-    unless ( ref($content) eq 'GLOB' ) {
+    my $content = $response->{content};
+    unless (ref($content) eq 'GLOB') {
 
         my $charset = setting('charset');
         my $ctype   = $response->header('Content-Type');
@@ -128,11 +128,9 @@ sub render_response {
         $content = [$content];
     }
 
-    Dancer::Logger::core("response: " . $response->status);
-
-    my $status  = $response->status();
-    my $headers = $response->headers_to_array();
-    return [ $status, $headers, $content ];
+    Dancer::Logger::core("response: " . $response->{status});
+    Dancer::SharedData->reset_all();
+    return [$response->{status}, $response->headers_to_array, $content];
 }
 
 sub _is_text {
