@@ -138,9 +138,6 @@ sub del             { Dancer::App->current->registry->universal_add('delete',  @
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
 sub r               { croak "'r' is DEPRECATED, use qr{} instead" }
-sub r { croak "'r' is DEPRECATED use qr{} instead"; }
-sub request   { Dancer::SharedData->request }
-sub set       { goto &setting }
 sub redirect  {
     my ($destination, $status) = @_;
     if ($destination =~ m!^(\w://)?/!) {

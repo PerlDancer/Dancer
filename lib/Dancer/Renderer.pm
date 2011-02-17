@@ -65,7 +65,7 @@ sub response_with_headers {
         $response->header('Set-Cookie' => $header);
     }
     
-    return 1;
+    return $response;
 }
 
 sub html_page {
@@ -160,15 +160,14 @@ sub get_file_response_for_path {
     my ($class, $static_file, $status) = @_;
     $status ||= 200;
 
-    if (-f $static_file) {
-        my $fh = open_file('<', $static_file);
+    if ( -f $static_file ) {
+        my $fh = open_file( '<', $static_file );
         binmode $fh;
-
-        Dancer::Response->status($status);
-        Dancer::Response->content_type(
-            get_mime_type($static_file));
-        Dancer::Response::set_current_content($fh);
-        return Dancer::Response->current;
+        my $response = Dancer::SharedData->response() || Dancer::Response->new();
+        $response->status($status);
+        $response->header('Content-Type' => get_mime_type($static_file));
+        $response->content($fh);
+        return $response;
     }
     return;
 }
