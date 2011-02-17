@@ -21,6 +21,9 @@ my $mock = { 'Template' => 0 };
 mock 'Dancer::ModuleLoader'
     => method 'load'
     => should sub { $mock->{ $_[1] } };
+mock 'Template'
+    => method 'can'
+    => should sub { 0 };
 
 my $engine;
 eval { $engine = Dancer::Template::TemplateToolkit->new };

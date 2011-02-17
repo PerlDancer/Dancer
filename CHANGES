@@ -5,9 +5,10 @@
       (Chris Andrews)
 
     [ ENHANCEMENTS ]
-    * add a new accessor to Dancer::Request: ->uri (it's an alias to ->request_uri)
+    * Add a new accessor to Dancer::Request: ->uri.
+      (it's an alias to ->request_uri)
       (Franck Cuny)
-    * removes Dancer::Helpers, refactor Dancer.pm accordingly
+    * Removes Dancer::Helpers, refactor Dancer.pm accordingly.
       (Franck Cuny)
     * Introduce changelog test of hell.
       (Damien Krotkine)
@@ -15,6 +16,8 @@
       (Sawyer X)
     * Add Dancer::Logger::Diag.
       (Sawyer X)
+    * Allow to use a subclass of Template::Toolkit.
+      (Michael G. Schwern)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
