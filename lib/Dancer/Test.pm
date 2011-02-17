@@ -105,7 +105,7 @@ sub response_status_is {
     $test_name ||= "response status is $status for @$req";
 
     my $response = dancer_response(@$req);
-    is $response->{status}, $status, $test_name;
+    is $response->status, $status, $test_name;
 }
 
 sub response_status_isnt {
@@ -202,7 +202,15 @@ sub dancer_response {
     );
 
     Dancer::SharedData->request($request);
-    return Dancer::Renderer::get_action_response();
+    if (Dancer::Renderer::get_action_response()) {
+        my $response = Dancer::SharedData->response();
+        Dancer::SharedData->reset_response();
+        return $response;
+    }else{
+        my $response = Dancer::SharedData->response();
+        Dancer::SharedData->reset_response();
+        (defined $response && $response->exists) ? return $response : return undef;
+    }
 }
 
 sub get_response {

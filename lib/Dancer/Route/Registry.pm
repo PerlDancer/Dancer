@@ -46,7 +46,7 @@ sub add_hook {
     my ($self, $position, $filter) = @_;
 
     my $compiled_filter = sub {
-        return if Dancer::Response->halted;
+        return if Dancer::SharedData->response->halted;
         Dancer::Logger::core("entering " . $position . " hook");
         eval { $filter->(@_) };
         if ($@) {

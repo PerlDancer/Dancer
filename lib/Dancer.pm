@@ -104,7 +104,7 @@ sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
-sub content_type    { Dancer::Response->content_type(@_) }
+sub content_type    { Dancer::SharedData->response->content_type(@_) }
 sub dance           { Dancer::start(@_) }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
@@ -117,14 +117,14 @@ sub send_error {
     Dancer::Response->set( $error->render );
 }
 sub false           { 0 }
-sub forward         { Dancer::Response->forward(shift) }
+sub forward         { Dancer::SharedData->response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
-sub halt            { Dancer::Response->halt(@_) }
-sub headers         { Dancer::Response->headers(@_) }
+sub halt            { Dancer::SharedData->response->halt(@_) }
+sub headers         { Dancer::SharedData->response->headers(@_); }
 sub header          { goto &headers }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
@@ -136,7 +136,7 @@ sub mime_type       {
     else                  { $mime->aliases           }
 }
 sub params          { Dancer::SharedData->request->params(@_) }
-sub pass            { Dancer::Response->pass }
+sub pass            { Dancer::SharedData->response->pass }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
@@ -210,7 +210,7 @@ sub session {
     }
 }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
-sub status          { Dancer::Response->status(@_) }
+sub status          { Dancer::SharedData->response->status(@_) }
 sub template {
     my ( $view, $tokens, $options ) = @_;
 
