@@ -703,13 +703,13 @@ Returns all the user-defined mime-types when called without parameters.
 Behaves as a setter/getter when given parameters
 
     # get the global hash of user-defined mime-types:
-    my $mimes = mime_types;
+    my $mimes = mime_type;
 
     # set a mime-type
-    mime_types foo => 'text/foo';
+    mime_type foo => 'text/foo';
 
     # get a mime-type
-    my $m = mime_types 'foo';
+    my $m = mime_type 'foo';
 
 =head2 params
 
