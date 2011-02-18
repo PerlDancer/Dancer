@@ -25,7 +25,7 @@ is $r->header('X-Bar'), 3;
 $r->header('X-Baz' => 2);
 is $r->header('X-Baz'), 2;
 
-$r->pass();
+$r->pass(1);
 ok($r->has_passed);
 
 my $headers = $r->headers_to_array;
