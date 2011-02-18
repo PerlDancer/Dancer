@@ -307,7 +307,6 @@ sub start {
     return $handler->dance;
 }
 
-
 sub _init {
     my $script = shift;
     

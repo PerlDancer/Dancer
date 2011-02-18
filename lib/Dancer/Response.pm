@@ -76,7 +76,7 @@ sub forward {
     $self->{forward} = $_[0];
 }
 
-sub is_forwarded { 
+sub is_forwarded {
     my $self = shift;
     $self->{forward};
 }
@@ -102,7 +102,6 @@ sub halted {
     my $self = shift;
     return $self->{halted}
 }
-
 
 sub header {
     my $self   = shift;
