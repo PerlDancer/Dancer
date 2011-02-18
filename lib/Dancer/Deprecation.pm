@@ -30,3 +30,36 @@ sub deprecated {
 }
 
 1;
+
+=head1 NAME
+
+Dancer::Deprecation - handle deprecation messages
+
+=head1 SYNOPSIS
+
+  Dancer::Deprecation::deprecated(
+    feature => 'sub_name',
+    version => '1.3000',
+    reason  => '...',
+  );
+
+=head1 DESCRIPTION
+
+=head2 METHODS
+
+=head3 deprecated
+
+=head1 LICENSE
+
+This module is free software and is distributed under the same terms as Perl
+itself.
+
+=head1 AUTHOR
+
+This module has been written by Alexis Sukrieh <sukria@sukria.net>
+
+=head1 SEE ALSO
+
+L<Package::DeprecationManager>
+
+=cut
