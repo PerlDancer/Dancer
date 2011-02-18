@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 {
 
@@ -29,6 +29,13 @@ use Test::More tests => 8;
         Dancer::Deprecation::deprecated(
             version => '0.1',
             feature => 'foo_bar_baz',
+        );
+    }
+
+    sub fatal {
+        Dancer::Deprecation::deprecated(
+            message => 'this should die',
+            fatal   => 1,
         );
     }
 }
@@ -63,3 +70,8 @@ $t->foo_bar_baz();
 ok $warn;
 like $warn, qr/foo_bar_baz has been deprecated since version 0.1/,
   'deprecation with feature and version';
+
+eval {$t->fatal};
+ok $@;
+like $@, qr/this should die/;
+
