@@ -18,6 +18,8 @@
       (Sawyer X)
     * Allow to use a subclass of Template::Toolkit.
       (Michael G. Schwern)
+    * Add Dancer::Deprecation. (handle deprecation messages)
+      (franck cuny)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
