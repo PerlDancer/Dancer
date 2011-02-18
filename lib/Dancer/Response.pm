@@ -12,7 +12,7 @@ use Dancer::MIME;
 use HTTP::Headers;
 use Dancer::SharedData;
 
-__PACKAGE__->attributes(qw/content/);
+__PACKAGE__->attributes(qw/content pass/);
 
 # constructor
 sub new {
@@ -66,14 +66,9 @@ sub content_type {
     }
 }
 
-sub pass {
-    my $self = shift;
-    $self->{pass} = 1
-}
-
 sub has_passed {
     my $self = shift;
-    return $self->{pass};
+    return $self->pass;
 }
 
 sub forward {
@@ -81,7 +76,7 @@ sub forward {
     $self->{forward} = $_[0];
 }
 
-sub is_forwarded { 
+sub is_forwarded {
     my $self = shift;
     $self->{forward};
 }
@@ -107,7 +102,6 @@ sub halted {
     my $self = shift;
     return $self->{halted}
 }
-
 
 sub header {
     my $self   = shift;
@@ -157,10 +151,10 @@ Dancer::Response - Response object for Dancer
         content => 'this is my content'
     );
 
-    Dancer::Response->status; # 200
+    Dancer::SharedData->response->status; # 200
 
     # fetch current response object
-    my $response = Dancer::Response->current;
+    my $response = Dancer::SharedData->response;
 
     # fetch the current status
     $response->status; # 200
@@ -182,7 +176,7 @@ create and return a new L<Dancer::Response> object
 
 =head2 current
 
-    my $response = Dancer::Response->current();
+    my $response = Dancer::SharedData->response->current();
 
 return the current Dancer::Response object, and reset the object
 
@@ -195,21 +189,15 @@ return the current Dancer::Response object, and reset the object
 
 test if the Dancer::Response object exists
 
-=head2 set
-
-    Dancer::Response->set(Dancer::Response->new(status=>500));
-
-Set a new Dancer::Response object as the current response
-
 =head2 content
 
     # get the content
     my $content = $response->content;
-    my $content = Dancer::Response->content;
+    my $content = Dancer::SharedData->response->content;
 
     # set the content
     $response->content('my new content');
-    Dancer::Response->content('my new content');
+    Dancer::SharedData->response->content('my new content');
 
 set or get the content of the current response object
 
@@ -217,11 +205,11 @@ set or get the content of the current response object
 
     # get the status
     my $status = $response->status;
-    my $status = Dancer::Response->status;
+    my $status = Dancer::SharedData->response->status;
 
     # set the status
     $response->status(201);
-    Dancer::Response->status(201);
+    Dancer::SharedData->response->status(201);
 
 set or get the status of the current response object
 
@@ -229,18 +217,18 @@ set or get the status of the current response object
 
     # get the status
     my $ct = $response->content_type;
-    my $ct = Dancer::Response->content_type;
+    my $ct = Dancer::SharedData->response->content_type;
 
     # set the status
     $response->content_type('application/json');
-    Dancer::Response->content_type('application/json');
+    Dancer::SharedData->response->content_type('application/json');
 
 set or get the status of the current response object
 
 =head2 pass
 
     $response->pass;
-    Dancer::Response->pass;
+    Dancer::SharedData->response->pass;
 
 set the pass value to one for this response
 
@@ -250,7 +238,7 @@ set the pass value to one for this response
         ...
     }
 
-    if (Dancer::Response->has_passed) {
+    if (Dancer::SharedData->response->has_passed) {
         ...
     }
 
@@ -258,12 +246,12 @@ test if the pass value is set to true
 
 =head2 halt
 
-    Dancer::Response->halt();
+    Dancer::SharedData->response->halt();
     $response->halt;
 
 =head2 halted
 
-    if (Dancer::Response->halted) {
+    if (Dancer::SharedData->response->halted) {
        ...
     }
 
@@ -275,25 +263,25 @@ test if the pass value is set to true
 
     # set the header
     $response->header('X-Foo' => 'bar');
-    Dancer::Response->header('X-Foo' => 'bar');
+    Dancer::SharedData->response->header('X-Foo' => 'bar');
 
     # get the header
     my $header = $response->header('X-Foo');
-    my $header = Dancer::Response->header('X-Foo');
+    my $header = Dancer::SharedData->response->header('X-Foo');
 
 get or set the value of a header
 
 =head2 headers
 
     $response->headers(HTTP::Headers->new(...));
-    Dancer::Response->headers(HTTP::Headers->new(...));
+    Dancer::SharedData->response->headers(HTTP::Headers->new(...));
 
 return the list of headers for the current response
 
 =head2 headers_to_array
 
     my $headers_psgi = $response->headers_to_array();
-    my $headers_psgi = Dancer::Response->headers_to_array();
+    my $headers_psgi = Dancer::SharedData->response->headers_to_array();
 
 this method is called before returning a PSGI response. It transforms the list of headers to an array reference.
 

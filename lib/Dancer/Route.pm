@@ -174,7 +174,7 @@ sub run {
     }
 
     if ($response && $response->has_passed) {
-        $response->{pass} = 0;
+        $response->pass(0);
         if ($self->next) {
             my $next_route = $self->find_next_matching_route($request);
             return $next_route->run($request);

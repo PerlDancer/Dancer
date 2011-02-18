@@ -130,7 +130,7 @@ sub mime_type {
     else                  { $mime->aliases           }
 }
 sub params          { Dancer::SharedData->request->params(@_) }
-sub pass            { Dancer::SharedData->response->pass }
+sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
@@ -145,12 +145,12 @@ sub redirect  {
         my $request = Dancer::SharedData->request;
         $destination = $request->uri_for($destination, {}, 1);
     }
-        my $response = Dancer::SharedData->response;
+    my $response = Dancer::SharedData->response;
     $response->status($status || 302);
     $response->headers('Location' => $destination);
 }
 sub render_with_layout {
-        my ($content, $tokens, $options) = @_;
+    my ($content, $tokens, $options) = @_;
     carp "'render_with_layout' is DEPRECATED, use the 'engine' keyword "
        . "to get the template engine, and use 'apply_layout' on the result";
 
@@ -306,7 +306,6 @@ sub start {
     Dancer::Logger::core("loading handler '".ref($handler)."'");
     return $handler->dance;
 }
-
 
 sub _init {
     my $script = shift;
