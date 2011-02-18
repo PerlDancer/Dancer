@@ -11,6 +11,7 @@ $VERSION   = '1.3011';
 $AUTHORITY = 'SUKRIA';
 
 use Dancer::Config;
+use Dancer::Deprecation;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
