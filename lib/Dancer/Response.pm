@@ -12,7 +12,7 @@ use Dancer::MIME;
 use HTTP::Headers;
 use Dancer::SharedData;
 
-__PACKAGE__->attributes(qw/content/);
+__PACKAGE__->attributes(qw/content pass/);
 
 # constructor
 sub new {
@@ -66,14 +66,9 @@ sub content_type {
     }
 }
 
-sub pass {
-    my $self = shift;
-    $self->{pass} = 1
-}
-
 sub has_passed {
     my $self = shift;
-    return $self->{pass};
+    return $self->pass;
 }
 
 sub forward {

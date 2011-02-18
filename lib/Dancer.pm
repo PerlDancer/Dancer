@@ -130,7 +130,7 @@ sub mime_type {
     else                  { $mime->aliases           }
 }
 sub params          { Dancer::SharedData->request->params(@_) }
-sub pass            { Dancer::SharedData->response->pass }
+sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
