@@ -16,6 +16,8 @@
       (Sawyer X)
     * Add Dancer::Logger::Diag.
       (Sawyer X)
+    * Refactor Dancer::Response
+      (franck cuny)
     * Allow to use a subclass of Template::Toolkit.
       (Michael G. Schwern)
 
