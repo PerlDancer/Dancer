@@ -145,12 +145,12 @@ sub redirect  {
         my $request = Dancer::SharedData->request;
         $destination = $request->uri_for($destination, {}, 1);
     }
-        my $response = Dancer::SharedData->response;
+    my $response = Dancer::SharedData->response;
     $response->status($status || 302);
     $response->headers('Location' => $destination);
 }
 sub render_with_layout {
-        my ($content, $tokens, $options) = @_;
+    my ($content, $tokens, $options) = @_;
     carp "'render_with_layout' is DEPRECATED, use the 'engine' keyword "
        . "to get the template engine, and use 'apply_layout' on the result";
 
