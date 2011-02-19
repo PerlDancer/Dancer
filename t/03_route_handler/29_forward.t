@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 10, import => ['!pass'];
+use Test::More tests => 12, import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::Logger;
@@ -13,8 +13,13 @@ Dancer::Logger->init('File');
 
 # checking get
 
-get '/'        => sub { 'home' };
+get '/'        => sub { 
+    'home' . join(',', params);
+};
 get '/bounce/' => sub {
+    return forward('/');
+};
+get '/bounce/:withparams/' => sub {
     return forward('/');
 };
 
@@ -23,6 +28,9 @@ response_content_is [ GET => '/' ], 'home';
 
 response_exists     [ GET => '/bounce/' ];
 response_content_is [ GET => '/bounce/' ], 'home';
+
+response_exists     [ GET => '/bounce/thesethings/' ];
+response_content_is [ GET => '/bounce/thesethings/' ], 'homewithparams,thesethings';
 
 my $expected_headers = [
     'Content-Type' => 'text/html',
