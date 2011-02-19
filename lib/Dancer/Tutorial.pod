@@ -178,7 +178,7 @@ Retrieve, Update, Delete) operations most database driven applications need to
 implement.
 
 Dancer currently supports GET, PUT, POST, DELETE, OPTIONS which map to
-Retrieve, Create, Update, Delete respectively.  Let's take a look now at the
+Retrieve, Update, Create, Delete respectively.  Let's take a look now at the
 C</add> route handler which handles a POST operation.
 
   post '/add' => sub {
