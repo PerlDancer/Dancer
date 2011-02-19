@@ -22,6 +22,8 @@
       (franck cuny)
     * Allow to use a subclass of Template::Toolkit.
       (Michael G. Schwern)
+    * Dancer::Test now uses Dancer::Logger::Null instead of ::File.
+      (Sawyer X)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
