@@ -112,7 +112,7 @@ Dancer::Object - Objects base class for Dancer
 
 =head1 DESCRIPTION
 
-While we B<love> L<Moose>, we can't use it for Dancer and stlil keep Dancer
+While we B<love> L<Moose>, we can't use it for Dancer and still keep Dancer
 minimal, so we wrote Dancer::Object instead.
 
 It provides you with attributes and an initializer.
