@@ -159,7 +159,7 @@ sub run {
         my $new_req = Dancer::Request->new_for_request(
             $request->method,
             $response->{forward},
-            $request->params,
+            scalar($request->params),
             $request->body,
             $request->headers,
         );
