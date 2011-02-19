@@ -54,10 +54,11 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
-    # set a default session engine for tests
-    setting 'session' => 'simple';
     Dancer::_init($options{appdir});
     Dancer::Config->load;
+
+    # set a default session engine for tests
+    setting 'session' => 'simple';
 }
 
 # Route Registry

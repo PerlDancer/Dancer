@@ -3,6 +3,8 @@
     [ BUG FIXES ]
     * Fix cookies disappearing when more than one is set.
       (Chris Andrews)
+    * Properly set the settings in Dancer::Test only after config loading.
+      (Sawyer X)
 
     [ ENHANCEMENTS ]
     * Add a new accessor to Dancer::Request: ->uri.
