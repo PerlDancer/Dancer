@@ -43,7 +43,7 @@ use vars '@EXPORT';
 
 sub import {
     my ($class, %options) = @_;
-    $options{appdir} ||= '..';
+    $options{appdir} ||= '.';
 
     # mimic PSGI env
     $ENV{SERVERNAME}        = 'localhost';
@@ -252,7 +252,7 @@ Dancer::Test - Test helpers to test a Dancer application
     use Test::More tests => 2;
 
     use MyWebApp;
-    use Dancer::Test appdir => '..';
+    use Dancer::Test;
 
     response_status_is [GET => '/'], 200, "GET / is found";
     response_content_like [GET => '/'], qr/hello, world/, "content looks good for /";
@@ -262,19 +262,7 @@ Dancer::Test - Test helpers to test a Dancer application
 
 This module provides test helpers for testing Dancer apps.
 
-=head1 CONFIGURATON
-
-When importing Dancer::Test, the appdir is set by defaut to '..', assuming that
-your test script is directly in your t/ directory. If you put your test script
-deeper in the 't/' hierarchy (like in 't/routes/01_some_test.t') you'll have to
-tell Dancer::Test that the appdir is one step upper.
-
-To do so, you can tell where the appdir is thanks to an import option:
-
-    use MyWebApp;
-    use Dancer::Test appdir => '../..';
-
-Be careful, the order in the example above is very important.
+Be careful, the module loading order in the example above is very important.
 Make sure to use C<Dancer::Test> B<after> importing the application package
 otherwise your appdir will be automatically set to C<lib> and your test script
 won't be able to find views, conffiles and other application content.
