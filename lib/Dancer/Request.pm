@@ -106,6 +106,23 @@ sub new_for_request {
     return $req;
 }
 
+#Create a new request which is a clone of the current one, apart
+#from the path location, which points instead to the new location
+sub forward {
+    my ($class, $request, $to) = @_;
+
+    my $env = $request->env;
+    $env->{PATH_INFO} = $to;
+
+    my $new_request = $class->new($env);
+
+    $new_request->{params}  = $request->params;
+    $new_request->{body}    = $request->body;
+    $new_request->{headers} = $request->headers;
+
+    return $new_request;
+}
+
 sub base {
     my $self = shift;
 
@@ -504,6 +521,12 @@ objects. It uses the environment hash table given to build the request object.
 
 An alternate constructor convinient for test scripts which creates a request
 object with the arguments given.
+
+=head2 forward($request, $new_location)
+
+Create a new request which is a clone of the current one, apart
+from the path location, which points instead to the new location.
+This is used internally to chain requests using the forward keyword.
 
 =head2 to_string()
 
