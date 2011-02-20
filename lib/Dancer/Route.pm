@@ -156,13 +156,8 @@ sub run {
     my $response = Dancer::SharedData->response;
 
     if ( $response && $response->is_forwarded ) {
-        my $new_req = Dancer::Request->new_for_request(
-            $request->method,
-            $response->{forward},
-            scalar($request->params),
-            $request->body,
-            $request->headers,
-        );
+        my $new_req = 
+            Dancer::Request->forward($request, $response->{forward});
 
         my $marshalled = Dancer::Handler->handle_request($new_req);
 
