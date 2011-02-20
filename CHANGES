@@ -5,6 +5,11 @@
       (Chris Andrews)
     * Properly set the settings in Dancer::Test only after config loading.
       (Sawyer X)
+    * Fix possible loss of last directory in path.
+      (Sawyer X)
+    * No need for default upper directory in Dancer::Test. This fixes an issue
+      raised on the list about the default scaffolded test failing.
+      (Sawyer X)
 
     [ ENHANCEMENTS ]
     * Add a new accessor to Dancer::Request: ->uri.
