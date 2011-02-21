@@ -59,6 +59,12 @@ sub add_hook {
             return Dancer::halt($err->render);
         }
     };
+
+    # XXX at the moment, we have a filer position named "before_template".
+    # this one is renamed "before_template_render", so we need to alias it.
+    # maybe we need to deprecate 'before_template' to enforce the use
+    # of 'hook before_template_render => sub {}' ?
+    $position = 'before_template_render' if $position eq 'before_template';
     push @{$self->hooks->{$position}}, $compiled_filter;
     return $compiled_filter;
 }
