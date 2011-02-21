@@ -51,7 +51,7 @@ sub dirname { File::Basename::dirname(@_) }
 sub open_file {
     my ($mode, $filename) = @_;
     require Dancer::Config;
-    my $charset = Dancer::Config::setting('charset');
+    my $charset = Dancer::Config::setting('charset') || 'utf-8';
     length($charset || '')
       and $mode .= ":encoding($charset)";
     open(my $fh, $mode, $filename)
