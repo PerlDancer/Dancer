@@ -48,10 +48,13 @@ sub apply_renderer {
     $view = $self->view($view);
     -r $view or return;
 
-    $_->($tokens) for (@{Dancer::App->current->registry->hooks->{before_template}});
+    Dancer::App->execute_hooks('before_template', $tokens);
 
     my $content = $self->render($view, $tokens);
 
+    # TODO: do we need to send tokens here ? doesn't really make sense...
+    Dancer::App->execute_hooks('after_template');
+    
     # make sure to avoid ( undef ) in list context return
     defined $content
       and return $content;
