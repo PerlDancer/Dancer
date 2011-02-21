@@ -57,6 +57,7 @@ use base 'Exporter';
   halt
   header
   headers
+  hook
   layout
   load
   load_app
@@ -124,6 +125,7 @@ sub load            { require $_ for @_ }
 sub logger          { set(logger => @_) }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub headers         { Dancer::SharedData->response->headers(@_); }
+sub hook            { Dancer::Route::Registry->hook(@_) }
 sub mime_type {
     my $mime = Dancer::MIME->instance();
     if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
