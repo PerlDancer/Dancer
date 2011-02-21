@@ -91,6 +91,7 @@ sub format_message {
               : '-';
         },
         t => sub { Encode::decode(setting('charset'), POSIX::strftime( "%d/%b/%Y %H:%M:%S", localtime )) },
+        T => sub { POSIX::strftime( "%Y-%m-%d %H:%M:%S", localtime  ) },
         P => sub { $$ },
         L => sub { $level },
         D => sub {
