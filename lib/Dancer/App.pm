@@ -190,7 +190,12 @@ sub execute_hooks {
 
     croak("Can't ask for hooks without a position") unless $hook_position;
 
-    map { $_->(@args) } @{ $class->get_hooks_for($hook_position) };
+    foreach my $hook (@{$class->get_hooks_for($hook_position)}) {
+        $hook->(@args);
+        # XXX ok, what if we want to modify the value of one of the arguments,
+        # and this argument is not a ref ? like the content in the template
+        # inside a 'after_template_render' ?
+    }
 }
 
 1;
