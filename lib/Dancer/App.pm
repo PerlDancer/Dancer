@@ -185,4 +185,12 @@ sub get_hooks_for {
     $hooks ? return $hooks : [];
 }
 
+sub execute_hooks {
+    my ( $class, $hook_position, @args ) = @_;
+
+    croak("Can't ask for hooks without a position") unless $hook_position;
+
+    map { $_->(@args) } @{ $class->get_hooks_for($hook_position) };
+}
+
 1;
