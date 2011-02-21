@@ -176,4 +176,13 @@ sub setting {
       );
 }
 
+sub get_hooks_for {
+    my ( $class, $hook_position ) = @_;
+
+    croak("Can't ask for hooks without a position") unless $hook_position;
+
+    my $hooks = Dancer::App->current->registry->hooks->{$hook_position};
+    $hooks ? return $hooks : [];
+}
+
 1;
