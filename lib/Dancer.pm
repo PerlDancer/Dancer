@@ -55,6 +55,7 @@ our @EXPORT    = qw(
   header
   push_header
   headers
+  hook
   layout
   load
   load_app
@@ -120,6 +121,7 @@ sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
+sub hook            { Dancer::Route::Registry->hook(@_) }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
@@ -127,9 +129,6 @@ sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          { set(logger => @_) }
 sub mime            { Dancer::MIME->instance() }
-sub mime_type       {
-    Dancer::Deprecation->deprecated(reason => "use 'mime' from Dancer.pm",fatal => 1)
-}
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
