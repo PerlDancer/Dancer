@@ -17,7 +17,7 @@ ok(
 );
 
 ok(
-    hook after_template => sub {
+    hook after_template_render => sub {
         my (undef, $end) = gettimeofday();
         $diff = $end - $start;
     }
