@@ -55,6 +55,7 @@ our @EXPORT    = qw(
   header
   push_header
   headers
+  hook
   layout
   load
   load_app
@@ -121,6 +122,7 @@ sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
+sub hook            { Dancer::Route::Registry->hook(@_) }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
