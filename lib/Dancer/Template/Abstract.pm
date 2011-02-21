@@ -52,8 +52,7 @@ sub apply_renderer {
 
     my $content = $self->render($view, $tokens);
 
-    # TODO: do we need to send tokens here ? doesn't really make sense...
-    Dancer::App->execute_hooks('after_template_render');
+    Dancer::App->execute_hooks('after_template_render', $content);
     
     # make sure to avoid ( undef ) in list context return
     defined $content
@@ -79,8 +78,13 @@ sub apply_layout {
 
     defined $layout or return $content;
 
+    Dancer::App->execute_hooks('before_layout_render', $tokens, $content);
+
     my $full_content =
       $self->layout($layout, $tokens, $content);
+
+    Dancer::App->execute_hooks('after_layout_render', $full_content);
+
     # make sure to avoid ( undef ) in list context return
     defined $full_content
       and return $full_content;
