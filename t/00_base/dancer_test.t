@@ -37,7 +37,7 @@ response_headers_are_deeply [GET => '/with_headers'], [
     ];
 
 eval { get_response($req) };
-like $@, qr/get_response.*is deprecated. use dancer_response.*instead/i,
+like $@, qr/get_response.*has been deprecated. use dancer_response.*instead/i,
      "DEPRECATED warning triggered by get_response()";
 my $resp = dancer_response(@$req);
 is $resp->{status}, 200, "response status from dancer_response looks good";

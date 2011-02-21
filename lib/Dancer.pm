@@ -11,6 +11,7 @@ $VERSION   = '1.3011';
 $AUTHORITY = 'SUKRIA';
 
 use Dancer::Config;
+use Dancer::Deprecation;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
@@ -137,7 +138,6 @@ sub prefix          { Dancer::App->current->set_prefix(@_) }
 sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
-sub r               { croak "'r' is DEPRECATED, use qr{} instead" }
 sub redirect  {
     my ($destination, $status) = @_;
     if ($destination =~ m!^(\w://)?/!) {
@@ -151,8 +151,12 @@ sub redirect  {
 }
 sub render_with_layout {
     my ($content, $tokens, $options) = @_;
-    carp "'render_with_layout' is DEPRECATED, use the 'engine' keyword "
-       . "to get the template engine, and use 'apply_layout' on the result";
+
+    Dancer::Deprecation::deprecated(
+        feature => 'render_with_layout',
+        version => '1.3000',
+        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
+    );
 
     my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
 
@@ -784,21 +788,6 @@ Defines a route for HTTP B<OPTIONS> requests to the given URL:
 Defines a route for HTTP B<PUT> requests to the given URL:
 
     put '/resource' => sub { ... };
-
-=head2 r
-
-Defines a route pattern as a regular Perl regexp.
-
-This method is B<DEPRECATED>. Dancer now supports real Perl Regexp objects
-instead. You should not use r() but qr{} instead:
-
-Don't do this:
-
-    get r('/some/pattern(.*)') => sub { };
-
-But rather this:
-
-    get qr{/some/pattern(.*)} => sub { };
 
 =head2 redirect
 

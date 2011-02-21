@@ -10,6 +10,7 @@ use Carp;
 use HTTP::Headers;
 use Dancer ':syntax';
 use Dancer::App;
+use Dancer::Deprecation;
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
@@ -216,7 +217,11 @@ sub dancer_response {
 }
 
 sub get_response {
-    croak "get_response() is DEPRECATED. Use dancer_response() instead.";
+    Dancer::Deprecation::deprecated(
+        fatal   => 1,
+        feature => 'get_response',
+        reason  => 'Use dancer_response() instead.',
+    );
 }
 
 # private
