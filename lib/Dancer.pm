@@ -179,14 +179,12 @@ sub set_cookie {
         %options
     );
 }
-sub session {
-    engine 'session'
-      or croak "Must specify session engine in settings prior to using 'session' keyword";
-      @_ == 0 ? Dancer::Session->get
-    : @_ == 1 ? Dancer::Session->read(@_)
-    :           Dancer::Session->write(@_);
-}
-
+sub session         { engine 'session'
+                        or croak "Must specify session engine in settings prior to using 'session' keyword";
+                        @_ == 0 ? Dancer::Session->get
+                      : @_ == 1 ? Dancer::Session->read(@_)
+                      :           Dancer::Session->write(@_);
+                    }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
 sub status    { Dancer::SharedData->response->status(@_) }
 sub template {
