@@ -33,6 +33,8 @@
       (franck cuny)
     * Introduce new timestamp format in logger (%T)
       (Roman Galeev)
+    * Refactoring of the forward method
+      (Alex Kalderimis)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
