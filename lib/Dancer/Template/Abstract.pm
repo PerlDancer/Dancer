@@ -87,6 +87,24 @@ sub apply_layout {
     return;
 }
 
+sub _prepare_tokens_options {
+    my ($tokens, $options) = @_;
+
+    $options ||= {};
+
+    # these are the default tokens provided for template processing
+    $tokens ||= {};
+    $tokens->{dancer_version} = $Dancer::VERSION;
+    $tokens->{settings}       = Dancer::Config->settings;
+    $tokens->{request}        = Dancer::SharedData->request;
+    $tokens->{params}         = Dancer::SharedData->request->params;
+
+    Dancer::App->current->setting('session')
+      and $tokens->{session} = Dancer::Session->get;
+
+    return ($tokens, $options);
+}
+
 sub _render_with_layout {
     my ($class, $content, $tokens, $options) = @_;
 
@@ -107,23 +125,6 @@ sub _render_with_layout {
     return $full_content;
 }
 
-sub _prepare_tokens_options {
-    my ($tokens, $options) = @_;
-
-    $options ||= {};
-
-    # these are the default tokens provided for template processing
-    $tokens ||= {};
-    $tokens->{dancer_version} = $Dancer::VERSION;
-    $tokens->{settings}       = Dancer::Config->settings;
-    $tokens->{request}        = Dancer::SharedData->request;
-    $tokens->{params}         = Dancer::SharedData->request->params;
-
-    Dancer::App->current->setting('session')
-      and $tokens->{session} = Dancer::Session->get;
-
-    return ($tokens, $options);
-}
 
 1;
 __END__
