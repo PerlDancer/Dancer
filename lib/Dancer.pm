@@ -122,11 +122,7 @@ sub load_app        { Dancer::App->load_app((caller)[1], @_) }
 sub logger          { set(logger => @_) }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub headers         { Dancer::SharedData->response->headers(@_); }
-sub mime_type       { my $mime = Dancer::MIME->instance();
-                        @_ == 0 ? $mime->aliases
-                      : @_ == 1 ? $mime->mime_type_for(@_)
-                      :           $mime->add_mime_type(@_);
-                    }
+sub mime_type       { goto _mime_type }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
@@ -204,12 +200,22 @@ sub import {
     Dancer::Config->load;
 }
 
-sub _session        { engine 'session'
-                        or croak "Must specify session engine in settings prior to using 'session' keyword";
-                        @_ == 0 ? Dancer::Session->get
-                      : @_ == 1 ? Dancer::Session->read(@_)
-                      :           Dancer::Session->write(@_);
-                    }
+# private code
+
+sub _mime_type {
+    my $mime = Dancer::MIME->instance();
+      @_ == 0 ? $mime->aliases
+    : @_ == 1 ? $mime->mime_type_for(@_)
+    :           $mime->add_mime_type(@_);
+}
+
+sub _session {
+    engine 'session'
+      or croak "Must specify session engine in settings prior to using 'session' keyword";
+      @_ == 0 ? Dancer::Session->get
+    : @_ == 1 ? Dancer::Session->read(@_)
+    :           Dancer::Session->write(@_);
+}
 
 # set_cookie name => value,
 #     expires => time() + 3600, domain => '.foo.com'
