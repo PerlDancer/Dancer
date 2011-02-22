@@ -205,31 +205,30 @@ sub init_script_dir {
       if ($script_dirs[$#script_dirs - 1] eq 'bin')
       or ($script_dirs[$#script_dirs - 1] eq 'public');
 
-    Dancer::setting(appdir => $ENV{DANCER_APPDIR}
-      || (
+    my $appdir = $ENV{DANCER_APPDIR} || (
           $LAYOUT_PRE_DANCER_1_2
         ? $script_path
-        : File::Spec->rel2abs(path($script_path, '..'))
-      ));
+        : File::Spec->rel2abs(Dancer::path($script_path, '..'))
+    );
+    Dancer::setting(appdir => $appdir);
 
     # once the dancer_appdir have been defined, we export to env
-    $ENV{DANCER_APPDIR} = Dancer::setting('appdir');
+    $ENV{DANCER_APPDIR} = $appdir;
 
-    Dancer::Logger::core(
-        "initializing appdir to: `" . Dancer::setting('appdir') . "'");
+    Dancer::Logger::core("initializing appdir to: `$appdir'");
 
     Dancer::setting(confdir => $ENV{DANCER_CONFDIR}
-      || Dancer::setting('appdir'));
+      || $appdir);
 
     Dancer::setting(public => $ENV{DANCER_PUBLIC}
-      || Dancer::FileUtils::path_no_verify(Dancer::setting('appdir'), 'public'));
+      || Dancer::FileUtils::path_no_verify($appdir, 'public'));
 
     Dancer::setting(views => $ENV{DANCER_VIEWS}
-      || Dancer::FileUtils::path_no_verify(Dancer::setting('appdir'), 'views'));
+      || Dancer::FileUtils::path_no_verify($appdir, 'views'));
 
     Dancer::setting(logger => 'file');
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify(Dancer::setting('appdir'), 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
