@@ -31,6 +31,8 @@
       (Sawyer X)
     * Add Dancer::Deprecation. (handle deprecation messages)
       (franck cuny)
+    * Introduce new timestamp format in logger (%T)
+      (Roman Galeev)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
