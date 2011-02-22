@@ -126,9 +126,9 @@ sub logger          { set(logger => @_) }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub headers         { Dancer::SharedData->response->headers(@_); }
 sub mime_type       { my $mime = Dancer::MIME->instance();
-                        @_ == 2 ? $mime->add_mime_type(@_)
+                        @_ == 0 ? $mime->aliases
                       : @_ == 1 ? $mime->mime_type_for(@_)
-                      :           $mime->aliases;
+                      :           $mime->add_mime_type(@_);
                     }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
@@ -151,11 +151,7 @@ sub redirect  {
 }
 sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
-sub send_error {
-    my ( $content, $status ) = @_;
-    $status ||= 500;
-    Dancer::Error->new( code => $status, message => $content )->render();
-}
+sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
 sub send_file {
     my ($path) = @_;
 
@@ -184,16 +180,13 @@ sub set_cookie {
     );
 }
 sub session {
-    croak "Must specify session engine in settings prior to using 'session' keyword" unless setting('session');
-    if (@_ == 0) {
-        return Dancer::Session->get;
-    }
-    else {
-        return (@_ == 1)
-          ? Dancer::Session->read(@_)
-          : Dancer::Session->write(@_);
-    }
+    engine 'session'
+      or croak "Must specify session engine in settings prior to using 'session' keyword";
+      @_ == 0 ? Dancer::Session->get
+    : @_ == 1 ? Dancer::Session->read(@_)
+    :           Dancer::Session->write(@_);
 }
+
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
 sub status    { Dancer::SharedData->response->status(@_) }
 sub template {
