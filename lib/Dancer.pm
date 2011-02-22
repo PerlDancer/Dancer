@@ -121,6 +121,8 @@ sub get             { map { my $r = $_; Dancer::App->current->registry->universa
 sub header          { goto &headers }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
+# FIXME handle previous usage of load_app with multiple app names
+sub load_app        { Dancer::App->load_app((caller)[1], @_) }
 sub logger          { set(logger => @_) }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub headers         { Dancer::SharedData->response->headers(@_); }
@@ -253,8 +255,6 @@ sub uri_for         { Dancer::SharedData->request->uri_for(@_) }
 sub var             { Dancer::SharedData->var(@_) }
 sub vars            { Dancer::SharedData->vars }
 sub warning         { goto &Dancer::Logger::warning }
-# FIXME handle previous usage of load_app with multiple app names
-sub load_app { Dancer::App->load_app((caller)[1], @_) }
 
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
