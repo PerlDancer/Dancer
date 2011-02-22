@@ -10,6 +10,8 @@ use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
 use Dancer::Logger;
 
+use File::Spec;
+
 Dancer::App->attributes(qw(name prefix registry settings));
 
 # singleton that saves any app created, we want unicity for app names
@@ -174,6 +176,61 @@ sub setting {
         exists($self->settings->{$name}) ? $self->settings->{$name}
         : Dancer::Config::setting($name)
       );
+}
+
+sub init_script_dir {
+    my ($class, $script) = @_;
+    
+    my ($script_vol, $script_dirs, $script_name) =
+      File::Spec->splitpath(File::Spec->rel2abs($script));
+
+    # normalize
+    if ( -d ( my $fulldir = File::Spec->catdir( $script_dirs, $script_name ) ) ) {
+        $script_dirs = $fulldir;
+        $script_name = '';
+    }
+
+    my @script_dirs = File::Spec->splitdir($script_dirs);
+    my $script_path;
+    if ($script_vol) {
+        $script_path = path($script_vol, $script_dirs);
+    } else {
+        $script_path = path($script_dirs);
+    }
+
+    my $LAYOUT_PRE_DANCER_1_2 = 1;
+
+    # in bin/ or public/ we need to go one level upper to find the appdir
+    $LAYOUT_PRE_DANCER_1_2 = 0
+      if ($script_dirs[$#script_dirs - 1] eq 'bin')
+      or ($script_dirs[$#script_dirs - 1] eq 'public');
+
+    Dancer::setting(appdir => $ENV{DANCER_APPDIR}
+      || (
+          $LAYOUT_PRE_DANCER_1_2
+        ? $script_path
+        : File::Spec->rel2abs(path($script_path, '..'))
+      ));
+
+    # once the dancer_appdir have been defined, we export to env
+    $ENV{DANCER_APPDIR} = Dancer::setting('appdir');
+
+    Dancer::Logger::core(
+        "initializing appdir to: `" . Dancer::setting('appdir') . "'");
+
+    Dancer::setting(confdir => $ENV{DANCER_CONFDIR}
+      || Dancer::setting('appdir'));
+
+    Dancer::setting(public => $ENV{DANCER_PUBLIC}
+      || Dancer::FileUtils::path_no_verify(Dancer::setting('appdir'), 'public'));
+
+    Dancer::setting(views => $ENV{DANCER_VIEWS}
+      || Dancer::FileUtils::path_no_verify(Dancer::setting('appdir'), 'views'));
+
+    Dancer::setting(logger => 'file');
+
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify(Dancer::setting('appdir'), 'lib'));
+    $res or croak "unable to set libdir : $error";
 }
 
 1;
