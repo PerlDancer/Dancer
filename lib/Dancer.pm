@@ -16,9 +16,7 @@ use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
 use Dancer::Logger;
-use Dancer::Plugin;
 use Dancer::Renderer;
-use Dancer::Response;
 use Dancer::Route;
 use Dancer::Serializer::JSON;
 use Dancer::Serializer::YAML;
@@ -27,7 +25,6 @@ use Dancer::Serializer::Dumper;
 use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
-use Dancer::ModuleLoader;
 use Dancer::MIME;
 
 use base 'Exporter';
@@ -105,7 +102,7 @@ sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::SharedData->response->content_type(@_) }
-sub dance           { Dancer::start(@_) }
+sub dance           { goto &Dancer::start }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
