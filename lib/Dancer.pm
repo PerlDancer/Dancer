@@ -166,24 +166,11 @@ sub send_file {
 }
 sub set             { goto &setting }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
-# set_cookie name => value,
-#     expires => time() + 3600, domain => '.foo.com'
-sub set_cookie {
-    my ( $name, $value, %options ) = @_;
-    Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
-        name  => $name,
-        value => $value,
-        %options
-    );
-}
-sub session         { engine 'session'
-                        or croak "Must specify session engine in settings prior to using 'session' keyword";
-                        @_ == 0 ? Dancer::Session->get
-                      : @_ == 1 ? Dancer::Session->read(@_)
-                      :           Dancer::Session->write(@_);
-                    }
+sub set_cookie      { goto &_set_cookie }
+sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
 sub status          { Dancer::SharedData->response->status(@_) }
+sub start           { goto &_start }
 sub template        { Dancer::Template::Abstract->template(@_) }
 sub true            { 1 }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
@@ -217,8 +204,26 @@ sub import {
     Dancer::Config->load;
 }
 
+sub _session        { engine 'session'
+                        or croak "Must specify session engine in settings prior to using 'session' keyword";
+                        @_ == 0 ? Dancer::Session->get
+                      : @_ == 1 ? Dancer::Session->read(@_)
+                      :           Dancer::Session->write(@_);
+                    }
+
+# set_cookie name => value,
+#     expires => time() + 3600, domain => '.foo.com'
+sub _set_cookie {
+    my ( $name, $value, %options ) = @_;
+    Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
+        name  => $name,
+        value => $value,
+        %options
+    );
+}
+
 # Start/Run the application with the chosen apphandler
-sub start {
+sub _start {
     my ($class, $request) = @_;
     Dancer::Config->load;
 
