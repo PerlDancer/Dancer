@@ -104,6 +104,7 @@ sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::SharedData->response->content_type(@_) }
 sub dance           { goto &start }
 sub debug           { goto &Dancer::Logger::debug }
+sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
@@ -111,68 +112,42 @@ sub false           { 0 }
 sub forward         { Dancer::SharedData->response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
-sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
+sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
+sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
+sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
-# FIXME handle previous usage of load_app with multiple app names
 sub load_app        { Dancer::App->load_app((caller)[1], @_) }
 sub logger          { set(logger => @_) }
-sub halt            { Dancer::SharedData->response->halt(@_) }
-sub headers         { Dancer::SharedData->response->headers(@_); }
 sub mime_type       { goto &_mime_type }
+sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
-sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
-sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
-sub redirect  {
-    my ($destination, $status) = @_;
-    if ($destination =~ m!^(\w://)?/!) {
-        # no absolute uri here, build one, RFC 2616 forces us to do so
-        my $request = Dancer::SharedData->request;
-        $destination = $request->uri_for($destination, {}, 1);
-    }
-    my $response = Dancer::SharedData->response;
-    $response->status($status || 302);
-    $response->headers('Location' => $destination);
-}
+sub redirect        { goto &_redirect }
 sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
 sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
-sub send_file {
-    my ($path) = @_;
-
-    my $request = Dancer::Request->new_for_request('GET' => $path);
-    Dancer::SharedData->request($request);
-
-    my $resp = Dancer::Renderer::get_file_response();
-    return $resp if $resp;
-
-    Dancer::Error->new(
-        code    => 404,
-        message => "No such file: `$path'"
-    )->render();
-    
-}
+sub send_file       { goto &_send_file }
 sub set             { goto &setting }
-sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
 sub set_cookie      { goto &_set_cookie }
+sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
 sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
-sub status          { Dancer::SharedData->response->status(@_) }
 sub start           { goto &_start }
+sub status          { Dancer::SharedData->response->status(@_) }
 sub template        { Dancer::Template::Abstract->template(@_) }
-sub true            { 1 }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
-sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
 sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
+sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
+sub true            { 1 }
 sub upload          { Dancer::SharedData->request->upload(@_) }
 sub uri_for         { Dancer::SharedData->request->uri_for(@_) }
 sub var             { Dancer::SharedData->var(@_) }
@@ -209,12 +184,40 @@ sub _mime_type {
     :           $mime->add_mime_type(@_);
 }
 
+sub _redirect {
+    my ($destination, $status) = @_;
+    if ($destination =~ m!^(\w://)?/!) {
+        # no absolute uri here, build one, RFC 2616 forces us to do so
+        my $request = Dancer::SharedData->request;
+        $destination = $request->uri_for($destination, {}, 1);
+    }
+    my $response = Dancer::SharedData->response;
+    $response->status($status || 302);
+    $response->headers('Location' => $destination);
+}
+
 sub _session {
     engine 'session'
       or croak "Must specify session engine in settings prior to using 'session' keyword";
       @_ == 0 ? Dancer::Session->get
     : @_ == 1 ? Dancer::Session->read(@_)
     :           Dancer::Session->write(@_);
+}
+
+sub _send_file {
+    my ($path) = @_;
+
+    my $request = Dancer::Request->new_for_request('GET' => $path);
+    Dancer::SharedData->request($request);
+
+    my $resp = Dancer::Renderer::get_file_response();
+    return $resp if $resp;
+
+    Dancer::Error->new(
+        code    => 404,
+        message => "No such file: `$path'"
+    )->render();
+    
 }
 
 # set_cookie name => value,
