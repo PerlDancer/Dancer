@@ -43,6 +43,26 @@ sub routes {
     map { $_->pattern } @{$self->registry->{'routes'}{$method}};
 }
 
+sub load_app {
+    my ($class, $script, $app_name, %options) = @_;
+    Dancer::Logger::core("loading application $app_name");
+
+    # set the application
+    my $app = $class->set_running_app($app_name);
+
+    # Application options
+    $app->prefix($options{prefix})     if $options{prefix};
+    $app->settings($options{settings}) if $options{settings};
+
+    # load the application
+    $class->init_script_dir($script);
+    my ($res, $error) = Dancer::ModuleLoader->load($app_name);
+    $res or croak "unable to load application $app_name : $error";
+
+    # restore the main application
+    $class->set_running_app('main');
+}
+
 sub reload_apps {
     my ($class) = @_;
 

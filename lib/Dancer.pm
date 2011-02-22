@@ -254,26 +254,7 @@ sub var             { Dancer::SharedData->var(@_) }
 sub vars            { Dancer::SharedData->vars }
 sub warning         { goto &Dancer::Logger::warning }
 # FIXME handle previous usage of load_app with multiple app names
-sub load_app {
-    my ($app_name, %options) = @_;
-    Dancer::Logger::core("loading application $app_name");
-
-    # set the application
-    my $app = Dancer::App->set_running_app($app_name);
-
-    # Application options
-    $app->prefix($options{prefix})     if $options{prefix};
-    $app->settings($options{settings}) if $options{settings};
-
-    # load the application
-    my ($package, $script) = caller;
-    Dancer::App->init_script_dir($script);
-    my ($res, $error) = Dancer::ModuleLoader->load($app_name);
-    $res or croak "unable to load application $app_name : $error";
-
-    # restore the main application
-    Dancer::App->set_running_app('main');
-}
+sub load_app { Dancer::App->load_app((caller)[1], @_) }
 
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
