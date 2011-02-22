@@ -126,12 +126,11 @@ sub load_app        { Dancer::App->load_app((caller)[1], @_) }
 sub logger          { set(logger => @_) }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub headers         { Dancer::SharedData->response->headers(@_); }
-sub mime_type {
-    my $mime = Dancer::MIME->instance();
-    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
-    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
-    else                  { $mime->aliases           }
-}
+sub mime_type       { my $mime = Dancer::MIME->instance();
+                        @_ == 2 ? $mime->add_mime_type(@_)
+                      : @_ == 1 ? $mime->mime_type_for(@_)
+                      :           $mime->aliases;
+                    }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
