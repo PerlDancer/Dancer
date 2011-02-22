@@ -125,6 +125,35 @@ sub _render_with_layout {
     return $full_content;
 }
 
+sub template {
+    my ( $class, $view, $tokens, $options ) = @_;
+
+    my $content;
+
+    if ($view) {
+        $content = Dancer::Template->engine->apply_renderer( $view, $tokens );
+        if ( !defined $content ) {
+                  return Dancer::Error->new(
+                code    => 404,
+                message => "Page not found",
+            )->render();
+        }
+    }
+    else {
+        $options ||= {};
+        $content = delete $options->{content};
+    }
+
+    my $full_content =
+      Dancer::Template->engine->apply_layout( $content, $tokens, $options );
+    defined $full_content
+      and return $full_content;
+
+    Dancer::Error->new(
+        code    => 404,
+        message => "Page not found",
+    )->render();
+}
 
 1;
 __END__

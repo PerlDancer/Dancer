@@ -186,36 +186,8 @@ sub session         { engine 'session'
                       :           Dancer::Session->write(@_);
                     }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
-sub status    { Dancer::SharedData->response->status(@_) }
-sub template {
-    my ( $view, $tokens, $options ) = @_;
-
-    my $content;
-
-    if ($view) {
-        $content = Dancer::Template->engine->apply_renderer( $view, $tokens );
-        if ( !defined $content ) {
-                  return Dancer::Error->new(
-                code    => 404,
-                message => "Page not found",
-            )->render();
-        }
-    }
-    else {
-        $options ||= {};
-        $content = delete $options->{content};
-    }
-
-    my $full_content =
-      Dancer::Template->engine->apply_layout( $content, $tokens, $options );
-    defined $full_content
-      and return $full_content;
-
-    Dancer::Error->new(
-        code    => 404,
-        message => "Page not found",
-    )->render();
-}
+sub status          { Dancer::SharedData->response->status(@_) }
+sub template        { Dancer::Template::Abstract->template(@_) }
 sub true            { 1 }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
