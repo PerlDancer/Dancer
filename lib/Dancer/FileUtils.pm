@@ -11,7 +11,7 @@ use Cwd 'realpath';
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
+@EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file set_file_mode);
 
 # Undo UNC special-casing catfile-voodoo on cygwin in the next three functions
 sub d_catfile {
@@ -48,15 +48,21 @@ sub path_no_verify {
 
 sub dirname { File::Basename::dirname(@_) }
 
-sub open_file {
-    my ($mode, $filename) = @_;
+sub set_file_mode {
+    my ($fh) = @_;
     require Dancer::Config;
     my $charset = Dancer::Config::setting('charset') || 'utf-8';
-    length($charset || '')
-      and $mode .= ":encoding($charset)";
+    if($charset) {
+        binmode($fh, ":encoding($charset)");
+    }
+    return $fh;
+}
+
+sub open_file {
+    my ($mode, $filename) = @_;
     open(my $fh, $mode, $filename)
       or croak "$! while opening '$filename' using mode '$mode'";
-    return $fh;
+    return set_file_mode($fh);
 }
 
 sub read_file_content {
