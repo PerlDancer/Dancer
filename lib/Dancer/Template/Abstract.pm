@@ -3,7 +3,10 @@ package Dancer::Template::Abstract;
 use strict;
 use warnings;
 use Carp;
+
+use Dancer::Deprecation;
 use Dancer::FileUtils 'path';
+
 use base 'Dancer::Engine';
 
 # Overloads this method to implement the rendering
@@ -82,6 +85,26 @@ sub apply_layout {
     defined $full_content
       and return $full_content;
     return;
+}
+
+sub _render_with_layout {
+    my ($class, $content, $tokens, $options) = @_;
+
+    Dancer::Deprecation::deprecated(
+        feature => 'render_with_layout',
+        version => '1.3000',
+        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
+    );
+
+    my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
+
+    if (! defined $full_content) {
+          return Dancer::Error->new(
+            code    => 404,
+            message => "Page not found",
+        )->render();
+    }
+    return $full_content;
 }
 
 sub _prepare_tokens_options {

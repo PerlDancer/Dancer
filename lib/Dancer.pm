@@ -12,7 +12,6 @@ $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
 use Dancer::Config;
-use Dancer::Deprecation;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
@@ -150,25 +149,7 @@ sub redirect  {
     $response->status($status || 302);
     $response->headers('Location' => $destination);
 }
-sub render_with_layout {
-    my ($content, $tokens, $options) = @_;
-
-    Dancer::Deprecation::deprecated(
-        feature => 'render_with_layout',
-        version => '1.3000',
-        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
-    );
-
-    my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
-
-    if (! defined $full_content) {
-          return Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        )->render();
-    }
-    return $full_content;
-}
+sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
 sub send_error {
     my ( $content, $status ) = @_;
