@@ -102,7 +102,7 @@ sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::SharedData->response->content_type(@_) }
-sub dance           { goto &Dancer::start }
+sub dance           { goto &start }
 sub debug           { goto &Dancer::Logger::debug }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
@@ -122,7 +122,7 @@ sub load_app        { Dancer::App->load_app((caller)[1], @_) }
 sub logger          { set(logger => @_) }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub headers         { Dancer::SharedData->response->headers(@_); }
-sub mime_type       { goto _mime_type }
+sub mime_type       { goto &_mime_type }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
