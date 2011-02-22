@@ -43,6 +43,7 @@ sub routes {
     map { $_->pattern } @{$self->registry->{'routes'}{$method}};
 }
 
+# FIXME handle previous usage of load_app with multiple app names
 sub load_app {
     my ($class, $script, $app_name, %options) = @_;
     Dancer::Logger::core("loading application $app_name");
