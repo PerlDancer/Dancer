@@ -14,7 +14,7 @@ use Dancer::Session;
 use Dancer::FileUtils qw(open_file);
 
 sub init {
-    my ($self, %params) = @_;
+    my ($self) = @_;
 
     $self->attributes_defaults(
         title => 'Error ' . $self->code,

@@ -25,7 +25,9 @@ sub logdir {
 }
 
 sub init {
-    my ($self) = @_;
+    my $self = shift;
+    $self->SUPER::init(@_);
+
     my $logdir = logdir();
 
     if (!-d $logdir && not mkdir $logdir) {
