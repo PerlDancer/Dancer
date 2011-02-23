@@ -16,6 +16,8 @@
       (franck cuny)
 
     [ ENHANCEMENTS ]
+    * Various packaging, changelog and test fixes
+      (Damien Krotkine)
     * Add a new accessor to Dancer::Request: ->uri.
       (it's an alias to ->request_uri)
       (Franck Cuny)
