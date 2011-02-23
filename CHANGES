@@ -12,6 +12,8 @@
       (Sawyer X)
     *  Fix anti UNC substitution under Cygwin
       (Rowan Thorpe)
+    * GH#299 Return appropriate headers on HEAD request (content-type, ...)
+      (franck cuny)
 
     [ ENHANCEMENTS ]
     * Add a new accessor to Dancer::Request: ->uri.

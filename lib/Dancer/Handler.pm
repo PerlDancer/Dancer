@@ -128,6 +128,10 @@ sub render_response {
         $content = [$content];
     }
 
+    # drop content if request is HEAD
+    $content = ['']
+      if ( defined Dancer::SharedData->request
+        && Dancer::SharedData->request->is_head() );
     Dancer::Logger::core("response: " . $response->status);
 
     my $status  = $response->status();
