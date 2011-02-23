@@ -16,6 +16,8 @@
       (franck cuny)
 
     [ ENHANCEMENTS ]
+    * Fix manifest
+      (Damien Krotkine)
     * Various packaging, changelog and test fixes
       (Damien Krotkine)
     * Add a new accessor to Dancer::Request: ->uri.
