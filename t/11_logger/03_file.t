@@ -7,7 +7,7 @@ use File::Temp qw/tempdir/;
 use t::lib::TestUtils;
 use Dancer;
 
-my $dir = tempdir(CLEANUP => 1);
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 setting appdir => $dir;
 
 use_ok 'Dancer::Logger::File';
@@ -28,7 +28,7 @@ ok($l->warning("Perl Dancer test message 3/4"), "warning works");
 ok($l->error("Perl Dancer test message 4/4"), "error works");
 
 #Create a new tmp directory to test log_path option
-my $dir2 = tempdir(CLEANUP => 1);
+my $dir2 = tempdir(CLEANUP => 1, TMPDIR => 1);
 setting log_path => $dir2;
 
 is(Dancer::Logger::File->logdir, $dir2, 

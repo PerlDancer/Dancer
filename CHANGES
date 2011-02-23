@@ -10,6 +10,8 @@
     * No need for default upper directory in Dancer::Test. This fixes an issue
       raised on the list about the default scaffolded test failing.
       (Sawyer X)
+    *  Fix anti UNC substitution under Cygwin
+      (Rowan Thorpe)
 
     [ ENHANCEMENTS ]
     * Add a new accessor to Dancer::Request: ->uri.

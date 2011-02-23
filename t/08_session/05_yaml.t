@@ -19,7 +19,7 @@ BEGIN {
 }
 
 
-my $dir = tempdir(CLEANUP => 1);
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 
 my $session = Dancer::Session::YAML->create();

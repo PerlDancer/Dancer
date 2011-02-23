@@ -6,10 +6,10 @@ use Dancer::FileUtils;
 use File::Temp qw/tempdir/;
 use File::Spec qw/catfile/;
 
-my $dir = tempdir(CLEANUP => 1);
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 
-eval { logger 'foobar'};
+eval { logger 'foobar' };
 like($@, qr/unknown logger/, 'invalid logger detected');
 
 ok(logger('file'), 'file-based logger correctly set');
@@ -23,10 +23,10 @@ ok(error($message), "error sent");
 my $logdir = Dancer::FileUtils::path_no_verify(setting('appdir'), 'logs');
 ok((-d $logdir), "log directory exists");
 
-my $logfile = Dancer::FileUtils::d_catfile($logdir, "development.log");
-ok((-r $logfile), "logfile exists");
+my $dev_logfile = Dancer::FileUtils::d_catfile($logdir, "development.log");
+ok((-r $dev_logfile), "logfile exists");
 
-open LOGFILE, '<', $logfile;
+open LOGFILE, '<', $dev_logfile;
 my @content = <LOGFILE>;
 close LOGFILE;
 
@@ -34,15 +34,13 @@ ok(grep(/debug \@.*$message/, @content), 'debug message found');
 ok(grep(/warn \@.*$message/, @content), 'warning message found');
 ok(grep(/error \@.*$message/, @content), 'error message found');
 
-unlink $logfile;
-
 set environment => 'test';
 logger 'file';
 
-$logfile = Dancer::FileUtils::d_catfile($logdir, "test.log");
-ok((-r $logfile), "environment logfile exists");
+my $test_logfile = Dancer::FileUtils::d_catfile($logdir, "test.log");
+ok((-r $test_logfile), "environment logfile exists");
 
-open LOGFILE, '<', $logfile;
+open LOGFILE, '<', $test_logfile;
 @content = <LOGFILE>;
 close LOGFILE;
 
@@ -53,5 +51,6 @@ ok(warning($message), 'warning message is logged');
 ok(error($message), 'error message is logged');
 
 Dancer::Logger::logger->{fh}->close;
-unlink $logfile;
+unlink $dev_logfile;
+unlink $test_logfile;
 File::Temp::cleanup();
