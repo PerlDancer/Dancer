@@ -48,10 +48,9 @@ sub destroy {
 # This is the default constructor for the session object, the only mandatory
 # attribute is 'id'. The whole object should be serialized by the session
 # engine.
-sub new {
-    my $self = Dancer::Object::new(@_);
+sub init {
+    my ($self) = @_;
     $self->id(build_id());
-    return $self;
 }
 
 # session name can be set in configuration file:
