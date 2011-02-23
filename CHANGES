@@ -37,6 +37,9 @@
       (Roman Galeev)
     * Refactoring of the forward method
       (Alex Kalderimis)
+    * Refactoring of internal objects in the core, 
+      use more of Dancer::Object. Introduce attributes_defaults
+      (Damien Krotkine)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
