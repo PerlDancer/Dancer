@@ -4,7 +4,8 @@ use strict;
 use warnings;
 use Carp;
 
-use Dancer::Object;
+use base 'Dancer::Object';
+
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Encode;
@@ -12,7 +13,6 @@ use HTTP::Body;
 use URI;
 use URI::Escape;
 
-use base 'Dancer::Object';
 my @http_env_keys = (
     'user_agent',      'host',       'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive', 'connection',      'accept',
@@ -20,7 +20,7 @@ my @http_env_keys = (
 );
 my $count = 0;
 
-Dancer::Request->attributes(
+__PACKAGE__->attributes(
 
     # query
     'env',          'path',    'method',
