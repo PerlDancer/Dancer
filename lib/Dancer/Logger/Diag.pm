@@ -4,6 +4,8 @@ use warnings;
 use base 'Dancer::Logger::Abstract';
 
 sub init {
+    my $self = shift;
+    $self->SUPER::init(@_);
     require Test::More;
 }
 
