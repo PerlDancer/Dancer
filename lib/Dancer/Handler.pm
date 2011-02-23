@@ -115,23 +115,38 @@ sub render_response {
     my $response = Dancer::SharedData->response();
 
     my $content = $response->content;
-    unless ( ref($content) eq 'GLOB' ) {
 
+    unless ( ref($content) eq 'GLOB' ) {
         my $charset = setting('charset');
         my $ctype   = $response->header('Content-Type');
 
-        if ($charset && $ctype && _is_text($ctype)) {
-            $content = Encode::encode($charset, $content);
-            $response->header('Content-Type' => "$ctype; charset=$charset")
+        if ( $charset && $ctype && _is_text($ctype) ) {
+            $content = Encode::encode( $charset, $content );
+            $response->header( 'Content-Type' => "$ctype; charset=$charset" )
               if $ctype !~ /$charset/;
         }
+        $response->header( 'Content-Length' => length($content) )
+          if !defined $response->header('Content-Length');
         $content = [$content];
+    }
+    else {
+        if ( !defind $response->header('Content-Length') ) {
+            my $stat = stat $content;
+            $response->header( 'Content-Length' => $stat->size );
+        }
     }
 
     # drop content if request is HEAD
     $content = ['']
       if ( defined Dancer::SharedData->request
         && Dancer::SharedData->request->is_head() );
+
+    # drop content AND content_length if reponse is 1xx or (2|3)04
+    if ($response->status =~ (/^(1\d{2}|[23]04)$/ )) {
+        $content = [''];
+        $response->header('Content-Length' => 0);
+    }
+    
     Dancer::Logger::core("response: " . $response->status);
 
     my $status  = $response->status();
