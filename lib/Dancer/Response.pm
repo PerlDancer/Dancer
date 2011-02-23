@@ -15,27 +15,17 @@ use Dancer::SharedData;
 __PACKAGE__->attributes(qw/content pass/);
 
 # constructor
-sub new {
-    my ( $class, %args ) = @_;
-
-    my $h = delete $args{headers} || [];
-    my $headers = HTTP::Headers->new(@$h);
-
-    my $self = {
+sub init {
+    my ( $self, %args ) = @_;
+    $self->attributes_defaults(
         status  => 200,
-        headers => $headers,
-        content => "",
+        content => '',
         pass    => 0,
         halted  => 0,
-        forward => "",
-        %args,
-    };
-
-    bless $self, $class;
-
+        forward => '',
+    );
+    $self->{headers} = HTTP::Headers->new(@{ $args{headers} || [] });
     Dancer::SharedData->response($self);
-
-    return $self;
 }
 
 # helpers for the route handlers
