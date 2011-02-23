@@ -25,7 +25,7 @@ open(my $fh, '<', $changelog_filename);
 my @lines = map { chomp; $_ } <$fh>;
 
 my $tests_count = 0;
-while (1) { $lines[$tests_count++] !~ /^\Q$stop_checking_version\E/ or last }
+while (1) { $lines[$tests_count++] !~ /^\Q$stop_checking_version\E(?:\s|$)/ or last }
 
 # test count = number of lines + 1
 plan tests => $tests_count;
@@ -38,12 +38,12 @@ my $line_nb = 0;
 my $line;
 sub _consume_line { $line = shift @lines;
                     defined $line or goto END_CHANGES;
-                    $line =~ /^\Q$stop_checking_version\E/ and goto END_CHANGES;
+                    $line =~ /^\Q$stop_checking_version\E(?:\s|$)/ and goto END_CHANGES;
                     $line_nb++;
                   }
 sub _peek_line { $line = $lines[0];
                  defined $line or goto END_CHANGES;
-                 $line =~ /^\Q$stop_checking_version\E/ and goto END_CHANGES;
+                 $line =~ /^\Q$stop_checking_version\E(?:\s|$)/ and goto END_CHANGES;
                }
 sub _fail { fail("changelog error (line $line_nb): " . shift() . " line was : '$line'"); }
 sub _fail_bail_out { _fail(@_); BAIL_OUT("changelog is not safe enough to continue checking"); }
