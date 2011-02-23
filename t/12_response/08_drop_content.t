@@ -26,7 +26,6 @@ sub test {
             for (qw/204 304/) {
                 my $req = HTTP::Request->new( GET => $url . $_ );
                 my $res = $ua->request($req);
-                use YAML;warn Dump $res;
                 ok !$res->content, 'no content for '.$_;
                 ok !$res->header('Content-Length'), 'no content-length for '.$_;
             }
