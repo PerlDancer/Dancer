@@ -142,7 +142,7 @@ sub render_response {
         && Dancer::SharedData->request->is_head() );
 
     # drop content AND content_length if reponse is 1xx or (2|3)04
-    if ($response->status =~ (/^(1\d{2}|[23]04)$/ )) {
+    if ($response->status =~ (/^[23]04$/ )) {
         $content = [''];
         $response->header('Content-Length' => 0);
     }
