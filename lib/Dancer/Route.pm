@@ -183,9 +183,6 @@ sub run {
     # prevent warnings
     $content = (defined $content) ? $content : '';
 
-    # drop content if HEAD request
-    $content = '' if $request->is_head;
-
     my $ct =
       ( defined $response && defined $response->content_type )
       ? $response->content_type()

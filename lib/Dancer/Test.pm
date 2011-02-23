@@ -205,15 +205,13 @@ sub dancer_response {
     );
 
     Dancer::SharedData->request($request);
-    if (Dancer::Renderer::get_action_response()) {
-        my $response = Dancer::SharedData->response();
-        Dancer::SharedData->reset_response();
-        return $response;
-    }else{
-        my $response = Dancer::SharedData->response();
-        Dancer::SharedData->reset_response();
-        (defined $response && $response->exists) ? return $response : return undef;
-    }
+
+    my $get_action = Dancer::Renderer::get_action_response();
+    my $response = Dancer::SharedData->response();
+    $response->content('') if $method eq 'HEAD';
+    Dancer::SharedData->reset_response();
+    return $response if $get_action;
+    (defined $response && $response->exists) ? return $response : return undef;
 }
 
 sub get_response {
