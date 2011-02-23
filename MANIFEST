@@ -233,6 +233,7 @@ t/12_response/04_charset_server.t
 t/12_response/05_api.t
 t/12_response/06_filter_halt_status.t
 t/12_response/07_cookies.t
+t/12_response/08_drop_content.t
 t/13_engines/00_load.t
 t/13_engines/02_template_init.t
 t/14_serializer/000_create_fake_env.t
@@ -251,6 +252,7 @@ t/14_serializer/12_bug_gh106.t
 t/14_serializer/13_xml.t
 t/14_serializer/14_api.t
 t/14_serializer/14_show_errors.t
+t/14_serializer/16_bug_gh_299.t
 t/14_serializer/handler-helper.t
 t/15_plugins/000_create_fake_env.t
 t/15_plugins/01_register.t
