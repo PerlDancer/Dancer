@@ -12,7 +12,7 @@ use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 use TestUtils;
 
-my $dir = tempdir(CLEANUP => 1);
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;

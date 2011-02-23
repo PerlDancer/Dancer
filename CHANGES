@@ -1,3 +1,50 @@
+1.3011_01   23.02.2011
+
+    [ BUG FIXES ]
+    * Fix cookies disappearing when more than one is set.
+      (Chris Andrews)
+    * Properly set the settings in Dancer::Test only after config loading.
+      (Sawyer X)
+    * Fix possible loss of last directory in path.
+      (Sawyer X)
+    * No need for default upper directory in Dancer::Test. This fixes an issue
+      raised on the list about the default scaffolded test failing.
+      (Sawyer X)
+    *  Fix anti UNC substitution under Cygwin
+      (Rowan Thorpe)
+
+    [ ENHANCEMENTS ]
+    * Add a new accessor to Dancer::Request: ->uri.
+      (it's an alias to ->request_uri)
+      (Franck Cuny)
+    * Removes Dancer::Helpers, refactor Dancer.pm accordingly.
+      (Franck Cuny)
+    * Introduce changelog test of hell.
+      (Damien Krotkine)
+    * Add Dancer::Logger::Null.
+      (Sawyer X)
+    * Add Dancer::Logger::Diag.
+      (Sawyer X)
+    * Refactor Dancer::Response
+      (franck cuny)
+    * Allow to use a subclass of Template::Toolkit.
+      (Michael G. Schwern)
+    * Dancer::Test now uses Dancer::Logger::Null instead of ::File.
+      (Sawyer X)
+    * Add Dancer::Deprecation. (handle deprecation messages)
+      (franck cuny)
+    * Introduce new timestamp format in logger (%T)
+      (Roman Galeev)
+    * Refactoring of the forward method
+      (Alex Kalderimis)
+    * Refactoring of internal objects in the core, 
+      use more of Dancer::Object. Introduce attributes_defaults
+      (Damien Krotkine)
+
+    [ DOCUMENTATION ]
+    * Add missing methods (e.g. "referer"), sorting, clean up.
+      (Flavio Poletti)
+
 1.3011    14.02.2011
 
     [ BUG FIXES ]

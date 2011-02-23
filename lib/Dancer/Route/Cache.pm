@@ -3,14 +3,15 @@ package Dancer::Route::Cache;
 use strict;
 use warnings;
 use Carp;
+
+use base 'Dancer::Object';
+
 use vars '$VERSION';
 
-use Dancer::Object;
 use Dancer::Config 'setting';
 use Dancer::Error;
 
 $VERSION = '0.01';
-use base 'Dancer::Object';
 Dancer::Route::Cache->attributes('size_limit', 'path_limit');
 
 # static

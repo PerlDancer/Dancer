@@ -10,6 +10,7 @@ use Carp;
 use HTTP::Headers;
 use Dancer ':syntax';
 use Dancer::App;
+use Dancer::Deprecation;
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
@@ -43,7 +44,7 @@ use vars '@EXPORT';
 
 sub import {
     my ($class, %options) = @_;
-    $options{appdir} ||= '..';
+    $options{appdir} ||= '.';
 
     # mimic PSGI env
     $ENV{SERVERNAME}        = 'localhost';
@@ -54,10 +55,12 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
-    # set a default session engine for tests
-    setting 'session' => 'simple';
     Dancer::_init($options{appdir});
     Dancer::Config->load;
+
+    # set a default session engine for tests
+    setting 'session' => 'simple';
+    setting 'logger'  => 'Null';
 }
 
 # Route Registry
@@ -105,7 +108,7 @@ sub response_status_is {
     $test_name ||= "response status is $status for @$req";
 
     my $response = dancer_response(@$req);
-    is $response->{status}, $status, $test_name;
+    is $response->status, $status, $test_name;
 }
 
 sub response_status_isnt {
@@ -202,11 +205,23 @@ sub dancer_response {
     );
 
     Dancer::SharedData->request($request);
-    return Dancer::Renderer::get_action_response();
+    if (Dancer::Renderer::get_action_response()) {
+        my $response = Dancer::SharedData->response();
+        Dancer::SharedData->reset_response();
+        return $response;
+    }else{
+        my $response = Dancer::SharedData->response();
+        Dancer::SharedData->reset_response();
+        (defined $response && $response->exists) ? return $response : return undef;
+    }
 }
 
 sub get_response {
-    croak "get_response() is DEPRECATED. Use dancer_response() instead.";
+    Dancer::Deprecation::deprecated(
+        fatal   => 1,
+        feature => 'get_response',
+        reason  => 'Use dancer_response() instead.',
+    );
 }
 
 # private
@@ -242,7 +257,7 @@ Dancer::Test - Test helpers to test a Dancer application
     use Test::More tests => 2;
 
     use MyWebApp;
-    use Dancer::Test appdir => '..';
+    use Dancer::Test;
 
     response_status_is [GET => '/'], 200, "GET / is found";
     response_content_like [GET => '/'], qr/hello, world/, "content looks good for /";
@@ -252,19 +267,7 @@ Dancer::Test - Test helpers to test a Dancer application
 
 This module provides test helpers for testing Dancer apps.
 
-=head1 CONFIGURATON
-
-When importing Dancer::Test, the appdir is set by defaut to '..', assuming that
-your test script is directly in your t/ directory. If you put your test script
-deeper in the 't/' hierarchy (like in 't/routes/01_some_test.t') you'll have to
-tell Dancer::Test that the appdir is one step upper.
-
-To do so, you can tell where the appdir is thanks to an import option:
-
-    use MyWebApp;
-    use Dancer::Test appdir => '../..';
-
-Be careful, the order in the example above is very important.
+Be careful, the module loading order in the example above is very important.
 Make sure to use C<Dancer::Test> B<after> importing the application package
 otherwise your appdir will be automatically set to C<lib> and your test script
 won't be able to find views, conffiles and other application content.

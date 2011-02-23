@@ -5,6 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
+use Dancer::Deprecation;
 use Dancer::Template;
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
@@ -56,7 +57,7 @@ my $setters = {
                 'get', '/:page',
                 sub {
                     my $params = Dancer::SharedData->request->params;
-                    Dancer::Helpers::template($params->{'page'});
+                    Dancer::template($params->{'page'});
                 }
             );
         }
@@ -85,7 +86,9 @@ my $normalizers = {
 };
 
 sub mime_types {
-    carp "DEPRECATED: use 'mime_type' from Dancer.pm";
+    Dancer::Deprecation::deprecated(
+        reason => "use 'mime_type' from Dancer.pm",
+    );
     my $mime = Dancer::MIME->instance();
     if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
     elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }

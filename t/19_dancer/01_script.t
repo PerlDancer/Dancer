@@ -24,7 +24,7 @@ sub slurp {
     <$fh>;
 }
 
-my $dir = tempdir( CLEANUP => 1 );
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 my $cwd = cwd;
 
 chdir $dir;

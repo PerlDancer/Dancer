@@ -4,7 +4,8 @@ use strict;
 use warnings;
 use Carp;
 
-use Dancer::Object;
+use base 'Dancer::Object';
+
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Encode;
@@ -12,7 +13,6 @@ use HTTP::Body;
 use URI;
 use URI::Escape;
 
-use base 'Dancer::Object';
 my @http_env_keys = (
     'user_agent',      'host',       'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive', 'connection',      'accept',
@@ -20,7 +20,7 @@ my @http_env_keys = (
 );
 my $count = 0;
 
-Dancer::Request->attributes(
+__PACKAGE__->attributes(
 
     # query
     'env',          'path',    'method',
@@ -44,6 +44,7 @@ sub user                  { $_[0]->env->{REMOTE_USER} }
 sub script_name           { $_[0]->env->{SCRIPT_NAME} }
 sub scheme                { $_[0]->env->{'psgi.url_scheme'} }
 sub secure                { $_[0]->scheme eq 'https' }
+sub uri                   { $_[0]->request_uri }
 
 sub is_head               { $_[0]->{method} eq 'HEAD' }
 sub is_post               { $_[0]->{method} eq 'POST' }
@@ -103,6 +104,23 @@ sub new_for_request {
     $req->{headers} = $headers if $headers;
 
     return $req;
+}
+
+#Create a new request which is a clone of the current one, apart
+#from the path location, which points instead to the new location
+sub forward {
+    my ($class, $request, $to) = @_;
+
+    my $env = $request->env;
+    $env->{PATH_INFO} = $to;
+
+    my $new_request = $class->new($env);
+
+    $new_request->{params}  = $request->params;
+    $new_request->{body}    = $request->body;
+    $new_request->{headers} = $request->headers;
+
+    return $new_request;
 }
 
 sub base {
@@ -504,6 +522,12 @@ objects. It uses the environment hash table given to build the request object.
 An alternate constructor convinient for test scripts which creates a request
 object with the arguments given.
 
+=head2 forward($request, $new_location)
+
+Create a new request which is a clone of the current one, apart
+from the path location, which points instead to the new location.
+This is used internally to chain requests using the forward keyword.
+
 =head2 to_string()
 
 Return a string represeting the request object (eg: C<"GET /some/path">)
@@ -532,23 +556,27 @@ Return the protocol (HTTP/1.0 or HTTP/1.1) used for the request.
 
 Return the port of the server.
 
-=head2 request_uri
+=head2 uri()
+
+An alias to request_uri()
+
+=head2 request_uri()
 
 Return the raw, undecoded request URI path.
 
-=head2 user
+=head2 user()
 
 Return remote user if defined.
 
-=head2 script_name
+=head2 script_name()
 
 Return script_name from the environment.
 
-=head2 scheme
+=head2 scheme()
 
 Return the scheme of the request
 
-=head2 secure
+=head2 secure()
 
 Return true of false, indicating wether the connection is secure
 
@@ -707,29 +735,36 @@ Dancer::Request object through specific accessors, here are those supported:
 
 =over 4
 
-=item C<user_agent>
-
-=item C<agent> (alias for C<user_agent>)
-
-=item C<host>
-
-=item C<accept_language>
+=item C<accept>
 
 =item C<accept_charset>
 
 =item C<accept_encoding>
 
-=item C<keep_alive>
+=item C<accept_language>
+
+=item C<accept_type>
+
+=item C<agent> (alias for C<user_agent>)
 
 =item C<connection>
 
-=item C<accept>
-
 =item C<forwarded_for_address>
+
+=item C<host>
+
+=item C<keep_alive>
+
+=item C<path_info>
+
+=item C<referer>
 
 =item C<remote_address>
 
+=item C<user_agent>
+
 =back
+
 
 =head1 AUTHORS
 

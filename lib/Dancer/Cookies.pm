@@ -23,7 +23,7 @@ sub parse_cookie_from_env {
     return {} unless defined $env_str;
 
     my $cookies = {};
-    foreach my $cookie ( split( '; ', $env_str ) ) {
+    foreach my $cookie ( split( /[,;]\s/, $env_str ) ) {
         my ( $name, $value ) = split( '=', $cookie );
         my @values;
         if ( $value ne '' ) {

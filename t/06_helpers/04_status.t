@@ -33,5 +33,6 @@ foreach my $test (@tests) {
     is($response->{status}, 
         $test->{expected}, 
         "status looks good for ".$test->{path}); 
+    Dancer::SharedData->reset_all();
 }
 
