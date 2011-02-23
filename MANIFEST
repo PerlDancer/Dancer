@@ -28,7 +28,6 @@ lib/Dancer/Handler.pm
 lib/Dancer/Handler/Debug.pm
 lib/Dancer/Handler/PSGI.pm
 lib/Dancer/Handler/Standalone.pm
-lib/Dancer/Helpers.pm
 lib/Dancer/HTTP.pm
 lib/Dancer/Introduction.pod
 lib/Dancer/Logger.pm
