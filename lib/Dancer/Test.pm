@@ -215,7 +215,7 @@ sub dancer_response {
 }
 
 sub get_response {
-    Dancer::Deprecation::deprecated(
+    Dancer::Deprecation->deprecated(
         fatal   => 1,
         feature => 'get_response',
         reason  => 'Use dancer_response() instead.',

@@ -71,7 +71,7 @@ sub apply_plack_middlewares {
 
     # XXX remove this after 1.2
     if ( ref $middlewares eq 'HASH' ) {
-        Dancer::Deprecation::deprecated(
+        Dancer::Deprecation->deprecated(
             fatal   => 1,
             feature => 'Listing Plack middlewares as a hash ref',
             reason  => 'Must be listed as an array ref',
