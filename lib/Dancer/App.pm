@@ -214,9 +214,9 @@ sub init_script_dir {
     my @script_dirs = File::Spec->splitdir($script_dirs);
     my $script_path;
     if ($script_vol) {
-        $script_path = path($script_vol, $script_dirs);
+        $script_path = Dancer::path($script_vol, $script_dirs);
     } else {
-        $script_path = path($script_dirs);
+        $script_path = Dancer::path($script_dirs);
     }
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
