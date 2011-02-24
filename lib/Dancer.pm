@@ -120,7 +120,7 @@ sub header          { goto &headers }
 sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
-sub load_app        { Dancer::App->load_app((caller)[1], @_) }
+sub load_app        { my $script = (caller)[1]; _load_app($script, @_) }
 sub logger          { set(logger => @_) }
 sub mime_type       { goto &_mime_type }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
@@ -176,6 +176,27 @@ sub import {
 }
 
 # private code
+
+# FIXME handle previous usage of load_app with multiple app names
+sub _load_app {
+    my ($script, $app_name, %options) = @_;
+    Dancer::Logger::core("loading application $app_name");
+
+    # set the application
+    my $app = Dancer::App->set_running_app($app_name);
+
+    # Application options
+    $app->prefix($options{prefix})     if $options{prefix};
+    $app->settings($options{settings}) if $options{settings};
+
+    # load the application
+    Dancer::App->init_script_dir($script);
+    my ($res, $error) = Dancer::ModuleLoader->load($app_name);
+    $res or croak "unable to load application $app_name : $error";
+
+    # restore the main application
+    Dancer::App->set_running_app('main');
+}
 
 sub _mime_type {
     my $mime = Dancer::MIME->instance();
