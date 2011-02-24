@@ -122,7 +122,7 @@ sub header          { goto &headers }
 sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
-sub load_app        { my $script = (caller)[1]; _load_app($script, @_) }
+sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          { set(logger => @_) }
 sub mime_type       { goto &_mime_type }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
@@ -181,7 +181,8 @@ sub import {
 
 # FIXME handle previous usage of load_app with multiple app names
 sub _load_app {
-    my ($script, $app_name, %options) = @_;
+    my ($app_name, %options) = @_;
+    my $script = (caller)[1];
     Dancer::Logger::core("loading application $app_name");
 
     # set the application
