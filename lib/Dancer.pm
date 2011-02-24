@@ -27,6 +27,8 @@ use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::MIME;
 
+use File::Spec;
+
 use base 'Exporter';
 
 @EXPORT    = qw(
@@ -171,7 +173,7 @@ sub import {
 
     Dancer::GetOpt->process_args();
 
-    Dancer::App->init_script_dir($script);
+    _init_script_dir($script);
     Dancer::Config->load;
 }
 
@@ -190,12 +192,66 @@ sub _load_app {
     $app->settings($options{settings}) if $options{settings};
 
     # load the application
-    Dancer::App->init_script_dir($script);
+    _init_script_dir($script);
     my ($res, $error) = Dancer::ModuleLoader->load($app_name);
     $res or croak "unable to load application $app_name : $error";
 
     # restore the main application
     Dancer::App->set_running_app('main');
+}
+
+sub _init_script_dir {
+    my ($script) = @_;
+    
+    my ($script_vol, $script_dirs, $script_name) =
+      File::Spec->splitpath(File::Spec->rel2abs($script));
+
+    # normalize
+    if ( -d ( my $fulldir = File::Spec->catdir( $script_dirs, $script_name ) ) ) {
+        $script_dirs = $fulldir;
+        $script_name = '';
+    }
+
+    my @script_dirs = File::Spec->splitdir($script_dirs);
+    my $script_path;
+    if ($script_vol) {
+        $script_path = Dancer::path($script_vol, $script_dirs);
+    } else {
+        $script_path = Dancer::path($script_dirs);
+    }
+
+    my $LAYOUT_PRE_DANCER_1_2 = 1;
+
+    # in bin/ or public/ we need to go one level upper to find the appdir
+    $LAYOUT_PRE_DANCER_1_2 = 0
+      if ($script_dirs[$#script_dirs - 1] eq 'bin')
+      or ($script_dirs[$#script_dirs - 1] eq 'public');
+
+    my $appdir = $ENV{DANCER_APPDIR} || (
+          $LAYOUT_PRE_DANCER_1_2
+        ? $script_path
+        : File::Spec->rel2abs(Dancer::path($script_path, '..'))
+    );
+    Dancer::setting(appdir => $appdir);
+
+    # once the dancer_appdir have been defined, we export to env
+    $ENV{DANCER_APPDIR} = $appdir;
+
+    Dancer::Logger::core("initializing appdir to: `$appdir'");
+
+    Dancer::setting(confdir => $ENV{DANCER_CONFDIR}
+      || $appdir);
+
+    Dancer::setting(public => $ENV{DANCER_PUBLIC}
+      || Dancer::FileUtils::path_no_verify($appdir, 'public'));
+
+    Dancer::setting(views => $ENV{DANCER_VIEWS}
+      || Dancer::FileUtils::path_no_verify($appdir, 'views'));
+
+    Dancer::setting(logger => 'file');
+
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
+    $res or croak "unable to set libdir : $error";
 }
 
 sub _mime_type {
