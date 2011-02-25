@@ -203,8 +203,12 @@ sub dancer_response {
         $method => $path,
         $params, $body, HTTP::Headers->new(@$headers)
     );
-
     Dancer::SharedData->request($request);
+
+    # XXX this is a hack!!
+    $request = Dancer::Serializer->process_request($request)
+      if Dancer::App->current->setting('serializer');
+
     if (Dancer::Renderer::get_action_response()) {
         my $response = Dancer::SharedData->response();
         Dancer::SharedData->reset_response();
