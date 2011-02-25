@@ -142,7 +142,10 @@ sub get_file_response {
     my $path_info   = $request->path_info;
     my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
-    return Dancer::Renderer->get_file_response_for_path($static_file);
+    Dancer::App->execute_hooks('before_file_render', $static_file);
+    my $response = Dancer::Renderer->get_file_response_for_path($static_file);
+    Dancer::App->execute_hooks('after_file_render', $response);
+    return $response;
 }
 
 sub get_file_response_for_path {
