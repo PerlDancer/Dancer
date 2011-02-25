@@ -68,7 +68,8 @@ sub process_response {
 sub process_request {
     my ($class, $request) = @_;
 
-    Dancer::App->execute_hooks('before_deserializer');
+    Dancer::App->execute_hooks('before_deserializer', $request);
+
     return $request unless engine;
     return $request
       unless engine->support_content_type($request->content_type);
@@ -91,7 +92,7 @@ sub process_request {
       ? $request->_set_body_params({%$old_params, %$new_params})
       : $request->_set_body_params($new_params);
 
-    Dancer::App->execute_hooks('after_deserializer');
+    Dancer::App->execute_hooks('after_deserializer', $request);
 
     return $request;
 }
