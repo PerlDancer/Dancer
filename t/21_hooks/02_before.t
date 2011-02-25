@@ -5,7 +5,7 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-plan tests => 17;
+plan tests => 15;
 
 my $i = 0;
 
@@ -33,23 +33,18 @@ ok(
     'before filter is defined'
 );
 
-ok(
-    get(
-        '/' => sub {
-            is( params->{number}, 42,             "params->{number} is set" );
-            is( "I am here",      vars->{notice}, "vars->{notice} is set" );
-            return 'index';
-        }
-    ),
-    'index route is defined'
+get(
+    '/' => sub {
+        is( params->{number}, 42,             "params->{number} is set" );
+        is( "I am here",      vars->{notice}, "vars->{notice} is set" );
+        return 'index';
+    }
 );
 
-ok(
-    get(
-        '/redirect_from' => sub {
-            $i++;
-        }
-    )
+get(
+    '/redirect_from' => sub {
+        $i++;
+    }
 );
 
 route_exists    [ GET => '/' ];

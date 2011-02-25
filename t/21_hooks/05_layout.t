@@ -5,13 +5,13 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-plan tests => 7;
+plan tests => 6;
 
 my $time = localtime();
 
 ok(
     hook before_layout_render => sub {
-        my $tokens  = shift;
+        my $tokens = shift;
         $tokens->{time} = $time;
     }
 );
@@ -27,11 +27,9 @@ ok(
 set views => path( 't', '21_hooks', 'views' );
 set layout => 'main';
 
-ok(
-    get '/' => sub {
-        template 'index', {foo => 'baz'};
-    }
-);
+get '/' => sub {
+    template 'index', { foo => 'baz' };
+};
 
 route_exists [ GET => '/' ];
 response_content_like( [ GET => '/' ], qr/start $time/ );

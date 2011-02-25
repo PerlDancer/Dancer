@@ -2,17 +2,18 @@ use strict;
 use warnings;
 
 use Test::More tests => 10, import => ['!pass'];
+
 use Dancer ':syntax';
 use Dancer::Test;
 use Time::HiRes qw/gettimeofday/;
 
-my ($start, $diff);
+my ( $start, $diff );
 
 ok(
     before_template sub {
         my $tokens = shift;
         $tokens->{foo} = 'bar';
-        (undef, $start) = gettimeofday();
+        ( undef, $start ) = gettimeofday();
     }
 );
 
@@ -20,18 +21,16 @@ ok(
     hook after_template_render => sub {
         my $full_content = shift;
         like $full_content, qr/foo => bar/;
-        my (undef, $end) = gettimeofday();
+        my ( undef, $end ) = gettimeofday();
         $diff = $end - $start;
     }
 );
 
-setting views => path('t', '21_hooks', 'views');
+setting views => path( 't', '21_hooks', 'views' );
 
-ok(
-    get '/' => sub {
-        template 'index', {foo => 'baz'};
-    }
-);
+get '/' => sub {
+    template 'index', { foo => 'baz' };
+};
 
 route_exists [ GET => '/' ];
 response_content_like( [ GET => '/' ], qr/foo => bar/ );
