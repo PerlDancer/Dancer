@@ -55,7 +55,7 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
-    Dancer::_init($options{appdir});
+    Dancer::_init_script_dir($options{appdir});
     Dancer::Config->load;
 
     # set a default session engine for tests
