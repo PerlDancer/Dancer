@@ -228,6 +228,10 @@ sub dancer_response {
     # then store the request
     Dancer::SharedData->request($request);
 
+    # XXX this is a hack!!
+    $request = Dancer::Serializer->process_request($request)
+      if Dancer::App->current->setting('serializer');
+    
     my $get_action = Dancer::Renderer::get_action_response();
     my $response = Dancer::SharedData->response();
     $response->content('') if $method eq 'HEAD';
