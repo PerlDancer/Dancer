@@ -7,7 +7,7 @@ use Dancer::Test;
 use Dancer::FileUtils 'read_glob_content';
 use File::Temp 'tempdir';
 
-plan tests => 7;
+plan tests => 6;
 
 my $dir = tempdir( CLEANUP => 1 );
 
@@ -32,11 +32,9 @@ ok(
     }
 );
 
-ok(
-    get '/' => sub {
-        { send_file('test.txt') }
-    }
-);
+get '/' => sub {
+    { send_file('test.txt') }
+};
 
 route_exists [ GET => '/' ];
 my $response = dancer_response( GET => '/' );

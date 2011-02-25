@@ -9,7 +9,7 @@ use Time::HiRes qw/gettimeofday/;
 
 set serializer => 'JSON';
 
-plan tests => 6;
+plan tests => 5;
 
 ok(
     hook before_serializer => sub {
@@ -26,7 +26,7 @@ ok(
     }
 );
 
-ok( get '/' => sub { { foo => 1 } } );
+get '/' => sub { { foo => 1 } };
 
 route_exists [ GET => '/' ];
 response_content_like( [ GET => '/' ], qr/start_time/ );
