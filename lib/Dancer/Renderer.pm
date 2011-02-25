@@ -141,8 +141,12 @@ sub get_action_response {
 
 sub serialize_response_if_needed {
     my $response = Dancer::SharedData->response();
-    $response = Dancer::Serializer->process_response($response)
-      if Dancer::App->current->setting('serializer') && $response->content();
+
+    if (Dancer::App->current->setting('serializer') && $response->content()){
+        Dancer::App->execute_hooks('before_serializer', $response);
+        Dancer::Serializer->process_response($response);
+        Dancer::App->execute_hooks('after_serializer', $response);
+    }
     return $response;
 }
 
