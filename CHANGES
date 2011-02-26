@@ -14,6 +14,8 @@
       (Rowan Thorpe)
     * GH#299 Return appropriate headers on HEAD request (content-type, ...)
       (franck cuny)
+    * Use the dancer_version variable in scaffolded app.
+      (Sawyer X, reported by Brian E. Lozier)
 
     [ ENHANCEMENTS ]
     * Fix manifest
@@ -46,6 +48,8 @@
     * Refactoring of internal objects in the core, 
       use more of Dancer::Object. Introduce attributes_defaults
       (Damien Krotkine)
+    * Add a perl_version variable to all templates, used in scaffolded app.
+      (Sawyer X, reported by Brian E. Lozier)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
