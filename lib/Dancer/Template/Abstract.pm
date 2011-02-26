@@ -94,6 +94,7 @@ sub _prepare_tokens_options {
 
     # these are the default tokens provided for template processing
     $tokens ||= {};
+    $tokens->{perl_version}   = $];
     $tokens->{dancer_version} = $Dancer::VERSION;
     $tokens->{settings}       = Dancer::Config->settings;
     $tokens->{request}        = Dancer::SharedData->request;
