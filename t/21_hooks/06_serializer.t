@@ -7,6 +7,9 @@ use Dancer::Test;
 
 use Time::HiRes qw/gettimeofday/;
 
+plan skip_all => "JSON is needed to run this tests"
+    unless Dancer::ModuleLoader->load('JSON');
+
 set serializer => 'JSON';
 
 plan tests => 11;
