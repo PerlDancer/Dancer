@@ -19,7 +19,7 @@ my $body = '{"foo":"bar"}';
 ok(
     hook(
         before_deserializer => sub {
-            my $request = shift;
+            my $request = Dancer::SharedData->request;
             if ($request->is_put){
                 like $request->body, qr/foo/, 'content from PUT is valid';
             }
@@ -31,7 +31,7 @@ ok(
 ok(
     hook(
         after_deserializer => sub {
-            my $request = shift;
+            my $request = Dancer::SharedData->request;
             if ( $request->is_put ) {
                 is $request->params->{foo}, 'bar', 'content from request is ok';
             }
