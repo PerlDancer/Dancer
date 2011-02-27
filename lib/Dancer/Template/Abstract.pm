@@ -46,7 +46,6 @@ sub apply_renderer {
     ($tokens, undef) = _prepare_tokens_options($tokens);
 
     $view = $self->view($view);
-    -r $view or return;
 
     $_->($tokens) for (@{Dancer::App->current->registry->hooks->{before_template}});
 
