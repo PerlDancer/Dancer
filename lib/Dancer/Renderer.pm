@@ -84,7 +84,9 @@ sub get_action_response {
       Dancer::App->find_route_through_apps(Dancer::SharedData->request);
 
     # run the before filters, before "running" the route handler
-    Dancer::App->execute_hooks('before');
+    # XXX should we scope route to a given application ?
+    my $app = $handler->{app} ? $handler->{app} : Dancer::App->current();
+    $_->() for @{$app->registry->hooks->{before}};
 
     # recurse if something has changed
     my $MAX_RECURSIVE_LOOP = 10;
@@ -118,7 +120,7 @@ sub get_action_response {
         $handler->run($request);
         serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
-        Dancer::App->execute_hooks('after', $resp);
+        $_->($resp) for @{$app->registry->hooks->{after}};
         return $resp;
     }
     else {
