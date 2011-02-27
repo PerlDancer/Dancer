@@ -8,11 +8,7 @@ plan tests => 5;
 
 my $cpt = 0;
 
-ok(
-    hook
-      'before' => sub { my $i = shift; $i ? $cpt += $i : $cpt++ },
-    'add a before filter'
-);
+ok( hook( 'before' => sub { $cpt += shift || 1 }), 'add a before filter');
 
 my $app = Dancer::App->current;
 is scalar @{ $app->registry->hooks->{before} }, 1, 'got one before filter';
