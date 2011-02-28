@@ -46,8 +46,10 @@ sub init {
 
 sub render {
     my ($self, $template, $tokens) = @_;
-    croak "'$template' is not a regular file"
-      if !ref($template) && (!-f $template);
+
+    if ( ! ref $template ) {
+        -f $template or croak "'$template' is not a regular file";
+    }
 
     my $content = "";
     my $charset = setting('charset') || '';
