@@ -105,6 +105,20 @@ sub header {
     }
 }
 
+sub push_header {
+    my $self   = shift;
+    my $header = shift;
+
+    if (@_) {
+        foreach my $h(@_) {
+            $self->{headers}->push_header( $header => $h );
+        }
+    }
+    else {
+        return $self->{headers}->header($header);
+    }
+}
+
 sub headers {
     my $self = shift;
     $self->{headers}->header(@_);
