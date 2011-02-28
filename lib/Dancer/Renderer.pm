@@ -61,8 +61,9 @@ sub response_with_headers {
         }
     }
     if (scalar @cookies) {
-        my $header = join ', ', @cookies;
-        $response->header('Set-Cookie' => $header);
+        foreach my $header(@cookies) {
+            $response->push_header('Set-Cookie',$header);
+        }
     }
     
     return $response;
