@@ -48,7 +48,7 @@ sub render {
     my ($self, $template, $tokens) = @_;
 
     if ( ! ref $template ) {
-        -f $template or croak "'$template' is not a regular file";
+        -f $template or croak "'$template' doesn't exist or not a regular file";
     }
 
     my $content = "";
