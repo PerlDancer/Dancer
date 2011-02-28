@@ -50,6 +50,8 @@
       (Damien Krotkine)
     * Add a perl_version variable to all templates, used in scaffolded app.
       (Sawyer X, reported by Brian E. Lozier)
+    * Better output when template file is missing.
+      (Brian E. Lozier, Sawyer X)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
