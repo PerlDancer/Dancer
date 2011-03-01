@@ -14,6 +14,7 @@ use Dancer::Cookies;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
+use Dancer::Hook;
 use Dancer::Logger;
 use Dancer::Renderer;
 use Dancer::Route;
@@ -98,10 +99,10 @@ our @EXPORT    = qw(
 
 # Dancer's syntax
 
-sub after           { Dancer::Route::Registry->hook('after', @_) }
+sub after           { Dancer::Hook->register_hook('after', @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Route::Registry->hook('before', @_) }
-sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
+sub before          { Dancer::Hook->register_hook('before', @_) }
+sub before_template { Dancer::Hook->register_hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
