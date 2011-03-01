@@ -634,10 +634,20 @@ Adds custom headers to responses:
 
 =head2 header
 
-Adds a custom header to response:
+adds a custom header to response:
 
     get '/send/header', sub {
-        header 'X-My-Header' => 'shazam!';
+        header 'x-my-header' => 'shazam!';
+    }
+
+=head2 push_header
+
+Do the same as C<header>, but allow for multiple headers with the same name.
+
+    get '/send/header', sub {
+        push_header 'x-my-header' => '1';
+        push_header 'x-my-header' => '2';
+        will result in two headers "x-my-header" in the response
     }
 
 =head2 layout
