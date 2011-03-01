@@ -165,14 +165,15 @@ sub import {
     my ($class,   $symbol) = @_;
     my ($package, $script) = caller;
 
+    $symbol ||= '';
+
     strict->import;
     utf8->import;
+
     $class->export_to_level(1, $class, @EXPORT);
 
     # if :syntax option exists, don't change settings
-    if ($symbol && $symbol eq ':syntax') {
-        return;
-    }
+    substr( $symbol, 0, 1 ) eq ':' and return;
 
     Dancer::GetOpt->process_args();
 
