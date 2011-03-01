@@ -176,26 +176,4 @@ sub setting {
       );
 }
 
-sub get_hooks_for {
-    my ( $class, $hook_position ) = @_;
-
-    croak("Can't ask for hooks without a position") unless $hook_position;
-
-    my $hooks = Dancer::App->current->registry->hooks->{$hook_position};
-    $hooks ? return $hooks : [];
-}
-
-sub execute_hooks {
-    my ( $class, $hook_position, @args ) = @_;
-
-    croak("Can't ask for hooks without a position") unless $hook_position;
-
-    foreach my $hook (@{$class->get_hooks_for($hook_position)}) {
-        $hook->(@args);
-        # XXX ok, what if we want to modify the value of one of the arguments,
-        # and this argument is not a ref ? like the content in the template
-        # inside a 'after_template_render' ?
-    }
-}
-
 1;
