@@ -130,7 +130,7 @@ sub render_response {
         $content = [$content];
     }
     else {
-        if ( !defind $response->header('Content-Length') ) {
+        if ( !defined $response->header('Content-Length') ) {
             my $stat = stat $content;
             $response->header( 'Content-Length' => $stat->size );
         }
