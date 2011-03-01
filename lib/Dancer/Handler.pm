@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp 'croak';
 
+use File::stat;
 use HTTP::Headers;
 
 use Dancer::Logger;
