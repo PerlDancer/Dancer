@@ -12,6 +12,7 @@ $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
 use Dancer::Config;
+use Dancer::Cookies;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
@@ -54,6 +55,7 @@ use base 'Exporter';
   get
   halt
   header
+  push_header
   headers
   layout
   load
@@ -119,6 +121,7 @@ sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
+sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
@@ -138,7 +141,7 @@ sub request         { Dancer::SharedData->request }
 sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
 sub send_file       { goto &_send_file }
 sub set             { goto &setting }
-sub set_cookie      { goto &_set_cookie }
+sub set_cookie      { Dancer::Cookies->set_cookie(@_) }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
 sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
@@ -296,17 +299,6 @@ sub _send_file {
         message => "No such file: `$path'"
     )->render();
     
-}
-
-# set_cookie name => value,
-#     expires => time() + 3600, domain => '.foo.com'
-sub _set_cookie {
-    my ( $name, $value, %options ) = @_;
-    Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
-        name  => $name,
-        value => $value,
-        %options
-    );
 }
 
 # Start/Run the application with the chosen apphandler
@@ -631,10 +623,20 @@ Adds custom headers to responses:
 
 =head2 header
 
-Adds a custom header to response:
+adds a custom header to response:
 
     get '/send/header', sub {
-        header 'X-My-Header' => 'shazam!';
+        header 'x-my-header' => 'shazam!';
+    }
+
+=head2 push_header
+
+Do the same as C<header>, but allow for multiple headers with the same name.
+
+    get '/send/header', sub {
+        push_header 'x-my-header' => '1';
+        push_header 'x-my-header' => '2';
+        will result in two headers "x-my-header" in the response
     }
 
 =head2 layout
