@@ -170,6 +170,10 @@ sub import {
     strict->import;
     utf8->import;
 
+    # remove unnecessary subs from export for Moose mode
+    $symbol eq ':moose'
+        and @EXPORT = grep { $_ !~ /^(?:before|after)$/ } @EXPORT;
+
     $class->export_to_level(1, $class, @EXPORT);
 
     # if :syntax option exists, don't change settings
