@@ -7,6 +7,7 @@ use HTTP::Headers;
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Cookie;
+use Dancer::Hook;
 use Dancer::Cookies;
 use Dancer::Request;
 use Dancer::Response;
@@ -16,6 +17,10 @@ use Dancer::FileUtils qw(path dirname read_file_content open_file);
 use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
+
+Dancer::Hook->register_hooks(
+    qw/before after before_serializer after_serializer before_file_render after_file_render/
+);
 
 sub render_file { get_file_response() }
 
@@ -85,7 +90,7 @@ sub get_action_response {
 
     # run the before filters, before "running" the route handler
     # XXX should we scope route to a given application ?
-    my $app = $handler->{app} ? $handler->{app} : Dancer::App->current();
+    my $app = ($handler && $handler->app) ? $handler->app : Dancer::App->current();
     $_->() for @{$app->registry->hooks->{before}};
 
     # recurse if something has changed
@@ -116,7 +121,7 @@ sub get_action_response {
         # a response may exist, produced by a before filter
         return serialize_response_if_needed() if defined $response && $response->exists;
         # else, get the route handler's response
-        Dancer::App->current($handler->app);
+        Dancer::App->current($handler->{app});
         $handler->run($request);
         serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
@@ -132,9 +137,9 @@ sub serialize_response_if_needed {
     my $response = Dancer::SharedData->response();
 
     if (Dancer::App->current->setting('serializer') && $response->content()){
-        Dancer::App->execute_hooks('before_serializer', $response);
+        Dancer::Hook->execute_hooks('before_serializer', $response);
         Dancer::Serializer->process_response($response);
-        Dancer::App->execute_hooks('after_serializer', $response);
+        Dancer::Hook->execute_hooks('after_serializer', $response);
     }
     return $response;
 }
@@ -144,9 +149,9 @@ sub get_file_response {
     my $path_info   = $request->path_info;
     my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
-    Dancer::App->execute_hooks('before_file_render', $static_file);
+    Dancer::Hook->execute_hooks('before_file_render', $static_file);
     my $response = Dancer::Renderer->get_file_response_for_path($static_file);
-    Dancer::App->execute_hooks('after_file_render', $response);
+    Dancer::Hook->execute_hooks('after_file_render', $response);
     return $response;
 }
 
