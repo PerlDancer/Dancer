@@ -1,4 +1,4 @@
-1.3012       01.03.2011
+1.3012    01.03.2011
 
     [ BUG FIXES ]
     * Fix cookies disappearing when more than one is set.
@@ -58,7 +58,7 @@
     * Add missing methods (e.g. "referer"), sorting, clean up.
       (Flavio Poletti)
 
-1.3010_01   12.02.2011
+1.3010_01    12.02.2011
 
     [ BUG FIXES ]
     * GH#136: fix again Mime::Type issues in preforking environment
@@ -68,7 +68,7 @@
       (Rowan Thorpe)
     * Fix for infinite loops detection in before filters
       (Flavio Poletti)
-    
+
     [ ENHANCEMENTS ]
     * Better detection of the application layout under non-UNIX platforms.
       (Rowan Thorpe, Alexis Sukrieh)
