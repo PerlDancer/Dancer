@@ -28,7 +28,6 @@ lib/Dancer/Handler.pm
 lib/Dancer/Handler/Debug.pm
 lib/Dancer/Handler/PSGI.pm
 lib/Dancer/Handler/Standalone.pm
-lib/Dancer/Helpers.pm
 lib/Dancer/HTTP.pm
 lib/Dancer/Introduction.pod
 lib/Dancer/Logger.pm
@@ -207,7 +206,6 @@ t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t
-t/09_cookies/04_has_changed.t
 t/09_cookies/05_api.t
 t/10_template/000_create_fake_env.t
 t/10_template/01_factory.t
@@ -234,6 +232,8 @@ t/12_response/04_charset_server.t
 t/12_response/05_api.t
 t/12_response/06_filter_halt_status.t
 t/12_response/07_cookies.t
+t/12_response/08_drop_content.t
+t/12_response/09_headers_to_array.t
 t/13_engines/00_load.t
 t/13_engines/02_template_init.t
 t/14_serializer/000_create_fake_env.t
@@ -252,6 +252,7 @@ t/14_serializer/12_bug_gh106.t
 t/14_serializer/13_xml.t
 t/14_serializer/14_api.t
 t/14_serializer/14_show_errors.t
+t/14_serializer/16_bug_gh_299.t
 t/14_serializer/handler-helper.t
 t/15_plugins/000_create_fake_env.t
 t/15_plugins/01_register.t

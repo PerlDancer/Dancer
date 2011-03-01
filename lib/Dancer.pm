@@ -7,18 +7,17 @@ use Cwd 'realpath';
 
 use vars qw($VERSION $AUTHORITY @EXPORT);
 
-$VERSION   = '1.3011_01';
+$VERSION   = '1.3012';
 $AUTHORITY = 'SUKRIA';
 
+use Dancer::App;
 use Dancer::Config;
-use Dancer::Deprecation;
+use Dancer::Cookies;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
 use Dancer::Logger;
-use Dancer::Plugin;
 use Dancer::Renderer;
-use Dancer::Response;
 use Dancer::Route;
 use Dancer::Serializer::JSON;
 use Dancer::Serializer::YAML;
@@ -27,8 +26,8 @@ use Dancer::Serializer::Dumper;
 use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
-use Dancer::ModuleLoader;
 use Dancer::MIME;
+
 use File::Spec;
 
 use base 'Exporter';
@@ -56,6 +55,7 @@ use base 'Exporter';
   get
   halt
   header
+  push_header
   headers
   layout
   load
@@ -106,8 +106,9 @@ sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::SharedData->response->content_type(@_) }
-sub dance           { Dancer::start(@_) }
+sub dance           { goto &start }
 sub debug           { goto &Dancer::Logger::debug }
+sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
@@ -115,165 +116,48 @@ sub false           { 0 }
 sub forward         { Dancer::SharedData->response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
-sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
+sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
+sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
+sub push_header     { Dancer::SharedData->response->push_header(@_); }
+sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
+sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          { set(logger => @_) }
-sub halt            { Dancer::SharedData->response->halt(@_) }
-sub headers         { Dancer::SharedData->response->headers(@_); }
-sub mime_type {
-    my $mime = Dancer::MIME->instance();
-    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
-    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
-    else                  { $mime->aliases           }
-}
+sub mime_type       { goto &_mime_type }
+sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
-sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
-sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
-sub redirect  {
-    my ($destination, $status) = @_;
-    if ($destination =~ m!^(\w://)?/!) {
-        # no absolute uri here, build one, RFC 2616 forces us to do so
-        my $request = Dancer::SharedData->request;
-        $destination = $request->uri_for($destination, {}, 1);
-    }
-    my $response = Dancer::SharedData->response;
-    $response->status($status || 302);
-    $response->headers('Location' => $destination);
-}
-sub render_with_layout {
-    my ($content, $tokens, $options) = @_;
-
-    Dancer::Deprecation::deprecated(
-        feature => 'render_with_layout',
-        version => '1.3000',
-        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
-    );
-
-    my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
-
-    if (! defined $full_content) {
-          return Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        )->render();
-    }
-    return $full_content;
-}
+sub redirect        { goto &_redirect }
+sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
-sub send_error {
-    my ( $content, $status ) = @_;
-    $status ||= 500;
-    Dancer::Error->new( code => $status, message => $content )->render();
-}
-sub send_file {
-    my ($path) = @_;
-
-    my $request = Dancer::Request->new_for_request('GET' => $path);
-    Dancer::SharedData->request($request);
-
-    my $resp = Dancer::Renderer::get_file_response();
-    return $resp if $resp;
-
-    Dancer::Error->new(
-        code    => 404,
-        message => "No such file: `$path'"
-    )->render();
-    
-}
+sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
+sub send_file       { goto &_send_file }
 sub set             { goto &setting }
+sub set_cookie      { Dancer::Cookies->set_cookie(@_) }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
-# set_cookie name => value,
-#     expires => time() + 3600, domain => '.foo.com'
-sub set_cookie {
-    my ( $name, $value, %options ) = @_;
-    Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
-        name  => $name,
-        value => $value,
-        %options
-    );
-}
-sub session {
-    croak "Must specify session engine in settings prior to using 'session' keyword" unless setting('session');
-    if (@_ == 0) {
-        return Dancer::Session->get;
-    }
-    else {
-        return (@_ == 1)
-          ? Dancer::Session->read(@_)
-          : Dancer::Session->write(@_);
-    }
-}
+sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
-sub status    { Dancer::SharedData->response->status(@_) }
-sub template {
-    my ( $view, $tokens, $options ) = @_;
-
-    my $content;
-
-    if ($view) {
-        $content = Dancer::Template->engine->apply_renderer( $view, $tokens );
-        if ( !defined $content ) {
-                  return Dancer::Error->new(
-                code    => 404,
-                message => "Page not found",
-            )->render();
-        }
-    }
-    else {
-        $options ||= {};
-        $content = delete $options->{content};
-    }
-
-    my $full_content =
-      Dancer::Template->engine->apply_layout( $content, $tokens, $options );
-    defined $full_content
-      and return $full_content;
-
-    Dancer::Error->new(
-        code    => 404,
-        message => "Page not found",
-    )->render();
-}
-sub true            { 1 }
+sub start           { goto &_start }
+sub status          { Dancer::SharedData->response->status(@_) }
+sub template        { Dancer::Template::Abstract->template(@_) }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
-sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
 sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
+sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
+sub true            { 1 }
 sub upload          { Dancer::SharedData->request->upload(@_) }
 sub uri_for         { Dancer::SharedData->request->uri_for(@_) }
 sub var             { Dancer::SharedData->var(@_) }
 sub vars            { Dancer::SharedData->vars }
 sub warning         { goto &Dancer::Logger::warning }
-# FIXME handle previous usage of load_app with multiple app names
-sub load_app {
-    my ($app_name, %options) = @_;
-    Dancer::Logger::core("loading application $app_name");
-
-    # set the application
-    my $app = Dancer::App->set_running_app($app_name);
-
-    # Application options
-    $app->prefix($options{prefix})     if $options{prefix};
-    $app->settings($options{settings}) if $options{settings};
-
-    # load the application
-    my ($package, $script) = caller;
-    _init($script);
-    my ($res, $error) = Dancer::ModuleLoader->load($app_name);
-    $res or croak "unable to load application $app_name : $error";
-
-    # restore the main application
-    Dancer::App->set_running_app('main');
-}
 
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
@@ -292,27 +176,36 @@ sub import {
 
     Dancer::GetOpt->process_args();
 
-    _init($script);
+    _init_script_dir($script);
     Dancer::Config->load;
 }
 
-# Start/Run the application with the chosen apphandler
-sub start {
-    my ($class, $request) = @_;
-    Dancer::Config->load;
+# private code
 
-    # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
-    if ($request) {
-        return Dancer::Handler->handle_request($request);
-    }
+# FIXME handle previous usage of load_app with multiple app names
+sub _load_app {
+    my ($app_name, %options) = @_;
+    my $script = (caller)[1];
+    Dancer::Logger::core("loading application $app_name");
 
-    my $handler = Dancer::Handler->get_handler;
-    Dancer::Logger::core("loading handler '".ref($handler)."'");
-    return $handler->dance;
+    # set the application
+    my $app = Dancer::App->set_running_app($app_name);
+
+    # Application options
+    $app->prefix($options{prefix})     if $options{prefix};
+    $app->settings($options{settings}) if $options{settings};
+
+    # load the application
+    _init_script_dir($script);
+    my ($res, $error) = Dancer::ModuleLoader->load($app_name);
+    $res or croak "unable to load application $app_name : $error";
+
+    # restore the main application
+    Dancer::App->set_running_app('main');
 }
 
-sub _init {
-    my $script = shift;
+sub _init_script_dir {
+    my ($script) = @_;
     
     my ($script_vol, $script_dirs, $script_name) =
       File::Spec->splitpath(File::Spec->rel2abs($script));
@@ -326,9 +219,9 @@ sub _init {
     my @script_dirs = File::Spec->splitdir($script_dirs);
     my $script_path;
     if ($script_vol) {
-        $script_path = path($script_vol, $script_dirs);
+        $script_path = Dancer::path($script_vol, $script_dirs);
     } else {
-        $script_path = path($script_dirs);
+        $script_path = Dancer::path($script_dirs);
     }
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
@@ -338,32 +231,89 @@ sub _init {
       if ($script_dirs[$#script_dirs - 1] eq 'bin')
       or ($script_dirs[$#script_dirs - 1] eq 'public');
 
-    setting appdir => $ENV{DANCER_APPDIR}
-      || (
+    my $appdir = $ENV{DANCER_APPDIR} || (
           $LAYOUT_PRE_DANCER_1_2
         ? $script_path
-        : File::Spec->rel2abs(path($script_path, File::Spec->updir()))
-      );
+        : File::Spec->rel2abs(Dancer::path($script_path, '..'))
+    );
+    Dancer::setting(appdir => $appdir);
 
     # once the dancer_appdir have been defined, we export to env
-    $ENV{DANCER_APPDIR} = setting('appdir');
+    $ENV{DANCER_APPDIR} = $appdir;
 
-    Dancer::Logger::core(
-        "initializing appdir to: `" . setting('appdir') . "'");
+    Dancer::Logger::core("initializing appdir to: `$appdir'");
 
-    setting confdir => $ENV{DANCER_CONFDIR}
-      || setting('appdir');
+    Dancer::setting(confdir => $ENV{DANCER_CONFDIR}
+      || $appdir);
 
-    setting public => $ENV{DANCER_PUBLIC}
-      || Dancer::FileUtils::path_no_verify(setting('appdir'), 'public');
+    Dancer::setting(public => $ENV{DANCER_PUBLIC}
+      || Dancer::FileUtils::path_no_verify($appdir, 'public'));
 
-    setting views => $ENV{DANCER_VIEWS}
-      || Dancer::FileUtils::path_no_verify(setting('appdir'), 'views');
+    Dancer::setting(views => $ENV{DANCER_VIEWS}
+      || Dancer::FileUtils::path_no_verify($appdir, 'views'));
 
-    setting logger => 'file';
+    Dancer::setting(logger => 'file');
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify(setting('appdir'), 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
+}
+
+sub _mime_type {
+    my $mime = Dancer::MIME->instance();
+      @_ == 0 ? $mime->aliases
+    : @_ == 1 ? $mime->mime_type_for(@_)
+    :           $mime->add_mime_type(@_);
+}
+
+sub _redirect {
+    my ($destination, $status) = @_;
+    if ($destination =~ m!^(\w://)?/!) {
+        # no absolute uri here, build one, RFC 2616 forces us to do so
+        my $request = Dancer::SharedData->request;
+        $destination = $request->uri_for($destination, {}, 1);
+    }
+    my $response = Dancer::SharedData->response;
+    $response->status($status || 302);
+    $response->headers('Location' => $destination);
+}
+
+sub _session {
+    engine 'session'
+      or croak "Must specify session engine in settings prior to using 'session' keyword";
+      @_ == 0 ? Dancer::Session->get
+    : @_ == 1 ? Dancer::Session->read(@_)
+    :           Dancer::Session->write(@_);
+}
+
+sub _send_file {
+    my ($path) = @_;
+
+    my $request = Dancer::Request->new_for_request('GET' => $path);
+    Dancer::SharedData->request($request);
+
+    my $resp = Dancer::Renderer::get_file_response();
+    return $resp if $resp;
+
+    Dancer::Error->new(
+        code    => 404,
+        message => "No such file: `$path'"
+    )->render();
+    
+}
+
+# Start/Run the application with the chosen apphandler
+sub _start {
+    my ($class, $request) = @_;
+    Dancer::Config->load;
+
+    # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
+    if ($request) {
+        return Dancer::Handler->handle_request($request);
+    }
+
+    my $handler = Dancer::Handler->get_handler;
+    Dancer::Logger::core("loading handler '".ref($handler)."'");
+    return $handler->dance;
 }
 
 1;
@@ -673,10 +623,20 @@ Adds custom headers to responses:
 
 =head2 header
 
-Adds a custom header to response:
+adds a custom header to response:
 
     get '/send/header', sub {
-        header 'X-My-Header' => 'shazam!';
+        header 'x-my-header' => 'shazam!';
+    }
+
+=head2 push_header
+
+Do the same as C<header>, but allow for multiple headers with the same name.
+
+    get '/send/header', sub {
+        push_header 'x-my-header' => '1';
+        push_header 'x-my-header' => '2';
+        will result in two headers "x-my-header" in the response
     }
 
 =head2 layout

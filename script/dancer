@@ -372,11 +372,11 @@ WriteMakefile(
                 <tbody>
                 <tr>
                     <td>Perl version</td>
-                    <td><tt>'.$].'</tt></td>
+                    <td><tt><% perl_version %></tt></td>
                 </tr>
                 <tr>
                     <td>Dancer version</td>
-                    <td><tt>'.$DANCER_VERSION.'</tt></td>
+                    <td><tt><% dancer_version %></tt></td>
                 </tr>
                 <tr>
                     <td>Backend</td>

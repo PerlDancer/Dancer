@@ -3,7 +3,10 @@ package Dancer::Template::Abstract;
 use strict;
 use warnings;
 use Carp;
+
+use Dancer::Deprecation;
 use Dancer::FileUtils 'path';
+
 use base 'Dancer::Engine';
 
 # Overloads this method to implement the rendering
@@ -46,7 +49,6 @@ sub apply_renderer {
     ($tokens, undef) = _prepare_tokens_options($tokens);
 
     $view = $self->view($view);
-    -r $view or return;
 
     $_->($tokens) for (@{Dancer::App->current->registry->hooks->{before_template}});
 
@@ -91,6 +93,7 @@ sub _prepare_tokens_options {
 
     # these are the default tokens provided for template processing
     $tokens ||= {};
+    $tokens->{perl_version}   = $];
     $tokens->{dancer_version} = $Dancer::VERSION;
     $tokens->{settings}       = Dancer::Config->settings;
     $tokens->{request}        = Dancer::SharedData->request;
@@ -100,6 +103,46 @@ sub _prepare_tokens_options {
       and $tokens->{session} = Dancer::Session->get;
 
     return ($tokens, $options);
+}
+
+sub _render_with_layout {
+    my ($class, $content, $tokens, $options) = @_;
+
+    Dancer::Deprecation::deprecated(
+        feature => 'render_with_layout',
+        version => '1.3000',
+        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
+    );
+
+    my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
+
+    if (! defined $full_content) {
+          return Dancer::Error->new(
+            code    => 404,
+            message => "Page not found",
+        )->render();
+    }
+    return $full_content;
+}
+
+sub template {
+    my ($class, $view, $tokens, $options) = @_;
+    my ($content, $full_content);
+
+    $options ||= {};
+    $content = $view ? Dancer::Template->engine->apply_renderer($view, $tokens)
+                     : delete $options->{content};
+
+    defined $content and $full_content = 
+      Dancer::Template->engine->apply_layout($content, $tokens, $options);
+
+    defined $full_content
+      and return $full_content;
+
+    Dancer::Error->new(
+        code    => 404,
+        message => "Page not found",
+    )->render();
 }
 
 1;

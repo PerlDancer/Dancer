@@ -97,7 +97,8 @@ sub write_session_id {
           Dancer::Cookie::_epoch_to_gmtstring(time + $expires);
     }
 
-    Dancer::Cookies->cookies->{$SESSION_NAME} = Dancer::Cookie->new(%cookie);
+    my $c = Dancer::Cookie->new(%cookie);
+    Dancer::Cookies->set_cookie_object($SESSION_NAME => $c);
 }
 
 1;

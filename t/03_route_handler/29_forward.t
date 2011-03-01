@@ -33,6 +33,7 @@ response_exists     [ GET => '/bounce/thesethings/' ];
 response_content_is [ GET => '/bounce/thesethings/' ], 'homewithparams,thesethings';
 
 my $expected_headers = [
+    'Content-Length' => 4,
     'Content-Type' => 'text/html',
     'X-Powered-By' => "Perl Dancer ${Dancer::VERSION}",
 ];
@@ -52,6 +53,7 @@ response_content_is [ POST => '/' ], 'post-home';
 response_exists     [ POST => '/bounce/' ];
 response_content_is [ POST => '/bounce/' ], 'post-home';
 
+$expected_headers->[1] = 9;
 response_headers_are_deeply [ POST => '/bounce/' ], $expected_headers;
 
 Dancer::Logger::logger->{fh}->close;
