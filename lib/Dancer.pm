@@ -54,6 +54,7 @@ use base 'Exporter';
   get
   halt
   header
+  push_header
   headers
   layout
   load
@@ -119,6 +120,7 @@ sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
+sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
@@ -302,11 +304,12 @@ sub _send_file {
 #     expires => time() + 3600, domain => '.foo.com'
 sub _set_cookie {
     my ( $name, $value, %options ) = @_;
-    Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
+    my $cookie = Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
         name  => $name,
         value => $value,
         %options
     );
+    push_header 'Set-Cookie' => $cookie->to_header;
 }
 
 # Start/Run the application with the chosen apphandler
