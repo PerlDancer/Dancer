@@ -206,7 +206,6 @@ t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t
-t/09_cookies/04_has_changed.t
 t/09_cookies/05_api.t
 t/10_template/000_create_fake_env.t
 t/10_template/01_factory.t
@@ -234,6 +233,7 @@ t/12_response/05_api.t
 t/12_response/06_filter_halt_status.t
 t/12_response/07_cookies.t
 t/12_response/08_drop_content.t
+t/12_response/09_headers_to_array.t
 t/13_engines/00_load.t
 t/13_engines/02_template_init.t
 t/14_serializer/000_create_fake_env.t
