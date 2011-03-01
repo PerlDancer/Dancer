@@ -12,6 +12,7 @@ $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
 use Dancer::Config;
+use Dancer::Cookies;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
@@ -140,7 +141,7 @@ sub request         { Dancer::SharedData->request }
 sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
 sub send_file       { goto &_send_file }
 sub set             { goto &setting }
-sub set_cookie      { goto &_set_cookie }
+sub set_cookie      { Dancer::Cookies->set_cookie(@_) }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
 sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
@@ -298,19 +299,6 @@ sub _send_file {
         message => "No such file: `$path'"
     )->render();
     
-}
-
-# set_cookie name => value,
-#     expires => time() + 3600, domain => '.foo.com'
-sub _set_cookie {
-    my ( $name, $value, %options ) = @_;
-    my $cookie =  Dancer::Cookie->new(
-        name  => $name,
-        value => $value,
-        %options
-    );
-    push_header 'Set-Cookie' => $cookie->to_header;
-    Dancer::Cookies->cookies->{$name} = $cookie;
 }
 
 # Start/Run the application with the chosen apphandler

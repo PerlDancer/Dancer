@@ -36,6 +36,25 @@ sub parse_cookie_from_env {
     return $cookies;
 }
 
+# set_cookie name => value,
+#     expires => time() + 3600, domain => '.foo.com'
+sub set_cookie {
+    my ( $class, $name, $value, %options ) = @_;
+    my $cookie =  Dancer::Cookie->new(
+        name  => $name,
+        value => $value,
+        %options
+    );
+    Dancer::Cookies->set_cookie_object($name => $cookie);
+}
+
+sub set_cookie_object {
+    my ($class, $name, $cookie) = @_;
+    Dancer::SharedData->response->push_header(
+        'Set-Cookie' => $cookie->to_header);
+    Dancer::Cookies->cookies->{$name} = $cookie;
+}
+
 1;
 
 __END__
