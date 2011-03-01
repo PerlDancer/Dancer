@@ -7,7 +7,7 @@ use Dancer::Hook;
 use Dancer::FileUtils 'path';
 use base 'Dancer::Engine';
 
-Dancer::Hook->register_hooks(
+Dancer::Hook->register_hooks_name(
     qw/before_template_render after_template_render before_layout_render after_layout_render/
 );
 
