@@ -36,17 +36,6 @@ sub parse_cookie_from_env {
     return $cookies;
 }
 
-# return true if the given cookie is not the same as the one sent by the client
-sub has_changed {
-    my ($self, $cookie) = @_;
-    my ($name, $value) = ($cookie->{name}, $cookie->{value});
-
-    my $client_cookies = parse_cookie_from_env();
-    my $search         = $client_cookies->{$name};
-    return 1 unless defined $search;
-    return $search->value ne $value;
-}
-
 1;
 
 __END__
@@ -93,11 +82,6 @@ Fetches all the cookies from the environment, parses them and creates a hashref
 of all cookies.
 
 It also returns all the hashref it created.
-
-=head2 has_changed
-
-Accepts a cookie and returns true if the given cookie is not the same as the one
-sent by the user.
 
 =head1 AUTHOR
 
