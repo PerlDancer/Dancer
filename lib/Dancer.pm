@@ -304,12 +304,13 @@ sub _send_file {
 #     expires => time() + 3600, domain => '.foo.com'
 sub _set_cookie {
     my ( $name, $value, %options ) = @_;
-    my $cookie = Dancer::Cookies->cookies->{$name} = Dancer::Cookie->new(
+    my $cookie =  Dancer::Cookie->new(
         name  => $name,
         value => $value,
         %options
     );
     push_header 'Set-Cookie' => $cookie->to_header;
+    Dancer::Cookies->cookies->{$name} = $cookie;
 }
 
 # Start/Run the application with the chosen apphandler
