@@ -3,10 +3,15 @@ package Dancer::Template::Abstract;
 use strict;
 use warnings;
 use Carp;
+use Dancer::Hook;
 use Dancer::FileUtils 'path';
 use base 'Dancer::Engine';
 
-# Overloads this method to implement the rendering
+Dancer::Hook->register_hooks(
+    qw/before_template_render after_template_render before_layout_render after_layout_render/
+);
+
+# overloads this method to implement the rendering
 # args:   $self, $template, $tokens
 # return: a string of $template's content processed with $tokens
 sub render { confess "render not implemented" }
@@ -48,11 +53,11 @@ sub apply_renderer {
     $view = $self->view($view);
     -r $view or return;
 
-    Dancer::App->execute_hooks('before_template_render', $tokens);
+    Dancer::Hook->execute_hooks('before_template_render', $tokens);
 
     my $content = $self->render($view, $tokens);
 
-    Dancer::App->execute_hooks('after_template_render', $content);
+    Dancer::Hook->execute_hooks('after_template_render', $content);
     
     # make sure to avoid ( undef ) in list context return
     defined $content
@@ -78,12 +83,12 @@ sub apply_layout {
 
     defined $layout or return $content;
 
-    Dancer::App->execute_hooks('before_layout_render', $tokens, $content);
+    Dancer::Hook->execute_hooks('before_layout_render', $tokens, $content);
 
     my $full_content =
       $self->layout($layout, $tokens, $content);
 
-    Dancer::App->execute_hooks('after_layout_render', $full_content);
+    Dancer::Hook->execute_hooks('after_layout_render', $full_content);
 
     # make sure to avoid ( undef ) in list context return
     defined $full_content
