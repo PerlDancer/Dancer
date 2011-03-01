@@ -15,6 +15,7 @@ use Dancer::Deprecation;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
+use Dancer::Hook;
 use Dancer::Logger;
 use Dancer::Plugin;
 use Dancer::Renderer;
@@ -99,10 +100,10 @@ use base 'Exporter';
 
 # Dancer's syntax
 
-sub after           { Dancer::Route::Registry->hook('after', @_) }
+sub after           { Dancer::Hook->register_hook('after', @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Route::Registry->hook('before', @_) }
-sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
+sub before          { Dancer::Hook->register_hook('before', @_) }
+sub before_template { Dancer::Hook->register_hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
@@ -125,7 +126,7 @@ sub load            { require $_ for @_ }
 sub logger          { set(logger => @_) }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub headers         { Dancer::SharedData->response->headers(@_); }
-sub hook            { Dancer::Route::Registry->hook(@_) }
+sub hook            { Dancer::Hook->register_hook(@_) }
 sub mime_type {
     my $mime = Dancer::MIME->instance();
     if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
