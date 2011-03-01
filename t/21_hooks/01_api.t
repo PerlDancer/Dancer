@@ -10,8 +10,8 @@ my $cpt = 0;
 
 ok( hook( 'before' => sub { $cpt += shift || 1 }), 'add a before filter');
 
-my $app = Dancer::App->current;
-is scalar @{ $app->registry->hooks->{before} }, 1, 'got one before filter';
+my $app = Dancer::App->current->name;
+is scalar @{ Dancer::Hook->get_hooks_for_app($app)->{before} }, 1, 'got one before filter';
 
 my $hooks = Dancer::Hook->get_hooks_for('before');
 is scalar @$hooks, 1, 'got one before filter';
