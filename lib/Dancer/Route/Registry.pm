@@ -6,12 +6,7 @@ use Dancer::Route;
 use base 'Dancer::Object';
 use Dancer::Logger;
 
-Dancer::Route::Registry->attributes(
-    qw(
-      id
-      hooks
-      )
-);
+Dancer::Route::Registry->attributes(qw( id ));
 
 my $id = 1;
 
@@ -22,7 +17,6 @@ sub init {
         $self->id($id++);
     }
     $self->{routes} = {};
-    $self->{hooks}  = {};
 
     return $self;
 }
@@ -35,40 +29,8 @@ sub is_empty {
     return 1;
 }
 
-sub hook {
-    my ($class, $position, $filter) = @_;
-    return Dancer::App->current->registry->add_hook($position, $filter);
-}
-
 # replace any ':foo' by '(.+)' and stores all the named
 # matches defined in $REG->{route_params}{$route}
-sub add_hook {
-    my ($self, $position, $filter) = @_;
-
-    my $compiled_filter = sub {
-        return if Dancer::SharedData->response->halted;
-        Dancer::Logger::core("entering " . $position . " hook");
-        eval { $filter->(@_) };
-        if ($@) {
-            my $err = Dancer::Error->new(
-                code  => 500,
-                title => $position . ' filter error',
-                message =>
-                  "An error occured while executing the filter at position $position: $@"
-            );
-            return Dancer::halt($err->render);
-        }
-    };
-
-    # XXX at the moment, we have a filer position named "before_template".
-    # this one is renamed "before_template_render", so we need to alias it.
-    # maybe we need to deprecate 'before_template' to enforce the use
-    # of 'hook before_template_render => sub {}' ?
-    $position = 'before_template_render' if $position eq 'before_template';
-    push @{$self->hooks->{$position}}, $compiled_filter;
-    return $compiled_filter;
-}
-
 sub routes {
     my ($self, $method) = @_;
 
