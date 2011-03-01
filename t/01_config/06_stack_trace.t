@@ -40,7 +40,7 @@ use Dancer::Template::TemplateToolkit;
 
 {
     # test setting traces to 1
-    ok(setting(traces => 1));
+    ok(setting(traces => 1), 'can set traces');
     is($Carp::Verbose, 1, "new Carp verbose is 1");
     eval { Dancer::Template::TemplateToolkit->render('/not/a/valid/file'); };
     my @error_lines = split(/\n/, $@);
