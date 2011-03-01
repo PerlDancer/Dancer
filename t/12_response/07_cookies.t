@@ -1,7 +1,7 @@
 package main;
 use strict;
 use warnings;
-use Test::More;
+use Test::More tests => 4, import => ['!pass'];
 
 {
     use Dancer;
@@ -15,26 +15,27 @@ use Test::More;
 }
 
 use Dancer::Test;
+
+
 {
     note "Testing one cookie";
     my $req = [GET => '/set_one_cookie'];
     route_exists $req;
     response_headers_are_deeply $req, [
         'Content-Type' => 'text/html',
-        'Set-Cookie' => 'a=b'
+        'Set-Cookie' => 'a=b; path=/; HttpOnly'
     ];
 }
 {
-    note "Testing one cookie";
+    note "Testing two cookies";
     my $req = [GET => '/set_two_cookies'];
     route_exists $req;
     response_headers_are_deeply $req, [
         'Content-Type' => 'text/html',
-        'Set-Cookie' => 'a=b',
-        'Set-Cookie' => 'c=d'
+        'Set-Cookie' => 'a=b; path=/; HttpOnly',
+        'Set-Cookie' => 'c=d; path=/; HttpOnly',
     ];
 }
 
-done_testing;
 1;
 
