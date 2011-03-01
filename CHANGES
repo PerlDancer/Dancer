@@ -57,6 +57,9 @@
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
       (Flavio Poletti)
+    * Complete working example of deployment under Nginx/Starman in
+      Deployment.pod
+      (Geistteufel)
 
 1.3010_01    12.02.2011
 

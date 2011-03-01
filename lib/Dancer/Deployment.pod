@@ -323,17 +323,41 @@ This configuration will proxy all request to the B</application> path to the pat
 
 with Nginx:
 
-    upstream backend {
-        server 10.0.0.1:8080;
-        server 10.0.0.2:8080;
-        ...
+    upstream backendurl {
+        server unix:THE_PATH_OF_YOUR_PLACKUP_SOCKET_HERE.sock;
     }
 
     server {
-        location / {
-            proxy_pass http://backend;
-        }
+      listen       80;
+      server_name YOUR_HOST_HERE;
+
+      access_log /var/log/YOUR_ACCESS_LOG_HERE.log;
+      error_log  /var/log/YOUR_ERROR_LOG_HERE.log info;
+
+      root YOUR_ROOT_PROJECT/public;
+      location / {
+        try_files $uri @proxy;
+        access_log off;
+        expires max;
+      }
+
+      location @proxy {
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_pass       http://backendurl;
+      }
+
     }
+
+You will need plackup to start a worker listening on a socket :
+
+    cd YOUR_PROJECT_PATH
+    sudo -u www plackup -E production -s Starman --workers=2 -l THE_PATH_OF_YOUR_PLACKUP_SOCKET_HERE.sock -a bin/app.pl
+
+A good way to start this is to use C<daemontools> and place this line with
+all environments variables in the "run" file.
 
 =head2 Running from Apache
 
