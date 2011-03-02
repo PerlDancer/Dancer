@@ -104,6 +104,24 @@ sub execute_hooks {
     }
 }
 
+sub execute_hooks_for_app {
+    my ($class, $app, $hook_name, @args) = @_;
+
+    croak("Can't ask for hooks without a position") unless $hook_name;
+
+    if (!$class->hook_is_registered($hook_name)){
+        croak("The hook '$hook_name' doesn't exists");
+    }
+
+    foreach my $hook (@{$class->get_hooks_for($hook_name, $app)}) {
+        $hook->(@args);
+        # XXX ok, what if we want to modify the value of one of the arguments,
+        # and this argument is not a ref ? like the content in the template
+        # inside a 'after_template_render' ?
+    }
+}
+
+
 sub get_hooks_for {
     my ( $class, $hook_name, $app_name ) = @_;
 
