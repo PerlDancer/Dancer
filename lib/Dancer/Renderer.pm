@@ -52,19 +52,6 @@ sub response_with_headers {
    $response->{headers} ||= HTTP::Headers->new;
    $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
 
-    # add cookies
-    my @cookies = ();
-    foreach my $c (keys %{Dancer::Cookies->cookies}) {
-        my $cookie = Dancer::Cookies->cookies->{$c};
-        if (Dancer::Cookies->has_changed($cookie)) {
-            push @cookies, $cookie->to_header;
-        }
-    }
-    if (scalar @cookies) {
-        my $header = join ', ', @cookies;
-        $response->header('Set-Cookie' => $header);
-    }
-    
     return $response;
 }
 

@@ -7,7 +7,7 @@ use t::lib::TestUtils;
 use File::Temp qw/tempdir/;
 use Dancer ':syntax';
 
-my $dir = tempdir(CLEANUP => 1);
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 setting appdir => $dir;
 
 use_ok 'Dancer::Logger';

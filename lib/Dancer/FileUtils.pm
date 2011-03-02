@@ -13,36 +13,42 @@ use vars '@EXPORT_OK';
 
 @EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
 
-# Undo UNC special-casing catfile-voodoo on cygwin in the next three functions
-sub d_catfile {
-    my $root = shift;
-    $root =~ s{^[/\\]+([/\\])}{$1};
-    File::Spec->catfile($root, @_);
+# Undo UNC special-casing catfile-voodoo on cygwin
+sub _trim_UNC {
+    if ($^O eq 'cygwin') {
+        return if ($#_ < 0);
+        my ($slashes, $part, @parts) = (0, undef, @_);
+        while(defined($part = shift(@parts))) { last if ($part); $slashes++ }
+        $slashes += ($part =~ s/^[\/\\]+//);
+        if ($slashes == 2) {
+            return("/" . $part, @parts);
+        } else {
+            my $slashstr = '';
+            $slashstr .= '/' for (1 .. $slashes);
+            return($slashstr . $part, @parts);
+        }
+    }
+    return(@_);
 }
-sub d_catdir {
-    my $root = shift;
-    $root =~ s{^[/\\]+([/\\])}{$1};
-    File::Spec->catdir($root, @_);
-}
-sub d_canonpath {
-    my $root = shift;
-    $root =~ s{^[/\\]+([/\\])}{$1};
-    File::Spec->canonpath($root, @_);
-}
+sub d_catfile { File::Spec->catfile(_trim_UNC(@_)) }
+sub d_catdir { File::Spec->catdir(_trim_UNC(@_)) }
+sub d_canonpath { File::Spec->canonpath(_trim_UNC(@_)) }
+sub d_catpath { File::Spec->catpath(_trim_UNC(@_)) }
+sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
 
 sub path { d_catfile(@_) }
 
 sub path_no_verify {
-    my @nodes = @_;
+    my @nodes = File::Spec->splitpath(d_catdir(@_)); # 0=vol,1=dirs,2=file
     my $path = '';
 
     # [0->?] path(must exist),[last] file(maybe exists)
-    if($#nodes > 0) {
-        $path = realpath(d_catdir(@nodes[0 .. ($#nodes - 1)])).'/';
-    } elsif(not File::Spec->file_name_is_absolute($nodes[0])) {
-        $path = Cwd::cwd.'/';
+    if($nodes[1]) {
+        $path = realpath(File::Spec->catpath(@nodes[0 .. 1],'')) . '/';
+    } else {
+        $path = Cwd::cwd . '/';
     }
-    $path .= d_canonpath($nodes[$#nodes]);
+    $path .= $nodes[2];
     return $path;
 }
 

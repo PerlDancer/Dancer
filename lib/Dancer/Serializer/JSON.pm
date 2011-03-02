@@ -75,7 +75,7 @@ sub _options_as_hashref {
         carp "options for to_json/from_json must be key value pairs (as a hashref)";
     }
     else {
-        Dancer::Deprecation::deprecated(
+        Dancer::Deprecation->deprecated(
             version => '1.3002',
             message => 'options as hash for to_json/from_json is DEPRECATED. please pass a hashref',
         );

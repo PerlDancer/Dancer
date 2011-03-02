@@ -55,7 +55,7 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
-    Dancer::_init($options{appdir});
+    Dancer::_init_script_dir($options{appdir});
     Dancer::Config->load;
 
     # set a default session engine for tests
@@ -205,19 +205,17 @@ sub dancer_response {
     );
 
     Dancer::SharedData->request($request);
-    if (Dancer::Renderer::get_action_response()) {
-        my $response = Dancer::SharedData->response();
-        Dancer::SharedData->reset_response();
-        return $response;
-    }else{
-        my $response = Dancer::SharedData->response();
-        Dancer::SharedData->reset_response();
-        (defined $response && $response->exists) ? return $response : return undef;
-    }
+
+    my $get_action = Dancer::Renderer::get_action_response();
+    my $response = Dancer::SharedData->response();
+    $response->content('') if $method eq 'HEAD';
+    Dancer::SharedData->reset_response();
+    return $response if $get_action;
+    (defined $response && $response->exists) ? return $response : return undef;
 }
 
 sub get_response {
-    Dancer::Deprecation::deprecated(
+    Dancer::Deprecation->deprecated(
         fatal   => 1,
         feature => 'get_response',
         reason  => 'Use dancer_response() instead.',

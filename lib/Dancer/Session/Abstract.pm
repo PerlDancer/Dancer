@@ -48,10 +48,9 @@ sub destroy {
 # This is the default constructor for the session object, the only mandatory
 # attribute is 'id'. The whole object should be serialized by the session
 # engine.
-sub new {
-    my $self = Dancer::Object::new(@_);
+sub init {
+    my ($self) = @_;
     $self->id(build_id());
-    return $self;
 }
 
 # session name can be set in configuration file:
@@ -98,7 +97,8 @@ sub write_session_id {
           Dancer::Cookie::_epoch_to_gmtstring(time + $expires);
     }
 
-    Dancer::Cookies->cookies->{$SESSION_NAME} = Dancer::Cookie->new(%cookie);
+    my $c = Dancer::Cookie->new(%cookie);
+    Dancer::Cookies->set_cookie_object($SESSION_NAME => $c);
 }
 
 1;

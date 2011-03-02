@@ -1,8 +1,9 @@
-{{$NEXT}}
+1.3012    01.03.2011
 
     [ BUG FIXES ]
     * Fix cookies disappearing when more than one is set.
-      (Chris Andrews)
+      Complete refactoring of the cookie handling.
+      (Chris Andrews, Geistteufel)
     * Properly set the settings in Dancer::Test only after config loading.
       (Sawyer X)
     * Fix possible loss of last directory in path.
@@ -10,8 +11,18 @@
     * No need for default upper directory in Dancer::Test. This fixes an issue
       raised on the list about the default scaffolded test failing.
       (Sawyer X)
+    *  Fix anti UNC substitution under Cygwin
+      (Rowan Thorpe)
+    * GH#299 Return appropriate headers on HEAD request (content-type, ...)
+      (franck cuny)
+    * Use the dancer_version variable in scaffolded app.
+      (Sawyer X, reported by Brian E. Lozier)
 
     [ ENHANCEMENTS ]
+    * Fix manifest
+      (Damien Krotkine)
+    * Various packaging, changelog and test fixes
+      (Damien Krotkine)
     * Add a new accessor to Dancer::Request: ->uri.
       (it's an alias to ->request_uri)
       (Franck Cuny)
@@ -31,9 +42,46 @@
       (Sawyer X)
     * Add Dancer::Deprecation. (handle deprecation messages)
       (franck cuny)
+    * Introduce new timestamp format in logger (%T)
+      (Roman Galeev)
+    * Refactoring of the forward method
+      (Alex Kalderimis)
+    * Refactoring of internal objects in the core, 
+      use more of Dancer::Object. Introduce attributes_defaults
+      (Damien Krotkine)
+    * Add a perl_version variable to all templates, used in scaffolded app.
+      (Sawyer X, reported by Brian E. Lozier)
+    * Better output when template file is missing.
+      (Brian E. Lozier, Sawyer X)
 
     [ DOCUMENTATION ]
     * Add missing methods (e.g. "referer"), sorting, clean up.
+      (Flavio Poletti)
+    * Complete working example of deployment under Nginx/Starman in
+      Deployment.pod
+      (Geistteufel)
+
+1.3010_01    12.02.2011
+
+    [ BUG FIXES ]
+    * GH#136: fix again Mime::Type issues in preforking environment
+      (Chris Andrews)
+    * GH#220: fix for path issues under MacOS X and Windows platforms.
+      A new function is provided by Dancer::FileUtils: path_no_verify()
+      (Rowan Thorpe)
+    * Fix for infinite loops detection in before filters
+      (Flavio Poletti)
+
+    [ ENHANCEMENTS ]
+    * Better detection of the application layout under non-UNIX platforms.
+      (Rowan Thorpe, Alexis Sukrieh)
+
+    [ DOCUMENTATION ]
+    * Fix a typo in Dancer::Request::Upload's POD
+      (Rowan Thorpe)
+    * Better documentation for the before filters, explanations about the
+      potential infinite loops that can happen when using before filters (and 
+      what Dancer does in that case).
       (Flavio Poletti)
 
 1.3011    14.02.2011

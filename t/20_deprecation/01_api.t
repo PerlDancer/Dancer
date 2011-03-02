@@ -9,7 +9,7 @@ use Test::More tests => 10;
     use Dancer::Deprecation;
 
     sub foo {
-        Dancer::Deprecation::deprecated(
+        Dancer::Deprecation->deprecated(
             feature => 'foo',
             version => '0.1',
             message => 'calling foo is deprecated, you should use bar',
@@ -17,23 +17,23 @@ use Test::More tests => 10;
     }
 
     sub bar {
-        Dancer::Deprecation::deprecated(
+        Dancer::Deprecation->deprecated(
             'calling bar is also deprecated, you should use baz');
     }
 
     sub baz {
-        Dancer::Deprecation::deprecated();
+        Dancer::Deprecation->deprecated();
     }
 
     sub foo_bar_baz {
-        Dancer::Deprecation::deprecated(
+        Dancer::Deprecation->deprecated(
             version => '0.1',
             feature => 'foo_bar_baz',
         );
     }
 
     sub fatal {
-        Dancer::Deprecation::deprecated(
+        Dancer::Deprecation->deprecated(
             message => 'this should die',
             fatal   => 1,
         );

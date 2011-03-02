@@ -17,6 +17,7 @@ lib/Dancer/Cookbook.pod
 lib/Dancer/Cookie.pm
 lib/Dancer/Cookies.pm
 lib/Dancer/Deployment.pod
+lib/Dancer/Deprecation.pm
 lib/Dancer/Development.pod
 lib/Dancer/Development/Integration.pod
 lib/Dancer/Engine.pm
@@ -27,13 +28,14 @@ lib/Dancer/Handler.pm
 lib/Dancer/Handler/Debug.pm
 lib/Dancer/Handler/PSGI.pm
 lib/Dancer/Handler/Standalone.pm
-lib/Dancer/Helpers.pm
 lib/Dancer/HTTP.pm
 lib/Dancer/Introduction.pod
 lib/Dancer/Logger.pm
 lib/Dancer/Logger/Abstract.pm
 lib/Dancer/Logger/Console.pm
+lib/Dancer/Logger/Diag.pm
 lib/Dancer/Logger/File.pm
+lib/Dancer/Logger/Null.pm
 lib/Dancer/MIME.pm
 lib/Dancer/ModuleLoader.pm
 lib/Dancer/Object.pm
@@ -87,6 +89,7 @@ t/00_base/09_load_app.t
 t/00_base/11_file_utils.t
 t/00_base/12_utf8_charset.t
 t/00_base/13_dancer_singleton.t
+t/00_base/14_changelog.t
 t/00_base/config.t
 t/00_base/dancer_test.t
 t/00_base/lib/AppWithError.pm
@@ -108,6 +111,7 @@ t/02_request/01_load.t
 t/02_request/02_get_params.t
 t/02_request/03_post_params.t
 t/02_request/04_custom.t
+t/02_request/04_forward.t
 t/02_request/05_cgi_pm_compat.t
 t/02_request/06_init_env.t
 t/02_request/07_raw_data.t
@@ -202,7 +206,6 @@ t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t
-t/09_cookies/04_has_changed.t
 t/09_cookies/05_api.t
 t/10_template/000_create_fake_env.t
 t/10_template/01_factory.t
@@ -219,6 +222,8 @@ t/11_logger/02_factory.t
 t/11_logger/03_file.t
 t/11_logger/04_console.t
 t/11_logger/05_format.t
+t/11_logger/06_null.t
+t/11_logger/07_diag.t
 t/12_response/000_create_fake_env.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t
@@ -226,6 +231,9 @@ t/12_response/03_charset.t
 t/12_response/04_charset_server.t
 t/12_response/05_api.t
 t/12_response/06_filter_halt_status.t
+t/12_response/07_cookies.t
+t/12_response/08_drop_content.t
+t/12_response/09_headers_to_array.t
 t/13_engines/00_load.t
 t/13_engines/02_template_init.t
 t/14_serializer/000_create_fake_env.t
@@ -244,6 +252,7 @@ t/14_serializer/12_bug_gh106.t
 t/14_serializer/13_xml.t
 t/14_serializer/14_api.t
 t/14_serializer/14_show_errors.t
+t/14_serializer/16_bug_gh_299.t
 t/14_serializer/handler-helper.t
 t/15_plugins/000_create_fake_env.t
 t/15_plugins/01_register.t
@@ -267,6 +276,7 @@ t/18_main_dsl/01_config.t
 t/18_main_dsl/uri_for.t
 t/19_dancer/01_script.t
 t/19_dancer/02_script_version_from.t
+t/20_deprecation/01_api.t
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm

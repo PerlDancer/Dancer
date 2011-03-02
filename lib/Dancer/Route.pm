@@ -156,13 +156,8 @@ sub run {
     my $response = Dancer::SharedData->response;
 
     if ( $response && $response->is_forwarded ) {
-        my $new_req = Dancer::Request->new_for_request(
-            $request->method,
-            $response->{forward},
-            $request->params,
-            $request->body,
-            $request->headers,
-        );
+        my $new_req = 
+            Dancer::Request->forward($request, $response->{forward});
 
         my $marshalled = Dancer::Handler->handle_request($new_req);
 
@@ -187,9 +182,6 @@ sub run {
     # coerce undef content to empty string to
     # prevent warnings
     $content = (defined $content) ? $content : '';
-
-    # drop content if HEAD request
-    $content = '' if $request->is_head;
 
     my $ct =
       ( defined $response && defined $response->content_type )

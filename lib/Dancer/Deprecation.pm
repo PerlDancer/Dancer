@@ -5,7 +5,7 @@ use warnings;
 use Carp qw/croak carp/;
 
 sub deprecated {
-    my %args = @_;
+    my ($class, %args) = @_;
 
     my ( $package, undef, undef, $sub ) = caller(1);
 
@@ -37,7 +37,7 @@ Dancer::Deprecation - handle deprecation messages
 
 =head1 SYNOPSIS
 
-  Dancer::Deprecation::deprecated(
+  Dancer::Deprecation->deprecated(
     feature => 'sub_name',
     version => '1.3000',
     reason  => '...',
@@ -48,6 +48,24 @@ Dancer::Deprecation - handle deprecation messages
 =head2 METHODS
 
 =head3 deprecated
+
+List of possible parameters:
+
+=over 4
+
+=item B<feature> name of the feature to deprecate
+
+=item B<version> from which version the feature is deprecated
+
+=item B<message> message to display
+
+=item B<fatal> if set to true, croak instead of carp
+
+item B<reason> why is the feature deprecated
+
+=back
+
+You can call the method with no arguments, and a default message using informations from C<caller> will be build for you.
 
 =head1 LICENSE
 

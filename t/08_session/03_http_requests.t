@@ -15,7 +15,7 @@ use LWP::UserAgent;
 
 use File::Spec;
 use File::Temp 'tempdir';
-my $tempdir = tempdir('Dancer.XXXXXX', DIR => File::Spec->curdir, CLEANUP => 1);
+my $tempdir = tempdir(CLEANUP => 1, TMPDIR => 1);
 
 use Dancer;
 use Dancer::Logger;

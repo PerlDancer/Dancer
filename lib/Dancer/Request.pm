@@ -4,7 +4,8 @@ use strict;
 use warnings;
 use Carp;
 
-use Dancer::Object;
+use base 'Dancer::Object';
+
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Encode;
@@ -12,7 +13,6 @@ use HTTP::Body;
 use URI;
 use URI::Escape;
 
-use base 'Dancer::Object';
 my @http_env_keys = (
     'user_agent',      'host',       'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive', 'connection',      'accept',
@@ -20,7 +20,7 @@ my @http_env_keys = (
 );
 my $count = 0;
 
-Dancer::Request->attributes(
+__PACKAGE__->attributes(
 
     # query
     'env',          'path',    'method',
@@ -104,6 +104,23 @@ sub new_for_request {
     $req->{headers} = $headers if $headers;
 
     return $req;
+}
+
+#Create a new request which is a clone of the current one, apart
+#from the path location, which points instead to the new location
+sub forward {
+    my ($class, $request, $to) = @_;
+
+    my $env = $request->env;
+    $env->{PATH_INFO} = $to;
+
+    my $new_request = $class->new($env);
+
+    $new_request->{params}  = $request->params;
+    $new_request->{body}    = $request->body;
+    $new_request->{headers} = $request->headers;
+
+    return $new_request;
 }
 
 sub base {
@@ -504,6 +521,12 @@ objects. It uses the environment hash table given to build the request object.
 
 An alternate constructor convinient for test scripts which creates a request
 object with the arguments given.
+
+=head2 forward($request, $new_location)
+
+Create a new request which is a clone of the current one, apart
+from the path location, which points instead to the new location.
+This is used internally to chain requests using the forward keyword.
 
 =head2 to_string()
 

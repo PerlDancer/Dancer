@@ -15,7 +15,8 @@ use File::Temp qw(tempfile);
 # static
 
 sub init {
-    my ($class) = @_;
+    my $self = shift;
+    $self->SUPER::init(@_);
 
     croak "YAML is needed and is not installed"
       unless Dancer::ModuleLoader->load('YAML');
