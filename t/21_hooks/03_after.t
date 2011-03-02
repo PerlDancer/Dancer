@@ -9,7 +9,7 @@ plan tests => 3;
 
 ok(
     after sub {
-        my $response = shift;
+        my $response = Dancer::SharedData->response;
         $response->content('not index!');
     },
     'after hook is defined'
