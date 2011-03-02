@@ -16,7 +16,7 @@ sub init {
     $logger = Dancer::Engine->build(logger => $name, $config);
 }
 
-sub serialize {
+sub _serialize {
     my @vars = @_;
 
     return join q{}, map {
@@ -30,10 +30,10 @@ sub serialize {
     } @vars;
 }
 
-sub core    { defined($logger) and $logger->core(    serialize(@_) ) }
-sub debug   { defined($logger) and $logger->debug(   serialize(@_) ) }
-sub warning { defined($logger) and $logger->warning( serialize(@_) ) }
-sub error   { defined($logger) and $logger->error(   serialize(@_) ) }
+sub core    { defined($logger) and $logger->core(    _serialize(@_) ) }
+sub debug   { defined($logger) and $logger->debug(   _serialize(@_) ) }
+sub warning { defined($logger) and $logger->warning( _serialize(@_) ) }
+sub error   { defined($logger) and $logger->error(   _serialize(@_) ) }
 
 1;
 
