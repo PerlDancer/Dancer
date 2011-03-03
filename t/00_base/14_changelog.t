@@ -3,6 +3,10 @@ use warnings;
 
 use Test::More import => ['!pass'];
 
+unless ( $ENV{RELEASE_TESTING} ) {
+    plan( skip_all => "Author tests not required for installation" );
+}
+
 #### Change these values if the Changelog syntax changes :
 
 # changelog file name
