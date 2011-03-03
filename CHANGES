@@ -1,3 +1,9 @@
+1.3013    01.03.2011
+
+    [ ENHANCEMENTS ]
+    * Fix test suite: the changelog test is skipped if not under 
+      RELEASE_TESTING environment.
+
 1.3012    01.03.2011
 
     [ BUG FIXES ]
