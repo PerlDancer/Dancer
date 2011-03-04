@@ -183,9 +183,22 @@ sub dancer_response {
 
     if ($method =~ /^(?:PUT|POST)$/ && $args->{body}) {
         my $body = $args->{body};
-        my $l    = length $body;
+
+        # coerce hashref into an url-encoded string
+        if (ref($body) && (ref($body) eq 'HASH')) {
+            my @tokens;
+            while (my ($name, $value) = each %{$body}) {
+                $name  = _url_encode($name);
+                $value = _url_encode($value);
+                push @tokens, "${name}=${value}";
+            }
+            $body = join('&', @tokens);
+        }
+
+        my $l = length $body;
         open my $in, '<', \$body;
         $ENV{'CONTENT_LENGTH'} = $l;
+        $ENV{'CONTENT_TYPE'}   = 'application/x-www-form-urlencoded';
         $ENV{'psgi.input'}     = $in;
     }
 
@@ -223,6 +236,12 @@ sub get_response {
 }
 
 # private
+
+sub _url_encode {
+    my $string = shift;
+    $string =~ s/([\W])/"%" . uc(sprintf("%2.2x",ord($1)))/eg;
+    return $string;
+}
 
 sub _get_file_response {
     my ($req) = @_;
