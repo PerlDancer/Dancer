@@ -1,3 +1,17 @@
+1.3014    04.03.2011
+
+    [ BUG FIXES ]
+    * YAML Session UTF-8 Fix
+      (Roman Galeev)
+    * Tests and documentations for Dancer::Request::Upload + type method in
+      Dancer::Request::Upload
+      (Michael G. Schwern)
+    * Dancer::Test::dancer_response handles correctly its 'body' parameter
+      We can now pass a hash ref as the body of dancer_response, it will
+      automatically be serialized as an URL-encoded string with the appropriate
+      content_type header.
+      (Alexis Sukrieh)
+
 1.3013    01.03.2011
 
     [ ENHANCEMENTS ]

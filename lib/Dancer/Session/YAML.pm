@@ -8,7 +8,7 @@ use base 'Dancer::Session::Abstract';
 use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path open_file);
+use Dancer::FileUtils qw(path set_file_mode);
 use File::Copy;
 use File::Temp qw(tempfile);
 
@@ -76,6 +76,7 @@ sub flush {
     my $self = shift;
     my ( $fh, $tmpname ) =
       tempfile( $self->id . '.XXXXXXXX', DIR => setting('session_dir') );
+    set_file_mode($fh);
     print {$fh} YAML::Dump($self);
     close $fh;
     move($tmpname, yaml_file($self->id));
