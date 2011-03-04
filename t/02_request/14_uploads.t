@@ -13,7 +13,7 @@ sub test_path {
     is dirname($file), $dir, "dir of $file is $dir";
 }
 
-plan tests => 15;
+plan tests => 16;
 
 my $content = qq{------BOUNDARY
 Content-Disposition: form-data; name="test_upload_file"; filename="yappo.txt"
@@ -75,6 +75,12 @@ do {
     like $uploads[1]->content, qr|^SHOGUN|, "... content for second as well";
     is $req->uploads->{'test_upload_file4'}[0]->content, 'SHOGUN4',
       "... content for other also good";
+
+    # headers
+    is_deeply $uploads[0]->headers, {
+        'Content-Disposition' => q[form-data; name="test_upload_file"; filename="yappo.txt"],
+        'Content-Type'        => 'text/plain',
+    };
 
     my $test_upload_file3 = $req->upload('test_upload_file3');
     is $test_upload_file3->content, 'SHOGUN3',
