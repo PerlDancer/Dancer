@@ -49,6 +49,8 @@ SHOGUN6
 $content =~ s/\r\n/\n/g;
 $content =~ s/\n/\r\n/g;
 
+plan tests => 17;
+
 do {
     open my $in, '<', \$content;
     my $req = Dancer::Request->new(
@@ -120,5 +122,3 @@ do {
 
     unlink($file) if ($^O eq 'MSWin32');
 };
-
-done_testing;
