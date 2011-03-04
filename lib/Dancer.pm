@@ -224,12 +224,6 @@ sub _init_script_dir {
     my ($script_vol, $script_dirs, $script_name) =
       File::Spec->splitpath(File::Spec->rel2abs($script));
 
-    # normalize
-    if ( -d ( my $fulldir = File::Spec->catdir( $script_dirs, $script_name ) ) ) {
-        $script_dirs = $fulldir;
-        $script_name = '';
-    }
-
     my @script_dirs = File::Spec->splitdir($script_dirs);
     my $script_path;
     if ($script_vol) {
