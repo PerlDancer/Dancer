@@ -13,7 +13,6 @@ sub test_path {
     is dirname($file), $dir, "dir of $file is $dir";
 }
 
-plan tests => 16;
 
 my $content = qq{------BOUNDARY
 Content-Disposition: form-data; name="test_upload_file"; filename="yappo.txt"
@@ -76,11 +75,14 @@ do {
     is $req->uploads->{'test_upload_file4'}[0]->content, 'SHOGUN4',
       "... content for other also good";
 
-    # headers
+    note "headers";
     is_deeply $uploads[0]->headers, {
         'Content-Disposition' => q[form-data; name="test_upload_file"; filename="yappo.txt"],
         'Content-Type'        => 'text/plain',
     };
+
+    note "type";
+    is $uploads[0]->type, 'text/plain';
 
     my $test_upload_file3 = $req->upload('test_upload_file3');
     is $test_upload_file3->content, 'SHOGUN3',
@@ -119,3 +121,4 @@ do {
     unlink($file) if ($^O eq 'MSWin32');
 };
 
+done_testing;
