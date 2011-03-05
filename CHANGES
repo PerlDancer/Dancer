@@ -4,6 +4,10 @@
     * GH #351: Moose mode ("use Dancer ':moose'") that does not import "before",
       nor "after". It implies ":syntax" as well.
       (Sawyer X)
+    * All logging options accept any number of variables.
+      (Sawyer X)
+    * GH #297: All logging options can automatically serialize references.
+      (Sawyer X)
 
 1.3014    04.03.2011
 
