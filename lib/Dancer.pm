@@ -230,6 +230,7 @@ sub _init_script_dir {
       File::Spec->splitpath(File::Spec->rel2abs($script));
 
     my @script_dirs = File::Spec->splitdir($script_dirs);
+    pop(@script_dirs); # splitpath creates a trailing dirsep...
     my $script_path;
     if ($script_vol) {
         $script_path = Dancer::path($script_vol, $script_dirs);
