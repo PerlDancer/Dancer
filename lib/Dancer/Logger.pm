@@ -75,6 +75,15 @@ Or in the application code:
     # logging to file 
     set logger => 'file';
 
+=head2 Auto-serializing
+
+The loggers allow auto-serializing of all inputs:
+
+    debug( 'User credentials: ', \%creds );
+
+Will provide you with an output in a single log message of the string and the
+reference dump.
+
 =head1 AUTHORS
 
 This module has been written by Alexis Sukrieh. See the AUTHORS file that comes
