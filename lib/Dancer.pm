@@ -242,8 +242,8 @@ sub _init_script_dir {
     # in bin/ or public/ we need to go one level upper to find the appdir
     $LAYOUT_PRE_DANCER_1_2 = 0
       if (not $run_from_cmdline)
-      and ($script_dirs[$#script_dirs - 1] eq 'bin')
-      or ($script_dirs[$#script_dirs - 1] eq 'public');
+      and ($script_dirs[$#script_dirs] eq 'bin')
+      or ($script_dirs[$#script_dirs] eq 'public');
 
     my $appdir = $ENV{DANCER_APPDIR} || (
           $LAYOUT_PRE_DANCER_1_2
