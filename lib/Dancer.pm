@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-use vars qw($VERSION $AUTHORITY @EXPORT);
+use vars qw($VERSION $AUTHORITY @EXPORT %EXPORT_TAGS);
 
 $VERSION   = '1.3014';
 $AUTHORITY = 'SUKRIA';
@@ -96,6 +96,8 @@ use base 'Exporter';
   warning
 );
 
+%EXPORT_TAGS = ( syntax => \@EXPORT );
+
 # Dancer's syntax
 
 sub after           { Dancer::Route::Registry->hook('after', @_) }
@@ -162,22 +164,16 @@ sub warning         { goto &Dancer::Logger::warning }
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
-    my ($class,   $symbol) = @_;
+    my ($class, @args) = @_;
     my ($package, $script) = caller;
-
-    $symbol ||= '';
 
     strict->import;
     utf8->import;
 
-    # remove unnecessary subs from export for Moose mode
-    $symbol eq ':moose'
-        and @EXPORT = grep { $_ !~ /^(?:before|after)$/ } @EXPORT;
-
-    $class->export_to_level(1, $class, @EXPORT);
+    $class->export_to_level(1, $class, @args);
 
     # if :syntax option exists, don't change settings
-    substr( $symbol, 0, 1 ) eq ':' and return;
+    return if grep { $_ eq ':syntax' } @args;
 
     Dancer::GetOpt->process_args();
 
