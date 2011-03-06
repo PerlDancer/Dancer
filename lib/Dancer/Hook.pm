@@ -3,32 +3,49 @@ package Dancer::Hook;
 use strict;
 use warnings;
 use Carp;
+use base 'Dancer::Object::Singleton';
 
-my $_registered_hooks_by_class = {};
-my $_registered_hooks          = [];
-my $_apps                      = {};
+use Dancer::Hook::Properties;
+
+Dancer::Hook->attributes(qw/ hooks registered_hooks registered_hooks_by_class/);
+
+sub init {
+    my ( $class, $self ) = @_;
+    $self->hooks( {} );
+    $self->registered_hooks([]);
+    return $self;
+}
 
 sub register_hook {
-    my ( $class, $hook_name, $code ) = @_;
-    my $app = Dancer::App->current->name;
-    $class->_register_hook($app, $hook_name, $code);
+    my ($class, $hook_name) = (shift, shift);
+
+    my ( $properties, $code ) =
+        ( scalar @_ == 1 ) ? ( Dancer::Hook::Properties->new(), shift )
+      : ( scalar @_ == 2 ) ? ( Dancer::Hook::Properties->new(shift), shift )
+      :                      croak "something's wrong";
+
+    $class->_register_hook( $hook_name, $properties, $code );
 }
 
 sub _register_hook {
-    my ($class, $app, $name, $code) = @_;
+    my ($class, $hook_name, $properties, $code) = @_;
 
     my $compiled_filter = sub {
         return if Dancer::SharedData->response->halted;
-        Dancer::Logger::core("entering " . $name . " hook");
+
+        my $app = Dancer::App->current();
+        
+        return unless $properties->should_run_this_app($app);
+
+        Dancer::Logger::core( "entering " . $hook_name . " hook" );
         eval { $code->(@_) };
         if ($@) {
             my $err = Dancer::Error->new(
-                code  => 500,
-                title => $name . ' filter error',
-                message =>
-                  "An error occured while executing the filter named $name: $@"
+                code    => 500,
+                title   => $hook_name . ' filter error',
+                message => "An error occured while executing the filter named $hook_name: $@"
             );
-            return Dancer::halt($err->render);
+            return Dancer::halt( $err->render );
         }
     };
 
@@ -36,115 +53,59 @@ sub _register_hook {
     # this one is renamed "before_template_render", so we need to alias it.
     # maybe we need to deprecate 'before_template' to enforce the use
     # of 'hook before_template_render => sub {}' ?
-    $name = 'before_template_render' if $name eq 'before_template';
-    push @{$_apps->{$app}->{$name}}, $compiled_filter;
-    return $compiled_filter;
+    $hook_name = 'before_template_render' if $hook_name eq 'before_template';
+
+    $class->_add_registered_hook($hook_name, $compiled_filter);
+}
+
+sub _add_registered_hook {
+    my ($class, $hook_name, $compiled_filter) = @_;
+    push @{$class->hooks->{$hook_name}}, $compiled_filter;
 }
 
 sub register_hooks_name {
-    my ( $class, @hooks_name ) = @_;
-
-    my ($for) = caller();
+    my ( $self, @hooks_name ) = @_;
 
     if ( !scalar @hooks_name ) {
-        croak "a name for your hook is required!";
+        croak "at least one name is required";
     }
 
     foreach my $hook_name (@hooks_name) {
-        if ( $class->hook_is_registered($hook_name) ) {
+        if ( $self->hook_is_registered($hook_name) ) {
             croak "$hook_name is already regsitered, please use another name";
         }
-
-        $class->_add_hook($hook_name, $for);
+        $self->_add_hook( $hook_name );
     }
 }
 
 sub _add_hook {
-    my ($class, $hook_name, $for) = @_;;
-    push @{$_registered_hooks_by_class->{$for}}, $hook_name;
-    push @$_registered_hooks, $hook_name;
+    my ($self, $hook_name ) = @_;
+    push @{$self->registered_hooks}, $hook_name;
 }
-
-sub get_hooks_name_list {
-    my ($class, $for) = @_;
-    if (!$for) {
-        $class->_get_all_hooks();
-    }else{
-        $class->_get_hooks_for($for);
-    }
-}
-
-sub get_hooks_for_app {
-    my ($class, $app_name) = @_;
-    return $_apps->{$app_name};
-}
-
-sub _get_all_hooks { return $_registered_hooks }
-sub _get_hooks_for { return $_registered_hooks_by_class->{$_[1]} }
 
 sub hook_is_registered {
-    my ( $class, $hook_name ) = @_;
-    return grep { $_ eq $hook_name } @$_registered_hooks;
+    my ( $self, $hook_name ) = @_;
+    return grep { $_ eq $hook_name } @{$self->registered_hooks};
 }
 
 sub execute_hooks {
-    my ($class, $hook_name, @args) = @_;
+    my ($self, $hook_name, @args) = @_;
 
     croak("Can't ask for hooks without a position") unless $hook_name;
 
-    if (!$class->hook_is_registered($hook_name)){
+    if (!$self->hook_is_registered($hook_name)){
         croak("The hook '$hook_name' doesn't exists");
     }
 
-    foreach my $hook (@{$class->get_hooks_for($hook_name)}) {
-        $hook->(@args);
-        # XXX ok, what if we want to modify the value of one of the arguments,
-        # and this argument is not a ref ? like the content in the template
-        # inside a 'after_template_render' ?
-    }
+    $_->(@args) foreach @{$self->get_hooks_for($hook_name)};
 }
-
-sub execute_hooks_for_app {
-    my ($class, $app, $hook_name, @args) = @_;
-
-    croak("Can't ask for hooks without a position") unless $hook_name;
-
-    if (!$class->hook_is_registered($hook_name)){
-        croak("The hook '$hook_name' doesn't exists");
-    }
-
-    foreach my $hook (@{$class->get_hooks_for($hook_name, $app)}) {
-        $hook->(@args);
-        # XXX ok, what if we want to modify the value of one of the arguments,
-        # and this argument is not a ref ? like the content in the template
-        # inside a 'after_template_render' ?
-    }
-}
-
 
 sub get_hooks_for {
-    my ( $class, $hook_name, $app_name ) = @_;
+    my ( $self, $hook_name ) = @_;
 
     croak("Can't ask for hooks without a position") unless $hook_name;
 
-    my $hooks = [];
-    if ($app_name) {
-        push @$hooks, @{$class->_get_hooks_for_app($hook_name, $app_name)};
-    }else{
-        foreach my $app ( keys %$_apps ) {
-            push @$hooks, @{$class->_get_hooks_for_app($hook_name, $app)};
-        }
-    }
-    $hooks;
-}
-
-sub _get_hooks_for_app {
-    my ( $class, $hook_name, $app ) = @_;
-    my $hooks = [];
-    if ( defined $_apps->{$app}->{$hook_name} ) {
-        push @$hooks, @{ $_apps->{$app}->{$hook_name} };
-    }
-    $hooks;
+    $self->hooks->{$hook_name} || [];
 }
 
 1;
