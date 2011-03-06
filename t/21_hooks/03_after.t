@@ -8,10 +8,12 @@ use Dancer::Test;
 plan tests => 3;
 
 ok(
-    after sub {
-        my $response = shift;
-        $response->content('not index!');
-    },
+    after(
+        sub {
+            my $response = shift;
+            $response->content('not index!');
+        }
+    ),
     'after hook is defined'
 );
 
