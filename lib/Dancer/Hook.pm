@@ -19,10 +19,20 @@ sub init {
 sub register_hook {
     my ($class, $hook_name) = (shift, shift);
 
-    my ( $properties, $code ) =
-        ( scalar @_ == 1 ) ? ( Dancer::Hook::Properties->new(), shift )
-      : ( scalar @_ == 2 ) ? ( Dancer::Hook::Properties->new(shift), shift )
-      :                      croak "something's wrong";
+    my ( $properties, $code );
+
+    if ( scalar @_ == 1 ) {
+        $properties = Dancer::Hook::Properties->new();
+        $code       = shift;
+    }
+    elsif ( scalar @_ == 2 ) {
+        my $prop = shift;
+        $properties = Dancer::Hook::Properties->new(%$prop);
+        $code       = shift;
+    }
+    else {
+        croak "something's wrong";
+    }
 
     $class->_register_hook( $hook_name, $properties, $code );
 }
@@ -34,8 +44,7 @@ sub _register_hook {
         return if Dancer::SharedData->response->halted;
 
         my $app = Dancer::App->current();
-        
-        return unless $properties->should_run_this_app($app);
+        return unless $properties->should_run_this_app($app->name);
 
         Dancer::Logger::core( "entering " . $hook_name . " hook" );
         eval { $code->(@_) };
