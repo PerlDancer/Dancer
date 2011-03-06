@@ -10,7 +10,7 @@ use Dancer::Hook;
 use Dancer::Error;
 use Dancer::SharedData;
 
-Dancer::Hook->register_hooks_name(qw/before_deserializer after_deserializer/);
+Dancer::Hook->instance->register_hooks_name(qw/before_deserializer after_deserializer/);
 
 my $_engine;
 

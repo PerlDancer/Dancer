@@ -18,7 +18,7 @@ use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
 
-Dancer::Hook->register_hooks_name(
+Dancer::Hook->instance->register_hooks_name(
     qw/before after before_serializer after_serializer before_file_render after_file_render/
 );
 
@@ -101,10 +101,10 @@ sub get_action_response {
     my $handler =
       Dancer::App->find_route_through_apps(Dancer::SharedData->request);
 
-    # run the before filters, before "running" the route handler
-    # XXX should we scope route to a given application ?
     my $app = ($handler && $handler->app) ? $handler->app : Dancer::App->current();
-    Dancer::Hook->execute_hooks_for_app($app->name, 'before');
+
+    # run the before filters, before "running" the route handler
+    Dancer::Hook->instance->execute_hooks('before');
 
     # recurse if something has changed
     my $MAX_RECURSIVE_LOOP = 10;
@@ -138,7 +138,7 @@ sub get_action_response {
         $handler->run($request);
         serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
-        Dancer::Hook->execute_hooks_for_app($app->name, 'after', $resp);
+        Dancer::Hook->instance->execute_hooks('after', $resp);
         return $resp;
     }
     else {
