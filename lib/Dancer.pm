@@ -99,7 +99,7 @@ our @EXPORT    = qw(
 
 # Dancer's syntax
 
-sub after           { Dancer::Hook->register_hook('after', @_) }
+sub after           { Dancer::Hook->instance->register_hook('after', @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
 sub before          { Dancer::Hook->register_hook('before', @_) }
 sub before_template { Dancer::Hook->register_hook('before_template', @_) }
