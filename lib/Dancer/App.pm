@@ -76,6 +76,10 @@ sub find_route_through_apps {
     my ($class, $request) = @_;
     for my $app (Dancer::App->applications) {
         my $route = $app->find_route($request);
+        if ($route) {
+            Dancer::App->current($route->app);
+            return $route;
+        }
         return $route if $route;
     }
     return;
