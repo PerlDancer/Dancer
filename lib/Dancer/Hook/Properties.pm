@@ -8,9 +8,21 @@ use base 'Dancer::Object';
 Dancer::Hook::Properties->attributes(qw/apps/);
 
 sub init {
-    my ($class, $self, @args) = @_;
-    $self->apps([]);
+    my ($self, %args) = @_;
+
+    $self->_init_apps(\%args);
     return $self;
+}
+
+sub _init_apps {
+    my ( $self, $args ) = @_;
+    if ( my $apps = $args->{'apps'} ) {
+        ref $apps ? $self->apps($apps) : $self->apps( [$apps] );
+        return;
+    }
+    else {
+        $self->apps( [] );
+    }
 }
 
 sub should_run_this_app {
@@ -19,7 +31,7 @@ sub should_run_this_app {
     return 1 unless scalar( @{ $self->apps } );
 
     if ( $self->apps ) {
-        return grep { $_ eq $app->name } @{ $self->apps };
+        return grep { $_ eq $app } @{ $self->apps };
     }
 }
 
