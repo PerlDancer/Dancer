@@ -431,7 +431,7 @@ WriteMakefile(
               it\'s just here to help you get started. The template used to
               generate this content is located in 
               <code>views/index.tt</code>.
-              You can add some routes to <tt>lib/'.$appname.'.pm</tt>. 
+              You can add some routes to <tt>lib/'.$LIB_PATH.'/'.$LIB_FILE.'</tt>. 
               </p>
             </li>
 
