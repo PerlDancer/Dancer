@@ -5,10 +5,8 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-use vars qw($VERSION $AUTHORITY @EXPORT %EXPORT_TAGS);
-
-$VERSION   = '1.3014';
-$AUTHORITY = 'SUKRIA';
+our $VERSION   = '1.3014';
+our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
 use Dancer::Config;
@@ -32,7 +30,7 @@ use File::Spec;
 
 use base 'Exporter';
 
-@EXPORT    = qw(
+our @EXPORT    = qw(
   after
   any
   before
@@ -95,8 +93,6 @@ use base 'Exporter';
   vars
   warning
 );
-
-%EXPORT_TAGS = ( syntax => \@EXPORT );
 
 # Dancer's syntax
 
