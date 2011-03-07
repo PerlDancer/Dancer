@@ -170,6 +170,14 @@ sub import {
     strict->import;
     utf8->import;
 
+    if ( grep { $_ eq ':moose' } @args ) {
+        push @args, '!before', '!after';
+    }
+
+    if ( grep { $_ eq ':test' } @args ) {
+        push @args, '!pass';
+    }
+    
     $class->export_to_level(1, $class, @args);
 
     # if :syntax option exists, don't change settings
