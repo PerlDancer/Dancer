@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * closes GH-373 - display valid path to the main app file in the welcome screen
+      (franck cuny)
+
     [ ENHANCEMENTS ]
     * GH #351: Moose mode ("use Dancer ':moose'") that does not import "before",
       nor "after". It implies ":syntax" as well.
