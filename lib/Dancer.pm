@@ -171,12 +171,16 @@ sub import {
     utf8->import;
 
     my @final_args;
+    my $syntax_only = 0;
     foreach (@args) {
         if ( $_ eq ':moose' ) {
             push @final_args, '!before', '!after';
         }
         elsif ( $_ eq ':tests' ) {
             push @final_args, '!pass';
+        }
+        elsif ( $_ eq ':syntax' ) {
+            $syntax_only = 1;
         }
         else {
             push @final_args, $_;
@@ -186,7 +190,7 @@ sub import {
     $class->export_to_level(1, $class, @final_args);
 
     # if :syntax option exists, don't change settings
-    return if grep { $_ eq ':syntax' } @final_args;
+    return if $syntax_only;
 
     Dancer::GetOpt->process_args();
 

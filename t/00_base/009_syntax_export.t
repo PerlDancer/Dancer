@@ -1,8 +1,7 @@
-use Test::More import => ['!pass'];
+use Test::More import => ["!pass"];
+use Dancer ':moose', ':tests', ":syntax";
 
 my @keywords = (qw/before after pass/);
-
-use Dancer ':moose', ':tests';
 
 plan tests => scalar(@keywords) + 2;
 
@@ -13,5 +12,4 @@ foreach my $symbol (@keywords) {
 ok(exists($::{'get'}), "symbol `get' is exported");
 
 use Cwd;
-is setting("appdir"), path( getcwd, dirname(__FILE__) ), "app was still set up";
-
+ok !setting("appdir"), ":syntax with exports prevents app setup";
