@@ -8,6 +8,9 @@
       (Sawyer X)
     * GH #297: All logging options can automatically serialize references.
       (Sawyer X)
+    * add Dancer::Logger::Capture to capture and read log messages during
+      testing
+      (Michael G. Schwern)
 
 1.3014    04.03.2011
 
