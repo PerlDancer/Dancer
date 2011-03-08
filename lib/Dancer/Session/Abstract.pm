@@ -151,7 +151,9 @@ done in order to allow multiple session storage with a common interface.
 Any session engine must inherits from Dancer::Session::Abstract and implement
 the following abstract methods.
 
-=head2 Settings
+=head2 Configuration
+
+These settings effect how a session acts.
 
 =head3 session_name
 
