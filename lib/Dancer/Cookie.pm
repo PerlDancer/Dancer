@@ -5,7 +5,7 @@ use warnings;
 use URI::Escape;
 
 use base 'Dancer::Object';
-__PACKAGE__->attributes('name', 'expires', 'domain', 'path');
+__PACKAGE__->attributes('name', 'expires', 'domain', 'path', "secure");
 
 sub init {
     my ($self, %args) = @_;
@@ -27,6 +27,7 @@ sub to_header {
     push @headers, "path=" . $self->path        if $self->path;
     push @headers, "expires=" . $self->expires  if $self->expires;
     push @headers, "domain=" . $self->domain    if $self->domain;
+    push @headers, "Secure"                     if $self->secure;
     push @headers, 'HttpOnly';
 
     return join '; ', @headers;
@@ -102,6 +103,11 @@ The cookie's domain.
 =head2 path
 
 The cookie's path.
+
+=head2 secure
+
+If true, it instructs the client to only serve the cookie over secure
+connections such as https.
 
 =head1 METHODS/SUBROUTINES
 
