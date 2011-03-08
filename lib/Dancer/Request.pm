@@ -125,6 +125,13 @@ sub forward {
 
 sub base {
     my $self = shift;
+    my $uri  = $self->_common_uri;
+
+    return $uri->canonical;
+}
+
+sub _common_uri {
+    my $self = shift;
 
     my @env_names = qw(
       SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
@@ -139,7 +146,7 @@ sub base {
     $uri->authority($host || "$server:$port");
     $uri->path($path      || '/');
 
-    return $uri->canonical;
+    return $uri;
 }
 
 sub uri_for {
@@ -156,7 +163,6 @@ sub uri_for {
 
     return $dont_escape ? uri_unescape($uri->canonical) : $uri->canonical;
 }
-
 
 sub params {
     my ($self, $source) = @_;
