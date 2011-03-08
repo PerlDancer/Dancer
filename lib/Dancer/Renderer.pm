@@ -163,7 +163,8 @@ sub get_file_response_for_path {
 
 sub get_mime_type {
     my ($filename) = @_;
-    my ($ext) = reverse(split(/\./, $filename));
+    my ($ext) = $filename =~ /\.([^.]+)$/;
+    return 'application/data' unless $ext;
 
     my $mime = Dancer::MIME->instance();
     return $mime->mime_type_for($ext);
