@@ -85,6 +85,8 @@ Or in config.yml or environments/$env.yml
 By default session are disabled, you must enable them before using it. If the
 session engine is disabled, any Dancer::Session call will throw an exception.
 
+See L<Dancer::Session::Abstract/Configuration> for more configuration options.
+
 =head2 Route Handlers
 
 When enabled, the session engine can be used in a route handler with the keyword
