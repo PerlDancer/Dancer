@@ -3,6 +3,9 @@
     [ BUG FIXES ]
     * closes GH-373 - display valid path to the main app file in the welcome screen
       (franck cuny)
+    * closes GH-152, GH-170, GH-362 - log dir is not created when logger is not set to
+      'file', and setting log_path works as expected
+      (franck cuny)
 
     [ ENHANCEMENTS ]
     * GH #351: Explicitly exclude some keywords when important Dancer's syntax, add
