@@ -803,6 +803,22 @@ This is equivalent to
     my $response = shift;
   };
 
+=item before_error_render
+
+This hook receives as argument a L<Dancer::Error> object.
+
+  hook before_error_render => sub {
+    my $error = shift;
+  };
+
+=item after_error_render
+
+This hook receives as argument a L<Dancer::Response> object.
+
+  hook after_error_render => sub {
+    my $response = shift;
+  };
+
 =back
 
 =head2 layout
