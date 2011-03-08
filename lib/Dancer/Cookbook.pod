@@ -79,17 +79,6 @@ will live), an environments directory (where environment-specific settings
 live), a module containing the actual guts of your application, a script to
 start it - or to run your web app via Plack/PSGI - more on that later.
 
-=head2 Using Moose with Moose mode
-
-If you're using L<Moose>, you've probably noticed there's a small conflict in
-keywords: Both Moose and Dancer provide C<before> and C<after> method
-modifiers. To get around that, you can ask Dancer not to import those keywords.
-
-    use Dancer ':moose';
-
-This imports Dancer in Moose mode (implies Syntax mode), which does not import
-C<before> nor C<after>.
-
 =head2 Declaring routes
 
 To control what happens when a web request is received by your webapp, you'll
