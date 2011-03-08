@@ -10,9 +10,13 @@ use Dancer::Response;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::Logger;
+use Dancer::Hook;
 use Dancer::Session;
 use Dancer::FileUtils qw(open_file);
 use Dancer::Engine;
+
+Dancer::Hook->instance->register_hooks_name(
+    qw/before_error_render after_error_render/);
 
 sub init {
     my ($self) = @_;
@@ -164,7 +168,9 @@ sub render {
     my $self = shift;
 
     my $serializer = setting('serializer');
+    Dancer::Hook->instance->execute_hooks('before_error_render', $self);
     $serializer ? $self->_render_serialized() : $self->_render_html();
+    Dancer::Hook->instance->execute_hooks('after_error_render');
 }
 
 sub _render_serialized {
