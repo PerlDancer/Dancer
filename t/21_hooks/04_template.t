@@ -20,7 +20,7 @@ ok(
 ok(
     hook after_template_render => sub {
         my $full_content = shift;
-        like $full_content, qr/foo => bar/;
+        like $$full_content, qr/foo => bar/;
         my ( undef, $end ) = gettimeofday();
         $diff = $end - $start;
     }

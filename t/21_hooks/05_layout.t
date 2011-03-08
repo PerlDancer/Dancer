@@ -19,8 +19,8 @@ ok(
 ok(
     hook after_layout_render => sub {
         my $full_content = shift;
-        like $full_content, qr/start/;
-        like $full_content, qr/stop/;
+        like $$full_content, qr/start/;
+        like $$full_content, qr/stop/;
     }
 );
 
