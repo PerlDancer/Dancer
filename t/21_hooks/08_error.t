@@ -19,7 +19,7 @@ ok(
 
 ok(
     hook 'after_error_render' => sub {
-        my $response = Dancer::SharedData->response;
+        my $response = shift;
         is $response->status, 404;
         $i++;
     }

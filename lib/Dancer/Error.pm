@@ -167,7 +167,7 @@ sub render {
 
     Dancer::Hook->instance->execute_hooks('before_error_render', $self);
     $serializer ? $self->_render_serialized() : $self->_render_html();
-    Dancer::Hook->instance->execute_hooks('after_error_render');
+    Dancer::Hook->instance->execute_hooks('after_error_render', Dancer::SharedData->response);
 }
 
 sub _render_serialized {
