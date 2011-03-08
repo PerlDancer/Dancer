@@ -83,11 +83,11 @@ Dancer::Cookie provides a HTTP cookie object to work with cookies.
 
 =head1 ATTRIBUTES
 
-=head3 name
+=head2 name
 
 The cookie's name.
 
-=head3 value
+=head2 value
 
 The cookie's value.
 
