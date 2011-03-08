@@ -266,8 +266,6 @@ sub _init_script_dir {
     Dancer::setting(views => $ENV{DANCER_VIEWS}
       || Dancer::FileUtils::path_no_verify($appdir, 'views'));
 
-    Dancer::setting(logger => 'file');
-
     my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
 }
