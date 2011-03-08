@@ -59,7 +59,7 @@ sub apply_renderer {
 
     my $content = $self->render($view, $tokens);
 
-    Dancer::Hook->execute_hooks('after_template_render', $content);
+    Dancer::Hook->execute_hooks('after_template_render', \$content);
     
     # make sure to avoid ( undef ) in list context return
     defined $content
@@ -85,12 +85,12 @@ sub apply_layout {
 
     defined $layout or return $content;
 
-    Dancer::Hook->execute_hooks('before_layout_render', $tokens, $content);
+    Dancer::Hook->execute_hooks('before_layout_render', $tokens, \$content);
 
     my $full_content =
       $self->layout($layout, $tokens, $content);
 
-    Dancer::Hook->execute_hooks('after_layout_render', $full_content);
+    Dancer::Hook->execute_hooks('after_layout_render', \$full_content);
 
     # make sure to avoid ( undef ) in list context return
     defined $full_content
