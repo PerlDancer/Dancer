@@ -149,6 +149,18 @@ sub _common_uri {
     return $uri;
 }
 
+sub uri_base {
+    my $self  = shift;
+    my $uri   = $self->_common_uri;
+    my $canon = $uri->canonical;
+
+    if ( $uri->path eq '/' ) {
+        $canon =~ s{/$}{};
+    }
+
+    return $canon;
+}
+
 sub uri_for {
     my ($self, $part, $params, $dont_escape) = @_;
     my $uri = $self->base;
