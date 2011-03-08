@@ -627,6 +627,17 @@ Return the path requested by the client.
 Returns an absolute URI for the base of the application.  Returns a L<URI>
 object (which stringifies to the URL, as you'd expect).
 
+=head2 uri_base()
+
+Same thing as C<base> above, except it removes the last trailing slash in the
+path if it is the only path.
+
+This means that if your base is I<http://myserver/>, C<uri_base> will return
+I<http://myserver> (notice no trailing slash). This is considered very useful
+when using templates to do the following thing:
+
+    <link rel="stylesheet" href="<% request.uri_base %>/css/style.css" />
+
 =head2 uri_for(path, params)
 
 Constructs a URI from the base and the passed path.  If params (hashref) is
