@@ -22,11 +22,14 @@ sub to_header {
     my $header = '';
 
     my $value = join('&', map {uri_escape($_)} $self->value);
-    $header .= $self->name . '=' . $value . '; ';    
-    $header .= "path=" . $self->path . "; " if $self->path;
-    $header .= "expires=" . $self->expires . "; " if $self->expires;
-    $header .= "domain=" . $self->domain . "; " if $self->domain;
-    $header .= 'HttpOnly';
+
+    my @headers = $self->name . '=' . $value;
+    push @headers, "path=" . $self->path        if $self->path;
+    push @headers, "expires=" . $self->expires  if $self->expires;
+    push @headers, "domain=" . $self->domain    if $self->domain;
+    push @headers, 'HttpOnly';
+
+    return join '; ', @headers;
 }
 
 sub value {
