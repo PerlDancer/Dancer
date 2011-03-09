@@ -6,6 +6,8 @@
     * closes GH-152, GH-170, GH-362 - log dir is not created when logger is not set to
       'file', and setting log_path works as expected
       (franck cuny)
+    * GH #308: Use request's uri_base.
+      (Sawyer X)
 
     [ ENHANCEMENTS ]
     * GH #351: Explicitly exclude some keywords when important Dancer's syntax, add
@@ -21,6 +23,8 @@
     * Dancer::Cookie make secure (https only) cookies. It also adds the "session_secure"
       setting instructing sessions to use secure cookies
       (Michael G. Schwern)
+    * Adding uri_base to Request.pm.
+      (Sawyer X)
 
     [ DOCUMENTATION ]
     * dancing on commandline
