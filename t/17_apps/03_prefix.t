@@ -1,4 +1,4 @@
-use Test::More tests => 5, import => ['!pass'];
+use Test::More tests => 9, import => ['!pass'];
 use strict;
 use warnings;
 
@@ -21,8 +21,18 @@ get '/baz' => sub {
     "/baz"
 };
 
+prefix '/foobar';
+
+get '/' => sub {
+    "/foobar/",;
+};
+
 response_content_is [ GET => "/foo/bar" ], "/foo/bar";
 response_content_is [ GET => "/foo/" ],    "/foo and /foo/";
 response_content_is [ GET => "/foo" ],     "/foo and /foo/";
 response_doesnt_exist [ GET => '/foo/baz' ];
-response_content_is [ GET => "/baz" ], "/baz";
+response_content_is   [ GET => "/baz" ], "/baz";
+response_content_is   [ GET => "/foobar" ], "/foobar/";
+response_content_is   [ GET => "/foobar/" ], "/foobar/";
+response_doesnt_exist [ GET => '/foobar/foobar/' ];
+response_doesnt_exist [ GET => '/foobar/foobar/foobar/' ];
