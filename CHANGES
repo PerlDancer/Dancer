@@ -8,8 +8,10 @@
       (franck cuny)
     * GH #308: Use request's uri_base.
       (Sawyer X)
+    * closes GH-378 - some routes with prefix where wrongly matched
+      (franck cuny)
 
-    [ ENHANCEMENTS ]
+      [ ENHANCEMENTS ]
     * GH #351: Explicitly exclude some keywords when important Dancer's syntax, add
       groups that also excludes some keywords (:moose, :tests)
       (Sawyer X, Naveed Massjouni, Michael G. Schwern, franck cuny)
