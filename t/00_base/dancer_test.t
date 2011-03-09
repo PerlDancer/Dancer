@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 21;
+use Test::More import => ['!pass'], tests => 22;
 
 use strict;
 use warnings;
@@ -64,9 +64,17 @@ note "capture logs"; {
     is setting("logger"), "capture";
     is setting("log"),    "debug";
 
-    my $msg = "Either that wallpaper goes, or I do.";
-    error $msg;
-    is_deeply +Dancer::Logger::Capture->trap->read, [
-        { level   => "error", message => $msg }
-    ];
+    warning "Danger!  Warning!";
+    debug   "I like pie.";
+
+    is_deeply read_logs, [
+        { level => "warning", message => "Danger!  Warning!" },
+        { level => "debug",   message => "I like pie.", }
+    ], "read_logs";
+
+    error "Put out the light.";
+
+    is_deeply read_logs, [
+        { level => "error", message => "Put out the light." },
+    ], "each read clears the trap";
 }
