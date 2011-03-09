@@ -27,8 +27,10 @@
       (Michael G. Schwern)
     * Adding uri_base to Request.pm.
       (Sawyer X)
+    * Make Dancer::Test use the capture logger
+      (Michael G. Schwern)
 
-    [ DOCUMENTATION ]
+      [ DOCUMENTATION ]
     * dancing on commandline
       (Maurice Mengel)
 
