@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 18;
+use Test::More import => ['!pass'], tests => 21;
 
 use strict;
 use warnings;
@@ -59,3 +59,14 @@ response_content_is [
         body    => 'foo=bar'
     }
 ], 'bar', "a POST request with form urlencoded is ok";
+
+note "capture logs"; {
+    is setting("logger"), "capture";
+    is setting("log"),    "debug";
+
+    my $msg = "Either that wallpaper goes, or I do.";
+    error $msg;
+    is_deeply +Dancer::Logger::Capture->trap->read, [
+        { level   => "error", message => $msg }
+    ];
+}

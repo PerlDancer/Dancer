@@ -60,7 +60,10 @@ sub import {
 
     # set a default session engine for tests
     setting 'session' => 'simple';
-    setting 'logger'  => 'Null';
+
+    # capture logs for testing
+    setting 'logger'  => 'capture';
+    setting 'log'     => 'debug';
 }
 
 # Route Registry
