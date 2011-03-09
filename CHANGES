@@ -18,6 +18,9 @@
     * add Dancer::Logger::Capture to capture and read log messages during
       testing
       (Michael G. Schwern)
+    * Dancer::Cookie make secure (https only) cookies. It also adds the "session_secure"
+      setting instructing sessions to use secure cookies
+      (Michael G. Schwern)
 
     [ DOCUMENTATION ]
     * dancing on commandline
