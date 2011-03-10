@@ -32,6 +32,8 @@ lib/Dancer/HTTP.pm
 lib/Dancer/Introduction.pod
 lib/Dancer/Logger.pm
 lib/Dancer/Logger/Abstract.pm
+lib/Dancer/Logger/Capture.pm
+lib/Dancer/Logger/Capture/Trap.pm
 lib/Dancer/Logger/Console.pm
 lib/Dancer/Logger/Diag.pm
 lib/Dancer/Logger/File.pm
@@ -83,6 +85,8 @@ t/00_base/003_syntax.t
 t/00_base/004_args.t
 t/00_base/005_module_loader.t
 t/00_base/007_load_syntax.t
+t/00_base/008_export.t
+t/00_base/009_syntax_export.t
 t/00_base/06_dancer_object.t
 t/00_base/08_pod_coverage_dancer.t
 t/00_base/09_load_app.t
@@ -123,6 +127,7 @@ t/02_request/13_ajax.t
 t/02_request/14_uploads.t
 t/02_request/15_headers.t
 t/02_request/16_delete.t
+t/02_request/17_uri_base.t
 t/03_route_handler/000_create_fake_env.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/00_route_object.t
@@ -202,10 +207,12 @@ t/08_session/07_session_expires.t
 t/08_session/08_simple.t
 t/08_session/09_session.t
 t/08_session/10_filter.t
+t/08_session/11_session_secure.t
 t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
 t/09_cookies/03_persistence.t
+t/09_cookies/04_secure.t
 t/09_cookies/05_api.t
 t/10_template/000_create_fake_env.t
 t/10_template/01_factory.t
@@ -224,6 +231,8 @@ t/11_logger/04_console.t
 t/11_logger/05_format.t
 t/11_logger/06_null.t
 t/11_logger/07_diag.t
+t/11_logger/08_serialize.t
+t/11_logger/09_capture.t
 t/12_response/000_create_fake_env.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t
