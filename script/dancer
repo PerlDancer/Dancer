@@ -4,12 +4,17 @@ use strict;
 use warnings;
 use Dancer::Template::Simple;
 use File::Basename 'basename', 'dirname';
-use File::Path 'mkpath';
-use File::Spec::Functions;
+use File::Path 'mkpath', 'remove_tree';
+use File::Spec::Functions ':ALL';
 use Getopt::Long;
 use Pod::Usage;
 use Dancer::Renderer;
 use LWP::UserAgent;
+use Module::CoreList;
+use File::Find 'find';
+use File::Copy 'copy';
+use Cwd 'cwd';
+
 use constant FILE => 1;
 
 # options
@@ -28,6 +33,8 @@ GetOptions(
     "p|path=s"        => \$path,
     "x|no-check"      => sub { $do_check_dancer_version = 0 },
     "v|version"       => \&version,
+    "f|freeze"        => sub { require Dancer; my @perl_files; freeze_dancer(); exit 0; },
+    "t|thaw"          => sub { require Dancer; thaw(); exit 0; },
 ) or pod2usage( -verbose => 1 );
 
 # main
@@ -54,6 +61,40 @@ safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
 # subs
+
+sub freeze_dancer {
+    # Freezes everything in the Dancer Namespace by copying from system to inside your app.
+    # Does not copy anything that Dancer requires outside of core.
+    my $cur_dir     = cwd();
+    my $inc_base    = dirname( $INC{'Dancer.pm'} );
+
+    print "Freezing Dancer $Dancer::VERSION into $cur_dir/vendor ... ";
+
+    find( \&wanted_perl_files, catdir($inc_base, 'Dancer') );
+    push (@__PACKAGE__::perl_files, $INC{'Dancer.pm'});
+
+    foreach my $file (@__PACKAGE__::perl_files) {
+        # Remove INC prefix from full path of module with abs2rel, and create the new path
+        my $new_file = catfile($cur_dir, 'vendor', abs2rel($file, $inc_base) );
+
+        mkpath( dirname($new_file) );
+        copy($file, $new_file);
+    }
+    
+    print "DONE\n";
+}
+
+sub thaw {
+    remove_tree( catdir( cwd(), 'vendor' ), { safe => 1 } );
+    print "Thawing successful. Now using system installed version of Dancer: $Dancer::VERSION\n";
+}
+
+sub wanted_perl_files {
+    return unless -f $_;
+    return unless $_ =~ /^(.+)\.p[ml]|t$/i;
+
+    push (@__PACKAGE__::perl_files, $File::Find::name);
+}
 
 sub validate_app_name {
     my $name = shift;
