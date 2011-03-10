@@ -312,7 +312,7 @@ Also, since automatically serialized JSON responses have
 C<application/json> Content-Type, you should always encode them by
 hand.
 
-=head2 appdir (string)
+=head2 appdir (directory)
 
 This is the path where your application will live.  It's where Dancer
 will look by default for your config files, templates and static
@@ -321,17 +321,17 @@ content.
 It is typically set by C<use Dancer> to use the same directory as your
 script.
 
-=head2 public (string)
+=head2 public (directory)
 
-This is the path of the public directory, where static files are stored. Any
-existing file in that directory will be served as a static file, before
-mathcing any route.
+This is the directory, where static files are stored. Any existing
+file in that directory will be served as a static file, before
+matching any route.
 
 By default, it points to $appdir/public.
 
-=head2 views (string)
+=head2 views (directory)
 
-This is the path where your templates and layouts live.  It's the
+This is the directory where your templates and layouts live.  It's the
 "view" part of MVC (model, view, controller).
 
 This defaults to $appdir/views.
