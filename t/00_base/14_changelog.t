@@ -195,8 +195,8 @@ subtest 'Advanced testing of changelog' => sub {
         if (defined $previous_version_number) {
             isnt ($previous_version_number, '{{$NEXT}}', "version $version_number has {{\$NEXT}} as previous version, that's wrong");
             if ($version_number ne '{{$NEXT}}') {
-                my ($v1,  $v2,  $v3,  $d1,  $d2,   $d3) = ( $version_number          =~ /^(\d)\.(\d{4})(?:_(\d{2}))?    (\d{2})\.(\d{2})\.(\d{4})$/ );
-                my ($pv1, $pv2, $pv3, $pd1, $pd2, $pd3) = ( $previous_version_number =~ /^(\d)\.(\d{4})(?:_(\d{2}))?    (\d{2})\.(\d{2})\.(\d{4})$/ );
+                my ($v1,  $v2,  $v3,  $d1,  $d2,   $d3) = ( $version_number          =~ /^(\d)\.(\d{4})(?:_(\d{2}))?\s+(\d{2})\.(\d{2})\.(\d{4})$/ );
+                my ($pv1, $pv2, $pv3, $pd1, $pd2, $pd3) = ( $previous_version_number =~ /^(\d)\.(\d{4})(?:_(\d{2}))?\s+(\d{2})\.(\d{2})\.(\d{4})$/ );
                 ok($v1 >= $pv1 || $v2 >= $pv2 || ($v3||0) >= ($pv3||0), "version '$version_number' is not greater than '$previous_version_number', that's wrong");
                 ok($d3 >= $pd3 || $d2 >= $pd2 ||      $d1 >= $pd1,      "version '$version_number' is not newer (date) than '$previous_version_number', that's wrong");
             }
