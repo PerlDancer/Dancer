@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+1.3014_01   10.03.2011
+
     [ BUG FIXES ]
     * GH #373: Display valid path to the main app file in the welcome screen.
       (Franck Cuny)
