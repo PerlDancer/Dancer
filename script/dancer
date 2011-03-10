@@ -619,6 +619,7 @@ my \$server = Plack::Handler::FCGI->new(nproc => 5, detach => 1);
 "app.pl" =>
 
 "$PERL_INTERPRETER
+use lib 'vendor';
 use Dancer;
 use $appname;
 dance;
