@@ -34,6 +34,7 @@ GetOptions(
     "x|no-check"      => sub { $do_check_dancer_version = 0 },
     "v|version"       => \&version,
     "f|freeze"        => sub { require Dancer; my @perl_files; freeze_dancer(); exit 0; },
+    "d|deep-freeze"   => sub { require Dancer; my @perl_files; deep_freeze(); exit 0; },
     "t|thaw"          => sub { require Dancer; thaw(); exit 0; },
 ) or pod2usage( -verbose => 1 );
 
@@ -84,6 +85,58 @@ sub freeze_dancer {
     print "DONE\n";
 }
 
+sub deep_freeze {
+    # Deep freeze scans for all instances of 'use' and copies the module.
+    # It has the same caveats as Module::ScanDeps, so it will copie modules
+    # that are not necessary to run your app (eg Template Modules that are not used)
+    # It also won't correctly copy modules that need to be compiled,
+    # or that require additional libraries (libmysql, etc.)
+
+    Dancer::ModuleLoader->load('Module::ScanDeps')
+            or die "Deep freezing requires Module::ScanDeps be installed";
+
+    freeze_dancer();
+
+    print "Freezing non-core dependencies. This may take a minute or so ... ";
+
+    my $cur_dir = cwd();
+
+    find( \&wanted_perl_files, $cur_dir );
+
+    my $dependencies = Module::ScanDeps::scan_deps(
+        files   => \@__PACKAGE__::perl_files,
+        recurse => 1,
+    );
+
+    # Dancer supports as far back as perl 5.8
+    my $core = $Module::CoreList::version{'5.008'};
+
+    foreach my $key (keys %$dependencies) {
+        my $module = $dependencies->{$key};
+        $module->{'name'} = _colon_name($key);
+
+        next unless $module->{'type'};
+
+        # We only want to copy non-core, non-dancer modules (Dancer is already copied)
+        if (exists $core->{$module->{'name'}} || $module->{'type'} ne 'module' || $module->{'name'} =~ m{^Dancer}) {
+            delete $dependencies->{$key};
+            next;
+        }
+
+        next if exists $core->{ $module->{'name'} };
+        next unless $module->{'type'} eq 'module';
+
+        my $new_file = catfile($cur_dir, 'vendor', $module->{'key'} );
+
+        mkpath( dirname($new_file) );
+        copy($module->{'file'}, $new_file);
+    }
+
+    my $num_frozen = scalar keys %$dependencies;
+
+    print "DONE. Froze $num_frozen modules.\n";
+}
+
 sub thaw {
     remove_tree( catdir( cwd(), 'vendor' ), { safe => 1 } );
     print "Thawing successful. Now using system installed version of Dancer: $Dancer::VERSION\n";
@@ -126,6 +179,14 @@ sub get_script_path {
 sub _dash_name {
     my $name = shift;
     $name =~ s/\:\:/-/g;
+    $name;
+}
+
+sub _colon_name {
+    my $name = shift;
+    $name =~ s{/}{::}g;
+    $name =~ s{.pm$}{}i;
+    $name =~ s{^auto::(.+)::.*}{$1};
     $name;
 }
 
