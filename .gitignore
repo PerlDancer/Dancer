@@ -1,12 +1,6 @@
-Makefile
-.last_cover_stats
-MANIFEST.bak
+# Dancer Specific
 *.old
-*.swp
 *~
-blib
-pm_to_blib
-cover_db
 example/logs
 t/*/logs
 t/*/sessions
@@ -15,3 +9,41 @@ TestApp
 t/sessions/
 tags
 MYMETA.yml
+
+
+# From: https://github.com/github/gitignore/blob/master/Global/Linux.gitignore
+.*
+!.gitignore
+*~
+*.sw[a-p]
+.directory
+
+
+# From: https://github.com/github/gitignore/blob/master/Global/Windows.gitignore
+Thumbs.db
+Desktop.ini
+
+
+# From https://github.com/github/gitignore/blob/master/Global/OSX.gitignore
+.DS_Store
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+
+# From https://github.com/github/gitignore/blob/master/Perl.gitignore
+blib/
+_build/
+cover_db/
+inc/
+Build
+Build.bat
+.last_cover_stats
+Makefile
+Makefile.old
+MANIFEST.bak
+META.yml
+MYMETA.yml
+nytprof.out
+pm_to_blib
