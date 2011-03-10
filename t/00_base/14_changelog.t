@@ -13,7 +13,7 @@ unless ( $ENV{RELEASE_TESTING} ) {
 my $changelog_filename = 'CHANGES';
 
 # don't check for versions older or equal to this
-my $stop_checking_version = '1.3011';
+my $stop_checking_version = '1.3014';
 
 # ordered list of possible sections
 my @possible_sections = ('API CHANGES', 'BUG FIXES', 'ENHANCEMENTS', 'DOCUMENTATION', );
