@@ -125,6 +125,13 @@ sub forward {
 
 sub base {
     my $self = shift;
+    my $uri  = $self->_common_uri;
+
+    return $uri->canonical;
+}
+
+sub _common_uri {
+    my $self = shift;
 
     my @env_names = qw(
       SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
@@ -139,7 +146,19 @@ sub base {
     $uri->authority($host || "$server:$port");
     $uri->path($path      || '/');
 
-    return $uri->canonical;
+    return $uri;
+}
+
+sub uri_base {
+    my $self  = shift;
+    my $uri   = $self->_common_uri;
+    my $canon = $uri->canonical;
+
+    if ( $uri->path eq '/' ) {
+        $canon =~ s{/$}{};
+    }
+
+    return $canon;
 }
 
 sub uri_for {
@@ -156,7 +175,6 @@ sub uri_for {
 
     return $dont_escape ? uri_unescape($uri->canonical) : $uri->canonical;
 }
-
 
 sub params {
     my ($self, $source) = @_;
@@ -608,6 +626,17 @@ Return the path requested by the client.
 
 Returns an absolute URI for the base of the application.  Returns a L<URI>
 object (which stringifies to the URL, as you'd expect).
+
+=head2 uri_base()
+
+Same thing as C<base> above, except it removes the last trailing slash in the
+path if it is the only path.
+
+This means that if your base is I<http://myserver/>, C<uri_base> will return
+I<http://myserver> (notice no trailing slash). This is considered very useful
+when using templates to do the following thing:
+
+    <link rel="stylesheet" href="<% request.uri_base %>/css/style.css" />
 
 =head2 uri_for(path, params)
 

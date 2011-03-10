@@ -7,7 +7,9 @@ Dancer::Cookbook - a quick-start guide to the Dancer web framework
 A quick-start guide with examples to get you up and running with the Dancer web
 framework.
 
-=head1 RECIPES
+
+
+=head1 BEGINNER'S DANCE
 
 =head2 Your first Dancer web app
 
@@ -38,6 +40,8 @@ route specification, whose value is made available through C<params>
 
 Note that you don't need to use the C<strict> and C<warnings> pragma, they are
 already loaded by Dancer.
+
+
 
 =head2 Starting a Dancer project
 
@@ -79,6 +83,9 @@ will live), an environments directory (where environment-specific settings
 live), a module containing the actual guts of your application, a script to
 start it - or to run your web app via Plack/PSGI - more on that later.
 
+
+
+=head1 DANCE ROUTINES: ROUTES
 
 =head2 Declaring routes
 
@@ -122,6 +129,7 @@ parameters supplied on the query string, within the path itself (with named
 placeholders), and, for HTTTP POST requests, the content of the POST body.
 
 
+
 =head2 Named parameters in route path declarations
 
 As seen above, you can use C<:somename> in a route's path to capture part of the
@@ -134,6 +142,7 @@ use something like:
         my $company_id = params->{companyid};
         # Look up the company and return appropriate page
     };
+
 
 
 =head2 Wildcard path matching and splat
@@ -152,6 +161,7 @@ with C<splat>:
             return "What?";
         }
     };
+
 
 
 =head2 Before filters - processed before a request
@@ -173,6 +183,7 @@ The above declares a before filter which uses C<var> to set a variable which
 will later be available within the route handler, then amends the path of the
 request to C</foo/oversee>; this means that, whatever path was requested, it
 will be treated as though the path requested was C</foo/oversee>.
+
 
 
 =head2 Default route
@@ -216,6 +227,8 @@ Simply enable auto_page in your config:
 Then, if you request C</foo/bar>, Dancer will look in the views dir for
 C</foo/bar.tt>.
 
+
+
 =head2 Why should I use the Ajax plugin
 
 As an Ajax query is just a HTTP query, it's similar to a GET or POST
@@ -257,6 +270,8 @@ and
 Because it's an ajax query, you know you need to return a xml content,
 so the content type of the response is set for you.
 
+
+
 =head2 Using the prefix feature to split your application
 
 For better maintainability, you may want to separate some of your application
@@ -288,6 +303,10 @@ The following routes will be generated for us:
     - get /admin/
     - head /
     - head /admin/
+
+
+
+=head1 MUSCLE MEMORY: STORING DATA
 
 =head2 Handling sessions
 
@@ -328,6 +347,7 @@ Storing data in the session is as easy as:
     session varname => 'value';
 
 
+
 =head3 Retrieving data from the session
 
 Retrieving data from the session is as easy as:
@@ -337,6 +357,7 @@ Retrieving data from the session is as easy as:
 Or, alternatively,
 
     session->{varname}
+
 
 
 =head3 Controlling where sessions are stored
@@ -353,6 +374,8 @@ and easily within your config file, for example:
 
 If the directory you specify does not exist, Dancer will attempt to create it
 for you.
+
+
 
 =head3 Destroying a session
 
@@ -414,7 +437,7 @@ wouldn't store your users passwords in the clear, would you?)) follows:
             warning "Failed login for unrecognised user " . params->{user};
             redirect '/login?failed=1';
         } else {
-            if (Crypt::SaltedHash->validate($user->{password}, params->{pass})) 
+            if (Crypt::SaltedHash->validate($user->{password}, params->{pass}))
             {
                 debug "Password correct";
                 # Logged in successfully
@@ -429,11 +452,15 @@ wouldn't store your users passwords in the clear, would you?)) follows:
 
 
 
+=head1 APPEARANCE
+
 =head2 Using templates - views and layouts
 
 Returning plain content is all well and good for examples or trivial apps, but
 soon you'll want to use templates to maintain separation between your code and
 your content.  Dancer makes this easy.
+
+
 
 =head3 Views
 
@@ -479,6 +506,8 @@ The template 'hello.tt' could contain, for example:
     <% IF session.username %>
         <p>You're logged in as <% session.username %>
     <% END %>
+
+
 
 =head3 Layouts
 
@@ -531,6 +560,8 @@ THen in your layout, modify your css inclusion as follows:
 From now on, you can mount your application wherever you want, without
 any further modification of the css inclusion
 
+
+
 =head3 template and unicode
 
 If you use L<Plack> and have some unicode problem with your Dancer application,
@@ -542,6 +573,8 @@ config.yml will look like this:
     engines:
       template_toolkit:
         ENCODING: utf8
+
+
 
 =head3 TT's WRAPPER directive in Dancer (META variables, SETs)
 
@@ -580,6 +613,10 @@ Change the configuration of the template to Template Toolkit:
 
 Done! Everything will work fine out of the box, including variables and META
 variables.
+
+
+
+=head1 SETTING THE STAGE: CONFIGURATION AND LOGGING
 
 =head2 Configuration and environments
 
@@ -624,6 +661,7 @@ And in a production one:
     show_errors: 0
 
 
+
 =head2 Accessing configuration information from your app
 
 A Dancer application can use the 'config' keyword to easily access the settings
@@ -636,38 +674,77 @@ within its config file, for instance:
 This makes keeping your application's settings all in one place simple and easy
 - you shouldn't need to worry about implementing all that yourself :)
 
-=head2 Plack middlewares
 
-If you deploy with Plack and use some Plack middlewares, you can enable them
-directly from Dancer's configuration files.
 
-To enable middlewares in Dancer, you just have to set the plack_middlewares
-setting like the following:
+=head2 Accessing configuration information from a separate script
 
-    set plack_middlewares => [
-        [ 'SomeMiddleware' => [ qw(some options for somemiddleware) ]],
-    ];
+You may well want to access your webapp's configuration from outside your
+webapp. You could, of course, use the YAML module of your choice and load your
+webapps's config.yml, but chances are that this is not convenient.
 
-For instance, if you want to enable L<Plack::Middleware::Debug> in your Dancer
-application, all you have to do is to set C<plack_middlewares> like that:
+Use Dancer instead. Without any ado, magic or too big jumps, you can use the
+values from config.yml and some additional default values:
 
-    set plack_middlewares => [
-        [ 'Debug' => [ 'panels' => [ qw(DBITrace Memory Timer) ]]],
-    ];
+	# bin/script1.pl
+	use Dancer ':syntax';
+	print "template:".config->{template}."\n"; #simple
+	print "log:".config->{log}."\n"; #undef
 
-Of course, you can also put this configuration into your config.yml file, or
-even in your environment configuration files:
+Note that config->{log} should result undef error on a default scaffold since
+you did not load the environment and in the default scaffold log is defined in
+the environment and not in config.yml. Hence undef.
 
-    # environments/development.yml
-    ...
-    plack_middlewares:
-      -
-        - Debug          # first element of the array is the name of the middleware
-        - panels         # following elements are the configuration ofthe middleware
-        -
-          - DBITrace
-          - Memory
-          - Timer
+If you want to load an environment you need to tell Dancer where to look for it.
+One way to do so, is to tell Dancer where the webapp lives. From there Dancer
+deducts where the config.yml file is (typically $webapp/config.yml).
+
+	# bin/script2.pl
+	use FindBin;
+	use Cwd qw/realpath/;
+	use Dancer ':syntax';
+
+	#tell the Dancer where the app lives
+	my $appdir=realpath( "$FindBin::Bin/..");
+
+	Dancer::Config::setting('appdir',$appdir);
+	Dancer::Config::load();
+
+	#getter
+	print "environment:".config->{environment}."\n"; #development
+	print "log:".config->{log}."\n"; #value from development environment
+
+By default Dancer loads development environment (typically
+$webapp/environment/development.yml). In contrast to the example before,  you
+do have a value from the development environment (environment/development.yml)
+now. Also note that in the above example Cwd and FindBin are used. They are
+likely to be already loaded by Dancer anyways, so it's not a big overhead. You
+could just as well hand over a simple path for the app if you like that better,
+e.g.:
+
+	Dancer::Config::setting('appdir','/path/to/app/dir');
+
+If you want to load an environment other than the default, try this:
+
+	# bin/script2.pl
+	use Dancer ':syntax';
+
+	#tell the Dancer where the app lives
+	Dancer::Config::setting('appdir','/path/to/app/dir');
+
+	#which environment to load
+	config->{environment}='production';
+
+	Dancer::Config::load();
+
+	#getter
+	print "log:".config->{log}."\n"; #has value from production environment
+
+By the way, you not only get values, you can also set values straightforward
+like we do above with config->{environment}='production'. Of course, this value
+does not get written in any file; it only lives in memory and your webapp
+doesn't have access to it, but you can use it inside your script.
+
+
 
 =head2 Logging
 
@@ -702,9 +779,13 @@ Just call  C<debug>, C<warning> or C<error> with your message:
 
     debug "This is a debug message from my app.";
 
+
+
+=head1 RESTING
+
 =head2 Writing a REST application
 
-With Dancer, it's easy to write REST applications. Dancer provides helpers to 
+With Dancer, it's easy to write REST applications. Dancer provides helpers to
 serialize and deserialize for the following data formats:
 
 =over 4
@@ -728,8 +809,8 @@ Or right in your code:
 
    set serializer => 'JSON';
 
-From now, all hash ref or array ref returned by a route will be serialized to 
-the format you chose, and all data received from B<POST> or B<PUT> requests 
+From now, all hash ref or array ref returned by a route will be serialized to
+the format you chose, and all data received from B<POST> or B<PUT> requests
 will be automatically deserialized.
 
     get '/hello/:name' => sub {
@@ -738,13 +819,13 @@ will be automatically deserialized.
         return {name => params->{name}};
     };
 
-It's possible to let the client choose which serializer he want to use. For 
-this, use the B<mutable> serializer, and an appropriate serializer will be 
+It's possible to let the client choose which serializer he want to use. For
+this, use the B<mutable> serializer, and an appropriate serializer will be
 chosen from the B<Content-Type> header.
 
-It's also possible to return custom error, using the C<send_error> function. 
-When you don't use a serializer, the C<send_error> function will take a string 
-as first parameter (the message), and an optional HTTP code. When using a 
+It's also possible to return custom error, using the C<send_error> function.
+When you don't use a serializer, the C<send_error> function will take a string
+as first parameter (the message), and an optional HTTP code. When using a
 serializer, the message can be a string, an arrayref or a hashref:
 
     get '/hello/:name' => sub {
@@ -762,6 +843,43 @@ The content of the error will be serialized using the appropriate serializer.
 For examples on deploying your Dancer applications (including standalone, behind
 proxy/load-balancing software, and using common web servers including Apache to
 run via CGI/FastCGI etc, see L<Dancer::Deployment>.
+
+
+
+=head1 DANCER ON THE STAGE: DEPLOYMENT
+
+=head2 Plack middlewares
+
+If you deploy with Plack and use some Plack middlewares, you can enable them
+directly from Dancer's configuration files.
+
+To enable middlewares in Dancer, you just have to set the plack_middlewares
+setting like the following:
+
+    set plack_middlewares => [
+        [ 'SomeMiddleware' => [ qw(some options for somemiddleware) ]],
+    ];
+
+For instance, if you want to enable L<Plack::Middleware::Debug> in your Dancer
+application, all you have to do is to set C<plack_middlewares> like that:
+
+    set plack_middlewares => [
+        [ 'Debug' => [ 'panels' => [ qw(DBITrace Memory Timer) ]]],
+    ];
+
+Of course, you can also put this configuration into your config.yml file, or
+even in your environment configuration files:
+
+    # environments/development.yml
+    ...
+    plack_middlewares:
+      -
+        - Debug          # first element of the array is the name of the middleware
+        - panels         # following elements are the configuration ofthe middleware
+        -
+          - DBITrace
+          - Memory
+          - Timer
 
 
 =head1 AUTHORS

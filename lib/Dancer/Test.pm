@@ -40,6 +40,8 @@ use vars '@EXPORT';
 
   dancer_response
   get_response
+
+  read_logs
 );
 
 sub import {
@@ -60,7 +62,10 @@ sub import {
 
     # set a default session engine for tests
     setting 'session' => 'simple';
-    setting 'logger'  => 'Null';
+
+    # capture logs for testing
+    setting 'logger'  => 'capture';
+    setting 'log'     => 'debug';
 }
 
 # Route Registry
@@ -258,6 +263,11 @@ sub _get_handler_response {
     return Dancer::Handler->handle_request($request);
 }
 
+sub read_logs {
+    return Dancer::Logger::Capture->trap->read;
+}
+
+
 1;
 __END__
 
@@ -411,6 +421,32 @@ Schrodinger's cat to die.
 =head2 get_response([$method, $path])
 
 This method is B<DEPRECATED>.  Use dancer_response() instead.
+
+
+=head2 read_logs
+
+    my $logs = read_logs;
+
+Returns an array ref of all log messages issued by the app since the
+last call to C<read_logs>.
+
+For example:
+
+    warning "Danger!  Warning!";
+    debug   "I like pie.";
+
+    is_deeply read_logs, [
+        { level => "warning", message => "Danger!  Warning!" },
+        { level => "debug",   message => "I like pie.", }
+    ];
+
+    error "Put out the light.";
+
+    is_deeply read_logs, [
+        { level => "error", message => "Put out the light." },
+    ];
+
+See L<Dancer::Logger::Capture> for more details.
 
 =head1 LICENSE
 

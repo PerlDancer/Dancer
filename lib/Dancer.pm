@@ -5,10 +5,8 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-use vars qw($VERSION $AUTHORITY @EXPORT);
-
-$VERSION   = '1.3014';
-$AUTHORITY = 'SUKRIA';
+our $VERSION   = '1.3014_01';
+our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
 use Dancer::Config;
@@ -32,7 +30,7 @@ use File::Spec;
 
 use base 'Exporter';
 
-@EXPORT    = qw(
+our @EXPORT    = qw(
   after
   any
   before
@@ -162,17 +160,33 @@ sub warning         { goto &Dancer::Logger::warning }
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
-    my ($class,   $symbol) = @_;
+    my ($class, @args) = @_;
     my ($package, $script) = caller;
 
     strict->import;
     utf8->import;
-    $class->export_to_level(1, $class, @EXPORT);
+
+    my @final_args;
+    my $syntax_only = 0;
+    foreach (@args) {
+        if ( $_ eq ':moose' ) {
+            push @final_args, '!before', '!after';
+        }
+        elsif ( $_ eq ':tests' ) {
+            push @final_args, '!pass';
+        }
+        elsif ( $_ eq ':syntax' ) {
+            $syntax_only = 1;
+        }
+        else {
+            push @final_args, $_;
+        }
+    }
+
+    $class->export_to_level(1, $class, @final_args);
 
     # if :syntax option exists, don't change settings
-    if ($symbol && $symbol eq ':syntax') {
-        return;
-    }
+    return if $syntax_only;
 
     Dancer::GetOpt->process_args();
 
@@ -251,8 +265,6 @@ sub _init_script_dir {
 
     Dancer::setting(views => $ENV{DANCER_VIEWS}
       || Dancer::FileUtils::path_no_verify($appdir, 'views'));
-
-    Dancer::setting(logger => 'file');
 
     my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
@@ -377,7 +389,53 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 You can find out more about the many useful plugins available for Dancer in
 L<Dancer::Plugins>.
 
-=head1 METHODS
+
+=head1 EXPORTS
+
+By default, C<use Dancer> exports all the functions below plus sets up
+your app.  You can control the exporting through the normal
+L<Exporter> means.  For example:
+
+    # Just export the route controllers
+    use Dancer qw(before after get post);
+
+    # Export everything but pass to avoid clashing with Test::More
+    use Test::More;
+    use Dancer qw(!pass);
+
+There are also some special tags to control exports and behavior.
+
+=head2 :moose
+
+This will export everything except those functions which clash with
+Moose.  Currently that is L<after> and L<before>.
+
+=head2 :syntax
+
+This tells Dancer to just export symbols and not set up your app.
+This is most useful for writing Dancer code outside of your main route
+handler.
+
+=head2 :tests
+
+This will export everything except those functions which clash with
+commonly used testing modules.  Currently that is L<pass>.
+
+These can be combined.  For example, while testing...
+
+    use Test::More;
+    use Dancer qw(:syntax :tests);
+
+    # Test::Most also exports "set" and "any"
+    use Test::Most;
+    use Dancer qw(:syntax :tests !set !any);
+
+    # Alternatively, if you want to use Dancer's set and any...
+    use Test::Most qw(!set !any);
+    use Dancer qw(:syntax :tests);
+
+
+=head1 FUNCTIONS
 
 =head2 after
 

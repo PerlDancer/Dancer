@@ -1,3 +1,43 @@
+{{$NEXT}}
+
+1.3014_01   10.03.2011
+
+    [ BUG FIXES ]
+    * GH #373: Display valid path to the main app file in the welcome screen.
+      (Franck Cuny)
+    * GH #152, GH #170, GH #362: Log dir is not created when logger is not set
+      to 'file', and setting log_path works as expected.
+      (Franck Cuny)
+    * GH #308: Use request's uri_base.
+      (Sawyer X)
+    * GH #378: Some routes with prefix where wrongly matched.
+      (Franck Cuny)
+
+    [ ENHANCEMENTS ]
+    * GH #351: Explicitly exclude some keywords when important Dancer's syntax,
+      add modes that also excludes some keywords (:moose, :tests).
+      (Sawyer X, Naveed Massjouni, Michael G. Schwern, Franck Cuny)
+    * All logging options accept any number of variables.
+      (Sawyer X)
+    * GH #297: All logging options can automatically serialize references.
+      (Sawyer X)
+    * Add Dancer::Logger::Capture to capture and read log messages during
+      testing.
+      (Michael G. Schwern)
+    * Dancer::Cookie make secure (https only) cookies. It also adds the
+      "session_secure" setting instructing sessions to use secure cookies.
+      (Michael G. Schwern)
+    * Adding uri_base to Request.pm.
+      (Sawyer X)
+    * Make Dancer::Test use the capture logger
+      (Michael G. Schwern)
+
+    [ DOCUMENTATION ]
+    * Dancing on command line.
+      (Maurice Mengel)
+    * Improve Dancer::Cookbook.
+      (Maurice Mengel)
+
 1.3014    04.03.2011
 
     [ BUG FIXES ]

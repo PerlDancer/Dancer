@@ -209,8 +209,9 @@ sub load_default_settings {
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
     $SETTINGS->{traces}       ||= $ENV{DANCER_TRACES}       || 0;
-    $SETTINGS->{environment} 
-      ||= $ENV{DANCER_ENVIRONMENT}
+    $SETTINGS->{logger}       ||= $ENV{DANCER_LOGGER}       || 'file';
+    $SETTINGS->{environment} ||=
+         $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
       || 'development';
 
