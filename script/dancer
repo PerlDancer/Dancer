@@ -1491,6 +1491,10 @@ dancer [options] -a <appname>
     -x, --no-check        : don't check for the latest version of Dancer
                               (checking version implies internet connection)
     -v, --version         : print the version of dancer being used
+    -f, --freeze          : "Freezes" the version of Dancer being used
+                              (copies Dancer:: modules into your app)
+    -d, --deep-freze      : "Deep Freezes" Dancer and non-core modules too
+    -t, --thaw            : Removes any frozen versions of Dancer.
 
 =head1 DESCRIPTION
 
