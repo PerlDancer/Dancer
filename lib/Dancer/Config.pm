@@ -338,9 +338,11 @@ occurs. (Internally sets Carp::Verbose). Default to false.
 =head2 log (enum)
 
 Tells which log messages should be actullay logged. Possible values are
-B<debug>, B<warning> or B<error>.
+B<core>, B<debug>, B<warning> or B<error>.
 
 =over 4
+
+=item B<core> : all messages are logged, including some from Dancer itself
 
 =item B<debug> : all messages are logged
 
