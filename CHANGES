@@ -7,6 +7,8 @@
     [ ENHANCEMENTS ]
     * GH #391: Dancer::Logger::Note now exists. :)
       (Sawyer X)
+    * Porting documentation on WRAPPER to Dancer::Template::TemplateToolkit.
+      (Sawyer x)
 
 1.3014_01   10.03.2011
 

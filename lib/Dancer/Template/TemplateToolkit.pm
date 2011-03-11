@@ -100,6 +100,44 @@ subclass with the C<subclass> option.
             subclass: My::Template
 
 
+=head1 WRAPPER, META variables, SETs
+
+Dancer already provides a WRAPPER-like ability, which we call a "layout". The
+reason we do not use TT's WRAPPER (which also makes it incompatible with it) is
+because not all template systems support it. Actually, most don't.
+
+However, you might want to use it, and be able to define META variables and
+regular L<Template::Toolkit> variables.
+
+These few steps will get you there:
+
+=over 4
+
+=item * Disable the layout in Dancer
+
+You can do this by simply commenting (or removing) the C<layout> configuration
+in the F<config.yml> file.
+
+=item * Use Template Toolkit template engine
+
+Change the configuration of the template to Template Toolkit:
+
+    # in config.yml
+    template: "template_toolkit"
+
+=item * Tell the Template Toolkit engine who's your wrapper
+
+    # in config.yml
+    # ...
+    engines:
+        template_toolkit:
+            WRAPPER: layouts/main.tt
+
+=back
+
+Done! Everything will work fine out of the box, including variables and META
+variables.
+
 =head1 SEE ALSO
 
 L<Dancer>, L<Template>
