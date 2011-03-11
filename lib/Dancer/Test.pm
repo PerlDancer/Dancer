@@ -222,6 +222,10 @@ sub dancer_response {
         $params, $body, HTTP::Headers->new(@$headers)
     );
 
+    # first, reset the current state
+    Dancer::SharedData->reset_all();
+
+    # then store the request
     Dancer::SharedData->request($request);
 
     my $get_action = Dancer::Renderer::get_action_response();
