@@ -1,11 +1,6 @@
-use Test::More import => ['!pass'];
-use strict;
-use warnings;
-
-use Dancer ':syntax';
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use TestUtils;
+use Dancer ':tests';
+use Test::More;
+use Dancer::Test;
 
 set views => path(dirname(__FILE__), 'views');
 
@@ -56,10 +51,6 @@ foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
     
-    my $request = fake_request(GET => $path);
-    Dancer::SharedData->request($request);
-    
-    my $resp = Dancer::Renderer::get_action_response();
+    my $resp = dancer_response(GET => $path);
     is($resp->content, $expected, "content rendered looks good for $path");
-    Dancer::SharedData->reset_all;
 }
