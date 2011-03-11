@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * GH #393: vars are reseted for each new request
+      (Franck Cuny)
+
 1.3014_01   10.03.2011
 
     [ BUG FIXES ]
