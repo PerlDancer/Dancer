@@ -9,6 +9,8 @@
       (Sawyer X)
     * Porting documentation on WRAPPER to Dancer::Template::TemplateToolkit.
       (Sawyer x)
+    * GH #387: Document views and appdir in Dancer::Config.
+      (Michael G. Schwern)
 
 1.3014_01   10.03.2011
 
