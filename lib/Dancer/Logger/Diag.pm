@@ -43,7 +43,7 @@ lazily.
 
 =head2 _log
 
-Use Test::More's diag() to poutput the log message.
+Use Test::More's diag() to output the log message.
 
 =head1 AUTHOR
 
