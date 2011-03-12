@@ -2,6 +2,8 @@ use Dancer ':tests';
 use Test::More;
 use Dancer::Test;
 
+# Test that vars are reset between each request by Dancer::Test
+
 plan tests => 10;
 
 var foo => 0;
