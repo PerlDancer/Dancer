@@ -443,6 +443,10 @@ This will export all the keywords, and will also load the configuration.
 
 This is useful when you want to use your Dancer application from a script.
 
+    use MyApp;
+    use Dancer ':script';
+    MyApp::schema('DBSchema')->deploy();
+
 =head1 FUNCTIONS
 
 =head2 after
