@@ -578,9 +578,9 @@ config.yml will look like this:
 
 =head3 TT's WRAPPER directive in Dancer (META variables, SETs)
 
-Dancer provides a WRAPPER ability, which we call a "layout". The reason we do
-not use TT's WRAPPER (and that it is incompatible with it) is since not all
-template systems support it. Actually, most don't.
+Dancer already provides a WRAPPER-like ability, which we call a "layout". The
+reason we do not use TT's WRAPPER (which also makes it incompatible with it) is
+because not all template systems support it. Actually, most don't.
 
 However, you might want to use it, and be able to define META variables and
 regular L<Template::Toolkit> variables.

@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3014_01';
+our $VERSION   = '1.3019_01';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -168,6 +168,7 @@ sub import {
 
     my @final_args;
     my $syntax_only = 0;
+    my $as_script   = 0;
     foreach (@args) {
         if ( $_ eq ':moose' ) {
             push @final_args, '!before', '!after';
@@ -178,7 +179,9 @@ sub import {
         elsif ( $_ eq ':syntax' ) {
             $syntax_only = 1;
         }
-        else {
+        elsif ($_ eq ':script') {
+            $as_script = 1;
+        } else {
             push @final_args, $_;
         }
     }
@@ -188,7 +191,7 @@ sub import {
     # if :syntax option exists, don't change settings
     return if $syntax_only;
 
-    Dancer::GetOpt->process_args();
+    Dancer::GetOpt->process_args() if !$as_script;
 
     _init_script_dir($script);
     Dancer::Config->load;
@@ -434,6 +437,15 @@ These can be combined.  For example, while testing...
     use Test::Most qw(!set !any);
     use Dancer qw(:syntax :tests);
 
+=head2 :script
+
+This will export all the keywords, and will also load the configuration.
+
+This is useful when you want to use your Dancer application from a script.
+
+    use MyApp;
+    use Dancer ':script';
+    MyApp::schema('DBSchema')->deploy();
 
 =head1 FUNCTIONS
 

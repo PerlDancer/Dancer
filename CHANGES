@@ -1,5 +1,23 @@
 {{$NEXT}}
 
+1.3019_01   13.03.2011
+
+    [ BUG FIXES ]
+    * GH #393: Reset vars for each new request.
+      (Franck Cuny)
+
+    [ ENHANCEMENTS ]
+    * GH #391: Dancer::Logger::Note now exists. :)
+      (Sawyer X)
+    * Porting documentation on WRAPPER to Dancer::Template::TemplateToolkit.
+      (Sawyer X)
+    * GH #387: Document views and appdir in Dancer::Config.
+      (Michael G. Schwern)
+    * Add a new symbol to exporter ':script'.
+      (Franck Cuny)
+    * GH #397: Support cookie expire times like "+2h".
+      (Michael G. Schwern)
+
 1.3014_01   10.03.2011
 
     [ BUG FIXES ]

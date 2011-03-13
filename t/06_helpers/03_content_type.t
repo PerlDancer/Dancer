@@ -1,8 +1,6 @@
-use Test::More import => ['!pass'];
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use TestUtils;
-use Dancer ':syntax';
+use Dancer ':tests';
+use Test::More;
+use Dancer::Test;
 
 get '/' => sub {
     "hello"
@@ -23,7 +21,6 @@ get '/png' => sub {
     "blergh";
 };
 
-
 my @tests = (
     { path => '/',     expected => setting('content_type')},
     { path => '/text', expected => 'text/plain'},
@@ -36,15 +33,7 @@ my @tests = (
 plan tests => scalar(@tests) * 2;
 
 foreach my $test (@tests) {
-    my $request = fake_request(GET => $test->{path});
-    Dancer::SharedData->request($request);
-    my $response = Dancer::Renderer::get_action_response();
-
+    my $response = dancer_response(GET => $test->{path});
     ok(defined($response), "route handler found for ".$test->{path});
-    my %headers = @{$response->headers_to_array};
-    is($headers{'Content-Type'}, 
-        $test->{expected}, 
-        "content_type looks good for ".$test->{path}); 
-    Dancer::SharedData->reset_all();
+    is $response->header('Content-Type'), $test->{expected};
 }
-

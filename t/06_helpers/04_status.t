@@ -1,9 +1,6 @@
-use Test::More import => ['!pass'];
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use TestUtils;
-
-use Dancer ':syntax';
+use Dancer ':tests';
+use Test::More;
+use Dancer::Test;
 
 get '/' => sub {
     "hello"
@@ -25,14 +22,11 @@ my @tests = (
 plan tests => scalar(@tests) * 2;
 
 foreach my $test (@tests) {
-    my $request = fake_request(GET => $test->{path});
-    Dancer::SharedData->request($request);
-    my $response = Dancer::Renderer::get_action_response();
+    my $response = dancer_response(GET => $test->{path});
 
     ok(defined($response), "route handler found for ".$test->{path});
-    is($response->{status}, 
+    is($response->status, 
         $test->{expected}, 
         "status looks good for ".$test->{path}); 
-    Dancer::SharedData->reset_all();
 }
 

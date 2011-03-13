@@ -312,19 +312,34 @@ Also, since automatically serialized JSON responses have
 C<application/json> Content-Type, you should always encode them by
 hand.
 
-=head2 public (string)
+=head2 appdir (directory)
 
-This is the path of the public directory, where static files are stored. Any
-existing file in that directory will be served as a static file, before
-mathcing any route.
+This is the path where your application will live.  It's where Dancer
+will look by default for your config files, templates and static
+content.
 
-By default, it points to APPDIR/public where APPDIR is the directory that
-contains your Dancer script.
+It is typically set by C<use Dancer> to use the same directory as your
+script.
+
+=head2 public (directory)
+
+This is the directory, where static files are stored. Any existing
+file in that directory will be served as a static file, before
+matching any route.
+
+By default, it points to $appdir/public.
+
+=head2 views (directory)
+
+This is the directory where your templates and layouts live.  It's the
+"view" part of MVC (model, view, controller).
+
+This defaults to $appdir/views.
 
 =head2 layout (string)
 
-name of the layout to use when rendering view. Dancer will look for
-a matching template in the directory $appdir/views/layout.
+The name of the layout to use when rendering view. Dancer will look for
+a matching template in the directory $views/layout.
 
 =head2 warnings (boolean)
 
@@ -338,9 +353,11 @@ occurs. (Internally sets Carp::Verbose). Default to false.
 =head2 log (enum)
 
 Tells which log messages should be actullay logged. Possible values are
-B<debug>, B<warning> or B<error>.
+B<core>, B<debug>, B<warning> or B<error>.
 
 =over 4
+
+=item B<core> : all messages are logged, including some from Dancer itself
 
 =item B<debug> : all messages are logged
 
