@@ -58,6 +58,14 @@ sub basename {
     File::Basename::basename($self->filename);
 }
 
+sub type {
+    my $self = shift;
+
+    return $self->headers->{'Content-Type'};
+}
+
+
+
 # private
 
 =pod
@@ -111,6 +119,18 @@ Copies the temporary file using File::Copy. Returns true for success,
 false for failure.
 
     $upload->copy_to('/path/to/target')
+
+=item size
+
+The size of the upload, in bytes.
+
+=item headers
+
+Returns a hash ref of the headers associated with this upload.
+
+=item type
+
+The Content-Type of this upload.
 
 =back
 

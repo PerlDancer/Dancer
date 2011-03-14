@@ -62,6 +62,7 @@ sub session_name {
     setting('session_name') || 'dancer.session';
 }
 
+
 # we try to make the best random number
 # with native Perl 5 code.
 # to rebuild a session id, an attacker should know:
@@ -89,8 +90,9 @@ sub read_session_id {
 sub write_session_id {
     my ($class, $id) = @_;
     my %cookie = (
-        name  => $SESSION_NAME,
-        value => $id
+        name   => $SESSION_NAME,
+        value  => $id,
+        secure => setting('session_secure')
     );
     if (my $expires = setting('session_expires')) {
         $cookie{expires} =
@@ -149,9 +151,20 @@ done in order to allow multiple session storage with a common interface.
 Any session engine must inherits from Dancer::Session::Abstract and implement
 the following abstract methods.
 
+=head2 Configuration
+
+These settings effect how a session acts.
+
+=head3 session_name
+
 The default session name is "dancer_session". This can be set in your config file:
 
     setting session_name: "mydancer_session"
+
+=head3 session_secure
+
+The user's session id is stored in a cookie.  If true, this cookie
+will be made "secure" meaning it will only be served over https.
 
 =head2 Abstract Methods
 

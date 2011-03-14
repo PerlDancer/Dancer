@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 18;
+use Test::More import => ['!pass'], tests => 22;
 
 use strict;
 use warnings;
@@ -59,3 +59,22 @@ response_content_is [
         body    => 'foo=bar'
     }
 ], 'bar', "a POST request with form urlencoded is ok";
+
+note "capture logs"; {
+    is setting("logger"), "capture";
+    is setting("log"),    "debug";
+
+    warning "Danger!  Warning!";
+    debug   "I like pie.";
+
+    is_deeply read_logs, [
+        { level => "warning", message => "Danger!  Warning!" },
+        { level => "debug",   message => "I like pie.", }
+    ], "read_logs";
+
+    error "Put out the light.";
+
+    is_deeply read_logs, [
+        { level => "error", message => "Put out the light." },
+    ], "each read clears the trap";
+}

@@ -46,8 +46,8 @@ sub handle_request {
     my ($self, $request) = @_;
     my $ip_addr = $request->remote_address || '-';
 
-    Dancer::SharedData->reset_response();
-    Dancer::SharedData->reset_timer;
+    Dancer::SharedData->reset_all();
+
     Dancer::Logger::core("request: "
           . $request->method . " "
           . $request->path_info

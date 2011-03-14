@@ -251,8 +251,9 @@ sub _init_prefix {
         # - /prefix/
         # - /prefix
         # this is done by creating a regex for this case
-        my $pattern = $self->pattern;
-        my $regex   = qr/$prefix(?:$pattern)?$/;
+        my $qpattern = quotemeta( $self->pattern );
+        my $qprefix  = quotemeta( $self->prefix );
+        my $regex    = qr/^$qprefix(?:$qpattern)?$/;
         $self->{regexp}  = $regex;
         $self->{pattern} = $regex;
     }

@@ -4,6 +4,7 @@ package Dancer::Logger;
 
 use strict;
 use warnings;
+use Data::Dumper;
 use Dancer::Engine;
 
 # singleton used for logging messages
@@ -15,10 +16,24 @@ sub init {
     $logger = Dancer::Engine->build(logger => $name, $config);
 }
 
-sub core    { defined($logger) and $logger->core($_[0]) }
-sub debug   { defined($logger) and $logger->debug($_[0]) }
-sub warning { defined($logger) and $logger->warning($_[0]) }
-sub error   { defined($logger) and $logger->error($_[0]) }
+sub _serialize {
+    my @vars = @_;
+
+    return join q{}, map {
+        ref $_                      ?
+            Data::Dumper->new([$_])
+                        ->Terse(1)
+                        ->Purity(1)
+                        ->Indent(0)
+                        ->Dump()    :
+            $_
+    } @vars;
+}
+
+sub core    { defined($logger) and $logger->core(    _serialize(@_) ) }
+sub debug   { defined($logger) and $logger->debug(   _serialize(@_) ) }
+sub warning { defined($logger) and $logger->warning( _serialize(@_) ) }
+sub error   { defined($logger) and $logger->error(   _serialize(@_) ) }
 
 1;
 
@@ -59,6 +74,15 @@ Or in the application code:
 
     # logging to file 
     set logger => 'file';
+
+=head2 Auto-serializing
+
+The loggers allow auto-serializing of all inputs:
+
+    debug( 'User credentials: ', \%creds );
+
+Will provide you with an output in a single log message of the string and the
+reference dump.
 
 =head1 AUTHORS
 

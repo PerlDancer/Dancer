@@ -40,6 +40,8 @@ use vars '@EXPORT';
 
   dancer_response
   get_response
+
+  read_logs
 );
 
 sub import {
@@ -60,7 +62,10 @@ sub import {
 
     # set a default session engine for tests
     setting 'session' => 'simple';
-    setting 'logger'  => 'Null';
+
+    # capture logs for testing
+    setting 'logger'  => 'capture';
+    setting 'log'     => 'debug';
 }
 
 # Route Registry
@@ -183,9 +188,22 @@ sub dancer_response {
 
     if ($method =~ /^(?:PUT|POST)$/ && $args->{body}) {
         my $body = $args->{body};
-        my $l    = length $body;
+
+        # coerce hashref into an url-encoded string
+        if (ref($body) && (ref($body) eq 'HASH')) {
+            my @tokens;
+            while (my ($name, $value) = each %{$body}) {
+                $name  = _url_encode($name);
+                $value = _url_encode($value);
+                push @tokens, "${name}=${value}";
+            }
+            $body = join('&', @tokens);
+        }
+
+        my $l = length $body;
         open my $in, '<', \$body;
         $ENV{'CONTENT_LENGTH'} = $l;
+        $ENV{'CONTENT_TYPE'}   = 'application/x-www-form-urlencoded';
         $ENV{'psgi.input'}     = $in;
     }
 
@@ -204,6 +222,10 @@ sub dancer_response {
         $params, $body, HTTP::Headers->new(@$headers)
     );
 
+    # first, reset the current state
+    Dancer::SharedData->reset_all();
+
+    # then store the request
     Dancer::SharedData->request($request);
 
     my $get_action = Dancer::Renderer::get_action_response();
@@ -224,6 +246,12 @@ sub get_response {
 
 # private
 
+sub _url_encode {
+    my $string = shift;
+    $string =~ s/([\W])/"%" . uc(sprintf("%2.2x",ord($1)))/eg;
+    return $string;
+}
+
 sub _get_file_response {
     my ($req) = @_;
     my ($method, $path, $params) = @$req;
@@ -238,6 +266,11 @@ sub _get_handler_response {
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     return Dancer::Handler->handle_request($request);
 }
+
+sub read_logs {
+    return Dancer::Logger::Capture->trap->read;
+}
+
 
 1;
 __END__
@@ -392,6 +425,32 @@ Schrodinger's cat to die.
 =head2 get_response([$method, $path])
 
 This method is B<DEPRECATED>.  Use dancer_response() instead.
+
+
+=head2 read_logs
+
+    my $logs = read_logs;
+
+Returns an array ref of all log messages issued by the app since the
+last call to C<read_logs>.
+
+For example:
+
+    warning "Danger!  Warning!";
+    debug   "I like pie.";
+
+    is_deeply read_logs, [
+        { level => "warning", message => "Danger!  Warning!" },
+        { level => "debug",   message => "I like pie.", }
+    ];
+
+    error "Put out the light.";
+
+    is_deeply read_logs, [
+        { level => "error", message => "Put out the light." },
+    ];
+
+See L<Dancer::Logger::Capture> for more details.
 
 =head1 LICENSE
 
