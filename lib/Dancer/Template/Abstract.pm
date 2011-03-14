@@ -129,7 +129,11 @@ sub template {
     my ($class, $view, $tokens, $options) = @_;
     my ($content, $full_content);
 
+    # it's important that $tokens is not undef, so that things added to it via
+    # a before_template in apply_renderer survive to the apply_layout. GH#354
+    $tokens ||= {}; 
     $options ||= {};
+
     $content = $view ? Dancer::Template->engine->apply_renderer($view, $tokens)
                      : delete $options->{content};
 

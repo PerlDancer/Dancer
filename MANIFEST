@@ -228,6 +228,7 @@ t/10_template/06_before_template_hook.t
 t/10_template/index.txt
 t/10_template/template.t
 t/10_template/views/index.tt
+t/10_template/views/layouts/main.tt
 t/11_logger/000_create_fake_env.t
 t/11_logger/01_abstract.t
 t/11_logger/02_factory.t

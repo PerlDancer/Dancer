@@ -1,5 +1,12 @@
 {{$NEXT}}
 
+1.3019_02   14.03.2011
+
+    [ BUG FIXES ]
+    * GH #354: Tokens are not passed to layout if no params are passed to
+      template.
+      (Damien Krotkine)
+
 1.3019_01   13.03.2011
 
     [ BUG FIXES ]
