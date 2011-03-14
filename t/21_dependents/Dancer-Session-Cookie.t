@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More import => ['!pass'];
 
 plan skip_all => "Dancer::Session::Cookie required" unless eval {
     require Dancer::Session::Cookie;
@@ -12,6 +12,12 @@ plan skip_all => "Dancer::Session::Cookie required" unless eval {
 plan skip_all => "Test::TCP required" unless eval {
     require Test::TCP; Test::TCP->import; 1;
 };
+
+plan skip_all => "HTTP::Cookies required" unless eval {
+    require HTTP::Cookies; HTTP::Cookies->import; 1;
+};
+
+plan tests=> 7;
 
 test_tcp(
     client => sub {
@@ -66,5 +72,3 @@ test_tcp(
         dance;
     }
 );
-
-done_testing;
