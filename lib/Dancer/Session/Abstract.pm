@@ -53,10 +53,6 @@ sub init {
     $self->id(build_id());
 }
 
-# session name can be set in configuration file:
-# setting session_name => 'mydancer.session';
-my $SESSION_NAME = session_name();
-
 # this method can be overwrite in any Dancer::Session::* module
 sub session_name {
     setting('session_name') || 'dancer.session';
@@ -83,14 +79,17 @@ sub build_id {
 }
 
 sub read_session_id {
-    my $c = Dancer::Cookies->cookies->{$SESSION_NAME};
+    my $name = session_name();
+    my $c = Dancer::Cookies->cookies->{$name};
     return (defined $c) ? $c->value : undef;
 }
 
 sub write_session_id {
     my ($class, $id) = @_;
+
+    my $name = session_name();
     my %cookie = (
-        name   => $SESSION_NAME,
+        name   => $name,
         value  => $id,
         secure => setting('session_secure')
     );
@@ -100,7 +99,7 @@ sub write_session_id {
     }
 
     my $c = Dancer::Cookie->new(%cookie);
-    Dancer::Cookies->set_cookie_object($SESSION_NAME => $c);
+    Dancer::Cookies->set_cookie_object($name => $c);
 }
 
 1;
