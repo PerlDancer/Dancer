@@ -702,6 +702,7 @@ adds a custom header to response:
         header 'x-my-header' => 'shazam!';
     }
 
+<<<<<<< HEAD
 =head2 push_header
 
 Do the same as C<header>, but allow for multiple headers with the same name.
@@ -712,6 +713,8 @@ Do the same as C<header>, but allow for multiple headers with the same name.
         will result in two headers "x-my-header" in the response
     }
 
+=======
+>>>>>>> ecb5f75647b113332df37e092bc45e182ece5355
 =head2 hook
 
 Adds a hook at some position.

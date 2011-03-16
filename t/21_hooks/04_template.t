@@ -2,7 +2,6 @@ use strict;
 use warnings;
 
 use Test::More tests => 7, import => ['!pass'];
-
 use Dancer ':syntax';
 use Dancer::Test;
 use Time::HiRes qw/gettimeofday/;
@@ -37,4 +36,3 @@ response_content_like( [ GET => '/' ], qr/foo => bar/ );
 
 ok $diff;
 cmp_ok $diff, '>', 0;
-
