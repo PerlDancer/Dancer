@@ -7,7 +7,7 @@ use HTTP::Headers;
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Cookie;
-use Dancer::Hook;
+use Dancer::Factory::Hook;
 use Dancer::Cookies;
 use Dancer::Request;
 use Dancer::Response;
@@ -18,7 +18,7 @@ use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
 
-Dancer::Hook->instance->register_hooks_name(
+Dancer::Factory::Hook->instance->install_hooks(
     qw/before after before_serializer after_serializer before_file_render after_file_render/
 );
 
@@ -91,7 +91,7 @@ sub get_action_response {
     my $app = ($handler && $handler->app) ? $handler->app : Dancer::App->current();
 
     # run the before filters, before "running" the route handler
-    Dancer::Hook->instance->execute_hooks('before');
+    Dancer::Factory::Hook->instance->execute_hooks('before');
 
     # recurse if something has changed
     my $MAX_RECURSIVE_LOOP = 10;
@@ -125,7 +125,7 @@ sub get_action_response {
         $handler->run($request);
         serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
-        Dancer::Hook->instance->execute_hooks('after', $resp);
+        Dancer::Factory::Hook->instance->execute_hooks('after', $resp);
         return $resp;
     }
     else {
@@ -137,9 +137,9 @@ sub serialize_response_if_needed {
     my $response = Dancer::SharedData->response();
 
     if (Dancer::App->current->setting('serializer') && $response->content()){
-        Dancer::Hook->execute_hooks('before_serializer', $response);
+        Dancer::Factory::Hook->execute_hooks('before_serializer', $response);
         Dancer::Serializer->process_response($response);
-        Dancer::Hook->execute_hooks('after_serializer', $response);
+        Dancer::Factory::Hook->execute_hooks('after_serializer', $response);
     }
     return $response;
 }
@@ -149,9 +149,9 @@ sub get_file_response {
     my $path_info   = $request->path_info;
     my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
-    Dancer::Hook->execute_hooks('before_file_render', $static_file);
+    Dancer::Factory::Hook->execute_hooks('before_file_render', $static_file);
     my $response = Dancer::Renderer->get_file_response_for_path($static_file);
-    Dancer::Hook->execute_hooks('after_file_render', $response);
+    Dancer::Factory::Hook->execute_hooks('after_file_render', $response);
     return $response;
 }
 

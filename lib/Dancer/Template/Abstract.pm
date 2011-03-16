@@ -4,13 +4,13 @@ use strict;
 use warnings;
 use Carp;
 
-use Dancer::Hook;
+use Dancer::Factory::Hook;
 use Dancer::Deprecation;
 use Dancer::FileUtils 'path';
 
 use base 'Dancer::Engine';
 
-Dancer::Hook->instance->register_hooks_name(
+Dancer::Factory::Hook->instance->install_hooks(
     qw/before_template_render after_template_render before_layout_render after_layout_render/
 );
 
@@ -55,11 +55,11 @@ sub apply_renderer {
 
     $view = $self->view($view);
 
-    Dancer::Hook->execute_hooks('before_template_render', $tokens);
+    Dancer::Factory::Hook->execute_hooks('before_template_render', $tokens);
 
     my $content = $self->render($view, $tokens);
 
-    Dancer::Hook->execute_hooks('after_template_render', \$content);
+    Dancer::Factory::Hook->execute_hooks('after_template_render', \$content);
     
     # make sure to avoid ( undef ) in list context return
     defined $content
@@ -85,12 +85,12 @@ sub apply_layout {
 
     defined $layout or return $content;
 
-    Dancer::Hook->execute_hooks('before_layout_render', $tokens, \$content);
+    Dancer::Factory::Hook->execute_hooks('before_layout_render', $tokens, \$content);
 
     my $full_content =
       $self->layout($layout, $tokens, $content);
 
-    Dancer::Hook->execute_hooks('after_layout_render', \$full_content);
+    Dancer::Factory::Hook->execute_hooks('after_layout_render', \$full_content);
 
     # make sure to avoid ( undef ) in list context return
     defined $full_content
