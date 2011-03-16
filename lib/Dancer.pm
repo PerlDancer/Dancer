@@ -99,10 +99,10 @@ our @EXPORT    = qw(
 
 # Dancer's syntax
 
-sub after           { Dancer::Hook->instance->register_hook('after', @_) }
+sub after           { Dancer::Hook->new('after', @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Hook->register_hook('before', @_) }
-sub before_template { Dancer::Hook->register_hook('before_template', @_) }
+sub before          { Dancer::Hook->new('before', @_) }
+sub before_template { Dancer::Hook->new('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
@@ -122,9 +122,9 @@ sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
-sub hook            { Dancer::Route::Registry->hook(@_) }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
+sub hook            { Dancer::Hook->new(@_) }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
