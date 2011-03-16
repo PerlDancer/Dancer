@@ -3,6 +3,8 @@
     [ ENHANCEMENTS ]
     * GH #396: Test that Dancer::Session::Cookie isn't broken
       (Michael G. Schwern)
+    * GH #399: Make sure session can have their name changed.
+      (Michael G. Schwern)
 
     [ DOCUMENTATION ]
     * Fix plack_middlewares example in the cookbook
