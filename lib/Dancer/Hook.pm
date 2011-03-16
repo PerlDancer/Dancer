@@ -3,42 +3,46 @@ package Dancer::Hook;
 use strict;
 use warnings;
 use Carp;
-use base 'Dancer::Object::Singleton';
 
+use base 'Dancer::Object';
+
+__PACKAGE__->attributes(qw/name code properties/);
+
+use Dancer::Factory::Hook;
 use Dancer::Hook::Properties;
 
-Dancer::Hook->attributes(qw/ hooks registered_hooks registered_hooks_by_class/);
+sub new {
+    my ($class, @args) = @_;
 
-sub init {
-    my ( $class, $self ) = @_;
-    $self->hooks( {} );
-    $self->registered_hooks([]);
-    return $self;
-}
+    my $self = bless {}, $class;
 
-sub register_hook {
-    my ($class, $hook_name) = (shift, shift);
+    if (!scalar @args) {
+        croak "one name and a coderef are required";
+    }
+
+    my $hook_name = shift @args;
+
+    # XXX at the moment, we have a filer position named "before_template".
+    # this one is renamed "before_template_render", so we need to alias it.
+    # maybe we need to deprecate 'before_template' to enforce the use
+    # of 'hook before_template_render => sub {}' ?
+    $hook_name = 'before_template_render' if $hook_name eq 'before_template';
+
+    $self->name($hook_name);
 
     my ( $properties, $code );
-
-    if ( scalar @_ == 1 ) {
+    if ( scalar @args == 1 ) {
         $properties = Dancer::Hook::Properties->new();
-        $code       = shift;
+        $code       = shift @args;
     }
-    elsif ( scalar @_ == 2 ) {
-        my $prop = shift;
+    elsif ( scalar @args == 2 ) {
+        my $prop = shift @args;
         $properties = Dancer::Hook::Properties->new(%$prop);
-        $code       = shift;
+        $code       = shift @args;
     }
     else {
         croak "something's wrong";
     }
-
-    $class->_register_hook( $hook_name, $properties, $code );
-}
-
-sub _register_hook {
-    my ($class, $hook_name, $properties, $code) = @_;
 
     my $compiled_filter = sub {
         return if Dancer::SharedData->response->halted;
@@ -48,6 +52,7 @@ sub _register_hook {
 
         Dancer::Logger::core( "entering " . $hook_name . " hook" );
         eval { $code->(@_) };
+
         if ($@) {
             my $err = Dancer::Error->new(
                 code    => 500,
@@ -58,63 +63,11 @@ sub _register_hook {
         }
     };
 
-    # XXX at the moment, we have a filer position named "before_template".
-    # this one is renamed "before_template_render", so we need to alias it.
-    # maybe we need to deprecate 'before_template' to enforce the use
-    # of 'hook before_template_render => sub {}' ?
-    $hook_name = 'before_template_render' if $hook_name eq 'before_template';
+    $self->properties($properties);
+    $self->code($compiled_filter);
 
-    $class->_add_registered_hook($hook_name, $compiled_filter);
-}
-
-sub _add_registered_hook {
-    my ($class, $hook_name, $compiled_filter) = @_;
-    push @{$class->hooks->{$hook_name}}, $compiled_filter;
-}
-
-sub register_hooks_name {
-    my ( $self, @hooks_name ) = @_;
-
-    if ( !scalar @hooks_name ) {
-        croak "at least one name is required";
-    }
-
-    foreach my $hook_name (@hooks_name) {
-        if ( $self->hook_is_registered($hook_name) ) {
-            croak "$hook_name is already regsitered, please use another name";
-        }
-        $self->_add_hook( $hook_name );
-    }
-}
-
-sub _add_hook {
-    my ($self, $hook_name ) = @_;
-    push @{$self->registered_hooks}, $hook_name;
-}
-
-sub hook_is_registered {
-    my ( $self, $hook_name ) = @_;
-    return grep { $_ eq $hook_name } @{$self->registered_hooks};
-}
-
-sub execute_hooks {
-    my ($self, $hook_name, @args) = @_;
-
-    croak("Can't ask for hooks without a position") unless $hook_name;
-
-    if (!$self->hook_is_registered($hook_name)){
-        croak("The hook '$hook_name' doesn't exists");
-    }
-
-    $_->(@args) foreach @{$self->get_hooks_for($hook_name)};
-}
-
-sub get_hooks_for {
-    my ( $self, $hook_name ) = @_;
-
-    croak("Can't ask for hooks without a position") unless $hook_name;
-
-    $self->hooks->{$hook_name} || [];
+    Dancer::Factory::Hook->instance->register_hook($self);
+    return $self;
 }
 
 1;
