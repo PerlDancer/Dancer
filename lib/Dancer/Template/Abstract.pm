@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
+use Dancer::Hook;
 use Dancer::Deprecation;
 use Dancer::FileUtils 'path';
 

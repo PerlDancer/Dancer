@@ -14,6 +14,9 @@ use Dancer::Hook;
 use Dancer::Session;
 use Dancer::FileUtils qw(open_file);
 
+Dancer::Hook->instance->register_hooks_name(
+    qw/before_error_render after_error_render/);
+
 sub init {
     my ($self) = @_;
 
