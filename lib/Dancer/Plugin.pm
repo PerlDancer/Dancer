@@ -20,7 +20,7 @@ sub register($&);
 
 my $_keywords = {};
 
-sub add_hook { Dancer::Hook->register_hook(@_) }
+sub add_hook { Dancer::Hook->new(@_) }
 
 sub plugin_setting {
     my $plugin_orig_name = caller();
