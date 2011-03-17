@@ -308,6 +308,16 @@ Make sure to use C<Dancer::Test> B<after> importing the application package
 otherwise your appdir will be automatically set to C<lib> and your test script
 won't be able to find views, conffiles and other application content.
 
+For all test methods, if the first argument is not
+an array ref but a scalar, it is taken to be the I<$path>,
+and the I<$method> is assumed to be I<GET>. I.e.:
+
+    response_status_is [ GET => '/' ], 200, 'GET / status is ok';
+
+    # is equivalent to 
+
+    response_status_is '/', 200, 'GET / status is ok';
+
 =head1 METHODS
 
 =head2 route_exists([$method, $path], $test_name)
