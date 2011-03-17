@@ -1,4 +1,5 @@
 {{$NEXT}}
+    * Dancer::Test tests assumes 'GET' if their first argument is scalar.
 
     [ ENHANCEMENTS ]
     * GH #396: Test that Dancer::Session::Cookie isn't broken
