@@ -1,4 +1,5 @@
 {{$NEXT}}
+    * Dancer::Test tests assumes 'GET' if their first argument is scalar.
 
 1.3019_02   14.03.2011
 
