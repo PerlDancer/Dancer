@@ -7,6 +7,9 @@
       (Michael G. Schwern)
     * Dancer::Test tests assumes 'GET' if their first argument is scalar.
       (Yanick Champoux)
+    * send_file accepts optional content-type declaration, to override guessed
+      MIME type, e.g. send_file $filename, content_type => 'image/png'
+      (Alberto Simões, requested by Michael G Schwern)
 
     [ DOCUMENTATION ]
     * Fix plack_middlewares example in the cookbook
