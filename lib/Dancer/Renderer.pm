@@ -140,11 +140,12 @@ sub get_file_response {
     my $path_info   = $request->path_info;
     my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
-    return Dancer::Renderer->get_file_response_for_path($static_file);
+    return Dancer::Renderer->get_file_response_for_path($static_file, undef,
+                                                        $request->content_type);
 }
 
 sub get_file_response_for_path {
-    my ($class, $static_file, $status) = @_;
+    my ($class, $static_file, $status, $mime) = @_;
     $status ||= 200;
 
     if ( -f $static_file ) {
@@ -152,7 +153,8 @@ sub get_file_response_for_path {
         binmode $fh;
         my $response = Dancer::SharedData->response() || Dancer::Response->new();
         $response->status($status);
-        $response->header('Content-Type' => get_mime_type($static_file));
+        $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
+                                             _get_mime_type($static_file)));
         $response->content($fh);
         return $response;
     }
@@ -160,8 +162,12 @@ sub get_file_response_for_path {
 }
 
 # private
+sub _get_full_mime_type {
+    my $mime = Dancer::MIME->instance();
+    return $mime->mime_type_for(shift @_);
+}
 
-sub get_mime_type {
+sub _get_mime_type {
     my ($filename) = @_;
     my ($ext) = $filename =~ /\.([^.]+)$/;
     return 'application/data' unless $ext;
