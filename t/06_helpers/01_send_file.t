@@ -8,7 +8,7 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 6;
+plan tests => 8;
 
 ok(get('/cat/:file', sub {
     send_file(params->{file});
@@ -17,6 +17,10 @@ ok(get('/cat/:file', sub {
 get '/catheader/:file' => sub {
     header 'FooHeader' => 42;
     send_file(params->{file});
+};
+
+get '/as_png/:file' => sub {
+    send_file(params->{file}, content_type => 'png');
 };
 
 my $resp = dancer_response(GET => '/cat/file.txt');
@@ -33,3 +37,7 @@ $resp = dancer_response(GET => '/catheader/file.txt');
 %headers = @{$resp->headers_to_array};
 is $headers{FooHeader}, 42, 'FooHeader is kept';
 
+my $png = dancer_response(GET => '/as_png/file.txt');
+ok(defined($png), "route handler found for /as_png/file.txt");
+my %png_header = @{$png->headers_to_array};
+is($png_header{'Content-Type'}, 'image/png', 'mime_type can be forced');

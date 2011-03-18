@@ -301,10 +301,14 @@ sub _session {
 }
 
 sub _send_file {
-    my ($path) = @_;
+    my ($path, %options) = @_;
 
     my $request = Dancer::Request->new_for_request('GET' => $path);
     Dancer::SharedData->request($request);
+
+    if (exists($options{content_type})) {
+        $request->content_type($options{content_type});
+    }
 
     my $resp = Dancer::Renderer::get_file_response();
     return $resp if $resp;
@@ -313,7 +317,6 @@ sub _send_file {
         code    => 404,
         message => "No such file: `$path'"
     )->render();
-    
 }
 
 # Start/Run the application with the chosen apphandler
