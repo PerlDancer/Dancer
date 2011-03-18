@@ -157,7 +157,7 @@ Configuration for plugin should be structured like this in the config.yaml of th
     plugin_name:
       key: value
 
-If plugin_setting is called inside a plugin, the appropriate configuration will be returned. The plugin_name should be the name of the package, or, if the plugin name is under the Dancer::Plugin:: namespace, the remaining part of the plugin name. Enclose the remaining part in quotes if it contains ::, e.g. for Dancer::Plugin::Foo::Bar, use:
+If plugin_setting is called inside a plugin, the appropriate configuration will be returned. The plugin_name should be the name of the package, or, if the plugin name is under the B<Dancer::Plugin::> namespace, the remaining part of the plugin name. Enclose the remaining part in quotes if it contains ::, e.g. for B<Dancer::Plugin::Foo::Bar>, use:
 
   plugins:
     "Foo::Bar":
