@@ -902,7 +902,8 @@ saying C<return send_error(...)> instead.
 
 =head2 send_file
 
-Lets the current route handler send a file to the client.
+Lets the current route handler send a file to the client. Note that
+the path of the file must be relative to the B<public> directory.
 
     get '/download/:file' => sub {
         send_file(params->{file});
@@ -911,7 +912,15 @@ Lets the current route handler send a file to the client.
 The content-type will be set depending on the current mime-types definition
 (see C<mime_type> if you want to define your own).
 
-The path of the file must be relative to the B<public> directory.
+If your filename does not have an extension, or you need to force a
+specific mime type, you can pass it to C<send_file> as follows:
+
+    send_file(params->{file}, content_type => 'image/png');
+
+Also, you can use your aliases or file extension names on
+C<content_type>, like this:
+
+    send_file(params->{file}, content_type => 'png');
 
 =head2 set
 
