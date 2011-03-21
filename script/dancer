@@ -143,6 +143,7 @@ sub app_tree($) {
 
     return {
         "Makefile.PL"        => FILE,
+        "MANIFEST.SKIP"      => FILE,
         lib                  => {
          $LIB_PATH => {
             $LIB_FILE => FILE,}
@@ -879,6 +880,8 @@ template: \"simple\"
 
 'jquery.js' => jquery_minified(),
 
+'MANIFEST.SKIP' => manifest_skip(),
+
 'development.yml' =>
 "# configuration file for development environment
 
@@ -1229,6 +1232,24 @@ M"S:;SM#[O36UR'8>Q8+OXZ:.B9(!_L-']6<>)0Z>@Z>>LZ:NB5-7&K8#*&(T
 J9M+;3:1@)2!@#7Q04U70U3%73P6(4-A`0VRR@)2D#W`:GZC5:6F</__9
 EOF
     write_data_to_file($data, $path);
+}
+
+sub manifest_skip {
+    return <<'EOF';
+^\.git\/
+maint
+^tags$
+.last_cover_stats
+Makefile$
+^blib
+^pm_to_blib
+^.*.bak
+^.*.old
+^t.*sessions
+^cover_db
+^.*\.log
+^.*\.swp$
+EOF
 }
 
 sub jquery_minified {
