@@ -12,6 +12,8 @@
       (Alberto Simões, requested by Michael G Schwern)
 
     [ DOCUMENTATION ]
+    * Add documentation to send_file optional argument
+      (Alberto Simoes)
     * Fix plack_middlewares example in the cookbook
       (Michael G. Schwern)
     * Extend the POD on plugin_setting to prevent a pitfall with plugin
