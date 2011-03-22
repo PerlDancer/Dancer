@@ -38,6 +38,7 @@ my @keywords = qw(
     redirect
     request
     send_file
+    send_any_file
     send_error
     set
     setting

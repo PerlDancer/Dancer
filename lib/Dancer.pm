@@ -72,6 +72,7 @@ our @EXPORT    = qw(
   render_with_layout
   request
   send_file
+  send_any_file
   send_error
   set
   setting
@@ -138,6 +139,7 @@ sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
 sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
 sub send_file       { goto &_send_file }
+sub send_any_file   { goto &_send_any_file }
 sub set             { goto &setting }
 sub set_cookie      { Dancer::Cookies->set_cookie(@_) }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
@@ -318,6 +320,28 @@ sub _send_file {
         message => "No such file: `$path'"
     )->render();
 }
+
+
+sub _send_any_file {
+    my ($path, %options) = @_;
+
+    my $request = Dancer::Request->new_for_request('GET' => $path);
+    Dancer::SharedData->request($request);
+
+    my $mime = exists($options{content_type}) ?
+      $options{content_type} : undef;
+
+    if (-f $path) {
+        my $resp = Dancer::Renderer->get_file_response_for_path($path, undef, $mime);
+        return $resp if $resp;
+    }
+
+    Dancer::Error->new(
+        code    => 404,
+        message => "No such file: `$path'"
+    )->render();
+}
+
 
 # Start/Run the application with the chosen apphandler
 sub _start {
@@ -921,6 +945,14 @@ Also, you can use your aliases or file extension names on
 C<content_type>, like this:
 
     send_file(params->{file}, content_type => 'png');
+
+=head2 send_any_file
+
+Lets the current route handler send a file to the client. Unlike
+c<send_file>, this command does not require the path of the file to be
+relative to the C<public> directory. Besides this, the behavior is the
+same as C<send_file>. Also, be caution about what files you are
+sending.
 
 =head2 set
 

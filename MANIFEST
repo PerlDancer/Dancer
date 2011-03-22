@@ -309,3 +309,4 @@ t/pod.t
 t/TestAppExt.pm
 t/TestPlugin.pm
 TODO
+t/06_helpers/07_send_any_file.t
