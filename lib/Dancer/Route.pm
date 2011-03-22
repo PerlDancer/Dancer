@@ -261,10 +261,6 @@ sub _init_prefix {
     }
     else {
         $self->{pattern} = $prefix . $self->pattern;
-
-        # There is no indication why trailing slashes are removed from the
-        # pattern and this makes matching routes with trailing slashes fail.
-        #$self->{pattern} =~ s/\/$//;
     }
 
     return $prefix;
