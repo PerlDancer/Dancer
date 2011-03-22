@@ -60,6 +60,7 @@ our @EXPORT    = qw(
   load_app
   logger
   mime_type
+  mime_type_for
   options
   params
   pass
@@ -126,6 +127,7 @@ sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          { set(logger => @_) }
 sub mime_type       { goto &_mime_type }
+sub mime_type_for   { Dancer::Renderer->get_mime_type(@_) }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
@@ -669,6 +671,10 @@ Defines a route for HTTP B<GET> requests to the given path:
         return "Hello world";
     }
 
+=head2 get_mime_type
+
+
+
 =head2 halt
 
 Sets a response object with the content given.
@@ -758,6 +764,14 @@ Behaves as a setter/getter when given parameters
 
     # get a mime-type
     my $m = mime_type 'foo';
+
+=head2 mime_type_for
+
+Given a filename, returns its mime-type. By default,
+C<application/data> is returned (if the file doesn't have an
+extension).
+
+   my $mime_type = get_mime_type("/var/foo/file");
 
 =head2 params
 

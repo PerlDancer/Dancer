@@ -154,7 +154,7 @@ sub get_file_response_for_path {
         my $response = Dancer::SharedData->response() || Dancer::Response->new();
         $response->status($status);
         $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
-                                             _get_mime_type($static_file)));
+                                             Dancer::Renderer->get_mime_type($static_file)));
         $response->content($fh);
         return $response;
     }
@@ -167,8 +167,9 @@ sub _get_full_mime_type {
     return $mime->mime_type_for(shift @_);
 }
 
-sub _get_mime_type {
-    my ($filename) = @_;
+# back to public (given alias on Dancer.pm)
+sub get_mime_type {
+    my ($self, $filename) = @_;
     my ($ext) = $filename =~ /\.([^.]+)$/;
     return 'application/data' unless $ext;
 

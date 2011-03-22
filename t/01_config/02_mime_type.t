@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8, import => ['!pass'];
+use Test::More tests => 10, import => ['!pass'];
 
 use Dancer ':syntax';
 
@@ -22,3 +22,10 @@ is($mime->mime_type_for('foo'), 'text/foo', 'mime type foo is found');
 ok($mime->add_mime_type(bar => 'foo'), 'define bar as alias to foo');
 is($mime->mime_type_for('bar'), 'text/foo', 'mime type bar is found');
 
+# test alias on Dancer.pm
+
+is(mime_type_for('foo.zip'), 'application/zip',
+    "a mime_type is found with MIME::Types");
+
+is(mime_type_for('foo.nonexistent'), 'text/plain',
+    'mime_type defaults to text/plain' );
