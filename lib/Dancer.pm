@@ -314,7 +314,7 @@ sub _send_file {
     if ($options{absolute} && -f $path) {
         $resp = Dancer::Renderer->get_file_response_for_path($path);
     } else {
-        $resp = Dancer::Renderer::get_file_response();
+        $resp = Dancer::Renderer->get_file_response();
     }
     return $resp if $resp;
 
