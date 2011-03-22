@@ -310,7 +310,12 @@ sub _send_file {
         $request->content_type($options{content_type});
     }
 
-    my $resp = Dancer::Renderer::get_file_response();
+    my $resp;
+    if ($options{absolute} && -f $path) {
+        $resp = Dancer::Renderer->get_file_response_for_path($path);
+    } else {
+        $resp = Dancer::Renderer::get_file_response();
+    }
     return $resp if $resp;
 
     Dancer::Error->new(
@@ -921,6 +926,12 @@ Also, you can use your aliases or file extension names on
 C<content_type>, like this:
 
     send_file(params->{file}, content_type => 'png');
+
+For files outside your B<public> folder, you can use the C<absolute>
+switch. Just bear in mind that its use needs caution as it can be
+dangerous.
+
+   send_file('/etc/passwd', absolute => 1);
 
 =head2 set
 
