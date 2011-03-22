@@ -259,7 +259,6 @@ sub _init_prefix {
     }
     else {
         $self->{pattern} = $prefix . $self->pattern;
-        $self->{pattern} =~ s/\/$//;
     }
 
     return $prefix;
