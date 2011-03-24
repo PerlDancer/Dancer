@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * Fix t/14_serializer/02_json.t to work with older JSON (relates to GH#416)
+      (Damien Krotkine)
+
     [ ENHANCEMENTS ]
     * GH #396: Test that Dancer::Session::Cookie isn't broken
       (Michael G. Schwern)
