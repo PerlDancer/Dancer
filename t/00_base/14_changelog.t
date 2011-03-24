@@ -54,6 +54,7 @@ sub _fail_bail_out { _fail(@_); BAIL_OUT("changelog is not safe enough to contin
 sub _pass { Test::More::pass("check line $line_nb"); }
 
 my $current_version;
+my $current_version_is_dev;
 my $current_section;
 my $current_item_start;
 my $current_item;
@@ -102,6 +103,9 @@ if ( (my ($pre, $version, $post)) = ($line =~ /^(\s*)(\S.*\S)(\s*)$/)) {
     $lpre and _fail("line starts with $lpre blank caracters, but it should not");
     $lpost and _fail("line ends with $lpre blank caracters, but it should not");
     like($version, qr/^{{\$NEXT}}$|^\d\.\d{4}(_\d{2}   |      )\d{2}.\d{2}.\d{4}$/, "changelog line $line_nb: check version failed");
+    $version =~ qr/^({{\$NEXT}})$|^\d\.\d{4}(_\d{2}   |      )\d{2}.\d{2}.\d{4}$/;
+#    print STDERR " ------->  [$1] [$2]\n";
+    $current_version_is_dev = defined $1 || $2 =~ /^_\d{2}/;
 
     $current_version = [];
     $current_section = undef;
@@ -111,6 +115,23 @@ if ( (my ($pre, $version, $post)) = ($line =~ /^(\s*)(\S.*\S)(\s*)$/)) {
 } else {
     _fail("line should contain a version number, but it contains '$line'.");
 }
+$current_version_is_dev
+  and goto SEPARATOR;
+goto CODENAME;
+
+CODENAME:
+# the codename is not mandatory, but strongly encouraged. So warn if it's not
+# there, but don't die
+_peek_line();
+if ($line =~ /^\s*$/) {
+    warn "It's recommended to add a CodeName to stable releases (non-dev versions).\n"
+         . "There is no CodeName at line $line_nb. Codename format is : "
+         . "    ** Codename: <The Name> // <The person it's dedicated to> ** \n"
+         . "The // ... part is optional.";
+    goto SEPARATOR;
+}
+_consume_line();
+like($line, qr|^    \*\* Codename: [^/]+( // [^/]+)? \*\*$|);
 goto SEPARATOR;
 
 SECTION:
