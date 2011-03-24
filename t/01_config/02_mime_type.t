@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10, import => ['!pass'];
+use Test::More tests => 11, import => ['!pass'];
 
 use Dancer ':syntax';
 
@@ -27,5 +27,9 @@ is($mime->mime_type_for('bar'), 'text/foo', 'mime type bar is found');
 is(mime_type_for('foo.zip'), 'application/zip',
     "a mime_type is found with MIME::Types");
 
-is(mime_type_for('foo.nonexistent'), 'text/plain',
-    'mime_type defaults to text/plain' );
+is(mime_type_for('foo.nonexistent'), Dancer::MIME::default_mime_type(),
+    'mime_type defaults' );
+
+config->{default_mime_type} = "text/plain";
+
+is(mime_type_for('foo.nonexistent'), "text/plain", 'mime_type defaults' );

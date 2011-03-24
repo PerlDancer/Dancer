@@ -23,8 +23,8 @@ my $resp = Dancer::Renderer::get_file_response();
 ok( defined($resp), "static file is found for $path");
 
 my %headers = @{$resp->headers_to_array};
-like($headers{'Content-Type'}, qr/text\/plain/,
-    "$path is sent as text/plain");
+is($headers{'Content-Type'}, Dancer::MIME::default_mime_type,
+                                 "$path is sent with default_mime_type");
 
 my $mime = Dancer::MIME->instance();
 ok($mime->add_mime_type(foo => 'text/foo'), 'mime type foo is set as text/foo');

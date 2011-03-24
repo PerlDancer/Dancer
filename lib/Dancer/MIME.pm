@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Dancer::Object::Singleton';
 
+use Dancer::Config;
 use MIME::Types;
 
 # Initialise MIME::Types at compile time, to ensure it's done before
@@ -37,6 +38,10 @@ sub add_mime_alias {
     return $name;
 }
 
+sub default_mime_type {
+    return Dancer::Config::setting("default_mime_type") || "application/data";
+}
+
 sub mime_type_for {
     my ($self, $content_type) = @_;
 
@@ -53,7 +58,7 @@ sub mime_type_for {
         if ($type_def) {
             $content_type = $type_def->type;
         } else {
-            $content_type = 'text/plain'; #sensible default
+            $content_type = default_mime_type();
         }
     }
     return $content_type;

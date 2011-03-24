@@ -671,10 +671,6 @@ Defines a route for HTTP B<GET> requests to the given path:
         return "Hello world";
     }
 
-=head2 get_mime_type
-
-
-
 =head2 halt
 
 Sets a response object with the content given.
@@ -769,9 +765,10 @@ Behaves as a setter/getter when given parameters
 
 Given a filename, returns its mime-type. By default,
 C<application/data> is returned (if the file doesn't have an
-extension).
+extension). You can configure it with the C<default_mime_type> under
+your C<config.yml> file.
 
-   my $mime_type = get_mime_type("/var/foo/file");
+   my $mime_type = mime_type_for("/var/foo/file");
 
 =head2 params
 

@@ -171,7 +171,7 @@ sub _get_full_mime_type {
 sub get_mime_type {
     my ($self, $filename) = @_;
     my ($ext) = $filename =~ /\.([^.]+)$/;
-    return 'application/data' unless $ext;
+    return Dancer::MIME::default_mime_type() unless $ext;
 
     my $mime = Dancer::MIME->instance();
     return $mime->mime_type_for($ext);
