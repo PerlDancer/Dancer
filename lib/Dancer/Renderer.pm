@@ -117,14 +117,16 @@ sub get_action_response {
         return serialize_response_if_needed() if defined $response && $response->exists;
         # else, get the route handler's response
         Dancer::App->current($handler->app);
-        $handler->run($request);
+        my $response = $handler->run($request);
+        return undef unless $response; # 404
+
         serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
         $_->($resp) for (@{$app->registry->hooks->{after}});
         return $resp;
     }
     else {
-        return;    # 404
+        return undef;    # 404
     }
 }
 
