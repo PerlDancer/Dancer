@@ -236,7 +236,7 @@ more options than just the session engine we want to set.
   set 'log' => 'debug';
   set 'show_errors' => 1;
   set 'access_log' => 1;
-  set 'warnings' => 1;
+  set 'critical_warnings' => 1;
 
 Hopefully these are fairly self-explanatory. We want the Simple session engine,
 the Template Toolkit template engine, logging enabled (at the 'debug' level
@@ -445,7 +445,7 @@ Here's the complete dancr.pl script from start to finish.
  set 'log' => 'debug';
  set 'show_errors' => 1;
  set 'access_log' => 1;
- set 'warnings' => 1;
+ set 'critical_warnings' => 1;
  set 'username' => 'admin';
  set 'password' => 'password';
  

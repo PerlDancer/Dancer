@@ -218,7 +218,7 @@ sub find_next_matching_route {
 sub execute {
     my ($self) = @_;
 
-    if (Dancer::Config::setting('warnings')) {
+    if (Dancer::Config::setting('critical_warnings')) {
         my $warning;
         local $SIG{__WARN__} = sub { $warning = $_[0] };
         my $content = $self->code->();

@@ -221,7 +221,7 @@ This is a choice left to the end-user and can be set with the
 B<show_errors> setting.
 
 Note that you can also choose to consider all warnings in your route handlers
-as errors when the setting B<warnings> is set to 1.
+as errors when the setting B<critical_warnings> is set to 1.
 
 =head1 FILTERS
 
