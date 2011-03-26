@@ -1,5 +1,14 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * Fix t/14_serializer/02_json.t to work with older JSON (relates to GH#416)
+      (Damien Krotkine)
+    * the Changelog test now supports Codenames. It suggests to add codenames
+      for table releaes as well
+      (Damien Krotkine)
+    * GH #420 : Extra content generated
+      (Alberto Simões, Damien Krotkine)
+
     [ ENHANCEMENTS ]
     * GH #396: Test that Dancer::Session::Cookie isn't broken
       (Michael G. Schwern)
