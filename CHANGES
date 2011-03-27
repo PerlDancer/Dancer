@@ -21,6 +21,8 @@
       (Alberto Simões, requested by Michael G Schwern)
     * send_file accepts optional absolute option, to send an absolute path
       (Alberto Simões)
+    * Have `dancer` cmd tool create MANIFEST and MANIFEST.SKIP.
+      (Alberto Simões)
 
     [ DOCUMENTATION ]
     * Add documentation to send_file optional argument
