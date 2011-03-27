@@ -282,7 +282,7 @@ sub _mime_type {
 
 sub _redirect {
     my ($destination, $status) = @_;
-    if ($destination !~ m!^(\w+://)?/!) {
+    if ($destination !~ m!^(\w+:/)?/!) {
         # no absolute uri here, build one, RFC 2616 forces us to do so
         my $request = Dancer::SharedData->request;
         $destination = $request->uri_for($destination, {}, 1);
