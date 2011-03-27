@@ -34,6 +34,8 @@
       (Stefan Hornburg)
     * GH #400: Documenting the plack_middlewares_map.
       (Michael G. Schwern, Sawyer X)
+    * GH #422: Documenting no need for caret when you have a prefix.
+      (Sawyer X)
 
 1.3020      21.03.2011
     ** Codename: The Schwern Cometh // Michael G. Schwern **
