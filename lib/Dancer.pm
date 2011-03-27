@@ -814,6 +814,12 @@ You can unset the prefix value:
     prefix undef;
     get '/page1' => sub {}; will match /page1
 
+B<Notice:> once you have a prefix set, do not add a caret to the regex:
+
+    prefix '/foo';
+    get qr{^/bar} => sub { ... } # BAD BAD BAD
+    get qr{/bar}  => sub { ... } # Good!
+
 =head2 del
 
 Defines a route for HTTP B<DELETE> requests to the given URL:
