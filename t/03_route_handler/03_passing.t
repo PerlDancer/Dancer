@@ -1,9 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 17, import => ['!pass'];
+use Test::More tests => 19, import => ['!pass'];
 
 use Dancer ':syntax';
-use Dancer::Route; 
+use Dancer::Route;
 use Dancer::Test;
 
 ok(get('/say/:char' => sub { 
@@ -29,6 +29,8 @@ ok(get('/say/*' => sub {
     "trash: ".params->{splat}[0];
 }), 'route /say/* defined');
 
+ok(get('/foo/' => sub { pass }), "route /foo/ defined");
+
 my @tests = ( 
     {path => '/say/A', expected => 'char: A'},
     {path => '/say/24', expected => 'number: 24'},
@@ -41,9 +43,11 @@ my @tests = (
 foreach my $test (@tests) {
     my $path = $test->{path};
     my $expected = $test->{expected};
-       
+
     response_exists( [GET => $path], 
         "route found for path `$path'");
     response_content_is_deeply([GET => $path], $expected, 
         "match data for path `$path' looks good");
 }
+
+response_doesnt_exist( [GET => '/foo'], "Pass over the last match is 404");

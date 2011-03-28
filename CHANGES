@@ -6,8 +6,10 @@
     * the Changelog test now supports Codenames. It suggests to add codenames
       for table releaes as well
       (Damien Krotkine)
-    * GH #420 : Extra content generated
+    * GH #420: Extra content generated
       (Alberto Simões, Damien Krotkine)
+    * GH #409: If pass has no more matching routes, return 404.
+      (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * GH #396: Test that Dancer::Session::Cookie isn't broken
