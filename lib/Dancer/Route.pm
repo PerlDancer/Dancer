@@ -175,7 +175,7 @@ sub run {
             return $next_route->run($request);
         }
         else {
-            Dancer::Logger::warning("Last matching route passed!");
+            Dancer::Logger::core('Last matching route passed!');
             return undef;
         }
     }
