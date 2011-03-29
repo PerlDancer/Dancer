@@ -166,16 +166,13 @@ sub get_file_response_for_path {
 # private
 sub _get_full_mime_type {
     my $mime = Dancer::MIME->instance();
-    return $mime->mime_type_for(shift @_);
+    return $mime->for_alias(shift @_);
 }
 
 sub _get_mime_type {
-    my ($filename) = @_;
-    my ($ext) = $filename =~ /\.([^.]+)$/;
-    return 'application/data' unless $ext;
-
+    my $file = shift;
     my $mime = Dancer::MIME->instance();
-    return $mime->mime_type_for($ext);
+    return $mime->for_file($file);
 }
 
 # set of builtin templates needed by Dancer when rendering HTML pages
