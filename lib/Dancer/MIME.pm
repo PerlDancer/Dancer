@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Dancer::Object::Singleton';
 
+use Dancer::Config;
+
 use MIME::Types;
 
 # Initialise MIME::Types at compile time, to ensure it's done before
@@ -12,7 +14,7 @@ use MIME::Types;
 # as MIME::Types fails to load its mappings from the DATA handle. See
 # t/04_static_file/003_mime_types_reinit.t and GH#136.
 BEGIN {
-        MIME::Types->new(only_complete => 1);
+    MIME::Types->new(only_complete => 1);
 }
 
 __PACKAGE__->attributes( qw/mime_type aliases/ );
@@ -24,20 +26,26 @@ sub init {
     $instance->aliases({});
 }
 
-# if not used with care these two methods can create cyclic structures.
-# would prefer not to burn CPU testing for that, but I can...
-sub add_mime_type {
-    my ($self, $name, $mime_type) = @_;
-    return $self->add_mime_alias($name => $mime_type);
+sub default {
+    my $instance = shift;
+    return Dancer::Config::setting("default_mime_type") || "application/data";
 }
 
-sub add_mime_alias {
+sub add {
     my ($self, $alias, $name) = @_;
     $self->aliases->{$alias} = $name;
     return $name;
 }
 
-sub mime_type_for {
+sub for_file {
+    my ($mime, $filename) = @_;
+    my ($ext) = $filename =~ /\.([^.]+)$/;
+    return 'application/data' unless $ext;
+
+    return $mime->for_alias($ext);
+}
+
+sub for_alias {
     my ($self, $content_type) = @_;
 
     my $i;
@@ -53,7 +61,7 @@ sub mime_type_for {
         if ($type_def) {
             $content_type = $type_def->type;
         } else {
-            $content_type = 'text/plain'; #sensible default
+            $content_type = $self->default;
         }
     }
     return $content_type;
@@ -71,16 +79,28 @@ Dancer::MIME - Singleton object to handle MimeTypes
     # retrieve object instance
     my $mime = Data::MIME->instance();
 
+    # return a hash reference of aliases
+    $mime->aliases;
+
+    # return the default mime-type for unknown files
+    $mime->default
+
+    # set the default mime-type with Dancer::Config or Dancer, like
+    set default_mime_type => "text/plain";
+    # or directly in your config.yml file.
+
     # add non standard mime type
-    $mime->add_mime_type( foo => "text/foo" );
+    $mime->add( foo => "text/foo" );
 
     # add an alias
-    $mime->add_mime_alias( bar => "foo" );
+    $mime->add( bar => "foo" );
 
     # get mime type for standard or non standard types
-    $nonstandard_type = $mime->mime_type_for('foo');
-    $standard_type = $mime->mime_type_for('svg');
-    my $response = Dancer::SharedData->response->status(200);
+    $nonstandard_type = $mime->for_alias('foo');
+    $standard_type    = $mime->for_alias('svg');
+
+    # get mime type for a file (given the extension)
+    $mime_type = $mime->for_file("foo.bar");
 
 =head1 PUBLIC API
 
@@ -90,23 +110,27 @@ Dancer::MIME - Singleton object to handle MimeTypes
 
 return the Dancer::MIME instance object.
 
-=head2 add_mime_type
+=head2 add
 
-    $mime->add_mime_type( foo => "text/foo" );
+    # add nonstandard mime type
+    $mime->add( foo => "text/foo" );
 
-Adds a non standard mime type.
+    # add alias to standard or previous alias
+    $mime->add( my_jpg => 'jpg' );
 
-=head2 add_mime_alias
+Adds a non standard mime type, or an alias to an existing one.
 
-    $mime->add_mime_alias( my_jpg => 'jpg' );
+=head2 for_alias
 
-Add an alias to a standard or non standard mime type.
-
-=head2 mime_type_for
-
-    $mime->mime_type_for( 'jpg' );
+    $mime->for_alias( 'jpg' );
 
 Retrieve the mime type for a standard or non standard mime type.
+
+=head2 for_file
+
+    $mime->for_file( 'file.jpg' );
+
+Retrieve the mime type for a file, based on a file extension.
 
 =head2 aliases
 
