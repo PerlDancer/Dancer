@@ -5,6 +5,7 @@ use warnings;
 use base 'Dancer::Object::Singleton';
 
 use Dancer::Config;
+use Dancer::Deprecation;
 
 use MIME::Types;
 
@@ -65,6 +66,27 @@ sub for_alias {
         }
     }
     return $content_type;
+}
+
+sub add_mime_type {
+    my ($self, $name, $type) = @_;
+    Dancer::Deprecation->deprecated(feature => 'add_mime_type',
+                                    reason => 'use the new "add" method');
+    $self->add($name => $type);
+}
+
+sub add_mime_alias {
+    my ($self, $name, $type) = @_;
+    Dancer::Deprecation->deprecated(feature => 'add_mime_alias',
+                                    reason => 'use the new "add" method');
+    $self->add($name => $type);
+}
+
+sub mime_type_for {
+    my ($self, $content_type) = @_;
+    Dancer::Deprecation->deprecated(feature => 'mime_type_for',
+                                    reason => 'use the new "for_alias" method');
+    return $self->for_alias($content_type);
 }
 
 42;
@@ -138,4 +160,32 @@ Retrieve the mime type for a file, based on a file extension.
 
 Retrieve the full hash table of added mime types and aliases.
 
+=head1 DEPRECATED API
+
+=head2 add_mime_type
+
+Check the new C<add> method.
+
+=head2 add_mime_alias
+
+Check the new C<add> method.
+
+=head2 mime_type_for
+
+Check the new C<for_alias> method.
+
+=head1 AUTHORS
+
+This module has been written and rewritten by different people from
+Dancer project.
+
+=head1 LICENCE
+
+This module is released under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<Dancer>
+
 =cut
+
