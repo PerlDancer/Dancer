@@ -19,13 +19,13 @@ BEGIN {
     MIME::Types->new(only_complete => 1);
 }
 
-__PACKAGE__->attributes( qw/mime_type aliases/ );
+__PACKAGE__->attributes( qw/mime_type custom_types/ );
 
 sub init {
     my ($class, $instance) = @_;
 
     $instance->mime_type(MIME::Types->new(only_complete => 1));
-    $instance->aliases({});
+    $instance->custom_types({});
 }
 
 sub default {
@@ -34,14 +34,14 @@ sub default {
 }
 
 sub add_type {
-    my ($self, $alias, $name) = @_;
-    $self->aliases->{$alias} = $name;
+    my ($self, $name, $type) = @_;
+    $self->custom_types->{$name} = $type;
     return;
 }
 
 sub add_alias {
     my($self, $alias, $orig) = @_;
-    my $type = $self->for_alias($orig) || croak "Can't find a mime type for $orig to alias $alias to";
+    my $type = $self->for_name($orig) || croak "Can't find a mime type for $orig to alias $alias to";
     $self->add_type($alias, $type);
     return;
 }
@@ -51,19 +51,19 @@ sub for_file {
     my ($ext) = $filename =~ /\.([^.]+)$/;
     return 'application/data' unless $ext;
 
-    return $mime->for_alias($ext);
+    return $mime->for_name($ext);
 }
 
 sub name_or_type {
     my($self, $name) = @_;
 
     return $name if $name =~ m{/};  # probably a mime type
-    return $self->for_alias($name);
+    return $self->for_name($name);
 }
 
-sub for_alias {
+sub for_name {
     my ($self, $name) = @_;
-    return $self->aliases->{$name} || $self->mime_type->mimeTypeOf(lc $name) || $self->default;
+    return $self->custom_types->{$name} || $self->mime_type->mimeTypeOf(lc $name) || $self->default;
 }
 
 sub add_mime_type {
@@ -76,15 +76,15 @@ sub add_mime_type {
 sub add_mime_alias {
     my ($self, $alias, $orig) = @_;
     Dancer::Deprecation->deprecated(feature => 'add_mime_alias',
-                                    reason => 'use the new "add" method');
+                                    reason => 'use the new "add_alias" method');
     $self->add_alias($alias => $orig);
 }
 
 sub mime_type_for {
     my ($self, $content_type) = @_;
     Dancer::Deprecation->deprecated(feature => 'mime_type_for',
-                                    reason => 'use the new "for_alias" method');
-    return $self->for_alias($content_type);
+                                    reason => 'use the new "name_or_type" method');
+    return $self->name_or_type($content_type);
 }
 
 42;
@@ -99,8 +99,8 @@ Dancer::MIME - Singleton object to handle MimeTypes
     # retrieve object instance
     my $mime = Data::MIME->instance();
 
-    # return a hash reference of aliases
-    $mime->aliases;
+    # return a hash reference of user defined types
+    my $types = $mime->custom_types;
 
     # return the default mime-type for unknown files
     $mime->default
@@ -112,12 +112,12 @@ Dancer::MIME - Singleton object to handle MimeTypes
     # add non standard mime type
     $mime->add_type( foo => "text/foo" );
 
-    # add an alias
+    # add an alias to an existing type
     $mime->add_alias( bar => "foo" );
 
     # get mime type for standard or non standard types
-    $nonstandard_type = $mime->for_alias('foo');
-    $standard_type    = $mime->for_alias('svg');
+    $nonstandard_type = $mime->for_name('foo');
+    $standard_type    = $mime->for_name('svg');
 
     # get mime type for a file (given the extension)
     $mime_type = $mime->for_file("foo.bar");
@@ -144,9 +144,9 @@ Add a non standard mime type or overrides an existing one.
 
 Adds an alias to an existing mime type.
 
-=head2 for_alias
+=head2 for_name
 
-    $mime->for_alias( 'jpg' );
+    $mime->for_name( 'jpg' );
 
 Retrieve the mime type for a standard or non standard mime type.
 
@@ -156,11 +156,11 @@ Retrieve the mime type for a standard or non standard mime type.
 
 Retrieve the mime type for a file, based on a file extension.
 
-=head2 aliases
+=head2 custom_types
 
-    $my_aliases = $mime->aliases;
+    my $types = $mime->custom_types;
 
-Retrieve the full hash table of added mime types and aliases.
+Retrieve the full hash table of added mime types.
 
 =head2 name_or_type
 
@@ -181,7 +181,7 @@ Check the new C<add> method.
 
 =head2 mime_type_for
 
-Check the new C<for_alias> method.
+Check the new C<for_name> and C<name_or_type> methods.
 
 =head1 AUTHORS
 
