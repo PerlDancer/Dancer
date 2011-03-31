@@ -757,17 +757,14 @@ Shortcut to access the instance object of L<Dancer::MIME>. You should
 check its man page for details, as this entry just summarize the most
 relevant methods.
 
-    # Returns all the user-defined mime-types and aliases.
-    my $aliases = mime->aliases;
-
     # set a new mime type
-    mime->add( foo => 'text/foo' );
+    mime->add_type( foo => 'text/foo' );
 
     # set a mime type alias
-    mime->add( f => 'foo' );
+    mime->add_alias( f => 'foo' );
 
     # get mime type for an alias
-    my $m = mime->for_alias( 'f' );
+    my $m = mime->for_name( 'f' );
 
     # get mime type for a file (based on extension)
     my $m = mime->for_file( "foo.bar" );
@@ -776,7 +773,7 @@ relevant methods.
     my $d = mime->default;
 
     # set the default mime type using config.yml
-    # or using the set keywork
+    # or using the set keyword
     set default_mime_type => 'text/plain';
 
 =head2 params
