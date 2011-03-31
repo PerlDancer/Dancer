@@ -39,11 +39,10 @@ sub add {
 }
 
 sub for_file {
-    my ($mime, $filename) = @_;
+    my ($self, $filename) = @_;
     my ($ext) = $filename =~ /\.([^.]+)$/;
-    return 'application/data' unless $ext;
-
-    return $mime->for_alias($ext);
+    return $self->default unless $ext;
+    return $self->for_alias($ext);
 }
 
 sub for_alias {
