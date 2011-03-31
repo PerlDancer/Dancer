@@ -16,7 +16,7 @@ set public => path(dirname(__FILE__), 'static');
 my $public = setting('public');
 
 # test we do not have any mime_type alias defined.
-is_deeply(mime->aliases, {}, "No aliases present.");
+is_deeply(mime->custom_types, {}, "No aliases present.");
 
 # create fake request
 my $path = '/hello.foo';
@@ -44,10 +44,10 @@ is($headers{'Content-Type'}, "text/plain", "$path is sent with new default mime_
 
 # check we can add a mime type
 mime->add_type(foo => 'text/foo');
-is mime->for_alias("foo"), "text/foo", "can add an alias";
+is mime->for_name("foo"), "text/foo", "can add an alias";
 
 # check that mime type is returned in the aliases method
-is_deeply(mime->aliases, {foo => 'text/foo'}, "just the 'foo' alias.");
+is_deeply(mime->custom_types, {foo => 'text/foo'}, "just the 'foo' alias.");
 
 # prepare another fake request...
 Dancer::SharedData->request($request);
