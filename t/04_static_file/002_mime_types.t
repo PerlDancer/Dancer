@@ -2,7 +2,6 @@ use strict;
 use warnings;
 
 use Dancer ':syntax';
-use Dancer::MIME;
 use Dancer::ModuleLoader;
 
 use File::Spec;
@@ -44,7 +43,8 @@ ok(defined($resp), "static file is found for $path");
 is($headers{'Content-Type'}, "text/plain", "$path is sent with new default mime_type");
 
 # check we can add a mime type
-ok(mime->add(foo => 'text/foo'), 'mime type foo is set as text/foo');
+mime->add_type(foo => 'text/foo');
+is mime->for_alias("foo"), "text/foo", "can add an alias";
 
 # check that mime type is returned in the aliases method
 is_deeply(mime->aliases, {foo => 'text/foo'}, "just the 'foo' alias.");
