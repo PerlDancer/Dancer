@@ -7,6 +7,7 @@ use base 'Dancer::Object::Singleton';
 use Dancer::Config;
 use Dancer::Deprecation;
 
+use Carp;
 use MIME::Types;
 
 # Initialise MIME::Types at compile time, to ensure it's done before
@@ -32,10 +33,17 @@ sub default {
     return Dancer::Config::setting("default_mime_type") || "application/data";
 }
 
-sub add {
+sub add_type {
     my ($self, $alias, $name) = @_;
     $self->aliases->{$alias} = $name;
-    return $name;
+    return;
+}
+
+sub add_alias {
+    my($self, $alias, $orig) = @_;
+    my $type = $self->for_alias($orig) || croak "Can't find a mime type for $orig to alias $alias to";
+    $self->add_type($alias, $type);
+    return;
 }
 
 sub for_file {
@@ -45,40 +53,30 @@ sub for_file {
     return $self->for_alias($ext);
 }
 
+sub name_or_type {
+    my($self, $name) = @_;
+
+    return $name if $name =~ m{/};  # probably a mime type
+    return $self->for_alias($name);
+}
+
 sub for_alias {
-    my ($self, $content_type) = @_;
-
-    my $i;
-    while (exists($self->aliases->{$content_type})) {
-        last if $i++ > 10; # 10 redirects is more than enough
-        $content_type = $self->aliases->{$content_type}
-    }
-
-    # expect it not to be a "final" content_type type unless it contains
-    # at least one slash
-    if ($content_type !~ m!/!) {
-        my $type_def = $self->mime_type->mimeTypeOf(lc $content_type);
-        if ($type_def) {
-            $content_type = $type_def->type;
-        } else {
-            $content_type = $self->default;
-        }
-    }
-    return $content_type;
+    my ($self, $name) = @_;
+    return $self->aliases->{$name} || $self->mime_type->mimeTypeOf(lc $name) || $self->default;
 }
 
 sub add_mime_type {
     my ($self, $name, $type) = @_;
     Dancer::Deprecation->deprecated(feature => 'add_mime_type',
                                     reason => 'use the new "add" method');
-    $self->add($name => $type);
+    $self->add_type($name => $type);
 }
 
 sub add_mime_alias {
-    my ($self, $name, $type) = @_;
+    my ($self, $alias, $orig) = @_;
     Dancer::Deprecation->deprecated(feature => 'add_mime_alias',
                                     reason => 'use the new "add" method');
-    $self->add($name => $type);
+    $self->add_alias($alias => $orig);
 }
 
 sub mime_type_for {
@@ -111,10 +109,10 @@ Dancer::MIME - Singleton object to handle MimeTypes
     # or directly in your config.yml file.
 
     # add non standard mime type
-    $mime->add( foo => "text/foo" );
+    $mime->add_type( foo => "text/foo" );
 
     # add an alias
-    $mime->add( bar => "foo" );
+    $mime->add_alias( bar => "foo" );
 
     # get mime type for standard or non standard types
     $nonstandard_type = $mime->for_alias('foo');
@@ -131,15 +129,19 @@ Dancer::MIME - Singleton object to handle MimeTypes
 
 return the Dancer::MIME instance object.
 
-=head2 add
+=head2 add_type
 
     # add nonstandard mime type
-    $mime->add( foo => "text/foo" );
+    $mime->add_type( foo => "text/foo" );
+
+Add a non standard mime type or overrides an existing one.
+
+=head2 add_alias
 
     # add alias to standard or previous alias
-    $mime->add( my_jpg => 'jpg' );
+    $mime->add_alias( my_jpg => 'jpg' );
 
-Adds a non standard mime type, or an alias to an existing one.
+Adds an alias to an existing mime type.
 
 =head2 for_alias
 
@@ -158,6 +160,13 @@ Retrieve the mime type for a file, based on a file extension.
     $my_aliases = $mime->aliases;
 
 Retrieve the full hash table of added mime types and aliases.
+
+=head2 name_or_type
+
+    my $type = $mime->name_or_type($thing);
+
+Resolves the $thing into a content $type whether it's the name of a
+MIME type like "txt" or already a mime type like "text/plain".
 
 =head1 DEPRECATED API
 

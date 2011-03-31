@@ -761,10 +761,10 @@ relevant methods.
     my $aliases = mime->aliases;
 
     # set a new mime type
-    mime->add( foo => 'text/foo' );
+    mime->add_type( foo => 'text/foo' );
 
     # set a mime type alias
-    mime->add( f => 'foo' );
+    mime->add_alias( f => 'foo' );
 
     # get mime type for an alias
     my $m = mime->for_alias( 'f' );

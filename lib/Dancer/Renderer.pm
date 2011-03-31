@@ -166,7 +166,7 @@ sub get_file_response_for_path {
 # private
 sub _get_full_mime_type {
     my $mime = Dancer::MIME->instance();
-    return $mime->for_alias(shift @_);
+    return $mime->name_or_type(shift @_);
 }
 
 sub _get_mime_type {
