@@ -142,6 +142,7 @@ t/03_route_handler/07_compilation_warning.t
 t/03_route_handler/08_errors.t
 t/03_route_handler/09_status.t
 t/03_route_handler/11_redirect.t
+t/03_route_handler/11_redirect_absolute.t
 t/03_route_handler/11_redirect_no_content.t
 t/03_route_handler/12_response.t
 t/03_route_handler/13_any_route_handler.t
@@ -212,6 +213,7 @@ t/08_session/08_simple.t
 t/08_session/09_session.t
 t/08_session/10_filter.t
 t/08_session/11_session_secure.t
+t/08_session/12_session_name.t
 t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
@@ -293,6 +295,7 @@ t/18_main_dsl/uri_for.t
 t/19_dancer/01_script.t
 t/19_dancer/02_script_version_from.t
 t/20_deprecation/01_api.t
+t/21_dependents/Dancer-Session-Cookie.t
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm
