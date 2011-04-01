@@ -256,7 +256,18 @@ sub dancer_response {
     # then store the request
     Dancer::SharedData->request($request);
 
-    my $get_action = Dancer::Renderer::get_action_response();
+    # duplicate some code from Dancer::Handler
+    my $get_action = eval {
+        Dancer::Renderer::get_action_response() ||
+            Dancer::Renderer->render_error(404)
+          };
+    if ($@) {
+        Dancer::Error->new(
+            code    => 500,
+            title   => "Runtime Error",
+            message => $@
+        )->render();
+    }
     my $response = Dancer::SharedData->response();
     $response->content('') if $method eq 'HEAD';
     Dancer::SharedData->reset_response();
