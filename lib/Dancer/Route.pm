@@ -309,6 +309,11 @@ sub _build_regexp_from_string {
         }
     }
 
+    # parse megasplat
+    # we use {0,} instead of '*' not to fall in the splat rule
+    # same logic for [^\n] instead of '.'
+    $capture = 1 if $pattern =~ s!\Q**\E!([^\n]+)!g;
+
     # parse wildcards
     if ($pattern =~ /\*/) {
         $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
