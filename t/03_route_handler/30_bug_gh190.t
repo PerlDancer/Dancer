@@ -13,6 +13,6 @@ ok( get( '/', sub { $i++; 'Hello' } ) );
 
 route_exists                [ GET => '/' ];
 response_headers_are_deeply [ GET => '/' ],
-  [ 'Location' => 'http://localhost/somewhere' ];
+  [ 'Location' => '/somewhere' ];
 response_content_is [ GET => '/' ], '';
 is $i, 0;
