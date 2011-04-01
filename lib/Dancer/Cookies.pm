@@ -23,7 +23,7 @@ sub parse_cookie_from_env {
     return {} unless defined $env_str;
 
     my $cookies = {};
-    foreach my $cookie ( split( '; ', $env_str ) ) {
+    foreach my $cookie ( split( /[,;]\s/, $env_str ) ) {
         my ( $name, $value ) = split( '=', $cookie );
         my @values;
         if ( $value ne '' ) {
@@ -36,15 +36,23 @@ sub parse_cookie_from_env {
     return $cookies;
 }
 
-# return true if the given cookie is not the same as the one sent by the client
-sub has_changed {
-    my ($self, $cookie) = @_;
-    my ($name, $value) = ($cookie->{name}, $cookie->{value});
+# set_cookie name => value,
+#     expires => time() + 3600, domain => '.foo.com'
+sub set_cookie {
+    my ( $class, $name, $value, %options ) = @_;
+    my $cookie =  Dancer::Cookie->new(
+        name  => $name,
+        value => $value,
+        %options
+    );
+    Dancer::Cookies->set_cookie_object($name => $cookie);
+}
 
-    my $client_cookies = parse_cookie_from_env();
-    my $search         = $client_cookies->{$name};
-    return 1 unless defined $search;
-    return $search->value ne $value;
+sub set_cookie_object {
+    my ($class, $name, $cookie) = @_;
+    Dancer::SharedData->response->push_header(
+        'Set-Cookie' => $cookie->to_header);
+    Dancer::Cookies->cookies->{$name} = $cookie;
 }
 
 1;
@@ -93,11 +101,6 @@ Fetches all the cookies from the environment, parses them and creates a hashref
 of all cookies.
 
 It also returns all the hashref it created.
-
-=head2 has_changed
-
-Accepts a cookie and returns true if the given cookie is not the same as the one
-sent by the user.
 
 =head1 AUTHOR
 

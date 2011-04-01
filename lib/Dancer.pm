@@ -3,22 +3,19 @@ package Dancer;
 use strict;
 use warnings;
 use Carp;
-use Cwd 'abs_path', 'realpath';
+use Cwd 'realpath';
 
-use vars qw($VERSION $AUTHORITY @EXPORT);
+our $VERSION   = '1.3029_01';
+our $AUTHORITY = 'SUKRIA';
 
-$VERSION   = '1.3010_01';
-$AUTHORITY = 'SUKRIA';
-
+use Dancer::App;
 use Dancer::Config;
+use Dancer::Cookies;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
-use Dancer::Helpers;
 use Dancer::Logger;
-use Dancer::Plugin;
 use Dancer::Renderer;
-use Dancer::Response;
 use Dancer::Route;
 use Dancer::Serializer::JSON;
 use Dancer::Serializer::YAML;
@@ -27,14 +24,13 @@ use Dancer::Serializer::Dumper;
 use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
-use Dancer::ModuleLoader;
 use Dancer::MIME;
+
 use File::Spec;
-use File::Basename 'basename';
 
 use base 'Exporter';
 
-@EXPORT    = qw(
+our @EXPORT    = qw(
   after
   any
   before
@@ -57,11 +53,13 @@ use base 'Exporter';
   get
   halt
   header
+  push_header
   headers
   layout
   load
   load_app
   logger
+  mime
   mime_type
   options
   params
@@ -106,77 +104,109 @@ sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
-sub content_type    { Dancer::Response->content_type(@_) }
-sub dance           { Dancer::start(@_) }
+sub content_type    { Dancer::SharedData->response->content_type(@_) }
+sub dance           { goto &start }
 sub debug           { goto &Dancer::Logger::debug }
+sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
-sub send_error      { Dancer::Helpers->error(@_) }
 sub false           { 0 }
-sub forward         { Dancer::Response->forward(shift) }
+sub forward         { Dancer::SharedData->response->forward(shift) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
-sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
+sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
-sub halt            { Dancer::Response->halt(@_) }
-sub headers         { Dancer::Response->headers(@_) }
+sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
+sub push_header     { Dancer::SharedData->response->push_header(@_); }
+sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
+sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          { set(logger => @_) }
+sub mime            { Dancer::MIME->instance() }
 sub mime_type       {
-    my $mime = Dancer::MIME->instance();
-    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
-    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
-    else                  { $mime->aliases           }
+    Dancer::Deprecation->deprecated(reason => "use 'mime' from Dancer.pm",fatal => 1)
 }
+sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
-sub pass            { Dancer::Response->pass }
+sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
-sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
-sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
-sub r               { croak "'r' is DEPRECATED, use qr{} instead" }
-sub redirect        { Dancer::Helpers::redirect(@_) }
-sub render_with_layout { Dancer::Helpers::render_with_layout(@_) }
+sub redirect        { goto &_redirect }
+sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
-sub send_file       { Dancer::Helpers::send_file(@_) }
+sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
+sub send_file       { goto &_send_file }
 sub set             { goto &setting }
+sub set_cookie      { Dancer::Cookies->set_cookie(@_) }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
-sub set_cookie      { Dancer::Helpers::set_cookie(@_) }
-
-sub session {
-    croak "Must specify session engine in settings prior to using 'session' keyword" unless setting('session');
-    if (@_ == 0) {
-        return Dancer::Session->get;
-    }
-    else {
-        return (@_ == 1)
-          ? Dancer::Session->read(@_)
-          : Dancer::Session->write(@_);
-    }
-}
+sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
-sub status          { Dancer::Response->status(@_) }
-sub template        { Dancer::Helpers::template(@_) }
-sub true            { 1 }
+sub start           { goto &_start }
+sub status          { Dancer::SharedData->response->status(@_) }
+sub template        { Dancer::Template::Abstract->template(@_) }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
-sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
 sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
+sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
+sub true            { 1 }
 sub upload          { Dancer::SharedData->request->upload(@_) }
 sub uri_for         { Dancer::SharedData->request->uri_for(@_) }
 sub var             { Dancer::SharedData->var(@_) }
 sub vars            { Dancer::SharedData->vars }
 sub warning         { goto &Dancer::Logger::warning }
 
+# When importing the package, strict and warnings pragma are loaded,
+# and the appdir detection is performed.
+sub import {
+    my ($class, @args) = @_;
+    my ($package, $script) = caller;
+
+    strict->import;
+    utf8->import;
+
+    my @final_args;
+    my $syntax_only = 0;
+    my $as_script   = 0;
+    foreach (@args) {
+        if ( $_ eq ':moose' ) {
+            push @final_args, '!before', '!after';
+        }
+        elsif ( $_ eq ':tests' ) {
+            push @final_args, '!pass';
+        }
+        elsif ( $_ eq ':syntax' ) {
+            $syntax_only = 1;
+        }
+        elsif ($_ eq ':script') {
+            $as_script = 1;
+        } else {
+            push @final_args, $_;
+        }
+    }
+
+    $class->export_to_level(1, $class, @final_args);
+
+    # if :syntax option exists, don't change settings
+    return if $syntax_only;
+
+    Dancer::GetOpt->process_args() if !$as_script;
+
+    _init_script_dir($script);
+    Dancer::Config->load;
+}
+
+# private code
+
 # FIXME handle previous usage of load_app with multiple app names
-sub load_app {
+sub _load_app {
     my ($app_name, %options) = @_;
+    my $script = (caller)[1];
     Dancer::Logger::core("loading application $app_name");
 
     # set the application
@@ -186,10 +216,8 @@ sub load_app {
     $app->prefix($options{prefix})     if $options{prefix};
     $app->settings($options{settings}) if $options{settings};
 
-
     # load the application
-    my ($package, $script) = caller;
-    _init($script);
+    _init_script_dir($script);
     my ($res, $error) = Dancer::ModuleLoader->load($app_name);
     $res or croak "unable to load application $app_name : $error";
 
@@ -197,29 +225,104 @@ sub load_app {
     Dancer::App->set_running_app('main');
 }
 
-# When importing the package, strict and warnings pragma are loaded,
-# and the appdir detection is performed.
-sub import {
-    my ($class,   $symbol) = @_;
-    my ($package, $script) = caller;
+sub _init_script_dir {
+    my ($script) = @_;
+    
+    my ($script_vol, $script_dirs, $script_name) =
+      File::Spec->splitpath(File::Spec->rel2abs($script));
 
-    strict->import;
-    utf8->import;
-    $class->export_to_level(1, $class, @EXPORT);
-
-    # if :syntax option exists, don't change settings
-    if ($symbol && $symbol eq ':syntax') {
-        return;
+    # normalize
+    if ( -d ( my $fulldir = File::Spec->catdir( $script_dirs, $script_name ) ) ) {
+        $script_dirs = $fulldir;
+        $script_name = '';
     }
 
-    Dancer::GetOpt->process_args();
+    my @script_dirs = File::Spec->splitdir($script_dirs);
+    my $script_path;
+    if ($script_vol) {
+        $script_path = Dancer::path($script_vol, $script_dirs);
+    } else {
+        $script_path = Dancer::path($script_dirs);
+    }
 
-    _init($script);
-    Dancer::Config->load;
+    my $LAYOUT_PRE_DANCER_1_2 = 1;
+
+    # in bin/ or public/ we need to go one level upper to find the appdir
+    $LAYOUT_PRE_DANCER_1_2 = 0
+      if ($script_dirs[$#script_dirs - 1] eq 'bin')
+      or ($script_dirs[$#script_dirs - 1] eq 'public');
+
+    my $appdir = $ENV{DANCER_APPDIR} || (
+          $LAYOUT_PRE_DANCER_1_2
+        ? $script_path
+        : File::Spec->rel2abs(Dancer::path($script_path, '..'))
+    );
+    Dancer::setting(appdir => $appdir);
+
+    # once the dancer_appdir have been defined, we export to env
+    $ENV{DANCER_APPDIR} = $appdir;
+
+    Dancer::Logger::core("initializing appdir to: `$appdir'");
+
+    Dancer::setting(confdir => $ENV{DANCER_CONFDIR}
+      || $appdir);
+
+    Dancer::setting(public => $ENV{DANCER_PUBLIC}
+      || Dancer::FileUtils::path_no_verify($appdir, 'public'));
+
+    Dancer::setting(views => $ENV{DANCER_VIEWS}
+      || Dancer::FileUtils::path_no_verify($appdir, 'views'));
+
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
+    $res or croak "unable to set libdir : $error";
+}
+
+sub _redirect {
+    my ($destination, $status) = @_;
+    if ($destination !~ m!^(\w+:/)?/!) {
+        # no absolute uri here, build one, RFC 2616 forces us to do so
+        my $request = Dancer::SharedData->request;
+        $destination = $request->uri_for($destination, {}, 1);
+    }
+    my $response = Dancer::SharedData->response;
+    $response->status($status || 302);
+    $response->headers('Location' => $destination);
+}
+
+sub _session {
+    engine 'session'
+      or croak "Must specify session engine in settings prior to using 'session' keyword";
+      @_ == 0 ? Dancer::Session->get
+    : @_ == 1 ? Dancer::Session->read(@_)
+    :           Dancer::Session->write(@_);
+}
+
+sub _send_file {
+    my ($path, %options) = @_;
+
+    my $request = Dancer::Request->new_for_request('GET' => $path);
+    Dancer::SharedData->request($request);
+
+    if (exists($options{content_type})) {
+        $request->content_type($options{content_type});
+    }
+
+    my $resp;
+    if ($options{absolute} && -f $path) {
+        $resp = Dancer::Renderer->get_file_response_for_path($path);
+    } else {
+        $resp = Dancer::Renderer->get_file_response();
+    }
+    return $resp if $resp;
+
+    Dancer::Error->new(
+        code    => 404,
+        message => "No such file: `$path'"
+    )->render();
 }
 
 # Start/Run the application with the chosen apphandler
-sub start {
+sub _start {
     my ($class, $request) = @_;
     Dancer::Config->load;
 
@@ -231,50 +334,6 @@ sub start {
     my $handler = Dancer::Handler->get_handler;
     Dancer::Logger::core("loading handler '".ref($handler)."'");
     return $handler->dance;
-}
-
-
-sub _init {
-    my $script = shift;
-    
-    my ($script_vol, $script_dirs, $script_name) =
-      File::Spec->splitpath(File::Spec->rel2abs($script));
-    my @script_dirs = File::Spec->splitdir($script_dirs);
-    my $script_path = File::Spec->catdir($script_vol, $script_dirs);
-
-    my $LAYOUT_PRE_DANCER_1_2 = 1;
-
-    # in bin/ or public/ we need to go one level upper to find the appdir
-    $LAYOUT_PRE_DANCER_1_2 = 0
-      if ($script_dirs[$#script_dirs - 1] eq 'bin')
-      or ($script_dirs[$#script_dirs - 1] eq 'public');
-
-    setting appdir => $ENV{DANCER_APPDIR}
-      || (
-          $LAYOUT_PRE_DANCER_1_2
-        ? $script_path
-        : File::Spec->rel2abs(path($script_path, '..'))
-      );
-
-    # once the dancer_appdir have been defined, we export to env
-    $ENV{DANCER_APPDIR} = setting('appdir');
-
-    Dancer::Logger::core(
-        "initializing appdir to: `" . setting('appdir') . "'");
-
-    setting confdir => $ENV{DANCER_CONFDIR}
-      || setting('appdir');
-
-    setting public => $ENV{DANCER_PUBLIC}
-      || Dancer::FileUtils::path_no_verify(setting('appdir'), 'public');
-
-    setting views => $ENV{DANCER_VIEWS}
-      || Dancer::FileUtils::path_no_verify(setting('appdir'), 'views');
-
-    setting logger => 'file';
-
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify(setting('appdir'), 'lib'));
-    $res or croak "unable to set libdir : $error";
 }
 
 1;
@@ -338,7 +397,62 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 You can find out more about the many useful plugins available for Dancer in
 L<Dancer::Plugins>.
 
-=head1 METHODS
+
+=head1 EXPORTS
+
+By default, C<use Dancer> exports all the functions below plus sets up
+your app.  You can control the exporting through the normal
+L<Exporter> means.  For example:
+
+    # Just export the route controllers
+    use Dancer qw(before after get post);
+
+    # Export everything but pass to avoid clashing with Test::More
+    use Test::More;
+    use Dancer qw(!pass);
+
+There are also some special tags to control exports and behavior.
+
+=head2 :moose
+
+This will export everything except those functions which clash with
+Moose.  Currently that is L<after> and L<before>.
+
+=head2 :syntax
+
+This tells Dancer to just export symbols and not set up your app.
+This is most useful for writing Dancer code outside of your main route
+handler.
+
+=head2 :tests
+
+This will export everything except those functions which clash with
+commonly used testing modules.  Currently that is L<pass>.
+
+These can be combined.  For example, while testing...
+
+    use Test::More;
+    use Dancer qw(:syntax :tests);
+
+    # Test::Most also exports "set" and "any"
+    use Test::Most;
+    use Dancer qw(:syntax :tests !set !any);
+
+    # Alternatively, if you want to use Dancer's set and any...
+    use Test::Most qw(!set !any);
+    use Dancer qw(:syntax :tests);
+
+=head2 :script
+
+This will export all the keywords, and will also load the configuration.
+
+This is useful when you want to use your Dancer application from a script.
+
+    use MyApp;
+    use Dancer ':script';
+    MyApp::schema('DBSchema')->deploy();
+
+=head1 FUNCTIONS
 
 =head2 after
 
@@ -584,10 +698,20 @@ Adds custom headers to responses:
 
 =head2 header
 
-Adds a custom header to response:
+adds a custom header to response:
 
     get '/send/header', sub {
-        header 'X-My-Header' => 'shazam!';
+        header 'x-my-header' => 'shazam!';
+    }
+
+=head2 push_header
+
+Do the same as C<header>, but allow for multiple headers with the same name.
+
+    get '/send/header', sub {
+        push_header 'x-my-header' => '1';
+        push_header 'x-my-header' => '2';
+        will result in two headers "x-my-header" in the response
     }
 
 =head2 layout
@@ -625,17 +749,32 @@ C<:syntax> option, in order not to change the application directory
 
 =head2 mime_type
 
-Returns all the user-defined mime-types when called without parameters.
-Behaves as a setter/getter when given parameters
+Deprecated. Check C<mime> bellow.
 
-    # get the global hash of user-defined mime-types:
-    my $mimes = mime_types;
+=head2 mime
 
-    # set a mime-type
-    mime_types foo => 'text/foo';
+Shortcut to access the instance object of L<Dancer::MIME>. You should
+check its man page for details, as this entry just summarize the most
+relevant methods.
 
-    # get a mime-type
-    my $m = mime_types 'foo';
+    # set a new mime type
+    mime->add_type( foo => 'text/foo' );
+
+    # set a mime type alias
+    mime->add_alias( f => 'foo' );
+
+    # get mime type for an alias
+    my $m = mime->for_name( 'f' );
+
+    # get mime type for a file (based on extension)
+    my $m = mime->for_file( "foo.bar" );
+
+    # get current defined default mime type
+    my $d = mime->default;
+
+    # set the default mime type using config.yml
+    # or using the set keyword
+    set default_mime_type => 'text/plain';
 
 =head2 params
 
@@ -687,6 +826,12 @@ You can unset the prefix value:
     prefix undef;
     get '/page1' => sub {}; will match /page1
 
+B<Notice:> once you have a prefix set, do not add a caret to the regex:
+
+    prefix '/foo';
+    get qr{^/bar} => sub { ... } # BAD BAD BAD
+    get qr{/bar}  => sub { ... } # Good!
+
 =head2 del
 
 Defines a route for HTTP B<DELETE> requests to the given URL:
@@ -704,21 +849,6 @@ Defines a route for HTTP B<OPTIONS> requests to the given URL:
 Defines a route for HTTP B<PUT> requests to the given URL:
 
     put '/resource' => sub { ... };
-
-=head2 r
-
-Defines a route pattern as a regular Perl regexp.
-
-This method is B<DEPRECATED>. Dancer now supports real Perl Regexp objects
-instead. You should not use r() but qr{} instead:
-
-Don't do this:
-
-    get r('/some/pattern(.*)') => sub { };
-
-But rather this:
-
-    get qr{/some/pattern(.*)} => sub { };
 
 =head2 redirect
 
@@ -795,16 +925,31 @@ saying C<return send_error(...)> instead.
 
 =head2 send_file
 
-Lets the current route handler send a file to the client.
+Lets the current route handler send a file to the client. Note that
+the path of the file must be relative to the B<public> directory.
 
     get '/download/:file' => sub {
         send_file(params->{file});
     }
 
 The content-type will be set depending on the current mime-types definition
-(see C<mime_type> if you want to define your own).
+(see C<mime> if you want to define your own).
 
-The path of the file must be relative to the B<public> directory.
+If your filename does not have an extension, or you need to force a
+specific mime type, you can pass it to C<send_file> as follows:
+
+    send_file(params->{file}, content_type => 'image/png');
+
+Also, you can use your aliases or file extension names on
+C<content_type>, like this:
+
+    send_file(params->{file}, content_type => 'png');
+
+For files outside your B<public> folder, you can use the C<absolute>
+switch. Just bear in mind that its use needs caution as it can be
+dangerous.
+
+   send_file('/etc/passwd', absolute => 1);
 
 =head2 set
 

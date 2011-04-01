@@ -3,7 +3,7 @@
 # takes care of rendering it.
 use strict;
 use warnings;
-use Test::More import => ['!pass'], tests => 4;
+use Test::More import => ['!pass'], tests => 3;
 use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 
@@ -22,8 +22,6 @@ use TestUtils;
 my $resp = get_response_for_request('GET' => '/hello');
 ok( defined($resp), "response found for /hello");
 is $resp->{content}, "Hello\n", "content looks good";
-
-$resp = get_response_for_request('GET' => '/falsepage');
-ok( defined($resp), "response found for non existent page");
-
-is $resp->{status}, 404, "response is 404";
+Dancer::SharedData->reset_response();
+eval { get_response_for_request('GET' => '/falsepage'); };
+ok $@, 'Failed to get response for nonexistent page';

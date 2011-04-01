@@ -4,34 +4,52 @@ use warnings;
 use Carp;
 use base 'Dancer::Logger::Abstract';
 
-use File::Spec;
+use File::Temp qw/tempdir/;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path open_file);
+use Dancer::FileUtils qw(open_file);
 use IO::File;
 
 sub logdir {
-    my $appdir = setting('appdir');
     my $altpath = setting('log_path');
-    my $logroot = $appdir || File::Spec->tmpdir();
-    return ($altpath ? $altpath : path($logroot, 'logs'));
-}
-
-sub init {
-    my ($self) = @_;
-    my $logdir = logdir();
-
-    if (!-d $logdir) {
-        if (not mkdir $logdir) {
-            carp "log directory $logdir doesn't exist, unable to create";
+    return $altpath if($altpath);
+    my $logroot = setting('appdir');
+    if ($logroot) {
+        if (!-d $logroot && not mkdir $logroot) {
+            carp "log directory $logroot doesn't exist, am unable to create it";
+            return;
+        }
+    } else {
+        unless($logroot = tempdir(CLEANUP => 1, TMPDIR => 1)) {
+            carp "cannot create temp log directory";
             return;
         }
     }
+    unless (-w $logroot and -x $logroot) {
+        my $perm = (stat $logroot)[2] & 07777;
+        chmod($perm | 0700, $logroot);
+        unless (-w $logroot and -x $logroot) {
+            carp "log directory $logroot isn't writable/executable and can't chmod it";
+            return;
+        }
+    }
+    return Dancer::FileUtils::path_no_verify($logroot, 'logs');
+}
 
+sub init {
+    my $self = shift;
+    $self->SUPER::init(@_);
+
+    my $logdir = logdir();
+    return unless ($logdir);
     my $logfile = setting('environment');
-    $logfile = path($logdir, "$logfile.log");
 
-    my $fh = open_file('>>', $logfile);
-
+    mkdir($logdir) unless(-d $logdir);
+    $logfile = File::Spec->catfile($logdir, "$logfile.log");
+    my $fh;
+    unless($fh = open_file('>>', $logfile)) {
+        carp "unable to create or append to $logfile";
+        return;
+    }
     $fh->autoflush;
     $self->{logfile} = $logfile;
     $self->{fh} = $fh;

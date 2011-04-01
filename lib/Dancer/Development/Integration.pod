@@ -77,7 +77,7 @@ First, we make sure we are in sync with C<origin/devel>
 
 Then, from that branch we create a I<temp> sandbox
 
-    git co -b temp
+    git checkout -b temp
 
 We pull here from I<$user>
 
@@ -90,8 +90,8 @@ commits by hand.
 
 From devel, we first create the final C<review> branch:
 
-    git co devel
-    git co -b review/$user
+    git checkout devel
+    git checkout -b review/$user
 
 Then we cherry-pick all the commits we want. To know them, we just
 have to go into I<temp> and inspect the history (with C<git log>).
@@ -111,7 +111,7 @@ commits to change something.
 
 When we're happy with the change set, we can merge into devel:
 
-    git co devel
+    git checkout devel
     git merge --no-ff review/$user
 
 Note the C<--no-ff> switch is used to make sure we'll see a nice

@@ -11,31 +11,65 @@ use Cwd 'realpath';
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file);
+@EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file set_file_mode);
 
-sub path {
-    File::Spec->catfile(@_);
+# Undo UNC special-casing catfile-voodoo on cygwin
+sub _trim_UNC {
+    if ($^O eq 'cygwin') {
+        return if ($#_ < 0);
+        my ($slashes, $part, @parts) = (0, undef, @_);
+        while(defined($part = shift(@parts))) { last if ($part); $slashes++ }
+        $slashes += ($part =~ s/^[\/\\]+//);
+        if ($slashes == 2) {
+            return("/" . $part, @parts);
+        } else {
+            my $slashstr = '';
+            $slashstr .= '/' for (1 .. $slashes);
+            return($slashstr . $part, @parts);
+        }
+    }
+    return(@_);
 }
+sub d_catfile { File::Spec->catfile(_trim_UNC(@_)) }
+sub d_catdir { File::Spec->catdir(_trim_UNC(@_)) }
+sub d_canonpath { File::Spec->canonpath(_trim_UNC(@_)) }
+sub d_catpath { File::Spec->catpath(_trim_UNC(@_)) }
+sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
+
+sub path { d_catfile(@_) }
 
 sub path_no_verify {
-    my @nodes = @_;
+    my @nodes = File::Spec->splitpath(d_catdir(@_)); # 0=vol,1=dirs,2=file
+    my $path = '';
 
     # [0->?] path(must exist),[last] file(maybe exists)
-    return realpath(File::Spec->catdir(@nodes[0 .. ($#nodes - 1)])) . '/'
-      . $nodes[-1];
+    if($nodes[1]) {
+        $path = realpath(File::Spec->catpath(@nodes[0 .. 1],'')) . '/';
+    } else {
+        $path = Cwd::cwd . '/';
+    }
+    $path .= $nodes[2];
+    return $path;
 }
 
 sub dirname { File::Basename::dirname(@_) }
 
+sub set_file_mode {
+    my ($fh) = @_;
+    require Dancer::Config;
+    my $charset = Dancer::Config::setting('charset') || 'utf-8';
+
+    if($charset) {
+        binmode($fh, ":encoding($charset)");
+    }
+    return $fh;
+}
+
 sub open_file {
     my ($mode, $filename) = @_;
-    require Dancer::Config;
-    my $charset = Dancer::Config::setting('charset');
-    length($charset || '')
-      and $mode .= ":encoding($charset)";
     open(my $fh, $mode, $filename)
       or croak "$! while opening '$filename' using mode '$mode'";
-    return $fh;
+    return set_file_mode($fh);
 }
 
 sub read_file_content {
@@ -44,7 +78,7 @@ sub read_file_content {
 
     if ($file) {
         $fh = open_file('<', $file);
-        
+
         return wantarray ? read_glob_content($fh) : scalar read_glob_content($fh);
     }
     else {

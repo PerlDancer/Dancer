@@ -15,7 +15,7 @@ my $res = Dancer::Response->new(headers => [ 'Content-Type' => 'text/html' ], co
 my $psgi_res = Dancer::Handler->render_response($res);
 is(@$psgi_res, 3);
 is($psgi_res->[0], 200, 'default status');
-is_deeply($psgi_res->[1], [ 'Content-Type' => 'text/html' ], 'default headers');
+is_deeply($psgi_res->[1], [ 'Content-Length', 0, 'Content-Type' => 'text/html' ], 'default headers');
 is_deeply($psgi_res->[2], [''], 'default content');
 
 ok $res->content_type('text/plain');
@@ -24,7 +24,7 @@ ok $res->content('123');
 is_deeply(Dancer::Handler->render_response($res),
     [
         200,
-        [ 'Content-Type', 'text/plain' ],
+        [ 'Content-Length', 0, 'Content-Type', 'text/plain' ],
         [ '123' ],
     ],
 );
@@ -34,7 +34,7 @@ setting charset => 'utf-8';
 is_deeply(Dancer::Handler->render_response($res),
     [
         200,
-        [ 'Content-Type', 'text/plain; charset=utf-8' ],
+        [ 'Content-Length', 0, 'Content-Type', 'text/plain; charset=utf-8' ],
         [ '123' ],
     ],
 );
@@ -44,7 +44,7 @@ ok $res->content("\x{0429}");   # cyrillic shcha -- way beyond latin1
 is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
     [
         200,
-        [ 'Content-Type', 'text/plain; charset=utf-8' ],
+        [ 'Content-Length', 0, 'Content-Type', 'text/plain; charset=utf-8' ],
         [ Encode::encode('utf-8', "\x{0429}") ],
     ],
 );
@@ -60,7 +60,7 @@ SKIP: {
     is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
         [
             200,
-            [ 'Content-Type', 'application/json; charset=utf-8' ],
+            [ 'Content-Length', 0, 'Content-Type', 'application/json; charset=utf-8' ],
             [ JSON::to_json({ key => 'value' }) ],
         ],
     );
@@ -81,7 +81,7 @@ SKIP: {
     is_deeply(Dancer::Handler->render_response(Dancer::Serializer->process_response($res)),
         [
             200,
-            [ 'Content-Type', 'text/xml; charset=utf-8' ],
+            [ 'Content-Length', 0, 'Content-Type', 'text/xml; charset=utf-8' ],
             [ Encode::encode('utf-8', XML::Simple::XMLout( { key => "\x{0429}"
                     }, RootName => 'data' )) ],
         ],

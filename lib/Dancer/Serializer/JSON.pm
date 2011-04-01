@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp;
 use Dancer::ModuleLoader;
+use Dancer::Deprecation;
 use Dancer::Config 'setting';
 use base 'Dancer::Serializer::Abstract';
 
@@ -74,7 +75,10 @@ sub _options_as_hashref {
         carp "options for to_json/from_json must be key value pairs (as a hashref)";
     }
     else {
-        carp "options as hash for to_json/from_json is DEPRECATED. please pass a hashref.";
+        Dancer::Deprecation->deprecated(
+            version => '1.3002',
+            message => 'options as hash for to_json/from_json is DEPRECATED. please pass a hashref',
+        );
         return { @_ };
     }
 }

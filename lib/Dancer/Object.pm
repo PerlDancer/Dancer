@@ -88,6 +88,13 @@ sub attributes {
     }
 }
 
+sub attributes_defaults {
+    my ($self, %defaults) = @_;
+    while (my ($k, $v) = each %defaults) {
+        exists $self->{$k} or $self->{$k} = $v;
+    }
+}
+
 1;
 
 __END__
@@ -112,7 +119,7 @@ Dancer::Object - Objects base class for Dancer
 
 =head1 DESCRIPTION
 
-While we B<love> L<Moose>, we can't use it for Dancer and stlil keep Dancer
+While we B<love> L<Moose>, we can't use it for Dancer and still keep Dancer
 minimal, so we wrote Dancer::Object instead.
 
 It provides you with attributes and an initializer.
@@ -147,6 +154,13 @@ Get the attributes of the specific class.
 Generates attributes for whatever object is extending Dancer::Object and saves
 them in an internal hashref so they can be later fetched using
 C<get_attributes>.
+
+=head2 attributes_defaults
+
+  $self->attributes_defaults(length => 2);
+
+given a hash (not a hashref), makes sure an object has the given attributes
+default values. Usually called from within an C<init> function.
 
 =head1 AUTHOR
 

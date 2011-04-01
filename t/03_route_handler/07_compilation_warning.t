@@ -7,7 +7,7 @@ use Dancer ':syntax';
 use Dancer::Logger;
 use File::Temp qw/tempdir/;
 
-my $dir = tempdir(CLEANUP => 1);
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 Dancer::Logger->init('File');
 
@@ -34,7 +34,7 @@ foreach my $test (@tests) {
 	Dancer::SharedData->request($req);
 
 	my $response = Dancer::Renderer::get_action_response();
-	like($response->{content}, 
+	like($response->content, 
 		$test->{expected}, 
 		"response looks good for ".$test->{path});
 }

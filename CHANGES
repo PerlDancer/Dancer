@@ -1,3 +1,241 @@
+1.3029_01   01.04.2011
+
+    [ BUG FIXES ]
+    * Fix t/14_serializer/02_json.t to work with older JSON (relates to GH#416)
+      (Damien Krotkine)
+    * the Changelog test now supports Codenames. It suggests to add codenames
+      for table releaes as well
+      (Damien Krotkine)
+    * GH #420: Extra content generated
+      (Alberto Simões, Damien Krotkine)
+    * GH #409: If pass has no more matching routes, return 404.
+      (Alberto Simões)
+
+    [ ENHANCEMENTS ]
+    * GH #396: Test that Dancer::Session::Cookie isn't broken
+      (Michael G. Schwern)
+    * GH #399: Make sure session can have their name changed.
+      (Michael G. Schwern)
+    * Dancer::Test tests assumes 'GET' if their first argument is scalar.
+      (Yanick Champoux)
+    * send_file accepts optional content-type declaration, to override guessed
+      MIME type, e.g. send_file $filename, content_type => 'image/png'
+      (Alberto Simões, requested by Michael G Schwern)
+    * send_file accepts optional absolute option, to send an absolute path
+      (Alberto Simões)
+    * Have `dancer` cmd tool create MANIFEST and MANIFEST.SKIP.
+      (Alberto Simões)
+    * mime_type is deprecated; new keyword 'mime'; new config key
+      'default_mime_type';
+      (Alberto Simões and Michael G. Schwern)
+    * Recognize absolute redirects 
+      (Yanick Champoux)
+
+    [ DOCUMENTATION ]
+    * Add documentation to send_file optional argument
+      (Alberto Simões)
+    * Fix plack_middlewares example in the cookbook
+      (Michael G. Schwern)
+    * Extend the POD on plugin_setting to prevent a pitfall with plugin
+      modules more than 3 levels deep.
+      (Stefan Hornburg)
+    * GH #400: Documenting the plack_middlewares_map.
+      (Michael G. Schwern, Sawyer X)
+    * GH #422: Documenting no need for caret when you have a prefix.
+      (Sawyer X)
+
+1.3020      21.03.2011
+    ** Codename: The Schwern Cometh // Michael G. Schwern **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+1.3019_02   14.03.2011
+
+    [ BUG FIXES ]
+    * GH #354: Tokens are not passed to layout if no params are passed to
+      template.
+      (Damien Krotkine)
+
+1.3019_01   13.03.2011
+
+    [ BUG FIXES ]
+    * GH #393: Reset vars for each new request.
+      (Franck Cuny)
+
+    [ ENHANCEMENTS ]
+    * GH #391: Dancer::Logger::Note now exists. :)
+      (Sawyer X)
+    * Porting documentation on WRAPPER to Dancer::Template::TemplateToolkit.
+      (Sawyer X)
+    * GH #387: Document views and appdir in Dancer::Config.
+      (Michael G. Schwern)
+    * Add a new symbol to exporter ':script'.
+      (Franck Cuny)
+    * GH #397: Support cookie expire times like "+2h".
+      (Michael G. Schwern)
+
+1.3014_01   10.03.2011
+
+    [ BUG FIXES ]
+    * GH #373: Display valid path to the main app file in the welcome screen.
+      (Franck Cuny)
+    * GH #152, GH #170, GH #362: Log dir is not created when logger is not set
+      to 'file', and setting log_path works as expected.
+      (Franck Cuny)
+    * GH #308: Use request's uri_base.
+      (Sawyer X)
+    * GH #378: Some routes with prefix where wrongly matched.
+      (Franck Cuny)
+
+    [ ENHANCEMENTS ]
+    * GH #351: Explicitly exclude some keywords when important Dancer's syntax,
+      add modes that also excludes some keywords (:moose, :tests).
+      (Sawyer X, Naveed Massjouni, Michael G. Schwern, Franck Cuny)
+    * All logging options accept any number of variables.
+      (Sawyer X)
+    * GH #297: All logging options can automatically serialize references.
+      (Sawyer X)
+    * Add Dancer::Logger::Capture to capture and read log messages during
+      testing.
+      (Michael G. Schwern)
+    * Dancer::Cookie make secure (https only) cookies. It also adds the
+      "session_secure" setting instructing sessions to use secure cookies.
+      (Michael G. Schwern)
+    * Adding uri_base to Request.pm.
+      (Sawyer X)
+    * Make Dancer::Test use the capture logger
+      (Michael G. Schwern)
+
+    [ DOCUMENTATION ]
+    * Dancing on command line.
+      (Maurice Mengel)
+    * Improve Dancer::Cookbook.
+      (Maurice Mengel)
+
+1.3014    04.03.2011
+
+    [ BUG FIXES ]
+    * YAML Session UTF-8 Fix
+      (Roman Galeev)
+    * Tests and documentations for Dancer::Request::Upload + type method in
+      Dancer::Request::Upload
+      (Michael G. Schwern)
+    * Dancer::Test::dancer_response handles correctly its 'body' parameter
+      We can now pass a hash ref as the body of dancer_response, it will
+      automatically be serialized as an URL-encoded string with the appropriate
+      content_type header.
+      (Alexis Sukrieh)
+
+1.3013    01.03.2011
+
+    [ ENHANCEMENTS ]
+    * Fix test suite: the changelog test is skipped if not under 
+      RELEASE_TESTING environment.
+
+1.3012    01.03.2011
+
+    [ BUG FIXES ]
+    * Fix cookies disappearing when more than one is set.
+      Complete refactoring of the cookie handling.
+      (Chris Andrews, Geistteufel)
+    * Properly set the settings in Dancer::Test only after config loading.
+      (Sawyer X)
+    * Fix possible loss of last directory in path.
+      (Sawyer X)
+    * No need for default upper directory in Dancer::Test. This fixes an issue
+      raised on the list about the default scaffolded test failing.
+      (Sawyer X)
+    *  Fix anti UNC substitution under Cygwin
+      (Rowan Thorpe)
+    * GH#299 Return appropriate headers on HEAD request (content-type, ...)
+      (franck cuny)
+    * Use the dancer_version variable in scaffolded app.
+      (Sawyer X, reported by Brian E. Lozier)
+
+    [ ENHANCEMENTS ]
+    * Fix manifest
+      (Damien Krotkine)
+    * Various packaging, changelog and test fixes
+      (Damien Krotkine)
+    * Add a new accessor to Dancer::Request: ->uri.
+      (it's an alias to ->request_uri)
+      (Franck Cuny)
+    * Removes Dancer::Helpers, refactor Dancer.pm accordingly.
+      (Franck Cuny)
+    * Introduce changelog test of hell.
+      (Damien Krotkine)
+    * Add Dancer::Logger::Null.
+      (Sawyer X)
+    * Add Dancer::Logger::Diag.
+      (Sawyer X)
+    * Refactor Dancer::Response
+      (franck cuny)
+    * Allow to use a subclass of Template::Toolkit.
+      (Michael G. Schwern)
+    * Dancer::Test now uses Dancer::Logger::Null instead of ::File.
+      (Sawyer X)
+    * Add Dancer::Deprecation. (handle deprecation messages)
+      (franck cuny)
+    * Introduce new timestamp format in logger (%T)
+      (Roman Galeev)
+    * Refactoring of the forward method
+      (Alex Kalderimis)
+    * Refactoring of internal objects in the core, 
+      use more of Dancer::Object. Introduce attributes_defaults
+      (Damien Krotkine)
+    * Add a perl_version variable to all templates, used in scaffolded app.
+      (Sawyer X, reported by Brian E. Lozier)
+    * Better output when template file is missing.
+      (Brian E. Lozier, Sawyer X)
+
+    [ DOCUMENTATION ]
+    * Add missing methods (e.g. "referer"), sorting, clean up.
+      (Flavio Poletti)
+    * Complete working example of deployment under Nginx/Starman in
+      Deployment.pod
+      (Geistteufel)
+
+1.3010_01    12.02.2011
+
+    [ BUG FIXES ]
+    * GH#136: fix again Mime::Type issues in preforking environment
+      (Chris Andrews)
+    * GH#220: fix for path issues under MacOS X and Windows platforms.
+      A new function is provided by Dancer::FileUtils: path_no_verify()
+      (Rowan Thorpe)
+    * Fix for infinite loops detection in before filters
+      (Flavio Poletti)
+
+    [ ENHANCEMENTS ]
+    * Better detection of the application layout under non-UNIX platforms.
+      (Rowan Thorpe, Alexis Sukrieh)
+
+    [ DOCUMENTATION ]
+    * Fix a typo in Dancer::Request::Upload's POD
+      (Rowan Thorpe)
+    * Better documentation for the before filters, explanations about the
+      potential infinite loops that can happen when using before filters (and 
+      what Dancer does in that case).
+      (Flavio Poletti)
+
+1.3011    14.02.2011
+
+    [ BUG FIXES ]
+    * Set binmode in write_data_to_file() to fix image corruption in
+      Windows
+      (Rowan Thorpe)
+    * GH#319, GH#278, GH#276, GH#217: Fix file issues on Cygwin and 
+      Win32 platforms
+      (Rowan Thorpe)
+    * GH#322: Detect errors in scaffolded dispatchers
+      (Alberto Simões)
+    * Fix tests so that they don't fail if JSON is not installed
+      (Damien Krotkine)
+    
+    [ DOCUMENTATION ]
+    * Small spaces fix (Alberto Simões).
+
 1.3010_01	12.02.2011
 
     [ BUG FIXES ]

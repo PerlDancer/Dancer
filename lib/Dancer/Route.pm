@@ -153,16 +153,11 @@ sub run {
     my ($self, $request) = @_;
 
     my $content  = $self->execute();
-    my $response = Dancer::Response->current;
+    my $response = Dancer::SharedData->response;
 
-    if ( $response->is_forwarded ) {
-        my $new_req = Dancer::Request->new_for_request(
-            $request->method,
-            $response->{forward},
-            $request->params,
-            $request->body,
-            $request->headers,
-        );
+    if ( $response && $response->is_forwarded ) {
+        my $new_req = 
+            Dancer::Request->forward($request, $response->{forward});
 
         my $marshalled = Dancer::Handler->handle_request($new_req);
 
@@ -173,13 +168,15 @@ sub run {
         );
     }
 
-    if ($response->has_passed) {
+    if ($response && $response->has_passed) {
+        $response->pass(0);
         if ($self->next) {
             my $next_route = $self->find_next_matching_route($request);
             return $next_route->run($request);
         }
         else {
-            croak "Last matching route passed";
+            Dancer::Logger::core('Last matching route passed!');
+            return undef;
         }
     }
 
@@ -187,14 +184,15 @@ sub run {
     # prevent warnings
     $content = (defined $content) ? $content : '';
 
-    # drop content if HEAD request
-    $content = '' if $request->is_head;
+    my $ct =
+      ( defined $response && defined $response->content_type )
+      ? $response->content_type()
+      : setting('content_type');
 
-    # init response headers
-    my $ct = $response->content_type() || setting('content_type');
-    my $st = $response->status()       || 200;
+    my $st = defined $response ? $response->status : 200;
+
     my $headers = [];
-    push @$headers, @{$response->headers_to_array};
+    push @$headers, @{ $response->headers_to_array } if defined $response;
 
     # content type may have already be set earlier
     # (eg: with send_error)
@@ -254,8 +252,9 @@ sub _init_prefix {
         # - /prefix/
         # - /prefix
         # this is done by creating a regex for this case
-        my $pattern = $self->pattern;
-        my $regex   = qr/$prefix(?:$pattern)?$/;
+        my $qpattern = quotemeta( $self->pattern );
+        my $qprefix  = quotemeta( $self->prefix );
+        my $regex    = qr/^$qprefix(?:$qpattern)?$/;
         $self->{regexp}  = $regex;
         $self->{pattern} = $regex;
     }

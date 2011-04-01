@@ -5,6 +5,7 @@ use warnings;
 use Carp;
 use base 'Dancer::Handler';
 
+use Dancer::Deprecation;
 use Dancer::GetOpt;
 use Dancer::Config;
 use Dancer::ModuleLoader;
@@ -70,8 +71,11 @@ sub apply_plack_middlewares {
 
     # XXX remove this after 1.2
     if ( ref $middlewares eq 'HASH' ) {
-        croak 'Listing Plack middlewares as a hash ref is DEPRECATED. '
-          . 'Must be listed as an array ref.';
+        Dancer::Deprecation->deprecated(
+            fatal   => 1,
+            feature => 'Listing Plack middlewares as a hash ref',
+            reason  => 'Must be listed as an array ref',
+        );
     }
     else {
         map {

@@ -1,15 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 10, import => ['!pass'];
+use Test::More tests => 9, import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::Test;
-
-eval { 
-    get r('/foo') => sub { "foo" };
-};
-like $@, qr/'r' is DEPRECATED, use qr{} instead/,
-    "DEPRECATED exception triggered by r()";
 
 ok(get(qr{/hello/([\w]+)} => sub { [splat] }), 'first route set');
 ok(get(qr{/show/([\d]+)} => sub { [splat] }), 'second route set');

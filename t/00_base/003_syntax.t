@@ -26,7 +26,7 @@ my @keywords = qw(
     load
     load_app
     logger
-    mime_type
+    mime
     options
     params
     pass

@@ -4,172 +4,128 @@ use strict;
 use warnings;
 use Carp;
 
-use Dancer::Config 'setting';
+use base 'Dancer::Object';
+
 use Scalar::Util qw/blessed/;
 use Dancer::HTTP;
 use Dancer::MIME;
 use HTTP::Headers;
+use Dancer::SharedData;
+
+__PACKAGE__->attributes(qw/content pass/);
 
 # constructor
-sub new {
-    my ($class, %args) = @_;
-
-    my $h = delete $args{headers} || [];
-    my $headers = HTTP::Headers->new(@$h);
-
-    my $self = {
+sub init {
+    my ( $self, %args ) = @_;
+    $self->attributes_defaults(
         status  => 200,
-        headers => $headers,
-        content => "",
+        content => '',
         pass    => 0,
-        forward => "",
-        %args,
-    };
-    bless $self, $class;
-    return $self;
-}
-
-# a singleton to store the current response
-# made public so status can be checked, etc
-my $CURRENT = Dancer::Response->new();
-
-# the accessor returns a copy of the singleton
-# after having purged it.
-# XXX why do we need to purge it ?
-sub current {
-    my $cp = $CURRENT;
-    $CURRENT = Dancer::Response->new();
-    return $cp;
-}
-
-sub _get_object {
-    my $current;
-    if (blessed($_[0]) && $_[0]->isa('Dancer::Response')) {
-        $current = shift;
-    }else{
-        $current = $CURRENT;
-    }
-    return $current;
+        halted  => 0,
+        forward => '',
+    );
+    $self->{headers} = HTTP::Headers->new(@{ $args{headers} || [] });
+    Dancer::SharedData->response($self);
 }
 
 # helpers for the route handlers
 sub exists {
-    my $current = _get_object(shift);
-    blessed($current) && length($current->{content});
-}
-
-# this is a class method
-sub set {
-    my $class = shift;
-    if ( blessed( $class ) ) {
-        Carp::croak("you can't call 'set' on a Dancer::Response object");
-    }
-    $CURRENT = shift;
-}
-
-# FIXME this whole class needs to be rewritten
-sub set_current_content {
-    $CURRENT->{content} = $_[0] 
-        if defined $CURRENT;
-}
-
-sub content {
-    my $current = _get_object(shift);
-    my $content = shift;
-    if (defined $content) {
-        $current->{content} = $content;
-    }else{
-        return $current->{content};
-    }
+    my $self = shift;
+    return length($self->content);
 }
 
 sub status {
-    my $current = _get_object(shift);;
+    my $self = shift;
 
     if (scalar @_ > 0) {
-        return $current->{status} = Dancer::HTTP->status(shift);
+        return $self->{status} = Dancer::HTTP->status(shift);
     }
     else {
-        return $current->{status};
+        return $self->{status};
     }
 }
 
 sub content_type {
-    my $current = _get_object(shift);
+    my $self = shift;
 
     if (scalar @_ > 0) {
         my $mimetype = Dancer::MIME->instance();
-        $current->header('Content-Type' => $mimetype->mime_type_for(shift));
-    }else{
-        return $current->header('Content-Type');
+        $self->header('Content-Type' => $mimetype->name_or_type(shift));
+    } else {
+        return $self->header('Content-Type');
     }
-}
-
-sub pass {
-    my $current = _get_object(shift);
-    $current->{pass} = 1
-}
-
-sub forward {
-    my $current = _get_object(shift);
-    $current->{forward} = $_[0];
-}
-
-sub is_forwarded { 
-    my $current = _get_object(shift);
-    $current->{forward};
 }
 
 sub has_passed {
-    my $current = _get_object(shift);
-    $current->{pass};
+    my $self = shift;
+    return $self->pass;
+}
+
+sub forward {
+    my $self = shift;
+    $self->{forward} = $_[0];
+}
+
+sub is_forwarded {
+    my $self = shift;
+    $self->{forward};
 }
 
 sub halt {
-    my $current = _get_object(shift);
-    my $content = shift;
+    my ($self, $content) = @_;
 
     if ( blessed($content) && $content->isa('Dancer::Response') ) {
-        $CURRENT = $content;
+        $content->{halted} = 1;
+        Dancer::SharedData->response($content);
     }
     else {
-        # FIXME we probably want to do better here, I think this class really deserves a
-        # complete rewrite ;-)
-        my $resp = Dancer::Response->new(
-        status => ($CURRENT->{status} || 200),
-        content => $content,
+        Dancer::Response->new(
+            status => ($self->status || 200),
+            content => $content,
+            halted => 1,
         );
-        $CURRENT = $resp;
     }
-    $CURRENT->{halted} = 1;
     return $content;
 }
 
 sub halted {
-    my $current = _get_object(shift);
-    $current && $current->{halted}
+    my $self = shift;
+    return $self->{halted}
 }
 
-
 sub header {
-    my $current = _get_object(shift);
+    my $self   = shift;
     my $header = shift;
 
     if (@_) {
-        $current->{headers}->header($header => @_);
+        $self->{headers}->header( $header => @_ );
     }
     else {
-        return $current->{headers}->header($header);
+        return $self->{headers}->header($header);
+    }
+}
+
+sub push_header {
+    my $self   = shift;
+    my $header = shift;
+
+    if (@_) {
+        foreach my $h(@_) {
+            $self->{headers}->push_header( $header => $h );
+        }
+    }
+    else {
+        return $self->{headers}->header($header);
     }
 }
 
 sub headers {
-    my $current = _get_object(shift);
-    $current->{headers}->header(@_);
+    my $self = shift;
+    $self->{headers}->header(@_);
 }
 
 sub headers_to_array {
-    my $current = _get_object(shift);
+    my $self = shift;
 
     my $headers = [
         map {
@@ -177,9 +133,9 @@ sub headers_to_array {
             map {
                 my $v = $_;
                 $v =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
-                ($k => $v)
-            } $current->{headers}->header($_);
-          } $current->{headers}->header_field_names
+                ( $k => $v )
+            } $self->{headers}->header($_);
+          } $self->{headers}->header_field_names
     ];
 
     return $headers;
@@ -199,10 +155,10 @@ Dancer::Response - Response object for Dancer
         content => 'this is my content'
     );
 
-    Dancer::Response->status; # 200
+    Dancer::SharedData->response->status; # 200
 
     # fetch current response object
-    my $response = Dancer::Response->current;
+    my $response = Dancer::SharedData->response;
 
     # fetch the current status
     $response->status; # 200
@@ -224,7 +180,7 @@ create and return a new L<Dancer::Response> object
 
 =head2 current
 
-    my $response = Dancer::Response->current();
+    my $response = Dancer::SharedData->response->current();
 
 return the current Dancer::Response object, and reset the object
 
@@ -237,21 +193,15 @@ return the current Dancer::Response object, and reset the object
 
 test if the Dancer::Response object exists
 
-=head2 set
-
-    Dancer::Response->set(Dancer::Response->new(status=>500));
-
-Set a new Dancer::Response object as the current response
-
 =head2 content
 
     # get the content
     my $content = $response->content;
-    my $content = Dancer::Response->content;
+    my $content = Dancer::SharedData->response->content;
 
     # set the content
     $response->content('my new content');
-    Dancer::Response->content('my new content');
+    Dancer::SharedData->response->content('my new content');
 
 set or get the content of the current response object
 
@@ -259,11 +209,11 @@ set or get the content of the current response object
 
     # get the status
     my $status = $response->status;
-    my $status = Dancer::Response->status;
+    my $status = Dancer::SharedData->response->status;
 
     # set the status
     $response->status(201);
-    Dancer::Response->status(201);
+    Dancer::SharedData->response->status(201);
 
 set or get the status of the current response object
 
@@ -271,18 +221,18 @@ set or get the status of the current response object
 
     # get the status
     my $ct = $response->content_type;
-    my $ct = Dancer::Response->content_type;
+    my $ct = Dancer::SharedData->response->content_type;
 
     # set the status
     $response->content_type('application/json');
-    Dancer::Response->content_type('application/json');
+    Dancer::SharedData->response->content_type('application/json');
 
 set or get the status of the current response object
 
 =head2 pass
 
     $response->pass;
-    Dancer::Response->pass;
+    Dancer::SharedData->response->pass;
 
 set the pass value to one for this response
 
@@ -292,7 +242,7 @@ set the pass value to one for this response
         ...
     }
 
-    if (Dancer::Response->has_passed) {
+    if (Dancer::SharedData->response->has_passed) {
         ...
     }
 
@@ -300,12 +250,12 @@ test if the pass value is set to true
 
 =head2 halt
 
-    Dancer::Response->halt();
+    Dancer::SharedData->response->halt();
     $response->halt;
 
 =head2 halted
 
-    if (Dancer::Response->halted) {
+    if (Dancer::SharedData->response->halted) {
        ...
     }
 
@@ -317,25 +267,25 @@ test if the pass value is set to true
 
     # set the header
     $response->header('X-Foo' => 'bar');
-    Dancer::Response->header('X-Foo' => 'bar');
+    Dancer::SharedData->response->header('X-Foo' => 'bar');
 
     # get the header
     my $header = $response->header('X-Foo');
-    my $header = Dancer::Response->header('X-Foo');
+    my $header = Dancer::SharedData->response->header('X-Foo');
 
 get or set the value of a header
 
 =head2 headers
 
     $response->headers(HTTP::Headers->new(...));
-    Dancer::Response->headers(HTTP::Headers->new(...));
+    Dancer::SharedData->response->headers(HTTP::Headers->new(...));
 
 return the list of headers for the current response
 
 =head2 headers_to_array
 
     my $headers_psgi = $response->headers_to_array();
-    my $headers_psgi = Dancer::Response->headers_to_array();
+    my $headers_psgi = Dancer::SharedData->response->headers_to_array();
 
 this method is called before returning a PSGI response. It transforms the list of headers to an array reference.
 

@@ -1,14 +1,13 @@
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More import => ['!pass'], tests => 2;
 
-use Dancer::ModuleLoader;
-use Dancer::Renderer;
+use Dancer;
 
 use t::lib::EasyMocker;
 
-is(Dancer::Renderer::get_mime_type('foo.zip'), 'application/zip',
+is(mime->for_file('foo.zip'), 'application/zip',
     "a mime_type is found with MIME::Types");
 
-is(Dancer::Renderer::get_mime_type('foo.nonexistent'), 'text/plain',
-    'mime_type defaults to text/plain' );
+is(mime->for_file('foo.nonexistent'), mime->default,
+    'mime_type defaults to the default defined mime_type' );

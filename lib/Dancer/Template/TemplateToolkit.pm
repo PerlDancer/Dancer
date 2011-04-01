@@ -14,8 +14,9 @@ my $_engine;
 sub init {
     my ($self) = @_;
 
-    croak "Template is needed by Dancer::Template::TemplateToolkit"
-      unless Dancer::ModuleLoader->load('Template');
+    my $class = $self->config->{subclass} || "Template";
+    croak "$class is needed by Dancer::Template::TemplateToolkit"
+      if !$class->can("process") and !Dancer::ModuleLoader->load($class);
 
     my $charset = setting('charset') || '';
     my @encoding = length($charset) ? ( ENCODING => $charset ) : ();
@@ -40,13 +41,15 @@ sub init {
 
     $tt_config->{INCLUDE_PATH} = setting('views');
 
-    $_engine = Template->new(%$tt_config);
+    $_engine = $class->new(%$tt_config);
 }
 
 sub render {
     my ($self, $template, $tokens) = @_;
-    croak "'$template' is not a regular file"
-      if !ref($template) && (!-f $template);
+
+    if ( ! ref $template ) {
+        -f $template or croak "'$template' doesn't exist or not a regular file";
+    }
 
     my $content = "";
     my $charset = setting('charset') || '';
@@ -89,6 +92,51 @@ within your config file - for example:
             start_tag: '[%'
             stop_tag: '%]'
 
+By default, L<Template> is used, but you can configure Dancer to use a
+subclass with the C<subclass> option.
+
+    engines:
+        template_toolkit:
+            subclass: My::Template
+
+
+=head1 WRAPPER, META variables, SETs
+
+Dancer already provides a WRAPPER-like ability, which we call a "layout". The
+reason we do not use TT's WRAPPER (which also makes it incompatible with it) is
+because not all template systems support it. Actually, most don't.
+
+However, you might want to use it, and be able to define META variables and
+regular L<Template::Toolkit> variables.
+
+These few steps will get you there:
+
+=over 4
+
+=item * Disable the layout in Dancer
+
+You can do this by simply commenting (or removing) the C<layout> configuration
+in the F<config.yml> file.
+
+=item * Use Template Toolkit template engine
+
+Change the configuration of the template to Template Toolkit:
+
+    # in config.yml
+    template: "template_toolkit"
+
+=item * Tell the Template Toolkit engine who's your wrapper
+
+    # in config.yml
+    # ...
+    engines:
+        template_toolkit:
+            WRAPPER: layouts/main.tt
+
+=back
+
+Done! Everything will work fine out of the box, including variables and META
+variables.
 
 =head1 SEE ALSO
 

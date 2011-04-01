@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use Carp;
 
+use base 'Dancer::Object';
+
 use Dancer::Response;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
@@ -11,24 +13,22 @@ use Dancer::Logger;
 use Dancer::Session;
 use Dancer::FileUtils qw(open_file);
 
-sub new {
-    my ($class, %params) = @_;
-    my $self = \%params;
-    bless $self, $class;
+sub init {
+    my ($self) = @_;
 
-    $self->{title} ||= "Error " . $self->code;
-    $self->{type}  ||= "runtime error";
+    $self->attributes_defaults(
+        title => 'Error ' . $self->code,
+        type  => 'runtime error',
+    );
 
-    if (!$self->has_serializer) {
-        my $html_output = "<h2>" . $self->{type} . "</h2>";
-        $html_output .= $self->backtrace;
-        $html_output .= $self->environment;
+    $self->has_serializer
+      and return;
 
-        $self->{message} = $html_output;
-    }
+    my $html_output = "<h2>" . $self->{type} . "</h2>";
+    $html_output .= $self->backtrace;
+    $html_output .= $self->environment;
 
-    Dancer::Logger::core("new Error object: [".$self->code."] ".$self->message);
-    return $self;
+    $self->{message} = $html_output;
 }
 
 sub has_serializer { setting('serializer') }

@@ -10,6 +10,7 @@ use Carp;
 use HTTP::Headers;
 use Dancer ':syntax';
 use Dancer::App;
+use Dancer::Deprecation;
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
@@ -39,11 +40,13 @@ use vars '@EXPORT';
 
   dancer_response
   get_response
+
+  read_logs
 );
 
 sub import {
     my ($class, %options) = @_;
-    $options{appdir} ||= '..';
+    $options{appdir} ||= '.';
 
     # mimic PSGI env
     $ENV{SERVERNAME}        = 'localhost';
@@ -54,18 +57,28 @@ sub import {
     my ($package, $script) = caller;
     $class->export_to_level(1, $class, @EXPORT);
 
+    Dancer::_init_script_dir($options{appdir});
+    Dancer::Config->load;
+
     # set a default session engine for tests
     setting 'session' => 'simple';
-    Dancer::_init($options{appdir});
-    Dancer::Config->load;
+
+    # capture logs for testing
+    setting 'logger'  => 'capture';
+    setting 'log'     => 'debug';
 }
 
 # Route Registry
 
+sub expand_req {
+    my $req = shift;
+    return ref $req eq 'ARRAY' ? @$req : ( 'GET', $req );
+}
+
 sub route_exists {
     my ($req, $test_name) = @_;
 
-    my ($method, $path) = @$req;
+    my ($method, $path) = expand_req($req);
     $test_name ||= "a route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
@@ -75,7 +88,7 @@ sub route_exists {
 sub route_doesnt_exist {
     my ($req, $test_name) = @_;
 
-    my ($method, $path) = @$req;
+    my ($method, $path) = expand_req($req);
     $test_name ||= "no route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
@@ -88,7 +101,7 @@ sub response_exists {
     my ($req, $test_name) = @_;
     $test_name ||= "a response is found for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     ok(defined($response), $test_name);
 }
 
@@ -96,7 +109,7 @@ sub response_doesnt_exist {
     my ($req, $test_name) = @_;
     $test_name ||= "no response found for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     ok(!defined($response), $test_name);
 }
 
@@ -104,15 +117,15 @@ sub response_status_is {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is $status for @$req";
 
-    my $response = dancer_response(@$req);
-    is $response->{status}, $status, $test_name;
+    my $response = dancer_response(expand_req($req));
+    is $response->status, $status, $test_name;
 }
 
 sub response_status_isnt {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is not $status for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     isnt $response->{status}, $status, $test_name;
 }
 
@@ -122,7 +135,7 @@ sub response_content_is {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     is $response->{content}, $matcher, $test_name;
 }
 
@@ -130,7 +143,7 @@ sub response_content_isnt {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     isnt $response->{content}, $matcher, $test_name;
 }
 
@@ -138,7 +151,7 @@ sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     like $response->{content}, $matcher, $test_name;
 }
 
@@ -146,7 +159,7 @@ sub response_content_unlike {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     unlike $response->{content}, $matcher, $test_name;
 }
 
@@ -154,7 +167,7 @@ sub response_content_is_deeply {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     is_deeply $response->{content}, $matcher, $test_name;
 }
 
@@ -170,7 +183,7 @@ sub response_headers_are_deeply {
     my ($req, $expected, $test_name) = @_;
     $test_name ||= "headers are as expected for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     is_deeply($response->headers_to_array, $expected, $test_name);
 }
 
@@ -180,9 +193,22 @@ sub dancer_response {
 
     if ($method =~ /^(?:PUT|POST)$/ && $args->{body}) {
         my $body = $args->{body};
-        my $l    = length $body;
+
+        # coerce hashref into an url-encoded string
+        if (ref($body) && (ref($body) eq 'HASH')) {
+            my @tokens;
+            while (my ($name, $value) = each %{$body}) {
+                $name  = _url_encode($name);
+                $value = _url_encode($value);
+                push @tokens, "${name}=${value}";
+            }
+            $body = join('&', @tokens);
+        }
+
+        my $l = length $body;
         open my $in, '<', \$body;
         $ENV{'CONTENT_LENGTH'} = $l;
+        $ENV{'CONTENT_TYPE'}   = 'application/x-www-form-urlencoded';
         $ENV{'psgi.input'}     = $in;
     }
 
@@ -201,19 +227,39 @@ sub dancer_response {
         $params, $body, HTTP::Headers->new(@$headers)
     );
 
+    # first, reset the current state
+    Dancer::SharedData->reset_all();
+
+    # then store the request
     Dancer::SharedData->request($request);
-    return Dancer::Renderer::get_action_response();
+
+    my $get_action = Dancer::Renderer::get_action_response();
+    my $response = Dancer::SharedData->response();
+    $response->content('') if $method eq 'HEAD';
+    Dancer::SharedData->reset_response();
+    return $response if $get_action;
+    (defined $response && $response->exists) ? return $response : return undef;
 }
 
 sub get_response {
-    croak "get_response() is DEPRECATED. Use dancer_response() instead.";
+    Dancer::Deprecation->deprecated(
+        fatal   => 1,
+        feature => 'get_response',
+        reason  => 'Use dancer_response() instead.',
+    );
 }
 
 # private
 
+sub _url_encode {
+    my $string = shift;
+    $string =~ s/([\W])/"%" . uc(sprintf("%2.2x",ord($1)))/eg;
+    return $string;
+}
+
 sub _get_file_response {
     my ($req) = @_;
-    my ($method, $path, $params) = @$req;
+    my ($method, $path, $params) = expand_req($req);
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     Dancer::SharedData->request($request);
     return Dancer::Renderer::get_file_response();
@@ -221,10 +267,15 @@ sub _get_file_response {
 
 sub _get_handler_response {
     my ($req) = @_;
-    my ($method, $path, $params) = @$req;
+    my ($method, $path, $params) = expand_req($req);
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     return Dancer::Handler->handle_request($request);
 }
+
+sub read_logs {
+    return Dancer::Logger::Capture->trap->read;
+}
+
 
 1;
 __END__
@@ -242,7 +293,7 @@ Dancer::Test - Test helpers to test a Dancer application
     use Test::More tests => 2;
 
     use MyWebApp;
-    use Dancer::Test appdir => '..';
+    use Dancer::Test;
 
     response_status_is [GET => '/'], 200, "GET / is found";
     response_content_like [GET => '/'], qr/hello, world/, "content looks good for /";
@@ -252,22 +303,20 @@ Dancer::Test - Test helpers to test a Dancer application
 
 This module provides test helpers for testing Dancer apps.
 
-=head1 CONFIGURATON
-
-When importing Dancer::Test, the appdir is set by defaut to '..', assuming that
-your test script is directly in your t/ directory. If you put your test script
-deeper in the 't/' hierarchy (like in 't/routes/01_some_test.t') you'll have to
-tell Dancer::Test that the appdir is one step upper.
-
-To do so, you can tell where the appdir is thanks to an import option:
-
-    use MyWebApp;
-    use Dancer::Test appdir => '../..';
-
-Be careful, the order in the example above is very important.
+Be careful, the module loading order in the example above is very important.
 Make sure to use C<Dancer::Test> B<after> importing the application package
 otherwise your appdir will be automatically set to C<lib> and your test script
 won't be able to find views, conffiles and other application content.
+
+For all test methods, if the first argument is not
+an array ref but a scalar, it is taken to be the I<$path>,
+and the I<$method> is assumed to be I<GET>. I.e.:
+
+    response_status_is [ GET => '/' ], 200, 'GET / status is ok';
+
+    # is equivalent to 
+
+    response_status_is '/', 200, 'GET / status is ok';
 
 =head1 METHODS
 
@@ -327,7 +376,7 @@ Asserts that the response content is equal to the C<$expected> string.
 
 Asserts that the response content is not equal to the C<$not_expected> string.
 
-    response_content_is [GET => '/'], "Hello, World", 
+    response_content_isnt [GET => '/'], "Hello, World", 
         "got expected response content for GET /";
 
 =head2 response_content_is_deeply([$method, $path], $expected_struct, $test_name)
@@ -391,6 +440,32 @@ Schrodinger's cat to die.
 =head2 get_response([$method, $path])
 
 This method is B<DEPRECATED>.  Use dancer_response() instead.
+
+
+=head2 read_logs
+
+    my $logs = read_logs;
+
+Returns an array ref of all log messages issued by the app since the
+last call to C<read_logs>.
+
+For example:
+
+    warning "Danger!  Warning!";
+    debug   "I like pie.";
+
+    is_deeply read_logs, [
+        { level => "warning", message => "Danger!  Warning!" },
+        { level => "debug",   message => "I like pie.", }
+    ];
+
+    error "Put out the light.";
+
+    is_deeply read_logs, [
+        { level => "error", message => "Put out the light." },
+    ];
+
+See L<Dancer::Logger::Capture> for more details.
 
 =head1 LICENSE
 
