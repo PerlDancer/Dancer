@@ -28,8 +28,10 @@
     * mime_type is deprecated; new keyword 'mime'; new config key
       'default_mime_type';
       (Alberto Simões and Michael G. Schwern)
+    * Recognize absolute redirects 
+      (Yanick Champoux)
 
-      [ DOCUMENTATION ]
+    [ DOCUMENTATION ]
     * Add documentation to send_file optional argument
       (Alberto Simões)
     * Fix plack_middlewares example in the cookbook
