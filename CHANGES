@@ -1,4 +1,4 @@
-{{$NEXT}}
+1.3029_01   01.04.2011
 
     [ BUG FIXES ]
     * Fix t/14_serializer/02_json.t to work with older JSON (relates to GH#416)
