@@ -7,6 +7,7 @@ use Dancer::Test;
 
 my $i = 0;
 
+set show_errors => 1;
 
 ok(get('/:id', sub { "whatever " . params->{id} }), 'installed basic route handler');
 
@@ -22,5 +23,7 @@ ok(
       }
    ), 'installed before hook',
 );
-ok(! eval { dancer_response(GET => "/$i") }, 'before messes all up, route not OK any more');
-like($@, qr{infinite loop}, 'infinite loop detected');
+
+response_status_is [GET => "/$i"], 500 => "Right request status";
+response_content_like [GET => "/$i"], qr{infinite loop} => "infinite loop detected";
+
