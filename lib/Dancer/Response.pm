@@ -50,8 +50,8 @@ sub content_type {
 
     if (scalar @_ > 0) {
         my $mimetype = Dancer::MIME->instance();
-        $self->header('Content-Type' => $mimetype->mime_type_for(shift));
-    }else{
+        $self->header('Content-Type' => $mimetype->name_or_type(shift));
+    } else {
         return $self->header('Content-Type');
     }
 }

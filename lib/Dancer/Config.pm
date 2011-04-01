@@ -87,12 +87,9 @@ my $normalizers = {
 
 sub mime_types {
     Dancer::Deprecation->deprecated(
-        reason => "use 'mime_type' from Dancer.pm",
+        reason => "use 'mime' from Dancer.pm",
+        fatal => 1,
     );
-    my $mime = Dancer::MIME->instance();
-    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
-    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
-    else                  { $mime->aliases           }
 }
 
 sub normalize_setting {

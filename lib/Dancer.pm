@@ -59,6 +59,7 @@ our @EXPORT    = qw(
   load
   load_app
   logger
+  mime
   mime_type
   options
   params
@@ -125,7 +126,10 @@ sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          { set(logger => @_) }
-sub mime_type       { goto &_mime_type }
+sub mime            { Dancer::MIME->instance() }
+sub mime_type       {
+    Dancer::Deprecation->deprecated(reason => "use 'mime' from Dancer.pm",fatal => 1)
+}
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
@@ -271,13 +275,6 @@ sub _init_script_dir {
 
     my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
-}
-
-sub _mime_type {
-    my $mime = Dancer::MIME->instance();
-      @_ == 0 ? $mime->aliases
-    : @_ == 1 ? $mime->mime_type_for(@_)
-    :           $mime->add_mime_type(@_);
 }
 
 sub _redirect {
@@ -752,17 +749,32 @@ C<:syntax> option, in order not to change the application directory
 
 =head2 mime_type
 
-Returns all the user-defined mime-types when called without parameters.
-Behaves as a setter/getter when given parameters
+Deprecated. Check C<mime> bellow.
 
-    # get the global hash of user-defined mime-types:
-    my $mimes = mime_type;
+=head2 mime
 
-    # set a mime-type
-    mime_type foo => 'text/foo';
+Shortcut to access the instance object of L<Dancer::MIME>. You should
+check its man page for details, as this entry just summarize the most
+relevant methods.
 
-    # get a mime-type
-    my $m = mime_type 'foo';
+    # set a new mime type
+    mime->add_type( foo => 'text/foo' );
+
+    # set a mime type alias
+    mime->add_alias( f => 'foo' );
+
+    # get mime type for an alias
+    my $m = mime->for_name( 'f' );
+
+    # get mime type for a file (based on extension)
+    my $m = mime->for_file( "foo.bar" );
+
+    # get current defined default mime type
+    my $d = mime->default;
+
+    # set the default mime type using config.yml
+    # or using the set keyword
+    set default_mime_type => 'text/plain';
 
 =head2 params
 
@@ -921,7 +933,7 @@ the path of the file must be relative to the B<public> directory.
     }
 
 The content-type will be set depending on the current mime-types definition
-(see C<mime_type> if you want to define your own).
+(see C<mime> if you want to define your own).
 
 If your filename does not have an extension, or you need to force a
 specific mime type, you can pass it to C<send_file> as follows:

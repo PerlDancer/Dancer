@@ -34,7 +34,7 @@ for (my $i = 0; $i < 3; $i++) {
                 # child
                 $p->close;
                 my $mime = Dancer::MIME->instance();
-                my $type = $mime->mime_type_for('css');
+                my $type = $mime->for_name('css');
                 $c->print($type);
                 $c->close;
                 exit 0;
