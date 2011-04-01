@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Dancer ':syntax';
+use Dancer::Test;
 use Dancer::Error;
 use Dancer::ModuleLoader;
 
@@ -22,3 +23,17 @@ if ( Dancer::ModuleLoader->load('JSON') ) {
     is $response->{status},    400;
     like $response->{content}, qr/foo/;
 }
+
+##  Error Templates
+
+set serializer => undef;
+set warnings => 1;
+set error_template => "error.tt";
+set views => path(dirname(__FILE__), 'views');
+
+ok(get('/warning' => sub { my $a = undef; @$a; }), "/warning route defined");
+
+response_content_like [GET => '/warning'],
+  qr/ERROR: Runtime Error/,
+  "template is used";
+

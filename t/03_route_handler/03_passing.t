@@ -50,4 +50,4 @@ foreach my $test (@tests) {
         "match data for path `$path' looks good");
 }
 
-response_doesnt_exist( [GET => '/foo'], "Pass over the last match is 404");
+response_status_is( [GET => '/foo'], 404, "Pass over the last match is 404");
