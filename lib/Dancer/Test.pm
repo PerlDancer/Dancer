@@ -258,9 +258,10 @@ sub dancer_response {
 
     # duplicate some code from Dancer::Handler
     my $get_action = eval {
-        Dancer::Renderer::get_action_response() ||
-            Dancer::Renderer->render_error(404)
-          };
+        Dancer::Renderer->render_file
+            || Dancer::Renderer->render_action
+              || Dancer::Renderer->render_error(404);
+    };
     if ($@) {
         Dancer::Error->new(
             code    => 500,
