@@ -61,7 +61,7 @@ my @failed = (
 
 foreach my $route (@failed) {
     foreach my $method (@{ $route->{methods} }) {
-        response_doesnt_exist [$method => $route->{path}],
+        response_status_is [$method => $route->{path}] => 404,
           "route handler not found for method $method, path ".$route->{path};
     }
 }
