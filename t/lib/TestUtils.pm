@@ -7,12 +7,12 @@ use File::Path qw(mkpath rmtree);
 use Dancer::Request;
 
 @EXPORT =
-  qw(fake_request http_request write_file get_response_for_request clean_tmp_files);
+  qw(http_request write_file get_response_for_request clean_tmp_files);
 
-sub fake_request($$) {
-    my ($method, $path) = @_;
-    return Dancer::Request->new_for_request($method => $path);
-}
+# sub fake_request($$) {
+#     my ($method, $path) = @_;
+#     return Dancer::Request->new_for_request($method => $path);
+# }
 
 sub http_request {
     my ($port, $method, $path) = @_;
