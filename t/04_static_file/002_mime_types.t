@@ -7,7 +7,7 @@ use Dancer::ModuleLoader;
 use Dancer::Test;
 use Test::More import => ['!pass'];
 
-plan tests => 11;
+plan tests => 12;
 
 # set environment...
 set public => path(dirname(__FILE__), 'static');
@@ -21,6 +21,7 @@ my $path = '/hello.foo';
 
 # check if fake request is working
 response_exists [GET => $path], "static file is found for $path";
+response_status_isnt [GET => $path] => 404;
 
 # check that for unknown file types, the default value is set
 response_headers_are_deeply [GET => $path] => ['Content-Type' => mime->default ],
