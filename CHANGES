@@ -4,6 +4,7 @@
     * Support for error templates
       If the setting "error_template" is set, it is used when building an error
       page instead of using the default template.
+	  Added the appropirate documentation as well.
       (Alberto Simões)
     * Dancer::Test::dancer_response() returns a 404 response when no route
       handler is found. This is consistent with what Dancer does internally.
