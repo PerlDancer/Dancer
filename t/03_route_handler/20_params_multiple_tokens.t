@@ -12,13 +12,10 @@ use Test::More tests => 2, import => ['!pass'];
     };
 }
 
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use TestUtils;
+use Dancer::Test;
 
-my $response = get_response_for_request(GET => '/user/42.json');
-ok( defined($response), "response found for '/user/42.json'" );
+response_exists [GET => '/user/42.json'] => "response found for '/user/42.json'";
 
-is_deeply( $response->{content}, ['user', '42', 'json'],
-    "params are parsed as expected" );
+response_content_is_deeply [GET => '/user/42.json'] => ['user', '42', 'json'],
+  "params are parsed as expected" ;
 
