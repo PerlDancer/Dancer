@@ -26,7 +26,7 @@ use Dancer::Test;
 
 response_exists [GET => '/data'] => "response found for /data";
 
-response_headers_are_deeply [GET => '/data'] =>  [ 'Content-Type' => 'application/json'],
+response_headers_include [GET => '/data'] => { 'Content-Type' => 'application/json' },
   "headers have content_type set to application/json";
 
 response_content_is [GET => '/data'] => $json, "\$data has been encoded to JSON";
