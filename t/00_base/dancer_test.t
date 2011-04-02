@@ -21,7 +21,7 @@ route_exists $req;
 route_doesnt_exist $false_req;
 
 response_exists $req;
-response_doesnt_exist $false_req;
+response_status_is $false_req, 404;
 
 response_status_is $req, 200;
 response_status_isnt $req, 404;

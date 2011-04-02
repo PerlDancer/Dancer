@@ -12,6 +12,7 @@ use Dancer::Config 'setting';
 use Dancer::Logger;
 use Dancer::Session;
 use Dancer::FileUtils qw(open_file);
+use Dancer::Engine;
 
 sub init {
     my ($self) = @_;
@@ -163,7 +164,6 @@ sub render {
     my $self = shift;
 
     my $serializer = setting('serializer');
-
     $serializer ? $self->_render_serialized() : $self->_render_html();
 }
 
@@ -195,14 +195,30 @@ sub _render_serialized {
 sub _render_html {
     my $self = shift;
 
-    return Dancer::Response->new(
-        status  => $self->code,
-        headers => ['Content-Type' => 'text/html'],
-        content =>
-          Dancer::Renderer->html_page($self->title, $self->message, 'error')
-    ) if setting('show_errors');
+    # I think it is irrelevant to look into show_errors. In the
+    # template the user can hide them if she desires so.
+    if (setting("error_template")) {
+        my $template_name = setting("error_template");
+        my $ops = {
+                   title => $self->title,
+                   message => $self->message,
+                   code => $self->code,
+                  };
+        my $content = Dancer::Engine->engine("template")->apply_renderer($template_name, $ops);
+        return Dancer::Response->new(
+            status => $self->code,
+            headers => ['Content-Type' => 'text/html'],
+            content => $content);
+    } else {
+        return Dancer::Response->new(
+            status  => $self->code,
+            headers => ['Content-Type' => 'text/html'],
+            content =>
+                Dancer::Renderer->html_page($self->title, $self->message, 'error')
+        ) if setting('show_errors');
 
-    return Dancer::Renderer->render_error($self->code);
+        return Dancer::Renderer->render_error($self->code);
+    }
 }
 
 sub environment {
