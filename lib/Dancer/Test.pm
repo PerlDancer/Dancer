@@ -437,6 +437,12 @@ Asserts that the response headers data structure equals the one given.
 
     response_headers_are_deeply [GET => '/'], [ 'X-Powered-By' => 'Dancer 1.150' ];
 
+=head2 response_headers_include([$method, $path], $expected, $test_name)
+
+Asserts that the response headers data structure includes some of the defined ones.
+
+    response_headers_include [GET => '/'], { 'Content-Type' => 'text/plain' ];
+
 =head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers })
 
 Returns a Dancer::Response object for the given request.
