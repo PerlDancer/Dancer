@@ -317,4 +317,3 @@ t/pod.t
 t/TestAppExt.pm
 t/TestPlugin.pm
 TODO
-t/03_route_handler/views/error.tt
