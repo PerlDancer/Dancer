@@ -37,6 +37,7 @@ use vars '@EXPORT';
   response_content_unlike
   response_is_file
   response_headers_are_deeply
+  response_headers_include
 
   dancer_response
   get_response
@@ -186,6 +187,28 @@ sub response_headers_are_deeply {
     my $response = dancer_response(expand_req($req));
     is_deeply($response->headers_to_array, $expected, $test_name);
 }
+
+sub response_headers_include {
+    my ($req, $expected, $test_name) = @_;
+    $test_name ||= "headers include expected data for @$req";
+
+    my $response = dancer_response(expand_req($req));
+
+    # ugly, but why not...
+    ok(_include({ @{$response->headers_to_array} }, $expected), $test_name);
+}
+
+sub _include {
+    my ($got, $expected) = @_;
+    my $ok = 1;
+    for my $k (keys %$expected) {
+        last if not $ok;
+        $ok = 0 if !exists($got->{$k}) || $got->{$k} ne $expected->{$k};
+    }
+    $ok
+}
+
+
 
 sub dancer_response {
     my ($method, $path, $args) = @_;
