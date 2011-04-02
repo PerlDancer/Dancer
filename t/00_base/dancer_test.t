@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 22;
+use Test::More import => ['!pass'], tests => 24;
 
 use strict;
 use warnings;
@@ -35,6 +35,9 @@ response_headers_are_deeply [GET => '/with_headers'], [
     'Content-Type' => 'text/html',
     'X-Foo-Dancer' => 42,
     ];
+
+response_headers_include [GET => '/with_headers'], { 'Content-Type' => 'text/html' };
+response_headers_include [GET => '/with_headers'], { 'X-Foo-Dancer' => '42' };
 
 eval { get_response($req) };
 like $@, qr/get_response.*has been deprecated. use dancer_response.*instead/i,
