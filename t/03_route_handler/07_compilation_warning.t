@@ -1,9 +1,7 @@
 use Test::More import => ['!pass'];
 
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use TestUtils;
 use Dancer ':syntax';
+use Dancer::Test;
 use Dancer::Logger;
 use File::Temp qw/tempdir/;
 
@@ -30,13 +28,8 @@ my @tests = (
 plan tests => scalar(@tests);
 
 foreach my $test (@tests) {
-	my $req = fake_request(GET => $test->{path});
-	Dancer::SharedData->request($req);
-
-	my $response = Dancer::Renderer::get_action_response();
-	like($response->content, 
-		$test->{expected}, 
-		"response looks good for ".$test->{path});
+    response_content_like [GET => $test->{path}] => $test->{expected},
+      "response looks good for ".$test->{path};
 }
 
 Dancer::Logger::logger->{fh}->close;
