@@ -100,7 +100,8 @@ sub route_exists {
     $test_name ||= "a route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
-    ok(Dancer::App->find_route_through_apps($req), $test_name);
+    @_ = (Dancer::App->find_route_through_apps($req), $test_name);
+    goto &ok;
 }
 
 sub route_doesnt_exist {
@@ -110,7 +111,9 @@ sub route_doesnt_exist {
     $test_name ||= "no route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
-    ok(!defined(Dancer::App->find_route_through_apps($req)), $test_name);
+
+    @_ = (!defined(Dancer::App->find_route_through_apps($req)), $test_name);
+    goto &ok;
 }
 
 # Response status
@@ -121,7 +124,8 @@ sub response_exists {
     $test_name ||= "a response is found for " . _req_label($req);
 
     my $response = _req_to_response( $req );
-    ok(defined($response), $test_name);
+    @_ = (defined($response), $test_name);
+    goto &ok;
 }
 
 sub response_doesnt_exist {
@@ -130,7 +134,8 @@ sub response_doesnt_exist {
     $test_name ||= "no response found for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    ok(!defined($response), $test_name);
+    @_ = (!defined($response), $test_name);
+    goto &ok;
 }
 
 sub response_status_is {
@@ -138,7 +143,8 @@ sub response_status_is {
     $test_name ||= "response status is $status for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    is $response->status, $status, $test_name;
+    @_ = ( $response->status, $status, $test_name );
+    goto &is;
 }
 
 sub response_status_isnt {
@@ -146,7 +152,8 @@ sub response_status_isnt {
     $test_name ||= "response status is not $status for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    isnt $response->{status}, $status, $test_name;
+    @_ = ( $response->{status}, $status, $test_name );
+    goto &isnt;
 }
 
 # Response content
@@ -156,7 +163,8 @@ sub response_content_is {
     $test_name ||= "response content looks good for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    is $response->{content}, $matcher, $test_name;
+    @_ = ( $response->{content}, $matcher, $test_name );
+    goto &is;
 }
 
 sub response_content_isnt {
@@ -164,7 +172,8 @@ sub response_content_isnt {
     $test_name ||= "response content looks good for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    isnt $response->{content}, $matcher, $test_name;
+    @_ = ( $response->{content}, $matcher, $test_name );
+    goto &isnt;
 }
 
 sub response_content_like {
@@ -172,7 +181,8 @@ sub response_content_like {
     $test_name ||= "response content looks good for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    like $response->{content}, $matcher, $test_name;
+    @_ = ( $response->{content}, $matcher, $test_name );
+    goto &like;
 }
 
 sub response_content_unlike {
@@ -180,7 +190,8 @@ sub response_content_unlike {
     $test_name ||= "response content looks good for " , _req_label($req);
 
     my $response = _req_to_response($req);
-    unlike $response->{content}, $matcher, $test_name;
+    @_ = ( $response->{content}, $matcher, $test_name );
+    goto &unlike;
 }
 
 sub response_content_is_deeply {
@@ -188,7 +199,9 @@ sub response_content_is_deeply {
     $test_name ||= "response content looks good for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    is_deeply $response->{content}, $matcher, $test_name;
+
+    @_ = (  $response->{content}, $matcher, $test_name );
+    goto &is_deeply;
 }
 
 sub response_is_file {
@@ -196,7 +209,8 @@ sub response_is_file {
     $test_name ||= "a file is returned for " . _req_label($req);
 
     my $response = _get_file_response($req);
-    ok(defined($response), $test_name);
+    @_=(defined($response), $test_name);
+    goto &ok;
 }
 
 sub response_headers_are_deeply {
@@ -204,7 +218,8 @@ sub response_headers_are_deeply {
     $test_name ||= "headers are as expected for " . _req_label($req);
 
     my $response = dancer_response(expand_req($req));
-    is_deeply($response->headers_to_array, $expected, $test_name);
+    @_=($response->headers_to_array, $expected, $test_name);
+    goto &is_deeply;
 }
 
 sub dancer_response {
