@@ -466,7 +466,7 @@ Asserts that the response headers data structure equals the one given.
 
 Asserts that the response headers data structure includes some of the defined ones.
 
-    response_headers_include [GET => '/'], { 'Content-Type' => 'text/plain' };
+    response_headers_include [GET => '/'], [ 'Content-Type' => 'text/plain' ];
 
 =head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers })
 
