@@ -15,6 +15,9 @@
     * Dancer::Test::dancer_response() returns a 404 response when no route
       handler is found. This is consistent with what Dancer does internally.
       (Alberto Simões)
+	* Dancer::Test provides a new helper for inspecting subsets of headers:
+      "response_headers_include".
+      (Alberto Simões, Alexis Sukrieh)
 
 1.3029_01   01.04.2011
 
