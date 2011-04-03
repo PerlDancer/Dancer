@@ -195,20 +195,35 @@ sub response_headers_include {
     my $response = dancer_response(expand_req($req));
 
     # ugly, but why not...
-    ok(_include({ @{$response->headers_to_array} }, $expected), $test_name);
+    ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 
-sub _include {
-    my ($got, $expected) = @_;
-    my $ok = 1;
-    for my $k (keys %$expected) {
-        last if not $ok;
-        $ok = 0 if !exists($got->{$k}) || $got->{$k} ne $expected->{$k};
+# make sure the given header sublist is included in the full headers array
+sub _include_in_headers {
+    my ($full_headers, $expected_subset) = @_;
+
+    # walk through all the expected header pairs, make sure 
+    # they exist with the same value in the full_headers list
+    # return false as soon as one is not.
+    for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
+        my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
+        return 0 
+          if _get_header($full_headers, $name) ne $value;
     }
-    $ok
+
+    # we've found all the expected pairs in the $full_headers list
+    return 1;
 }
 
-
+# fetch the value of a header in the array given
+sub _get_header {
+    my ($headers, $key) = @_;
+    for (my $i=0; $i<scalar(@$headers); $i+=2) {
+        my ($name, $value) = ($headers->[$i], $headers->[$i + 1]);
+        return $value if $name eq $key;
+    }
+    return;
+}
 
 sub dancer_response {
     my ($method, $path, $args) = @_;
@@ -452,7 +467,7 @@ Asserts that the response headers data structure equals the one given.
 
 Asserts that the response headers data structure includes some of the defined ones.
 
-    response_headers_include [GET => '/'], { 'Content-Type' => 'text/plain' ];
+    response_headers_include [GET => '/'], { 'Content-Type' => 'text/plain' };
 
 =head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers })
 
