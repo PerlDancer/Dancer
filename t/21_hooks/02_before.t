@@ -62,7 +62,7 @@ response_content_is $request, 'index',
 
 response_headers_are_deeply [ GET => '/redirect_from' ],
   [
-    'Location'     => 'http://localhost/redirect_to',
+    'Location'     => '/redirect_to',
     'Content-Type' => 'text/xhtml',
   ];
 
