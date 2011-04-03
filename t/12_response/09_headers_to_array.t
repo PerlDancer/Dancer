@@ -16,6 +16,6 @@ use Test::More tests => 1, import => ['!pass'];
 use Dancer::Test;
 
 response_headers_include [GET => '/'] =>
-  { 'Content-Type' => 'text/html', 'A' => 1, 'A' => 2, 'B' => 3 };
+  [ 'Content-Type' => 'text/html', 'A' => 1, 'A' => 2, 'B' => 3 ];
 
 1;

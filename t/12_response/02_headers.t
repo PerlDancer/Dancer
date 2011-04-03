@@ -59,13 +59,13 @@ is($res->header('Content-Type'), 'text/css', "Content-Type looks good for /heade
 # /headers/multiple
 response_headers_include
   [ GET => '/headers/multiple'] =>
-  {
+  [
    'Content-Type' => 'text/html',
    Bar => 3,
    Foo => 1,
    Foo => 2,
    Foo => 4,
-  }, 'multiple headers are kept';
+  ], 'multiple headers are kept';
 
 # Dancer::Response header's API
 $res = Dancer::Response->new(

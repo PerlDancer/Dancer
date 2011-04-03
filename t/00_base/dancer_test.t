@@ -32,8 +32,8 @@ response_content_is_deeply [GET => '/hash'], { a => 1, b => 2, c => 3};
 response_content_like $req, qr{Hello};
 response_content_unlike $req, qr{Goodbye};
 
-response_headers_include [GET => '/with_headers'], { 'Content-Type' => 'text/html' };
-response_headers_include [GET => '/with_headers'], { 'X-Foo-Dancer' => '42' };
+response_headers_include [GET => '/with_headers']=>['Content-Type' => 'text/html'];
+response_headers_include [GET => '/with_headers']=>['X-Foo-Dancer' => '42'];
 
 eval { get_response($req) };
 like $@, qr/get_response.*has been deprecated. use dancer_response.*instead/i,
