@@ -197,6 +197,7 @@ sub response_headers_include {
     ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 
+
 # make sure the given header sublist is included in the full headers array
 sub _include_in_headers {
     my ($full_headers, $expected_subset) = @_;
@@ -207,21 +208,20 @@ sub _include_in_headers {
     for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
         my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
         return 0 
-          if _get_header($full_headers, $name) ne $value;
+          unless _check_header($full_headers, $name, $value);
     }
 
     # we've found all the expected pairs in the $full_headers list
     return 1;
 }
 
-# fetch the value of a header in the array given
-sub _get_header {
-    my ($headers, $key) = @_;
+sub _check_header {
+    my ($headers, $key, $value) = @_;
     for (my $i=0; $i<scalar(@$headers); $i+=2) {
-        my ($name, $value) = ($headers->[$i], $headers->[$i + 1]);
-        return $value if $name eq $key;
+        my ($name, $val) = ($headers->[$i], $headers->[$i + 1]);
+        return 1 if $name eq $key && $value eq $val;
     }
-    return;
+    return 0;
 }
 
 sub dancer_response {
