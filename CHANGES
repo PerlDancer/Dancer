@@ -1,5 +1,11 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+	* Better way to initialize the logdir in Dancer::Logger::File
+	  Works now cleanly if the appdir is not writable but the logdir exist and
+	  is writable.
+      (Alberto Simões)
+
     [ ENHANCEMENTS ]
     * Support for error templates
       If the setting "error_template" is set, it is used when building an error
