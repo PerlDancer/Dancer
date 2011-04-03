@@ -151,20 +151,14 @@ sub get_file_response {
     my $path_info   = $request->path_info;
     my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
-<<<<<<< HEAD
 
-    Dancer::App->execute_hooks('before_file_render', $static_file);
+    Dancer::Factory::Hook->execute_hooks('before_file_render', $static_file);
 
     my $response =
       Dancer::Renderer->get_file_response_for_path( $static_file, undef,
         $request->content_type );
 
-    Dancer::App->execute_hooks('after_file_render', $response);
-=======
-    Dancer::Factory::Hook->execute_hooks('before_file_render', $static_file);
-    my $response = Dancer::Renderer->get_file_response_for_path($static_file);
     Dancer::Factory::Hook->execute_hooks('after_file_render', $response);
->>>>>>> aa42831... use new API
     return $response;
 }
 

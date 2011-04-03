@@ -4,10 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
-<<<<<<< HEAD
-=======
 use Dancer::Factory::Hook;
->>>>>>> aa42831... use new API
 use Dancer::Deprecation;
 use Dancer::Hook;
 use Dancer::FileUtils 'path';
