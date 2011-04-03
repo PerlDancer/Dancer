@@ -11,8 +11,10 @@ use IO::File;
 
 sub logdir {
     my $altpath = setting('log_path');
-    return $altpath if($altpath);
+    return $altpath if $altpath;
+
     my $logroot = setting('appdir');
+
     if ($logroot) {
         if (!-d $logroot && not mkdir $logroot) {
             carp "log directory $logroot doesn't exist, am unable to create it";
@@ -24,15 +26,19 @@ sub logdir {
             return;
         }
     }
-    unless (-w $logroot and -x $logroot) {
+
+    my $expected_path = Dancer::FileUtils::path_no_verify($logroot, 'logs');
+    return $expected_path if (-d $expected_path && -x _ && -w _);
+
+    unless (-w $logroot and -x _) {
         my $perm = (stat $logroot)[2] & 07777;
         chmod($perm | 0700, $logroot);
-        unless (-w $logroot and -x $logroot) {
+        unless (-w $logroot and -x _) {
             carp "log directory $logroot isn't writable/executable and can't chmod it";
             return;
         }
     }
-    return Dancer::FileUtils::path_no_verify($logroot, 'logs');
+    return $expected_path;
 }
 
 sub init {
