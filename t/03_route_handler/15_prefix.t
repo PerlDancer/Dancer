@@ -1,7 +1,7 @@
 use Test::More import => ['!pass'];
 use t::lib::TestUtils;
 
-plan tests => 26;
+plan tests => 32;
 
 use Dancer ':syntax';
 use Dancer::Test;
@@ -11,6 +11,24 @@ eval { prefix 'say' };
 like $@, qr/not a valid prefix/, 'prefix must start with a /';
 
 ok( prefix '/say', 'prefix defined' );
+
+ok(
+    get(
+        '/foo' => sub {
+            'it worked'
+        }
+    ),
+    'route /say/foo defined'
+);
+
+ok(
+    get(
+        '/foo/' => sub {
+            'it worked'
+        }
+    ),
+    'route /say/foo/ defined'
+);
 
 ok(
     get(
@@ -82,6 +100,8 @@ my @tests = (
     { path => '/say/_stuff',  expected => 'underscore: stuff' },
     { path => '/say/any',     expected => 'any' },
     { path => '/go_to_trash', expected => 'trash: go_to_trash' },
+    { path => '/say/foo',     expected => 'it worked' },
+    { path => '/say/foo/',    expected => 'it worked' },
 );
 
 foreach my $test (@tests) {
@@ -91,3 +111,4 @@ foreach my $test (@tests) {
     response_exists [GET => $path];
     response_content_is_deeply [GET => $path], $expected;
 }
+
