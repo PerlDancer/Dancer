@@ -34,7 +34,7 @@ Test::TCP::test_tcp(
         my $port    = shift;
 
         my $handler = sub {
-            use Dancer ':syntax';
+            use Dancer;
 
             setting port       => $port;
             setting apphandler => 'PSGI';
