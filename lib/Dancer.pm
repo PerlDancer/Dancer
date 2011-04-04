@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3020';
+our $VERSION   = '1.3029_01';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -59,6 +59,7 @@ our @EXPORT    = qw(
   load
   load_app
   logger
+  mime
   mime_type
   options
   params
@@ -125,7 +126,10 @@ sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          { set(logger => @_) }
-sub mime_type       { goto &_mime_type }
+sub mime            { Dancer::MIME->instance() }
+sub mime_type       {
+    Dancer::Deprecation->deprecated(reason => "use 'mime' from Dancer.pm",fatal => 1)
+}
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }
@@ -273,16 +277,9 @@ sub _init_script_dir {
     $res or croak "unable to set libdir : $error";
 }
 
-sub _mime_type {
-    my $mime = Dancer::MIME->instance();
-      @_ == 0 ? $mime->aliases
-    : @_ == 1 ? $mime->mime_type_for(@_)
-    :           $mime->add_mime_type(@_);
-}
-
 sub _redirect {
     my ($destination, $status) = @_;
-    if ($destination =~ m!^(\w://)?/!) {
+    if ($destination !~ m!^(\w+:/)?/!) {
         # no absolute uri here, build one, RFC 2616 forces us to do so
         my $request = Dancer::SharedData->request;
         $destination = $request->uri_for($destination, {}, 1);
@@ -301,19 +298,27 @@ sub _session {
 }
 
 sub _send_file {
-    my ($path) = @_;
+    my ($path, %options) = @_;
 
     my $request = Dancer::Request->new_for_request('GET' => $path);
     Dancer::SharedData->request($request);
 
-    my $resp = Dancer::Renderer::get_file_response();
+    if (exists($options{content_type})) {
+        $request->content_type($options{content_type});
+    }
+
+    my $resp;
+    if ($options{absolute} && -f $path) {
+        $resp = Dancer::Renderer->get_file_response_for_path($path);
+    } else {
+        $resp = Dancer::Renderer->get_file_response();
+    }
     return $resp if $resp;
 
     Dancer::Error->new(
         code    => 404,
         message => "No such file: `$path'"
     )->render();
-    
 }
 
 # Start/Run the application with the chosen apphandler
@@ -744,17 +749,32 @@ C<:syntax> option, in order not to change the application directory
 
 =head2 mime_type
 
-Returns all the user-defined mime-types when called without parameters.
-Behaves as a setter/getter when given parameters
+Deprecated. Check C<mime> bellow.
 
-    # get the global hash of user-defined mime-types:
-    my $mimes = mime_type;
+=head2 mime
 
-    # set a mime-type
-    mime_type foo => 'text/foo';
+Shortcut to access the instance object of L<Dancer::MIME>. You should
+check its man page for details, as this entry just summarize the most
+relevant methods.
 
-    # get a mime-type
-    my $m = mime_type 'foo';
+    # set a new mime type
+    mime->add_type( foo => 'text/foo' );
+
+    # set a mime type alias
+    mime->add_alias( f => 'foo' );
+
+    # get mime type for an alias
+    my $m = mime->for_name( 'f' );
+
+    # get mime type for a file (based on extension)
+    my $m = mime->for_file( "foo.bar" );
+
+    # get current defined default mime type
+    my $d = mime->default;
+
+    # set the default mime type using config.yml
+    # or using the set keyword
+    set default_mime_type => 'text/plain';
 
 =head2 params
 
@@ -805,6 +825,12 @@ You can unset the prefix value:
 
     prefix undef;
     get '/page1' => sub {}; will match /page1
+
+B<Notice:> once you have a prefix set, do not add a caret to the regex:
+
+    prefix '/foo';
+    get qr{^/bar} => sub { ... } # BAD BAD BAD
+    get qr{/bar}  => sub { ... } # Good!
 
 =head2 del
 
@@ -899,16 +925,31 @@ saying C<return send_error(...)> instead.
 
 =head2 send_file
 
-Lets the current route handler send a file to the client.
+Lets the current route handler send a file to the client. Note that
+the path of the file must be relative to the B<public> directory.
 
     get '/download/:file' => sub {
         send_file(params->{file});
     }
 
 The content-type will be set depending on the current mime-types definition
-(see C<mime_type> if you want to define your own).
+(see C<mime> if you want to define your own).
 
-The path of the file must be relative to the B<public> directory.
+If your filename does not have an extension, or you need to force a
+specific mime type, you can pass it to C<send_file> as follows:
+
+    send_file(params->{file}, content_type => 'image/png');
+
+Also, you can use your aliases or file extension names on
+C<content_type>, like this:
+
+    send_file(params->{file}, content_type => 'png');
+
+For files outside your B<public> folder, you can use the C<absolute>
+switch. Just bear in mind that its use needs caution as it can be
+dangerous.
+
+   send_file('/etc/passwd', absolute => 1);
 
 =head2 set
 

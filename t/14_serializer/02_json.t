@@ -7,6 +7,8 @@ plan skip_all => "JSON is needed to run this tests"
     unless Dancer::ModuleLoader->load('JSON');
 plan tests => 17;
 
+set environment => 'testing';
+
 eval {
     setting serializer => 'FooBar';
 };
@@ -31,10 +33,8 @@ is_deeply $data2, $data, "data is correctly deserialized";
 # helpers
 
 $json = to_json($data);
-is $json, '{
-   "foo" : 42
-}
-', "data is correctly serialized";
+is $json, '{"foo":42}',
+  "data is correctly serialized";
 
 $data2 = from_json($json);
 is_deeply($data2, $data, "data is correctly deserialized");

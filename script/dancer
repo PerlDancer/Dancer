@@ -92,6 +92,25 @@ sub create_node($;$) {
     my ($node, $root) = @_;
     $root ||= '.';
 
+    my $manifest_name = catfile($root => 'MANIFEST');
+    open my $manifest, ">", $manifest_name or die $!;
+
+    # create a closure, so we do not need to get $root passed as
+    # argument on _create_node
+    my $add_to_manifest = sub {
+        my $file = shift;
+        $file =~ s{^$root/?}{};
+        print $manifest "$file\n";
+    };
+
+    $add_to_manifest->($manifest_name);
+    _create_node($add_to_manifest, $node, $root);
+    close $manifest;
+}
+
+sub _create_node {
+    my ($add_to_manifest, $node, $root) = @_;
+
     my $templates = templates($name);
 
     while ( my ($path, $content) = each %$node ) {
@@ -99,11 +118,12 @@ sub create_node($;$) {
 
         if (ref($content) eq 'HASH') {
             safe_mkdir($path);
-            create_node($content, $path);
+            _create_node($add_to_manifest, $content, $path);
         } elsif (ref($content) eq 'CODE') {
             # The content is a coderef, which, given the path to the file it
             # should create, will do the appropriate thing:
             $content->($path);
+            $add_to_manifest->($path);
        } else {
             my $file = basename($path);
             my $dir  = dirname($path);
@@ -113,6 +133,7 @@ sub create_node($;$) {
             $path = catfile($dir, $file); # rebuild the path without the '+' flag
             write_file($path, $template, {appdir => File::Spec->rel2abs($DANCER_APP_DIR)});
             chmod 0755, $path if $ex;
+            $add_to_manifest->($path);
         }
     }
 }
@@ -122,6 +143,7 @@ sub app_tree($) {
 
     return {
         "Makefile.PL"        => FILE,
+        "MANIFEST.SKIP"      => FILE,
         lib                  => {
          $LIB_PATH => {
             $LIB_FILE => FILE,}
@@ -208,7 +230,7 @@ sub process_template {
 sub write_data_to_file {
     my ($data, $path) = @_;
     open(my $fh, '>', $path)
-      or warn "Failed to write favicon to $path - $!" and return;
+      or warn "Failed to write file to $path - $!" and return;
     binmode($fh);
     print {$fh} unpack 'u*', $data;
     close $fh;
@@ -462,7 +484,7 @@ WriteMakefile(
 <!-- Grab Google CDN\'s jQuery. fall back to local if necessary -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">/* <![CDATA[ */
-    !window.jQuery && document.write(\'<script type="text/javascript" src="<% request.uri_base %>/javascripts/jquery.js"></script>\')
+    !window.jQuery && document.write(\'<script type="text/javascript" src="<% request.uri_base %>/javascripts/jquery.js"><\/script>\')
 /* ]]> */</script>
 
 </head>
@@ -858,6 +880,8 @@ template: \"simple\"
 
 'jquery.js' => jquery_minified(),
 
+'MANIFEST.SKIP' => manifest_skip(),
+
 'development.yml' =>
 "# configuration file for development environment
 
@@ -1208,6 +1232,24 @@ M"S:;SM#[O36UR'8>Q8+OXZ:.B9(!_L-']6<>)0Z>@Z>>LZ:NB5-7&K8#*&(T
 J9M+;3:1@)2!@#7Q04U70U3%73P6(4-A`0VRR@)2D#W`:GZC5:6F</__9
 EOF
     write_data_to_file($data, $path);
+}
+
+sub manifest_skip {
+    return <<'EOF';
+^\.git\/
+maint
+^tags$
+.last_cover_stats
+Makefile$
+^blib
+^pm_to_blib
+^.*.bak
+^.*.old
+^t.*sessions
+^cover_db
+^.*\.log
+^.*\.swp$
+EOF
 }
 
 sub jquery_minified {

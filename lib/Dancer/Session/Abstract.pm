@@ -11,12 +11,6 @@ use File::Spec;
 
 __PACKAGE__->attributes('id');
 
-# args: ($class)
-# Overload this method in your session engine if you have some init stuff to do,
-# such as a database connection or making sure a directory exists...
-# It will be called once the session engine is loaded.
-# sub init { return 1; }
-
 # args: ($class, $id)
 # receives a session id and should return a session object if found, or undef
 # otherwise.
@@ -43,25 +37,24 @@ sub destroy {
 }
 
 
-# Methods below this this line should not be overloaded.
 
 # This is the default constructor for the session object, the only mandatory
 # attribute is 'id'. The whole object should be serialized by the session
 # engine.
+# If you override this constructor, remember to call $self->SUPER::init() so
+# that the session ID is still generated.
 sub init {
     my ($self) = @_;
     $self->id(build_id());
 }
 
-# session name can be set in configuration file:
-# setting session_name => 'mydancer.session';
-my $SESSION_NAME = session_name();
-
-# this method can be overwrite in any Dancer::Session::* module
+# this method can be overwritten in any Dancer::Session::* module
 sub session_name {
     setting('session_name') || 'dancer.session';
 }
 
+
+# Methods below this this line should not be overloaded.
 
 # we try to make the best random number
 # with native Perl 5 code.
@@ -83,14 +76,17 @@ sub build_id {
 }
 
 sub read_session_id {
-    my $c = Dancer::Cookies->cookies->{$SESSION_NAME};
+    my $name = session_name();
+    my $c = Dancer::Cookies->cookies->{$name};
     return (defined $c) ? $c->value : undef;
 }
 
 sub write_session_id {
     my ($class, $id) = @_;
+
+    my $name = session_name();
     my %cookie = (
-        name   => $SESSION_NAME,
+        name   => $name,
         value  => $id,
         secure => setting('session_secure')
     );
@@ -100,7 +96,7 @@ sub write_session_id {
     }
 
     my $c = Dancer::Cookie->new(%cookie);
-    Dancer::Cookies->set_cookie_object($SESSION_NAME => $c);
+    Dancer::Cookies->set_cookie_object($name => $c);
 }
 
 1;
@@ -123,16 +119,18 @@ needed to manipulate a session, whatever its storing engine is.
 
 =item B<id>
 
-The session id will be written to a cookie, named C<dancer.session>, it is
-assumed that a client must accept cookies to be able to use a session-aware
-Dancer webapp.
+The session id will be written to a cookie, by default named C<dancer.session>, 
+it is assumed that a client must accept cookies to be able to use a 
+session-aware Dancer webapp. (The cookie name can be change using the
+C<session_name> config setting.)
 
 =item B<storage engine>
 
 When the session engine is enabled, a I<before> filter takes care to initialize
-the good Dancer::Session::Engine (according to the setting C<session>).
+the appropriate session engine (according to the setting C<session>).
 
-Then, the filter looks for a cookie named C<dancer.session> in order to
+Then, the filter looks for a cookie named C<dancer.session> (or whatever you've
+set the C<ssesion_name> setting to, if you've used it) in order to
 I<retrieve> the current session object. If not found, a new session object is
 I<created> and its id written to the cookie.
 
@@ -146,14 +144,14 @@ After terminating the request, a I<flush> is made to the session object.
 =head1 DESCRIPTION
 
 This virtual class describes how to build a session engine for Dancer. This is
-done in order to allow multiple session storage with a common interface.
+done in order to allow multiple session storage backends with a common interface.
 
-Any session engine must inherits from Dancer::Session::Abstract and implement
+Any session engine must inherit from Dancer::Session::Abstract and implement
 the following abstract methods.
 
 =head2 Configuration
 
-These settings effect how a session acts.
+These settings control how a session acts.
 
 =head3 session_name
 
@@ -190,6 +188,9 @@ Remove the current session object from the storage engine.
 =item B<session_name> (optional)
 
 Returns a string with the name of cookie used for storing the session ID.
+
+You should probably not override this; the user can control the cookie name
+using the C<session_name> setting.
 
 =back
 

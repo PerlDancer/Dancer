@@ -26,7 +26,7 @@ response_content_is [GET => '/'], "home";
 get '/redirect' => sub { header 'X-Foo' => 'foo'; redirect '/'; };
 
 my $expected_headers = [
-    'Location' => 'http://localhost/',
+    'Location' => '/',
     'Content-Type' => 'text/html',
     'X-Foo' => 'foo',
 ];
@@ -34,7 +34,7 @@ response_headers_are_deeply [GET => '/redirect'], $expected_headers;
 
 get '/redirect_querystring' => sub { redirect '/login?failed=1' };
 $expected_headers = [
-    'Location' => 'http://localhost/login?failed=1',
+    'Location' => '/login?failed=1',
     'Content-Type' => 'text/html',
 ];
 response_headers_are_deeply [GET => '/redirect_querystring'], $expected_headers;

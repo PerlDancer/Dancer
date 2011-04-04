@@ -1,4 +1,48 @@
-{{$NEXT}}
+1.3029_01   01.04.2011
+
+    [ BUG FIXES ]
+    * Fix t/14_serializer/02_json.t to work with older JSON (relates to GH#416)
+      (Damien Krotkine)
+    * the Changelog test now supports Codenames. It suggests to add codenames
+      for table releaes as well
+      (Damien Krotkine)
+    * GH #420: Extra content generated
+      (Alberto Simões, Damien Krotkine)
+    * GH #409: If pass has no more matching routes, return 404.
+      (Alberto Simões)
+
+    [ ENHANCEMENTS ]
+    * GH #396: Test that Dancer::Session::Cookie isn't broken
+      (Michael G. Schwern)
+    * GH #399: Make sure session can have their name changed.
+      (Michael G. Schwern)
+    * Dancer::Test tests assumes 'GET' if their first argument is scalar.
+      (Yanick Champoux)
+    * send_file accepts optional content-type declaration, to override guessed
+      MIME type, e.g. send_file $filename, content_type => 'image/png'
+      (Alberto Simões, requested by Michael G Schwern)
+    * send_file accepts optional absolute option, to send an absolute path
+      (Alberto Simões)
+    * Have `dancer` cmd tool create MANIFEST and MANIFEST.SKIP.
+      (Alberto Simões)
+    * mime_type is deprecated; new keyword 'mime'; new config key
+      'default_mime_type';
+      (Alberto Simões and Michael G. Schwern)
+    * Recognize absolute redirects 
+      (Yanick Champoux)
+
+    [ DOCUMENTATION ]
+    * Add documentation to send_file optional argument
+      (Alberto Simões)
+    * Fix plack_middlewares example in the cookbook
+      (Michael G. Schwern)
+    * Extend the POD on plugin_setting to prevent a pitfall with plugin
+      modules more than 3 levels deep.
+      (Stefan Hornburg)
+    * GH #400: Documenting the plack_middlewares_map.
+      (Michael G. Schwern, Sawyer X)
+    * GH #422: Documenting no need for caret when you have a prefix.
+      (Sawyer X)
 
 1.3020      21.03.2011
     ** Codename: The Schwern Cometh // Michael G. Schwern **
