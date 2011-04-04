@@ -349,7 +349,7 @@ occurs. (Internally sets Carp::Verbose). Default to false.
 
 =head2 log (enum)
 
-Tells which log messages should be actullay logged. Possible values are
+Tells which log messages should be actually logged. Possible values are
 B<core>, B<debug>, B<warning> or B<error>.
 
 =over 4
