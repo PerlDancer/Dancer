@@ -7,7 +7,7 @@ use Dancer::Request;
 use Dancer::Serializer;
 use Dancer::Serializer::Abstract;
 
-plan tests => 13;
+plan tests => 16;
 
 SKIP: {
     skip 'JSON is needed to run this test', 3
@@ -89,4 +89,31 @@ SKIP: {
     Dancer::SharedData->request($req);
     $ct = $s->_find_content_type($req);
     is_deeply $ct, [ 'application/json', 'text/xml' ];
+}
+
+# handler helper
+{
+    skip 'JSON is needed to run this test', 3
+      unless Dancer::ModuleLoader->load('JSON');
+
+    my $body = '{"foo":42}';
+    open my $in, '<', \$body;
+    my $env = {
+        CONTENT_LENGTH => length($body),
+        CONTENT_TYPE   => Dancer::Serializer::JSON->content_type,
+        REQUEST_METHOD => 'PUT',
+        SCRIPT_NAME    => '/',
+        'psgi.input'   => $in,
+    };
+
+    my $expected_params = { foo => '42', };
+
+    my $req = Dancer::Request->new($env);
+    is $req->body, $body, "body is untouched";
+
+    my $processed_req = Dancer::Serializer->process_request($req);
+    is_deeply( scalar( $processed_req->params('body') ),
+        $expected_params, "body request has been deserialized" );
+    is $processed_req->params->{'foo'}, 42, "params have been updated";
+
 }
