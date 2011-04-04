@@ -337,6 +337,10 @@ Content-Type: text/plain
     # then store the request
     Dancer::SharedData->request($request);
 
+    # XXX this is a hack!!
+    $request = Dancer::Serializer->process_request($request)
+      if Dancer::App->current->setting('serializer');
+    
     # duplicate some code from Dancer::Handler
     my $get_action = eval {
         Dancer::Renderer->render_file
