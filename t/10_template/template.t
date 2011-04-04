@@ -10,7 +10,7 @@ use warnings;
 
     setting views => path('t', '10_template', 'views');
     get '/' => sub {
-        template 'index.tt', {foo => 42};
+        template 'index', {foo => 42};
     };
 }
 
