@@ -1,21 +1,23 @@
 {{$NEXT}}
 
     [ BUG FIXES ]
-	* Better way to initialize the logdir in Dancer::Logger::File
-	  Works now cleanly if the appdir is not writable but the logdir exist and
-	  is writable.
+    * Better way to initialize the logdir in Dancer::Logger::File
+      Works now cleanly if the appdir is not writable but the logdir exist and
+      is writable.
       (Alberto Simões)
+    * fix warnings in t/03_route_handler/28_plack_mount.t
+      (Franck Cuny)
 
     [ ENHANCEMENTS ]
     * Support for error templates
       If the setting "error_template" is set, it is used when building an error
       page instead of using the default template.
-	  Added the appropirate documentation as well.
+      Added the appropirate documentation as well.
       (Alberto Simões)
     * Dancer::Test::dancer_response() returns a 404 response when no route
       handler is found. This is consistent with what Dancer does internally.
       (Alberto Simões)
-	* Dancer::Test provides a new helper for inspecting subsets of headers:
+    * Dancer::Test provides a new helper for inspecting subsets of headers:
       "response_headers_include".
       (Alberto Simões, Alexis Sukrieh)
     * dancer_response now handles the rendering of static pages as well
