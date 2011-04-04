@@ -18,6 +18,8 @@
 	* Dancer::Test provides a new helper for inspecting subsets of headers:
       "response_headers_include".
       (Alberto Simões, Alexis Sukrieh)
+    * dancer_response now handles the rendering of static pages as well
+      (Alberto Simões)
 
 1.3029_01   01.04.2011
 
