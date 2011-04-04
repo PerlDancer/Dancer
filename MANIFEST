@@ -228,6 +228,7 @@ t/10_template/02_abstract_class.t
 t/10_template/03_simple.t
 t/10_template/05_template_toolkit.t
 t/10_template/06_before_template_hook.t
+t/10_template/extension.t
 t/10_template/extension.tt
 t/10_template/index.txt
 t/10_template/template.t
