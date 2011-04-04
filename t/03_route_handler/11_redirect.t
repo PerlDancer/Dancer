@@ -30,14 +30,14 @@ my $expected_headers = [
     'Content-Type' => 'text/html',
     'X-Foo' => 'foo',
 ];
-response_headers_are_deeply [GET => '/redirect'], $expected_headers;
+response_headers_include [GET => '/redirect'] => $expected_headers;
 
 get '/redirect_querystring' => sub { redirect '/login?failed=1' };
 $expected_headers = [
     'Location' => '/login?failed=1',
     'Content-Type' => 'text/html',
 ];
-response_headers_are_deeply [GET => '/redirect_querystring'], $expected_headers;
+response_headers_include [GET => '/redirect_querystring'] => $expected_headers;
 
 Dancer::Logger::logger->{fh}->close;
 File::Temp::cleanup();

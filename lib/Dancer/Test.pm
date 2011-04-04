@@ -194,9 +194,9 @@ sub response_headers_include {
 
     my $response = dancer_response(expand_req($req));
 
-    # ugly, but why not...
     ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
+
 
 # make sure the given header sublist is included in the full headers array
 sub _include_in_headers {
@@ -208,21 +208,20 @@ sub _include_in_headers {
     for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
         my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
         return 0 
-          if _get_header($full_headers, $name) ne $value;
+          unless _check_header($full_headers, $name, $value);
     }
 
     # we've found all the expected pairs in the $full_headers list
     return 1;
 }
 
-# fetch the value of a header in the array given
-sub _get_header {
-    my ($headers, $key) = @_;
+sub _check_header {
+    my ($headers, $key, $value) = @_;
     for (my $i=0; $i<scalar(@$headers); $i+=2) {
-        my ($name, $value) = ($headers->[$i], $headers->[$i + 1]);
-        return $value if $name eq $key;
+        my ($name, $val) = ($headers->[$i], $headers->[$i + 1]);
+        return 1 if $name eq $key && $value eq $val;
     }
-    return;
+    return 0;
 }
 
 sub dancer_response {
@@ -273,9 +272,10 @@ sub dancer_response {
 
     # duplicate some code from Dancer::Handler
     my $get_action = eval {
-        Dancer::Renderer::get_action_response() ||
-            Dancer::Renderer->render_error(404)
-          };
+        Dancer::Renderer->render_file
+            || Dancer::Renderer->render_action
+              || Dancer::Renderer->render_error(404);
+    };
     if ($@) {
         Dancer::Error->new(
             code    => 500,
@@ -467,7 +467,7 @@ Asserts that the response headers data structure equals the one given.
 
 Asserts that the response headers data structure includes some of the defined ones.
 
-    response_headers_include [GET => '/'], { 'Content-Type' => 'text/plain' };
+    response_headers_include [GET => '/'], [ 'Content-Type' => 'text/plain' ];
 
 =head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers })
 

@@ -21,7 +21,7 @@ use Dancer::Test;
     note "Testing one cookie";
     my $req = [GET => '/set_one_cookie'];
     route_exists $req;
-    response_headers_are_deeply $req, [
+    response_headers_include $req => [
         'Content-Type' => 'text/html',
         'Set-Cookie' => 'a=b; path=/; HttpOnly'
     ];
@@ -30,7 +30,7 @@ use Dancer::Test;
     note "Testing two cookies";
     my $req = [GET => '/set_two_cookies'];
     route_exists $req;
-    response_headers_are_deeply $req, [
+    response_headers_include $req => [
         'Content-Type' => 'text/html',
         'Set-Cookie' => 'a=b; path=/; HttpOnly',
         'Set-Cookie' => 'c=d; path=/; HttpOnly',
