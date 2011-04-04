@@ -21,6 +21,10 @@
     * dancer_response now handles the rendering of static pages as well
       (Alberto Simões)
 
+    [ DOCUMENTATION ]
+    * POD fix.
+      (Stefan Hornburg - Racke)
+
 1.3029_01   01.04.2011
 
     [ BUG FIXES ]
