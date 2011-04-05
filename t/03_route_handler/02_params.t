@@ -2,7 +2,7 @@ use Dancer ':syntax', ':tests';
 use Dancer::Test;
 use Test::More;
 
-plan tests => 23;
+plan tests => 28;
 
 # multiple token
 {
