@@ -423,6 +423,25 @@ have a lot of files being served in the B<public> folder that do not
 have an extension, and are text files, set the C<default_mime_type> to
 C<text/plain>.
 
+=head2 auto_page (boolean)
+
+For simple pages where you're not doing anything dynamic, but still
+want to use the template engine to provide headers etc, you can use
+the auto_page feature to avoid the need to create a route for each
+page.
+
+With C<auto_page> enabled, if the requested path does not match any
+specific route, Dancer will check in the views directory for a
+matching template, and use it to satisfy the request if found.
+
+Simply enable auto_page in your config:
+
+    auto_page: 1
+
+Then, if you request C</foo/bar>, Dancer will look in the views dir for
+C</foo/bar.tt>.
+
+
 =head1 AUTHOR
 
 This module has been written by Alexis Sukrieh <sukria@cpan.org> and others,
