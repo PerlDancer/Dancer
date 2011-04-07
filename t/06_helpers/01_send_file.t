@@ -24,7 +24,7 @@ ok(get('/as_png/:file' => sub {
 }), '/as_png/:file route defined');
 
 ok(get('/absolute/:file' => sub {
-    send_file(path(dirname(__FILE__), "routes.pl"), absolute => 1);
+    send_file(path(dirname(__FILE__), "routes.pl"), system_path => 1);
 }), '/absolute/:file route defined');
 
 my $resp = dancer_response(GET => '/cat/file.txt');

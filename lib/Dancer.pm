@@ -308,7 +308,7 @@ sub _send_file {
     }
 
     my $resp;
-    if ($options{absolute} && -f $path) {
+    if ($options{system_path} && -f $path) {
         $resp = Dancer::Renderer->get_file_response_for_path($path);
     } else {
         $resp = Dancer::Renderer->get_file_response();
@@ -945,11 +945,11 @@ C<content_type>, like this:
 
     send_file(params->{file}, content_type => 'png');
 
-For files outside your B<public> folder, you can use the C<absolute>
+For files outside your B<public> folder, you can use the C<system_path>
 switch. Just bear in mind that its use needs caution as it can be
 dangerous.
 
-   send_file('/etc/passwd', absolute => 1);
+   send_file('/etc/passwd', system_path => 1);
 
 =head2 set
 
