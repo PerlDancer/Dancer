@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8, import => ['!pass'];
+use Test::More tests => 7, import => ['!pass'];
 
 use Dancer ':syntax';
 
@@ -10,15 +10,16 @@ BEGIN {
 }
 
 my $mime = Dancer::MIME->instance();
-is($mime->mime_type_for('svg'), 'image/svg+xml', 'mime type svg is known');
+is($mime->for_name('svg'), 'image/svg+xml', 'mime type svg is known');
 
-is_deeply($mime->aliases, {}, 'user defined mime_types are empty');
+is_deeply($mime->custom_types, {}, 'user defined mime_types are empty');
 
-ok($mime->add_mime_type(foo => 'text/foo'), 'define text/foo');
-is_deeply($mime->aliases, {foo => 'text/foo'}, 'text/foo is saved');
+$mime->add_type(foo => 'text/foo');
+is_deeply($mime->custom_types, {foo => 'text/foo'}, 'text/foo is saved');
+is($mime->for_name('foo'), 'text/foo', 'mime type foo is found');
 
-is($mime->mime_type_for('foo'), 'text/foo', 'mime type foo is found');
+$mime->add_alias(bar => 'foo');
+is($mime->for_name('bar'), 'text/foo', 'mime type bar is found');
 
-ok($mime->add_mime_type(bar => 'foo'), 'define bar as alias to foo');
-is($mime->mime_type_for('bar'), 'text/foo', 'mime type bar is found');
+is($mime->for_file('foo.bar'), 'text/foo', 'mime type for extension .bar is found');
 

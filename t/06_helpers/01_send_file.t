@@ -8,16 +8,24 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 6;
+plan tests => 15;
 
 ok(get('/cat/:file', sub {
     send_file(params->{file});
 }), '/cat/:file route defined');
 
-get '/catheader/:file' => sub {
+ok(get('/catheader/:file' => sub {
     header 'FooHeader' => 42;
     send_file(params->{file});
-};
+}), '/catheader/:file route defined');
+
+ok(get('/as_png/:file' => sub {
+    send_file(params->{file}, content_type => 'png');
+}), '/as_png/:file route defined');
+
+ok(get('/absolute/:file' => sub {
+    send_file(path(dirname(__FILE__), "routes.pl"), absolute => 1);
+}), '/absolute/:file route defined');
 
 my $resp = dancer_response(GET => '/cat/file.txt');
 ok(defined($resp), "route handler found for /cat/file.txt");
@@ -33,3 +41,17 @@ $resp = dancer_response(GET => '/catheader/file.txt');
 %headers = @{$resp->headers_to_array};
 is $headers{FooHeader}, 42, 'FooHeader is kept';
 
+my $png = dancer_response(GET => '/as_png/file.txt');
+ok(defined($png), "route handler found for /as_png/file.txt");
+my %png_headers = @{$png->headers_to_array};
+is($png_headers{'Content-Type'}, 'image/png', 'mime_type can be forced');
+
+
+$resp = undef; # just to be sure
+$resp = dancer_response(GET => '/absolute/file.txt');
+ok(defined($resp), "route handler found for /absolute/file.txt");
+%headers = @{$resp->headers_to_array};
+is($headers{'Content-Type'}, 'application/x-perl', 'mime_type is ok');
+is(ref($resp->{content}), 'GLOB', "content is a File handle");
+$content = read_glob_content($resp->{content});
+like($content, qr/'foo loaded'/, "content is ok");

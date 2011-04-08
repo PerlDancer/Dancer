@@ -3,10 +3,7 @@ use strict;
 use warnings;
 
 use Test::More tests => 105, import => ['!pass'];
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use TestUtils;
-
+use Dancer::Test;
 use Dancer ':syntax';
 setting route_cache => 1;
 
@@ -50,11 +47,7 @@ my %reqs = (
 
 foreach my $method ( qw/get post/ ) {
     foreach my $path ( '/in', '/out', '/err' ) {
-        my $req = TestUtils::fake_request( $method => $path );
-        Dancer::SharedData->request($req);
-        my $res = Dancer::Renderer::get_action_response();
-
-        ok( defined $res, "$method $path request" );
+        response_exists [$method => $path] => "$method $path request"
     }
 }
 
@@ -115,11 +108,7 @@ $cache->{'cache_array'} = [];
     }
 
     foreach my $path (@paths) {
-        my $req = TestUtils::fake_request( get => "/$path" );
-        Dancer::SharedData->request($req);
-        my $res = Dancer::Renderer::get_action_response();
-
-        ok( defined $res, "get $path request" );
+        response_exists [GET => "/$path"] => "get $path request";
     }
 
     # check that only 10 remained
@@ -162,11 +151,7 @@ SKIP: {
     }
 
     foreach my $path (@paths) {
-        my $req = TestUtils::fake_request( get => $path );
-        Dancer::SharedData->request($req);
-        my $res = Dancer::Renderer::get_action_response();
-
-        ok( defined $res, 'get request' );
+        response_exists [GET => $path], 'get request';
     }
 
     # check that only 10 remained

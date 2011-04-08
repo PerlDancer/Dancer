@@ -87,12 +87,9 @@ my $normalizers = {
 
 sub mime_types {
     Dancer::Deprecation->deprecated(
-        reason => "use 'mime_type' from Dancer.pm",
+        reason => "use 'mime' from Dancer.pm",
+        fatal => 1,
     );
-    my $mime = Dancer::MIME->instance();
-    if    (scalar(@_)==2) { $mime->add_mime_type(@_) }
-    elsif (scalar(@_)==1) { $mime->mime_type_for(@_) }
-    else                  { $mime->aliases           }
 }
 
 sub normalize_setting {
@@ -352,7 +349,7 @@ occurs. (Internally sets Carp::Verbose). Default to false.
 
 =head2 log (enum)
 
-Tells which log messages should be actullay logged. Possible values are
+Tells which log messages should be actually logged. Possible values are
 B<core>, B<debug>, B<warning> or B<error>.
 
 =over 4
@@ -396,6 +393,35 @@ default, sessions are disabled in Dancer, you must choose a session engine to
 use them.
 
 See L<Dancer::Session> for supported engines and their respective configuration.
+
+=head2 error_template (template path)
+
+This setting lets you specify a template to be used in case of runtime
+error. At the present moment the template can use three variables:
+
+=over 4
+
+=item B<title>
+
+The error title.
+
+=item B<message>
+
+The error message.
+
+=item B<code>
+
+The code throwing that error.
+
+=back
+
+=head2 default_mime_type (string)
+
+Dancer's L<Dancer::MIME> module uses C<application/data> as a default
+mime type. This setting lets the user change it. For example, if you
+have a lot of files being served in the B<public> folder that do not
+have an extension, and are text files, set the C<default_mime_type> to
+C<text/plain>.
 
 =head1 AUTHOR
 

@@ -37,6 +37,7 @@ use vars '@EXPORT';
   response_content_unlike
   response_is_file
   response_headers_are_deeply
+  response_headers_include
 
   dancer_response
   get_response
@@ -70,10 +71,15 @@ sub import {
 
 # Route Registry
 
+sub expand_req {
+    my $req = shift;
+    return ref $req eq 'ARRAY' ? @$req : ( 'GET', $req );
+}
+
 sub route_exists {
     my ($req, $test_name) = @_;
 
-    my ($method, $path) = @$req;
+    my ($method, $path) = expand_req($req);
     $test_name ||= "a route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
@@ -83,7 +89,7 @@ sub route_exists {
 sub route_doesnt_exist {
     my ($req, $test_name) = @_;
 
-    my ($method, $path) = @$req;
+    my ($method, $path) = expand_req($req);
     $test_name ||= "no route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
@@ -96,7 +102,7 @@ sub response_exists {
     my ($req, $test_name) = @_;
     $test_name ||= "a response is found for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     ok(defined($response), $test_name);
 }
 
@@ -104,7 +110,7 @@ sub response_doesnt_exist {
     my ($req, $test_name) = @_;
     $test_name ||= "no response found for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     ok(!defined($response), $test_name);
 }
 
@@ -112,7 +118,7 @@ sub response_status_is {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is $status for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     is $response->status, $status, $test_name;
 }
 
@@ -120,7 +126,7 @@ sub response_status_isnt {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is not $status for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     isnt $response->{status}, $status, $test_name;
 }
 
@@ -130,7 +136,7 @@ sub response_content_is {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     is $response->{content}, $matcher, $test_name;
 }
 
@@ -138,7 +144,7 @@ sub response_content_isnt {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     isnt $response->{content}, $matcher, $test_name;
 }
 
@@ -146,7 +152,7 @@ sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     like $response->{content}, $matcher, $test_name;
 }
 
@@ -154,7 +160,7 @@ sub response_content_unlike {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     unlike $response->{content}, $matcher, $test_name;
 }
 
@@ -162,7 +168,7 @@ sub response_content_is_deeply {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     is_deeply $response->{content}, $matcher, $test_name;
 }
 
@@ -178,8 +184,44 @@ sub response_headers_are_deeply {
     my ($req, $expected, $test_name) = @_;
     $test_name ||= "headers are as expected for @$req";
 
-    my $response = dancer_response(@$req);
+    my $response = dancer_response(expand_req($req));
     is_deeply($response->headers_to_array, $expected, $test_name);
+}
+
+sub response_headers_include {
+    my ($req, $expected, $test_name) = @_;
+    $test_name ||= "headers include expected data for @$req";
+
+    my $response = dancer_response(expand_req($req));
+
+    ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
+}
+
+
+# make sure the given header sublist is included in the full headers array
+sub _include_in_headers {
+    my ($full_headers, $expected_subset) = @_;
+
+    # walk through all the expected header pairs, make sure 
+    # they exist with the same value in the full_headers list
+    # return false as soon as one is not.
+    for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
+        my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
+        return 0 
+          unless _check_header($full_headers, $name, $value);
+    }
+
+    # we've found all the expected pairs in the $full_headers list
+    return 1;
+}
+
+sub _check_header {
+    my ($headers, $key, $value) = @_;
+    for (my $i=0; $i<scalar(@$headers); $i+=2) {
+        my ($name, $val) = ($headers->[$i], $headers->[$i + 1]);
+        return 1 if $name eq $key && $value eq $val;
+    }
+    return 0;
 }
 
 sub dancer_response {
@@ -228,7 +270,19 @@ sub dancer_response {
     # then store the request
     Dancer::SharedData->request($request);
 
-    my $get_action = Dancer::Renderer::get_action_response();
+    # duplicate some code from Dancer::Handler
+    my $get_action = eval {
+        Dancer::Renderer->render_file
+            || Dancer::Renderer->render_action
+              || Dancer::Renderer->render_error(404);
+    };
+    if ($@) {
+        Dancer::Error->new(
+            code    => 500,
+            title   => "Runtime Error",
+            message => $@
+        )->render();
+    }
     my $response = Dancer::SharedData->response();
     $response->content('') if $method eq 'HEAD';
     Dancer::SharedData->reset_response();
@@ -254,7 +308,7 @@ sub _url_encode {
 
 sub _get_file_response {
     my ($req) = @_;
-    my ($method, $path, $params) = @$req;
+    my ($method, $path, $params) = expand_req($req);
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     Dancer::SharedData->request($request);
     return Dancer::Renderer::get_file_response();
@@ -262,7 +316,7 @@ sub _get_file_response {
 
 sub _get_handler_response {
     my ($req) = @_;
-    my ($method, $path, $params) = @$req;
+    my ($method, $path, $params) = expand_req($req);
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     return Dancer::Handler->handle_request($request);
 }
@@ -302,6 +356,16 @@ Be careful, the module loading order in the example above is very important.
 Make sure to use C<Dancer::Test> B<after> importing the application package
 otherwise your appdir will be automatically set to C<lib> and your test script
 won't be able to find views, conffiles and other application content.
+
+For all test methods, if the first argument is not
+an array ref but a scalar, it is taken to be the I<$path>,
+and the I<$method> is assumed to be I<GET>. I.e.:
+
+    response_status_is [ GET => '/' ], 200, 'GET / status is ok';
+
+    # is equivalent to 
+
+    response_status_is '/', 200, 'GET / status is ok';
 
 =head1 METHODS
 
@@ -398,6 +462,12 @@ given.
 Asserts that the response headers data structure equals the one given.
 
     response_headers_are_deeply [GET => '/'], [ 'X-Powered-By' => 'Dancer 1.150' ];
+
+=head2 response_headers_include([$method, $path], $expected, $test_name)
+
+Asserts that the response headers data structure includes some of the defined ones.
+
+    response_headers_include [GET => '/'], [ 'Content-Type' => 'text/plain' ];
 
 =head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers })
 

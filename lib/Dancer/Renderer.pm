@@ -117,14 +117,16 @@ sub get_action_response {
         return serialize_response_if_needed() if defined $response && $response->exists;
         # else, get the route handler's response
         Dancer::App->current($handler->app);
-        $handler->run($request);
+        my $response = $handler->run($request);
+        return undef unless $response; # 404
+
         serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
         $_->($resp) for (@{$app->registry->hooks->{after}});
         return $resp;
     }
     else {
-        return;    # 404
+        return undef;    # 404
     }
 }
 
@@ -140,11 +142,12 @@ sub get_file_response {
     my $path_info   = $request->path_info;
     my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
-    return Dancer::Renderer->get_file_response_for_path($static_file);
+    return Dancer::Renderer->get_file_response_for_path($static_file, undef,
+                                                        $request->content_type);
 }
 
 sub get_file_response_for_path {
-    my ($class, $static_file, $status) = @_;
+    my ($class, $static_file, $status, $mime) = @_;
     $status ||= 200;
 
     if ( -f $static_file ) {
@@ -152,7 +155,8 @@ sub get_file_response_for_path {
         binmode $fh;
         my $response = Dancer::SharedData->response() || Dancer::Response->new();
         $response->status($status);
-        $response->header('Content-Type' => get_mime_type($static_file));
+        $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
+                                             _get_mime_type($static_file)));
         $response->content($fh);
         return $response;
     }
@@ -160,14 +164,15 @@ sub get_file_response_for_path {
 }
 
 # private
-
-sub get_mime_type {
-    my ($filename) = @_;
-    my ($ext) = $filename =~ /\.([^.]+)$/;
-    return 'application/data' unless $ext;
-
+sub _get_full_mime_type {
     my $mime = Dancer::MIME->instance();
-    return $mime->mime_type_for($ext);
+    return $mime->name_or_type(shift @_);
+}
+
+sub _get_mime_type {
+    my $file = shift;
+    my $mime = Dancer::MIME->instance();
+    return $mime->for_file($file);
 }
 
 # set of builtin templates needed by Dancer when rendering HTML pages

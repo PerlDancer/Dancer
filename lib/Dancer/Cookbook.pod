@@ -853,6 +853,8 @@ run via CGI/FastCGI etc, see L<Dancer::Deployment>.
 If you deploy with Plack and use some Plack middlewares, you can enable them
 directly from Dancer's configuration files.
 
+=head3 Generic middlewares
+
 To enable middlewares in Dancer, you just have to set the plack_middlewares
 setting like the following:
 
@@ -864,7 +866,7 @@ For instance, if you want to enable L<Plack::Middleware::Debug> in your Dancer
 application, all you have to do is to set C<plack_middlewares> like that:
 
     set plack_middlewares => [
-        [ 'Debug' => [ 'panels' => [ qw(DBITrace Memory Timer) ]]],
+        [ 'Debug' => [ 'panels' => qw(DBITrace Memory Timer) ]],
     ];
 
 Of course, you can also put this configuration into your config.yml file, or
@@ -881,6 +883,14 @@ even in your environment configuration files:
           - Memory
           - Timer
 
+=head3 Path-based middlewares
+
+If you want to setup a middleware for a specific path, you can do that using
+C<plack_middlewares_map>. You'll need L<Plack::App::URLMap> to do that.
+
+    plack_middlewares_map:
+        '/':      ['Debug']
+        '/timer': ['Timer'],
 
 =head1 AUTHORS
 
