@@ -124,8 +124,10 @@ sub response_exists {
     $test_name ||= "a response is found for " . _req_label($req);
 
     my $response = _req_to_response( $req );
-    @_ = (defined($response), $test_name);
-    goto &ok;
+
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    ok defined($response), $test_name;
 }
 
 sub response_doesnt_exist {
@@ -134,26 +136,33 @@ sub response_doesnt_exist {
     $test_name ||= "no response found for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    @_ = (!defined($response), $test_name);
-    goto &ok;
+
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
+    return ok !defined($response), $test_name;
 }
 
 sub response_status_is {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is $status for " . _req_label($req);
 
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
     my $response = _req_to_response($req);
-    @_ = ( $response->status, $status, $test_name );
-    goto &is;
+    is $response->status, $status, $test_name;
 }
 
 sub response_status_isnt {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is not $status for " . _req_label($req);
 
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
     my $response = _req_to_response($req);
-    @_ = ( $response->{status}, $status, $test_name );
-    goto &isnt;
+    isnt $response->{status}, $status, $test_name;
 }
 
 # Response content
@@ -162,64 +171,79 @@ sub response_content_is {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for " . _req_label($req);
 
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
     my $response = _req_to_response($req);
-    @_ = ( $response->{content}, $matcher, $test_name );
-    goto &is;
+    is $response->{content}, $matcher, $test_name;
 }
 
 sub response_content_isnt {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for " . _req_label($req);
 
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
     my $response = _req_to_response($req);
-    @_ = ( $response->{content}, $matcher, $test_name );
-    goto &isnt;
+    isnt $response->{content}, $matcher, $test_name;
 }
 
 sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for " . _req_label($req);
 
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
     my $response = _req_to_response($req);
-    @_ = ( $response->{content}, $matcher, $test_name );
-    goto &like;
+    like  $response->{content}, $matcher, $test_name;
 }
 
 sub response_content_unlike {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for " , _req_label($req);
 
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
     my $response = _req_to_response($req);
-    @_ = ( $response->{content}, $matcher, $test_name );
-    goto &unlike;
+    unlike $response->{content}, $matcher, $test_name;
 }
 
 sub response_content_is_deeply {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for " . _req_label($req);
 
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
     my $response = _req_to_response($req);
 
-    @_ = (  $response->{content}, $matcher, $test_name );
-    goto &is_deeply;
+    is_deeply $response->{content}, $matcher, $test_name;
 }
 
 sub response_is_file {
     my ($req, $test_name) = @_;
     $test_name ||= "a file is returned for " . _req_label($req);
 
-    my $response = _get_file_response($req);
-    @_=(defined($response), $test_name);
-    goto &ok;
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
+    my $response = _req_to_response($req);
+
+    ok defined($response), $test_name;
 }
 
 sub response_headers_are_deeply {
     my ($req, $expected, $test_name) = @_;
     $test_name ||= "headers are as expected for " . _req_label($req);
 
+    # so that we report the test' line, not the one in this module
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
     my $response = dancer_response(expand_req($req));
-    @_=($response->headers_to_array, $expected, $test_name);
-    goto &is_deeply;
+    is_deeply $response->headers_to_array, $expected, $test_name;
 }
 
 sub dancer_response {
