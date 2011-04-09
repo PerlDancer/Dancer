@@ -3,6 +3,11 @@
     [ BUGFIXES ]
     * Don't remove trailing slashes from route patterns under prefix
       (Brian E. Lozier)
+      
+    [ ENHANCEMENTS ]
+	* Change the flag for sending system-wide path with send_file to
+      'system_path' (was 'absolute').
+      (Alberto Simões)
 
 1.3030      13.04.2011
     ** Codename: Silence of the ambs // Alberto Simões **
@@ -19,7 +24,6 @@
 
     [ ENHANCEMENTS ]
     * Test before_template & auto_page.
-      (Alberto Simões)
 
 1.3029_02   08.04.2011
 
