@@ -1,4 +1,8 @@
 {{$NEXT}}
+    
+    [ BUGFIXES ]
+    * Don't remove trailing slashes from route patterns under prefix
+      (Brian E. Lozier)
 
 1.3030      13.04.2011
     ** Codename: Silence of the ambs // Alberto Simões **
