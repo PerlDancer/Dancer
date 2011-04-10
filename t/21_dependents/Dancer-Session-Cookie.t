@@ -6,8 +6,8 @@ use warnings;
 use Dancer::ModuleLoader;
 use Test::More import => ['!pass'];
 
-plan skip_all => "Dancer::Session::Cookie required"
-    unless Dancer::ModuleLoader->load('Dancer::Session::Cookie');
+plan skip_all => "Dancer::Session::Cookie 0.14 required"
+    unless Dancer::ModuleLoader->load( 'Dancer::Session::Cookie', '0.14' );
 
 plan skip_all => "Test::TCP required"
     unless Dancer::ModuleLoader->load('Test::TCP');
