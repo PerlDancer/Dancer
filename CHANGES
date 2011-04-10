@@ -1,5 +1,16 @@
 {{$NEXT}}
 
+1.3029_03   10.04.2011
+
+    [ BUG FIXES ]
+    * Dancer::Session::Cookie 0.14 is required for dependency test.
+    * Only test for undef serializer if we have the default (JSON) available.
+      (Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * Test before_template & auto_page.
+      (Alberto Simões)
+
 1.3029_02   08.04.2011
 
     [ BUG FIXES ]
