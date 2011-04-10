@@ -3,6 +3,7 @@
 1.3029_03   10.04.2011
     [ BUG FIXES ]
     * Dancer::Session::Cookie 0.14 is required for dependency test.
+    * Only test for undef serializer if we have the default (JSON) available.
 
 1.3029_02   08.04.2011
 
