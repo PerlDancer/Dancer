@@ -24,6 +24,6 @@ response_exists [ GET => '/' ];
 response_content_is [ GET => '/' ], "im home";
 
 response_exists [ GET => '/false' ];
-response_headers_include [GET => '/false'] => ['Location'=>'/'];
+response_headers_include [GET => '/false'] => ['Location'=>'http://localhost/'];
 
 is $pass, 0;

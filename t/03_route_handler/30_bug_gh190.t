@@ -12,6 +12,6 @@ ok( before( sub { redirect '/somewhere' } ) );
 ok( get( '/', sub { $i++; 'Hello' } ) );
 
 route_exists                [ GET => '/' ];
-response_headers_include    [ GET => '/' ] => [ Location => '/somewhere' ];
+response_headers_include    [ GET => '/' ] => [ Location => 'http://localhost/somewhere' ];
 response_content_is         [ GET => '/' ], '';
 is $i, 0;
