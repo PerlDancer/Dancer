@@ -277,10 +277,15 @@ sub _init_script_dir {
     $res or croak "unable to set libdir : $error";
 }
 
+# Scheme grammar as defined in RFC 2396
+#  scheme = alpha *( alpha | digit | "+" | "-" | "." )
+my $scheme_re = qr{ [a-z][a-z0-9\+\-\.]* }ix;
 sub _redirect {
     my ($destination, $status) = @_;
-    if ($destination !~ m!^(\w+:/)?/!) {
-        # no absolute uri here, build one, RFC 2616 forces us to do so
+
+    # RFC 2616 requires an absolute URI with a scheme,
+    # turn the URI into that if it needs it
+    if ($destination !~ m{^ $scheme_re : }x) {
         my $request = Dancer::SharedData->request;
         $destination = $request->uri_for($destination, {}, 1);
     }

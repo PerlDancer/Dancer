@@ -66,7 +66,7 @@ response_content_is $request, 'index',
     "which is the result of a redirection to /";
 
 response_headers_include [GET => '/redirect_from'] => [
-    'Location' => '/redirect_to',
+    'Location' => 'http://localhost/redirect_to',
     'Content-Type' => 'text/xhtml',
 ];
 
