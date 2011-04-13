@@ -15,6 +15,11 @@
     [ ENHANCEMENTS ]
     * No functional changes, just releasing as stable.
 
+    [ ENHANCEMENTS ]
+	* Change the flag for sending system-wide path with send_file to
+      'system_path' (was 'absolute').
+      (Alberto Simões)
+
 1.3029_03   10.04.2011
 
     [ BUG FIXES ]
