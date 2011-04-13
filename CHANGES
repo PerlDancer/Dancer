@@ -8,6 +8,9 @@
 	* Change the flag for sending system-wide path with send_file to
       'system_path' (was 'absolute').
       (Alberto Simões)
+    * Improve Dancer::Test so failures report the correct line numbers
+      (Michael G. Schwern)
+
 
 1.3030      13.04.2011
     ** Codename: Silence of the ambs // Alberto Simões **
