@@ -9,6 +9,7 @@ use Dancer::Deprecation;
 use Dancer::Template;
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
+use Dancer::Engine;
 use Carp;
 
 use Encode;
@@ -118,6 +119,13 @@ sub setting {
 sub _trigger_hooks {
     my ($setting, $value) = @_;
 
+    if ($setting =~ m!^engines/([^/]+)!) {
+        #my $name = $1;
+        #$setting = Dancer::Engine->engine($name)->type;
+        @_ = (undef, $1);
+        $setting = "template";
+    }
+
     $setters->{$setting}->(@_) if defined $setters->{$setting};
 }
 
@@ -128,14 +136,50 @@ sub _set_setting {
 
     # normalize the value if needed
     $value = Dancer::Config->normalize_setting($setting, $value);
-    $SETTINGS->{$setting} = $value;
+
+    if ($setting =~ m!/!) {
+        my @path = split m!/!, $setting;
+        _set_hierarchical_setting($SETTINGS, [@path], $value);
+    } else {
+        $SETTINGS->{$setting} = $value;
+    }
     return $value;
+}
+
+sub _set_hierarchical_setting {
+    my ($settings_pos, $path, $value) = @_;
+    return unless ref $path eq "ARRAY";
+
+    my $key = shift @$path;
+    if (@$path) {
+        $settings_pos->{$key} = _set_hierarchical_setting($settings_pos->{$key}, $path, $value);
+    } else {
+        $settings_pos->{$key} = $value;
+    }
+    return $settings_pos;
 }
 
 sub _get_setting {
     my $setting = shift;
 
-    return $SETTINGS->{$setting};
+    if ($setting =~ m!/!) {
+        my @path = split m!/!, $setting;
+        return _get_hierarchical_setting($SETTINGS, [@path]);
+    } else {
+        return $SETTINGS->{$setting};
+    }
+}
+
+sub _get_hierarchical_setting {
+    my ($settings_pos, $path) = @_;
+    return unless ref $path eq "ARRAY";
+
+    my $key = shift @$path;
+    if (@$path) {
+        return _get_hierarchical_setting($settings_pos->{$key}, $path);
+    } else {
+        return $settings_pos->{$key};
+    }
 }
 
 sub conffile { path(setting('confdir') || setting('appdir'), 'config.yml') }
