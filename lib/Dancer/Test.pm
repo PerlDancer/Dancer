@@ -4,11 +4,12 @@ package Dancer::Test;
 
 use strict;
 use warnings;
-use Test::More import => ['!pass'];
+use Test::Builder;
+use Test::More;
 
 use Carp;
 use HTTP::Headers;
-use Dancer ':syntax';
+use Dancer ':syntax', ':tests';
 use Dancer::App;
 use Dancer::Deprecation;
 use Dancer::Request;
@@ -78,22 +79,25 @@ sub expand_req {
 
 sub route_exists {
     my ($req, $test_name) = @_;
+    my $tb = Test::Builder->new;
 
     my ($method, $path) = expand_req($req);
     $test_name ||= "a route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
-    ok(Dancer::App->find_route_through_apps($req), $test_name);
+
+    return $tb->ok(Dancer::App->find_route_through_apps($req), $test_name);
 }
 
 sub route_doesnt_exist {
     my ($req, $test_name) = @_;
+    my $tb = Test::Builder->new;
 
     my ($method, $path) = expand_req($req);
     $test_name ||= "no route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
-    ok(!defined(Dancer::App->find_route_through_apps($req)), $test_name);
+    return $tb->ok(!defined(Dancer::App->find_route_through_apps($req)), $test_name);
 }
 
 # Response status
@@ -101,33 +105,37 @@ sub route_doesnt_exist {
 sub response_exists {
     my ($req, $test_name) = @_;
     $test_name ||= "a response is found for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-    ok(defined($response), $test_name);
+    return $tb->ok(defined($response), $test_name);
 }
 
 sub response_doesnt_exist {
     my ($req, $test_name) = @_;
     $test_name ||= "no response found for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-    ok(!defined($response), $test_name);
+    return $tb->ok(!defined($response), $test_name);
 }
 
 sub response_status_is {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is $status for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-    is $response->status, $status, $test_name;
+    return $tb->is_eq($response->status, $status, $test_name);
 }
 
 sub response_status_isnt {
     my ($req, $status, $test_name) = @_;
     $test_name ||= "response status is not $status for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-    isnt $response->{status}, $status, $test_name;
+    $tb->isnt_eq( $response->{status}, $status, $test_name );
 }
 
 # Response content
@@ -135,39 +143,44 @@ sub response_status_isnt {
 sub response_content_is {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-    is $response->{content}, $matcher, $test_name;
+    return $tb->is_eq( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_isnt {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-    isnt $response->{content}, $matcher, $test_name;
+    return $tb->isnt_eq( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-    like $response->{content}, $matcher, $test_name;
+    return $tb->like( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_unlike {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-    unlike $response->{content}, $matcher, $test_name;
+    return $tb->unlike( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_is_deeply {
     my ($req, $matcher, $test_name) = @_;
     $test_name ||= "response content looks good for @$req";
 
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
     my $response = dancer_response(expand_req($req));
     is_deeply $response->{content}, $matcher, $test_name;
 }
@@ -175,15 +188,17 @@ sub response_content_is_deeply {
 sub response_is_file {
     my ($req, $test_name) = @_;
     $test_name ||= "a file is returned for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = _get_file_response($req);
-    ok(defined($response), $test_name);
+    return $tb->ok(defined($response), $test_name);
 }
 
 sub response_headers_are_deeply {
     my ($req, $expected, $test_name) = @_;
     $test_name ||= "headers are as expected for @$req";
 
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
     my $response = dancer_response(expand_req($req));
     is_deeply($response->headers_to_array, $expected, $test_name);
 }
@@ -191,10 +206,11 @@ sub response_headers_are_deeply {
 sub response_headers_include {
     my ($req, $expected, $test_name) = @_;
     $test_name ||= "headers include expected data for @$req";
+    my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
 
-    ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
+    return $tb->ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 
 
