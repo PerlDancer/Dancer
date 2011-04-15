@@ -82,7 +82,7 @@ Or in config.yml or environments/$env.yml
 
     session: "YAML"
 
-By default session are disabled, you must enable them before using it. If the
+By default sessions are disabled, you must enable them before using it. If the
 session engine is disabled, any Dancer::Session call will throw an exception.
 
 See L<Dancer::Session::Abstract/Configuration> for more configuration options.
@@ -90,12 +90,20 @@ See L<Dancer::Session::Abstract/Configuration> for more configuration options.
 =head2 Route Handlers
 
 When enabled, the session engine can be used in a route handler with the keyword
-B<session>. This keyword represents a key-value pairs ensemble that is actually
-stored to the session.
+B<session>. This keyword allows you to store/retrieve values from the session by
+name.
+
+Storing a value into the session:
+
+    session foo => 'bar';
+
+Retrieving that value later:
+
+    my $foo = session 'foo';
 
 You can either look for an existing item in the session storage or modify one.
-Here is a simple example of two route handlers that implement a basic C</login> and
-C</home> actions using the session engine. 
+Here is a simple example of two route handlers that implement basic C</login> 
+and C</home> actions using the session engine. 
 
     post '/login' => sub {
         # look for params and authenticate the user
@@ -110,7 +118,7 @@ C</home> actions using the session engine.
         # /login
         if (not session('user_id')) {
             redirect '/login';
-        }
+        a
     };
 
 Of course, you probably don't want to have to duplicate the code to check
