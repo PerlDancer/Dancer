@@ -564,7 +564,8 @@ Return the IP address of the client.
 
 =head2 remote_host()
 
-Return the remote host of the client.
+Return the remote host of the client. This only works with web servers configured
+to do a reverse DNS lookup on the client's IP address.
 
 =head2 protocol()
 
