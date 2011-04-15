@@ -986,7 +986,8 @@ You can also store more complex structure in your cookies:
         };
     };
 
-You can't store more complex structure than this. All your keys in your hash should be scalar.
+You can't store more complex structure than this. All your keys in your hash 
+should be scalars; storing references will not work.
 
 =head2 session
 
