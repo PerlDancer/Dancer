@@ -133,7 +133,8 @@ Dancer has a modular session engine that makes implementing new session backends
 pretty easy. If you'd like to write your own, feel free to take a
 look at L<Dancer::Session::Abstract>.
 
-The following engines are supported:
+The following engines are supported out-of-the-box (shipped with the core Dancer
+distribution):
 
 =over 4
 
@@ -142,15 +143,47 @@ The following engines are supported:
 A YAML file-based session backend, pretty convininent for development purposes,
 but maybe not the best for production needs.
 
+=item L<Dancer::Session::Simple>
+
+A very simple session backend, holding all session data in memory.  This means 
+that sessions are volatile, and no longer exist when the process exits.  This 
+module is likely to be most useful for testing purposes, and of little use for
+production.
+
+=back
+
+Additionally, many more session engines are available from CPAN, including:
+
+=over 4
+
 =item L<Dancer::Session::Memcached>
 
 Session are stored in Memcached servers. This is good for production matters
-and is a good way to use a distributed session storage.
+and is a good way to use a fast, distributed session storage.  If you may be
+scaling up to add additional servers later, this will be a good choice.
 
 =item L<Dancer::Session::Cookie>
 
 This module implements a session engine for sessions stored entirely
 inside encrypted cookies (this engine doesn't use a server-side storage).
+
+=item L<Dancer::Session::Storable>
+
+This backend stores sessions on disc using Storable, which offers solid 
+performance and reliable serialisation of various data structures.
+
+=item L<Dancer::Session::MongoDB>
+
+A backend to store sessions using L<MongoDB>
+
+=item L<Dancer::Session::KiokuDB>
+
+A backend to store sessions using L<KiokuDB>
+
+=item L<Dancer::Session::PSGI>
+
+Let Plack::Middleware::Session handle sessions; may be useful to share sessions
+between a Dancer app and other Plack-based apps.
 
 =back
 
