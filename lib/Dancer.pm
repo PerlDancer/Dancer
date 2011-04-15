@@ -754,8 +754,8 @@ Deprecated. Check C<mime> bellow.
 =head2 mime
 
 Shortcut to access the instance object of L<Dancer::MIME>. You should
-check its man page for details, as this entry just summarize the most
-relevant methods.
+read the L<Dancer::MIME> documentation for full details, but the most
+commonly-used methods are summarised below:
 
     # set a new mime type
     mime->add_type( foo => 'text/foo' );
