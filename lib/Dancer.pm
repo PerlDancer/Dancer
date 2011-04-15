@@ -1149,9 +1149,11 @@ Returns a fully-qualified URI for the given path:
 
 =head2 captures
 
-Returns a reference to a copy of C<%+>, if there are named captures in the route Regexp.
+Returns a reference to a copy of C<%+>, if there are named captures in the route
+Regexp.
 
-Named captures are a feature of Perl 5.10, and are not supported in earlier versions:
+Named captures are a feature of Perl 5.10, and are not supported in earlier
+versions:
 
     get qr{
         / (?<object> user   | ticket | comment )
@@ -1213,6 +1215,9 @@ client at L<http://www.perldancer.org/irc> for you.
 There is also a Dancer users mailing list available - subscribe at:
 
 L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
+
+If you'd like to contribute to the Dancer project, please see
+L<http://www.perldancer.org/contribute> for all the ways you can help!
 
 
 =head1 DEPENDENCIES
