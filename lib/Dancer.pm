@@ -969,9 +969,9 @@ Returns the value of a given setting:
 Creates or updates cookie values:
 
     get '/some_action' => sub {
-        set_cookie 'name' => 'value',
-            'expires' => (time + 3600),
-            'domain'  => '.foo.com';
+        set_cookie name => 'value',
+            expires => (time + 3600),
+            domain  => '.foo.com';
     };
 
 In the example above, only 'name' and 'value' are mandatory.
