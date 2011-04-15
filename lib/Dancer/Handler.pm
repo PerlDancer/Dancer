@@ -147,11 +147,12 @@ sub render_response {
         $content = [''];
         $response->header('Content-Length' => 0);
     }
-    
+
     Dancer::Logger::core("response: " . $response->status);
 
     my $status  = $response->status();
     my $headers = $response->headers_to_array();
+
     return [ $status, $headers, $content ];
 }
 
