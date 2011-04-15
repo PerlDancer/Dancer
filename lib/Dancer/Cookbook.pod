@@ -209,6 +209,16 @@ Then you can set up the template as such:
     Please try again or contact us at our email at <...>.
 
 
+=head2 Using the auto_page feature for automatic route creation
+
+For simple "static" pages, you can simply enable the C<auto_page> config
+setting; this means that you need not declare a route handler for those pages;
+if a request is for C</foo/bar>, Dancer will check for a matching view (e.g.
+C</foo/bar.tt> and render it with the default layout etc if found.  For full
+details, see the documentation for the 
+L<auto_page setting|Dancer::Config/"auto_page">.
+
+
 
 =head2 Why should I use the Ajax plugin
 
