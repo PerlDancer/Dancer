@@ -131,10 +131,29 @@ sub _trigger_hooks {
     my ($setting, $value) = @_;
 
     if ($setting =~ m!^engines/([^/]+)!) {
-        #my $name = $1;
-        #$setting = Dancer::Engine->engine($name)->type;
-        @_ = (undef, $1);
-        $setting = "template";
+        my $name = $1;
+
+        # hack, hack, hack
+
+        # There isn't a way to guess the type of the engine based on
+        # the key used in the configuration file. My issue #458
+        # explains (I think) that we need to rewrite the configuration
+        # file structure.
+
+        # Meanwhile, I tried to guess the common used modules. But
+        # more will arrive, and this will stop working.
+        if ($name eq "simple" || $name =~ /template/) {
+            @_ = (undef, $name);
+            $setting = "template";
+        }
+        elsif ($name eq "JSON") {
+            @_ = (undef, $name);
+            $setting = "serializer";
+        }
+        else {
+            $setting = $1;
+            @_ = ();
+        }
     }
 
     $setters->{$setting}->(@_) if defined $setters->{$setting};
@@ -160,6 +179,7 @@ sub _set_setting {
 sub _set_hierarchical_setting {
     my ($settings_pos, $path, $value) = @_;
     return unless ref $path eq "ARRAY";
+    return undef if ($settings_pos &&  ref $settings_pos ne "HASH");
 
     my $key = shift @$path;
     if (@$path) {
@@ -184,6 +204,7 @@ sub _get_setting {
 sub _get_hierarchical_setting {
     my ($settings_pos, $path) = @_;
     return unless ref $path eq "ARRAY";
+    die if ($settings_pos &&  ref $settings_pos ne "HASH");
 
     my $key = shift @$path;
     if (@$path) {
