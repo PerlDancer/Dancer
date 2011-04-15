@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 23;
+use Test::More import => ['!pass'], tests => 24;
 
 use strict;
 use warnings;
@@ -25,6 +25,7 @@ response_status_is $false_req, 404;
 
 response_status_is $req, 200;
 response_status_isnt $req, 404;
+response_status_is [GET => '/forward_to_unavailable_route'] => 404;
 
 response_content_is $req, "Hello, this is the home";
 response_content_isnt $req, "foo bar";
