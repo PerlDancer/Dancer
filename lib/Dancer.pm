@@ -1084,7 +1084,9 @@ Serializes a structure with Data::Dumper.
 
 =head2 to_json ($structure, %options)
 
-Serializes a structure to JSON. Can receive optional arguments. Thoses arguments are valid L<JSON> arguments to change the behavior of the default C<JSON::to_json> function.
+Serializes a structure to JSON. Can receive optional arguments. Thoses arguments
+are valid L<JSON> arguments to change the behavior of the default
+C<JSON::to_json> function.
 
 =head2 to_yaml ($structure)
 
@@ -1092,7 +1094,9 @@ Serializes a structure to YAML.
 
 =head2 to_xml ($structure, %options)
 
-Serializes a structure to XML. Can receive optional arguments. Thoses arguments are valid L<XML::Simple> arguments to change the behavior of the default C<XML::Simple::XMLout> function.
+Serializes a structure to XML. Can receive optional arguments. Thoses arguments
+are valid L<XML::Simple> arguments to change the behavior of the default
+C<XML::Simple::XMLout> function.
 
 =head2 true
 
