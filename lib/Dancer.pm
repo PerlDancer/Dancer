@@ -991,10 +991,9 @@ should be scalars; storing references will not work.
 
 =head2 session
 
-Provides access to all data stored in the current
-session engine (if any).
+Provides access to all data stored in the user's session (if any).
 
-It can also be used as a setter to add new data to the current session engine:
+It can also be used as a setter to store data in the session:
 
     # getter example
     get '/user' => sub {
