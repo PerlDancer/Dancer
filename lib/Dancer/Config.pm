@@ -394,6 +394,35 @@ use them.
 
 See L<Dancer::Session> for supported engines and their respective configuration.
 
+=head2 error_template (template path)
+
+This setting lets you specify a template to be used in case of runtime
+error. At the present moment the template can use three variables:
+
+=over 4
+
+=item B<title>
+
+The error title.
+
+=item B<message>
+
+The error message.
+
+=item B<code>
+
+The code throwing that error.
+
+=back
+
+=head2 default_mime_type (string)
+
+Dancer's L<Dancer::MIME> module uses C<application/data> as a default
+mime type. This setting lets the user change it. For example, if you
+have a lot of files being served in the B<public> folder that do not
+have an extension, and are text files, set the C<default_mime_type> to
+C<text/plain>.
+
 =head1 AUTHOR
 
 This module has been written by Alexis Sukrieh <sukria@cpan.org> and others,

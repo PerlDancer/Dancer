@@ -1,9 +1,7 @@
 use strict;
 use warnings;
 use Test::More tests => 17, import => ['!pass'];
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use TestUtils;
+use Dancer::Test;
 
 use Dancer ':syntax';
 
@@ -45,13 +43,11 @@ my @routes = (
 # making sure response are OK
 foreach my $route (@routes) {
     foreach my $method (@{ $route->{methods} }) {
-        my $request = TestUtils::fake_request($method => $route->{path});
-        Dancer::SharedData->request($request);
-        my $response = Dancer::Renderer::get_action_response();
-        ok(defined($response), 
-            "route handler found for method $method, path ".$route->{path});
-        is $response->{content}, $route->{expected}, "response content is ok";
-        Dancer::SharedData->reset_response();
+        response_exists [$method => $route->{path}],
+          "route handler found for method $method, path ".$route->{path};
+
+        response_content_is [$method => $route->{path}], $route->{expected},
+          "response content is ok";
     }
 }
 
@@ -65,11 +61,7 @@ my @failed = (
 
 foreach my $route (@failed) {
     foreach my $method (@{ $route->{methods} }) {
-        my $request = TestUtils::fake_request($method => $route->{path});
-        Dancer::SharedData->request($request);
-        my $response = Dancer::Renderer::get_action_response();
-        ok(!defined($response), 
-            "route handler not found for method $method, path ".$route->{path});
-        Dancer::SharedData->reset_response();
+        response_status_is [$method => $route->{path}] => 404,
+          "route handler not found for method $method, path ".$route->{path};
     }
 }

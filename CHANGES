@@ -1,3 +1,53 @@
+{{$NEXT}}
+
+1.3030      13.04.2011
+    ** Codename: Silence of the ambs // Alberto Simões **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+1.3029_03   10.04.2011
+
+    [ BUG FIXES ]
+    * Dancer::Session::Cookie 0.14 is required for dependency test.
+    * Only test for undef serializer if we have the default (JSON) available.
+      (Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * Test before_template & auto_page.
+      (Alberto Simões)
+
+1.3029_02   08.04.2011
+
+    [ BUG FIXES ]
+    * Better way to initialize the logdir in Dancer::Logger::File.
+      Works now cleanly if the appdir is not writable but the logdir exist and
+      is writable.
+      (Alberto Simões)
+    * fix warnings in t/03_route_handler/28_plack_mount.t.
+      (Franck Cuny)
+
+    [ ENHANCEMENTS ]
+    * Support for error templates.
+      If the setting "error_template" is set, it is used when building an error
+      page instead of using the default template.
+      Added the appropirate documentation as well.
+      (Alberto Simões)
+    * Dancer::Test::dancer_response() returns a 404 response when no route
+      handler is found. This is consistent with what Dancer does internally.
+      (Alberto Simões)
+    * Dancer::Test provides a new helper for inspecting subsets of headers:
+      "response_headers_include".
+      (Alberto Simões, Alexis Sukrieh)
+    * dancer_response now handles the rendering of static pages as well.
+      (Alberto Simões)
+    * Cleanup some tests.
+      (Alberto Simões)
+
+    [ DOCUMENTATION ]
+    * POD fix.
+      (Stefan Hornburg - Racke)
+
 1.3029_01   01.04.2011
 
     [ BUG FIXES ]

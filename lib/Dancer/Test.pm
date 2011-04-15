@@ -37,6 +37,7 @@ use vars '@EXPORT';
   response_content_unlike
   response_is_file
   response_headers_are_deeply
+  response_headers_include
 
   dancer_response
   get_response
@@ -187,6 +188,42 @@ sub response_headers_are_deeply {
     is_deeply($response->headers_to_array, $expected, $test_name);
 }
 
+sub response_headers_include {
+    my ($req, $expected, $test_name) = @_;
+    $test_name ||= "headers include expected data for @$req";
+
+    my $response = dancer_response(expand_req($req));
+
+    ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
+}
+
+
+# make sure the given header sublist is included in the full headers array
+sub _include_in_headers {
+    my ($full_headers, $expected_subset) = @_;
+
+    # walk through all the expected header pairs, make sure 
+    # they exist with the same value in the full_headers list
+    # return false as soon as one is not.
+    for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
+        my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
+        return 0 
+          unless _check_header($full_headers, $name, $value);
+    }
+
+    # we've found all the expected pairs in the $full_headers list
+    return 1;
+}
+
+sub _check_header {
+    my ($headers, $key, $value) = @_;
+    for (my $i=0; $i<scalar(@$headers); $i+=2) {
+        my ($name, $val) = ($headers->[$i], $headers->[$i + 1]);
+        return 1 if $name eq $key && $value eq $val;
+    }
+    return 0;
+}
+
 sub dancer_response {
     my ($method, $path, $args) = @_;
     $args ||= {};
@@ -233,7 +270,19 @@ sub dancer_response {
     # then store the request
     Dancer::SharedData->request($request);
 
-    my $get_action = Dancer::Renderer::get_action_response();
+    # duplicate some code from Dancer::Handler
+    my $get_action = eval {
+        Dancer::Renderer->render_file
+            || Dancer::Renderer->render_action
+              || Dancer::Renderer->render_error(404);
+    };
+    if ($@) {
+        Dancer::Error->new(
+            code    => 500,
+            title   => "Runtime Error",
+            message => $@
+        )->render();
+    }
     my $response = Dancer::SharedData->response();
     $response->content('') if $method eq 'HEAD';
     Dancer::SharedData->reset_response();
@@ -413,6 +462,12 @@ given.
 Asserts that the response headers data structure equals the one given.
 
     response_headers_are_deeply [GET => '/'], [ 'X-Powered-By' => 'Dancer 1.150' ];
+
+=head2 response_headers_include([$method, $path], $expected, $test_name)
+
+Asserts that the response headers data structure includes some of the defined ones.
+
+    response_headers_include [GET => '/'], [ 'Content-Type' => 'text/plain' ];
 
 =head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers })
 
