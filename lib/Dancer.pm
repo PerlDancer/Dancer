@@ -587,7 +587,7 @@ Returns the dirname of the path given:
 
 =head2 engine
 
-Given an namespace, returns the current engine object
+Given a namespace, returns the current engine object
 
     my $template_engine = engine 'template';
     my $html = $template_engine->apply_renderer(...);
