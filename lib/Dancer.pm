@@ -1054,8 +1054,9 @@ produce an C<HTTP 200 OK> status code, meaning everything is OK:
 In that example, Dancer will notice that the status has changed, and will
 render the response accordingly.
 
-The status keyword receives either a status code or its name in lower case, with
-underscores as a separator for blanks.
+The status keyword receives either a numeric status code or its name in 
+lower case, with underscores as a separator for blanks - see the list in
+L<Dancer::HTTP/"HTTP CODES">.
 
 =head2 template
 
