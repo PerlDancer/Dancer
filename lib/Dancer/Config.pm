@@ -226,11 +226,13 @@ __END__
 
 =head1 NAME
 
-Dancer::Config - setting registry for Dancer
+Dancer::Config - how to configure Dancer to suit your needs
 
 =head1 DESCRIPTION
 
-Setting registry for Dancer
+Dancer::Config handles reading and changing the configuration of your Dancer
+apps.  The documentation for this module aims to describe how to change
+settings, and which settings are available.
 
 =head1 SETTINGS
 
