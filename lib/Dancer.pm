@@ -592,7 +592,7 @@ Returns the dirname of the path given:
 
 =head2 engine
 
-Given an namespace, returns the current engine object
+Given a namespace, returns the current engine object
 
     my $template_engine = engine 'template';
     my $html = $template_engine->apply_renderer(...);
@@ -759,8 +759,8 @@ Deprecated. Check C<mime> bellow.
 =head2 mime
 
 Shortcut to access the instance object of L<Dancer::MIME>. You should
-check its man page for details, as this entry just summarize the most
-relevant methods.
+read the L<Dancer::MIME> documentation for full details, but the most
+commonly-used methods are summarised below:
 
     # set a new mime type
     mime->add_type( foo => 'text/foo' );
@@ -784,7 +784,7 @@ relevant methods.
 =head2 params
 
 I<This method should be called from a route handler>.
-Alias for the L<Dancer::Request> params accessor.
+Alias for the L<Dancer::Request params accessor|Dancer::Request/"params">.
 
 =head2 pass
 
@@ -931,13 +931,14 @@ saying C<return send_error(...)> instead.
 =head2 send_file
 
 Lets the current route handler send a file to the client. Note that
-the path of the file must be relative to the B<public> directory.
+the path of the file must be relative to the B<public> directory unless you use
+the C<absolute> option (see below).
 
     get '/download/:file' => sub {
         send_file(params->{file});
     }
 
-The content-type will be set depending on the current mime-types definition
+The content-type will be set depending on the current MIME types definition
 (see C<mime> if you want to define your own).
 
 If your filename does not have an extension, or you need to force a
@@ -973,9 +974,9 @@ Returns the value of a given setting:
 Creates or updates cookie values:
 
     get '/some_action' => sub {
-        set_cookie 'name' => 'value',
-            'expires' => (time + 3600),
-            'domain'  => '.foo.com';
+        set_cookie name => 'value',
+            expires => (time + 3600),
+            domain  => '.foo.com';
     };
 
 In the example above, only 'name' and 'value' are mandatory.
@@ -990,14 +991,14 @@ You can also store more complex structure in your cookies:
         };
     };
 
-You can't store more complex structure than this. All your keys in your hash should be scalar.
+You can't store more complex structure than this. All your keys in your hash 
+should be scalars; storing references will not work.
 
 =head2 session
 
-Provides access to all data stored in the current
-session engine (if any).
+Provides access to all data stored in the user's session (if any).
 
-It can also be used as a setter to add new data to the current session engine:
+It can also be used as a setter to store data in the session:
 
     # getter example
     get '/user' => sub {
@@ -1058,8 +1059,9 @@ produce an C<HTTP 200 OK> status code, meaning everything is OK:
 In that example, Dancer will notice that the status has changed, and will
 render the response accordingly.
 
-The status keyword receives either a status code or its name in lower case, with
-underscores as a separator for blanks.
+The status keyword receives either a numeric status code or its name in 
+lower case, with underscores as a separator for blanks - see the list in
+L<Dancer::HTTP/"HTTP CODES">.
 
 =head2 template
 
@@ -1087,7 +1089,9 @@ Serializes a structure with Data::Dumper.
 
 =head2 to_json ($structure, %options)
 
-Serializes a structure to JSON. Can receive optional arguments. Thoses arguments are valid L<JSON> arguments to change the behavior of the default C<JSON::to_json> function.
+Serializes a structure to JSON. Can receive optional arguments. Thoses arguments
+are valid L<JSON> arguments to change the behavior of the default
+C<JSON::to_json> function.
 
 =head2 to_yaml ($structure)
 
@@ -1095,7 +1099,9 @@ Serializes a structure to YAML.
 
 =head2 to_xml ($structure, %options)
 
-Serializes a structure to XML. Can receive optional arguments. Thoses arguments are valid L<XML::Simple> arguments to change the behavior of the default C<XML::Simple::XMLout> function.
+Serializes a structure to XML. Can receive optional arguments. Thoses arguments
+are valid L<XML::Simple> arguments to change the behavior of the default
+C<XML::Simple::XMLout> function.
 
 =head2 true
 
@@ -1148,9 +1154,11 @@ Returns a fully-qualified URI for the given path:
 
 =head2 captures
 
-Returns a reference to a copy of C<%+>, if there are named captures in the route Regexp.
+Returns a reference to a copy of C<%+>, if there are named captures in the route
+Regexp.
 
-Named captures are a feature of Perl 5.10, and are not supported in earlier versions:
+Named captures are a feature of Perl 5.10, and are not supported in earlier
+versions:
 
     get qr{
         / (?<object> user   | ticket | comment )
@@ -1212,6 +1220,9 @@ client at L<http://www.perldancer.org/irc> for you.
 There is also a Dancer users mailing list available - subscribe at:
 
 L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
+
+If you'd like to contribute to the Dancer project, please see
+L<http://www.perldancer.org/contribute> for all the ways you can help!
 
 
 =head1 DEPENDENCIES
