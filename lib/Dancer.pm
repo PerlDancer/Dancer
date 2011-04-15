@@ -779,7 +779,7 @@ relevant methods.
 =head2 params
 
 I<This method should be called from a route handler>.
-Alias for the L<Dancer::Request> params accessor.
+Alias for the L<Dancer::Request params accessor|Dancer::Request/"params">.
 
 =head2 pass
 
