@@ -11,6 +11,10 @@
     * Improve Dancer::Test so failures report the correct line numbers
       (Michael G. Schwern)
 
+    [ DOCUMENTATION ]
+    * Major rewrite/reorganization on Dancer::Config documentation
+      (David Precious, pushed by Alberto Simões PR)
+
 1.3030      13.04.2011
     ** Codename: Silence of the ambs // Alberto Simões **
 
