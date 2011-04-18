@@ -12,6 +12,8 @@
     * Fix #433 - encoding issues with forward (Alberto Simões)
 
     [ ENHANCEMENTS ]
+    * More tests for versions, setings and variables
+      (Alberto Simões)      
     * Change the flag for sending system-wide path with send_file to
       'system_path' (was 'absolute').
       (Alberto Simões)
