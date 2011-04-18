@@ -158,10 +158,10 @@ sub run {
     if ( $response && $response->is_forwarded ) {
         my $new_req = 
             Dancer::Request->forward($request, $response->{forward});
-
         my $marshalled = Dancer::Handler->handle_request($new_req);
 
         return Dancer::Response->new(
+            encoded => 1,
             status  => $marshalled->[0],
             headers => $marshalled->[1],
             content => @{ $marshalled->[2] },

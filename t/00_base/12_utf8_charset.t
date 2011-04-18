@@ -10,7 +10,7 @@ use LWP::UserAgent;
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP");
 
-plan tests => 3;
+plan tests => 4;
 
 Test::TCP::test_tcp(
     client => sub {
@@ -19,6 +19,9 @@ Test::TCP::test_tcp(
     
         $res = _get_http_response(GET => '/string', $port);
         is d($res->content), "\x{1A9}", "utf8 static response";
+
+        $res = _get_http_response(GET => '/other/string', $port);
+        is d($res->content), "\x{1A9}", "utf8 response through forward";
 
         $res = _get_http_response(GET => "/param/".u("\x{1A9}"), $port);
         is d($res->content), "\x{1A9}", "utf8 route param";
