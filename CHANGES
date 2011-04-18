@@ -7,6 +7,7 @@
       (Stefan Hornburg)
     * Fix session_expires so it honors +2h style formatting. (closes #402)
       (Michael G. Schwern)
+    * Fix #433 - encoding issues with forward (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * Change the flag for sending system-wide path with send_file to
