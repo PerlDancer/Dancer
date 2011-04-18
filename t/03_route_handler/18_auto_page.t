@@ -28,4 +28,4 @@ response_content_is [GET => '/hello'], "Hello\n", "content looks good";
 eval { get_response_for_request('GET' => '/falsepage'); };
 ok $@, 'Failed to get response for nonexistent page';
 
-response_content_is [GET => '/error'] => "ERROR: Dancer\n";
+response_content_like [GET => '/error'] => qr/ERROR: Dancer\n/, "error page looks OK";
