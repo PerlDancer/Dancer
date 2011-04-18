@@ -34,7 +34,6 @@ my @keywords = qw(
     post
     prefix
     put
-    r
     redirect
     request
     send_file
