@@ -21,14 +21,14 @@ plan tests => 17;
     response_content_is [ GET => '/' ], "home";
 
     my $expected_headers = [
-        'Location'     => 'http://localhost/',
+        'Location'     => '/',
         'Content-Type' => 'text/html',
         'X-Foo'        => 'foo',
     ];
     response_headers_include [ GET => '/redirect' ] => $expected_headers;
 
     $expected_headers = [
-        'Location'     => 'http://localhost/login?failed=1',
+        'Location'     => '/login?failed=1',
         'Content-Type' => 'text/html',
     ];
     response_headers_include [ GET => '/redirect_querystring' ] =>
@@ -45,7 +45,7 @@ plan tests => 17;
     is $res->header('Location') => 'http://foo.com/somewhere';
 
     $res = dancer_response GET => '/absolute';
-    is $res->header('Location') => 'http://localhost/absolute';
+    is $res->header('Location') => '/absolute';
 
     $res = dancer_response GET => '/relative';
     is $res->header('Location') => 'http://localhost/somewhere/else';

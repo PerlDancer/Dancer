@@ -48,7 +48,7 @@ plan tests => 19;
       "which is the result of a redirection to /";
 
     response_headers_include [ GET => '/redirect_from' ] => [
-        'Location'     => 'http://localhost/redirect_to',
+        'Location'     => '/redirect_to',
         'Content-Type' => 'text/xhtml',
     ];
 
