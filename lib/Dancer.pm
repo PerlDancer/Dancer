@@ -53,7 +53,6 @@ our @EXPORT    = qw(
   get
   halt
   header
-  push_header
   headers
   layout
   load
@@ -67,6 +66,7 @@ our @EXPORT    = qw(
   path
   post
   prefix
+  push_header
   put
   redirect
   render_with_layout
