@@ -35,8 +35,25 @@ if ( Dancer::ModuleLoader->load('JSON') ) {
 
     ok(get('/warning' => sub { my $a = undef; @$a; }), "/warning route defined");
 
+    ok(get('/warning/:param' => sub { my $a = undef; @$a; }), "/warning route with params defined");
+
     response_content_like [GET => '/warning'],
       qr/ERROR: Runtime Error/,
       "template is used";
+
+    response_content_like [GET => '/warning'],
+      qr/PERL VERSION: $]/, "perl_version is available";
+
+    response_content_like [GET => '/warning'],
+      qr/DANCER VERSION: $Dancer::VERSION/, "dancer_version is available";
+
+    response_content_like [GET => '/warning'],
+      qr/ERROR TEMPLATE: error.tt/, "settings are available";
+
+    response_content_like [GET => '/warning'],
+      qr/REQUEST METHOD: GET/, "request is available";
+
+    response_content_like [GET => '/warning/value'],
+      qr/PARAM VALUE: value/, "params are available";
 }
 
