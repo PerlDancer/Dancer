@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 61, import => ['!pass'];
+use Test::More tests => 59, import => ['!pass'];
 
 use Dancer;
 use Dancer::Test;
@@ -161,19 +161,8 @@ use Dancer::Test;
 
 # any routes handler
 {
-    eval {
-        any [ 'get', 'delete' ] => '/any_1' => sub {
-            "any_1";
-        };
-    };
-    is $@, '', "route defined for methods get and delete; for path /any_1";
-
-    eval {
-        any '/any_2' => sub {
-            "any_2";
-        };
-    };
-    is $@, '', "route defined for any method; for path /any_1";
+    any [ 'get', 'delete' ] => '/any_1' => sub { "any_1"; };
+    any '/any_2' => sub { "any_2"; };
 
     eval {
         any 'get' => '/any_1' => sub {
@@ -203,8 +192,7 @@ use Dancer::Test;
             ok( defined($response),
                 "route handler found for method $method, path "
                   . $route->{path} );
-            is $response->content, $route->{expected},
-              "response content is ok";
+            is $response->content, $route->{expected}, "response content is ok";
         }
     }
 
@@ -219,10 +207,9 @@ use Dancer::Test;
     foreach my $route (@failed) {
         foreach my $method ( @{ $route->{methods} } ) {
             my $response = dancer_response( $method => $route->{path} );
-            ok( !defined($response),
+            is( $response->status, 404,
                 "route handler not found for method $method, path "
                   . $route->{path} );
         }
     }
-
 }
