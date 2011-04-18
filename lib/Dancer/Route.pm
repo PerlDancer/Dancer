@@ -164,7 +164,8 @@ sub run {
             encoded => 1,
             status  => $marshalled->[0],
             headers => $marshalled->[1],
-            content => @{ $marshalled->[2] },
+            # if the forward failed with 404, marshalled->[2] is not an array, but a GLOB
+            content => ref($marshalled->[2]) eq "ARRAY" ? @{ $marshalled->[2] } : $marshalled->[2]
         );
     }
 
