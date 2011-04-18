@@ -3,6 +3,8 @@
     [ BUG FIXES ]
     * Don't remove trailing slashes from route patterns under prefix
       (Brian E. Lozier)
+    * Remove deprecated r function from list of exports.
+      (Stefan Hornburg)
 
     [ ENHANCEMENTS ]
     * Change the flag for sending system-wide path with send_file to
