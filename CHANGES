@@ -1,6 +1,8 @@
 {{$NEXT}}
 
     [ BUG FIXES ]
+    * Fix 404 forwarding
+      (Alberto Simões)      
     * Don't remove trailing slashes from route patterns under prefix
       (Brian E. Lozier)
     * Remove deprecated r function from list of exports.
