@@ -76,7 +76,8 @@ sub match {
           . $self->{_compiled_regexp}
           . "/");
 
-    my @values = $path =~ $self->{_compiled_regexp};
+    my @values = map { m#/# ? [ split '/' => $_ ] : $_ } 
+                     $path =~ $self->{_compiled_regexp};
     Dancer::Logger::core("  --> got ".
         map { defined $_ ? $_ : 'undef' } @values) 
         if @values;
