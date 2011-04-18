@@ -68,7 +68,6 @@ our @EXPORT    = qw(
   post
   prefix
   put
-  r
   redirect
   render_with_layout
   request
