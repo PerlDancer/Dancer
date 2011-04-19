@@ -178,6 +178,15 @@ The cookie's path.
 If true, it instructs the client to only serve the cookie over secure
 connections such as https.
 
+=head2 http_only
+
+By default, cookies are created with a property, named C<HttpOnly>,
+that can be used for security, forcing the cookie to be used only by
+the server (via HTTP) and not by any JavaScript code.
+
+If your cookie is meant to be used by some JavaScript code, set this
+attribute to 0.
+
 =head1 METHODS/SUBROUTINES
 
 =head2 new

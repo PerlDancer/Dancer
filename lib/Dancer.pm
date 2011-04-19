@@ -990,8 +990,10 @@ You can also store more complex structure in your cookies:
         };
     };
 
-You can't store more complex structure than this. All your keys in your hash 
+You can't store more complex structure than this. All your keys in your hash
 should be scalars; storing references will not work.
+
+Check L<Dancer::Cookie> for further details about the cookie object.
 
 =head2 session
 
