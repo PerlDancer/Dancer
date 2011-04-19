@@ -993,6 +993,8 @@ You can also store more complex structure in your cookies:
 You can't store more complex structure than this. All your keys in your hash 
 should be scalars; storing references will not work.
 
+See L<Dancer::Cookie> for further options when creating your cookie.
+
 =head2 session
 
 Provides access to all data stored in the user's session (if any).
