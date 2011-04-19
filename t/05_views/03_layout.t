@@ -5,9 +5,16 @@ BEGIN {
 
     plan skip_all => "Template is needed to run this tests"
         unless Dancer::ModuleLoader->load('Template');
+    plan skip_all => "YAML needed to run this tests"
+        unless Dancer::ModuleLoader->load('YAML');
+
+    use File::Spec;
+    use lib File::Spec->catdir( 't', 'lib' );
+    use TestUtils;
 };
 
 use Dancer::Test;
+use File::Temp qw/tempdir/;
 
 set views => path(dirname(__FILE__), 'views');
 
@@ -28,48 +35,68 @@ my @tests = (
       expected => "customstart\ncontent\ncustomstop\n" },
 );
 
-plan tests => scalar(@tests);
+plan tests => scalar(@tests) + 4;
 
-SKIP: {
-    Template->import;
-    
-    get '/solo' => sub {
-        template 't03';
-    };
+my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+set appdir => $dir;
+my $envdir = File::Spec->catdir($dir, 'environments');
+mkdir $envdir;
 
-    get '/full' => sub {
-        layout 'main';
-        template 't03';
-    };
+my $conffile = Dancer::Config->conffile;
+ok( defined($conffile),   'Default conffile is defined'        );
+ok( Dancer::Config->load, 'Config load works without conffile' );
 
-    get '/layoutdisabled' => sub {
-        layout 'main';
-        template 't03', {}, { layout => undef };
-    };
+# create the conffile
+my $conf = '
+layout: main
+';
 
-    get '/layoutchanged' => sub {
-        template 't03', {}, { layout => 'custom' };
-    };
+write_file( $conffile => $conf );
+ok( Dancer::Config->load, 'Config load works with a conffile' );
+is( setting('layout'), 'main', 'Correct layout setting from config' );
 
-    get '/render_layout_only/default_layout' => sub {
-        engine('template')->apply_layout("content\n");
-    };
+Template->import;
 
-    # Yes, apply_layout without a layout is kind of pointless, but let's
-    # be thorough :)
-    get '/render_layout_only/no_layout' => sub {
-        engine('template')->apply_layout("content\n", {}, { layout => undef });
-    };
+get '/solo' => sub {
+    setting layout => undef;
+    template 't03';
+};
 
-    get '/render_layout_only/custom_layout' => sub {
-        engine('template')->apply_layout("content\n", {}, { layout => 'custom' });
-    };
+get '/full' => sub {
+    layout 'main';
+    template 't03';
+};
 
-    foreach my $test (@tests) {
-        my $path = $test->{path};
-        my $expected = $test->{expected};
+get '/layoutdisabled' => sub {
+    layout 'main';
+    template 't03', {}, { layout => undef };
+};
 
-        my $resp = dancer_response(GET => $path);
-        is($resp->content, $expected, "content rendered looks good for $path");
-    }
-}; 
+get '/layoutchanged' => sub {
+    template 't03', {}, { layout => 'custom' };
+};
+
+get '/render_layout_only/default_layout' => sub {
+    engine('template')->apply_layout("content\n");
+};
+
+# Yes, apply_layout without a layout is kind of pointless, but let's
+# be thorough :)
+get '/render_layout_only/no_layout' => sub {
+    engine('template')->apply_layout("content\n", {}, { layout => undef });
+};
+
+get '/render_layout_only/custom_layout' => sub {
+    engine('template')->apply_layout("content\n", {}, { layout => 'custom' });
+};
+
+foreach my $test (@tests) {
+    my $path     = $test->{path};
+    my $expected = $test->{expected};
+    my $resp     = dancer_response( GET => $path );
+
+    is( $resp->content, $expected, "content rendered looks good for $path" );
+}
+
+unlink $conffile;
+File::Temp::cleanup();
