@@ -4,16 +4,16 @@ use File::Spec;
 use File::Slurp;
 use Template;
 
-set 'database' => File::Spec->tmpdir() . '/dancr.db';
-set 'session' => 'Simple';
-set 'template' => 'template_toolkit';
-set 'logger' => 'console';
-set 'log' => 'debug';
+set 'database'    => File::Spec->tmpdir() . '/dancr.db';
+set 'session'     => 'Simple';
+set 'template'    => 'template_toolkit';
+set 'logger'      => 'console';
+set 'log'         => 'debug';
 set 'show_errors' => 1;
-set 'access_log' => 1;
-set 'warnings' => 1;
-set 'username' => 'admin';
-set 'password' => 'password';
+set 'access_log'  => 1;
+set 'warnings'    => 1;
+set 'username'    => 'admin';
+set 'password'    => 'password';
 
 layout 'main';
 
