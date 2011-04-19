@@ -5,7 +5,7 @@ use warnings;
 use URI::Escape;
 
 use base 'Dancer::Object';
-__PACKAGE__->attributes(qw.name expires domain path secure http_only.);
+__PACKAGE__->attributes( qw/name expires domain path secure http_only/ );
 
 sub init {
     my ($self, %args) = @_;
@@ -26,15 +26,15 @@ sub to_header {
     my $self   = shift;
     my $header = '';
 
-    my $value = join('&', map {uri_escape($_)} $self->value);
+    my $value       = join('&', map {uri_escape($_)} $self->value);
+    my $no_httponly = defined( $self->http_only ) && $self->http_only == 0;
 
     my @headers = $self->name . '=' . $value;
     push @headers, "path=" . $self->path        if $self->path;
     push @headers, "expires=" . $self->expires  if $self->expires;
     push @headers, "domain=" . $self->domain    if $self->domain;
     push @headers, "Secure"                     if $self->secure;
-    push @headers, 'HttpOnly'                   unless defined($self->http_only) &&
-                                                               $self->http_only == 0;
+    push @headers, 'HttpOnly'                   unless $no_httponly;
 
     return join '; ', @headers;
 }
