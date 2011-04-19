@@ -59,7 +59,7 @@ for my $session_expires (keys %tests) {
             setting session_expires => $session_expires;
             setting environment     => 'production';
             setting port            => $port;
-            setting access_log      => 0;
+            setting startup_info    => 0;
             Dancer->dance();
         },
     );

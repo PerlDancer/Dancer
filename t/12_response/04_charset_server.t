@@ -44,10 +44,10 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
 
-        setting charset => 'utf-8';
-        setting environment => 'production';
-        setting port => $port;
-        setting access_log => 0;
+        setting charset      => 'utf-8';
+        setting environment  => 'production';
+        setting port         => $port;
+        setting startup_info => 0;
         Dancer->dance();
     },
 );

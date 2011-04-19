@@ -163,7 +163,7 @@ sub _is_text {
 
 # Fancy banner to print on startup
 sub print_banner {
-    if (setting('access_log')) {
+    if (setting('startup_info')) {
         my $env = setting('environment');
         print "== Entering the $env dance floor ...\n";
     }

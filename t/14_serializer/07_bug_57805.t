@@ -44,10 +44,10 @@ Test::TCP::test_tcp(
             
         use Dancer;
         
-        set serializer => 'JSON';
-        set port => $port;
-        set show_errors => 1;
-        set access_log => 0;
+        set serializer   => 'JSON';
+        set port         => $port;
+        set show_errors  => 1;
+        set startup_info => 0;
 
         post '/test' => sub {
             return { test_value => params->{test_value} };

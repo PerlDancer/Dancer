@@ -54,7 +54,7 @@ test_tcp(
 
         set port                => $port;
         set appdir              => '';          # quiet warnings not having an appdir
-        set access_log          => 0;           # quiet startup banner
+        set startup_info        => 0;           # quiet startup banner
 
         set session_cookie_key  => "John has a long mustache";
         set session             => "cookie";

@@ -200,7 +200,7 @@ sub load_default_settings {
     $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
     $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
     $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
-    $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG}   || 1;
+    $SETTINGS->{startup_info} ||= $ENV{DANCER_STARTUP_INFO} || 1;
     $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
     $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
@@ -241,9 +241,9 @@ You can change a setting with the keyword B<set>, like the following:
     use Dancer;
 
     # changing default settings
-    set port => 8080;
+    set port         => 8080;
     set content_type => 'text/plain';
-    set access_log => 0;
+    set startup_info => 0;
 
 A better way of defining settings exists: using YAML file. For this to be
 possible, you have to install the L<YAML> module. If a file named B<config.yml>
@@ -374,6 +374,13 @@ a matching template in the directory $views/layout.
 
 
 =head2 Logging, debugging and error handling
+
+=head3 startup_info (boolean)
+
+If set to true, prints a banner at the server start with information such as
+versions and the environment (or "dancerfloor").
+
+Conforms to the environment variable DANCER_STARTUP_INFO.
 
 =head3 warnings (boolean)
 
