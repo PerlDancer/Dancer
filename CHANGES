@@ -10,6 +10,8 @@
     * Fix session_expires so it honors +2h style formatting. (closes #402)
       (Michael G. Schwern)
     * Fix #433 - encoding issues with forward (Alberto Simões)
+    * Renaming access_log to startup_info (+doc), fixes GH #390.
+      (Sawyer X)
 
     [ ENHANCEMENTS ]
     * More tests for versions, setings and variables
