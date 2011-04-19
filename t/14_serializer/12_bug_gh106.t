@@ -31,8 +31,8 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
         load_app 't::lib::TestSerializer';
-        setting access_log => 0;
-        setting port       => $port;
+        setting startup_info => 0;
+        setting port         => $port;
         Dancer->dance();
     }
 );
@@ -51,9 +51,9 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
         load_app 't::lib::TestSerializer';
-        setting access_log => 0;
-        setting port       => $port;
-        setting engines =>
+        setting startup_info => 0;
+        setting port         => $port;
+        setting engines      =>
           { JSON => { allow_blessed => 1, convert_blessed => 1 } };
         Dancer->dance();
     }

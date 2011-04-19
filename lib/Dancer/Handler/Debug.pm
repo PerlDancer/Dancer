@@ -54,7 +54,7 @@ sub run {
 
 sub start {
     my ($self, $req) = @_;
-    print STDERR ">> Dancer dummy debug server\n" if setting('access_log');
+    print STDERR ">> Dancer dummy debug server\n" if setting('startup_info');
     
     my $dancer = Dancer::Handler::Debug->new();
     my $psgi = sub {

@@ -31,13 +31,13 @@ sub start {
         print STDERR
             ">> Dancer $Dancer::VERSION server $pid listening"
             . "on http://$ipaddr:$port\n"
-                if setting('access_log');
+                if setting('startup_info');
         return $pid;
     }
     else {
         print STDERR ">> Dancer $Dancer::VERSION server $$ listening"
             ." on http://$ipaddr:$port\n"
-                if setting('access_log');
+                if setting('startup_info');
         $dancer->run();
     }
 }

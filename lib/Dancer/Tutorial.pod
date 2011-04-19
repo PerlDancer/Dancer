@@ -230,13 +230,13 @@ session handler and initialize a session manager.  To do that, we add some
 configuration directives toward the top of our dancr.pl file.  But there are
 more options than just the session engine we want to set.
 
-  set 'session' => 'Simple';
-  set 'template' => 'template_toolkit';
-  set 'logger' => 'console';
-  set 'log' => 'debug';
-  set 'show_errors' => 1;
-  set 'access_log' => 1;
-  set 'warnings' => 1;
+  set 'session'      => 'Simple';
+  set 'template'     => 'template_toolkit';
+  set 'logger'       => 'console';
+  set 'log'          => 'debug';
+  set 'show_errors'  => 1;
+  set 'startup_info' => 1;
+  set 'warnings'     => 1;
 
 Hopefully these are fairly self-explanatory. We want the Simple session engine,
 the Template Toolkit template engine, logging enabled (at the 'debug' level
@@ -438,16 +438,16 @@ Here's the complete dancr.pl script from start to finish.
  use File::Slurp;
  use Template;
  
- set 'database' => File::Spec->catfile(File::Spec->tmpdir(), 'dancr.db');
- set 'session' => 'Simple';
- set 'template' => 'template_toolkit';
- set 'logger' => 'console';
- set 'log' => 'debug';
- set 'show_errors' => 1;
- set 'access_log' => 1;
- set 'warnings' => 1;
- set 'username' => 'admin';
- set 'password' => 'password';
+ set 'database'     => File::Spec->catfile(File::Spec->tmpdir(), 'dancr.db');
+ set 'session'      => 'Simple';
+ set 'template'     => 'template_toolkit';
+ set 'logger'       => 'console';
+ set 'log'          => 'debug';
+ set 'show_errors'  => 1;
+ set 'startup_info' => 1;
+ set 'warnings'     => 1;
+ set 'username'     => 'admin';
+ set 'password'     => 'password';
  
  layout 'main';
  

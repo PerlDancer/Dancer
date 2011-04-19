@@ -36,12 +36,12 @@ Test::TCP::test_tcp(
         use Dancer;
         use t::lib::TestAppUnicode;
 
-        setting charset => 'utf8';
-        setting port => $port;
-        set show_errors => 1;
-        setting access_log => 0;
-        set 'log' => 'debug';
-        set logger => 'console';
+        setting charset      => 'utf8';
+        setting port         => $port;
+        set     show_errors  => 1;
+        setting startup_info => 0;
+        set     'log'        => 'debug';
+        set     logger       => 'console';
 
         Dancer->dance();
     },

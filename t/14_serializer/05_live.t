@@ -83,9 +83,9 @@ sub test_json {
             my $port = shift;
             use t::lib::TestSerializer;
             Dancer::Config->load;
-            setting access_log => 0;
-            setting port       => $port;
-            setting show_errors => 1;
+            setting startup_info => 0;
+            setting port         => $port;
+            setting show_errors  => 1;
             Dancer->dance();
         },
     );
@@ -142,9 +142,9 @@ sub test_yaml {
             my $port = shift;
             use t::lib::TestSerializer;
             Dancer::Config->load;
-            setting port       => $port;
-            setting access_log => 0;
-            setting show_errors => 1;
+            setting port         => $port;
+            setting startup_info => 0;
+            setting show_errors  => 1;
             Dancer->dance();
         },
     );
@@ -193,8 +193,8 @@ sub test_mutable {
             my $port = shift;
             use t::lib::TestSerializer;
             Dancer::Config->load;
-            setting port       => $port;
-            setting access_log => 0;
+            setting port         => $port;
+            setting startup_info => 0;
             Dancer->dance();
         },
     );

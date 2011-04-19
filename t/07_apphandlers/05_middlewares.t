@@ -41,7 +41,7 @@ foreach my $c (@$confs) {
             setting environment       => 'production';
             setting apphandler        => 'PSGI';
             setting port              => $port;
-            setting access_log        => 0;
+            setting startup_info      => 0;
             setting plack_middlewares => $c->[0];
             my $app = Dancer::Handler->get_handler()->dance;
             Plack::Loader->auto( port => $port )->run($app);
