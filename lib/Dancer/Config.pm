@@ -375,6 +375,13 @@ a matching template in the directory $views/layout.
 
 =head2 Logging, debugging and error handling
 
+=head3 startup_info (boolean)
+
+If set to true, prints a banner at the server start with information such as
+versions and the environment (or "dancerfloor").
+
+Conforms to the environment variable DANCER_STARTUP_INFO.
+
 =head3 warnings (boolean)
 
 If set to true, tells Dancer to consider all warnings as blocking errors.
