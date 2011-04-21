@@ -88,7 +88,9 @@ sub write_session_id {
     my %cookie = (
         name   => $name,
         value  => $id,
-        secure => setting('session_secure')
+        secure => setting('session_secure'),
+        http_only => defined(setting("session_is_http_only")) ?
+                     setting("session_is_http_only") : 1,
     );
     if (my $expires = setting('session_expires')) {
         # It's # of seconds from the current time
@@ -173,6 +175,12 @@ seconds in the future, or the human readable offset from
 L<Dancer::Cookie/expires>.
 
 By default, there is no expiration.
+
+=head3 session_is_http_only
+
+This setting defaults to 1 and instructs the session cookie to be
+created with the C<HttpOnly> option active, meaning that JavaScript
+will not be able to access to its value.
 
 =head2 Abstract Methods
 
