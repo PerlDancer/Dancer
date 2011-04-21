@@ -215,6 +215,7 @@ t/08_session/09_session.t
 t/08_session/10_filter.t
 t/08_session/11_session_secure.t
 t/08_session/12_session_name.t
+t/08_session/13_session_httponly.t
 t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
