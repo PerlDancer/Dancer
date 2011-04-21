@@ -20,6 +20,8 @@
       (Michael G. Schwern)
     * Can now set cookies with http_only => 0 for JS integration, fixes GH #466.
       (Alberto Simões)
+    * Session engine can be told to set cookies without HttpOnly attribute using
+    * new session_is_http_only setting. (Alberto Simões, requested by JT Smith)
 
     [ DOCUMENTATION ]
     * Major rewrite/reorganization on Dancer::Config documentation
