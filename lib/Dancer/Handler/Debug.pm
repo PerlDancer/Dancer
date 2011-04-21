@@ -9,6 +9,7 @@ use base 'Dancer::Object', 'Dancer::Handler', 'HTTP::Server::Simple::PSGI';
 
 use Dancer::Config 'setting';
 use Dancer::SharedData;
+use Dancer::Logger;
 
 sub run {
     my ($self, $req) = @_;
@@ -54,8 +55,8 @@ sub run {
 
 sub start {
     my ($self, $req) = @_;
-    print STDERR ">> Dancer dummy debug server\n" if setting('startup_info');
-    
+    Dancer::Logger::core ">> Dancer dummy debug server\n" if setting('startup_info');
+
     my $dancer = Dancer::Handler::Debug->new();
     my $psgi = sub {
         my $env = shift;

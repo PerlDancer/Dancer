@@ -6,6 +6,7 @@ use warnings;
 use HTTP::Server::Simple::PSGI;
 use base 'Dancer::Handler', 'HTTP::Server::Simple::PSGI';
 
+use Dancer::Logger;
 use Dancer::HTTP;
 use Dancer::GetOpt;
 use Dancer::Config 'setting';
@@ -28,16 +29,16 @@ sub start {
 
     if (setting('daemon')) {
         my $pid = $dancer->background();
-        print STDERR
+        Dancer::Logger::core
             ">> Dancer $Dancer::VERSION server $pid listening"
-            . "on http://$ipaddr:$port\n"
+              . "on http://$ipaddr:$port\n"
                 if setting('startup_info');
         return $pid;
     }
     else {
-        print STDERR ">> Dancer $Dancer::VERSION server $$ listening"
+        Dancer::Logger::core ">> Dancer $Dancer::VERSION server $$ listening"
             ." on http://$ipaddr:$port\n"
-                if setting('startup_info');
+              if setting('startup_info');
         $dancer->run();
     }
 }
