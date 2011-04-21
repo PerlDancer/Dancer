@@ -43,13 +43,14 @@ sub instance {
 # accessor code for singleton objects
 # (overloaded from Dancer::Object)
 sub _setter_code {
-    my ($class, $attr) = @_;
+    my ($class, $attr, $default) = @_;
     sub {
         my ($class_or_instance, $value) = @_;
         my $instance = ref $class_or_instance ?
           $class_or_instance : $class_or_instance->instance;
         if (@_ == 1) {
-            return $instance->{$attr};
+            return exists $instance->{$attr} ?
+                $instance->{$attr} : $default;
         }
         else {
             return $instance->{$attr} = $value;
@@ -73,7 +74,12 @@ Dancer::Object::Singleton - Singleton base class for Dancer
     use warnings;
     use base 'Dancer::Object::Singleton';
 
+    # name attributes
     __PACKAGE__->attributes( qw/name value this that/ );
+
+    # or create attribute with default value
+    __PACKAGE__->attribute( foo => 'bar' );
+
 
     sub init {
         my ($class, $instance) = @_;
@@ -109,7 +115,13 @@ you don't want to. init receives the instance as argument.
 
 Get the attributes of the specific class.
 
-=head2 attributes
+=head2 attribute( $name, $default )
+
+Generates attribute with default value for whatever object is extending
+Dancer::Object and saves them in an internal hashref so they can be later
+fetched using C<get_attributes>.
+
+=head2 attributes( @names )
 
 Generates attributes for whatever object is extending Dancer::Object and saves
 them in an internal hashref so they can be later fetched using

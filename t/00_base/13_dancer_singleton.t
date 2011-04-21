@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More import => ['!pass'];
 
-plan tests => 10;
+plan tests => 12;
 
 my $test_counter = 0;
 
@@ -11,6 +11,7 @@ my $test_counter = 0;
     package MySingleton;
     use base qw(Dancer::Object::Singleton);
 
+    __PACKAGE__->attribute( bar => 'baz' );
     __PACKAGE__->attributes( qw/foo/ );
 
     sub init {
@@ -34,6 +35,9 @@ is $test_counter, 1, 'counter incremented';
 is $instance->foo, 'bar', 'attribute is set';
 $instance->foo('baz');
 is $instance->foo, 'baz', 'attribute changed';
+is $instance->bar, 'baz', 'attribute has default';
+$instance->bar('foo');
+is $instance->bar, 'foo', 'attribute changed';
 
 my $instance2 =  MySingleton->instance();
 ok $instance2, 'instance retrieved';

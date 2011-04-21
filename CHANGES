@@ -22,6 +22,8 @@
       (Alberto Simões)
     * Session engine can be told to set cookies without HttpOnly attribute using
     * new session_is_http_only setting. (Alberto Simões, requested by JT Smith)
+    * Allow setting attribute default value in Dancer::Object and
+      Dancer::Object::Singleton (AJGB)
 
     [ DOCUMENTATION ]
     * Major rewrite/reorganization on Dancer::Config documentation

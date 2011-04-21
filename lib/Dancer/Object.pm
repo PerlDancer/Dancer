@@ -61,11 +61,12 @@ sub get_attributes {
 # accessor code for normal objects
 # (overloaded in D::O::Singleton for instance)
 sub _setter_code {
-    my ($class, $attr) = @_;
+    my ($class, $attr, $default) = @_;
     sub {
         my ($self, $value) = @_;
         if (@_ == 1) {
-            return $self->{$attr};
+            return exists $self->{$attr} ?
+                $self->{$attr} : $default;
         }
         else {
             return $self->{$attr} = $value;
@@ -95,6 +96,20 @@ sub attributes_defaults {
     }
 }
 
+# attribute with default
+sub attribute {
+    my ($class, $name, $default) = @_;
+
+    # save meta information
+    push @{ $_attrs_per_class->{$class} }, $name;
+
+    # define setters and getters for attribute
+    my $code = $class->_setter_code($name, $default);
+    my $method = "${class}::${name}";
+    { no strict 'refs'; *$method = $code; }
+}
+
+
 1;
 
 __END__
@@ -111,7 +126,11 @@ Dancer::Object - Objects base class for Dancer
     use warnings;
     use base 'Dancer::Object';
 
+    # name attributes
     __PACKAGE__->attributes( qw/name value this that/ );
+
+    # or create attribute with default value
+    __PACKAGE__->attribute( foo => 'bar' );
 
     sub init {
         # our initialization code, if we need one
@@ -149,7 +168,13 @@ dynamically. If we cannot load L<Clone>, we throw an exception.
 
 Get the attributes of the specific class.
 
-=head2 attributes
+=head2 attribute( $name, $default )
+
+Generates attribute with default value for whatever object is extending
+Dancer::Object and saves them in an internal hashref so they can be later
+fetched using C<get_attributes>.
+
+=head2 attributes( @names )
 
 Generates attributes for whatever object is extending Dancer::Object and saves
 them in an internal hashref so they can be later fetched using
