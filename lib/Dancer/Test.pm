@@ -5,7 +5,7 @@ package Dancer::Test;
 use strict;
 use warnings;
 use Test::Builder;
-use Test::More;
+use Test::More import => [ '!pass' ];
 
 use Carp;
 use HTTP::Headers;
@@ -72,6 +72,24 @@ sub import {
 
 # Route Registry
 
+sub _req_to_response {
+    my $req = shift;
+
+    # already a response object
+    return $req if ref $req eq 'Dancer::Response';
+
+    return dancer_response( ref $req eq 'ARRAY' ? @$req : ( 'GET', $req ) );
+}
+
+sub _req_label {
+    my $req = shift;
+
+    return ref $req eq 'Dancer::Response' ? 'response object'
+         : ref $req eq 'ARRAY' ? join( ' ', @$req )
+         : "GET $req"
+         ;
+}
+
 sub expand_req {
     my $req = shift;
     return ref $req eq 'ARRAY' ? @$req : ( 'GET', $req );
@@ -104,37 +122,39 @@ sub route_doesnt_exist {
 
 sub response_exists {
     my ($req, $test_name) = @_;
-    $test_name ||= "a response is found for @$req";
+
+    $test_name ||= "a response is found for " . _req_label($req);
     my $tb = Test::Builder->new;
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response( $req );
     return $tb->ok(defined($response), $test_name);
 }
 
 sub response_doesnt_exist {
     my ($req, $test_name) = @_;
-    $test_name ||= "no response found for @$req";
+
+    $test_name ||= "no response found for " . _req_label($req);
     my $tb = Test::Builder->new;
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
     return $tb->ok(!defined($response), $test_name);
 }
 
 sub response_status_is {
     my ($req, $status, $test_name) = @_;
-    $test_name ||= "response status is $status for @$req";
-    my $tb = Test::Builder->new;
+    $test_name ||= "response status is $status for " . _req_label($req);
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
     return $tb->is_eq($response->status, $status, $test_name);
 }
 
 sub response_status_isnt {
     my ($req, $status, $test_name) = @_;
-    $test_name ||= "response status is not $status for @$req";
-    my $tb = Test::Builder->new;
+    $test_name ||= "response status is not $status for " . _req_label($req);
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
     $tb->isnt_eq( $response->{status}, $status, $test_name );
 }
 
@@ -142,61 +162,61 @@ sub response_status_isnt {
 
 sub response_content_is {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
-    my $tb = Test::Builder->new;
+    $test_name ||= "response content looks good for " . _req_label($req);
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
     return $tb->is_eq( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_isnt {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
-    my $tb = Test::Builder->new;
+    $test_name ||= "response content looks good for " . _req_label($req);
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
     return $tb->isnt_eq( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
-    my $tb = Test::Builder->new;
+    $test_name ||= "response content looks good for " . _req_label($req);
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
     return $tb->like( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_unlike {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
-    my $tb = Test::Builder->new;
+    $test_name ||= "response content looks good for " , _req_label($req);
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
     return $tb->unlike( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_is_deeply {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
+    $test_name ||= "response content looks good for " . _req_label($req);
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
     is_deeply $response->{content}, $matcher, $test_name;
 }
 
 sub response_is_file {
     my ($req, $test_name) = @_;
-    $test_name ||= "a file is returned for @$req";
-    my $tb = Test::Builder->new;
+    $test_name ||= "a file is returned for " . _req_label($req);
 
     my $response = _get_file_response($req);
+    my $tb = Test::Builder->new;
     return $tb->ok(defined($response), $test_name);
 }
 
 sub response_headers_are_deeply {
     my ($req, $expected, $test_name) = @_;
-    $test_name ||= "headers are as expected for @$req";
+    $test_name ||= "headers are as expected for " . _req_label($req);
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     my $response = dancer_response(expand_req($req));
@@ -324,6 +344,7 @@ sub _url_encode {
 
 sub _get_file_response {
     my ($req) = @_;
+
     my ($method, $path, $params) = expand_req($req);
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     Dancer::SharedData->request($request);
@@ -373,15 +394,18 @@ Make sure to use C<Dancer::Test> B<after> importing the application package
 otherwise your appdir will be automatically set to C<lib> and your test script
 won't be able to find views, conffiles and other application content.
 
-For all test methods, if the first argument is not
-an array ref but a scalar, it is taken to be the I<$path>,
-and the I<$method> is assumed to be I<GET>. I.e.:
+For all test methods, the first argument can be either an
+array ref of the method and route, or a scalar containing the
+route (in which case the method is assumed to be C<GET>), or
+a L<Dancer::Response> object.
 
+    # all 3 are equivalent
     response_status_is [ GET => '/' ], 200, 'GET / status is ok';
 
-    # is equivalent to 
-
     response_status_is '/', 200, 'GET / status is ok';
+
+    my $resp = dancer_response GET => '/';
+    response_status_is $resp => 200, 'GET / status is ok';
 
 =head1 METHODS
 
