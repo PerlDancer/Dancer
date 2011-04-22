@@ -124,20 +124,26 @@ sub response_exists {
     my ($req, $test_name) = @_;
 
     $test_name ||= "a response is found for " . _req_label($req);
-    my $tb = Test::Builder->new;
 
     my $response = _req_to_response( $req );
-    return $tb->ok(defined($response), $test_name);
+
+    # goto used so that the test reports
+    # the correct test line
+    @_ = ( $response, 404, $test_name );
+    goto &response_status_isnt;
 }
 
 sub response_doesnt_exist {
     my ($req, $test_name) = @_;
 
     $test_name ||= "no response found for " . _req_label($req);
-    my $tb = Test::Builder->new;
 
     my $response = _req_to_response($req);
-    return $tb->ok(!defined($response), $test_name);
+
+    # goto used so that the test reports
+    # the correct test line
+    @_ = ( $response, 404, $test_name );
+    goto &response_status_is;
 }
 
 sub response_status_is {
