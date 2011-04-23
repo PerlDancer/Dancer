@@ -18,7 +18,7 @@ is $req->method, 'GET', 'method is get';
 is_deeply scalar($req->params), {foo => 'bar', number => 42}, 
     'params are parsed';
 
-$req = Dancer::Request->forward($req, "/new/path");
+$req = Dancer::Request->forward($req, { to_url => "/new/path"} );
 is $req->path, '/new/path', 'path is changed';
 is $req->method, 'GET', 'method is unchanged';
 is_deeply scalar($req->params), {foo => 'bar', number => 42}, 
