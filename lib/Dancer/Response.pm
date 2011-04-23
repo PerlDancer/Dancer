@@ -63,8 +63,9 @@ sub has_passed {
 }
 
 sub forward {
-    my $self = shift;
-    $self->{forward} = $_[0];
+    my ($self, $uri, $params) = @_;
+    $self->{forward} = { to_url => $uri,
+                         params => $params || [] };
 }
 
 sub is_forwarded {
