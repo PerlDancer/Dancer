@@ -111,7 +111,7 @@ sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub false           { 0 }
-sub forward         { Dancer::SharedData->response->forward(shift) }
+sub forward         { Dancer::SharedData->response->forward(@_) }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
