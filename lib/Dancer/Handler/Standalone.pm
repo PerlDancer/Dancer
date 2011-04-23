@@ -28,18 +28,25 @@ sub start {
 
     if (setting('daemon')) {
         my $pid = $dancer->background();
-        print STDERR
-            ">> Dancer $Dancer::VERSION server $pid listening"
-            . "on http://$ipaddr:$port\n"
-                if setting('startup_info');
+        print_startup_info($pid);
         return $pid;
     }
     else {
-        print STDERR ">> Dancer $Dancer::VERSION server $$ listening"
-            ." on http://$ipaddr:$port\n"
-                if setting('startup_info');
         $dancer->run();
+        print_startup_info($$);
     }
+}
+
+sub print_startup_info {
+    my $pid    = shift;
+    my $ipaddr = setting('server');
+    my $port   = setting('port');
+
+    # we only print the info if we need to
+    setting('startup_info') or return;
+
+    print STDERR ">> Dancer $Dancer::VERSION server $pid listening " .
+                 "on http://$ipaddr:$port\n"
 }
 
 1;
