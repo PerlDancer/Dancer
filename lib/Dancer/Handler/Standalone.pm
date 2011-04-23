@@ -32,8 +32,8 @@ sub start {
         return $pid;
     }
     else {
-        $dancer->run();
         print_startup_info($$);
+        $dancer->run();
     }
 }
 
@@ -45,8 +45,10 @@ sub print_startup_info {
     # we only print the info if we need to
     setting('startup_info') or return;
 
+    # bare minimum
     print STDERR ">> Dancer $Dancer::VERSION server $pid listening " .
-                 "on http://$ipaddr:$port\n"
+                 "on http://$ipaddr:$port\n";
+
 }
 
 1;
