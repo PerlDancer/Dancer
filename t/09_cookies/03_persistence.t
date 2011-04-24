@@ -21,7 +21,7 @@ Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
 
-        foreach my $client qw(one two three) {
+        foreach my $client (qw(one two three)) {
             my $ua = LWP::UserAgent->new;
             $ua->cookie_jar({ file => "$tempdir/.cookies.txt" });
 
