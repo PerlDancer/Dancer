@@ -111,11 +111,17 @@ sub setting {
         die "Odd number in 'set' assignment" unless scalar @_ % 2 == 0;
 
         my $count = 0;
-        my @hooks = ();
         while (@_) {
             my $setting = shift;
             my $value   = shift;
-            _set_setting($setting, $value);
+            _set_setting  ($setting, $value);
+
+            # At the moment, with any kind of hierarchical setter,
+            # there is no case where the same trigger will be run more
+            # than once. If/when a hierarchical setter is implemented,
+            # we should create a list of the hooks that should be run,
+            # and run them at the end of this while, only (efficiency
+            # purposes).
             _trigger_hooks($setting, $value);
             $count++
         }
