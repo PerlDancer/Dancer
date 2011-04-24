@@ -962,6 +962,10 @@ Defines a setting:
 
     set something => 'value';
 
+You can set more than one value at once:
+
+    set something => 'value', otherthing => 'othervalue';
+
 =head2 setting
 
 Returns the value of a given setting:
