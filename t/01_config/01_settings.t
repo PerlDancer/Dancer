@@ -14,7 +14,7 @@ ok(setting(foo => '42'), 'setting a new value');
 is(setting('foo'), 42, 'new value has been set');
 
 # test the alias 'set'
-is(set(bar => 43), 43, "setting bar with set");
+ok(set(bar => 43), "setting bar with set");
 
 # testing private interface
 is( Dancer::Config::_set_setting( bar => 42 ),

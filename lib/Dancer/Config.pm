@@ -103,15 +103,23 @@ sub normalize_setting {
 
 # public accessor for get/set
 sub setting {
-    my ($setting, $value) = @_;
-
-    if (@_ == 2) {
-        $value = _set_setting($setting, $value);
-        _trigger_hooks($setting, $value);
-        return $value;
+    if (@_ == 1) {
+        return _get_setting(shift @_);
     }
     else {
-        return _get_setting($setting);
+        # can be useful for debug! Use Logger, instead?
+        die "Odd number in 'set' assignment" unless scalar @_ % 2 == 0;
+
+        my $count = 0;
+        my @hooks = ();
+        while (@_) {
+            my $setting = shift;
+            my $value   = shift;
+            _set_setting($setting, $value);
+            _trigger_hooks($setting, $value);
+            $count++
+        }
+        return $count; # just to return anything, the number of items set.
     }
 }
 
