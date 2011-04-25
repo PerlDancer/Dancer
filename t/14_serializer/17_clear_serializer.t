@@ -1,6 +1,6 @@
 use Dancer ':tests';
 use Dancer::Test;
-use Test::More tests => 4;
+use Test::More;
 use Dancer::ModuleLoader;
 use LWP::UserAgent;
 
@@ -9,6 +9,8 @@ plan skip_all => 'Test::TCP is needed to run this test'
 
 plan skip_all => 'JSON is needed to run this test'
     unless Dancer::ModuleLoader->load('JSON');
+
+plan tests => 4;
 
 set serializer => 'JSON';
 
