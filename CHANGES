@@ -12,6 +12,8 @@
     * Fix #433 - encoding issues with forward (Alberto Simões)
     * Renaming access_log to startup_info (+doc), fixes GH #390.
       (Sawyer X)
+    * Rewrite scalar usage of qw() that is incompatible with 5.14.
+      (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * More tests for versions, setings and variables
