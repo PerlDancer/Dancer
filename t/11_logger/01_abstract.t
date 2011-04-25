@@ -10,9 +10,9 @@ use_ok 'Dancer::Logger::Abstract';
 
 my $l = Dancer::Logger::Abstract->new;
 isa_ok $l, 'Dancer::Logger::Abstract';
-can_ok $l, qw(_log _should debug warning error);
+can_ok $l, (qw(_log _should debug warning error));
 
-foreach my $method qw(_log debug warning error) {
+foreach my $method (qw(_log debug warning error)) {
     eval { $l->$method };
     like $@, qr/_log not implemented/, "$method is a virtual method";
 }
