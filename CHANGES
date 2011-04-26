@@ -28,6 +28,8 @@
     * new session_is_http_only setting. (Alberto Simões, requested by JT Smith)
     * GH #296: Show versions of loaded modules in startup info.
       (Sawyer X)
+    * Able to set more than one value at once using set().
+      (Alberto Simões)
 
     [ DOCUMENTATION ]
     * Major rewrite/reorganization on Dancer::Config documentation
