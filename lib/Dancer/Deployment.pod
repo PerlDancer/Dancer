@@ -164,21 +164,26 @@ a L<PSGI> webserver like L<Starman>.
 
 Start by creating a simple app.psgi file:
 
-    use Dancer;
+    use Dancer ':syntax';
     use Plack::Builder;
-    load_app 'MyApp1', 'MyApp2';
 
-    use Dancer::Config 'setting';
     setting apphandler => 'PSGI';
-    Dancer::Config->load;
 
     my $app1 = sub {
         my $env = shift;
+        setting appdir => '/path/to/app1',
+        setting appname => 'app1';
+        load_app "app1";
+        Dancer::Config->load;
         my $request = Dancer::Request->new( $env );
         Dancer->dance( $request );
     };
     my $app2 = sub {
         my $env = shift;
+        setting appdir => '/path/to/app2',
+        setting appname => 'app2';
+        load_app "app2";
+        Dancer::Config->load;
         my $request = Dancer::Request->new( $env );
         Dancer->dance( $request );
     };
