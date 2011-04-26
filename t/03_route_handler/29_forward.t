@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 16, import => ['!pass'];
+use Test::More tests => 14, import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::Logger;
@@ -22,11 +22,8 @@ get '/bounce/' => sub {
 get '/bounce/:withparams/' => sub {
     return forward '/';
 };
-get '/bounce2/adding_params_array/' => sub {
-    return forward '/', [ withparams => 'foo' ];
-};
-get '/bounce2/adding_params_hash/' => sub {
-    return forward '/', { withparams => 'bar' };
+get '/bounce2/adding_params/' => sub {
+    return forward '/', { withparams => 'foo' };
 };
 
 response_exists     [ GET => '/' ];
@@ -38,11 +35,8 @@ response_content_is [ GET => '/bounce/' ], 'home';
 response_exists     [ GET => '/bounce/thesethings/' ];
 response_content_is [ GET => '/bounce/thesethings/' ], 'homewithparams,thesethings';
 
-response_exists     [ GET => '/bounce2/adding_params_array/' ];
-response_content_is [ GET => '/bounce2/adding_params_array/' ], 'homewithparams,foo';
-
-response_exists     [ GET => '/bounce2/adding_params_hash/' ];
-response_content_is [ GET => '/bounce2/adding_params_hash/' ], 'homewithparams,bar';
+response_exists     [ GET => '/bounce2/adding_params/' ];
+response_content_is [ GET => '/bounce2/adding_params/' ], 'homewithparams,foo';
 
 my $expected_headers = [
     'Content-Length' => 4,

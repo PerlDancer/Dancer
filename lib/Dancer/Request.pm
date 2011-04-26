@@ -116,7 +116,7 @@ sub forward {
 
     my $new_request = $class->new($env);
     my $new_params  = _merge_params(scalar($request->params),
-                                    $to_data->{params});
+                                    $to_data->{params} || {});
 
     $new_request->{params}  = $new_params;
     $new_request->{body}    = $request->body;
@@ -128,28 +128,10 @@ sub forward {
 sub _merge_params {
     my ($params, $to_add) = @_;
 
-    my $result = {};
-    $result = $to_add if ref $to_add eq "HASH";
-
-    if (ref $to_add eq "ARRAY") {
-        while (@$to_add) {
-            my $key   = shift @$to_add;
-            my $value = shift @$to_add;
-
-            if (exists($result->{$key})) {
-                $result->{$key} = [$result->{$key}]
-                  unless ref $result->{$key} eq "ARRAY";
-                push @{$result->{$key}}, $value;
-            }
-            else {
-                $result->{$key} = $value;
-            }
-        }
+    die unless ref $to_add eq "HASH";
+    for my $key (keys %$to_add) {
+        $params->{$key} = $to_add->{$key};
     }
-    for my $key (keys %$result) {
-        $params->{$key} = $result->{$key};
-    }
-
     return $params;
 }
 

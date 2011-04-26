@@ -651,6 +651,16 @@ function, e.g.
 
 You probably always want to use C<return> with forward.
 
+Note that forward doesn't parse GET arguments. So, you can't use
+something like:
+
+     return forward '/home?authorized=1';
+
+But C<forward> supports an optional hash with parameters to be added
+to the actual parameters:
+
+     return forward '/home', { authorized => 1 };
+
 =head2 from_dumper ($structure)
 
 Deserializes a Data::Dumper structure.
