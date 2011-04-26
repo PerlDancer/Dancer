@@ -30,6 +30,8 @@
       (Sawyer X)
     * Able to set more than one value at once using set().
       (Alberto Simões)
+    * GH #253: Use Clone::clone() if available to clone data before censoring.
+      (Sawyer X)
 
     [ DOCUMENTATION ]
     * Major rewrite/reorganization on Dancer::Config documentation
