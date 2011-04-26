@@ -3,6 +3,7 @@ use warnings;
     
 use Dancer ':syntax';
 use Dancer::Request;
+use Dancer::Test;
 use Dancer::FileUtils;
 use File::Temp qw(tempdir);
 use Test::More 'import' => ['!pass'];
@@ -49,7 +50,7 @@ SHOGUN6
 $content =~ s/\r\n/\n/g;
 $content =~ s/\n/\r\n/g;
 
-plan tests => 17;
+plan tests => 21;
 
 do {
     open my $in, '<', \$content;
@@ -122,3 +123,51 @@ do {
 
     unlink($file) if ($^O eq 'MSWin32');
 };
+
+# test with Dancer::Test
+my $dest_dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dest_file = File::Spec->catfile( $dest_dir, 'foo' );
+
+post(
+    '/upload',
+    sub {
+        my $file = upload('test');
+        is $file->{filename}, $dest_file;
+        return $file->content;
+    }
+);
+
+post(
+    '/uploads',
+    sub {
+        my $content;
+        my $uploads = request->uploads;
+        foreach my $u (keys %$uploads){
+            $content .= $uploads->{$u}->content;
+        }
+        return $content;
+    }
+);
+
+$content = "foo";
+open my $fh, '>', $dest_file;
+print $fh $content;
+close $fh;
+
+my $resp =
+  dancer_response( 'POST', '/upload',
+    { files => [ { name => 'test', filename => $dest_file } ] } );
+is $resp->content, $content;
+
+my $files;
+for (qw/a b c/){
+    my $dest_file = File::Spec->catfile( $dest_dir, $_ );
+    open my $fh, '>', $dest_file;
+    print $fh $_;
+    close $fh;
+    push @$files, {name => $_, filename => $dest_file};
+}
+
+$resp =  dancer_response( 'POST', '/uploads', {files => $files});
+is length($resp->content), 3;
+like $resp->content, qr/a/;

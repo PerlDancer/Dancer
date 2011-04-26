@@ -270,24 +270,49 @@ sub dancer_response {
     my ($method, $path, $args) = @_;
     $args ||= {};
 
-    if ($method =~ /^(?:PUT|POST)$/ && $args->{body}) {
-        my $body = $args->{body};
+    if ($method =~ /^(?:PUT|POST)$/) {
 
-        # coerce hashref into an url-encoded string
-        if (ref($body) && (ref($body) eq 'HASH')) {
-            my @tokens;
-            while (my ($name, $value) = each %{$body}) {
-                $name  = _url_encode($name);
-                $value = _url_encode($value);
-                push @tokens, "${name}=${value}";
+        my ($content, $content_type);
+
+        if ( $args->{body} ) {
+            $content      = $args->{body};
+            $content_type = $args->{content_type}
+              || 'application/x-www-form-data';
+
+            # coerce hashref into an url-encoded string
+            if ( ref($content) && ( ref($content) eq 'HASH' ) ) {
+                my @tokens;
+                while ( my ( $name, $value ) = each %{$content} ) {
+                    $name  = _url_encode($name);
+                    $value = _url_encode($value);
+                    push @tokens, "${name}=${value}";
+                }
+                $content = join( '&', @tokens );
             }
-            $body = join('&', @tokens);
+        }
+        elsif ( $args->{files} ) {
+            $content_type = 'multipart/form-data; boundary=----BOUNDARY';
+            foreach my $file (@{$args->{files}}){
+                $content .= qq{------BOUNDARY
+Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename}"
+Content-Type: text/plain
+
+};
+                open my $fh, '<', $file->{filename};
+                while (<$fh>){
+                    $content .= $_;
+                }
+                $content .= "\n";
+            }
+            $content .= "------BOUNDARY";
+            $content =~ s/\r\n/\n/g;
+            $content =~ s/\n/\r\n/g;
         }
 
-        my $l = length $body;
-        open my $in, '<', \$body;
+        my $l = length $content;
+        open my $in, '<', \$content;
         $ENV{'CONTENT_LENGTH'} = $l;
-        $ENV{'CONTENT_TYPE'}   = 'application/x-www-form-urlencoded';
+        $ENV{'CONTENT_TYPE'}   = $content_type;
         $ENV{'psgi.input'}     = $in;
     }
 
@@ -515,18 +540,16 @@ Asserts that the response headers data structure includes some of the defined on
 
     response_headers_include [GET => '/'], [ 'Content-Type' => 'text/plain' ];
 
-=head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers })
+=head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers, files => [{filename => '/path/to/file', name => 'my_file'}] })
 
 Returns a Dancer::Response object for the given request.
+
 Only $method and $path are required.
+
 $params is a hashref, $body is a string and $headers can be an arrayref or
-a HTTP::Headers object.
-A good reason to use this function is for
-testing POST requests. Since POST requests may not be idempotent, it is
-necessary to capture the content and status in one shot. Calling the
-response_status_is and response_content_is functions in succession would make
-two requests, each of which could alter the state of the application and cause
-Schrodinger's cat to die.
+a HTTP::Headers object, $files is an arrayref of hashref, containing some files to upload.
+
+A good reason to use this function is for testing POST requests. Since POST requests may not be idempotent, it is necessary to capture the content and status in one shot. Calling the response_status_is and response_content_is functions in succession would make two requests, each of which could alter the state of the application and cause Schrodinger's cat to die.
 
     my $response = dancer_response POST => '/widgets';
     is $response->{status}, 202, "response for POST /widgets is 202";
@@ -537,6 +560,12 @@ Schrodinger's cat to die.
     is $response->{status}, 202, "response for POST /widgets is 202";
     is $response->{content}, "Widget #2 has been scheduled for creation",
         "response content looks good for second POST /widgets";
+
+It's possible to test file uploads:
+
+    post '/upload' => sub { return upload('image')->content };
+
+    $response = dancer_reponse(POST => '/upload', {files => [{name => 'image', filename => '/path/to/image.jpg}]});
 
 =head2 get_response([$method, $path])
 
