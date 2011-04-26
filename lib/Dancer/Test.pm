@@ -121,6 +121,12 @@ sub route_doesnt_exist {
 # Response status
 
 sub response_exists {
+    Dancer::Deprecation->deprecated(
+       fatal   => 0,
+       feature => 'route_exists',
+       version => '1.3040',
+       reason  => 'Use response_status_isnt and check for status 404.'
+    );
     my ($req, $test_name) = @_;
 
     $test_name ||= "a response is found for " . _req_label($req);
@@ -134,6 +140,12 @@ sub response_exists {
 }
 
 sub response_doesnt_exist {
+    Dancer::Deprecation->deprecated(
+       fatal   => 0,
+       version => '1.3040',
+       feature => 'route_doesnt_exist',
+       reason  => 'Use response_status_is and check for status 404.',
+    );
     my ($req, $test_name) = @_;
 
     $test_name ||= "no response found for " . _req_label($req);
