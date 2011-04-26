@@ -77,6 +77,16 @@ sub match {
           . "/");
 
     my @values = $path =~ $self->{_compiled_regexp};
+
+    # the regex comments are how we know if we captured
+    # a splat or a megasplat
+    if( my @splat_or_megasplat
+            = $self->{_compiled_regexp} =~ /\(\?#((?:mega)?splat)\)/g ) {
+        for ( @values ) {
+            $_ = [ split '/' => $_ ] if ( shift @splat_or_megasplat ) =~ /megasplat/;
+        }
+    }
+
     Dancer::Logger::core("  --> got ".
         map { defined $_ ? $_ : 'undef' } @values) 
         if @values;
@@ -309,11 +319,13 @@ sub _build_regexp_from_string {
         }
     }
 
+    # parse megasplat
+    # we use {0,} instead of '*' not to fall in the splat rule
+    # same logic for [^\n] instead of '.'
+    $capture = 1 if $pattern =~ s!\Q**\E!(?#megasplat)([^\n]+)!g;
+
     # parse wildcards
-    if ($pattern =~ /\*/) {
-        $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
-        $capture = 1;
-    }
+    $capture = 1 if $pattern =~ s!\*!(?#splat)([^/]+)!g;
 
     # escape dots
     $pattern =~ s/\./\\\./g if $pattern =~ /\./;

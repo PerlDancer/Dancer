@@ -16,6 +16,8 @@
       (Alberto Simões)
 
     [ ENHANCEMENTS ]
+    * Introducing the "megasplat"!
+      (Yanick Champoux)
     * More tests for versions, setings and variables
       (Alberto Simões)      
     * Improve Dancer::Test so failures report the correct line numbers

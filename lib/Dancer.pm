@@ -1036,6 +1036,35 @@ which includes wildcards:
         ...
     };
 
+There is also the extensive splat (A.K.A. "megasplat"), which allows extensive
+greedier matching, available using two asterisks. The additional path is broken
+down and returned as an arrayref:
+
+    get '/entry/*/tags/**' => sub {
+        my ( $entry_id, $tags ) = splat;
+        my @tags = @{$tags};
+    };
+
+This helps with chained actions:
+
+    get '/team/*/**' => sub {
+        my ($team) = splat;
+        var team => $team;
+        pass;
+    };
+
+    prefix '/team/*';
+
+    get '/player/*' => sub {
+        my ($player) = splat;
+
+        # etc...
+    };
+
+    get '/score' => sub {
+        return score_for( vars->{'team'} );
+    };
+
 =head2 start
 
 Starts the application or the standalone server (depending on the deployment
