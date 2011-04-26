@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More;
 
-plan tests => 24;
+plan tests => 26;
 
 use Dancer qw/ :syntax :tests /;
 use Dancer::Test;
@@ -20,6 +20,10 @@ my $resp = dancer_response GET => '/marco';
 my @req = ( [ GET => $route ], $route, $resp );
 
 test_helping_functions( $_ ) for @req;
+
+response_doesnt_exist [ GET => '/satisfaction' ], 'response_doesnt_exist';
+response_exists [ GET => '/marco' ], 'response_exists';
+
 
 sub test_helping_functions {
     my $req = shift;
