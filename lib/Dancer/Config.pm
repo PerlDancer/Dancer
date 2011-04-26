@@ -103,15 +103,29 @@ sub normalize_setting {
 
 # public accessor for get/set
 sub setting {
-    my ($setting, $value) = @_;
-
-    if (@_ == 2) {
-        $value = _set_setting($setting, $value);
-        _trigger_hooks($setting, $value);
-        return $value;
+    if (@_ == 1) {
+        return _get_setting(shift @_);
     }
     else {
-        return _get_setting($setting);
+        # can be useful for debug! Use Logger, instead?
+        die "Odd number in 'set' assignment" unless scalar @_ % 2 == 0;
+
+        my $count = 0;
+        while (@_) {
+            my $setting = shift;
+            my $value   = shift;
+            _set_setting  ($setting, $value);
+
+            # At the moment, with any kind of hierarchical setter,
+            # there is no case where the same trigger will be run more
+            # than once. If/when a hierarchical setter is implemented,
+            # we should create a list of the hooks that should be run,
+            # and run them at the end of this while, only (efficiency
+            # purposes).
+            _trigger_hooks($setting, $value);
+            $count++
+        }
+        return $count; # just to return anything, the number of items set.
     }
 }
 
