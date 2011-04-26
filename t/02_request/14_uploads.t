@@ -50,7 +50,7 @@ SHOGUN6
 $content =~ s/\r\n/\n/g;
 $content =~ s/\n/\r\n/g;
 
-plan tests => 19;
+plan tests => 21;
 
 do {
     open my $in, '<', \$content;
@@ -137,6 +137,18 @@ post(
     }
 );
 
+post(
+    '/uploads',
+    sub {
+        my $content;
+        my $uploads = request->uploads;
+        foreach my $u (keys %$uploads){
+            $content .= $uploads->{$u}->content;
+        }
+        return $content;
+    }
+);
+
 $content = "foo";
 open my $fh, '>', $dest_file;
 print $fh $content;
@@ -146,3 +158,16 @@ my $resp =
   dancer_response( 'POST', '/upload',
     { files => [ { name => 'test', filename => $dest_file } ] } );
 is $resp->content, $content;
+
+my $files;
+for (qw/a b c/){
+    my $dest_file = File::Spec->catfile( $dest_dir, $_ );
+    open my $fh, '>', $dest_file;
+    print $fh $_;
+    close $fh;
+    push @$files, {name => $_, filename => $dest_file};
+}
+
+$resp =  dancer_response( 'POST', '/uploads', {files => $files});
+is length($resp->content), 3;
+like $resp->content, qr/a/;
