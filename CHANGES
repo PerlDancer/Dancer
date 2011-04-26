@@ -36,7 +36,10 @@
     [ DOCUMENTATION ]
     * Major rewrite/reorganization on Dancer::Config documentation
       (David Precious, pushed by Alberto Simões PR)
-
+    * Fix documentation about hosting multiples Dancer apps inside a PSGI file,
+      fix GH #284
+      (Franck Cuny)
+      
 1.3030      13.04.2011
     ** Codename: Silence of the ambs // Alberto Simões **
 
