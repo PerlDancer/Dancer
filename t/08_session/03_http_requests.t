@@ -67,10 +67,10 @@ Test::TCP::test_tcp(
         setting appdir => $tempdir;
         Dancer::Logger->init('File');
         ok(setting(session => $engine), "using engine $engine");
-        setting show_errors => 1;
-        setting access_log => 0;
-        setting environment => 'production';
-        setting port => $port;
+        setting show_errors  => 1;
+        setting startup_info => 0;
+        setting environment  => 'production';
+        setting port         => $port;
         Dancer->dance();
     },
 );

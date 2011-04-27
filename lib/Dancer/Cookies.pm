@@ -38,6 +38,7 @@ sub parse_cookie_from_env {
 
 # set_cookie name => value,
 #     expires => time() + 3600, domain => '.foo.com'
+#     http_only => 0 # defaults to 1
 sub set_cookie {
     my ( $class, $name, $value, %options ) = @_;
     my $cookie =  Dancer::Cookie->new(

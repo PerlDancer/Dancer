@@ -15,11 +15,11 @@ use Dancer::Request;
 my $req = Dancer::Request->new(\%ENV);
 is $req->path, '/', 'path is /';
 is $req->method, 'GET', 'method is get';
-is_deeply scalar($req->params), {foo => 'bar', number => 42}, 
+is_deeply scalar($req->params), {foo => 'bar', number => 42},
     'params are parsed';
 
-$req = Dancer::Request->forward($req, "/new/path");
+$req = Dancer::Request->forward($req, { to_url => "/new/path"} );
 is $req->path, '/new/path', 'path is changed';
 is $req->method, 'GET', 'method is unchanged';
-is_deeply scalar($req->params), {foo => 'bar', number => 42}, 
+is_deeply scalar($req->params), {foo => 'bar', number => 42},
     'params are not touched';

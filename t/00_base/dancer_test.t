@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 22;
+use Test::More import => ['!pass'], tests => 24;
 
 use strict;
 use warnings;
@@ -25,16 +25,16 @@ response_status_is $false_req, 404;
 
 response_status_is $req, 200;
 response_status_isnt $req, 404;
+response_status_is [GET => '/forward_to_unavailable_route'] => 404;
 
 response_content_is $req, "Hello, this is the home";
 response_content_isnt $req, "foo bar";
 response_content_is_deeply [GET => '/hash'], { a => 1, b => 2, c => 3};
 response_content_like $req, qr{Hello};
 response_content_unlike $req, qr{Goodbye};
-response_headers_are_deeply [GET => '/with_headers'], [
-    'Content-Type' => 'text/html',
-    'X-Foo-Dancer' => 42,
-    ];
+
+response_headers_include [GET => '/with_headers'], [ 'Content-Type' => 'text/html' ];
+response_headers_include [GET => '/with_headers'], [ 'X-Foo-Dancer' => '42' ];
 
 eval { get_response($req) };
 like $@, qr/get_response.*has been deprecated. use dancer_response.*instead/i,

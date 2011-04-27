@@ -5,6 +5,10 @@ get '/string' => sub {
     "\x{1A9}";
 };
 
+get '/other/string' => sub {
+    forward '/string';
+};
+
 get '/param/:param' => sub {
     params('route')->{'param'};
 };

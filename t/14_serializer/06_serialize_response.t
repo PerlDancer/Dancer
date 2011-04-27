@@ -22,15 +22,11 @@ my $json = JSON::encode_json($data);
     };
 }
 
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use TestUtils;
+use Dancer::Test;
 
-my $response = get_response_for_request(GET => '/data');
-ok(defined($response), "response found for /data");
+response_exists [GET => '/data'] => "response found for /data";
 
-is_deeply( $response->headers_to_array, [ 'Content-Type' => 'application/json'],
-    "headers have content_type set to application/json" );
+response_headers_include [GET => '/data'] => [ 'Content-Type' => 'application/json' ],
+  "headers have content_type set to application/json";
 
-is( $response->{content}, $json,
-    "\$data has been encoded to JSON");
+response_content_is [GET => '/data'] => $json, "\$data has been encoded to JSON";

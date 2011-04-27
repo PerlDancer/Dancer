@@ -34,11 +34,11 @@ Test::TCP::test_tcp(
         my $port    = shift;
 
         my $handler = sub {
-            use Dancer ':syntax';
+            use Dancer;
 
-            setting port       => $port;
-            setting apphandler => 'PSGI';
-            setting access_log => 0;
+            setting port         => $port;
+            setting apphandler   => 'PSGI';
+            setting startup_info => 0;
 
             get '/foo' => sub {request->path_info};
 

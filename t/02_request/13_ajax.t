@@ -28,8 +28,8 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
         use Dancer;
-        setting port => $port;
-        setting access_log => 0;
+        setting port         => $port;
+        setting startup_info => 0;
 
         get '/req' => sub {
             request->is_ajax ? return 1 : return 0;

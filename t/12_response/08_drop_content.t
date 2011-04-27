@@ -32,8 +32,8 @@ sub test {
         },
         server => sub {
             my $port = shift;
-            setting port       => $port;
-            setting access_log => 0;
+            setting port         => $port;
+            setting startup_info => 0;
 
             get '/204' => sub {
                 status 204;

@@ -28,18 +28,36 @@ sub start {
 
     if (setting('daemon')) {
         my $pid = $dancer->background();
-        print STDERR
-            ">> Dancer $Dancer::VERSION server $pid listening"
-            . "on http://$ipaddr:$port\n"
-                if setting('access_log');
+        print_startup_info($pid);
         return $pid;
     }
     else {
-        print STDERR ">> Dancer $Dancer::VERSION server $$ listening"
-            ." on http://$ipaddr:$port\n"
-                if setting('access_log');
+        print_startup_info($$);
         $dancer->run();
     }
+}
+
+sub print_startup_info {
+    my $pid    = shift;
+    my $ipaddr = setting('server');
+    my $port   = setting('port');
+
+    # we only print the info if we need to
+    setting('startup_info') or return;
+
+    # bare minimum
+    print STDERR ">> Dancer $Dancer::VERSION server $pid listening " .
+                 "on http://$ipaddr:$port\n";
+
+    # all loaded plugins
+    foreach my $module ( grep { $_ =~ m{^Dancer/Plugin/} } keys %INC ) {
+        $module =~ s{/}{::}g;  # change / to ::
+        $module =~ s{\.pm$}{}; # remove .pm at the end
+
+        my $version = $module->VERSION;
+        print ">> $module ($version)\n";
+    }
+
 }
 
 1;

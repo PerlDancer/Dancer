@@ -88,11 +88,15 @@ sub write_session_id {
     my %cookie = (
         name   => $name,
         value  => $id,
-        secure => setting('session_secure')
+        secure => setting('session_secure'),
+        http_only => defined(setting("session_is_http_only")) ?
+                     setting("session_is_http_only") : 1,
     );
     if (my $expires = setting('session_expires')) {
-        $cookie{expires} =
-          Dancer::Cookie::_epoch_to_gmtstring(time + $expires);
+        # It's # of seconds from the current time
+        # Otherwise just feed it through.
+        $expires = Dancer::Cookie::_epoch_to_gmtstring(time + $expires) if $expires =~ /^\d+$/;
+        $cookie{expires} = $expires;
     }
 
     my $c = Dancer::Cookie->new(%cookie);
@@ -163,6 +167,20 @@ The default session name is "dancer_session". This can be set in your config fil
 
 The user's session id is stored in a cookie.  If true, this cookie
 will be made "secure" meaning it will only be served over https.
+
+=head3 session_expires
+
+When the session should expire.  The format is either the number of
+seconds in the future, or the human readable offset from
+L<Dancer::Cookie/expires>.
+
+By default, there is no expiration.
+
+=head3 session_is_http_only
+
+This setting defaults to 1 and instructs the session cookie to be
+created with the C<HttpOnly> option active, meaning that JavaScript
+will not be able to access to its value.
 
 =head2 Abstract Methods
 

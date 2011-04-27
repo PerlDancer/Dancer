@@ -1,14 +1,93 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * Fix 404 forwarding
+      (Alberto Simões)      
+    * Don't remove trailing slashes from route patterns under prefix
+      (Brian E. Lozier)
+    * Remove deprecated r function from list of exports.
+      (Stefan Hornburg)
+    * Fix session_expires so it honors +2h style formatting. (closes #402)
+      (Michael G. Schwern)
+    * Fix #433 - encoding issues with forward (Alberto Simões)
+    * Renaming access_log to startup_info (+doc), fixes GH #390.
+      (Sawyer X)
+    * Rewrite scalar usage of qw() that is incompatible with 5.14.
+      (Alberto Simões)
+
     [ ENHANCEMENTS ]
-    * Support for error templates
+    * Introducing the "megasplat"!
+      (Yanick Champoux)
+    * More tests for versions, setings and variables
+      (Alberto Simões)      
+    * Improve Dancer::Test so failures report the correct line numbers
+      (Michael G. Schwern)
+    * Can now set cookies with http_only => 0 for JS integration, fixes GH #466.
+      (Alberto Simões)
+    * Session engine can be told to set cookies without HttpOnly attribute using
+    * new session_is_http_only setting. (Alberto Simões, requested by JT Smith)
+    * GH #296: Show versions of loaded modules in startup info.
+      (Sawyer X)
+    * Able to set more than one value at once using set().
+      (Alberto Simões)
+    * GH #253: Use Clone::clone() if available to clone data before censoring.
+      (Sawyer X)
+
+    [ DOCUMENTATION ]
+    * Major rewrite/reorganization on Dancer::Config documentation
+      (David Precious, pushed by Alberto Simões PR)
+    * Fix documentation about hosting multiples Dancer apps inside a PSGI file,
+      fix GH #284
+      (Franck Cuny)
+      
+1.3030      13.04.2011
+    ** Codename: Silence of the ambs // Alberto Simões **
+
+    [ ENHANCEMENTS ]
+    * Change the flag for sending system-wide path with send_file to
+      'system_path' (was 'absolute').
+      (Alberto Simões)
+
+1.3029_03   10.04.2011
+
+    [ BUG FIXES ]
+    * Dancer::Session::Cookie 0.14 is required for dependency test.
+    * Only test for undef serializer if we have the default (JSON) available.
+      (Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * Test before_template & auto_page.
+
+1.3029_02   08.04.2011
+
+    [ BUG FIXES ]
+    * Better way to initialize the logdir in Dancer::Logger::File.
+      Works now cleanly if the appdir is not writable but the logdir exist and
+      is writable.
+      (Alberto Simões)
+    * fix warnings in t/03_route_handler/28_plack_mount.t.
+      (Franck Cuny)
+
+    [ ENHANCEMENTS ]
+    * Support for error templates.
       If the setting "error_template" is set, it is used when building an error
       page instead of using the default template.
-	  Added the appropirate documentation as well.
+      Added the appropirate documentation as well.
       (Alberto Simões)
     * Dancer::Test::dancer_response() returns a 404 response when no route
       handler is found. This is consistent with what Dancer does internally.
       (Alberto Simões)
+    * Dancer::Test provides a new helper for inspecting subsets of headers:
+      "response_headers_include".
+      (Alberto Simões, Alexis Sukrieh)
+    * dancer_response now handles the rendering of static pages as well.
+      (Alberto Simões)
+    * Cleanup some tests.
+      (Alberto Simões)
+
+    [ DOCUMENTATION ]
+    * POD fix.
+      (Stefan Hornburg - Racke)
 
 1.3029_01   01.04.2011
 

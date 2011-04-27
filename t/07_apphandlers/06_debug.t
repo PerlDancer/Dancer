@@ -10,8 +10,8 @@ plan tests => 3;
 
 use Dancer;
 
-set access_log => false;
-set apphandler => 'Debug';
+set startup_info => false;
+set apphandler   => 'Debug';
 get '/' => sub { 42 };
 
 my $handler = Dancer::Handler->get_handler;

@@ -5,7 +5,7 @@ use warnings;
 use URI::Escape;
 
 use base 'Dancer::Object';
-__PACKAGE__->attributes('name', 'expires', 'domain', 'path', "secure");
+__PACKAGE__->attributes( qw/name expires domain path secure http_only/ );
 
 sub init {
     my ($self, %args) = @_;
@@ -26,14 +26,15 @@ sub to_header {
     my $self   = shift;
     my $header = '';
 
-    my $value = join('&', map {uri_escape($_)} $self->value);
+    my $value       = join('&', map {uri_escape($_)} $self->value);
+    my $no_httponly = defined( $self->http_only ) && $self->http_only == 0;
 
     my @headers = $self->name . '=' . $value;
     push @headers, "path=" . $self->path        if $self->path;
     push @headers, "expires=" . $self->expires  if $self->expires;
     push @headers, "domain=" . $self->domain    if $self->domain;
     push @headers, "Secure"                     if $self->secure;
-    push @headers, 'HttpOnly';
+    push @headers, 'HttpOnly'                   unless $no_httponly;
 
     return join '; ', @headers;
 }
@@ -176,6 +177,15 @@ The cookie's path.
 
 If true, it instructs the client to only serve the cookie over secure
 connections such as https.
+
+=head2 http_only
+
+By default, cookies are created with a property, named C<HttpOnly>,
+that can be used for security, forcing the cookie to be used only by
+the server (via HTTP) and not by any JavaScript code.
+
+If your cookie is meant to be used by some JavaScript code, set this
+attribute to 0.
 
 =head1 METHODS/SUBROUTINES
 

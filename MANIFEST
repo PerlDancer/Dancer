@@ -215,6 +215,7 @@ t/08_session/09_session.t
 t/08_session/10_filter.t
 t/08_session/11_session_secure.t
 t/08_session/12_session_name.t
+t/08_session/13_session_httponly.t
 t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
@@ -228,9 +229,12 @@ t/10_template/02_abstract_class.t
 t/10_template/03_simple.t
 t/10_template/05_template_toolkit.t
 t/10_template/06_before_template_hook.t
+t/10_template/extension.t
 t/10_template/index.txt
 t/10_template/template.t
+t/10_template/views/index.ts
 t/10_template/views/index.tt
+t/10_template/views/layouts/main.ts
 t/10_template/views/layouts/main.tt
 t/11_logger/000_create_fake_env.t
 t/11_logger/01_abstract.t

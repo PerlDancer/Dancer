@@ -113,7 +113,9 @@ sub dumper {
 
 
     # Take a copy of the data, so we can mask sensitive-looking stuff:
-    my %data     = %$obj;
+    my %data     = Dancer::ModuleLoader->load('Clone') ?
+                   %{ Clone::clone($obj) }             :
+                   %$obj;
     my $censored = _censor(\%data);
 
     #use Data::Dumper;
@@ -187,7 +189,7 @@ sub _render_serialized {
             headers => ['Content-Type' => Dancer::Serializer->engine->content_type]
             );
     }
-    
+
     # if show_errors is disabled, we don't expose the real error message to the
     # outside world
     else {

@@ -16,7 +16,7 @@ my $res = dancer_response GET => '/absolute_with_host';
 is $res->header('Location') => 'http://foo.com/somewhere';
 
 $res = dancer_response GET => '/absolute';
-is $res->header('Location') => '/absolute';
+is $res->header('Location') => 'http://localhost/absolute';
 
 $res = dancer_response GET => '/relative';
 is $res->header('Location') => 'http://localhost/somewhere/else';

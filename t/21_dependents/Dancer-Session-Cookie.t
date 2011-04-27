@@ -3,19 +3,19 @@
 use strict;
 use warnings;
 
+use Dancer::ModuleLoader;
 use Test::More import => ['!pass'];
 
-plan skip_all => "Dancer::Session::Cookie required" unless eval {
-    require Dancer::Session::Cookie;
-};
+plan skip_all => "Dancer::Session::Cookie 0.14 required"
+    unless Dancer::ModuleLoader->load( 'Dancer::Session::Cookie', '0.14' );
 
-plan skip_all => "Test::TCP required" unless eval {
-    require Test::TCP; Test::TCP->import; 1;
-};
+plan skip_all => "Test::TCP required"
+    unless Dancer::ModuleLoader->load('Test::TCP');
+Test::TCP->import;
 
-plan skip_all => "HTTP::Cookies required" unless eval {
-    require HTTP::Cookies; HTTP::Cookies->import; 1;
-};
+plan skip_all => "HTTP::Cookies required"
+    unless Dancer::ModuleLoader->load('HTTP::Cookies');
+HTTP::Cookies->import;
 
 plan tests=> 7;
 
@@ -54,7 +54,7 @@ test_tcp(
 
         set port                => $port;
         set appdir              => '';          # quiet warnings not having an appdir
-        set access_log          => 0;           # quiet startup banner
+        set startup_info        => 0;           # quiet startup banner
 
         set session_cookie_key  => "John has a long mustache";
         set session             => "cookie";
