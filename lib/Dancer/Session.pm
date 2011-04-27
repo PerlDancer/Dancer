@@ -75,7 +75,7 @@ be done like the following:
 
 In the application code:
 
-    #Â enabling the YAML-file-based session engine
+    # enabling the YAML-file-based session engine
     set session => 'YAML';
 
 Or in config.yml or environments/$env.yml
@@ -107,15 +107,15 @@ and C</home> actions using the session engine.
 
     post '/login' => sub {
         # look for params and authenticate the user
-        #Â ...
+        # ...
         if ($user) {
             session user_id => $user->id;
         }
     };
 
     get '/home' => sub {
-        #Â if a user is present in the session, let him go, otherwise redirect to
-        #Â /login
+        # if a user is present in the session, let him go, otherwise redirect to
+        # /login
         if (not session('user_id')) {
             redirect '/login';
         a
