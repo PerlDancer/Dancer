@@ -140,7 +140,7 @@ distribution):
 
 =item L<Dancer::Session::YAML>
 
-A YAML file-based session backend, pretty convininent for development purposes,
+A YAML file-based session backend, pretty convenient for development purposes,
 but maybe not the best for production needs.
 
 =item L<Dancer::Session::Simple>
