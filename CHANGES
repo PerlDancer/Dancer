@@ -1,16 +1,19 @@
 {{$NEXT}}
 
+1.3039_01   27.04.2011
+
     [ BUG FIXES ]
-    * Fix 404 forwarding
-      (Alberto Simões)      
-    * Don't remove trailing slashes from route patterns under prefix
+    * Fix 404 results from forwarding.
+      (Alberto Simões)
+    * Don't remove trailing slashes from route patterns under prefix.
       (Brian E. Lozier)
-    * Remove deprecated r function from list of exports.
+    * Remove deprecated r() function from list of exports.
       (Stefan Hornburg)
-    * Fix session_expires so it honors +2h style formatting. (closes #402)
+    * GH #402: make session_expires honor +2h style formatting.
       (Michael G. Schwern)
-    * Fix #433 - encoding issues with forward (Alberto Simões)
-    * Renaming access_log to startup_info (+doc), fixes GH #390.
+    * GH #433: encoding issues with forward().
+      (Alberto Simões)
+    * GH #390: Renaming access_log to startup_info (+doc).
       (Sawyer X)
     * Rewrite scalar usage of qw() that is incompatible with 5.14.
       (Alberto Simões)
@@ -18,28 +21,34 @@
     [ ENHANCEMENTS ]
     * Introducing the "megasplat"!
       (Yanick Champoux)
-    * More tests for versions, setings and variables
-      (Alberto Simões)      
-    * Improve Dancer::Test so failures report the correct line numbers
+    * More tests for versions, setings and variables.
+      (Alberto Simões)
+    * Improve Dancer::Test so failures report the correct line numbers.
       (Michael G. Schwern)
-    * Can now set cookies with http_only => 0 for JS integration, fixes GH #466.
+    * GH #466: Can now set cookies with http_only => 0 for JS integration.
       (Alberto Simões)
     * Session engine can be told to set cookies without HttpOnly attribute using
-    * new session_is_http_only setting. (Alberto Simões, requested by JT Smith)
+      new session_is_http_only setting.
+      (Alberto Simões, requested by JT Smith)
     * GH #296: Show versions of loaded modules in startup info.
       (Sawyer X)
     * Able to set more than one value at once using set().
       (Alberto Simões)
     * GH #253: Use Clone::clone() if available to clone data before censoring.
       (Sawyer X)
+    * GH #246: Dancer::Test can now test for file uploads as well.
+      (Franck Cuny)
+    * Allow parameters in forward().
+      (Alberto Simões)
 
     [ DOCUMENTATION ]
-    * Major rewrite/reorganization on Dancer::Config documentation
+    * Major rewrite/reorganization on Dancer::Config documentation.
       (David Precious, pushed by Alberto Simões PR)
-    * Fix documentation about hosting multiples Dancer apps inside a PSGI file,
-      fix GH #284
+    * GH #284: Document hosting multiples Dancer apps in a single PSGI file.
       (Franck Cuny)
-      
+    * Dancer::Session POD typos and spurious characters.
+      (Stefan Hornburg)
+
 1.3030      13.04.2011
     ** Codename: Silence of the ambs // Alberto Simões **
 
