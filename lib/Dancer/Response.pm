@@ -63,10 +63,10 @@ sub has_passed {
 }
 
 sub forward {
-    my ($self, $uri, $params, $meta) = @_;
-    $self->{forward} = { to_url => $uri,
-                         params => $params,
-                         meta => $meta };
+    my ($self, $uri, $params, $opts) = @_;
+    $self->{forward} = { to_url  => $uri,
+                         params  => $params,
+                         options => $opts };
 }
 
 sub is_forwarded {
