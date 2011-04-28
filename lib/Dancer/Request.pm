@@ -118,11 +118,23 @@ sub forward {
     my $new_params  = _merge_params(scalar($request->params),
                                     $to_data->{params} || {});
 
+    my $meta = $to_data->{meta} || {};
+
+    if (exists($to_data->{meta}{method})) {
+        die unless _valid_method($to_data->{meta}{method});
+        $new_request->{method} = uc $to_data->{meta}{method};
+    }
+
     $new_request->{params}  = $new_params;
     $new_request->{body}    = $request->body;
     $new_request->{headers} = $request->headers;
 
     return $new_request;
+}
+
+sub _valid_method {
+    my $method = shift;
+    return $method =~ /head|post|get|put|delete/i;
 }
 
 sub _merge_params {
@@ -557,6 +569,13 @@ object with the arguments given.
 Create a new request which is a clone of the current one, apart
 from the path location, which points instead to the new location.
 This is used internally to chain requests using the forward keyword.
+
+Note that the new location should be a hash reference. Only one key is
+required, the C<to_url>, that should point to the URL that forward
+will use. Optional values are the key C<params> to a hash of
+parameters to be added to the current request parameters, and the key
+C<meta> that points to a hash of meta-information about the redirect
+(for instance, C<method> pointing to a new request method).
 
 =head2 to_string()
 
