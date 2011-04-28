@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 14, import => ['!pass'];
+use Test::More tests => 16, import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::Logger;
@@ -14,7 +14,7 @@ Dancer::Logger->init('File');
 # checking get
 
 get '/'        => sub { 
-    'home' . join(',', params);
+    'home:' . join(',', params);
 };
 get '/bounce/' => sub {
     return forward '/';
@@ -25,21 +25,30 @@ get '/bounce/:withparams/' => sub {
 get '/bounce2/adding_params/' => sub {
     return forward '/', { withparams => 'foo' };
 };
+post '/simple_post_route/' => sub {
+    'post:' . join(',', params);
+};
+get '/go_to_post/' => sub {
+    return forward '/simple_post_route/', { foo => 'bar' }, { method => 'post' };
+};
 
 response_exists     [ GET => '/' ];
-response_content_is [ GET => '/' ], 'home';
+response_content_is [ GET => '/' ], 'home:';
 
 response_exists     [ GET => '/bounce/' ];
-response_content_is [ GET => '/bounce/' ], 'home';
+response_content_is [ GET => '/bounce/' ], 'home:';
 
 response_exists     [ GET => '/bounce/thesethings/' ];
-response_content_is [ GET => '/bounce/thesethings/' ], 'homewithparams,thesethings';
+response_content_is [ GET => '/bounce/thesethings/' ], 'home:withparams,thesethings';
 
 response_exists     [ GET => '/bounce2/adding_params/' ];
-response_content_is [ GET => '/bounce2/adding_params/' ], 'homewithparams,foo';
+response_content_is [ GET => '/bounce2/adding_params/' ], 'home:withparams,foo';
+
+response_exists     [ GET => '/go_to_post/' ];
+response_content_is [ GET => '/go_to_post/' ], 'post:foo,bar';
 
 my $expected_headers = [
-    'Content-Length' => 4,
+    'Content-Length' => 5,
     'Content-Type' => 'text/html',
     'X-Powered-By' => "Perl Dancer ${Dancer::VERSION}",
 ];

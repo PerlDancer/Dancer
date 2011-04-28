@@ -661,6 +661,13 @@ to the actual parameters:
 
      return forward '/home', { authorized => 1 };
 
+Finally, you can add some more meta-information to the forward method,
+in a third argument, also as a hash reference. At the moment that
+option is only used to change the method of your request. Use with
+caution.
+
+    return forward '/home', { auth => 1 }, { method => 'POST' };
+
 =head2 from_dumper ($structure)
 
 Deserializes a Data::Dumper structure.
