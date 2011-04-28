@@ -97,10 +97,11 @@ sub new_for_request {
     $params ||= {};
     $method = uc($method);
 
-    my $req =
-      $class->new({%ENV, PATH_INFO => $path, REQUEST_METHOD => $method});
-    $req->{params} = {%{$req->{params}}, %{$params}};
-    $req->{body} = $body if defined $body;
+    my $req = $class->new( { %ENV,
+                             PATH_INFO      => $path,
+                             REQUEST_METHOD => $method});
+    $req->{params}  = {%{$req->{params}}, %{$params}};
+    $req->{body}    = $body    if defined $body;
     $req->{headers} = $headers if $headers;
 
     return $req;
@@ -118,11 +119,9 @@ sub forward {
     my $new_params  = _merge_params(scalar($request->params),
                                     $to_data->{params} || {});
 
-    my $meta = $to_data->{meta} || {};
-
-    if (exists($to_data->{meta}{method})) {
-        die unless _valid_method($to_data->{meta}{method});
-        $new_request->{method} = uc $to_data->{meta}{method};
+    if (exists($to_data->{options}{method})) {
+        die unless _valid_method($to_data->{options}{method});
+        $new_request->{method} = uc $to_data->{options}{method};
     }
 
     $new_request->{params}  = $new_params;
@@ -134,7 +133,7 @@ sub forward {
 
 sub _valid_method {
     my $method = shift;
-    return $method =~ /head|post|get|put|delete/i;
+    return $method =~ /^(?:head|post|get|put|delete)$/i;
 }
 
 sub _merge_params {
@@ -574,8 +573,8 @@ Note that the new location should be a hash reference. Only one key is
 required, the C<to_url>, that should point to the URL that forward
 will use. Optional values are the key C<params> to a hash of
 parameters to be added to the current request parameters, and the key
-C<meta> that points to a hash of meta-information about the redirect
-(for instance, C<method> pointing to a new request method).
+C<options> that points to a hash of options about the redirect (for
+instance, C<method> pointing to a new request method).
 
 =head2 to_string()
 
