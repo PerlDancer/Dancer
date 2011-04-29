@@ -25,6 +25,8 @@
       (Alberto Simões)
 
     [ ENHANCEMENTS ]
+    * Forward can change method GH#493
+      (Alberto Simões)
     * Introducing the "megasplat"!
       (Yanick Champoux)
     * More tests for versions, setings and variables.
