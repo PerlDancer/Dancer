@@ -194,6 +194,8 @@ sub import {
     # if :syntax option exists, don't change settings
     return if $syntax_only;
 
+    $as_script = 1 if $ENV{PLACK_ENV};
+    
     Dancer::GetOpt->process_args() if !$as_script;
 
     _init_script_dir($script);
