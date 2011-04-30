@@ -1,7 +1,5 @@
-use Test::More import => ['!pass'];
-use strict;
-use warnings;
-use Dancer;
+use Test::More;
+use Dancer ':tests', ':syntax';
 use Dancer::Test;
 
 plan tests => 17;

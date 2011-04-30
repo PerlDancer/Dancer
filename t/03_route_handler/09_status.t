@@ -1,8 +1,5 @@
 use Test::More import => ['!pass'];
 
-use strict;
-use warnings;
-
 use Dancer ':syntax';
 use Dancer::Test;
 
