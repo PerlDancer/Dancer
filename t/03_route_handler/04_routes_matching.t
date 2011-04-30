@@ -1,6 +1,6 @@
 use Dancer ':syntax';
 use Dancer::Test;
-use Test::More tests => 51, import => ['!pass'];
+use Test::More tests => 50, import => ['!pass'];
 
 # regexps
 {
@@ -8,6 +8,7 @@ use Test::More tests => 51, import => ['!pass'];
     get( qr{/hello/([\w]+)} => sub { [splat] } );
     get( qr{/show/([\d]+)}  => sub { [splat] } );
     get( qr{/post/([\w\d\-\.]+)/#comment([\d]+)} => sub { [splat] } );
+
     my @tests = (
         {
             path     => '/hello/sukria',
@@ -40,7 +41,6 @@ use Test::More tests => 51, import => ['!pass'];
 
 # passing
 {
-
         get(
             '/say/:char' => sub {
                 pass and return false if length( params->{char} ) > 1;
@@ -74,7 +74,7 @@ use Test::More tests => 51, import => ['!pass'];
             }
     );
 
-    ok( get( '/foo/' => sub { pass } ), "route /foo/ defined" );
+    get( '/foo/' => sub { pass } );
 
     my @tests = (
         { path => '/say/A',           expected => 'char: A' },
