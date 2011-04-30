@@ -1,94 +1,68 @@
 use Test::More import => ['!pass'];
-use t::lib::TestUtils;
-
-plan tests => 32;
-
 use Dancer ':syntax';
 use Dancer::Test;
 use Dancer::Route;
+
+plan tests => 23;
 
 eval { prefix 'say' };
 like $@, qr/not a valid prefix/, 'prefix must start with a /';
 
 ok( prefix '/say', 'prefix defined' );
 
-ok(
     get(
         '/foo' => sub {
             'it worked'
         }
-    ),
-    'route /say/foo defined'
 );
 
-ok(
     get(
         '/foo/' => sub {
             'it worked'
         }
-    ),
-    'route /say/foo/ defined'
 );
 
-ok(
     get(
         '/:char' => sub {
             pass and return false if length( params->{char} ) > 1;
             "char: " . params->{char};
         }
-    ),
-    'route /say/:char defined'
 );
 
-ok(
     get(
         '/:number' => sub {
             pass and return false if params->{number} !~ /^\d+$/;
             "number: " . params->{number};
         }
-    ),
-    'route /say/:number defined'
 );
 
-ok( any( '/any' => sub {"any"} ), 'route any /any defined' );
+any( '/any' => sub {"any"} );
 
-ok(
     get(
         qr{/_(.*)} => sub {
             "underscore: " . params->{splat}[0];
         }
-    ),
-    'route /say/_(.*) defined'
 );
 
-ok(
     get(
         '/:word' => sub {
             pass and return false if params->{word} =~ /trash/;
             "word: " . params->{word};
         }
-    ),
-    'route /:word defined'
 );
 
-ok(
     get(
         '/' => sub {
             "char: all";
         }
-    ),
-    'route / defined'
 );
 
 ok( prefix(undef), "undef prefix" );
 
-ok(
     get(
         '/*' => sub {
             "trash: " . params->{splat}[0];
         }
-    ),
-    'route /say/* defined'
 );
 
 my @tests = (

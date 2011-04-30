@@ -1,19 +1,16 @@
-use Test::More;
-use strict;
-use warnings;
-
-use Dancer ':tests';
+use Dancer ':tests', ':syntax';
 use Dancer::Test;
-
-plan tests => 23;
+use Test::More;
 
 my @methods = qw(get head put post delete options);
 
-ok( get( '/', sub { 'get' } ), "GET / defined " );
-ok( post( '/', sub { 'post' } ), "POST / defined " );
-ok( put( '/', sub { 'put' } ), "PUT / defined " );
-ok( del( '/', sub { 'delete' } ), "DELETE / defined " );
-ok( options( '/', sub { 'options' } ), "OPTIONS / defined " );
+plan tests => @methods * 3;
+
+get( '/', sub { 'get' } );
+post( '/', sub { 'post' } );
+put( '/', sub { 'put' } );
+del( '/', sub { 'delete' } );
+options( '/', sub { 'options' } );
 
 foreach my $m (@methods) {
     route_exists [ $m => '/' ], "route handler found for method $m";

@@ -1,10 +1,8 @@
-use Test::More import => ['!pass'];
-use strict;
-use warnings;
-use Dancer;
+use Dancer ':syntax', ':tests';
 use Dancer::Test;
+use Test::More;
 
-plan tests => 29;
+plan tests => 23;
 
 # multiple token
 {
@@ -22,19 +20,16 @@ plan tests => 29;
 }
 
 {
-    ok( get( '/'            => sub { 'index' } ),        'first route set' );
-    ok( get( '/hello/:name' => sub { params->{name} } ), 'second route set' );
-    ok( get( '/hello/:foo/bar' => sub { params->{foo} } ), 'third route set' );
-    ok( post( '/new/:stuff' => sub { params->{stuff} } ), 'post 1 route set' );
-    ok( post( '/allo'       => sub { request->body } ),   'post 2 route set' );
+    get( '/'               => sub { 'index' } );
+    get( '/hello/:name'    => sub { params->{name} } );
+    get( '/hello/:foo/bar' => sub { params->{foo} } );
+    post( '/new/:stuff' => sub { params->{stuff} } );
+    post( '/allo'       => sub { request->body } );
 
-    ok(
-        get(
-            '/opt/:name?/?:lastname?' => sub {
-                [ params->{name}, params->{lastname} ];
-            }
-        ),
-        'route with two optinal tokens set'
+    get(
+        '/opt/:name?/?:lastname?' => sub {
+            [ params->{name}, params->{lastname} ];
+        }
     );
 
     my @tests = (
