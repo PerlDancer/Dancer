@@ -1,6 +1,6 @@
-use Test::More import => ['!pass'];
+use Test::More;
 
-use Dancer ':syntax';
+use Dancer ':syntax', ':tests';
 use Dancer::Test;
 use Dancer::Logger;
 use File::Temp qw/tempdir/;

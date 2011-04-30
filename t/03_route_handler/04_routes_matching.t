@@ -1,17 +1,13 @@
-use strict;
-use warnings;
-use Test::More tests => 59, import => ['!pass'];
-
-use Dancer;
+use Dancer ':syntax';
 use Dancer::Test;
+use Test::More tests => 50, import => ['!pass'];
 
 # regexps
 {
 
-    ok( get( qr{/hello/([\w]+)} => sub { [splat] } ), 'first route set' );
-    ok( get( qr{/show/([\d]+)}  => sub { [splat] } ), 'second route set' );
-    ok( get( qr{/post/([\w\d\-\.]+)/#comment([\d]+)} => sub { [splat] } ),
-        'third route set' );
+    get( qr{/hello/([\w]+)} => sub { [splat] } );
+    get( qr{/show/([\d]+)}  => sub { [splat] } );
+    get( qr{/post/([\w\d\-\.]+)/#comment([\d]+)} => sub { [splat] } );
 
     my @tests = (
         {
@@ -45,55 +41,40 @@ use Dancer::Test;
 
 # passing
 {
-    ok(
         get(
             '/say/:char' => sub {
                 pass and return false if length( params->{char} ) > 1;
                 "char: " . params->{char};
             }
-        ),
-        'route /say/:char defined'
-    );
+        );
 
-    ok(
         get(
             '/say/:number' => sub {
                 pass and return false if params->{number} !~ /^\d+$/;
                 "number: " . params->{number};
             }
-        ),
-        'route /say/:number defined'
     );
 
-    ok(
         get(
             qr{/say/_(.*)} => sub {
                 "underscore: " . params->{splat}[0];
             }
-        ),
-        'route /say/_(.*) defined'
     );
 
-    ok(
         get(
             '/say/:word' => sub {
                 pass and return false if params->{word} =~ /trash/;
                 "word: " . params->{word};
             }
-        ),
-        'route /say/:word defined'
     );
 
-    ok(
         get(
             '/say/*' => sub {
                 "trash: " . params->{splat}[0];
             }
-        ),
-        'route /say/* defined'
     );
 
-    ok( get( '/foo/' => sub { pass } ), "route /foo/ defined" );
+    get( '/foo/' => sub { pass } );
 
     my @tests = (
         { path => '/say/A',           expected => 'char: A' },

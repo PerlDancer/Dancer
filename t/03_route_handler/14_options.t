@@ -1,12 +1,9 @@
-use strict;
-use warnings;
-
-use Test::More import => ['!pass'];
+use Test::More;
 use Dancer::Test;
+use Dancer ':syntax', ':tests';
+use Dancer::Route;
 
 plan tests => 26;
-use Dancer ':syntax';
-use Dancer::Route;
 
 {
     ok( get( '/', { agent => 'foo' } => sub {'agent foo'} ),

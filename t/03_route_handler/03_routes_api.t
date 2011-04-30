@@ -1,8 +1,7 @@
-use Test::More 'tests' => 8, import => ['!pass'];
-use strict;
-use warnings;
-
 use Dancer ':syntax';
+use Dancer::Test;
+use Test::More 'tests' => 8, import => ['!pass'];
+
 use Dancer::Route;
 
 my $r = Dancer::Route->new(
