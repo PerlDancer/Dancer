@@ -23,6 +23,8 @@
       (Sawyer X)
     * Rewrite scalar usage of qw() that is incompatible with 5.14.
       (Alberto Simões)
+    * Don't parse ARGV when under PSGI (closes #473)
+      (Franck Cuny)
 
     [ ENHANCEMENTS ]
     * Forward can change method GH#493
