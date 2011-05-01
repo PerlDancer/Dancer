@@ -14,6 +14,7 @@ my @keywords = qw(
     dirname
     error
     false
+    forward
     from_dumper
     from_json
     from_yaml
@@ -33,8 +34,8 @@ my @keywords = qw(
     path
     post
     prefix
+    push_header
     put
-    r
     redirect
     request
     send_file

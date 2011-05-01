@@ -103,15 +103,29 @@ sub normalize_setting {
 
 # public accessor for get/set
 sub setting {
-    my ($setting, $value) = @_;
-
-    if (@_ == 2) {
-        $value = _set_setting($setting, $value);
-        _trigger_hooks($setting, $value);
-        return $value;
+    if (@_ == 1) {
+        return _get_setting(shift @_);
     }
     else {
-        return _get_setting($setting);
+        # can be useful for debug! Use Logger, instead?
+        die "Odd number in 'set' assignment" unless scalar @_ % 2 == 0;
+
+        my $count = 0;
+        while (@_) {
+            my $setting = shift;
+            my $value   = shift;
+            _set_setting  ($setting, $value);
+
+            # At the moment, with any kind of hierarchical setter,
+            # there is no case where the same trigger will be run more
+            # than once. If/when a hierarchical setter is implemented,
+            # we should create a list of the hooks that should be run,
+            # and run them at the end of this while, only (efficiency
+            # purposes).
+            _trigger_hooks($setting, $value);
+            $count++
+        }
+        return $count; # just to return anything, the number of items set.
     }
 }
 
@@ -200,7 +214,7 @@ sub load_default_settings {
     $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
     $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
     $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
-    $SETTINGS->{access_log}   ||= $ENV{DANCER_ACCESS_LOG}   || 1;
+    $SETTINGS->{startup_info} ||= $ENV{DANCER_STARTUP_INFO} || 1;
     $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
     $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
@@ -226,11 +240,13 @@ __END__
 
 =head1 NAME
 
-Dancer::Config - setting registry for Dancer
+Dancer::Config - how to configure Dancer to suit your needs
 
 =head1 DESCRIPTION
 
-Setting registry for Dancer
+Dancer::Config handles reading and changing the configuration of your Dancer
+apps.  The documentation for this module aims to describe how to change
+settings, and which settings are available.
 
 =head1 SETTINGS
 
@@ -239,9 +255,9 @@ You can change a setting with the keyword B<set>, like the following:
     use Dancer;
 
     # changing default settings
-    set port => 8080;
+    set port         => 8080;
     set content_type => 'text/plain';
-    set access_log => 0;
+    set startup_info => 0;
 
 A better way of defining settings exists: using YAML file. For this to be
 possible, you have to install the L<YAML> module. If a file named B<config.yml>
@@ -252,31 +268,36 @@ directory.
 
 =head1 SUPPORTED SETTINGS
 
-=head2 server (string)
+=head2 Run mode and listening interface/port
+
+=head3 server (string)
 
 The IP address that the Dancer app should bind to.  Default is 0.0.0.0, i.e.
 bind to all available interfaces.
 
-=head2 port (int)
+=head3 port (int)
 
 The port Dancer will listen to.
 
 Default value is 3000. This setting can be changed on the command-line with the
 B<--port> switch.
 
-=head2 daemon (boolean)
+=head3 daemon (boolean)
 
 If set to true, runs the standalone webserver in the background.
 This setting can be changed on the command-line with the B<--daemon> flag.
 
-=head2 content_type (string)
+
+=head2 Content type / character set
+
+=head3 content_type (string)
 
 The default content type of outgoing content.
 Default value is 'text/html'.
 
-=head2 charset (string)
+=head3 charset (string)
 
-This setting does 3 things:
+This setting has multiple effects:
 
 =over
 
@@ -295,6 +316,12 @@ this charset.
 It also indicates to Dancer in which charset the static files and templates are
 encoded.
 
+=item *
+
+If you're using L<Dancer::Plugin::Database>, UTF-8 support will automatically be
+enabled for your database - see 
+L<Dancer::Plugin::Database/"AUTOMATIC UTF-8 SUPPORT">
+
 =back
 
 Default value is empty which means don't do anything. HTTP responses
@@ -309,7 +336,18 @@ Also, since automatically serialized JSON responses have
 C<application/json> Content-Type, you should always encode them by
 hand.
 
-=head2 appdir (directory)
+=head3 default_mime_type (string)
+
+Dancer's L<Dancer::MIME> module uses C<application/data> as a default
+mime type. This setting lets the user change it. For example, if you
+have a lot of files being served in the B<public> folder that do not
+have an extension, and are text files, set the C<default_mime_type> to
+C<text/plain>.
+
+
+=head2 File / directory locations
+
+=head3 appdir (directory)
 
 This is the path where your application will live.  It's where Dancer
 will look by default for your config files, templates and static
@@ -318,7 +356,7 @@ content.
 It is typically set by C<use Dancer> to use the same directory as your
 script.
 
-=head2 public (directory)
+=head3 public (directory)
 
 This is the directory, where static files are stored. Any existing
 file in that directory will be served as a static file, before
@@ -326,28 +364,64 @@ matching any route.
 
 By default, it points to $appdir/public.
 
-=head2 views (directory)
+=head3 views (directory)
 
 This is the directory where your templates and layouts live.  It's the
 "view" part of MVC (model, view, controller).
 
 This defaults to $appdir/views.
 
-=head2 layout (string)
+=head2 Templating & layouts
+
+=head3 template
+
+Allows you to configure which template engine should be used.  For instance, to
+use Template Toolkit, add the following to C<config.yml>:
+
+    template: template_toolkit
+
+
+=head3 layout (string)
 
 The name of the layout to use when rendering view. Dancer will look for
 a matching template in the directory $views/layout.
 
-=head2 warnings (boolean)
+
+=head2 Logging, debugging and error handling
+
+=head3 startup_info (boolean)
+
+If set to true, prints a banner at the server start with information such as
+versions and the environment (or "dancerfloor").
+
+Conforms to the environment variable DANCER_STARTUP_INFO.
+
+=head3 warnings (boolean)
 
 If set to true, tells Dancer to consider all warnings as blocking errors.
 
-=head2 traces (boolean)
+=head3 traces (boolean)
 
 If set to true, Dancer will display full stack traces when a warning or a die
 occurs. (Internally sets Carp::Verbose). Default to false.
 
-=head2 log (enum)
+=head3 logger (enum)
+
+Select which logger to use.  For example, to write to log files in C<logdir>:
+
+    logger: file
+
+Or to direct log messages to the console from which you started your Dancer app
+in standalone mode,
+
+    logger: console
+
+Various other logger backends are available on CPAN, including 
+L<Dancer::Logger::Syslog>, L<Dancer::Logger::Log4perl>, L<Dancer::Logger::PSGI>
+(which can, with the aid of Plack middlewares, send log messages to a browser's
+console window) and others.
+
+=head3 log (enum)
 
 Tells which log messages should be actually logged. Possible values are
 B<core>, B<debug>, B<warning> or B<error>.
@@ -364,37 +438,24 @@ B<core>, B<debug>, B<warning> or B<error>.
 
 =back
 
-=head2 show_errors (boolean)
+During development, you'll probably want to use C<debug> to see your own debug
+messages, and C<core> if you need to see what Dancer is doing.  In production,
+you'll likely want C<error> or C<warning> only, for less-chatty logs.
+
+
+=head3 show_errors (boolean)
 
 If set to true, Dancer will render a detailed debug screen whenever an error is
-catched. If set to false, Dancer will render the default error page, using
-$public/$error_code.html if it exists.
+caught. If set to false, Dancer will render the default error page, using
+$public/$error_code.html if it exists or the template specified by the
+C<error_template> setting.
 
-=head2 auto_reload (boolean)
+The error screen attempts to sanitise sensitive looking information (passwords /
+card numbers in the request, etc) but you still should not have show_errors
+enabled whilst in production, as there is still a risk of divulging details.
 
-Requires L<Module::Refresh> and L<Clone>.
 
-If set to true, Dancer will reload the route handlers whenever the file where
-they are defined is changed. This is very useful in development environment but
-B<should not be enabled in production>. Enabling this flag in production yields
-a major negative effect on performance because of L<Module::Refresh>.
-
-When this flag is set, you don't have to restart your webserver whenever you
-make a change in a route handler.
-
-Note that L<Module::Refresh> only operates on files in C<%INC>, so if the script
-your Dancer app is started from changes, even with auto_reload enabled, you will
-still not see the changes reflected until you start your app.
-
-=head2 session (enum)
-
-This setting lets you enable a session engine for your web application. Be
-default, sessions are disabled in Dancer, you must choose a session engine to
-use them.
-
-See L<Dancer::Session> for supported engines and their respective configuration.
-
-=head2 error_template (template path)
+=head3 error_template (template path)
 
 This setting lets you specify a template to be used in case of runtime
 error. At the present moment the template can use three variables:
@@ -415,13 +476,56 @@ The code throwing that error.
 
 =back
 
-=head2 default_mime_type (string)
 
-Dancer's L<Dancer::MIME> module uses C<application/data> as a default
-mime type. This setting lets the user change it. For example, if you
-have a lot of files being served in the B<public> folder that do not
-have an extension, and are text files, set the C<default_mime_type> to
-C<text/plain>.
+=head3 auto_reload (boolean)
+
+Requires L<Module::Refresh> and L<Clone>.
+
+If set to true, Dancer will reload the route handlers whenever the file where
+they are defined is changed. This is very useful in development environment but
+B<should not be enabled in production>. Enabling this flag in production yields
+a major negative effect on performance because of L<Module::Refresh>.
+
+When this flag is set, you don't have to restart your webserver whenever you
+make a change in a route handler.
+
+Note that L<Module::Refresh> only operates on files in C<%INC>, so if the script
+your Dancer app is started from changes, even with auto_reload enabled, you will
+still not see the changes reflected until you start your app.
+
+=head2 Session engine
+
+=head3 session (enum)
+
+This setting lets you enable a session engine for your web application. Be
+default, sessions are disabled in Dancer, you must choose a session engine to
+use them.
+
+See L<Dancer::Session> for supported engines and their respective configuration.
+
+
+=head2 auto_page (boolean)
+
+For simple pages where you're not doing anything dynamic, but still
+want to use the template engine to provide headers etc, you can use
+the auto_page feature to avoid the need to create a route for each
+page.
+
+With C<auto_page> enabled, if the requested path does not match any
+specific route, Dancer will check in the views directory for a
+matching template, and use it to satisfy the request if found.
+
+Simply enable auto_page in your config:
+
+    auto_page: 1
+
+Then, if you request C</foo/bar>, Dancer will look in the views dir for
+C</foo/bar.tt>.
+
+Dancer will honor your C<before_template> code, and all default
+variables. They will be accessible and interpolated on automatic
+served pages.
+
 
 =head1 AUTHOR
 

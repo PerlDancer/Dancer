@@ -122,7 +122,7 @@ sub render_response {
         my $ctype   = $response->header('Content-Type');
 
         if ( $charset && $ctype && _is_text($ctype) ) {
-            $content = Encode::encode( $charset, $content );
+            $content = Encode::encode( $charset, $content ) unless $response->_already_encoded;
             $response->header( 'Content-Type' => "$ctype; charset=$charset" )
               if $ctype !~ /$charset/;
         }
@@ -147,11 +147,12 @@ sub render_response {
         $content = [''];
         $response->header('Content-Length' => 0);
     }
-    
+
     Dancer::Logger::core("response: " . $response->status);
 
     my $status  = $response->status();
     my $headers = $response->headers_to_array();
+
     return [ $status, $headers, $content ];
 }
 
@@ -162,7 +163,7 @@ sub _is_text {
 
 # Fancy banner to print on startup
 sub print_banner {
-    if (setting('access_log')) {
+    if (setting('startup_info')) {
         my $env = setting('environment');
         print "== Entering the $env dance floor ...\n";
     }

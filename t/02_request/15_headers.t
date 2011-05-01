@@ -35,10 +35,10 @@ Test::TCP::test_tcp(
         my $port = shift;
         use Dancer;
         
-        setting apphandler => $handler;
-        setting port => $port;
-        setting show_errors => 1;
-        setting access_log => 0;
+        setting apphandler   => $handler;
+        setting port         => $port;
+        setting show_errors  => 1;
+        setting startup_info => 0;
 
         after sub {
             my $response = shift;

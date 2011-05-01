@@ -98,6 +98,7 @@ t/00_base/13_dancer_singleton.t
 t/00_base/14_changelog.t
 t/00_base/config.t
 t/00_base/dancer_test.t
+t/00_base/dancer_test_functions.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
 t/00_base/uri_for.t
@@ -137,6 +138,8 @@ t/03_route_handler/01_params.t
 t/03_route_handler/02_before_filter.t
 t/03_route_handler/03_passing.t
 t/03_route_handler/04_wildcards.t
+t/03_route_handler/04_wildcards_megasplat.t
+t/03_route_handler/05_unicode.t
 t/03_route_handler/06_regexp.t
 t/03_route_handler/07_compilation_warning.t
 t/03_route_handler/08_errors.t
@@ -167,6 +170,7 @@ t/03_route_handler/31_infinite_loop.t
 t/03_route_handler/32_gh_393.t
 t/03_route_handler/33_vars.t
 t/03_route_handler/public/404.html
+t/03_route_handler/public/utf8file.txt
 t/03_route_handler/views/error.tt
 t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
@@ -215,6 +219,7 @@ t/08_session/09_session.t
 t/08_session/10_filter.t
 t/08_session/11_session_secure.t
 t/08_session/12_session_name.t
+t/08_session/13_session_httponly.t
 t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
@@ -256,6 +261,7 @@ t/12_response/06_filter_halt_status.t
 t/12_response/07_cookies.t
 t/12_response/08_drop_content.t
 t/12_response/09_headers_to_array.t
+t/12_response/10_error_dumper.t
 t/13_engines/00_load.t
 t/13_engines/02_template_init.t
 t/14_serializer/000_create_fake_env.t
@@ -275,6 +281,7 @@ t/14_serializer/13_xml.t
 t/14_serializer/14_api.t
 t/14_serializer/14_show_errors.t
 t/14_serializer/16_bug_gh_299.t
+t/14_serializer/17_clear_serializer.t
 t/14_serializer/handler-helper.t
 t/15_plugins/000_create_fake_env.t
 t/15_plugins/01_register.t

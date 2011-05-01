@@ -209,23 +209,14 @@ Then you can set up the template as such:
     Please try again or contact us at our email at <...>.
 
 
-
 =head2 Using the auto_page feature for automatic route creation
 
-For simple pages where you're not doing anything dynamic, but still want to use
-the template engine to provide headers etc, you can use the auto_page feature to
-avoid the need to create a route for each page.
-
-With C<auto_page> enabled, if the requested path does not match any specific
-route, Dancer will check in the views directory for a matching template, and use
-it to satisfy the request if found.
-
-Simply enable auto_page in your config:
-
-    auto_page: 1
-
-Then, if you request C</foo/bar>, Dancer will look in the views dir for
-C</foo/bar.tt>.
+For simple "static" pages, you can simply enable the C<auto_page> config
+setting; this means that you need not declare a route handler for those pages;
+if a request is for C</foo/bar>, Dancer will check for a matching view (e.g.
+C</foo/bar.tt> and render it with the default layout etc if found.  For full
+details, see the documentation for the 
+L<auto_page setting|Dancer::Config/"auto_page">.
 
 
 
@@ -650,15 +641,15 @@ Typically, you'll want to set the following values in a development config file:
 
     # appdir/environments/development.yml
     log: 'debug'
-    access_log: 1
-    show_errors: 1
+    startup_info: 1
+    show_errors:  1
 
 And in a production one:
 
     # appdir/environments/production.yml
     log: 'warning'
-    access_log: 0
-    show_errors: 0
+    startup_info: 0
+    show_errors:  0
 
 
 

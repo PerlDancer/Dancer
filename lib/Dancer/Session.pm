@@ -75,14 +75,14 @@ be done like the following:
 
 In the application code:
 
-    # enabling the YAML-file-based session engine
+    # enabling the YAML-file-based session engine
     set session => 'YAML';
 
 Or in config.yml or environments/$env.yml
 
     session: "YAML"
 
-By default session are disabled, you must enable them before using it. If the
+By default sessions are disabled, you must enable them before using it. If the
 session engine is disabled, any Dancer::Session call will throw an exception.
 
 See L<Dancer::Session::Abstract/Configuration> for more configuration options.
@@ -90,27 +90,35 @@ See L<Dancer::Session::Abstract/Configuration> for more configuration options.
 =head2 Route Handlers
 
 When enabled, the session engine can be used in a route handler with the keyword
-B<session>. This keyword represents a key-value pairs ensemble that is actually
-stored to the session.
+B<session>. This keyword allows you to store/retrieve values from the session by
+name.
+
+Storing a value into the session:
+
+    session foo => 'bar';
+
+Retrieving that value later:
+
+    my $foo = session 'foo';
 
 You can either look for an existing item in the session storage or modify one.
-Here is a simple example of two route handlers that implement a basic C</login> and
-C</home> actions using the session engine. 
+Here is a simple example of two route handlers that implement basic C</login> 
+and C</home> actions using the session engine. 
 
     post '/login' => sub {
         # look for params and authenticate the user
-        # ...
+        # ...
         if ($user) {
             session user_id => $user->id;
         }
     };
 
     get '/home' => sub {
-        # if a user is present in the session, let him go, otherwise redirect to
-        # /login
+        # if a user is present in the session, let him go, otherwise redirect to
+        # /login
         if (not session('user_id')) {
             redirect '/login';
-        }
+        a
     };
 
 Of course, you probably don't want to have to duplicate the code to check
@@ -125,24 +133,57 @@ Dancer has a modular session engine that makes implementing new session backends
 pretty easy. If you'd like to write your own, feel free to take a
 look at L<Dancer::Session::Abstract>.
 
-The following engines are supported:
+The following engines are supported out-of-the-box (shipped with the core Dancer
+distribution):
 
 =over 4
 
 =item L<Dancer::Session::YAML>
 
-A YAML file-based session backend, pretty convininent for development purposes,
+A YAML file-based session backend, pretty convenient for development purposes,
 but maybe not the best for production needs.
+
+=item L<Dancer::Session::Simple>
+
+A very simple session backend, holding all session data in memory.  This means 
+that sessions are volatile, and no longer exist when the process exits.  This 
+module is likely to be most useful for testing purposes, and of little use for
+production.
+
+=back
+
+Additionally, many more session engines are available from CPAN, including:
+
+=over 4
 
 =item L<Dancer::Session::Memcached>
 
 Session are stored in Memcached servers. This is good for production matters
-and is a good way to use a distributed session storage.
+and is a good way to use a fast, distributed session storage.  If you may be
+scaling up to add additional servers later, this will be a good choice.
 
 =item L<Dancer::Session::Cookie>
 
 This module implements a session engine for sessions stored entirely
 inside encrypted cookies (this engine doesn't use a server-side storage).
+
+=item L<Dancer::Session::Storable>
+
+This backend stores sessions on disc using Storable, which offers solid 
+performance and reliable serialisation of various data structures.
+
+=item L<Dancer::Session::MongoDB>
+
+A backend to store sessions using L<MongoDB>
+
+=item L<Dancer::Session::KiokuDB>
+
+A backend to store sessions using L<KiokuDB>
+
+=item L<Dancer::Session::PSGI>
+
+Let Plack::Middleware::Session handle sessions; may be useful to share sessions
+between a Dancer app and other Plack-based apps.
 
 =back
 

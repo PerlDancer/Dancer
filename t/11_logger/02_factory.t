@@ -25,7 +25,7 @@ ok(Dancer::Logger->init('file'), 'logger file initialized');
 $engine = Dancer::Logger->logger;
 isa_ok $engine, 'Dancer::Logger::File';
 
-foreach my $method qw(debug warning error) {
+foreach my $method (qw(debug warning error)) {
     ok(Dancer::Logger->$method("test"), "$method works");
 }
 

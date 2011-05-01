@@ -109,18 +109,30 @@ sub new_for_request {
 #Create a new request which is a clone of the current one, apart
 #from the path location, which points instead to the new location
 sub forward {
-    my ($class, $request, $to) = @_;
+    my ($class, $request, $to_data) = @_;
 
     my $env = $request->env;
-    $env->{PATH_INFO} = $to;
+    $env->{PATH_INFO} = $to_data->{to_url};
 
     my $new_request = $class->new($env);
+    my $new_params  = _merge_params(scalar($request->params),
+                                    $to_data->{params} || {});
 
-    $new_request->{params}  = $request->params;
+    $new_request->{params}  = $new_params;
     $new_request->{body}    = $request->body;
     $new_request->{headers} = $request->headers;
 
     return $new_request;
+}
+
+sub _merge_params {
+    my ($params, $to_add) = @_;
+
+    die unless ref $to_add eq "HASH";
+    for my $key (keys %$to_add) {
+        $params->{$key} = $to_add->{$key};
+    }
+    return $params;
 }
 
 sub base {
@@ -564,7 +576,8 @@ Return the IP address of the client.
 
 =head2 remote_host()
 
-Return the remote host of the client.
+Return the remote host of the client. This only works with web servers configured
+to do a reverse DNS lookup on the client's IP address.
 
 =head2 protocol()
 

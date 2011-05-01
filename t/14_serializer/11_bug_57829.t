@@ -25,9 +25,9 @@ Test::TCP::test_tcp(
     server => sub {
         my $port  = shift;
         use Dancer;
-        set serializer => 'JSON';
-        set access_log => 0;
-        set port => $port;
+        set serializer   => 'JSON',
+            startup_info => 0,
+            port         => $port;
         get '/' => sub {
             header 'X-Test' => 'ok';
             {body => 'ok'}

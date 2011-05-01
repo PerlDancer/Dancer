@@ -21,7 +21,7 @@ Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
 
-        foreach my $client qw(one two three) {
+        foreach my $client (qw(one two three)) {
             my $ua = LWP::UserAgent->new;
             $ua->cookie_jar({ file => "$tempdir/.cookies.txt" });
 
@@ -48,7 +48,7 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
 
-        setting access_log => 0;
+        setting startup_info => 0;
         setting environment => 'production';
         setting port => $port;
         Dancer->dance();

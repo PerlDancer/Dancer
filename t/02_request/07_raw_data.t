@@ -34,9 +34,9 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
 
-        setting environment => 'production';
-        setting port => $port;
-        setting access_log => 0;
+        setting environment  => 'production';
+        setting port         => $port;
+        setting startup_info => 0;
         Dancer->dance();
     },
 );

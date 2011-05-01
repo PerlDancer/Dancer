@@ -1,10 +1,67 @@
 {{$NEXT}}
 
+1.3040      01.05.2011
+    ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+1.3039_01   27.04.2011
+
+    [ BUG FIXES ]
+    * Fix 404 results from forwarding.
+      (Alberto Simões)
+    * Don't remove trailing slashes from route patterns under prefix.
+      (Brian E. Lozier)
+    * Remove deprecated r() function from list of exports.
+      (Stefan Hornburg)
+    * GH #402: make session_expires honor +2h style formatting.
+      (Michael G. Schwern)
+    * GH #433: encoding issues with forward().
+      (Alberto Simões)
+    * GH #390: Renaming access_log to startup_info (+doc).
+      (Sawyer X)
+    * Rewrite scalar usage of qw() that is incompatible with 5.14.
+      (Alberto Simões)
+
+    [ ENHANCEMENTS ]
+    * Introducing the "megasplat"!
+      (Yanick Champoux)
+    * More tests for versions, setings and variables.
+      (Alberto Simões)
+    * Improve Dancer::Test so failures report the correct line numbers.
+      (Michael G. Schwern)
+    * GH #466: Can now set cookies with http_only => 0 for JS integration.
+      (Alberto Simões)
+    * Session engine can be told to set cookies without HttpOnly attribute using
+      new session_is_http_only setting.
+      (Alberto Simões, requested by JT Smith)
+    * GH #296: Show versions of loaded modules in startup info.
+      (Sawyer X)
+    * Able to set more than one value at once using set().
+      (Alberto Simões)
+    * GH #253: Use Clone::clone() if available to clone data before censoring.
+      (Sawyer X)
+    * GH #246: Dancer::Test can now test for file uploads as well.
+      (Franck Cuny)
+    * Allow parameters in forward().
+      (Alberto Simões)
+
+    [ DOCUMENTATION ]
+    * Major rewrite/reorganization on Dancer::Config documentation.
+      (David Precious, pushed by Alberto Simões PR)
+    * GH #284: Document hosting multiples Dancer apps in a single PSGI file.
+      (Franck Cuny)
+    * Dancer::Session POD typos and spurious characters.
+      (Stefan Hornburg)
+
 1.3030      13.04.2011
     ** Codename: Silence of the ambs // Alberto Simões **
 
     [ ENHANCEMENTS ]
-    * No functional changes, just releasing as stable.
+    * Change the flag for sending system-wide path with send_file to
+      'system_path' (was 'absolute').
+      (Alberto Simões)
 
 1.3029_03   10.04.2011
 
@@ -15,7 +72,6 @@
 
     [ ENHANCEMENTS ]
     * Test before_template & auto_page.
-      (Alberto Simões)
 
 1.3029_02   08.04.2011
 

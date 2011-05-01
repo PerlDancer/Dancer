@@ -54,11 +54,11 @@ sub test_json {
         server => sub {
             my $port = shift;
             Dancer::Config->load;
-            setting access_log  => 0;
-            setting port        => $port;
-            setting show_errors => 1;
-            get '/'             => sub { halt send_error('no', 400) };
-            get '/error'        => sub {
+            setting startup_info => 0;
+            setting port         => $port;
+            setting show_errors  => 1;
+            get '/'              => sub { halt send_error('no', 400) };
+            get '/error'         => sub {
                 halt send_error({reason => 'because', error => 'foo'}), 500;
             };
             get '/error2' => sub { halt send_error('no http code') };

@@ -64,8 +64,8 @@ Test::TCP::test_tcp(
         use Dancer;
         use Dancer::Plugin::Ajax;
 
-        setting access_log => 0;
-        setting port => $port;
+        setting startup_info => 0;
+        setting port         => $port;
 
         ajax '/req' => sub {
             return 1;

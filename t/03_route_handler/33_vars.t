@@ -16,7 +16,9 @@ Test::TCP::test_tcp(
         my $port = shift;
         my $ua  = LWP::UserAgent->new;
         for (1..10) {
-            my $req = HTTP::Request->new( GET => "http://0.0:$port/getvarfoo" );
+            my $req = HTTP::Request->new( 
+                GET => "http://127.0.0.1:$port/getvarfoo"
+            );
             my $res = $ua->request($req);
             is $res->content, 1;
         }
@@ -29,8 +31,8 @@ Test::TCP::test_tcp(
         # vars should be reset before the handler is called
         var foo => 42;
 
-        set access_log => 0;
-        set port => $port;
+        set startup_info => 0;
+        set port         => $port;
 
         get "/getvarfoo" => sub {
             return ++vars->{foo};

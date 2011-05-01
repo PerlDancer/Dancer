@@ -4,16 +4,16 @@ use File::Spec;
 use File::Slurp;
 use Template;
 
-set 'database' => File::Spec->tmpdir() . '/dancr.db';
-set 'session' => 'Simple';
-set 'template' => 'template_toolkit';
-set 'logger' => 'console';
-set 'log' => 'debug';
-set 'show_errors' => 1;
-set 'access_log' => 1;
-set 'warnings' => 1;
-set 'username' => 'admin';
-set 'password' => 'password';
+set 'database'     => File::Spec->tmpdir() . '/dancr.db';
+set 'session'      => 'Simple';
+set 'template'     => 'template_toolkit';
+set 'logger'       => 'console';
+set 'log'          => 'debug';
+set 'show_errors'  => 1;
+set 'startup_info' => 1;
+set 'warnings'     => 1;
+set 'username'     => 'admin';
+set 'password'     => 'password';
 
 layout 'main';
 
@@ -48,7 +48,7 @@ sub init_db {
 
 before_template sub {
 	my $tokens = shift;
-	
+
 	$tokens->{'css_url'} = request->base . 'css/style.css';
 	$tokens->{'login_url'} = uri_for('/login');
 	$tokens->{'logout_url'} = uri_for('/logout');
@@ -59,7 +59,7 @@ get '/' => sub {
 	my $sql = 'select id, title, text from entries order by id desc';
 	my $sth = $db->prepare($sql) or die $db->errstr;
 	$sth->execute or die $sth->errstr;
-	template 'show_entries.tt', { 
+	template 'show_entries.tt', {
 		'msg' => get_flash(),
 		'add_entry_url' => uri_for('/add'),
 		'entries' => $sth->fetchall_hashref('id'),
@@ -99,7 +99,7 @@ any ['get', 'post'] => '/login' => sub {
 	}
 
 	# display login form
-	template 'login.tt', { 
+	template 'login.tt', {
 		'err' => $err,
 	};
 

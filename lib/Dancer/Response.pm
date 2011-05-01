@@ -23,6 +23,7 @@ sub init {
         pass    => 0,
         halted  => 0,
         forward => '',
+        encoded => 0,
     );
     $self->{headers} = HTTP::Headers->new(@{ $args{headers} || [] });
     Dancer::SharedData->response($self);
@@ -62,13 +63,19 @@ sub has_passed {
 }
 
 sub forward {
-    my $self = shift;
-    $self->{forward} = $_[0];
+    my ($self, $uri, $params) = @_;
+    $self->{forward} = { to_url => $uri,
+                         params => $params };
 }
 
 sub is_forwarded {
     my $self = shift;
     $self->{forward};
+}
+
+sub _already_encoded {
+    my $self = shift;
+    $self->{encoded};
 }
 
 sub halt {
