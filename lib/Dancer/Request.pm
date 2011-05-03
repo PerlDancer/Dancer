@@ -627,7 +627,7 @@ Return the scheme of the request
 
 =head2 secure()
 
-Return true of false, indicating wether the connection is secure
+Return true of false, indicating whether the connection is secure
 
 =head2 is_get()
 
