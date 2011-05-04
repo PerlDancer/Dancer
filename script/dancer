@@ -53,6 +53,24 @@ version_check() if $do_check_dancer_version;
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
+my $have_yaml = eval "require YAML" ? 1 : 0;
+unless (eval "require YAML") {
+    print <<NOYAML;
+*****
+WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
+recommended; in particular, the scaffolded Dancer app being created will not be
+able to read settings from the config file without YAML.pm being installed.
+
+To resolve this, simply install YAML from CPAN, for instance using one of the
+following commands:
+
+  cpan YAML
+  perl -MCPAN -e 'install YAML'
+  curl -L http://cpanmin.us | perl - --sudo YAML
+*****
+NOYAML
+}
+
 # subs
 
 sub validate_app_name {
