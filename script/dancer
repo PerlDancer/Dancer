@@ -53,7 +53,6 @@ version_check() if $do_check_dancer_version;
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
-my $have_yaml = eval "require YAML" ? 1 : 0;
 unless (eval "require YAML") {
     print <<NOYAML;
 *****
