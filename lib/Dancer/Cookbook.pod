@@ -421,8 +421,8 @@ keyword, and L<Crypt::SaltedHash> to handle salted hashed passwords (well, you
 wouldn't store your users passwords in the clear, would you?)) follows:
 
     post '/login' => sub {
-        my $user = database()->selectrow_hashref(
-            'select * from users where username = ?', {}, params->{user}
+        my $user = database->quick_select('users', 
+            { username => params->{user} }
         );
         if (!$user) {
             warning "Failed login for unrecognised user " . params->{user};
