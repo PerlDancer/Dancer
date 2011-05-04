@@ -309,7 +309,8 @@ Content-Type: text/plain
             $content =~ s/\n/\r\n/g;
         }
 
-        my $l = length $content;
+        my $l = 0;
+        $l = length $content if defined $content;
         open my $in, '<', \$content;
         $ENV{'CONTENT_LENGTH'} = $l;
         $ENV{'CONTENT_TYPE'}   = $content_type;
