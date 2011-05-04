@@ -1,4 +1,7 @@
 {{$NEXT}}
+    [ ENHANCEMENTS ]
+    * When scaffolding an app, show a warning if YAML not installed.
+      Prompted by Issue 496.  (David Precious)
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
