@@ -13,8 +13,10 @@ my $logfile = Dancer::FileUtils::path($dir, "logs", "development.log");
 
 set environment => 'development';
 set appdir => $dir;
-set logger => 'file';
+
 set log    => 'debug';
+set logger => 'file';
+
 
 get '/' => sub {
     die "Dieing in route handler - arrggghh!";
