@@ -14,14 +14,14 @@ my $logfile = Dancer::FileUtils::path($dir, "logs", "development.log");
 set environment => 'development';
 set appdir => $dir;
 set logger => 'file';
-set log => 'debug';
+set log    => 'debug';
 
 get '/' => sub {
     die "Dieing in route handler - arrggghh!";
 };
 
-response_exists [GET => '/'] => "We get an answer";
-ok -f $logfile               => "Log file got created";
+response_status_is [GET => '/'], 500 => "We get a 500 answer";
+ok -f $logfile => "Log file got created";
 
 my $logcontents = Dancer::FileUtils::read_file_content($logfile);
 
