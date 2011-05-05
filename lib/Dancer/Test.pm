@@ -345,6 +345,9 @@ Content-Type: text/plain
               || Dancer::Renderer->render_error(404);
     };
     if ($@) {
+        Dancer::Logger::core(
+            'request to ' . $request->path_info . " crashed: $@");
+
         Dancer::Error->new(
             code    => 500,
             title   => "Runtime Error",
