@@ -1,4 +1,5 @@
 {{$NEXT}}
+
     [ ENHANCEMENTS ]
     * When scaffolding an app, show a warning if YAML not installed.
       Prompted by Issue 496.  (David Precious)
