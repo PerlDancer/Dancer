@@ -331,9 +331,10 @@ WriteMakefile(
       : ()),
     PL_FILES            => {},
     PREREQ_PM => {
-        'Test::More' => 0,
-        'YAML'       => 0,
-        'Dancer'     => [% dancer_version %],
+        'Test::More'  => 0,
+        'YAML'        => 0,
+#       'Plack'       => 0,
+        'Dancer'      => [% dancer_version %],
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => '$cleanfiles-*' },
