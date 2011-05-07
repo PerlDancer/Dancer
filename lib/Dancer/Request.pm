@@ -6,6 +6,7 @@ use Carp;
 
 use base 'Dancer::Object';
 
+use Dancer::Config 'setting';
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Encode;
@@ -161,6 +162,15 @@ sub _common_uri {
     );
 
     my ($server, $host, $port, $path, $scheme) = @{$self->env}{@env_names};
+
+    if (setting('behind_proxy')) {
+        if ($self->env->{'X-Forwarded-Protocol'}) {
+            $scheme = $self->env->{'X-Forwarded-Protocol'};
+        }
+        if ($self->env->{'X-Forwarded-For'}) {
+            $host = $self->env->{'X-Forwarded-For'}
+        }
+    }
 
     $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'};    # Windows
 
