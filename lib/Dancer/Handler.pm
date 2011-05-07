@@ -68,12 +68,12 @@ sub handle_request {
         Dancer::App->reload_apps;
     }
 
-    _render_request($request);
+    render_request($request);
 
     return $self->render_response();
 }
 
-sub _render_request {
+sub render_request {
     my $request = shift;
     my $action;
     $action = eval {

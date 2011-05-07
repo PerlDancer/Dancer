@@ -340,7 +340,7 @@ Content-Type: text/plain
     Dancer::SharedData->request($request);
 
     # duplicate some code from Dancer::Handler
-    my $get_action = Dancer::Handler::_render_request($request);
+    my $get_action = Dancer::Handler::render_request($request);
     my $response   = Dancer::SharedData->response();
     $response->content('') if $method eq 'HEAD';
     Dancer::SharedData->reset_response();
