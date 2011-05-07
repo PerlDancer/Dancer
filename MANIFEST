@@ -251,6 +251,7 @@ t/11_logger/07_diag.t
 t/11_logger/08_serialize.t
 t/11_logger/09_capture.t
 t/11_logger/10_note.t
+t/11_logger/11_runtime_file.t
 t/12_response/000_create_fake_env.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t

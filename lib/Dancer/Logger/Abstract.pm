@@ -10,7 +10,7 @@ use Dancer::Timer;
 use Dancer::Config 'setting';
 use POSIX qw/strftime/;
 
-# This is the only method to implement if logger engines.
+# This is the only method to implement by logger engines.
 # It receives the following arguments:
 # $msg_level, $msg_content, it gets called only if the configuration allows
 # a message of the given level to be logged.
