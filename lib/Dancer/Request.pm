@@ -168,7 +168,7 @@ sub _common_uri {
             $scheme = $self->env->{'X-Forwarded-Protocol'};
         }
         if ($self->env->{'X-Forwarded-For'}) {
-            $host = $self->env->{'X-Forwarded-For'}
+            $host = $self->env->{'X-Forwarded-For'};
         }
     }
 
