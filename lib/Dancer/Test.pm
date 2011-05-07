@@ -15,6 +15,7 @@ use Dancer::Deprecation;
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
+use Dancer::Handler;
 use Dancer::Config;
 use Dancer::FileUtils qw(open_file);
 
@@ -339,22 +340,8 @@ Content-Type: text/plain
     Dancer::SharedData->request($request);
 
     # duplicate some code from Dancer::Handler
-    my $get_action = eval {
-        Dancer::Renderer->render_file
-            || Dancer::Renderer->render_action
-              || Dancer::Renderer->render_error(404);
-    };
-    if ($@) {
-        Dancer::Logger::error(
-            'request to ' . $request->path_info . " crashed: $@");
-
-        Dancer::Error->new(
-            code    => 500,
-            title   => "Runtime Error",
-            message => $@
-        )->render();
-    }
-    my $response = Dancer::SharedData->response();
+    my $get_action = Dancer::Handler::_render_request($request);
+    my $response   = Dancer::SharedData->response();
     $response->content('') if $method eq 'HEAD';
     Dancer::SharedData->reset_response();
     return $response if $get_action;

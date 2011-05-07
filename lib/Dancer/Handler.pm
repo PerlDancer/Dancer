@@ -68,7 +68,15 @@ sub handle_request {
         Dancer::App->reload_apps;
     }
 
-    eval {
+    _render_request($request);
+
+    return $self->render_response();
+}
+
+sub _render_request {
+    my $request = shift;
+    my $action;
+    $action = eval {
         Dancer::Renderer->render_file
           || Dancer::Renderer->render_action
           || Dancer::Renderer->render_error(404);
@@ -83,7 +91,7 @@ sub handle_request {
             message => $@
         )->render();
     }
-    return $self->render_response();
+    return $action;
 }
 
 sub psgi_app {
