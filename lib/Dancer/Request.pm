@@ -166,7 +166,7 @@ sub _common_uri {
 
     if (setting('behind_proxy')) {
         if ($self->forwarded_protocol) {
-            $host = $self->forwarded_protocol;
+            $scheme = $self->forwarded_protocol;
         }
         if ($self->forwarded_for_address) {
             $host = $self->forwarded_for_address;

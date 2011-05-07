@@ -235,7 +235,6 @@ sub response_headers_include {
     my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-
     return $tb->ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 
