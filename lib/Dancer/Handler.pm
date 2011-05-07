@@ -69,7 +69,6 @@ sub handle_request {
     }
 
     render_request($request);
-
     return $self->render_response();
 }
 
