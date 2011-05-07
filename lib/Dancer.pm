@@ -124,7 +124,10 @@ sub headers         { Dancer::SharedData->response->headers(@_); }
 sub layout          { set(layout => shift) }
 sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
-sub logger          { set(logger => @_) }
+sub logger          {
+    Dancer::Deprecation->deprecated(reason => "use 'set logger'",fatal => 0,version=>'1.3050');
+    set(logger => @_)
+}
 sub mime            { Dancer::MIME->instance() }
 sub mime_type       {
     Dancer::Deprecation->deprecated(reason => "use 'mime' from Dancer.pm",fatal => 1)
@@ -745,10 +748,7 @@ sugar around the C<layout> setting:
 
 =head2 logger
 
-Allows you to set the logger engine to use.  Syntactic sugar around the
-C<logger> setting:
-
-    logger 'console';
+Deprecated. Use C<set logger => 'console'> to change current logger engine.
 
 =head2 load
 
