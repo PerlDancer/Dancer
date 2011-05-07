@@ -36,6 +36,7 @@ __PACKAGE__->attributes(
 sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->address }
 sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
+sub forwarded_protocol    { $_[0]->env->{'X_FORWARDED_PROTOCOL'} }
 sub address               { $_[0]->env->{REMOTE_ADDR} }
 sub remote_host           { $_[0]->env->{REMOTE_HOST} }
 sub protocol              { $_[0]->env->{SERVER_PROTOCOL} }
@@ -164,11 +165,11 @@ sub _common_uri {
     my ($server, $host, $port, $path, $scheme) = @{$self->env}{@env_names};
 
     if (setting('behind_proxy')) {
-        if ($self->env->{'X-Forwarded-Protocol'}) {
-            $scheme = $self->env->{'X-Forwarded-Protocol'};
+        if ($self->forwarded_protocol) {
+            $host = $self->forwarded_protocol;
         }
-        if ($self->env->{'X-Forwarded-For'}) {
-            $host = $self->env->{'X-Forwarded-For'};
+        if ($self->forwarded_for_address) {
+            $host = $self->forwarded_for_address;
         }
     }
 
