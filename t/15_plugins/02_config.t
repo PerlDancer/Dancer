@@ -23,6 +23,7 @@ set(environment => 'test' );
 
 my $conffile = Dancer::Config->conffile;
 write_file( $conffile => << 'CONF' );
+logger: Null
 plugins:
   Test:
     foo: bar
