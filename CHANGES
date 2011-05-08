@@ -4,6 +4,9 @@
     * When scaffolding an app, show a warning if YAML not installed.
       Prompted by Issue 496.  (David Precious)
 
+    [ DEPRECATIONS ]
+    * Deprecate 'layout' (use set). (Alberto Simões)
+
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
 
