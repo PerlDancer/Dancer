@@ -5,7 +5,7 @@ use Carp;
 
 use base 'Exporter';
 use Dancer::Config 'setting';
-
+use Dancer::Hook;
 use base 'Exporter';
 use vars qw(@EXPORT);
 
@@ -20,7 +20,7 @@ sub register($&);
 
 my $_keywords = {};
 
-sub add_hook { Dancer::Route::Registry->hook(@_) }
+sub add_hook { Dancer::Hook->new(@_) }
 
 sub plugin_setting {
     my $plugin_orig_name = caller();
