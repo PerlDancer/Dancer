@@ -121,7 +121,11 @@ sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
-sub layout          { set(layout => shift) }
+sub layout          {
+    Dancer::Deprecation->deprecated(reason => "use 'set layout => \"value\"'",
+                                    version => '1.3050',
+                                    fatal => 0);
+    set(layout => shift) }
 sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          { set(logger => @_) }
@@ -738,10 +742,9 @@ Do the same as C<header>, but allow for multiple headers with the same name.
 
 =head2 layout
 
-Allows you to set the default layout to use when rendering a view.  Syntactic
-sugar around the C<layout> setting:
+This method is deprecated. Use C<set>:
 
-    layout 'user';
+    set layout => 'user';
 
 =head2 logger
 

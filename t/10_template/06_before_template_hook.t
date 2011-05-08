@@ -25,7 +25,7 @@ response_content_like( [ GET => '/' ], qr/foo => bar/ );
 
 ok(
     get '/layout_empty_params_passed' => sub {
-        layout 'main';
+        set layout => 'main';
         template 'index', {};
     }
 );
@@ -35,7 +35,7 @@ response_content_like( [ GET => '/layout_empty_params_passed' ], qr/layout:bar\n
 
 ok(
     get '/layout_but_no_params_passed' => sub {
-        layout 'main';
+        set layout => 'main';
         template 'index';
     }
 );
