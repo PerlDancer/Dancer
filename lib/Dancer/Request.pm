@@ -37,6 +37,7 @@ sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->address }
 sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
 sub forwarded_protocol    { $_[0]->env->{'X_FORWARDED_PROTOCOL'} }
+sub forwarded_host        { $_[0]->env->{'X_FORWARDED_HOST'} }
 sub address               { $_[0]->env->{REMOTE_ADDR} }
 sub remote_host           { $_[0]->env->{REMOTE_HOST} }
 sub protocol              { $_[0]->env->{SERVER_PROTOCOL} }
@@ -168,8 +169,8 @@ sub _common_uri {
         if ($self->forwarded_protocol) {
             $scheme = $self->forwarded_protocol;
         }
-        if ($self->forwarded_for_address) {
-            $host = $self->forwarded_for_address;
+        if ($self->forwarded_host) {
+            $host = $self->forwarded_host;
         }
     }
 
@@ -821,6 +822,10 @@ Dancer::Request object through specific accessors, here are those supported:
 =item C<connection>
 
 =item C<forwarded_for_address>
+
+=item C<forwarded_protocol>
+
+=item C<forwarded_host>
 
 =item C<host>
 
