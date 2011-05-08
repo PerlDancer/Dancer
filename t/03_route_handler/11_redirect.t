@@ -40,7 +40,7 @@ $expected_headers = [
 response_headers_include [GET => '/redirect_querystring'] => $expected_headers;
 
 set behind_proxy => 1;
-$ENV{X_FORWARDED_FOR} = "nice.host.name";
+$ENV{X_FORWARDED_HOST} = "nice.host.name";
 response_headers_include [GET => '/bounce'] => [Location => 'http://nice.host.name/'];
 
 $ENV{X_FORWARDED_PROTOCOL} = "https";
