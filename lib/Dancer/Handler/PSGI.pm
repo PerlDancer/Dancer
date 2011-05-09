@@ -69,20 +69,13 @@ sub apply_plack_middlewares {
 
     my $builder = Plack::Builder->new();
 
-    # XXX remove this after 1.2
-    if ( ref $middlewares eq 'HASH' ) {
-        Dancer::Deprecation->deprecated(
-            fatal   => 1,
-            feature => 'Listing Plack middlewares as a hash ref',
-            reason  => 'Must be listed as an array ref',
-        );
-    }
-    else {
-        map {
-            Dancer::Logger::core "add middleware " . $_->[0];
-            $builder->add_middleware(@$_)
-        } @$middlewares;
-    }
+    ref $middlewares eq "ARRAY"
+      or croak "'plack_middlewares' setting must be an ArrayRef";
+
+    map {
+        Dancer::Logger::core "add middleware " . $_->[0];
+        $builder->add_middleware(@$_)
+    } @$middlewares;
 
     $app = $builder->to_app($app);
 
