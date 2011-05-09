@@ -527,7 +527,7 @@ Here is an example of a layout: C<views/layouts/main.tt> :
 You can tell your app which layout to use with C<layout: name> in the config
 file, or within your code:
 
-    layout 'main';
+    set layout => 'main';
 
 You can control which layout to use (or whether to use a layout at all) for a
 specific request without altering the layout setting by passing an options

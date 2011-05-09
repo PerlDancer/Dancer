@@ -14,8 +14,7 @@ set 'startup_info' => 1;
 set 'warnings'     => 1;
 set 'username'     => 'admin';
 set 'password'     => 'password';
-
-layout 'main';
+set 'layout'       => 'main';
 
 my $flash;
 

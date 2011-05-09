@@ -10,6 +10,9 @@
     [ DEPRECATIONS ]
     * Deprecation of 'logger' (use set). (Alberto Simões)
 
+    [ DEPRECATIONS ]
+    * Deprecate 'layout' (use set). (Alberto Simões)
+
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
 

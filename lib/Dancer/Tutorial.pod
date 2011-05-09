@@ -366,7 +366,7 @@ I mentioned near the beginning of this tutorial that it is possible to create a
 C<layout> template. In Dancr, that layout is called C<main> and it's set up by
 putting in a directive like this:
 
-  layout 'main';
+  set layout => 'main';
 
 near the top of your web application.  What this tells Dancer's template engine
 is that it should look for a file called F<main.tt> in C<dancr/views/layouts/>
@@ -448,8 +448,7 @@ Here's the complete dancr.pl script from start to finish.
  set 'warnings'     => 1;
  set 'username'     => 'admin';
  set 'password'     => 'password';
- 
- layout 'main';
+ set 'layout'       => 'main';
  
  my $flash;
  
