@@ -1,5 +1,11 @@
 {{$NEXT}}
 
+    [ API CHANGES ]
+    * Deprecation of 'logger' (use set). (Alberto Simões)
+    * Deprecate 'layout' (use set). (Alberto Simões)
+    * Definitely remove plack_middlewares HashRef deprecation.
+      (Alberto Simões & Damien Krotkine)
+
     [ ENHANCEMENTS ]
     * GH #519: remove redundant lines from CSS
       (Alberto Simões)
@@ -8,12 +14,6 @@
     * Hooks! add new positions for hooks, and possibility to create your
       own hooks inside your application and your plugin.
       (Franck Cuny)
-
-    [ DEPRECATIONS ]
-    * Deprecation of 'logger' (use set). (Alberto Simões)
-    * Deprecate 'layout' (use set). (Alberto Simões)
-    * Definitely remove plack_middlewares HashRef deprecation.
-      (Alberto Simões & Damien Krotkine)
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
