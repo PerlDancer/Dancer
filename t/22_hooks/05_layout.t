@@ -24,7 +24,7 @@ ok(
     }
 );
 
-set views => path( 't', '21_hooks', 'views' );
+set views => path( 't', '22_hooks', 'views' );
 set layout => 'main';
 
 get '/' => sub {
