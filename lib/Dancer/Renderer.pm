@@ -150,13 +150,8 @@ sub get_file_response {
     my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
 
-    Dancer::Factory::Hook->execute_hooks('before_file_render', $static_file);
-    my $response =
-      Dancer::Renderer->get_file_response_for_path( $static_file, undef,
+    return Dancer::Renderer->get_file_response_for_path( $static_file, undef,
         $request->content_type );
-
-    Dancer::Factory::Hook->execute_hooks('after_file_render', $response);
-    return $response;
 }
 
 sub get_file_response_for_path {
@@ -164,6 +159,9 @@ sub get_file_response_for_path {
     $status ||= 200;
 
     if ( -f $static_file ) {
+        Dancer::Factory::Hook->execute_hooks( 'before_file_render',
+            $static_file );
+
         my $fh = open_file( '<', $static_file );
         binmode $fh;
         my $response = Dancer::SharedData->response() || Dancer::Response->new();
@@ -171,6 +169,9 @@ sub get_file_response_for_path {
         $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
                                              _get_mime_type($static_file)));
         $response->content($fh);
+
+        Dancer::Factory::Hook->execute_hooks( 'after_file_render', $response );
+
         return $response;
     }
     return;
