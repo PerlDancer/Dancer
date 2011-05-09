@@ -339,9 +339,13 @@ Content-Type: text/plain
     # then store the request
     Dancer::SharedData->request($request);
 
-    # duplicate some code from Dancer::Handler
+    # XXX this is a hack!!
+    $request = Dancer::Serializer->process_request($request)
+      if Dancer::App->current->setting('serializer');
+
     my $get_action = Dancer::Handler::render_request($request);
-    my $response   = Dancer::SharedData->response();
+    my $response = Dancer::SharedData->response();
+
     $response->content('') if $method eq 'HEAD';
     Dancer::SharedData->reset_response();
     return $response if $get_action;

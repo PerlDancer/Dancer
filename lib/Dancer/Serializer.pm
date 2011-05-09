@@ -6,8 +6,11 @@ use strict;
 use warnings;
 use Dancer::ModuleLoader;
 use Dancer::Engine;
+use Dancer::Factory::Hook;
 use Dancer::Error;
 use Dancer::SharedData;
+
+Dancer::Factory::Hook->instance->install_hooks(qw/before_deserializer after_deserializer/);
 
 my $_engine;
 
@@ -68,6 +71,8 @@ sub process_response {
 sub process_request {
     my ($class, $request) = @_;
 
+    Dancer::Factory::Hook->execute_hooks('before_deserializer');
+
     return $request unless engine;
     return $request
       unless engine->support_content_type($request->content_type);
@@ -89,6 +94,8 @@ sub process_request {
     (keys %$old_params)
       ? $request->_set_body_params({%$old_params, %$new_params})
       : $request->_set_body_params($new_params);
+
+    Dancer::Factory::Hook->execute_hooks('after_deserializer');
 
     return $request;
 }
