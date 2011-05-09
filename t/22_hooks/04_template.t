@@ -25,7 +25,7 @@ ok(
     }
 );
 
-setting views => path( 't', '21_hooks', 'views' );
+setting views => path( 't', '22_hooks', 'views' );
 
 get '/' => sub {
     template 'index', { foo => 'baz' };
