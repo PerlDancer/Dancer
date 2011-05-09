@@ -342,8 +342,8 @@ Content-Type: text/plain
     # XXX this is a hack!!
     $request = Dancer::Serializer->process_request($request)
       if Dancer::App->current->setting('serializer');
-    
-    my $get_action = Dancer::Renderer::get_action_response();
+
+    my $get_action = Dancer::Handler::render_request($request);
     my $response = Dancer::SharedData->response();
 
     $response->content('') if $method eq 'HEAD';
