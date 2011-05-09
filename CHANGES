@@ -12,6 +12,8 @@
     [ DEPRECATIONS ]
     * Deprecation of 'logger' (use set). (Alberto Simões)
     * Deprecate 'layout' (use set). (Alberto Simões)
+    * Definitely remove plack_middlewares HashRef deprecation.
+      (Alberto Simões & Damien Krotkine)
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
