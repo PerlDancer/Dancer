@@ -1,6 +1,8 @@
 {{$NEXT}}
 
     [ ENHANCEMENTS ]
+    * GH #519: remove redundant lines from CSS
+      (Alberto Simões)
     * When scaffolding an app, show a warning if YAML not installed.
       Prompted by Issue 496.  (David Precious)
     * Hooks! add new positions for hooks, and possibility to create your
