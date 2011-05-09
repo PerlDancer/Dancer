@@ -69,7 +69,9 @@ sub apply_plack_middlewares {
 
     my $builder = Plack::Builder->new();
 
-    die unless ref $middlewares eq "ARRAY";
+    ref $middlewares eq "ARRAY"
+      or croak "'plack_middlewares' setting must be an ArrayRef";
+
     map {
         Dancer::Logger::core "add middleware " . $_->[0];
         $builder->add_middleware(@$_)
