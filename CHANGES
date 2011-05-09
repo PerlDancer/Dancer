@@ -3,6 +3,9 @@
     [ ENHANCEMENTS ]
     * When scaffolding an app, show a warning if YAML not installed.
       Prompted by Issue 496.  (David Precious)
+    * Hooks! add new positions for hooks, and possibility to create your
+      own hooks inside your application and your plugin.
+      (Franck Cuny)
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
