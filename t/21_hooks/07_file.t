@@ -7,7 +7,7 @@ use Dancer::Test;
 use Dancer::FileUtils 'read_glob_content';
 use File::Temp 'tempdir';
 
-plan tests => 6;
+plan tests => 5;
 
 my $dir = tempdir( CLEANUP => 1 );
 
@@ -27,16 +27,15 @@ ok(
 ok(
     hook 'after_file_render' => sub {
         my $response = shift;
-        is $response->header('Content-Type'), 'text/plain';
-        $response->header( 'Content-Type' => 'text/tests' );
+        is       $response->header('Content-Type'), 'text/plain';
+       $response->header( 'Content-Type' => 'text/tests' );
     }
 );
 
 get '/' => sub {
-    { send_file('test.txt') }
+     send_file('test.txt') 
 };
 
-route_exists [ GET => '/' ];
 my $response = dancer_response( GET => '/' );
 is read_glob_content( $response->content ), 'this is content';
 is $response->header('Content-Type'), 'text/tests';
