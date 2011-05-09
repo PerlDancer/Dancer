@@ -578,12 +578,11 @@ true;
 'style.css' =>
 '
 body {
-font-family: \'Linux Libertine\', Palatino, \'Palatino Linotype\', \'Book Antiqua\', Georgia, \'Times New Roman\', serif;
 margin: 0;
 margin-bottom: 25px;
 padding: 0;
 background-color: #ddd;
-background-image: url("/images/perldancer-bg.jpg"); 
+background-image: url("/images/perldancer-bg.jpg");
 background-repeat: no-repeat;
 background-position: top left;
 
@@ -603,7 +602,6 @@ background-color: #03c;
 color: white;
 text-decoration: none;
 }
-
 
 #page {
 background-color: #ddd;
@@ -634,7 +632,7 @@ padding-right: 30px;
 
 
 #header {
-background-image: url("/images/perldancer.jpg"); 
+background-image: url("/images/perldancer.jpg");
 background-repeat: no-repeat;
 background-position: top left;
 height: 64px;
@@ -645,7 +643,6 @@ color: #888;
 font-weight: normal;
 font-size: 16px;
 }
-
 
 #about h3 {
 margin: 0;
@@ -680,7 +677,6 @@ border: 1px solid #f00;
 margin: 0;
 padding: 10px;
 }
-
 
 #getting-started {
 border-top: 1px solid #ccc;
@@ -718,7 +714,6 @@ color: #555;
 font-size: 13px;
 }
 
-
 #search {
 margin: 0;
 padding-top: 10px;
@@ -730,7 +725,6 @@ font-size: 11px;
 margin: 2px;
 }
 #search-text {width: 170px}
-
 
 #sidebar ul {
 margin-left: 0;
@@ -748,7 +742,6 @@ list-style-type: none;
 #sidebar ul.links li {
 margin-bottom: 5px;
 }
-
 
 h1, h2, h3, h4, h5 {
 font-family: sans-serif;
