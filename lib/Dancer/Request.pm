@@ -36,7 +36,8 @@ __PACKAGE__->attributes(
 sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->address }
 sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
-sub forwarded_protocol    { $_[0]->env->{'X_FORWARDED_PROTOCOL'} }
+sub forwarded_protocol    { $_[0]->env->{'X_FORWARDED_PROTOCOL'} ||
+                            $_[0]->env->{'HTTP_FORWARDED_PROTO'} }
 sub forwarded_host        { $_[0]->env->{'X_FORWARDED_HOST'} }
 sub address               { $_[0]->env->{REMOTE_ADDR} }
 sub remote_host           { $_[0]->env->{REMOTE_HOST} }
