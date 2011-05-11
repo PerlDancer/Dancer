@@ -15,9 +15,9 @@ use URI;
 use URI::Escape;
 
 my @http_env_keys = (
-    'user_agent',      'host',       'accept_language', 'accept_charset',
+    'user_agent',      'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive', 'connection',      'accept',
-    'accept_type',     'referer',
+    'accept_type',     'referer',  #'host', managed manually
 );
 my $count = 0;
 
@@ -36,17 +36,29 @@ __PACKAGE__->attributes(
 sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->address }
 sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
-sub forwarded_protocol    { $_[0]->env->{'X_FORWARDED_PROTOCOL'} ||
-                            $_[0]->env->{'HTTP_FORWARDED_PROTO'} }
-sub forwarded_host        { $_[0]->env->{'X_FORWARDED_HOST'} }
 sub address               { $_[0]->env->{REMOTE_ADDR} }
+sub host {
+    if (@_==2) {
+        $_[0]->{host} = $_[1];
+    } else {
+        my $host;
+        $host = $_[0]->env->{X_FORWARDED_HOST} if setting('behind_proxy');
+        $host || $_[0]->{host} || $_[0]->env->{HTTP_HOST};
+    }
+}
 sub remote_host           { $_[0]->env->{REMOTE_HOST} }
 sub protocol              { $_[0]->env->{SERVER_PROTOCOL} }
 sub port                  { $_[0]->env->{SERVER_PORT} }
 sub request_uri           { $_[0]->env->{REQUEST_URI} }
 sub user                  { $_[0]->env->{REMOTE_USER} }
 sub script_name           { $_[0]->env->{SCRIPT_NAME} }
-sub scheme                { $_[0]->env->{'psgi.url_scheme'} }
+sub scheme                {
+    my $scheme;
+    if (setting('behind_proxy')) {
+        $scheme = $_[0]->env->{'X_FORWARDED_PROTOCOL'} || $_[0]->env->{'HTTP_FORWARDED_PROTO'}
+    }
+    return $scheme || $_[0]->env->{'psgi.url_scheme'} || $_[0]->env->{'PSGI.URL_SCHEME'};
+}
 sub secure                { $_[0]->scheme eq 'https' }
 sub uri                   { $_[0]->request_uri }
 
@@ -160,22 +172,11 @@ sub base {
 sub _common_uri {
     my $self = shift;
 
-    my @env_names = qw(
-      SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
-    );
-
-    my ($server, $host, $port, $path, $scheme) = @{$self->env}{@env_names};
-
-    if (setting('behind_proxy')) {
-        if ($self->forwarded_protocol) {
-            $scheme = $self->forwarded_protocol;
-        }
-        if ($self->forwarded_host) {
-            $host = $self->forwarded_host;
-        }
-    }
-
-    $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'};    # Windows
+    my $path   = $self->env->{SCRIPT_NAME};
+    my $port   = $self->env->{SERVER_PORT};
+    my $server = $self->env->{SERVER_NAME};
+    my $host   = $self->host;
+    my $scheme = $self->scheme;
 
     my $uri = URI->new;
     $uri->scheme($scheme);
@@ -789,7 +790,7 @@ table provided by C<uploads()>. It looks at the calling context and returns a
 corresponding value.
 
 If you have many file uploads under the same name, and call C<upload('name')> in
-an array context, the accesor will unroll the ARRA ref for you:
+an array context, the accesor will unroll the ARRAY ref for you:
 
     my @uploads = request->upload('many_uploads'); # OK
 
