@@ -921,7 +921,7 @@ C<:syntax> option, in order not to change the application directory
 
 =head2 mime_type
 
-Deprecated. Check C<mime> bellow.
+Deprecated. Check C<mime> below.
 
 =head2 mime
 
