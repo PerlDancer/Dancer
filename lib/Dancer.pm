@@ -909,7 +909,7 @@ sugar around Perl's C<require>:
 
 =head2 load_app
 
-Loads a Dancer package. This method takes care to set the libdir to the curent
+Loads a Dancer package. This method takes care to set the libdir to the current
 C<./lib> directory:
 
     # if we have lib/Webapp.pm, we can load it like:
