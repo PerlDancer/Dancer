@@ -560,7 +560,7 @@ objects. It uses the environment hash table given to build the request object.
 
 =head2 new_for_request($method, $path, $params, $body, $headers)
 
-An alternate constructor convinient for test scripts which creates a request
+An alternate constructor convienient for test scripts which creates a request
 object with the arguments given.
 
 =head2 forward($request, $new_location)
@@ -578,7 +578,7 @@ instance, C<method> pointing to a new request method).
 
 =head2 to_string()
 
-Return a string represeting the request object (eg: C<"GET /some/path">)
+Return a string representing the request object (eg: C<"GET /some/path">)
 
 =head2 method()
 
