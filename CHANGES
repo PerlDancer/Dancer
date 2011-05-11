@@ -20,6 +20,8 @@
     * Check HTTP status code/alias passed to status() is valid; previously, and
       invalid code would result in the response status being unset
       (David Precious, prompted on IRC by jonas)
+    * Lowercase status aliases and swap spaces for underscores before trying to
+    * match (David Precious, suggested on IRC by jonas)
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
