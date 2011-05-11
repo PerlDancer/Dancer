@@ -254,7 +254,7 @@ sub _init_prefix {
     if ($self->is_regexp) {
         my $regexp = $self->regexp || $self->pattern;
         if ($regexp !~ /^$prefix/) {
-            $self->{pattern} = qr{${prefix}${regexp}};
+            $self->{pattern} = qr{^${prefix}${regexp}};
         }
     }
     elsif ($self->pattern eq '/') {
