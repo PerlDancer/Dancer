@@ -148,8 +148,8 @@ your clone (C<master> is used only for building releases).
     $ git checkout -b devel upstream/devel
 
 This will create a local branch in your clone named C<devel> and that
-will track the offical C<devel> branch. That way, if you have more or
-less commits than the upstream repo, you'll be immediatly notified by git.
+will track the official C<devel> branch. That way, if you have more or
+less commits than the upstream repo, you'll be immediately notified by git.
 
 =item *
 
@@ -264,7 +264,7 @@ Official developers have write access to this repository, contributors are
 invited to fork it if they want to submit patches, as explained in the
 I<Patch submission> section.
 
-The repository layout is organized as follows:
+The repository layout is organised as follows:
 
 =over 4
 
