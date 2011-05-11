@@ -14,6 +14,12 @@
     * Hooks! add new positions for hooks, and possibility to create your
       own hooks inside your application and your plugin.
       (Franck Cuny)
+    * Don't try to read/set session vars with empty/undef keys.
+      It doesn't make sense to do so, and can cause warnings elsewhere.
+      (David Precious)
+    * Check HTTP status code/alias passed to status() is valid; previously, and
+      invalid code would result in the response status being unset
+      (David Precious, prompted on IRC by jonas)
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
