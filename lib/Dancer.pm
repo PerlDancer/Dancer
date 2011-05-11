@@ -685,7 +685,9 @@ Deserializes a Data::Dumper structure.
 
 =head2 from_json ($structure, %options)
 
-Deserializes a JSON structure. Can receive optional arguments. Thoses arguments are valid L<JSON> arguments to change the behavior of the default C<JSON::from_json> function.
+Deserializes a JSON structure. Can receive optional arguments. Those arguments 
+are valid L<JSON> arguments to change the behaviour of the default 
+C<JSON::from_json> function.
 
 =head2 from_yaml ($structure)
 
@@ -693,7 +695,9 @@ Deserializes a YAML structure.
 
 =head2 from_xml ($structure, %options)
 
-Deserializes a XML structure. Can receive optional arguments. Thoses arguments are valid L<XML::Simple> arguments to change the behavior of the default C<XML::Simple::XMLin> function.
+Deserializes a XML structure. Can receive optional arguments. Thoses arguments 
+are valid L<XML::Simple> arguments to change the behaviour of the default 
+C<XML::Simple::XMLin> function.
 
 =head2 get
 
@@ -1292,7 +1296,7 @@ Serializes a structure with Data::Dumper.
 =head2 to_json ($structure, %options)
 
 Serializes a structure to JSON. Can receive optional arguments. Thoses arguments
-are valid L<JSON> arguments to change the behavior of the default
+are valid L<JSON> arguments to change the behaviour of the default
 C<JSON::to_json> function.
 
 =head2 to_yaml ($structure)
@@ -1302,7 +1306,7 @@ Serializes a structure to YAML.
 =head2 to_xml ($structure, %options)
 
 Serializes a structure to XML. Can receive optional arguments. Thoses arguments
-are valid L<XML::Simple> arguments to change the behavior of the default
+are valid L<XML::Simple> arguments to change the behaviour of the default
 C<XML::Simple::XMLout> function.
 
 =head2 true
