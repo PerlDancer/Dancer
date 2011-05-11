@@ -427,7 +427,7 @@ L<Exporter> means.  For example:
     use Test::More;
     use Dancer qw(!pass);
 
-There are also some special tags to control exports and behavior.
+There are also some special tags to control exports and behaviour.
 
 =head2 :moose
 
