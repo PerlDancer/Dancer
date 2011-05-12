@@ -21,7 +21,9 @@
       invalid code would result in the response status being unset
       (David Precious, prompted on IRC by jonas)
     * Lowercase status aliases and swap spaces for underscores before trying to
-    * match (David Precious, suggested on IRC by jonas)
+      match (David Precious, suggested on IRC by jonas)
+    * Added 'behind_proxy' setting, making Dancer honor X_FORWARDED_PROTOCOL and
+      X_FORWARDED_HOST (Alberto Simões, requested by sukria and others)
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
