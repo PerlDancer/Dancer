@@ -61,7 +61,6 @@ our @EXPORT    = qw(
   load_app
   logger
   mime
-  mime_type
   options
   params
   pass
@@ -136,9 +135,6 @@ sub logger          {
     set(logger => @_)
 }
 sub mime            { Dancer::MIME->instance() }
-sub mime_type       {
-    Dancer::Deprecation->deprecated(reason => "use 'mime' from Dancer.pm",fatal => 1)
-}
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub pass            { Dancer::SharedData->response->pass(1) }

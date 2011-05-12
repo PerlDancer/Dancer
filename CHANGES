@@ -5,6 +5,8 @@
     * Deprecate 'layout' (use set). (Alberto Simões)
     * Definitely remove plack_middlewares HashRef deprecation.
       (Alberto Simões & Damien Krotkine)
+    * Second level of deprecation for mime_type method.
+      (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * GH #519: remove redundant lines from CSS

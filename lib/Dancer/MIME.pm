@@ -66,24 +66,21 @@ sub for_name {
 }
 
 sub add_mime_type {
-    my ($self, $name, $type) = @_;
     Dancer::Deprecation->deprecated(feature => 'add_mime_type',
+                                    fatal => 1,
                                     reason => 'use the new "add" method');
-    $self->add_type($name => $type);
 }
 
 sub add_mime_alias {
-    my ($self, $alias, $orig) = @_;
     Dancer::Deprecation->deprecated(feature => 'add_mime_alias',
+                                    fatal => 1,
                                     reason => 'use the new "add_alias" method');
-    $self->add_alias($alias => $orig);
 }
 
 sub mime_type_for {
-    my ($self, $content_type) = @_;
     Dancer::Deprecation->deprecated(feature => 'mime_type_for',
+                                    fatal => 1,
                                     reason => 'use the new "name_or_type" method');
-    return $self->name_or_type($content_type);
 }
 
 42;
