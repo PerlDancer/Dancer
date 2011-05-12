@@ -290,7 +290,7 @@ This setting can be changed on the command-line with the B<--daemon> flag.
 =head3 behind_proxy (boolean)
 
 If set to true, Dancer will look to C<X-Forwarded-Protocol> and
-C<X-Forwarded-For> when constructing URLs (for example, when using
+C<X-Forwarded-host> when constructing URLs (for example, when using
 C<redirect>. This is useful if your application is behind a proxy.
 
 =head2 Content type / character set
