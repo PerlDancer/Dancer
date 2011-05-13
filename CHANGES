@@ -25,6 +25,13 @@
     * Added 'behind_proxy' setting, making Dancer honor X_FORWARDED_PROTOCOL and
       X_FORWARDED_HOST (Alberto Simões, requested by sukria and others)
 
+    [ BUG FIXES ]
+    * Unbreaking auto_page somewhat - the catch-all route added will pass unless
+      a suitable view exists.  This means that routes like /foo are not
+      obscured, and made up URLs will result in a proper 404, not 500.
+      A little more work required here, though. (David Precious)
+
+
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
 
