@@ -57,7 +57,11 @@ my $setters = {
                 'get', '/:page',
                 sub {
                     my $params = Dancer::SharedData->request->params;
-                    Dancer::template($params->{'page'});
+                    if  (-f Dancer::engine('template')->view($params->{page})) {
+                        return Dancer::template($params->{'page'});
+                    } else {
+                        return Dancer::pass();
+                    }
                 }
             );
         }
