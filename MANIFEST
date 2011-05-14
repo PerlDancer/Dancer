@@ -138,7 +138,6 @@ t/03_route_handler/000_create_fake_env.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/00_route_object.t
 t/03_route_handler/01_params.t
-t/03_route_handler/02_before_filter.t
 t/03_route_handler/03_passing.t
 t/03_route_handler/04_wildcards.t
 t/03_route_handler/04_wildcards_megasplat.t
@@ -163,7 +162,6 @@ t/03_route_handler/22_filter_halt.t
 t/03_route_handler/23_filter_error_catching.t
 t/03_route_handler/24_multiple_params.t
 t/03_route_handler/24_named_captures.t
-t/03_route_handler/26_after_hook.t
 t/03_route_handler/27_issue_77_pass_breaks_routes.t
 t/03_route_handler/28_plack_mount.t
 t/03_route_handler/29_forward.t
@@ -235,7 +233,6 @@ t/10_template/01_factory.t
 t/10_template/02_abstract_class.t
 t/10_template/03_simple.t
 t/10_template/05_template_toolkit.t
-t/10_template/06_before_template_hook.t
 t/10_template/extension.t
 t/10_template/index.txt
 t/10_template/template.t
