@@ -1,10 +1,20 @@
-{{$NEXT}}
+1.3049_01  14.05.2011
 
     [ API CHANGES ]
     * Deprecation of 'logger' (use set). (Alberto Simões)
     * Deprecate 'layout' (use set). (Alberto Simões)
     * Definitely remove plack_middlewares HashRef deprecation.
       (Alberto Simões & Damien Krotkine)
+
+    [ BUG FIXES ]
+    * Unbreaking auto_page somewhat - the catch-all route added will
+      pass unless a suitable view exists.  This means that routes like
+      /foo are not obscured, and made up URLs will result in a proper
+      404, not 500.  A little more work required here, though. 
+      (David Precious)
+    * Anchor regular expression routes. Before regular expressions
+      were matching anywhere in the URL.
+      (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * GH #519: remove redundant lines from CSS
@@ -27,17 +37,6 @@
     * Added 'behind_proxy' setting, making Dancer honor
       X_FORWARDED_PROTOCOL and X_FORWARDED_HOST
       (Alberto Simões, requested by sukria and others)
-
-    [ BUG FIXES ]
-    * Unbreaking auto_page somewhat - the catch-all route added will
-      pass unless a suitable view exists.  This means that routes like
-      /foo are not obscured, and made up URLs will result in a proper
-      404, not 500.  A little more work required here, though. 
-      (David Precious)
-    * Anchor regular expression routes. Before regular expressions
-      were matching anywhere in the URL.
-      (Alberto Simões)
-
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
