@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9, import => ['!pass'];
+use Test::More tests => 10, import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::Test;
@@ -24,10 +24,12 @@ foreach my $test (@tests) {
     my $handle;
     my $path = $test->{path};
     my $expected = $test->{expected};
- 
+
     my $request = [GET => $path];
-       
+
     response_exists($request, "route handler found for path `$path'");
-    response_content_is_deeply($request, $expected, 
+    response_content_is_deeply($request, $expected,
         "match data for path `$path' looks good");
 }
+
+response_status_is [GET => '/no/hello/bar'] => 404;
