@@ -11,25 +11,32 @@
       (Alberto Simões)
     * When scaffolding an app, show a warning if YAML not installed.
       Prompted by Issue 496.  (David Precious)
-    * Hooks! add new positions for hooks, and possibility to create your
-      own hooks inside your application and your plugin.
+    * Hooks! add new positions for hooks, and possibility to create
+      your own hooks inside your application and your plugin.
       (Franck Cuny)
-    * Don't try to read/set session vars with empty/undef keys.
-      It doesn't make sense to do so, and can cause warnings elsewhere.
+    * Don't try to read/set session vars with empty/undef keys.  It
+      doesn't make sense to do so, and can cause warnings elsewhere.
       (David Precious)
-    * Check HTTP status code/alias passed to status() is valid; previously, and
-      invalid code would result in the response status being unset
+    * Check HTTP status code/alias passed to status() is valid;
+      previously, and invalid code would result in the response status
+      being unset
       (David Precious, prompted on IRC by jonas)
-    * Lowercase status aliases and swap spaces for underscores before trying to
-      match (David Precious, suggested on IRC by jonas)
-    * Added 'behind_proxy' setting, making Dancer honor X_FORWARDED_PROTOCOL and
-      X_FORWARDED_HOST (Alberto Simões, requested by sukria and others)
+    * Lowercase status aliases and swap spaces for underscores before
+      trying to match
+      (David Precious, suggested on IRC by jonas)
+    * Added 'behind_proxy' setting, making Dancer honor
+      X_FORWARDED_PROTOCOL and X_FORWARDED_HOST
+      (Alberto Simões, requested by sukria and others)
 
     [ BUG FIXES ]
-    * Unbreaking auto_page somewhat - the catch-all route added will pass unless
-      a suitable view exists.  This means that routes like /foo are not
-      obscured, and made up URLs will result in a proper 404, not 500.
-      A little more work required here, though. (David Precious)
+    * Unbreaking auto_page somewhat - the catch-all route added will
+      pass unless a suitable view exists.  This means that routes like
+      /foo are not obscured, and made up URLs will result in a proper
+      404, not 500.  A little more work required here, though. 
+      (David Precious)
+    * Anchor regular expression routes. Before regular expressions
+      were matching anywhere in the URL.
+      (Alberto Simões)
 
 
 1.3040      01.05.2011
