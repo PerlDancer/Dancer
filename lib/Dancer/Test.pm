@@ -15,6 +15,7 @@ use Dancer::Deprecation;
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
+use Dancer::Handler;
 use Dancer::Config;
 use Dancer::FileUtils qw(open_file);
 
@@ -235,7 +236,6 @@ sub response_headers_include {
     my $tb = Test::Builder->new;
 
     my $response = dancer_response(expand_req($req));
-
     return $tb->ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 
@@ -309,7 +309,8 @@ Content-Type: text/plain
             $content =~ s/\n/\r\n/g;
         }
 
-        my $l = length $content;
+        my $l = 0;
+        $l = length $content if defined $content;
         open my $in, '<', \$content;
         $ENV{'CONTENT_LENGTH'} = $l;
         $ENV{'CONTENT_TYPE'}   = $content_type;
@@ -337,20 +338,13 @@ Content-Type: text/plain
     # then store the request
     Dancer::SharedData->request($request);
 
-    # duplicate some code from Dancer::Handler
-    my $get_action = eval {
-        Dancer::Renderer->render_file
-            || Dancer::Renderer->render_action
-              || Dancer::Renderer->render_error(404);
-    };
-    if ($@) {
-        Dancer::Error->new(
-            code    => 500,
-            title   => "Runtime Error",
-            message => $@
-        )->render();
-    }
+    # XXX this is a hack!!
+    $request = Dancer::Serializer->process_request($request)
+      if Dancer::App->current->setting('serializer');
+
+    my $get_action = Dancer::Handler::render_request($request);
     my $response = Dancer::SharedData->response();
+
     $response->content('') if $method eq 'HEAD';
     Dancer::SharedData->reset_response();
     return $response if $get_action;

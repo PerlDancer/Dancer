@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3040';
+our $VERSION   = '1.3049_01';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -14,6 +14,7 @@ use Dancer::Cookies;
 use Dancer::FileUtils;
 use Dancer::GetOpt;
 use Dancer::Error;
+use Dancer::Hook;
 use Dancer::Logger;
 use Dancer::Renderer;
 use Dancer::Route;
@@ -54,6 +55,7 @@ our @EXPORT    = qw(
   halt
   header
   headers
+  hook
   layout
   load
   load_app
@@ -96,10 +98,10 @@ our @EXPORT    = qw(
 
 # Dancer's syntax
 
-sub after           { Dancer::Route::Registry->hook('after', @_) }
+sub after           { Dancer::Hook->new('after', @_) }
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Route::Registry->hook('before', @_) }
-sub before_template { Dancer::Route::Registry->hook('before_template', @_) }
+sub before          { Dancer::Hook->new('before', @_) }
+sub before_template { Dancer::Hook->new('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
@@ -121,10 +123,18 @@ sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
-sub layout          { set(layout => shift) }
+sub hook            { Dancer::Hook->new(@_) }
+sub layout          {
+    Dancer::Deprecation->deprecated(reason => "use 'set layout => \"value\"'",
+                                    version => '1.3050',
+                                    fatal => 0);
+    set(layout => shift) }
 sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
-sub logger          { set(logger => @_) }
+sub logger          {
+    Dancer::Deprecation->deprecated(reason => "use 'set logger'",fatal => 0,version=>'1.3050');
+    set(logger => @_)
+}
 sub mime            { Dancer::MIME->instance() }
 sub mime_type       {
     Dancer::Deprecation->deprecated(reason => "use 'mime' from Dancer.pm",fatal => 1)
@@ -194,6 +204,8 @@ sub import {
     # if :syntax option exists, don't change settings
     return if $syntax_only;
 
+    $as_script = 1 if $ENV{PLACK_ENV};
+    
     Dancer::GetOpt->process_args() if !$as_script;
 
     _init_script_dir($script);
@@ -415,7 +427,7 @@ L<Exporter> means.  For example:
     use Test::More;
     use Dancer qw(!pass);
 
-There are also some special tags to control exports and behavior.
+There are also some special tags to control exports and behaviour.
 
 =head2 :moose
 
@@ -661,13 +673,21 @@ to the actual parameters:
 
      return forward '/home', { authorized => 1 };
 
+Finally, you can add some more options to the forward method, in a
+third argument, also as a hash reference. At the moment that option is
+only used to change the method of your request. Use with caution.
+
+    return forward '/home', { auth => 1 }, { method => 'POST' };
+
 =head2 from_dumper ($structure)
 
 Deserializes a Data::Dumper structure.
 
 =head2 from_json ($structure, %options)
 
-Deserializes a JSON structure. Can receive optional arguments. Thoses arguments are valid L<JSON> arguments to change the behavior of the default C<JSON::from_json> function.
+Deserializes a JSON structure. Can receive optional arguments. Those arguments 
+are valid L<JSON> arguments to change the behaviour of the default 
+C<JSON::from_json> function.
 
 =head2 from_yaml ($structure)
 
@@ -675,7 +695,9 @@ Deserializes a YAML structure.
 
 =head2 from_xml ($structure, %options)
 
-Deserializes a XML structure. Can receive optional arguments. Thoses arguments are valid L<XML::Simple> arguments to change the behavior of the default C<XML::Simple::XMLin> function.
+Deserializes a XML structure. Can receive optional arguments. Thoses arguments 
+are valid L<XML::Simple> arguments to change the behaviour of the default 
+C<XML::Simple::XMLin> function.
 
 =head2 get
 
@@ -728,19 +750,159 @@ Do the same as C<header>, but allow for multiple headers with the same name.
         will result in two headers "x-my-header" in the response
     }
 
+=head2 hook
+
+Adds a hook at some position.
+
+  hook before_serialization => sub {
+    my $response = shift;
+    $response->content->{generated_at} = localtime();
+  };
+
+Supported B<before> hooks (in order of execution):
+
+=over 4
+
+=item before_deserializer
+
+This hook receives no arguments.
+
+  hook before_deserializer {
+    ...
+  };
+
+=item before_file_render
+
+This hook receives as argument the path of the file to render.
+
+  hook before_file_render {
+    ...
+  };
+
+=item before
+
+This is an alias to C<before>.
+
+This hook receives no arguments.
+
+  before sub {
+    ...
+  };
+
+It's equivalent to
+
+  hook before sub {
+    ...
+  };
+
+=item before_template_render
+
+This hook receives as argument a HASHREF, containing the tokens.
+
+This is an alias to 'before_template'
+
+  hook before_template_render sub {
+    my $tokens = shift;
+    delete $tokens->{user};
+  };
+
+=item before_layout_render
+
+This hook receives two arguments. The first one is a HASHREF containing the tokens. The second is a SCALARREF representing the content of the template.
+
+  hook before_layout_render sub {
+    my ($tokens, $html_ref) = @_;
+    ...
+  };
+
+=item before_serialization
+
+This hook receives as argument a L<Dancer::Response> object.
+
+  hook before_serializer sub {
+    my $response = shift;
+    $response->content->{start_time} = time();
+  };
+
+=back
+
+Supported B<after> hooks (in order of execution):
+
+=over 4
+
+=item after_deserializer
+
+This hook receives no arguments.
+
+  hook after_deserializer sub {
+    ...
+  };
+
+=item after_file_render
+
+This hook receives as argument a L<Dancer::Response> object.
+
+  hook after_file_render sub {
+    my $response = shift;
+  };
+
+=item after_template_render
+
+This hook receives as argument a SCALARREF representing the content generated by the template.
+
+  hook after_template_render sub {
+    my $html_ref = shift;
+  };
+
+=item after_layout_render
+
+This hook receives as argument a SCALARREF representing the content generated by the layout
+
+  hook after_layout_render sub {
+    my $html_ref = shift;
+  };
+
+=item after
+
+This hook receives as argument a L<Dancer::Response> object.
+
+  hook after sub {
+    my $response = shift;
+  };
+
+This is equivalent to
+
+  after sub {
+    my $response = shift;
+  };
+
+=item before_error_render
+
+This hook receives as argument a L<Dancer::Error> object.
+
+  hook before_error_render => sub {
+    my $error = shift;
+  };
+
+=item after_error_render
+
+This hook receives as argument a L<Dancer::Response> object.
+
+  hook after_error_render => sub {
+    my $response = shift;
+  };
+
+=back
+
 =head2 layout
 
-Allows you to set the default layout to use when rendering a view.  Syntactic
-sugar around the C<layout> setting:
+This method is deprecated. Use C<set>:
 
-    layout 'user';
+    set layout => 'user';
 
 =head2 logger
 
-Allows you to set the logger engine to use.  Syntactic sugar around the
-C<logger> setting:
-
-    logger 'console';
+Deprecated. Use C<set logger => 'console'> to change current logger engine.
 
 =head2 load
 
@@ -751,7 +913,7 @@ sugar around Perl's C<require>:
 
 =head2 load_app
 
-Loads a Dancer package. This method takes care to set the libdir to the curent
+Loads a Dancer package. This method takes care to set the libdir to the current
 C<./lib> directory:
 
     # if we have lib/Webapp.pm, we can load it like:
@@ -763,7 +925,7 @@ C<:syntax> option, in order not to change the application directory
 
 =head2 mime_type
 
-Deprecated. Check C<mime> bellow.
+Deprecated. Check C<mime> below.
 
 =head2 mime
 
@@ -1134,7 +1296,7 @@ Serializes a structure with Data::Dumper.
 =head2 to_json ($structure, %options)
 
 Serializes a structure to JSON. Can receive optional arguments. Thoses arguments
-are valid L<JSON> arguments to change the behavior of the default
+are valid L<JSON> arguments to change the behaviour of the default
 C<JSON::to_json> function.
 
 =head2 to_yaml ($structure)
@@ -1144,7 +1306,7 @@ Serializes a structure to YAML.
 =head2 to_xml ($structure, %options)
 
 Serializes a structure to XML. Can receive optional arguments. Thoses arguments
-are valid L<XML::Simple> arguments to change the behavior of the default
+are valid L<XML::Simple> arguments to change the behaviour of the default
 C<XML::Simple::XMLout> function.
 
 =head2 true

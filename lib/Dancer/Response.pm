@@ -39,9 +39,15 @@ sub status {
     my $self = shift;
 
     if (scalar @_ > 0) {
-        return $self->{status} = Dancer::HTTP->status(shift);
-    }
-    else {
+        my $status = shift;
+        my $numeric_status = Dancer::HTTP->status($status);
+        if ($numeric_status) {
+            return $self->{status} = $numeric_status;
+        } else {
+            carp "Unrecognised HTTP status $status";
+            return;
+        }
+    } else {
         return $self->{status};
     }
 }
@@ -63,9 +69,10 @@ sub has_passed {
 }
 
 sub forward {
-    my ($self, $uri, $params) = @_;
-    $self->{forward} = { to_url => $uri,
-                         params => $params };
+    my ($self, $uri, $params, $opts) = @_;
+    $self->{forward} = { to_url  => $uri,
+                         params  => $params,
+                         options => $opts };
 }
 
 sub is_forwarded {

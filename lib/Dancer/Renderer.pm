@@ -7,6 +7,7 @@ use HTTP::Headers;
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Cookie;
+use Dancer::Factory::Hook;
 use Dancer::Cookies;
 use Dancer::Request;
 use Dancer::Response;
@@ -16,6 +17,10 @@ use Dancer::FileUtils qw(path dirname read_file_content open_file);
 use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
+
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/before after before_serializer after_serializer before_file_render after_file_render/
+);
 
 sub render_file { get_file_response() }
 
@@ -83,10 +88,10 @@ sub get_action_response {
     my $handler =
       Dancer::App->find_route_through_apps(Dancer::SharedData->request);
 
+    my $app = ($handler && $handler->app) ? $handler->app : Dancer::App->current();
+
     # run the before filters, before "running" the route handler
-    my $app = Dancer::App->current;
-    $app = $handler->{app} if ($handler);
-    $_->() for @{$app->registry->hooks->{before}};
+    Dancer::Factory::Hook->instance->execute_hooks('before');
 
     # recurse if something has changed
     my $MAX_RECURSIVE_LOOP = 10;
@@ -116,13 +121,11 @@ sub get_action_response {
         # a response may exist, produced by a before filter
         return serialize_response_if_needed() if defined $response && $response->exists;
         # else, get the route handler's response
-        Dancer::App->current($handler->app);
-        my $response = $handler->run($request);
-        return undef unless $response; # 404
-
+        Dancer::App->current($handler->{app});
+        $handler->run($request);
         serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
-        $_->($resp) for (@{$app->registry->hooks->{after}});
+        Dancer::Factory::Hook->instance->execute_hooks('after', $resp);
         return $resp;
     }
     else {
@@ -132,8 +135,12 @@ sub get_action_response {
 
 sub serialize_response_if_needed {
     my $response = Dancer::SharedData->response();
-    $response = Dancer::Serializer->process_response($response)
-      if Dancer::App->current->setting('serializer') && $response->content();
+
+    if (Dancer::App->current->setting('serializer') && $response->content()){
+        Dancer::Factory::Hook->execute_hooks('before_serializer', $response);
+        Dancer::Serializer->process_response($response);
+        Dancer::Factory::Hook->execute_hooks('after_serializer', $response);
+    }
     return $response;
 }
 
@@ -142,8 +149,9 @@ sub get_file_response {
     my $path_info   = $request->path_info;
     my $app         = Dancer::App->current;
     my $static_file = path($app->setting('public'), $path_info);
-    return Dancer::Renderer->get_file_response_for_path($static_file, undef,
-                                                        $request->content_type);
+
+    return Dancer::Renderer->get_file_response_for_path( $static_file, undef,
+        $request->content_type );
 }
 
 sub get_file_response_for_path {
@@ -151,6 +159,9 @@ sub get_file_response_for_path {
     $status ||= 200;
 
     if ( -f $static_file ) {
+        Dancer::Factory::Hook->execute_hooks( 'before_file_render',
+            $static_file );
+
         my $fh = open_file( '<', $static_file );
         binmode $fh;
         my $response = Dancer::SharedData->response() || Dancer::Response->new();
@@ -158,6 +169,9 @@ sub get_file_response_for_path {
         $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
                                              _get_mime_type($static_file)));
         $response->content($fh);
+
+        Dancer::Factory::Hook->execute_hooks( 'after_file_render', $response );
+
         return $response;
     }
     return;

@@ -9,10 +9,10 @@ use File::Spec qw/catfile/;
 my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 
-eval { logger 'foobar' };
+eval { set logger => 'foobar' };
 like($@, qr/unknown logger/, 'invalid logger detected');
 
-ok(logger('file'), 'file-based logger correctly set');
+ok(set(logger => 'file'), 'file-based logger correctly set');
 
 my $message = 'this is a test log message';
 
@@ -35,7 +35,7 @@ ok(grep(/warn \@.*$message/, @content), 'warning message found');
 ok(grep(/error \@.*$message/, @content), 'error message found');
 
 set environment => 'test';
-logger 'file';
+set logger => 'file';
 
 my $test_logfile = Dancer::FileUtils::d_catfile($logdir, "test.log");
 ok((-r $test_logfile), "environment logfile exists");

@@ -57,7 +57,11 @@ my $setters = {
                 'get', '/:page',
                 sub {
                     my $params = Dancer::SharedData->request->params;
-                    Dancer::template($params->{'page'});
+                    if  (-f Dancer::engine('template')->view($params->{page})) {
+                        return Dancer::template($params->{'page'});
+                    } else {
+                        return Dancer::pass();
+                    }
                 }
             );
         }
@@ -287,6 +291,11 @@ B<--port> switch.
 If set to true, runs the standalone webserver in the background.
 This setting can be changed on the command-line with the B<--daemon> flag.
 
+=head3 behind_proxy (boolean)
+
+If set to true, Dancer will look to C<X-Forwarded-Protocol> and
+C<X-Forwarded-host> when constructing URLs (for example, when using
+C<redirect>. This is useful if your application is behind a proxy.
 
 =head2 Content type / character set
 

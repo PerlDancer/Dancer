@@ -37,12 +37,14 @@ sub get { get_current_session() }
 
 sub read {
     my ($class, $key) = @_;
+    return unless $key;
     my $session = get_current_session();
     return $session->{$key};
 }
 
 sub write {
     my ($class, $key, $value) = @_;
+    return unless $key;
     my $session = get_current_session();
     $session->{$key} = $value;
 

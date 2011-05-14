@@ -53,6 +53,23 @@ version_check() if $do_check_dancer_version;
 safe_mkdir($DANCER_APP_DIR);
 create_node( app_tree($name), $DANCER_APP_DIR );
 
+unless (eval "require YAML") {
+    print <<NOYAML;
+*****
+WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
+recommended; in particular, the scaffolded Dancer app being created will not be
+able to read settings from the config file without YAML.pm being installed.
+
+To resolve this, simply install YAML from CPAN, for instance using one of the
+following commands:
+
+  cpan YAML
+  perl -MCPAN -e 'install YAML'
+  curl -L http://cpanmin.us | perl - --sudo YAML
+*****
+NOYAML
+}
+
 # subs
 
 sub validate_app_name {
@@ -60,7 +77,7 @@ sub validate_app_name {
     if ($name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
         print STDERR "Error: Invalid application name.\n";
         print STDERR "Application names must not contain colons,"
-            ." dots or start with a number.\n";
+            ." dots, hyphens or start with a number.\n";
         exit;
     }
 }
@@ -561,12 +578,11 @@ true;
 'style.css' =>
 '
 body {
-font-family: \'Linux Libertine\', Palatino, \'Palatino Linotype\', \'Book Antiqua\', Georgia, \'Times New Roman\', serif;
 margin: 0;
 margin-bottom: 25px;
 padding: 0;
 background-color: #ddd;
-background-image: url("/images/perldancer-bg.jpg"); 
+background-image: url("/images/perldancer-bg.jpg");
 background-repeat: no-repeat;
 background-position: top left;
 
@@ -586,7 +602,6 @@ background-color: #03c;
 color: white;
 text-decoration: none;
 }
-
 
 #page {
 background-color: #ddd;
@@ -617,7 +632,7 @@ padding-right: 30px;
 
 
 #header {
-background-image: url("/images/perldancer.jpg"); 
+background-image: url("/images/perldancer.jpg");
 background-repeat: no-repeat;
 background-position: top left;
 height: 64px;
@@ -628,7 +643,6 @@ color: #888;
 font-weight: normal;
 font-size: 16px;
 }
-
 
 #about h3 {
 margin: 0;
@@ -663,7 +677,6 @@ border: 1px solid #f00;
 margin: 0;
 padding: 10px;
 }
-
 
 #getting-started {
 border-top: 1px solid #ccc;
@@ -701,7 +714,6 @@ color: #555;
 font-size: 13px;
 }
 
-
 #search {
 margin: 0;
 padding-top: 10px;
@@ -713,7 +725,6 @@ font-size: 11px;
 margin: 2px;
 }
 #search-text {width: 170px}
-
 
 #sidebar ul {
 margin-left: 0;
@@ -731,7 +742,6 @@ list-style-type: none;
 #sidebar ul.links li {
 margin-bottom: 5px;
 }
-
 
 h1, h2, h3, h4, h5 {
 font-family: sans-serif;

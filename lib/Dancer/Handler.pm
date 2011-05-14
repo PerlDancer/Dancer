@@ -68,13 +68,20 @@ sub handle_request {
         Dancer::App->reload_apps;
     }
 
-    eval {
+    render_request($request);
+    return $self->render_response();
+}
+
+sub render_request {
+    my $request = shift;
+    my $action;
+    $action = eval {
         Dancer::Renderer->render_file
           || Dancer::Renderer->render_action
           || Dancer::Renderer->render_error(404);
     };
     if ($@) {
-        Dancer::Logger::core(
+        Dancer::Logger::error(
             'request to ' . $request->path_info . " crashed: $@");
 
         Dancer::Error->new(
@@ -83,7 +90,7 @@ sub handle_request {
             message => $@
         )->render();
     }
-    return $self->render_response();
+    return $action;
 }
 
 sub psgi_app {

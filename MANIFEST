@@ -22,12 +22,15 @@ lib/Dancer/Development.pod
 lib/Dancer/Development/Integration.pod
 lib/Dancer/Engine.pm
 lib/Dancer/Error.pm
+lib/Dancer/Factory/Hook.pm
 lib/Dancer/FileUtils.pm
 lib/Dancer/GetOpt.pm
 lib/Dancer/Handler.pm
 lib/Dancer/Handler/Debug.pm
 lib/Dancer/Handler/PSGI.pm
 lib/Dancer/Handler/Standalone.pm
+lib/Dancer/Hook.pm
+lib/Dancer/Hook/Properties.pm
 lib/Dancer/HTTP.pm
 lib/Dancer/Introduction.pod
 lib/Dancer/Logger.pm
@@ -135,7 +138,6 @@ t/03_route_handler/000_create_fake_env.t
 t/03_route_handler/00_http_methods.t
 t/03_route_handler/00_route_object.t
 t/03_route_handler/01_params.t
-t/03_route_handler/02_before_filter.t
 t/03_route_handler/03_passing.t
 t/03_route_handler/04_wildcards.t
 t/03_route_handler/04_wildcards_megasplat.t
@@ -160,7 +162,6 @@ t/03_route_handler/22_filter_halt.t
 t/03_route_handler/23_filter_error_catching.t
 t/03_route_handler/24_multiple_params.t
 t/03_route_handler/24_named_captures.t
-t/03_route_handler/26_after_hook.t
 t/03_route_handler/27_issue_77_pass_breaks_routes.t
 t/03_route_handler/28_plack_mount.t
 t/03_route_handler/29_forward.t
@@ -232,7 +233,6 @@ t/10_template/01_factory.t
 t/10_template/02_abstract_class.t
 t/10_template/03_simple.t
 t/10_template/05_template_toolkit.t
-t/10_template/06_before_template_hook.t
 t/10_template/extension.t
 t/10_template/index.txt
 t/10_template/template.t
@@ -251,6 +251,7 @@ t/11_logger/07_diag.t
 t/11_logger/08_serialize.t
 t/11_logger/09_capture.t
 t/11_logger/10_note.t
+t/11_logger/11_runtime_file.t
 t/12_response/000_create_fake_env.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t
@@ -307,6 +308,17 @@ t/19_dancer/01_script.t
 t/19_dancer/02_script_version_from.t
 t/20_deprecation/01_api.t
 t/21_dependents/Dancer-Session-Cookie.t
+t/22_hooks/00_syntax.t
+t/22_hooks/01_api.t
+t/22_hooks/02_before.t
+t/22_hooks/03_after.t
+t/22_hooks/04_template.t
+t/22_hooks/05_layout.t
+t/22_hooks/06_serializer.t
+t/22_hooks/07_file.t
+t/22_hooks/08_error.t
+t/22_hooks/views/index.tt
+t/22_hooks/views/layouts/main.tt
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm

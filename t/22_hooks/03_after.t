@@ -5,23 +5,22 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-plan tests => 4;
+plan tests => 3;
 
 ok(
-    after sub {
-        my $response = shift;
-        $response->{content} = 'not index!';
-    },
+    after(
+        sub {
+            my $response = shift;
+            $response->content('not index!');
+        }
+    ),
     'after hook is defined'
 );
 
-ok(
-    get(
-        '/' => sub {
-            return 'index';
-        }
-    ),
-    'index route is defined'
+get(
+    '/' => sub {
+        return 'index';
+    }
 );
 
 route_exists [ GET => '/' ];

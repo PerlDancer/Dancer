@@ -23,6 +23,7 @@ my @keywords = qw(
     halt
     header
     headers
+    hook
     layout
     load
     load_app

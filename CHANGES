@@ -1,4 +1,42 @@
-{{$NEXT}}
+1.3049_01  14.05.2011
+
+    [ API CHANGES ]
+    * Deprecation of 'logger' (use set). (Alberto Simões)
+    * Deprecate 'layout' (use set). (Alberto Simões)
+    * Definitely remove plack_middlewares HashRef deprecation.
+      (Alberto Simões & Damien Krotkine)
+
+    [ BUG FIXES ]
+    * Unbreaking auto_page somewhat - the catch-all route added will
+      pass unless a suitable view exists.  This means that routes like
+      /foo are not obscured, and made up URLs will result in a proper
+      404, not 500.  A little more work required here, though. 
+      (David Precious)
+    * Anchor regular expression routes. Before regular expressions
+      were matching anywhere in the URL.
+      (Alberto Simões)
+
+    [ ENHANCEMENTS ]
+    * GH #519: remove redundant lines from CSS
+      (Alberto Simões)
+    * When scaffolding an app, show a warning if YAML not installed.
+      Prompted by Issue 496.  (David Precious)
+    * Hooks! add new positions for hooks, and possibility to create
+      your own hooks inside your application and your plugin.
+      (Franck Cuny)
+    * Don't try to read/set session vars with empty/undef keys.  It
+      doesn't make sense to do so, and can cause warnings elsewhere.
+      (David Precious)
+    * Check HTTP status code/alias passed to status() is valid;
+      previously, and invalid code would result in the response status
+      being unset
+      (David Precious, prompted on IRC by jonas)
+    * Lowercase status aliases and swap spaces for underscores before
+      trying to match
+      (David Precious, suggested on IRC by jonas)
+    * Added 'behind_proxy' setting, making Dancer honor
+      X_FORWARDED_PROTOCOL and X_FORWARDED_HOST
+      (Alberto Simões, requested by sukria and others)
 
 1.3040      01.05.2011
     ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
@@ -23,8 +61,12 @@
       (Sawyer X)
     * Rewrite scalar usage of qw() that is incompatible with 5.14.
       (Alberto Simões)
+    * Don't parse ARGV when under PSGI (closes #473)
+      (Franck Cuny)
 
     [ ENHANCEMENTS ]
+    * Forward can change method GH#493
+      (Alberto Simões)
     * Introducing the "megasplat"!
       (Yanick Champoux)
     * More tests for versions, setings and variables.

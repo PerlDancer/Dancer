@@ -63,12 +63,12 @@ get '/solo' => sub {
 };
 
 get '/full' => sub {
-    layout 'main';
+    set layout => 'main';
     template 't03';
 };
 
 get '/layoutdisabled' => sub {
-    layout 'main';
+    set layout => 'main';
     template 't03', {}, { layout => undef };
 };
 

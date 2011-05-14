@@ -34,11 +34,8 @@ Test::TCP::test_tcp(
         # new request, no serializer
         $res = $ua->request($request);
         ok( $res->is_success, 'Successful response from server' );
-        is_deeply(
-            $res->content,
-            "$data",
-            'Serializer undef, getting our object back',
-        );
+        like($res->content, qr/HASH\(0x.+\)/,
+            'Serializer undef, response not serialised');
     },
 
     server => sub {

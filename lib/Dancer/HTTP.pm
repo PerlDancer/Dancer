@@ -78,7 +78,8 @@ $HTTP_CODES->{error} = $HTTP_CODES->{internal_server_error};
 sub status {
     my ($class, $name) = @_;
     return $name if $name =~ /^\d+$/;
-    return $HTTP_CODES->{$name};
+    $name =~ s/\s/_/;
+    return $HTTP_CODES->{lc $name};
 }
 
 1;

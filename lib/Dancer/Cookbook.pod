@@ -421,8 +421,8 @@ keyword, and L<Crypt::SaltedHash> to handle salted hashed passwords (well, you
 wouldn't store your users passwords in the clear, would you?)) follows:
 
     post '/login' => sub {
-        my $user = database()->selectrow_hashref(
-            'select * from users where username = ?', {}, params->{user}
+        my $user = database->quick_select('users', 
+            { username => params->{user} }
         );
         if (!$user) {
             warning "Failed login for unrecognised user " . params->{user};
@@ -527,7 +527,7 @@ Here is an example of a layout: C<views/layouts/main.tt> :
 You can tell your app which layout to use with C<layout: name> in the config
 file, or within your code:
 
-    layout 'main';
+    set layout => 'main';
 
 You can control which layout to use (or whether to use a layout at all) for a
 specific request without altering the layout setting by passing an options
