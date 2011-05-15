@@ -13,6 +13,10 @@ tags:
         --exclude=.git \
         --exclude='*.swp' \
         --languages=Perl --langmap=Perl:+.t 
+
+author_test:
+	RELEASE_TESTING=1 make test
+
 MAKE_FRAG
 }
 
@@ -22,7 +26,7 @@ WriteMakefile1(
     LICENSE      => 'perl',
     VERSION_FROM => 'lib/Dancer.pm',
     EXE_FILES    => ['script/dancer'],
-    
+
     META_MERGE => {
         resources => {
             repository => 'http://github.com/sukria/Dancer',
