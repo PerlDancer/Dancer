@@ -1,4 +1,4 @@
-1.3049_01  14.05.2011
+1.3049_01   14.05.2011
 
     [ API CHANGES ]
     * Deprecation of 'logger' (use set). (Alberto Simões)
