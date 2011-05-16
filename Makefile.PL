@@ -15,7 +15,7 @@ tags:
         --languages=Perl --langmap=Perl:+.t 
 
 author_test:
-	RELEASE_TESTING=1 make test
+	RELEASE_TESTING=1 $(MAKE) test
 
 MAKE_FRAG
 }
