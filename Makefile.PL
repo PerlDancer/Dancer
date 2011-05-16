@@ -32,7 +32,8 @@ WriteMakefile1(
     },
 
     BUILD_REQUIRES => {
-        'Test::More'             => '0.94',
+        'Test::More'              => '0.94',
+        'Tie::Hash::NamedCapture' => '0',
     },
 
     PREREQ_PM => {
