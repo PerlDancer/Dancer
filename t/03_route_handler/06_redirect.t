@@ -2,7 +2,7 @@ use Test::More;
 use Dancer ':tests', ':syntax';
 use Dancer::Test;
 
-plan tests => 17;
+plan tests => 20;
 
 # basic redirect
 {
@@ -75,4 +75,20 @@ plan tests => 17;
     response_status_is $req,  200, 'status is 200';
     response_content_is $req, $not_redirected_content, 'content is not empty';
 
+}
+
+# redirect behind proxy
+{
+    set behind_proxy => 1;
+    $ENV{X_FORWARDED_HOST} = "nice.host.name";
+    response_headers_include [GET => '/bounce'] => [Location => 'http://nice.host.name/'],
+      "Test X_FORWARDED_HOST";
+
+    $ENV{HTTP_FORWARDED_PROTO} = "https";
+    response_headers_include [GET => '/bounce'] => [Location => 'https://nice.host.name/'],
+      "Test HTTP_FORWARDED_PROTO";
+
+    $ENV{X_FORWARDED_PROTOCOL} = "ftp";  # stupid, but why not?
+    response_headers_include [GET => '/bounce'] => [Location => 'ftp://nice.host.name/'],
+      "Test X_FORWARDED_PROTOCOL";
 }
