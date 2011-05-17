@@ -445,7 +445,7 @@ handler.
 This will export everything except functions which clash with
 commonly used testing modules. Currently these are C<pass>.
 
-It can be combined. For example, while testing...
+It can be combined with other export pragmas. For example, while testing...
 
     use Test::More;
     use Dancer qw(:syntax :tests);
