@@ -1,6 +1,6 @@
 use Dancer ':syntax';
 use Dancer::Test;
-use Test::More tests => 50, import => ['!pass'];
+use Test::More tests => 51, import => ['!pass'];
 
 # regexps
 {
@@ -33,10 +33,12 @@ use Test::More tests => 50, import => ['!pass'];
 
         my $request = [ GET => $path ];
 
-        response_exists( $request, "route handler found for path `$path'" );
+        response_status_is( $request => 200, "route handler found for path `$path'" );
         response_content_is_deeply( $request, $expected,
             "match data for path `$path' looks good" );
     }
+
+    response_status_is [GET => '/no/hello/bar'] => 404;
 }
 
 # passing
