@@ -1441,6 +1441,8 @@ The following modules are mandatory (Dancer cannot run without them):
 
 =item L<HTTP::Body>
 
+=item L<LWP>
+
 =item L<MIME::Types>
 
 =item L<URI>
@@ -1451,11 +1453,15 @@ The following modules are optional:
 
 =over 8
 
-=item L<Template> : In order to use TT for rendering views
+=item L<JSON> : needed to use JSON serializer
+
+=item L<Plack> : in order to use PSGI
+
+=item L<Template> : in order to use TT for rendering views
+
+=item L<XML::Simple> and L<XML:SAX> or L<XML:Parser> for XML serialization
 
 =item L<YAML> : needed for configuration file support
-
-=item L<File::MimeInfo::Simple>
 
 =back
 
