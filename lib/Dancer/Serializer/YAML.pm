@@ -53,20 +53,16 @@ Dancer::Serializer::YAML - serializer for handling YAML data
 
 =head1 DESCRIPTION
 
-=head2 METHODS
+=head1 METHODS
 
-=over 4
-
-=item B<serialize>
+=head2 serialize
 
 Serialize a data structure to a YAML structure.
 
-=item B<deserialize>
+=head2 deserialize
 
 Deserialize a YAML structure to a data structure
 
-=item B<content_type>
+=head2 content_type
 
-Return 'application/json'
-
-=back
+Return 'text/x-yaml'
