@@ -69,18 +69,14 @@ Dancer::Serializer::XML - serializer for handling XML data
 
 =head2 METHODS
 
-=over 4
-
-=item B<serialize>
+=head2 serialize
 
 Serialize a data structure to a XML structure.
 
-=item B<deserialize>
+=head2 deserialize
 
 Deserialize a XML structure to a data structure
 
-=item B<content_type>
+=head2 content_type
 
 Return 'text/xml'
-
-=back
