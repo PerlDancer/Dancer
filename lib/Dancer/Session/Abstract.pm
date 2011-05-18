@@ -36,7 +36,10 @@ sub destroy {
     confess "destroy not implemented";
 }
 
-
+# does nothing in most case (exception is YAML)
+sub reset_dir_cache {
+    return;
+}
 
 # This is the default constructor for the session object, the only mandatory
 # attribute is 'id'. The whole object should be serialized by the session
