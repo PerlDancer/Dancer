@@ -60,6 +60,8 @@
     [ DOCUMENTATION ]
     * Improve Dancer documentation
       (Damien Krotkine)
+    * Implement session directory testing cache for Session::YAML
+      (Damien Krotkine)
 
 1.3049_01   14.05.2011
 
