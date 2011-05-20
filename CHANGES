@@ -1,3 +1,9 @@
+{{$NEXT}}
+
+    [ DOCUMENTATION ]
+    * Improve Serializers documentation
+      (Damien Krotkine)
+
 1.3050      20.05.2011
     ** Codename: The Captain Hook Adventure // Franck Cuny **
 
@@ -6,8 +12,6 @@
 
     [ DOCUMENTATION ]
     * Improve Dancer documentation
-      (Damien Krotkine)
-    * Improve Serializers documentation
       (Damien Krotkine)
 
 1.3049_01   14.05.2011
