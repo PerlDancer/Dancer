@@ -1,4 +1,14 @@
-1.3049_01  14.05.2011
+1.3050      20.05.2011
+    ** Codename: The Captain Hook Adventure // Franck Cuny **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+    [ DOCUMENTATION ]
+    * Improve Dancer documentation
+      (Damien Krotkine)
+
+1.3049_01   14.05.2011
 
     [ API CHANGES ]
     * Deprecation of 'logger' (use set). (Alberto Simões)

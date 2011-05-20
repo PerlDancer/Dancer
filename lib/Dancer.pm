@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3049_01';
+our $VERSION   = '1.3050';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -418,7 +418,7 @@ L<Dancer::Plugins>.
 
 By default, C<use Dancer> exports all the functions below plus sets up
 your app.  You can control the exporting through the normal
-L<Exporter> means.  For example:
+L<Exporter> mechanism.  For example:
 
     # Just export the route controllers
     use Dancer qw(before after get post);
@@ -431,8 +431,8 @@ There are also some special tags to control exports and behaviour.
 
 =head2 :moose
 
-This will export everything except those functions which clash with
-Moose.  Currently that is L<after> and L<before>.
+This will export everything except functions which clash with
+Moose. Currently these are C<after> and C<before>.
 
 =head2 :syntax
 
@@ -442,10 +442,10 @@ handler.
 
 =head2 :tests
 
-This will export everything except those functions which clash with
-commonly used testing modules.  Currently that is L<pass>.
+This will export everything except functions which clash with
+commonly used testing modules. Currently these are C<pass>.
 
-These can be combined.  For example, while testing...
+It can be combined with other export pragmas. For example, while testing...
 
     use Test::More;
     use Dancer qw(:syntax :tests);
@@ -508,12 +508,12 @@ Defines a before filter:
         # do something with request, vars or params
     };
 
-The anonymous function which is given to C<before> will be executed before
-executing a route handler to handle the request.
+The anonymous function given to C<before> will be executed before executing a
+route handler to handle the request.
 
 If the function modifies the request's C<path_info> or C<method>, a new
-search for a matching route is performed and the filter is re-executed
-again. Considering that this can lead to an infinite loop, this mechanism
+search for a matching route is performed and the filter is re-executed.
+Considering that this can lead to an infinite loop, this mechanism
 is stopped after 10 times with an exception.
 
 The before filter can set a response with a redirection code (either
@@ -534,21 +534,21 @@ Defines a before_template filter:
     };
 
 The anonymous function which is given to C<before_template> will be executed
-before sending data and tokens to the template. Receives a hashref of the
+before sending data and tokens to the template. Receives a HashRef of the
 tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
 
 =head2 cookies
 
-Accesses cookies values, which returns a hashref of L<Dancer::Cookie> objects:
+Accesses cookies values, it returns a HashRef of L<Dancer::Cookie> objects:
 
     get '/some_action' => sub {
         my $cookie = cookies->{name};
         return $cookie->value;
     };
 
-In the case you have stored something else than a scalar in your cookie:
+In the case you have stored something else than a Scalar in your cookie:
 
     get '/some_action' => sub {
         my $cookie = cookies->{oauth};
@@ -583,7 +583,7 @@ You can use abbreviations for content types. For instance:
     };
 
 Note that if you want to change the default content-type for every route, you
-have to change the setting C<content_type> instead.
+have to change the C<content_type> setting instead.
 
 =head2 dance
 
@@ -668,13 +668,13 @@ something like:
 
      return forward '/home?authorized=1';
 
-But C<forward> supports an optional hash with parameters to be added
+But C<forward> supports an optional HashRef with parameters to be added
 to the actual parameters:
 
      return forward '/home', { authorized => 1 };
 
 Finally, you can add some more options to the forward method, in a
-third argument, also as a hash reference. At the moment that option is
+third argument, also as a HashRef. That option is currently
 only used to change the method of your request. Use with caution.
 
     return forward '/home', { auth => 1 }, { method => 'POST' };
@@ -695,7 +695,7 @@ Deserializes a YAML structure.
 
 =head2 from_xml ($structure, %options)
 
-Deserializes a XML structure. Can receive optional arguments. Thoses arguments 
+Deserializes a XML structure. Can receive optional arguments. These arguments 
 are valid L<XML::Simple> arguments to change the behaviour of the default 
 C<XML::Simple::XMLin> function.
 
@@ -740,6 +740,9 @@ adds a custom header to response:
         header 'x-my-header' => 'shazam!';
     }
 
+Note that it will overwrite the old value of the header, if any. To avoid that,
+see L</push_header>.
+
 =head2 push_header
 
 Do the same as C<header>, but allow for multiple headers with the same name.
@@ -752,7 +755,7 @@ Do the same as C<header>, but allow for multiple headers with the same name.
 
 =head2 hook
 
-Adds a hook at some position.
+Adds a hook at some position. For example :
 
   hook before_serialization => sub {
     my $response = shift;
@@ -761,7 +764,7 @@ Adds a hook at some position.
 
 Supported B<before> hooks (in order of execution):
 
-=over 4
+=over
 
 =item before_deserializer
 
@@ -776,7 +779,16 @@ This hook receives no arguments.
 This hook receives as argument the path of the file to render.
 
   hook before_file_render {
+    my $path = shift;
     ...
+  };
+
+=item before_error_render
+
+This hook receives as argument a L<Dancer::Error> object.
+
+  hook before_error_render => sub {
+    my $error = shift;
   };
 
 =item before
@@ -789,7 +801,7 @@ This hook receives no arguments.
     ...
   };
 
-It's equivalent to
+is equivalent to
 
   hook before sub {
     ...
@@ -797,18 +809,26 @@ It's equivalent to
 
 =item before_template_render
 
-This hook receives as argument a HASHREF, containing the tokens.
+This is an alias to 'before_template'.
 
-This is an alias to 'before_template'
+This hook receives as argument a HashRef, containing the tokens.
 
   hook before_template_render sub {
     my $tokens = shift;
     delete $tokens->{user};
   };
 
+is equivalent to 
+
+  hook before_template sub {
+    my $tokens = shift;
+    delete $tokens->{user};
+  };
+
 =item before_layout_render
 
-This hook receives two arguments. The first one is a HASHREF containing the tokens. The second is a SCALARREF representing the content of the template.
+This hook receives two arguments. The first one is a HashRef containing the
+tokens. The second is a ScalarRef representing the content of the template.
 
   hook before_layout_render sub {
     my ($tokens, $html_ref) = @_;
@@ -828,7 +848,7 @@ This hook receives as argument a L<Dancer::Response> object.
 
 Supported B<after> hooks (in order of execution):
 
-=over 4
+=over
 
 =item after_deserializer
 
@@ -848,7 +868,8 @@ This hook receives as argument a L<Dancer::Response> object.
 
 =item after_template_render
 
-This hook receives as argument a SCALARREF representing the content generated by the template.
+This hook receives as argument a ScalarRef representing the content generated
+by the template.
 
   hook after_template_render sub {
     my $html_ref = shift;
@@ -856,13 +877,16 @@ This hook receives as argument a SCALARREF representing the content generated by
 
 =item after_layout_render
 
-This hook receives as argument a SCALARREF representing the content generated by the layout
+This hook receives as argument a ScalarRef representing the content generated
+by the layout
 
   hook after_layout_render sub {
     my $html_ref = shift;
   };
 
 =item after
+
+This is an alias for 'after'.
 
 This hook receives as argument a L<Dancer::Response> object.
 
@@ -874,14 +898,6 @@ This is equivalent to
 
   after sub {
     my $response = shift;
-  };
-
-=item before_error_render
-
-This hook receives as argument a L<Dancer::Error> object.
-
-  hook before_error_render => sub {
-    my $error = shift;
   };
 
 =item after_error_render
@@ -925,13 +941,13 @@ C<:syntax> option, in order not to change the application directory
 
 =head2 mime_type
 
-Deprecated. Check C<mime> below.
+Deprecated. See L</mime>.
 
 =head2 mime
 
 Shortcut to access the instance object of L<Dancer::MIME>. You should
 read the L<Dancer::MIME> documentation for full details, but the most
-commonly-used methods are summarised below:
+commonly-used methods are summarized below:
 
     # set a new mime type
     mime->add_type( foo => 'text/foo' );
@@ -955,7 +971,7 @@ commonly-used methods are summarised below:
 =head2 params
 
 I<This method should be called from a route handler>.
-Alias for the L<Dancer::Request params accessor|Dancer::Request/"params">.
+It's an alias for the L<Dancer::Request params accessor|Dancer::Request/"params">.
 
 =head2 pass
 
@@ -974,7 +990,7 @@ You should always C<return> after calling C<pass>:
 
 =head2 path
 
-Concatenates multiple path together, without worrying about the underlying
+Concatenates multiple paths together, without worrying about the underlying
 operating system:
 
     my $path = path(dirname($0), 'lib', 'File.pm');
@@ -1077,7 +1093,6 @@ instance, to use a custom layout:
 
     render_with_layout $content, {}, { layout => 'layoutname' };
 
-
 =head2 request
 
 Returns a L<Dancer::Request> object representing the current request.
@@ -1150,8 +1165,8 @@ Creates or updates cookie values:
 
     get '/some_action' => sub {
         set_cookie name => 'value',
-            expires => (time + 3600),
-            domain  => '.foo.com';
+                   expires => (time + 3600),
+                   domain  => '.foo.com';
     };
 
 In the example above, only 'name' and 'value' are mandatory.
@@ -1166,8 +1181,8 @@ You can also store more complex structure in your cookies:
         };
     };
 
-You can't store more complex structure than this. All your keys in your hash
-should be scalars; storing references will not work.
+You can't store more complex structure than this. All keys in the HashRef
+should be Scalars; storing references will not work.
 
 See L<Dancer::Cookie> for further options when creating your cookie.
 
@@ -1214,7 +1229,7 @@ which includes wildcards:
 
 There is also the extensive splat (A.K.A. "megasplat"), which allows extensive
 greedier matching, available using two asterisks. The additional path is broken
-down and returned as an arrayref:
+down and returned as an ArrayRef:
 
     get '/entry/*/tags/**' => sub {
         my ( $entry_id, $tags ) = splat;
@@ -1279,8 +1294,8 @@ Tells the route handler to build a response with the current template engine:
     };
 
 The first parameter should be a template available in the views directory, the
-second one (optional) is a hashref of tokens to interpolate, and the third
-(again optional) is a hashref of options.
+second one (optional) is a HashRef of tokens to interpolate, and the third
+(again optional) is a HashRef of options.
 
 For example, to disable the layout for a specific request:
 
@@ -1324,20 +1339,20 @@ L<Dancer::Request::Upload> object. You can access all parsed uploads via:
     };
 
 If you named multiple input of type "file" with the same name, the upload
-keyword will return an array of Dancer::Request::Upload objects:
+keyword will return an Array of Dancer::Request::Upload objects:
 
     post '/some/route' => sub {
         my ($file1, $file2) = upload('files_input');
         # $file1 and $file2 are Dancer::Request::Upload objects
     };
 
-You can also access the raw hashref of parsed uploads via the current request
+You can also access the raw HashRef of parsed uploads via the current request
 object:
 
     post '/some/route' => sub {
         my $all_uploads = request->uploads;
         # $all_uploads->{'file_input_foo'} is a Dancer::Request::Upload object
-        # $all_uploads->{'files_input'} is an array ref of Dancer::Request::Upload objects
+        # $all_uploads->{'files_input'} is an ArrayRef of Dancer::Request::Upload objects
     };
 
 Note that you can also access the filename of the upload received via the params
@@ -1391,7 +1406,7 @@ C<vars> keyword.
 
 =head2 vars
 
-Returns the hashref of all shared variables set during the filter/route
+Returns the HashRef of all shared variables set during the filter/route
 chain:
 
     get '/path' => sub {
@@ -1441,6 +1456,8 @@ The following modules are mandatory (Dancer cannot run without them):
 
 =item L<HTTP::Body>
 
+=item L<LWP>
+
 =item L<MIME::Types>
 
 =item L<URI>
@@ -1451,11 +1468,15 @@ The following modules are optional:
 
 =over 8
 
-=item L<Template> : In order to use TT for rendering views
+=item L<JSON> : needed to use JSON serializer
+
+=item L<Plack> : in order to use PSGI
+
+=item L<Template> : in order to use TT for rendering views
+
+=item L<XML::Simple> and L<XML:SAX> or L<XML:Parser> for XML serialization
 
 =item L<YAML> : needed for configuration file support
-
-=item L<File::MimeInfo::Simple>
 
 =back
 
