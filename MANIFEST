@@ -179,7 +179,6 @@ t/04_static_file/001_base.t
 t/04_static_file/003_mime_types_reinit.t
 t/04_static_file/static/hello.foo
 t/04_static_file/static/hello.txt
-t/05_views/001_settings.t
 t/05_views/002_view_rendering.t
 t/05_views/03_layout.t
 t/05_views/views/clock.tt
