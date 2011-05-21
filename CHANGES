@@ -1,6 +1,8 @@
 {{$NEXT}}
 
     [ API CHANGES ]
+    * Second level of deprecation for render_with_layout method.
+      (Alberto Simões)
     * Second level of deprecation for mime_type method.
       (Alberto Simões)
 
