@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+    [ API CHANGES ]
+    * Second level of deprecation for mime_type method.
+      (Alberto Simões)
+
     [ DOCUMENTATION ]
     * Improve Serializers documentation
       (Damien Krotkine)

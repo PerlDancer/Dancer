@@ -13,7 +13,7 @@ use Carp;
 
 use Encode;
 
-@EXPORT_OK = qw(setting mime_types);
+@EXPORT_OK = qw(setting);
 
 my $SETTINGS = {};
 
@@ -88,13 +88,6 @@ my $normalizers = {
         return $name;
     },
 };
-
-sub mime_types {
-    Dancer::Deprecation->deprecated(
-        reason => "use 'mime' from Dancer.pm",
-        fatal => 1,
-    );
-}
 
 sub normalize_setting {
     my ($class, $setting, $value) = @_;
