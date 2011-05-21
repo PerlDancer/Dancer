@@ -481,7 +481,7 @@ Here is an example of a layout: views/layouts/main.tt:
 This layout can be used like the following:
 
     use Dancer;
-    layout 'main';
+    set layout => 'main';
 
     get '/' => sub {
         template 'index' => { page_title => "Your website Homepage" };
@@ -491,7 +491,7 @@ Of course, if a layout is set, it can also be disabled for a specific action,
 like the following:
 
     use Dancer;
-    layout 'main';
+    set layout => 'main';
 
     get '/nolayout' => sub {
         template 'some_ajax_view',
