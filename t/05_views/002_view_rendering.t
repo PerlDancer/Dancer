@@ -2,7 +2,8 @@ use Dancer ':tests';
 use Test::More;
 use Dancer::Test;
 
-set views => path(dirname(__FILE__), 'views');
+my $views = path(dirname(__FILE__), 'views')
+set views => $views;
 
 my $time = time();
 
@@ -17,7 +18,16 @@ my @tests = (
     { path => '/request', expected => "/request\n" },
 );
 
-plan tests => scalar(@tests);
+plan tests => 2 + scalar(@tests);
+
+# 1. Check setting variables
+{
+    is(setting("views") => $views, "Views setting was correctly set");
+
+    ok(!defined(setting("layout")), 'layout is not defined');
+}
+
+# 2. Check views
 
 # test simple rendering
 get '/' => sub {
@@ -26,7 +36,7 @@ get '/' => sub {
 
 get '/with_fh' => sub {
     my $fh;
-    
+
     die "TODO";
 };
 
