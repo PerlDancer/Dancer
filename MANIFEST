@@ -116,8 +116,6 @@ t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
 t/02_request/000_create_fake_env.t
 t/02_request/01_load.t
-t/02_request/02_get_params.t
-t/02_request/03_post_params.t
 t/02_request/04_custom.t
 t/02_request/04_forward.t
 t/02_request/05_cgi_pm_compat.t
