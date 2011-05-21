@@ -16,10 +16,9 @@ use TestUtils;
 use File::Temp qw/tempdir/;
 
 my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
-set(appdir => $dir);
-set(confdir => $dir);
+set appdir => $dir, confdir => $dir;
 mkdir File::Spec->catdir( $dir, 'environments' );
-set(environment => 'test' );
+set environment => 'test';
 
 my $conffile = Dancer::Config->conffile;
 write_file( $conffile => << 'CONF' );
