@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+    [ API CHANGES ]
+    * Second level of deprecation for mime_type method.
+      (Alberto Simões)
+
     [ DOCUMENTATION ]
     * Improve Serializers documentation
       (Damien Krotkine)
@@ -21,8 +25,6 @@
     * Deprecate 'layout' (use set). (Alberto Simões)
     * Definitely remove plack_middlewares HashRef deprecation.
       (Alberto Simões & Damien Krotkine)
-    * Second level of deprecation for mime_type method.
-      (Alberto Simões)
 
     [ BUG FIXES ]
     * Unbreaking auto_page somewhat - the catch-all route added will
