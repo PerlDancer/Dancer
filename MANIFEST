@@ -289,7 +289,6 @@ t/15_plugins/05_keywords.t
 t/15_plugins/05_plugins_and_OO.t
 t/15_plugins/06_hook.t
 t/16_timer/00_base.t
-t/16_timer/02_hires.t
 t/17_apps/000_create_fake_env.t
 t/17_apps/00_base.t
 t/17_apps/01_settings.t

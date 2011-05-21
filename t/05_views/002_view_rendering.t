@@ -2,7 +2,7 @@ use Dancer ':tests';
 use Test::More;
 use Dancer::Test;
 
-my $views = path(dirname(__FILE__), 'views')
+my $views = path(dirname(__FILE__), 'views');
 set views => $views;
 
 my $time = time();
