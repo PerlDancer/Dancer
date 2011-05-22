@@ -71,6 +71,12 @@ NOYAML
 }
 
 # subs
+sub new { 
+	my $class = shift; 
+	my $self = bless {}, $class; 
+	return $self;
+}
+
 
 sub validate_app_name {
     my $name = shift;
@@ -1420,7 +1426,7 @@ f.top,left:d.left-f.left}},offsetParent:function(){return this.map(function(){fo
 e&&e.document?e.document.compatMode==="CSS1Compat"&&e.document.documentElement["client"+b]||e.document.body["client"+b]:e.nodeType===9?Math.max(e.documentElement["client"+b],e.body["scroll"+b],e.documentElement["scroll"+b],e.body["offset"+b],e.documentElement["offset"+b]):f===w?c.css(e,d):this.css(d,typeof f==="string"?f:f+"px")}});A.jQuery=A.$=c})(window);
 EOF
 }
-
+1;
 __END__
 =pod
 
@@ -1505,4 +1511,3 @@ terms as Perl itself.
 
 =cut
 
-1;
