@@ -123,18 +123,9 @@ sub _render_with_layout {
     Dancer::Deprecation::deprecated(
         feature => 'render_with_layout',
         version => '1.3000',
+        fatal   => 1,
         reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
     );
-
-    my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
-
-    if (! defined $full_content) {
-          return Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        )->render();
-    }
-    return $full_content;
 }
 
 sub template {
