@@ -6,6 +6,10 @@
     * Second level of deprecation for mime_type method.
       (Alberto Simões)
 
+    [ BUG FIXES ]
+    * Dancer::Test was broken for tests using data in POST (GH#534)
+      (Franck Cuny)
+
     [ DOCUMENTATION ]
     * Improve Serializers documentation
       (Damien Krotkine)
