@@ -12,64 +12,6 @@ use Dancer::Renderer;
 use LWP::UserAgent;
 use constant FILE => 1;
 
-# options
-my $help = 0;
-my $do_check_dancer_version = 1;
-my $name = undef;
-my $path = '.';
-
-sub templates($);
-sub app_tree($);
-sub create_node($;$);
-
-GetOptions(
-    "h|help"          => \$help,
-    "a|application=s" => \$name,
-    "p|path=s"        => \$path,
-    "x|no-check"      => sub { $do_check_dancer_version = 0 },
-    "v|version"       => \&version,
-) or pod2usage( -verbose => 1 );
-
-# main
-my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
-
-pod2usage( -verbose => 1 ) if $help;
-pod2usage( -verbose => 1 ) if not defined $name;
-pod2usage( -verbose => 1 ) unless -d $path && -w $path;
-sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
-
-validate_app_name($name);
-
-my $DO_OVERWRITE_ALL = 0;
-my $DANCER_APP_DIR   = get_application_path($path, $name);
-my $DANCER_SCRIPT    = get_script_path($name);
-my ($LIB_FILE, $LIB_PATH) = get_lib_path($name);
-my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
-
-require Dancer;
-my $DANCER_VERSION   = $Dancer::VERSION;
-
-version_check() if $do_check_dancer_version;
-safe_mkdir($DANCER_APP_DIR);
-create_node( app_tree($name), $DANCER_APP_DIR );
-
-unless (eval "require YAML") {
-    print <<NOYAML;
-*****
-WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
-recommended; in particular, the scaffolded Dancer app being created will not be
-able to read settings from the config file without YAML.pm being installed.
-
-To resolve this, simply install YAML from CPAN, for instance using one of the
-following commands:
-
-  cpan YAML
-  perl -MCPAN -e 'install YAML'
-  curl -L http://cpanmin.us | perl - --sudo YAML
-*****
-NOYAML
-}
-
 # subs
 sub new { 
 	my $class = shift; 
@@ -79,6 +21,7 @@ sub new {
 
 
 sub validate_app_name {
+    my $self = shift;
     my $name = shift;
     if ($name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
         print STDERR "Error: Invalid application name.\n";
@@ -86,14 +29,18 @@ sub validate_app_name {
             ." dots, hyphens or start with a number.\n";
         exit;
     }
+    $self->_dash_name($name);
 }
 
 sub get_application_path {
-    my ($path, $app_name) = @_;
+    my $self = shift;
+    my $path = shift;
+    my $app_name = shift;
     catdir($path, _dash_name($app_name));
 }
 
 sub get_lib_path {
+    my $self = shift;
     my $name = shift;
     my @lib_path = split('::', $name);
     my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
@@ -102,17 +49,21 @@ sub get_lib_path {
 }
 
 sub get_script_path {
-    _dash_name(shift);
+    my $self = shift;
+    $self->_dash_name(shift);
 }
 
 sub _dash_name {
+    my $self = shift;
     my $name = shift;
     $name =~ s/\:\:/-/g;
-    $name;
+    return $name;
 }
 
-sub create_node($;$) {
-    my ($node, $root) = @_;
+sub create_node($$;$) {
+    my $self = shift;
+    my $node = shift;
+    my $root = shift;
     $root ||= '.';
 
     my $manifest_name = catfile($root => 'MANIFEST');
@@ -127,12 +78,15 @@ sub create_node($;$) {
     };
 
     $add_to_manifest->($manifest_name);
-    _create_node($add_to_manifest, $node, $root);
+    $self->_create_node($add_to_manifest, $node, $root);
     close $manifest;
 }
 
-sub _create_node {
-    my ($add_to_manifest, $node, $root) = @_;
+sub _create_node {               
+    my $self = shift;
+    my $add_to_manifest = shift;
+    my $node = shift;
+    my $root = shift;
 
     my $templates = templates($name);
 
@@ -140,8 +94,8 @@ sub _create_node {
         $path = catfile($root, $path);
 
         if (ref($content) eq 'HASH') {
-            safe_mkdir($path);
-            _create_node($add_to_manifest, $content, $path);
+            $self->safe_mkdir($path);
+            $self->_create_node($add_to_manifest, $content, $path);
         } elsif (ref($content) eq 'CODE') {
             # The content is a coderef, which, given the path to the file it
             # should create, will do the appropriate thing:
@@ -154,15 +108,16 @@ sub _create_node {
             my $template = $templates->{$file};
 
             $path = catfile($dir, $file); # rebuild the path without the '+' flag
-            write_file($path, $template, {appdir => File::Spec->rel2abs($DANCER_APP_DIR)});
+            $self->write_file($path, $template, {appdir => File::Spec->rel2abs($DANCER_APP_DIR)});
             chmod 0755, $path if $ex;
             $add_to_manifest->($path);
         }
     }
 }
 
-sub app_tree($) {
-    my ($appname) = @_;
+sub app_tree($$) {
+    my $self = shift;
+    my $appname = shift;
 
     return {
         "Makefile.PL"        => FILE,
@@ -210,7 +165,8 @@ sub app_tree($) {
 
 
 sub safe_mkdir {
-    my ($dir) = @_;
+    my $self = shift;
+    my $dir = shift;
     if (not -d $dir) {
         print "+ $dir\n";
         mkpath $dir or die "could not mkpath $dir: $!";
@@ -221,7 +177,10 @@ sub safe_mkdir {
 }
 
 sub write_file {
-    my ($path, $template, $vars) = @_;
+    my $self = shift;
+    my $path = shift;
+    my $template = shift;
+    my $vars = shift;
     die "no template found for $path" unless defined $template;
 
     $vars->{dancer_version} = $DANCER_VERSION;
@@ -235,7 +194,7 @@ sub write_file {
     }
 
     my $fh;
-    my $content = process_template($template, $vars);
+    my $content = $self->process_template($template, $vars);
     print "+ $path\n";
     open $fh, '>', $path or die "unable to open file `$path' for writing: $!";
     print $fh $content;
@@ -243,7 +202,9 @@ sub write_file {
 }
 
 sub process_template {
-    my ($template, $tokens) = @_;
+    my $self = shift;
+    my ($template = shift;
+    my $tokens = shift;
     my $engine = Dancer::Template::Simple->new;
     $engine->{start_tag} = '[%';
     $engine->{stop_tag} = '%]';
@@ -251,7 +212,9 @@ sub process_template {
 }
 
 sub write_data_to_file {
-    my ($data, $path) = @_;
+    my $self = shift;
+    my $data = shift;
+    my $path = shift;
     open(my $fh, '>', $path)
       or warn "Failed to write file to $path - $!" and return;
     binmode($fh);
@@ -277,10 +240,11 @@ sub send_http_request {
 }
 
 sub version_check {
+    my $self = shift;
     my $latest_version = 0;
     require Dancer;
 
-    my $resp = send_http_request('http://search.cpan.org/api/module/Dancer');
+    my $resp = $self->send_http_request('http://search.cpan.org/api/module/Dancer');
 
     if ($resp) {
         if ( $resp =~ /"version" (?:\s+)? \: (?:\s+)? "(\d\.\d+)"/x ) {
@@ -302,8 +266,10 @@ Please check http://search.cpan.org/dist/Dancer/ for updates.
 }
 
 sub download_file {
-    my ($path, $url) = @_;
-    my $resp = send_http_request($url);
+    my $self = shift;
+    my $path = shift;
+    my $url = shift;
+    my $resp = $self->send_http_request($url);
     if ($resp) {
         open my $fh, '>', $path or die "cannot open $path for writing: $!";
         print $fh $resp;
@@ -313,6 +279,7 @@ sub download_file {
 }
 
 sub templates($) {
+    my $self = shift;
     my $appname    = shift;
     my $appfile    = $appname;
     my $cleanfiles = $appname;
@@ -973,6 +940,7 @@ response_status_is ['GET' => '/'], 200, 'response status is 200 for /';
 }
 
 sub write_bg {
+    my $self = shift;
     my $path = shift;
     my $data =<<'EOF';
 M_]C_X``02D9)1@`!`0$`2`!(``#_VP!#``4#!`0$`P4$!`0%!04&!PP(!P<'
@@ -1144,10 +1112,11 @@ M````````````````````````````````````````````````````````````
 M````````````````````````````````````````````````````````````
 <``````````````````````````````````__V0``
 EOF
-    write_data_to_file($data, $path);
+    $self->write_data_to_file($data, $path);
 }
 
 sub write_favicon {
+    my $self = shift;
     my $path = shift;
     my $data =<<'EOF';
 M```!``$`$!````$`"`!H!0``%@```"@````0````(`````$`"```````````
@@ -1184,10 +1153,11 @@ MH,/&R<;'JB$L;)&08QXNO</&R<;)QL')FU,W.ENYR<3&R<D`````````````
 M````````````````````````````````````````````````````````````
 )````````````
 EOF
-    write_data_to_file($data, $path);
+    $self->write_data_to_file($data, $path);
 }
 
 sub write_logo {
+    my $self = shift;
     my $path = shift;
     my $data =<<'EOF';
 M_]C_X``02D9)1@`!`0$`2`!(``#__@`30W)E871E9"!W:71H($=)35#_VP!#
@@ -1247,10 +1217,11 @@ M<^J5I.K7;O9WW%N:<BRXN;J5/8"@OV/7J4AA1_\`5PGG<^9.>@\1'31S2!0V
 M"S:;SM#[O36UR'8>Q8+OXZ:.B9(!_L-']6<>)0Z>@Z>>LZ:NB5-7&K8#*&(T
 J9M+;3:1@)2!@#7Q04U70U3%73P6(4-A`0VRR@)2D#W`:GZC5:6F</__9
 EOF
-    write_data_to_file($data, $path);
+    $self->write_data_to_file($data, $path);
 }
 
 sub manifest_skip {
+    my $self = shift;
     return <<'EOF';
 ^\.git\/
 maint
@@ -1269,6 +1240,7 @@ EOF
 }
 
 sub jquery_minified {
+    my $self = shift;
     return <<'EOF';
 /*!
  * jQuery JavaScript Library v1.4.2
@@ -1426,6 +1398,65 @@ f.top,left:d.left-f.left}},offsetParent:function(){return this.map(function(){fo
 e&&e.document?e.document.compatMode==="CSS1Compat"&&e.document.documentElement["client"+b]||e.document.body["client"+b]:e.nodeType===9?Math.max(e.documentElement["client"+b],e.body["scroll"+b],e.documentElement["scroll"+b],e.body["offset"+b],e.documentElement["offset"+b]):f===w?c.css(e,d):this.css(d,typeof f==="string"?f:f+"px")}});A.jQuery=A.$=c})(window);
 EOF
 }
+
+# options
+my $help = 0;
+my $do_check_dancer_version = 1;
+my $name = undef;
+my $path = '.';
+
+sub templates($);
+sub app_tree($);
+sub create_node($;$);
+
+GetOptions(
+    "h|help"          => \$help,
+    "a|application=s" => \$name,
+    "p|path=s"        => \$path,
+    "x|no-check"      => sub { $do_check_dancer_version = 0 },
+    "v|version"       => \&version,
+) or pod2usage( -verbose => 1 );
+
+# main
+my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+
+pod2usage( -verbose => 1 ) if $help;
+pod2usage( -verbose => 1 ) if not defined $name;
+pod2usage( -verbose => 1 ) unless -d $path && -w $path;
+sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
+
+validate_app_name($name);
+
+my $DO_OVERWRITE_ALL = 0;
+my $DANCER_APP_DIR   = get_application_path($path, $name);
+my $DANCER_SCRIPT    = get_script_path($name);
+my ($LIB_FILE, $LIB_PATH) = get_lib_path($name);
+my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
+
+require Dancer;
+my $DANCER_VERSION   = $Dancer::VERSION;
+
+version_check() if $do_check_dancer_version;
+safe_mkdir($DANCER_APP_DIR);
+create_node( app_tree($name), $DANCER_APP_DIR );
+
+unless (eval "require YAML") {
+    print <<NOYAML;
+*****
+WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
+recommended; in particular, the scaffolded Dancer app being created will not be
+able to read settings from the config file without YAML.pm being installed.
+
+To resolve this, simply install YAML from CPAN, for instance using one of the
+following commands:
+
+  cpan YAML
+  perl -MCPAN -e 'install YAML'
+  curl -L http://cpanmin.us | perl - --sudo YAML
+*****
+NOYAML
+}
+
 1;
 __END__
 =pod
