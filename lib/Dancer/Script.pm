@@ -860,9 +860,9 @@ template: \"simple\"
 
 ",
 
-'jquery.js' => jquery_minified(),
+'jquery.js' => $self->jquery_minified(),
 
-'MANIFEST.SKIP' => manifest_skip(),
+'MANIFEST.SKIP' => $self->manifest_skip(),
 
 'development.yml' =>
 "# configuration file for development environment
