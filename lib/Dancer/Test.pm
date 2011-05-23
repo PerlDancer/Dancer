@@ -277,7 +277,7 @@ sub dancer_response {
         if ( $args->{body} ) {
             $content      = $args->{body};
             $content_type = $args->{content_type}
-              || 'application/x-www-form-data';
+                || 'application/x-www-form-urlencoded';
 
             # coerce hashref into an url-encoded string
             if ( ref($content) && ( ref($content) eq 'HASH' ) ) {
