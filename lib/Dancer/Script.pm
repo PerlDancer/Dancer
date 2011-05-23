@@ -29,14 +29,13 @@ sub validate_app_name {
             ." dots, hyphens or start with a number.\n";
         exit;
     }
-    $self->_dash_name($name);
 }
 
 sub get_application_path {
     my $self = shift;
     my $path = shift;
     my $app_name = shift;
-    catdir($path, _dash_name($app_name));
+    catdir($path, $self->_dash_name($app_name));
 }
 
 sub get_lib_path {
