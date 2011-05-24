@@ -4,7 +4,7 @@ use warnings;
 use Dancer;
 use Dancer::Test;
 
-plan tests => 21;
+plan tests => 19;
 
 # issue gh_77
 {
@@ -14,7 +14,7 @@ plan tests => 21;
         return pass() unless $page =~ m/about|help|intro|upload/;
         return $page;
     };
-    
+
     get '/status' => sub { 'status' };
     get '/search' => sub { 'search' };
 
@@ -30,12 +30,12 @@ plan tests => 21;
 {
     my $i = 0;
 
-    ok( before( sub { redirect '/somewhere' if request->path eq '/' } ) );
-    ok( get( '/', sub { $i++; 'Hello' } ) );
+    before( sub { redirect '/somewhere' if request->path eq '/' } );
+    get( '/', sub { $i++; 'Hello' } );
 
     route_exists [ GET => '/' ];
     response_headers_include [ GET => '/' ] => [ Location => 'http://localhost/somewhere' ];
-    response_content_is [ GET => '/' ], '';
+    response_content_is      [ GET => '/' ] => '';
     is $i, 0;
 }
 
@@ -47,7 +47,7 @@ plan tests => 21;
     get '/reset' => sub { vars->{foo} += 1; vars->{foo}; };
 
     for ( 1 .. 10 ) {
-        response_content_is [ GET => '/reset' ], 1, "foo is 1";
+        response_content_is [ GET => '/reset' ] => 1, "foo is 1";
     }
 }
 
