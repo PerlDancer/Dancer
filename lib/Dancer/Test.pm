@@ -124,8 +124,7 @@ sub route_doesnt_exist {
 sub response_exists {
     Dancer::Deprecation->deprecated(
        fatal   => 0,
-       feature => 'route_exists',
-       version => '1.3040',
+       feature => 'response_exists',
        reason  => 'Use response_status_isnt and check for status 404.'
     );
     my ($req, $test_name) = @_;
@@ -143,8 +142,7 @@ sub response_exists {
 sub response_doesnt_exist {
     Dancer::Deprecation->deprecated(
        fatal   => 0,
-       version => '1.3040',
-       feature => 'route_doesnt_exist',
+       feature => 'response_doesnt_exist',
        reason  => 'Use response_status_is and check for status 404.',
     );
     my ($req, $test_name) = @_;
