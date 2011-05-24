@@ -12,24 +12,20 @@ my $r = Dancer::Route->new(
     },
 );
 
-isa_ok $r, 'Dancer::Route';
-is $r->method, 'get',
-    "method is 'get'";
+isa_ok $r => 'Dancer::Route';
 
-is $r->pattern, '/:var',
-    "pattern is '/:var'";
+is $r->method  => 'get',   "method is 'get'";
+is $r->pattern => '/:var', "pattern is '/:var'";
 
 my $req = Dancer::Request->new_for_request(GET => '/42');
 my $expected_match = { var => 42 };
 my $match = $r->match($req);
-is_deeply $match, $expected_match,
-    "route matched GET /42";
+is_deeply $match => $expected_match, "route matched GET /42";
 
 $r->match_data($match);
 Dancer::SharedData->request($req);
 my $response = $r->run($req);
-is $response->{content}, 42,
-    "response looks good";
+is $response->{content} => 42, "response looks good";
 
 my $r2 = Dancer::Route->new(method => 'get',
     pattern => '/pass/:var',
@@ -50,15 +46,14 @@ my $r4 = Dancer::Route->new(method => 'get',
 $req = Dancer::Request->new_for_request(GET => '/pass/42');
 $expected_match = { var => 42 };
 $match = $r2->match($req);
-is_deeply $match, $expected_match,
-    "route matched GET /42";
+is_deeply $match => $expected_match, "route matched GET /42";
 
 $r2->match_data($match);
 Dancer::SharedData->request($req);
 $r2->run($req);
 
 $response = Dancer::SharedData->response;
-is $response->{content}, 'this is r4',
+is $response->{content} => 'this is r4',
     "route 2 passed, r3 skipped (dont match), r4 served the response";
 
 setting 'public' => 't/03_route_handler/public';
