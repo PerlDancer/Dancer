@@ -21,7 +21,7 @@ use Dancer::Test;
     get '/' => sub { 1 };
 }
 
-response_exists [GET => '/hello'], "response found for /hello";
+response_status_is [GET => '/hello'] => 200, "response found for /hello";
 
 response_content_is [GET => '/hello'], "Hello\n", "content looks good";
 
