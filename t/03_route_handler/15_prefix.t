@@ -3,67 +3,49 @@ use Dancer ':syntax';
 use Dancer::Test;
 use Dancer::Route;
 
-plan tests => 23;
+plan tests => 21;
 
 eval { prefix 'say' };
 like $@, qr/not a valid prefix/, 'prefix must start with a /';
 
-ok( prefix '/say', 'prefix defined' );
+{
+    prefix '/say' => 'prefix defined';
 
-    get(
-        '/foo' => sub {
-            'it worked'
-        }
-);
+    get '/foo'  => sub { 'it worked' };
 
-    get(
-        '/foo/' => sub {
-            'it worked'
-        }
-);
+    get '/foo/' => sub { 'it worked' };
 
-    get(
-        '/:char' => sub {
+    get '/:char' => sub {
             pass and return false if length( params->{char} ) > 1;
             "char: " . params->{char};
-        }
-);
+        };
 
-    get(
-        '/:number' => sub {
+    get '/:number' => sub {
             pass and return false if params->{number} !~ /^\d+$/;
             "number: " . params->{number};
-        }
-);
+        };
 
-any( '/any' => sub {"any"} );
+    any '/any' => sub {"any"};
 
-    get(
-        qr{/_(.*)} => sub {
-            "underscore: " . params->{splat}[0];
-        }
-);
+    get qr{/_(.*)} => sub {
+        "underscore: " . params->{splat}[0];
+    };
 
-    get(
-        '/:word' => sub {
-            pass and return false if params->{word} =~ /trash/;
-            "word: " . params->{word};
-        }
-);
+    get '/:word' => sub {
+        pass and return false if params->{word} =~ /trash/;
+        "word: " . params->{word};
+    };
 
-    get(
-        '/' => sub {
-            "char: all";
-        }
-);
+    get '/' => sub {
+        "char: all";
+    };
 
-ok( prefix(undef), "undef prefix" );
+    prefix(undef);
 
-    get(
-        '/*' => sub {
-            "trash: " . params->{splat}[0];
-        }
-);
+    get '/*' => sub {
+        "trash: " . params->{splat}[0];
+    };
+}
 
 my @tests = (
     { path => '/say/',        expected => 'char: all' },
@@ -82,7 +64,7 @@ foreach my $test (@tests) {
     my $path     = $test->{path};
     my $expected = $test->{expected};
 
-    response_exists [GET => $path];
-    response_content_is_deeply [GET => $path], $expected;
+    response_status_is         [GET => $path] => 200;
+    response_content_is_deeply [GET => $path] => $expected;
 }
 
