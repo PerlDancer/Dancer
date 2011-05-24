@@ -11,8 +11,6 @@ my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 Dancer::Logger->init('File');
 
-# checking get
-
 get '/'        => sub { 
     'home:' . join(',', params);
 };
@@ -57,10 +55,8 @@ response_headers_are_deeply [ GET => '/bounce/' ], $expected_headers;
 
 # checking post
 
-post '/'        => sub { 'post-home' };
-post '/bounce/' => sub {
-    return forward('/');
-};
+post '/'        => sub { 'post-home'  };
+post '/bounce/' => sub { forward('/') };
 
 response_status_is  [ POST => '/' ] => 200;
 response_content_is [ POST => '/' ] => 'post-home';
