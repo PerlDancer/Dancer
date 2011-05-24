@@ -14,7 +14,7 @@ plan tests => 15;
     response_status_is  [ GET => '/' ] => 200;
     response_content_is [ GET => '/' ] => "home";
 
-    response_status_is [ GET => '/bounce' ] => 302;
+    response_status_is  [ GET => '/bounce' ] => 302;
 
     my $expected_headers = [
         'Location'     => 'http://localhost/',
@@ -37,14 +37,17 @@ plan tests => 15;
     get '/absolute' => sub { redirect "/absolute"; };
     get '/relative' => sub { redirect "somewhere/else"; };
 
-    my $res = dancer_response GET => '/absolute_with_host';
-    is $res->header('Location') => 'http://foo.com/somewhere';
+    response_headers_include
+      [ GET => '/absolute_with_host' ],
+      [ Location => 'http://foo.com/somewhere' ];
 
-    $res = dancer_response GET => '/absolute';
-    is $res->header('Location') => 'http://localhost/absolute';
+    response_headers_include
+      [ GET => '/absolute' ],
+      [ Location => 'http://localhost/absolute' ];
 
-    $res = dancer_response GET => '/relative';
-    is $res->header('Location') => 'http://localhost/somewhere/else';
+    response_headers_include
+      [ GET => '/relative' ],
+      [ Location => 'http://localhost/somewhere/else' ];
 }
 
 # redirect no content
@@ -62,12 +65,12 @@ plan tests => 15;
     };
 
     my $req = [ GET => '/cond_bounce', { params => { bounce => 1 } } ];
-    response_status_is  $req, 302, 'status is 302';
-    response_content_is $req, '', 'content is empty when bounced';
+    response_status_is  $req => 302, 'status is 302';
+    response_content_is $req => '', 'content is empty when bounced';
 
     $req = [ GET => '/cond_bounce' ];
-    response_status_is  $req, 200, 'status is 200';
-    response_content_is $req, $not_redirected_content, 'content is not empty';
+    response_status_is  $req => 200, 'status is 200';
+    response_content_is $req => $not_redirected_content, 'content is not empty';
 
 }
 

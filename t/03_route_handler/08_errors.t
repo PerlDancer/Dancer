@@ -9,31 +9,33 @@ plan tests => 12;
 set show_errors => 1;
 
 my $error = Dancer::Error->new(code => 500);
-ok(defined($error), "error is defined");
-ok($error->title, "title is set");
+ok defined($error) => "error is defined";
+ok $error->title   => "title is set";
 
 SKIP: {
     skip "JSON is required", 10 unless Dancer::ModuleLoader->load('JSON');
-    setting 'serializer' => 'JSON';
+    set 'serializer' => 'JSON';
     my $error = Dancer::Error->new( code => 400, message => { foo => 'bar' } );
-    ok( defined($error), "error is defined" );
+    ok defined($error) => "error is defined";
+
     my $response = $error->render();
-    isa_ok $response, 'Dancer::Response';
-    is $response->{status},    400;
-    like $response->{content}, qr/foo/;
+    isa_ok $response => 'Dancer::Response';
+
+    is     $response->{status}  => 400;
+    like   $response->{content} => qr/foo/;
 
     # FIXME: i think this is a bug where serializer cannot be set to 'undef'
     # without the Serializer.pm trying to load JSON as a default serializer
 
     ##  Error Templates
 
-    set serializer => undef;
-    set warnings => 1;
-    set error_template => "error.tt";
-    set views => path(dirname(__FILE__), 'views');
+    set(serializer => undef,
+        warnings => 1,
+        error_template => "error.tt",
+        views => path(dirname(__FILE__), 'views'));
 
-    get('/warning' => sub { my $a = undef; @$a; });
-    get('/warning/:param' => sub { my $a = undef; @$a; });
+    get '/warning'        => sub { my $a = undef; @$a; };
+    get '/warning/:param' => sub { my $a = undef; @$a; };
 
     response_content_like [GET => '/warning'],
       qr/ERROR: Runtime Error/,
