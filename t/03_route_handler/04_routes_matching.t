@@ -91,9 +91,9 @@ use Test::More tests => 51, import => ['!pass'];
         my $path     = $test->{path};
         my $expected = $test->{expected};
 
-        response_exists( [ GET => $path ], "route found for path `$path'" );
-        response_content_is_deeply( [ GET => $path ],
-            $expected, "match data for path `$path' looks good" );
+        response_status_is [ GET => $path ] => 200, "route found for path `$path'";
+        response_content_is_deeply [ GET => $path ] => $expected,
+                                   "match data for path `$path' looks good";
     }
 
     response_status_is( [ GET => '/foo' ],
