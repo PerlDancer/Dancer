@@ -8,24 +8,24 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 15;
+plan tests => 11;
 
-ok(get('/cat/:file', sub {
+get '/cat/:file' => sub {
     send_file(params->{file});
-}), '/cat/:file route defined');
+};
 
-ok(get('/catheader/:file' => sub {
+get '/catheader/:file' => sub {
     header 'FooHeader' => 42;
     send_file(params->{file});
-}), '/catheader/:file route defined');
+};
 
-ok(get('/as_png/:file' => sub {
+get '/as_png/:file' => sub {
     send_file(params->{file}, content_type => 'png');
-}), '/as_png/:file route defined');
+};
 
-ok(get('/absolute/:file' => sub {
+get '/absolute/:file' => sub {
     send_file(path(dirname(__FILE__), "routes.pl"), system_path => 1);
-}), '/absolute/:file route defined');
+};
 
 my $resp = dancer_response(GET => '/cat/file.txt');
 ok(defined($resp), "route handler found for /cat/file.txt");

@@ -20,7 +20,7 @@ my @tests = (
     {status => 'not_found', expected => qr/404/ },
     {status => '404', expected => qr/404/ },
     {status => 'internal_server_error', expected => qr/500/ },
-    
+
     # additional aliases
     {status => 'error', expected => qr/500/ },
 );
@@ -28,8 +28,8 @@ my @tests = (
 plan tests => scalar(@tests);
 
 foreach my $test (@tests) {
-    like(Dancer::HTTP->status($test->{status}), 
-        $test->{expected}, 
+    like(Dancer::HTTP->status($test->{status}),
+        $test->{expected},
         "status header looks good for ".$test->{status});
 }
 
