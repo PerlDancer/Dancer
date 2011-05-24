@@ -29,7 +29,7 @@ setting route_cache => 1;
         path_limit => 10,
     );
 
-    isa_ok( $cache, 'Dancer::Route::Cache' );
+    isa_ok $cache => 'Dancer::Route::Cache';
     cmp_ok( $cache->size_limit, '==', $sizes{'10M'}, 'setting size_limit' );
     cmp_ok( $cache->path_limit, '==', 10,            'setting path_limit' );
 }
@@ -47,30 +47,24 @@ my %reqs = (
 
 foreach my $method ( qw/get post/ ) {
     foreach my $path ( '/in', '/out', '/err' ) {
-        response_status_is [$method => $path] => 200, "$method $path request"
+        response_status_is [$method => $path] => 200;
     }
 }
 
 my $cache = Dancer::Route::Cache->get;
-isa_ok( $cache, 'Dancer::Route::Cache' );
+isa_ok $cache => 'Dancer::Route::Cache';
 
 # checking when path doesn't exist
-is(
-    $cache->route_from_path( get => '/wont/work'),
-    undef,
-    'non-existing path',
-);
+is $cache->route_from_path( get => '/wont/work') => undef,
+  'non-existing path';
 
-is(
-    $cache->route_from_path( post => '/wont/work'),
-    undef,
-    'non-existing path',
-);
+is $cache->route_from_path( post => '/wont/work') => undef,
+  'non-existing path';
 
 foreach my $method ( qw/get post/ ) {
     foreach my $path ( '/in', '/out', '/err' ) {
         my $route = $cache->route_from_path( $method, $path );
-        is( ref $route, 'Dancer::Route', "Got route for $path ($method)" );
+        is ref($route) => 'Dancer::Route', "Got route for $path ($method)";
     }
 }
 
@@ -81,14 +75,14 @@ foreach my $path ( '/out', '/err' ) {
     my %content; # by method
     foreach my $method ( qw/get post/ ) {
         my $handler = $cache->route_from_path( $method => $path );
-        ok( $handler, "Got handler for $method $path" );
+        ok $handler, "Got handler for $method $path";
         if ($handler) {
             $content{$method} = $handler->{'content'};
         }
     }
 
     if ( defined $content{'get'} and defined $content{'post'} ) {
-        is( $content{'get'}, $content{'post'}, "get/post $path is the same" );
+        is $content{'get'} => $content{'post'}, "get/post $path is the same";
     }
 }
 

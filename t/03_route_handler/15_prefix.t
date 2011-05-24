@@ -6,7 +6,7 @@ use Dancer::Route;
 plan tests => 21;
 
 eval { prefix 'say' };
-like $@, qr/not a valid prefix/, 'prefix must start with a /';
+like $@ => qr/not a valid prefix/, 'prefix must start with a /';
 
 {
     prefix '/say' => 'prefix defined';
@@ -16,14 +16,14 @@ like $@, qr/not a valid prefix/, 'prefix must start with a /';
     get '/foo/' => sub { 'it worked' };
 
     get '/:char' => sub {
-            pass and return false if length( params->{char} ) > 1;
-            "char: " . params->{char};
-        };
+        pass and return false if length( params->{char} ) > 1;
+        "char: " . params->{char};
+    };
 
     get '/:number' => sub {
-            pass and return false if params->{number} !~ /^\d+$/;
-            "number: " . params->{number};
-        };
+        pass and return false if params->{number} !~ /^\d+$/;
+        "number: " . params->{number};
+    };
 
     any '/any' => sub {"any"};
 
