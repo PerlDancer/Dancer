@@ -7,8 +7,8 @@ plan tests => 23;
 # multiple token
 {
     get '/:resource/:id.:format' => sub {
-        [ params->{'resource'}, 
-          params->{'id'}, 
+        [ params->{'resource'},
+          params->{'id'},
           params->{'format'} ];
     };
 
@@ -20,17 +20,15 @@ plan tests => 23;
 }
 
 {
-    get( '/'               => sub { 'index' } );
-    get( '/hello/:name'    => sub { params->{name} } );
-    get( '/hello/:foo/bar' => sub { params->{foo} } );
-    post( '/new/:stuff' => sub { params->{stuff} } );
-    post( '/allo'       => sub { request->body } );
+    get  '/'               => sub { 'index' };
+    get  '/hello/:name'    => sub { params->{name}  };
+    get  '/hello/:foo/bar' => sub { params->{foo}   };
+    post '/new/:stuff'     => sub { params->{stuff} };
+    post '/allo'           => sub { request->body   };
 
-    get(
-        '/opt/:name?/?:lastname?' => sub {
-            [ params->{name}, params->{lastname} ];
-        }
-    );
+    get '/opt/:name?/?:lastname?' => sub {
+        [ params->{name}, params->{lastname} ];
+    };
 
     my @tests = (
         { method => 'GET',  path => '/',              expected => 'index' },
@@ -63,10 +61,10 @@ plan tests => 23;
         route_exists $req;
 
         if ( ref( $test->{expected} ) ) {
-            response_content_is_deeply $req, $test->{expected};
+            response_content_is_deeply $req => $test->{expected};
         }
         else {
-            response_content_is $req, $test->{expected};
+            response_content_is $req => $test->{expected};
         }
 
         # splat should not be set

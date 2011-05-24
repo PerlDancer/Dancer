@@ -10,29 +10,25 @@ plan tests => 19;
 {
     my $i = 0;
 
-    before( sub { content_type('text/xhtml'); } );
-    before(
-        sub {
-            if ( request->path_info eq '/redirect_from' ) {
-                redirect('/redirect_to');
-            }
-            elsif( request->path_info eq '/' or request->path eq '/somewhere' ){
-                params->{number} = 42;
-                var notice => "I am here";
-                request->path_info('/');
-            }
+    before sub { content_type('text/xhtml'); };
+    before sub {
+        if ( request->path_info eq '/redirect_from' ) {
+            redirect('/redirect_to');
         }
-    );
-
-    get(
-        '/' => sub {
-            is( params->{number}, 42,             "params->{number} is set" );
-            is( "I am here",      vars->{notice}, "vars->{notice} is set" );
-            return 'index';
+        elsif( request->path_info eq '/' or request->path eq '/somewhere' ){
+            params->{number} = 42;
+            var notice => "I am here";
+            request->path_info('/');
         }
-    );
+    };
 
-    get( '/redirect_from' => sub { $i++; } );
+    get '/' => sub {
+        is( params->{number}, 42,             "params->{number} is set" );
+        is( "I am here",      vars->{notice}, "vars->{notice} is set" );
+        return 'index';
+    };
+
+    get '/redirect_from' => sub { $i++; };
 
     route_exists       [ GET => '/' ];
     response_status_is [ GET => '/' ] => 200;
@@ -40,10 +36,11 @@ plan tests => 19;
     my $path = '/somewhere';
     my $request = [ GET => $path ];
 
-    route_doesnt_exist $request, "there is no route handler for $path...";
+    route_doesnt_exist $request => "there is no route handler for $path...";
 
-    response_status_is $request => 200, "...but a response is returned though";
-    response_content_is $request, 'index',
+    response_status_is  $request => 200,
+      "...but a response is returned though";
+    response_content_is $request => 'index',
       "which is the result of a redirection to /";
 
     response_headers_include [ GET => '/redirect_from' ] => [
@@ -67,13 +64,13 @@ plan tests => 19;
             "param format is defined in route handler" );
         1;
     };
-    route_exists [ GET => '/foo.json' ];
+    route_exists        [ GET => '/foo.json' ];
     response_content_is [ GET => '/foo.json' ], 1;
 }
 
 # filter and halt
 {
-    before sub { 
+    before sub {
         unless (params->{'requested'}) {
             return halt("stopped");
         }

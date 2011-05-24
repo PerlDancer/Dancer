@@ -1,13 +1,13 @@
 use Dancer ':syntax';
 use Dancer::Test;
-use Test::More tests => 51, import => ['!pass'];
+use Test::More tests => 47, import => ['!pass'];
 
 # regexps
 {
 
-    get( qr{/hello/([\w]+)} => sub { [splat] } );
-    get( qr{/show/([\d]+)}  => sub { [splat] } );
-    get( qr{/post/([\w\d\-\.]+)/#comment([\d]+)} => sub { [splat] } );
+    get qr{/hello/([\w]+)} => sub { [splat] };
+    get qr{/show/([\d]+)}  => sub { [splat] };
+    get qr{/post/([\w\d\-\.]+)/#comment([\d]+)} => sub { [splat] };
 
     my @tests = (
         {
@@ -33,9 +33,10 @@ use Test::More tests => 51, import => ['!pass'];
 
         my $request = [ GET => $path ];
 
-        response_status_is( $request => 200, "route handler found for path `$path'" );
-        response_content_is_deeply( $request, $expected,
-            "match data for path `$path' looks good" );
+        response_status_is         $request => 200,
+          "route handler found for path `$path'";
+        response_content_is_deeply $request => $expected,
+          "match data for path `$path' looks good";
     }
 
     response_status_is [GET => '/no/hello/bar'] => 404;
@@ -43,40 +44,30 @@ use Test::More tests => 51, import => ['!pass'];
 
 # passing
 {
-        get(
-            '/say/:char' => sub {
-                pass and return false if length( params->{char} ) > 1;
-                "char: " . params->{char};
-            }
-        );
+    get '/say/:char' => sub {
+        pass and return false if length( params->{char} ) > 1;
+        "char: " . params->{char};
+    };
 
-        get(
-            '/say/:number' => sub {
-                pass and return false if params->{number} !~ /^\d+$/;
-                "number: " . params->{number};
-            }
-    );
+    get '/say/:number' => sub {
+        pass and return false if params->{number} !~ /^\d+$/;
+        "number: " . params->{number};
+    };
 
-        get(
-            qr{/say/_(.*)} => sub {
-                "underscore: " . params->{splat}[0];
-            }
-    );
+    get qr{/say/_(.*)} => sub {
+        "underscore: " . params->{splat}[0];
+    };
 
-        get(
-            '/say/:word' => sub {
-                pass and return false if params->{word} =~ /trash/;
-                "word: " . params->{word};
-            }
-    );
+    get '/say/:word' => sub {
+        pass and return false if params->{word} =~ /trash/;
+        "word: " . params->{word};
+    };
 
-        get(
-            '/say/*' => sub {
-                "trash: " . params->{splat}[0];
-            }
-    );
+    get '/say/*' => sub {
+        "trash: " . params->{splat}[0];
+    };
 
-    get( '/foo/' => sub { pass } );
+    get '/foo/' => sub { pass };
 
     my @tests = (
         { path => '/say/A',           expected => 'char: A' },
@@ -91,13 +82,14 @@ use Test::More tests => 51, import => ['!pass'];
         my $path     = $test->{path};
         my $expected = $test->{expected};
 
-        response_status_is [ GET => $path ] => 200, "route found for path `$path'";
+        response_status_is [ GET => $path ] => 200,
+          "route found for path `$path'";
         response_content_is_deeply [ GET => $path ] => $expected,
-                                   "match data for path `$path' looks good";
+          "match data for path `$path' looks good";
     }
 
-    response_status_is( [ GET => '/foo' ],
-        404, "Pass over the last match is 404" );
+    response_status_is [ GET => '/foo' ] => 404,
+      "Pass over the last match is 404";
 }
 
 # wildcards
@@ -128,7 +120,7 @@ use Test::More tests => 51, import => ['!pass'];
 
     my $nb_tests = ( scalar(@paths) ) + ( scalar(@tests) * 2 );
 
-    ok( get( $_ => sub { [splat] } ), "route $_ is set" ) for @paths;
+    get( $_ => sub { [splat] } ) for @paths;
 
     foreach my $test (@tests) {
         my $path     = $test->{path};
@@ -173,8 +165,7 @@ use Test::More tests => 51, import => ['!pass'];
         foreach my $method ( @{ $route->{methods} } ) {
             my $response = dancer_response( $method => $route->{path} );
             ok( defined($response),
-                "route handler found for method $method, path "
-                  . $route->{path} );
+                "route handler found for method $method, path $route->{path}");
             is $response->content, $route->{expected}, "response content is ok";
         }
     }
