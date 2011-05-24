@@ -36,9 +36,7 @@ Test::TCP::test_tcp(
         my $handler = sub {
             use Dancer;
 
-            setting port         => $port;
-            setting apphandler   => 'PSGI';
-            setting startup_info => 0;
+            set port => $port, apphandler   => 'PSGI', startup_info => 0;
 
             get '/foo' => sub {request->path_info};
 
