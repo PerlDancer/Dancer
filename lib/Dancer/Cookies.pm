@@ -16,6 +16,14 @@ sub init {
     $COOKIES = parse_cookie_from_env();
 }
 
+sub cookie {
+	my $class = shift;
+    my $name  = shift;
+    my $value = shift;
+	defined $value && set_cookie( $class, $name, $value, @_ );
+	cookies->{$name} ? cookies->{$name}->value : undef;
+}
+
 sub parse_cookie_from_env {
     my $request = Dancer::SharedData->request;
     my $env     = (defined $request) ? $request->env : {};
@@ -75,6 +83,11 @@ Dancer::Cookies - a singleton storage for all cookies
         my $value  = $cookie->value;
         print "$name => $value\n";
     }
+
+
+    cookie lang => "fr-FR"; #set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";
+    cookie "lang"           #return a cookie value
 
 =head1 DESCRIPTION
 

@@ -37,6 +37,7 @@ our @EXPORT    = qw(
   before
   before_template
   cookies
+  cookie
   config
   content_type
   dance
@@ -102,6 +103,7 @@ sub any             { Dancer::App->current->registry->any_add(@_) }
 sub before          { Dancer::Hook->new('before', @_) }
 sub before_template { Dancer::Hook->new('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
+sub cookie          { Dancer::Cookies->cookie( @_ ) }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::SharedData->response->content_type(@_) }
