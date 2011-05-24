@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 105, import => ['!pass'];
+use Test::More tests => 66, import => ['!pass'];
 use Dancer::Test;
 use Dancer ':syntax';
 setting route_cache => 1;
@@ -36,9 +36,9 @@ setting route_cache => 1;
 
 # running three routes
 # GET and POST with in pass to 'any'
-ok( get(  '/:p', sub { params->{'p'} eq 'in' or pass } ), 'adding POST /:p' );
-ok( post( '/:p', sub { params->{'p'} eq 'in' or pass } ), 'adding GET  /:p' );
-ok( any(  '/:p', sub { 'any' } ),                         'adding any  /:p' );
+get  '/:p', sub { params->{'p'} eq 'in' or pass };
+post '/:p', sub { params->{'p'} eq 'in' or pass };
+any  '/:p', sub { 'any' };
 
 my %reqs = (
     '/'    => 'GET / request',
@@ -47,7 +47,7 @@ my %reqs = (
 
 foreach my $method ( qw/get post/ ) {
     foreach my $path ( '/in', '/out', '/err' ) {
-        response_exists [$method => $path] => "$method $path request"
+        response_status_is [$method => $path] => 200, "$method $path request"
     }
 }
 
@@ -104,11 +104,11 @@ $cache->{'cache_array'} = [];
 
     my @paths = 'a' .. 'z';
     foreach my $path (@paths) {
-        ok( get( "/$path", sub {1} ), 'Added path' );
+        get "/$path" => sub {1};
     }
 
     foreach my $path (@paths) {
-        response_exists [GET => "/$path"] => "get $path request";
+        response_status_is [GET => "/$path"] => 200, "get $path request";
     }
 
     # check that only 10 remained
@@ -147,11 +147,11 @@ SKIP: {
     }
 
     foreach my $path (@paths) {
-        ok( get( "/$path", sub {1} ), 'Added path' );
+        get "/$path" => sub {1};
     }
 
     foreach my $path (@paths) {
-        response_exists [GET => $path], 'get request';
+        response_status_is [GET => $path] => 200, 'get request';
     }
 
     # check that only 10 remained
