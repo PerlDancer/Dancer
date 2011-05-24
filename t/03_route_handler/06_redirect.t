@@ -2,7 +2,7 @@ use Test::More;
 use Dancer ':tests', ':syntax';
 use Dancer::Test;
 
-plan tests => 20;
+plan tests => 15;
 
 # basic redirect
 {
@@ -11,14 +11,10 @@ plan tests => 20;
     get '/redirect' => sub { header 'X-Foo' => 'foo'; redirect '/'; };
     get '/redirect_querystring' => sub { redirect '/login?failed=1' };
 
-    response_exists [ GET => '/' ];
-    response_content_is [ GET => '/' ], "home";
+    response_status_is  [ GET => '/' ] => 200;
+    response_content_is [ GET => '/' ] => "home";
 
-    response_exists [ GET => '/bounce' ];
-    response_status_is [ GET => '/bounce' ], 302;
-
-    response_exists [ GET => '/' ];
-    response_content_is [ GET => '/' ], "home";
+    response_status_is [ GET => '/bounce' ] => 302;
 
     my $expected_headers = [
         'Location'     => 'http://localhost/',
@@ -66,13 +62,11 @@ plan tests => 20;
     };
 
     my $req = [ GET => '/cond_bounce', { params => { bounce => 1 } } ];
-    response_exists $req,     "response for /cond_bounce, with bounce param";
-    response_status_is $req,  302, 'status is 302';
+    response_status_is  $req, 302, 'status is 302';
     response_content_is $req, '', 'content is empty when bounced';
 
     $req = [ GET => '/cond_bounce' ];
-    response_exists $req,     "response for /cond_bounce without bounce param";
-    response_status_is $req,  200, 'status is 200';
+    response_status_is  $req, 200, 'status is 200';
     response_content_is $req, $not_redirected_content, 'content is not empty';
 
 }
