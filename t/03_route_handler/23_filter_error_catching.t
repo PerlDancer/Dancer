@@ -19,5 +19,5 @@ set show_errors => true;
     };
 }
 
-response_status_is [GET => '/'], 500;
-response_content_like [GET => '/'], qr/FooBar-&gt;send_error/;
+response_status_is    [GET => '/'] => 500;
+response_content_like [GET => '/'] => qr/FooBar-&gt;send_error/;
