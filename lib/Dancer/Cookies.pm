@@ -17,11 +17,11 @@ sub init {
 }
 
 sub cookie {
-	my $class = shift;
+    my $class = shift;
     my $name  = shift;
     my $value = shift;
-	defined $value && set_cookie( $class, $name, $value, @_ );
-	cookies->{$name} ? cookies->{$name}->value : undef;
+    defined $value && set_cookie( $class, $name, $value, @_ );
+    cookies->{$name} ? cookies->{$name}->value : undef;
 }
 
 sub parse_cookie_from_env {
