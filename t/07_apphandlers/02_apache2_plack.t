@@ -66,12 +66,11 @@ $env->{'/'}  = {
 
 use Dancer;
 
-set apphandler => 'PSGI';
-set logger => 'file';
+set apphandler => 'PSGI', logger => 'file';
 
 Dancer::Config->load;
 
-get '/' => sub { '/' };
+get '/'    => sub { '/'    };
 get '/foo' => sub { '/foo' };
 
 my $req = $request->{'/'};
