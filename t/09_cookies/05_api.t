@@ -8,7 +8,7 @@ my @tests = (
     { name => 'msg', value => 'hello; world', opts => { http_only => 0 } },
 );
 
-plan tests => scalar (@tests * 5) + 6 + 4;
+plan tests => scalar (@tests * 5) + 10;
 
 is_deeply(cookies, {}, "cookies() return a hashref");
 

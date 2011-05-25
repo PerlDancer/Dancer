@@ -36,8 +36,8 @@ our @EXPORT    = qw(
   any
   before
   before_template
-  cookies
   cookie
+  cookies
   config
   content_type
   dance
