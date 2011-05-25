@@ -35,7 +35,7 @@ Test::TCP::test_tcp(
         use lib File::Spec->catdir( 't', 'lib' );
         use TestApp;
         Dancer::Config->load;
-        set port => $port; environment  => 'production', startup_info => 0;
+        set port => $port, environment  => 'production', startup_info => 0;
         Dancer->dance();
     },
 );
