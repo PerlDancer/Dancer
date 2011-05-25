@@ -111,6 +111,7 @@ sub setting {
         while (@_) {
             my $setting = shift;
             my $value   = shift;
+
             _set_setting  ($setting, $value);
 
             # At the moment, with any kind of hierarchical setter,
