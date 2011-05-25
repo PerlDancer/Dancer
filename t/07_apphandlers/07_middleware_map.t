@@ -48,11 +48,8 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
 
-        setting environment           => 'production';
-        setting apphandler            => 'PSGI';
-        setting port                  => $port;
-        setting startup_info          => 0;
-        setting plack_middlewares_map => $confs;
+        set environment => 'production', apphandler => 'PSGI',
+          port => $port, startup_info => 0, plack_middlewares_map => $confs;
         my $app = Dancer::Handler->get_handler()->dance;
         Plack::Loader->auto( port => $port )->run($app);
     },

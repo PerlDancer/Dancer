@@ -16,10 +16,10 @@ Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua = LWP::UserAgent->new;
-        
+
         my $res = $ua->get("http://127.0.0.1:$port/env");
         like $res->content, qr/PATH_INFO/, 'path info is found in response';
-        
+
         $res = $ua->get("http://127.0.0.1:$port/name/bar");
         like $res->content, qr/Your name: bar/, 'name is found on a GET';
 

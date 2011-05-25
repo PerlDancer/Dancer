@@ -40,8 +40,7 @@ Test::TCP::test_tcp(
         use lib File::Spec->catdir( 't', 'lib' );
         use TestApp;
         use Dancer;
-        setting apphandler  => 'PSGI';
-        setting environment => 'production';
+        set apphandler  => 'PSGI', environment => 'production';
         Dancer::Config->load;
 
         Plack::Loader->auto(port => $port)->run($app);
