@@ -9,6 +9,9 @@
     [ BUG FIXES ]
     * Dancer::Test was broken for tests using data in POST (GH#534)
       (Franck Cuny)
+    * Multiple setter implemented at 1.3039_01 was broken for App
+      specific settings.
+      (Alberto Simões)
 
     [ DOCUMENTATION ]
     * Improve Serializers documentation
