@@ -100,8 +100,6 @@ t/00_base/12_utf8_charset.t
 t/00_base/13_dancer_singleton.t
 t/00_base/14_changelog.t
 t/00_base/config.t
-t/00_base/dancer_test.t
-t/00_base/dancer_test_functions.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
 t/00_base/uri_for.t
