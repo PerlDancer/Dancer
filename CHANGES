@@ -15,6 +15,10 @@
     * return 400 Bad Request when requested filename seems suspicious
       (Vladimir Lettiev and Franck Cuny)
 
+    [ ENHANCEMENTS ]
+    * Cookie accessor to manipulate cookies directly.
+      (Niko)
+
     [ DOCUMENTATION ]
     * Improve Serializers documentation
       (Damien Krotkine)
