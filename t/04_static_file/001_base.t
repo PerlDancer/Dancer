@@ -20,22 +20,25 @@ is_deeply(
 );
 is( ref( $resp->{content} ), 'GLOB', "response content looks good for @$req" );
 
-$resp = Dancer::Test::_get_file_response([ GET => "/hello\0.txt" ]);
-ok $resp;
+ok $resp = Dancer::Test::_get_file_response( [ GET => "/hello\0.txt" ] );
 my $r = Dancer::SharedData->response();
-is $r->status, 400;
+is $r->status,  400;
 is $r->content, 'Bad Request';
 
 SKIP: {
-    skip "Test::TCP is required", 1 unless Dancer::ModuleLoader->load('Test::TCP');
-    use HTTP::Request;
-    use LWP::UserAgent;
-    use Plack::Loader;
+    skip "Test::TCP is required", 2
+      unless Dancer::ModuleLoader->load('Test::TCP');
+    skip "Plack is required", 2
+      unless Dancer::ModuleLoader->load('Plack::Loader');
+    require HTTP::Request;
+    require LWP::UserAgent;
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
-            my $req = HTTP::Request->new(GET => "http://127.0.0.1:$port/hello%00.txt");
-            my $ua = LWP::UserAgent->new();
+            my $req =
+              HTTP::Request->new(
+                GET => "http://127.0.0.1:$port/hello%00.txt" );
+            my $ua  = LWP::UserAgent->new();
             my $res = $ua->request($req);
             ok !$res->is_success;
             is $res->code, 400;
@@ -43,11 +46,10 @@ SKIP: {
         server => sub {
             my $port = shift;
             setting apphandler => 'PSGI';
-            get '/' => sub {"hello"};
             Dancer::Config->load;
             my $app = Dancer::Handler->psgi_app;
-            Plack::Loader->auto(port => $port)->run($app);
+            Plack::Loader->auto( port => $port )->run($app);
             Dancer->dance();
         }
     );
-};
+}
