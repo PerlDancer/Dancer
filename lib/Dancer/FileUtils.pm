@@ -11,7 +11,7 @@ use Cwd 'realpath';
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(path dirname read_file_content read_glob_content open_file set_file_mode);
+@EXPORT_OK = qw(path real_path dirname read_file_content read_glob_content open_file set_file_mode);
 
 # Undo UNC special-casing catfile-voodoo on cygwin
 sub _trim_UNC {
@@ -37,6 +37,8 @@ sub d_catpath { File::Spec->catpath(_trim_UNC(@_)) }
 sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
 
 sub path { d_catfile(@_) }
+
+sub real_path { realpath( d_catfile(@_) ) }
 
 sub path_no_verify {
     my @nodes = File::Spec->splitpath(d_catdir(@_)); # 0=vol,1=dirs,2=file

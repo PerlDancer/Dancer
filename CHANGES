@@ -12,6 +12,8 @@
     * Multiple setter implemented at 1.3039_01 was broken for App
       specific settings.
       (Alberto Simões)
+    * return 400 Bad Request when requested filename seems suspicious
+      (Vladimir Lettiev and Franck Cuny)
 
     [ DOCUMENTATION ]
     * Improve Serializers documentation
