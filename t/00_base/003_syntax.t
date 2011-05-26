@@ -5,6 +5,7 @@ my @keywords = qw(
     any
     before
     before_template
+    cookie
     cookies
     config
     content_type

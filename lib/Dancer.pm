@@ -36,6 +36,7 @@ our @EXPORT    = qw(
   any
   before
   before_template
+  cookie
   cookies
   config
   content_type
@@ -102,6 +103,7 @@ sub any             { Dancer::App->current->registry->any_add(@_) }
 sub before          { Dancer::Hook->new('before', @_) }
 sub before_template { Dancer::Hook->new('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
+sub cookie          { Dancer::Cookies->cookie( @_ ) }
 sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::SharedData->response->content_type(@_) }
@@ -551,6 +553,17 @@ In the case you have stored something else than a Scalar in your cookie:
         my %values = $cookie->value;
         return ($values{token}, $values{token_secret});
     };
+
+
+=head2 cookie
+
+Accesses a cookie value (ot set it). Note that this method will
+eventually be preferred to C<set_cookie>.
+
+    cookie lang => "fr-FR";              # set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
+    cookie "lang"                        # return a cookie value
+
 
 =head2 config
 
@@ -1181,6 +1194,9 @@ You can't store more complex structure than this. All keys in the HashRef
 should be Scalars; storing references will not work.
 
 See L<Dancer::Cookie> for further options when creating your cookie.
+
+Note that this method will be eventually deprecated in favor of the
+new C<cookie> method.
 
 =head2 session
 
