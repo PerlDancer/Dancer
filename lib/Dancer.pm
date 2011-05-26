@@ -554,6 +554,17 @@ In the case you have stored something else than a Scalar in your cookie:
         return ($values{token}, $values{token_secret});
     };
 
+
+=head2 cookie
+
+Accesses a cookie value (ot set it). Note that this method will
+eventually be preferred to C<set_cookie>.
+
+    cookie lang => "fr-FR";              # set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
+    cookie "lang"                        # return a cookie value
+
+
 =head2 config
 
 Accesses the configuration of the application:
@@ -1183,6 +1194,9 @@ You can't store more complex structure than this. All keys in the HashRef
 should be Scalars; storing references will not work.
 
 See L<Dancer::Cookie> for further options when creating your cookie.
+
+Note that this method will be eventually deprecated in favor of the
+new C<cookie> method.
 
 =head2 session
 

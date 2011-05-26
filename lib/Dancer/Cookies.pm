@@ -109,6 +109,14 @@ Returns a hash reference of all cookies, all objects of L<Dancer::Cookie> type.
 
 The key is the cookie name, the value is the L<Dancer::Cookie> object.
 
+=head2 cookie
+
+C<cookie> method is useful to query or set cookies easily.
+
+    cookie lang => "fr-FR";              # set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
+    cookie "lang"                        # return a cookie value
+
 =head2 parse_cookie_from_env
 
 Fetches all the cookies from the environment, parses them and creates a hashref
