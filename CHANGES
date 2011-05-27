@@ -1,4 +1,4 @@
-{{$NEXT}}
+1.3059_01      27.05.2011
 
     [ API CHANGES ]
     * Second level of deprecation for render_with_layout method.
