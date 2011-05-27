@@ -100,8 +100,6 @@ t/00_base/12_utf8_charset.t
 t/00_base/13_dancer_singleton.t
 t/00_base/14_changelog.t
 t/00_base/config.t
-t/00_base/dancer_test.t
-t/00_base/dancer_test_functions.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
 t/00_base/uri_for.t
@@ -319,6 +317,8 @@ t/22_hooks/07_file.t
 t/22_hooks/08_error.t
 t/22_hooks/views/index.tt
 t/22_hooks/views/layouts/main.tt
+t/23_dancer_tests/01_basic.t
+t/23_dancer_tests/02_tests_functions.t
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm

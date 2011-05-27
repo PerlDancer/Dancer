@@ -113,7 +113,7 @@ Dancer::Serializer::Mutable - (De)Serialize content using the appropriate HTTP h
 This serializer will try find the best (de)serializer for a given request.
 For this, it will go through:
 
-=over 4
+=over
 
 =item
 
@@ -135,18 +135,18 @@ The default is B<application/json>
 
 =head2 METHODS
 
-=over 4
+=head2 serialize
 
-=item B<serialize>
+Serialize a data structure to a structure. The type of structure depends of the
+request's content-type. For now, it can be one of YAML, XML, JSON.
 
-Serialize a data structure to a YAML structure.
+=head2 deserialize
 
-=item B<deserialize>
+Deserialize a YAML structure to a data structure. The type of structure depends of the
+request's content-type. For now, it can be one of YAML, XML, JSON.
 
-Deserialize a YAML structure to a data structure
+=head2 content_type
 
-=item B<content_type>
-
-Return 'application/json'
-
-=back
+Returns the content-type that were used during the last C<serialize> /
+C<deserialize> call. B<WARNING> : you must call C<serialize> / C<deserialize>
+before calling C<content_type>. Otherwise he return value will be C<undef>.

@@ -8,7 +8,7 @@ my @tests = (
     { name => 'msg', value => 'hello; world', opts => { http_only => 0 } },
 );
 
-plan tests => scalar (@tests * 5) + 6;
+plan tests => scalar (@tests * 5) + 10;
 
 is_deeply(cookies, {}, "cookies() return a hashref");
 
@@ -44,4 +44,9 @@ my $cookies = Dancer::Cookies->cookies;
 my %values = $cookies->{complex}->value;
 is $values{token}, 'foo';
 is $values{token_secret}, 'bar';
+
+is cookie(answer => 42, path => 'dtc'), 42, "cookie set";
+is cookie('answer'), 42, "cookie get";
+is cookies->{answer}->path, 'dtc', "cookie option correctly set";
+is cookie('zorglub'), undef, "unknown cookie";
 

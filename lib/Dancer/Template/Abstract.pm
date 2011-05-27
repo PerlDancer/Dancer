@@ -60,7 +60,7 @@ sub apply_renderer {
     my $content = $self->render($view, $tokens);
 
     Dancer::Factory::Hook->execute_hooks('after_template_render', \$content);
-    
+
     # make sure to avoid ( undef ) in list context return
     defined $content
       and return $content;
@@ -123,18 +123,9 @@ sub _render_with_layout {
     Dancer::Deprecation::deprecated(
         feature => 'render_with_layout',
         version => '1.3000',
+        fatal   => 1,
         reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
     );
-
-    my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
-
-    if (! defined $full_content) {
-          return Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        )->render();
-    }
-    return $full_content;
 }
 
 sub template {
@@ -143,13 +134,13 @@ sub template {
 
     # it's important that $tokens is not undef, so that things added to it via
     # a before_template in apply_renderer survive to the apply_layout. GH#354
-    $tokens ||= {}; 
+    $tokens  ||= {};
     $options ||= {};
 
     $content = $view ? Dancer::Template->engine->apply_renderer($view, $tokens)
                      : delete $options->{content};
 
-    defined $content and $full_content = 
+    defined $content and $full_content =
       Dancer::Template->engine->apply_layout($content, $tokens, $options);
 
     defined $full_content

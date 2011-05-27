@@ -163,21 +163,33 @@ sub get {
 }
 
 sub setting {
-    my ($self, $name, $value) = @_;
+    my $self = shift;
 
     if ($self->name eq 'main') {
-        return (@_ == 3)
-          ? Dancer::Config::setting($name => $value)
-          : Dancer::Config::setting($name);
+        return (@_ > 1)
+          ? Dancer::Config::setting( @_ )
+          : Dancer::Config::setting( $_[0] );
     }
 
-    return
-      (@_ == 3) ? $self->settings->{$name} =
-      Dancer::Config->normalize_setting($name => $value)
-      : (
+    if (@_ > 1) {
+        $self->_set_settings(@_)
+    } else {
+        my $name = shift;
         exists($self->settings->{$name}) ? $self->settings->{$name}
-        : Dancer::Config::setting($name)
-      );
+          : Dancer::Config::setting($name);
+    }
 }
+
+sub _set_settings {
+    my $self = shift;
+    die "Odd number of elements in set" unless @_ % 2 == 0;
+    while (@_) {
+        my $name = shift;
+        my $value = shift;
+        $self->settings->{$name} =
+          Dancer::Config->normalize_setting($name => $value);
+    }
+}
+
 
 1;

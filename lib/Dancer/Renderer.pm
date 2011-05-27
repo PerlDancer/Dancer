@@ -13,7 +13,7 @@ use Dancer::Request;
 use Dancer::Response;
 use Dancer::Serializer;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path dirname read_file_content open_file);
+use Dancer::FileUtils qw(path real_path dirname read_file_content open_file);
 use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
@@ -145,10 +145,20 @@ sub serialize_response_if_needed {
 }
 
 sub get_file_response {
-    my $request     = Dancer::SharedData->request;
-    my $path_info   = $request->path_info;
-    my $app         = Dancer::App->current;
-    my $static_file = path($app->setting('public'), $path_info);
+    my $request   = Dancer::SharedData->request;
+    my $path_info = $request->path_info;
+
+    # requests that have \0 in path are forbidden
+    if ( $path_info =~ /\0/ ) {
+        _bad_request();
+        return 1;
+    }
+
+    my $app = Dancer::App->current;
+    my $static_file = real_path( $app->setting('public'), $path_info );
+
+    return if ( !$static_file
+        || index( $static_file, real_path( $app->setting('public') ) ) != 0 );
 
     return Dancer::Renderer->get_file_response_for_path( $static_file, undef,
         $request->content_type );
@@ -187,6 +197,12 @@ sub _get_mime_type {
     my $file = shift;
     my $mime = Dancer::MIME->instance();
     return $mime->for_file($file);
+}
+
+sub _bad_request{
+    my $response = Dancer::SharedData->response() || Dancer::Response->new();
+    $response->status(400);
+    $response->content('Bad Request');
 }
 
 # set of builtin templates needed by Dancer when rendering HTML pages
