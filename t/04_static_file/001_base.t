@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+BEGIN { $ENV{PERL_ONLY} = 1; }
+
 use Test::More tests => 8, import => ['!pass'];
 use Dancer::Test;
 
@@ -32,6 +34,7 @@ SKIP: {
       unless Dancer::ModuleLoader->load('Plack::Loader');
     require HTTP::Request;
     require LWP::UserAgent;
+
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
