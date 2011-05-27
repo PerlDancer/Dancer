@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+# There is an issue with HTTP::Parser::XS while parsing an URI with \0
+# Using the pure perl via PERL_ONLY works
 BEGIN { $ENV{PERL_ONLY} = 1; }
 
 use Test::More tests => 8, import => ['!pass'];
