@@ -1,5 +1,11 @@
 {{$NEXT}}
 
+    [ SECURITY ]
+    * FIX CVE-2011-1589 (Mojolicious report, but Dancer was vulnerable as well).
+      Return "400 Bad Request" when requested filename seems suspicious
+      http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1589
+      (Vladimir Lettiev and Franck Cuny)
+
     [ API CHANGES ]
     * Second level of deprecation for render_with_layout method.
       (Alberto Simões)
@@ -12,8 +18,6 @@
     * Multiple setter implemented at 1.3039_01 was broken for App
       specific settings.
       (Alberto Simões)
-    * return 400 Bad Request when requested filename seems suspicious
-      (Vladimir Lettiev and Franck Cuny)
 
     [ ENHANCEMENTS ]
     * Cookie accessor to manipulate cookies directly.
