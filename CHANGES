@@ -1,11 +1,5 @@
 {{$NEXT}}
 
-    [ SECURITY ]
-    * FIX CVE-2011-1589 (Mojolicious report, but Dancer was vulnerable as well).
-      Return "400 Bad Request" when requested filename seems suspicious
-      http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1589
-      (Vladimir Lettiev and Franck Cuny)
-
     [ API CHANGES ]
     * Second level of deprecation for render_with_layout method.
       (Alberto Simões)
@@ -26,6 +20,15 @@
     [ DOCUMENTATION ]
     * Improve Serializers documentation
       (Damien Krotkine)
+
+1.3051      27.05.2011
+    ** Security release based on 1.3050 **
+
+    [ SECURITY ]
+    * FIX CVE-2011-1589 (Mojolicious report, but Dancer was vulnerable as well).
+      Return "400 Bad Request" when requested filename seems suspicious
+      http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1589
+      (Vladimir Lettiev and Franck Cuny)
 
 1.3050      20.05.2011
     ** Codename: The Captain Hook Adventure // Franck Cuny **
