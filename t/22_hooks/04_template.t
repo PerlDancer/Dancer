@@ -4,15 +4,15 @@ use warnings;
 use Test::More tests => 7, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
-use Time::HiRes qw/gettimeofday/;
+use Time::HiRes qw/gettimeofday tv_interval/;
 
-my ( $start, $diff );
+my ($t0, $elapsed);
 
 ok(
     before_template sub {
         my $tokens = shift;
         $tokens->{foo} = 'bar';
-        ( undef, $start ) = gettimeofday();
+        $t0 = [gettimeofday];
     }
 );
 
@@ -21,7 +21,7 @@ ok(
         my $full_content = shift;
         like $$full_content, qr/foo => bar/;
         my ( undef, $end ) = gettimeofday();
-        $diff = $end - $start;
+        $elapsed = tv_interval($t0);
     }
 );
 
@@ -34,5 +34,5 @@ get '/' => sub {
 route_exists [ GET => '/' ];
 response_content_like( [ GET => '/' ], qr/foo => bar/ );
 
-ok $diff;
-cmp_ok $diff, '>', 0;
+ok $elapsed;
+cmp_ok $elapsed, '>', 0;
