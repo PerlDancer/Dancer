@@ -16,7 +16,7 @@ my $changelog_filename = 'CHANGES';
 my $stop_checking_version = '1.3014';
 
 # ordered list of possible sections
-my @possible_sections = ('API CHANGES', 'BUG FIXES', 'ENHANCEMENTS', 'DOCUMENTATION', );
+my @possible_sections = ('SECURITY', 'API CHANGES', 'BUG FIXES', 'ENHANCEMENTS', 'DOCUMENTATION', );
 
 #################
 
