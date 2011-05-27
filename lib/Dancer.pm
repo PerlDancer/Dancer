@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3050';
+our $VERSION   = '1.3059_01';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
