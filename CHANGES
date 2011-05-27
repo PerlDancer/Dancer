@@ -1,4 +1,5 @@
-{{$NEXT}}
+1.3051      27.05.2011
+    ** Security release based on 1.3050 **
 
     [ SECURITY ]
     * FIX CVE-2011-1589 (Mojolicious report, but Dancer was vulnerable as well).
