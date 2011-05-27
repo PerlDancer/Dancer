@@ -317,6 +317,8 @@ t/22_hooks/07_file.t
 t/22_hooks/08_error.t
 t/22_hooks/views/index.tt
 t/22_hooks/views/layouts/main.tt
+t/23_dancer_tests/01_basic.t
+t/23_dancer_tests/02_tests_functions.t
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm
