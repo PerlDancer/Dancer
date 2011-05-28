@@ -14,6 +14,8 @@
       with the deprecated keyword "r". The related code is now more 
       concise and should be slightly more efficient.
       (Alexis Sukrieh)
+    * param accessor to retrieve a parameter easily.
+      (Alberto Simões)
 
 1.3059_01      27.05.2011
 
