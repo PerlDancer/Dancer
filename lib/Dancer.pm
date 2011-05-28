@@ -63,6 +63,7 @@ our @EXPORT    = qw(
   logger
   mime
   options
+  param
   params
   pass
   path
@@ -139,6 +140,7 @@ sub logger          {
 sub mime            { Dancer::MIME->instance() }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
+sub param           { goto &_param }
 sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
@@ -286,6 +288,11 @@ sub _init_script_dir {
     $res or croak "unable to set libdir : $error";
 }
 
+sub _param {
+    my $name = shift;
+    return params->{$name};
+}
+
 # Scheme grammar as defined in RFC 2396
 #  scheme = alpha *( alpha | digit | "+" | "-" | "." )
 my $scheme_re = qr{ [a-z][a-z0-9\+\-\.]* }ix;
@@ -365,7 +372,7 @@ Dancer - lightweight yet powerful web application framework
     use Dancer;
 
     get '/hello/:name' => sub {
-        return "Why, hello there " . params->{name};
+        return "Why, hello there " . param('name');
     };
 
     dance;
@@ -580,7 +587,7 @@ Sets the B<content-type> rendered, for the current route handler:
     get '/cat/:txtfile' => sub {
         content_type 'text/plain';
 
-        # here we can dump the contents of params->{txtfile}
+        # here we can dump the contents of param('txtfile')
     };
 
 You can use abbreviations for content types. For instance:
@@ -588,7 +595,7 @@ You can use abbreviations for content types. For instance:
     get '/svg/:id' => sub {
         content_type 'svg';
 
-        # here we can dump the image with id params->{id}
+        # here we can dump the image with id param('id')
     };
 
 Note that if you want to change the default content-type for every route, you
@@ -980,7 +987,20 @@ commonly-used methods are summarized below:
 =head2 params
 
 I<This method should be called from a route handler>.
-It's an alias for the L<Dancer::Request params accessor|Dancer::Request/"params">.
+It's an alias for the L<Dancer::Request params accessor|Dancer::Request/"params">. It returns
+an hash reference to all defined parameters. Check C<param> bellow to access quickly to a single
+parameter value.
+
+=head2 param
+
+I<This method should be called from a route handler>.
+This method is an accessor to the parameters hash table.
+
+   post '/login' => sub {
+       my $username = param "user";
+       my $password = param "pass";
+       # ...
+   }
 
 =head2 pass
 

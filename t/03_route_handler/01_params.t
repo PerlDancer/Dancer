@@ -10,9 +10,9 @@ use Data::Dumper;
 
 {
     ok(get('/' => sub { 'index' }), 'first route set');
-    ok(get('/hello/:name' => sub { params->{name} }), 'second route set');
-    ok(get('/hello/:foo/bar' => sub { params->{foo} }), 'third route set');
-    ok(post('/new/:stuff' => sub { params->{stuff} }), 'post 1 route set');
+    ok(get('/hello/:name'    => sub { param 'name'   }), 'second route set');
+    ok(get('/hello/:foo/bar' => sub { param 'foo'    }), 'third route set');
+    ok(post('/new/:stuff'    => sub { param 'stuff'  }), 'post 1 route set');
     ok(post('/allo' => sub { request->body }), 'post 2 route set');
 
     ok(get('/opt/:name?/?:lastname?' => sub { 
