@@ -140,7 +140,7 @@ sub logger          {
 sub mime            { Dancer::MIME->instance() }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
-sub param           { goto &_param }
+sub param           { params->{$_[0]} }
 sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
@@ -288,10 +288,6 @@ sub _init_script_dir {
     $res or croak "unable to set libdir : $error";
 }
 
-sub _param {
-    my $name = shift;
-    return params->{$name};
-}
 
 # Scheme grammar as defined in RFC 2396
 #  scheme = alpha *( alpha | digit | "+" | "-" | "." )
