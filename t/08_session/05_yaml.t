@@ -57,6 +57,6 @@ eval { $session = Dancer::Session::YAML->create() };
 my $error = $@;
 like ($@, qr/Parent directory .* does not exist/, "session dir was not recreated");
 
-Dancer::Session::YAML->reset_dir_cache();
+Dancer::Session::YAML->reset();
 $session = Dancer::Session::YAML->create();
 ok( -d $session_dir, "session dir was recreated");
