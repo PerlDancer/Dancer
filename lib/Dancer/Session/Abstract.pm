@@ -36,7 +36,10 @@ sub destroy {
     confess "destroy not implemented";
 }
 
-
+# does nothing in most cases (exception is YAML)
+sub reset {
+    return;
+}
 
 # This is the default constructor for the session object, the only mandatory
 # attribute is 'id'. The whole object should be serialized by the session

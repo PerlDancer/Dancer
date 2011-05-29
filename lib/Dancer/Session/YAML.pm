@@ -14,24 +14,31 @@ use File::Temp qw(tempfile);
 
 # static
 
+my %session_dir_initialized;
+
 sub init {
     my $self = shift;
     $self->SUPER::init(@_);
 
-    croak "YAML is needed and is not installed"
-      unless Dancer::ModuleLoader->load('YAML');
+    if (!keys %session_dir_initialized) {
+        croak "YAML is needed and is not installed"
+          unless Dancer::ModuleLoader->load('YAML');
+    }
 
     # default value for session_dir
     setting('session_dir' => path(setting('appdir'), 'sessions'))
       if not defined setting('session_dir');
 
-    # make sure session_dir exists
     my $session_dir = setting('session_dir');
-    if (!-d $session_dir) {
-        mkdir $session_dir
-          or croak "session_dir $session_dir cannot be created";
+    if (! exists $session_dir_initialized{$session_dir}) {
+        $session_dir_initialized{$session_dir} = 1;
+        # make sure session_dir exists
+        if (!-d $session_dir) {
+            mkdir $session_dir
+              or croak "session_dir $session_dir cannot be created";
+        }
+        Dancer::Logger::core("session_dir : $session_dir");
     }
-    Dancer::Logger::core("session_dir : $session_dir");
 }
 
 # create a new session and return the newborn object
@@ -42,6 +49,12 @@ sub create {
     my $self = Dancer::Session::YAML->new;
     $self->flush;
     return $self;
+}
+
+# deletes the dir cache
+sub reset {
+    my ($class) = @_;
+    %session_dir_initialized = ();
 }
 
 # Return the session object corresponding to the given id
@@ -116,6 +129,19 @@ files in /tmp/dancer-sessions
 
     session: "YAML"
     session_dir: "/tmp/dancer-sessions"
+
+=head1 METHODS
+
+=head2 reset
+
+to avoid checking if the sessions directory exists everytime a new session is
+created, this module maintains a cache of session directories it has already
+created. C<reset> wipes this cache out, forcing a test for existence
+of the sessions directory next time a session is created. It takes no argument.
+
+This is particulary useful if you want to remove the sessions directory on the
+system where your app is running, but you want this session engine to continue
+to work without having to restart your application.
 
 =head1 DEPENDENCY
 
