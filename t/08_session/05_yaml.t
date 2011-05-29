@@ -5,6 +5,7 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
 use Dancer::Logger;
+use File::Path qw(mkpath rmtree);
 
 # use t::lib::TestUtils;
 # use t::lib::EasyMocker;
@@ -14,7 +15,7 @@ use File::Temp qw/tempdir/;
 BEGIN {
     plan skip_all => "need YAML"
         unless Dancer::ModuleLoader->load('YAML');
-    plan tests => 9;
+    plan tests => 12;
     use_ok 'Dancer::Session::YAML'
 }
 
@@ -49,4 +50,13 @@ $s->destroy;
 $session = Dancer::Session::YAML->retrieve($id);
 is $session, undef, 'session is destroyed';
 
-File::Temp::cleanup();
+my $session_dir = "$dir/sessions";
+ok( -d $session_dir, "session dir was created");
+rmtree($session_dir);
+eval { $session = Dancer::Session::YAML->create() };
+my $error = $@;
+like ($@, qr/Parent directory .* does not exist/, "session dir was not recreated");
+
+Dancer::Session::YAML->reset();
+$session = Dancer::Session::YAML->create();
+ok( -d $session_dir, "session dir was recreated");

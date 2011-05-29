@@ -18,6 +18,8 @@
       https://github.com/sukria/Dancer/pull/541
       New "param" accessor to retrieve a parameter easily.
       (Alberto Simões)
+    * Implement session directory testing cache for Session::YAML
+      (Damien Krotkine)
 
 1.3059_01      27.05.2011
 
