@@ -36,8 +36,8 @@ sub destroy {
     confess "destroy not implemented";
 }
 
-# does nothing in most case (exception is YAML)
-sub reset_dir_cache {
+# does nothing in most cases (exception is YAML)
+sub reset {
     return;
 }
 

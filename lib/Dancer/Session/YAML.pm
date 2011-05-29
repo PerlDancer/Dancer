@@ -52,7 +52,7 @@ sub create {
 }
 
 # deletes the dir cache
-sub reset_dir_cache {
+sub reset {
     my ($class) = @_;
     %session_dir_initialized = ();
 }
@@ -132,11 +132,11 @@ files in /tmp/dancer-sessions
 
 =head1 METHODS
 
-=head2 reset_dir_cache
+=head2 reset
 
 to avoid checking if the sessions directory exists everytime a new session is
 created, this module maintains a cache of session directories it has already
-created. C<reset_dir_cache> wipes this cache out, forcing a test for existence
+created. C<reset> wipes this cache out, forcing a test for existence
 of the sessions directory next time a session is created. It takes no argument.
 
 This is particulary useful if you want to remove the sessions directory on the
