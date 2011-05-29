@@ -31,6 +31,7 @@ my @keywords = qw(
     logger
     mime
     options
+    param
     params
     pass
     path
