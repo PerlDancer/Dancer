@@ -1,4 +1,4 @@
-{{$NEXT}}
+1.3059_02   29.05.2011
 
     [ BUG FIXES ]
     * Fix for smoker failure under Perl 5.13.4
@@ -6,7 +6,7 @@
       Better use of Time::Hires in t/22_hooks/04_template.t
       (Franck Cuny)
 
-1.3059_01      27.05.2011
+1.3059_01   27.05.2011
 
     [ API CHANGES ]
     * Second level of deprecation for render_with_layout method.
