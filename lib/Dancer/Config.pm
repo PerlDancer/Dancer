@@ -167,8 +167,8 @@ sub _set_setting {
     # normalize the value if needed
     $value = Dancer::Config->normalize_setting($setting, $value);
 
-    if ($setting =~ m!/!) {
-        my @path = split m!/!, $setting;
+    if ($setting =~ m{/}) {
+        my @path = split m{/}, $setting;
         _set_hierarchical_setting($SETTINGS, [@path], $value);
     } else {
         $SETTINGS->{$setting} = $value;
