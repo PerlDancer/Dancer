@@ -1245,6 +1245,11 @@ You may also need to clear a session:
         ...
     };
 
+If you need to fetch the session ID being used for any reason:
+
+    my $id = session->id;
+
+
 =head2 splat
 
 Returns the list of captures made from a route handler with a route pattern
