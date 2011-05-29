@@ -250,7 +250,7 @@ sub _decode {
     my ($h) = @_;
     return if not defined $h;
 
-    if (not ref($h)) {
+    if (!ref($h) && !utf8::is_utf8($h)) {
         return decode('UTF-8', $h);
     }
 

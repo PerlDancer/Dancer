@@ -1,3 +1,12 @@
+{{$NEXT}}
+
+    [ BUG FIXES ]
+    * Fix for issue #539
+      https://github.com/sukria/Dancer/issues/539
+      Don't decode twice entries in the params hash table, file 
+      uploads with UTF-8 characters in their name are now possible.
+      (Toby Corkindale, Alexis Sukrieh)
+
 1.3059_01      27.05.2011
 
     [ API CHANGES ]

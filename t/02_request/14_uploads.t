@@ -14,9 +14,10 @@ sub test_path {
     is dirname($file), $dir, "dir of $file is $dir";
 }
 
+my $filename = "some_\x{1A9}_file.txt";
 
 my $content = qq{------BOUNDARY
-Content-Disposition: form-data; name="test_upload_file"; filename="yappo.txt"
+Content-Disposition: form-data; name="test_upload_file"; filename="$filename"
 Content-Type: text/plain
 
 SHOGUN
@@ -80,7 +81,7 @@ do {
 
     note "headers";
     is_deeply $uploads[0]->headers, {
-        'Content-Disposition' => q[form-data; name="test_upload_file"; filename="yappo.txt"],
+        'Content-Disposition' => qq[form-data; name="test_upload_file"; filename="$filename"],
         'Content-Type'        => 'text/plain',
     };
 
