@@ -7,6 +7,14 @@
       uploads with UTF-8 characters in their name are now possible.
       (Toby Corkindale, Alexis Sukrieh)
 
+    [ ENHANCEMENTS ]
+    * Fix for issue #516
+      https://github.com/sukria/Dancer/issues/516
+      No more legacy code in Dancer::Route to handle routes created 
+      with the deprecated keyword "r". The related code is now more 
+      concise and should be slightly more efficient.
+      (Alexis Sukrieh)
+
 1.3059_01      27.05.2011
 
     [ API CHANGES ]
