@@ -2,13 +2,14 @@ package Dancer::Script;
 
 use strict;
 use warnings;
+use Dancer::ModuleLoader;
 use Dancer::Template::Simple;
+use Dancer::Renderer;
 use File::Basename 'basename', 'dirname';
 use File::Path 'mkpath';
 use File::Spec::Functions;
 use Getopt::Long;
 use Pod::Usage;
-use Dancer::Renderer;
 use LWP::UserAgent;
 use constant FILE => 1;
 
@@ -87,7 +88,7 @@ sub _create_node {
     my $node = shift;
     my $root = shift;
 
-    my $templates = $self->templates($name);
+    my $templates = $self->templates($node);
 
     while ( my ($path, $content) = each %$node ) {
         $path = catfile($root, $path);
@@ -107,7 +108,7 @@ sub _create_node {
             my $template = $templates->{$file};
 
             $path = catfile($dir, $file); # rebuild the path without the '+' flag
-            $self->write_file($path, $template, {appdir => File::Spec->rel2abs($DANCER_APP_DIR)});
+            $self->write_file($path, $template, {appdir => File::Spec->rel2abs($root)});
             chmod 0755, $path if $ex;
             $add_to_manifest->($path);
         }
@@ -117,13 +118,14 @@ sub _create_node {
 sub app_tree($$) {
     my $self = shift;
     my $appname = shift;
+    my $path = shift;
 
     return {
         "Makefile.PL"        => FILE,
         "MANIFEST.SKIP"      => FILE,
         lib                  => {
-         $LIB_PATH => {
-            $LIB_FILE => FILE,}
+         $appname => {
+            $appname => FILE,}
         },
         "bin" => {
             "+app.pl" => FILE,
@@ -147,13 +149,13 @@ sub app_tree($$) {
                 "error.css" => FILE,
             },
             "images"      => {
-                "perldancer-bg.jpg" => \&write_bg,
-                "perldancer.jpg" => \&write_logo,
+                "perldancer-bg.jpg" => $self->write_bg($path.'/'.$appname.'/public/images/perldancer-bg.jpg'),
+                "perldancer.jpg" => $self->write_logo($path.'/'.$appname.'/public/images/perldancer.jpg'),
             },
             "javascripts" => {
                 "jquery.js" => FILE,
             },
-            "favicon.ico" => \&write_favicon,
+            "favicon.ico" => $self->write_favicon($path.'/'.$appname.'/public/favicon.ico'),
         },
         "t" => {
             "001_base.t"        => FILE,
@@ -182,13 +184,13 @@ sub write_file {
     my $vars = shift;
     die "no template found for $path" unless defined $template;
 
-    $vars->{dancer_version} = $DANCER_VERSION;
+    #$vars->{dancer_version} = $self->DANCER_VERSION;
 
     # if file already exists, ask for confirmation
-    if (-f $path && (not $DO_OVERWRITE_ALL)) {
+    if (-f $path && (not $self->DO_OVERWRITE_ALL)) {
         print "! $path exists, overwrite? [N/y/a]: ";
         my $res = <STDIN>; chomp($res);
-        $DO_OVERWRITE_ALL = 1 if $res eq 'a';
+        $self->DO_OVERWRITE_ALL = 1 if $res eq 'a';
         return 0 unless ($res eq 'y') or ($res eq 'a');
     }
 
@@ -202,7 +204,7 @@ sub write_file {
 
 sub process_template {
     my $self = shift;
-    my ($template = shift;
+    my $template = shift;
     my $tokens = shift;
     my $engine = Dancer::Template::Simple->new;
     $engine->{start_tag} = '[%';
@@ -223,6 +225,7 @@ sub write_data_to_file {
 
 
 sub send_http_request {
+    my $self = shift;
     my $url = shift;
     my $ua = LWP::UserAgent->new;
     $ua->timeout(5);
@@ -240,6 +243,7 @@ sub send_http_request {
 
 sub version_check {
     my $self = shift;
+    my $DANCER_VERSION = shift;
     my $latest_version = 0;
     require Dancer;
 
@@ -442,7 +446,7 @@ WriteMakefile(
               it\'s just here to help you get started. The template used to
               generate this content is located in 
               <code>views/index.tt</code>.
-              You can add some routes to <tt>lib/'.$LIB_PATH.'/'.$LIB_FILE.'</tt>. 
+              You can add some routes to <tt>lib/'.$appname.'/'.$appfile.'.pm</tt>. 
               </p>
             </li>
 
@@ -487,7 +491,7 @@ Powered by <a href="http://perldancer.org/">Dancer</a> <% dancer_version %>
 ',
 
 "dispatch.cgi" =>
-"$PERL_INTERPRETER
+"$self->PERL_INTERPRETER
 use Dancer ':syntax';
 use FindBin '\$RealBin';
 use Plack::Runner;
@@ -506,7 +510,7 @@ Plack::Runner->run(\$psgi);
 
 
 "dispatch.fcgi" =>
-qq{$PERL_INTERPRETER
+qq{$self->PERL_INTERPRETER
 use Dancer ':syntax';
 use FindBin '\$RealBin';
 use Plack::Handler::FCGI;
@@ -527,13 +531,13 @@ my \$server = Plack::Handler::FCGI->new(nproc => 5, detach => 1);
 
 "app.pl" =>
 
-"$PERL_INTERPRETER
+"$self->PERL_INTERPRETER
 use Dancer;
 use $appname;
 dance;
 ",
 
-"$LIB_FILE" =>
+"$self->LIB_FILE" =>
 
 "package $appname;
 use Dancer ':syntax';
@@ -834,7 +838,7 @@ pre.error {
 # all the settings in this file will be loaded at Dancer's startup.
 
 # Your application's name
-appname: \"$name\"
+appname: \"$self->name\"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
@@ -1399,47 +1403,30 @@ EOF
 }
 
 # options
-my $help = 0;
-my $do_check_dancer_version = 1;
-my $name = undef;
-my $path = '.';
+sub parse_opts { 
+	my $self = shift;
+	my $help = 0;
+	my $do_check_dancer_version = 1;
+	my $name = undef;
+	my $path = '.';
 
-sub templates($);
-sub app_tree($);
-sub create_node($;$);
 
-GetOptions(
-    "h|help"          => \$help,
-    "a|application=s" => \$name,
-    "p|path=s"        => \$path,
-    "x|no-check"      => sub { $do_check_dancer_version = 0 },
-    "v|version"       => \&version,
-) or pod2usage( -verbose => 1 );
+	GetOptions(
+	    "h|help"          => \$help,
+	    "a|application=s" => \$name,
+	    "p|path=s"        => \$path,
+	    "x|no-check"      => sub { $do_check_dancer_version = 0 },
+	    "v|version"       => \&version,
+	) or pod2usage( -verbose => 1 );
 
-# main
-my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+	my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 
-pod2usage( -verbose => 1 ) if $help;
-pod2usage( -verbose => 1 ) if not defined $name;
-pod2usage( -verbose => 1 ) unless -d $path && -w $path;
-sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
+	pod2usage( -verbose => 1 ) if $help;
+	pod2usage( -verbose => 1 ) if not defined $name;
+	pod2usage( -verbose => 1 ) unless -d $path && -w $path;
+	sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
 
-validate_app_name($name);
-
-my $DO_OVERWRITE_ALL = 0;
-my $DANCER_APP_DIR   = get_application_path($path, $name);
-my $DANCER_SCRIPT    = get_script_path($name);
-my ($LIB_FILE, $LIB_PATH) = get_lib_path($name);
-my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
-
-require Dancer;
-my $DANCER_VERSION   = $Dancer::VERSION;
-
-version_check() if $do_check_dancer_version;
-safe_mkdir($DANCER_APP_DIR);
-create_node( app_tree($name), $DANCER_APP_DIR );
-
-unless (eval "require YAML") {
+unless (Dancer::ModuleLoader->load('YAML')) {
     print <<NOYAML;
 *****
 WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
@@ -1454,6 +1441,29 @@ following commands:
   curl -L http://cpanmin.us | perl - --sudo YAML
 *****
 NOYAML
+}
+
+	return ($name,$path,$do_check_dancer_version);
+}
+
+sub run {
+       my $self = shift; 
+       my ($name,$path,$do_check_dancer_version) = $self->parse_opts();
+       $self->validate_app_name($name);
+
+my $DO_OVERWRITE_ALL = 0;
+my $DANCER_APP_DIR   = $self->get_application_path($path, $name);
+my $DANCER_SCRIPT    = $self->get_script_path($name);
+my ($LIB_FILE, $LIB_PATH) = $self->get_lib_path($name);
+my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
+
+require Dancer;
+my $DANCER_VERSION   = $Dancer::VERSION;
+
+$self->version_check($DANCER_VERSION) if $do_check_dancer_version;
+$self->safe_mkdir($DANCER_APP_DIR);
+$self->create_node($self->app_tree($name,$path), $DANCER_APP_DIR);
+
 }
 
 1;
@@ -1540,4 +1550,3 @@ This module is free software and is published under the same
 terms as Perl itself.
 
 =cut
-
