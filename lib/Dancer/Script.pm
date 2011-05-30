@@ -149,13 +149,13 @@ sub app_tree($$) {
                 "error.css" => FILE,
             },
             "images"      => {
-                "perldancer-bg.jpg" => $self->write_bg($path.'/'.$appname.'/public/images/perldancer-bg.jpg'),
-                "perldancer.jpg" => $self->write_logo($path.'/'.$appname.'/public/images/perldancer.jpg'),
+                "perldancer-bg.jpg" => sub { $self->write_bg($path.'/'.$appname.'/public/images/perldancer-bg.jpg') }, 
+                "perldancer.jpg" => sub { $self->write_logo($path.'/'.$appname.'/public/images/perldancer.jpg') },
             },
             "javascripts" => {
                 "jquery.js" => FILE,
             },
-            "favicon.ico" => $self->write_favicon($path.'/'.$appname.'/public/favicon.ico'),
+            "favicon.ico" => sub { $self->write_favicon($path.'/'.$appname.'/public/favicon.ico') },
         },
         "t" => {
             "001_base.t"        => FILE,
@@ -1152,7 +1152,7 @@ M````````QLG&P<F)13LY3)G)P<;)R<G&R)47,7N$A6\I);C$QLG&R'$:B["'
 ID\3&P9\;LJ2FNK%Z7XZLF`R^PLD<CS-!30-5#@DF1$IV,LF7+;9#1PH`
 M+PT]7"`P6*04P%%JHDA!"TX2/E)&0D&E3VXUC*%=9E"`9&4V)%=_GFA6-8VG
 M'ZAK`6($26T`0*AG651IJ2=X<#B["!.\&+6G2W2C*K<H*S\&G049DA:NK1'%
-MR2*1(RD\'8,"%88/LW(TR<&K$GY\FF%_9WRT>90(O\+&QGT0BI9><W=@G($'
+MR2*1(RD\'18,"%88/LW(TR<&K$GY\FF%_9WRT>90(O\+&QGT0BI9><W=@G($'
 MH,/&R<;'JB$L;)&08QXNO</&R<;)QL')FU,W.ENYR<3&R<D`````````````
 M````````````````````````````````````````````````````````````
 )````````````
