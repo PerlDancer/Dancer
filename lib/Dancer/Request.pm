@@ -130,8 +130,8 @@ sub forward {
 
     my $env = $request->env;
     $env->{PATH_INFO} = $to_data->{to_url};
-
     $env->{CONTENT_LENGTH} = 0; # make sure post data is empty.
+
     my $new_request = $class->new($env);
     my $new_params  = _merge_params(scalar($request->params),
                                     $to_data->{params} || {});
