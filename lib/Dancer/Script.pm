@@ -221,6 +221,7 @@ sub write_data_to_file {
     binmode($fh);
     print {$fh} unpack 'u*', $data;
     close $fh;
+    return 1;
 }
 
 
@@ -838,7 +839,7 @@ pre.error {
 # all the settings in this file will be loaded at Dancer's startup.
 
 # Your application's name
-appname: \"$self->name\"
+appname: \"$appname\"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
