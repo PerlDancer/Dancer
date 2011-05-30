@@ -131,6 +131,7 @@ sub forward {
     my $env = $request->env;
     $env->{PATH_INFO} = $to_data->{to_url};
 
+    $env->{CONTENT_LENGTH} = 0; # make sure post data is empty.
     my $new_request = $class->new($env);
     my $new_params  = _merge_params(scalar($request->params),
                                     $to_data->{params} || {});
@@ -353,7 +354,7 @@ sub _build_headers {
 
 sub _build_params {
     my ($self) = @_;
-    
+
     # params may have been populated by before filters
     # _before_ we get there, so we have to save it first
     my $previous = $self->{params};
@@ -361,7 +362,6 @@ sub _build_params {
     # now parse environement params...
     $self->_parse_get_params();
     $self->_parse_post_params();
-
 
     # and merge everything
     $self->{params} = {
@@ -421,7 +421,6 @@ sub _url_decode {
 sub _parse_post_params {
     my ($self) = @_;
     return $self->{_body_params} if defined $self->{_body_params};
-
     my $body = $self->_read_to_end();
     $self->{_body_params} = $self->{_http_body}->param;
 }
@@ -463,14 +462,12 @@ sub _read_to_end {
 
     my $content_length = $self->content_length;
     return unless $self->_has_something_to_read();
-
     if ($content_length > 0) {
         while (my $buffer = $self->_read()) {
             $self->{body} .= $buffer;
             $self->{_http_body}->add($buffer);
         }
     }
-
     return $self->{body};
 }
 
