@@ -1,4 +1,4 @@
-package Dancer::Script
+package Dancer::Script;
 
 use strict;
 use warnings;
@@ -87,7 +87,7 @@ sub _create_node {
     my $node = shift;
     my $root = shift;
 
-    my $templates = templates($name);
+    my $templates = $self->templates($name);
 
     while ( my ($path, $content) = each %$node ) {
         $path = catfile($root, $path);
