@@ -354,11 +354,13 @@ Content-Type: text/plain
     
     # duplicate some code from Dancer::Handler
     my $get_action = eval {
-        Dancer::Renderer->render_file
-            || Dancer::Renderer->render_action
-              || Dancer::Renderer->render_error(404);
+             Dancer::Renderer->render_file
+          || Dancer::Renderer->render_action
+          || Dancer::Renderer->render_error(404);
     };
     if ($@) {
+        Dancer::Logger::error(
+            'request to ' . $request->path_info . " crashed: $@");
         Dancer::Error->new(
             code    => 500,
             title   => "Runtime Error",
