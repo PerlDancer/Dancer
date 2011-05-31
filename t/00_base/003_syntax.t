@@ -5,6 +5,7 @@ my @keywords = qw(
     any
     before
     before_template
+    cookie
     cookies
     config
     content_type
@@ -30,6 +31,7 @@ my @keywords = qw(
     logger
     mime
     options
+    param
     params
     pass
     path

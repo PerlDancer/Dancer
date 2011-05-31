@@ -76,7 +76,7 @@ sub validate_app_name {
     my $name = shift;
     if ($name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
         print STDERR "Error: Invalid application name.\n";
-        print STDERR "Application names must not contain colons,"
+        print STDERR "Application names must not contain single colons,"
             ." dots, hyphens or start with a number.\n";
         exit;
     }

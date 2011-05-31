@@ -1,3 +1,76 @@
+{{$NEXT}}
+
+    [ BUG FIXES ]
+    * Fix for issue #539
+      https://github.com/sukria/Dancer/issues/539
+      Don't decode twice entries in the params hash table, file 
+      uploads with UTF-8 characters in their name are now possible.
+      (Toby Corkindale, Alexis Sukrieh)
+
+    [ ENHANCEMENTS ]
+    * Fix for issue #516
+      https://github.com/sukria/Dancer/issues/516
+      No more legacy code in Dancer::Route to handle routes created 
+      with the deprecated keyword "r". The related code is now more 
+      concise and should be slightly more efficient.
+      (Alexis Sukrieh)
+    * Merge PR #541
+      https://github.com/sukria/Dancer/pull/541
+      New "param" accessor to retrieve a parameter easily.
+      (Alberto Simões)
+    * Implement session directory testing cache for Session::YAML
+      (Damien Krotkine)
+
+1.3059_02   29.05.2011
+
+    [ BUG FIXES ]
+    * Fix for smoker failure under Perl 5.13.4
+      http://www.cpantesters.org/cpan/report/b37416b8-88df-11e0-9c74-cad5bcb8094c
+      Better use of Time::Hires in t/22_hooks/04_template.t
+      (Franck Cuny)
+
+1.3059_01   27.05.2011
+
+    [ API CHANGES ]
+    * Second level of deprecation for render_with_layout method.
+      (Alberto Simões)
+    * Second level of deprecation for mime_type method.
+      (Alberto Simões)
+
+    [ BUG FIXES ]
+    * Dancer::Test was broken for tests using data in POST (GH#534)
+      (Franck Cuny)
+    * Multiple setter implemented at 1.3039_01 was broken for App
+      specific settings.
+      (Alberto Simões)
+
+    [ ENHANCEMENTS ]
+    * Cookie accessor to manipulate cookies directly.
+      (Niko)
+
+    [ DOCUMENTATION ]
+    * Improve Serializers documentation
+      (Damien Krotkine)
+
+1.3051      27.05.2011
+    ** Security release based on 1.3050 **
+
+    [ SECURITY ]
+    * FIX CVE-2011-1589 (Mojolicious report, but Dancer was vulnerable as well).
+      Return "400 Bad Request" when requested filename seems suspicious
+      http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1589
+      (Vladimir Lettiev and Franck Cuny)
+
+1.3050      20.05.2011
+    ** Codename: The Captain Hook Adventure // Franck Cuny **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+    [ DOCUMENTATION ]
+    * Improve Dancer documentation
+      (Damien Krotkine)
+
 1.3049_01   14.05.2011
 
     [ API CHANGES ]

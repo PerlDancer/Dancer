@@ -13,7 +13,7 @@ use Carp;
 
 use Encode;
 
-@EXPORT_OK = qw(setting mime_types);
+@EXPORT_OK = qw(setting);
 
 my $SETTINGS = {};
 
@@ -88,13 +88,6 @@ my $normalizers = {
         return $name;
     },
 };
-
-sub mime_types {
-    Dancer::Deprecation->deprecated(
-        reason => "use 'mime' from Dancer.pm",
-        fatal => 1,
-    );
-}
 
 sub normalize_setting {
     my ($class, $setting, $value) = @_;
@@ -512,6 +505,28 @@ default, sessions are disabled in Dancer, you must choose a session engine to
 use them.
 
 See L<Dancer::Session> for supported engines and their respective configuration.
+
+=head3 session_expires
+
+The session expiry time in seconds, or as e.g. "2 hours" (see
+L<Dancer::Cookie/expires>.  By default, there is no specific expiry time.
+
+=head3 session_name
+
+The name of the cookie to store the session ID in.  Defaults to
+C<dancer.session>.  This can be overridden by certain session engines.
+
+=head3 session_secure
+
+The user's session ID is stored in a cookie.  If the C<session_secure> setting
+is set to a true value, the cookie will be marked as secure, meaning it should
+only be sent over HTTPS connections.
+
+=head3 session_is_http_only
+
+This setting defaults to 1 and instructs the session cookie to be
+created with the C<HttpOnly> option active, meaning that JavaScript
+will not be able to access to its value.
 
 
 =head2 auto_page (boolean)

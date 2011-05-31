@@ -1,9 +1,79 @@
- Alexis Sukrieh <sukria@cpan.org>
- Sébastien Deseille <sebastien.deseille@gmail.com>
- David Moreno <david@axiombox.com>
- David Precious <davidp@preshweb.co.uk>
- Sawyer X <xsawyerx@cpan.org>
- Franck Cuny <franck@lumberjaph.net>
- Naveed Massjouni <naveedm9@gmail.com>
- Damien 'dams' Krotkine <dams@cpan.org>
- Alberto Simões <ambs+dancer@perl-hackers.net>
+*** Meet the Dancer Crew ***
+
+The first version of Dancer was written by Alexis Sukrieh in summer 2009.
+The project has evolved a lot since that time, and a huge and very active 
+community emerged to extend and improve Dancer..
+
+The Project is now handled by an organised team of core developers, and many 
+valued contributions are sent by motivated developers around the globe. 
+This is what makes Dancer such a fun project to use - it's a living community 
+of motivated people.
+
+A huge thank you to all of them!
+
+
+                 [ CORE TEAM ]
+
+    Alberto Simões <ambs+dancer@perl-hackers.net>
+    Alexis Sukrieh <sukria@cpan.org>
+    Damien Krotkine <dams@cpan.org>
+    David Precious <davidp@preshweb.co.uk>
+    Franck Cuny <franck@lumberjaph.net>
+    Sawyer X <xsawyerx@cpan.org>
+
+
+                [ CONTRIBUTORS ]
+
+    Adam J. Foxson <afoxson@pobox.com>
+    Alan Haggai Alavi <alanhaggai@alanhaggai.org>
+    Alex Kalderimis <alex.kalderimis@gmail.com>
+    Alex Kapranoff <kapranoff@gmail.com>
+    Al Newkirk <github@alnewkirk.com>
+    Anirvan Chatterjee <anirvan@base.mx.org>
+    Ask Bjørn Hansen <ask@develooper.com>
+    boris shomodjvarac <shomodj@oginwm09.(none)>
+    Brian E. Lozier <brian@massassi.com>
+    Chris Andrews <chrisandrews@venda.com>
+    chromatic <chromatic@wgz.org>
+    Danijel Tasov <dt@korn.shell.la>
+    Dave Doyle <dave.s.doyle@gmail.com>
+    David Moreno <david@axiombox.com>
+    Flavio Poletti <flavio@polettix.it>
+    François Charlier <fcharlier@ploup.net>
+    Gabor Szabo <szabgab@gmail.com>
+    geistteufel <geistteufel@yahoo.fr>
+    Hagen Fuchs <github@hfuchs.net>
+    Hans Dieter Pearcey <hdp@weftsoar.net>
+    ironcamel <naveedm9@gmail.com>
+    Ivan Bessarabov <ivan@bessarabov.ru>
+    James Aitken <loonypandora@gmail.com>
+    jamhed <jamhed@lenobook.jh>
+    Joel Roth <joelz@pobox.com>
+    Jonathan "Duke" Leto <jonathan@leto.net>
+    Jonathan Otsuka <djgoku@gmail.com>
+    Joshua Barratt <jbarratt@serialized.net>
+    Juan J. Martínez <reidrac@usebox.net>
+    Jury Gorky <schwein@schwein-laptop.(none)>
+    Marc Chantreux <marc.chantreux@biblibre.com>
+    Mark Allen <mrallen1@yahoo.com>
+    Mark Stosberg <mark@stosberg.com>
+    Michael G. Schwern <schwern@pobox.com>
+    mokko <mauricemengel@gmail.com>
+    Murray <murray@minty.org>
+    Natal Ngétal <hobbestigrou@erakis.im>
+    Nate Jones <nate@endot.org>
+    Naveed <naveed@ironcamel.(none)>
+    Naveen <nmani@nashresearch.com>
+    Nicolas Oudard <noudard@weborama.com>
+    Niko <nikomomo@gmail.com>
+    Olivier Mengué <dolmen@cpan.org>
+    Paul Driver <frodwith@gmail.com>
+    Paul Tomlin <ptomli@gmail.com>
+    Philippe Bruhat (BooK) <book@cpan.org>
+    Rowan Thorpe <rowanthorpe@gmail.com>
+    sdeseille <sebastien.deseille@gmail.com>
+    Sebastian de Castelberg <sebu@kpricorn.org>
+    Stefan Hornburg (Racke) <racke@linuxia.de>
+    Tatsuhiko Miyagawa <miyagawa@bulknews.net>
+    Yanick Champoux <yanick@babyl.dyndns.org>
+

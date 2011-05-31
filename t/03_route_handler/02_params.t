@@ -21,9 +21,9 @@ plan tests => 23;
 
 {
     get  '/'               => sub { 'index' };
-    get  '/hello/:name'    => sub { params->{name}  };
-    get  '/hello/:foo/bar' => sub { params->{foo}   };
-    post '/new/:stuff'     => sub { params->{stuff} };
+    get  '/hello/:name'    => sub { param 'name'  };
+    get  '/hello/:foo/bar' => sub { param 'foo'   };
+    post '/new/:stuff'     => sub { param 'stuff' };
     post '/allo'           => sub { request->body   };
 
     get '/opt/:name?/?:lastname?' => sub {

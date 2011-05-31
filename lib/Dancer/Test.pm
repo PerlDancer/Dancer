@@ -287,7 +287,7 @@ sub dancer_response {
         if ( $args->{body} ) {
             $content      = $args->{body};
             $content_type = $args->{content_type}
-              || 'application/x-www-form-data';
+                || 'application/x-www-form-urlencoded';
 
             # coerce hashref into an url-encoded string
             if ( ref($content) && ( ref($content) eq 'HASH' ) ) {
@@ -351,8 +351,23 @@ Content-Type: text/plain
     # XXX this is a hack!!
     $request = Dancer::Serializer->process_request($request)
       if Dancer::App->current->setting('serializer');
+    
+    # duplicate some code from Dancer::Handler
+    my $get_action = eval {
+             Dancer::Renderer->render_file
+          || Dancer::Renderer->render_action
+          || Dancer::Renderer->render_error(404);
+    };
+    if ($@) {
+        Dancer::Logger::error(
+            'request to ' . $request->path_info . " crashed: $@");
+        Dancer::Error->new(
+            code    => 500,
+            title   => "Runtime Error",
+            message => $@
+        )->render();
+    }
 
-    my $get_action = Dancer::Handler::render_request($request);
     my $response = Dancer::SharedData->response();
 
     $response->content('') if $method eq 'HEAD';
