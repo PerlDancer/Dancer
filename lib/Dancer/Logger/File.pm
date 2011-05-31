@@ -49,7 +49,8 @@ sub init {
     return unless ($logdir);
 
     my $logfile = setting('log_file');
-    $logfile = setting('environment').".log" unless defined($logfile);
+    $logfile = setting('environment').".log"
+       unless defined($logfile) and length($logfile); # prevent ''
 
     mkdir($logdir) unless(-d $logdir);
     $logfile = File::Spec->catfile($logdir, $logfile);
