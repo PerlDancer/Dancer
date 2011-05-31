@@ -8,7 +8,7 @@ my @tests = (
     { name => 'msg', value => 'hello; world', opts => { http_only => 0 } },
 );
 
-plan tests => scalar (@tests * 5) + 6;
+plan tests => scalar (@tests * 5) + 3 + 3*2;
 
 is_deeply(cookies, {}, "cookies() return a hashref");
 
@@ -31,17 +31,18 @@ ok my $c = Dancer::Cookie->new(
 my $text = $c->to_header;
 like $text, qr/complex=token&foo&token_secret&bar/;
 
-my $env = {
-    REQUEST_METHOD => 'GET',
-    SCRIPT_NAME => '/',
-    COOKIE => 'complex=token&foo&token_secret&bar',
-};
-my $request = Dancer::Request->new($env);
-Dancer::SharedData->request($request);
-ok(Dancer::Cookies->init, "Dancer::Cookies->init");
+for my $var (qw[COOKIE HTTP_COOKIE]) {
+    my $env = {
+               REQUEST_METHOD => 'GET',
+               SCRIPT_NAME => '/',
+               $var => 'complex=token&foo&token_secret&bar',
+              };
+    my $request = Dancer::Request->new($env);
+    Dancer::SharedData->request($request);
+    ok(Dancer::Cookies->init, "Dancer::Cookies->init");
 
-my $cookies = Dancer::Cookies->cookies;
-my %values = $cookies->{complex}->value;
-is $values{token}, 'foo';
-is $values{token_secret}, 'bar';
-
+    my $cookies = Dancer::Cookies->cookies;
+    my %values = $cookies->{complex}->value;
+    is $values{token}, 'foo';
+    is $values{token_secret}, 'bar';
+}
