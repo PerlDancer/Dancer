@@ -24,6 +24,7 @@ note "expiration times"; {
         "3 weeks 4 days 2 hours 99 min 0 secs" => "Sat, 10-Jul-2010 03:39:00 GMT",
         "2 months"                  => "Sat, 14-Aug-2010 00:00:00 GMT",
         "12 years"                  => "Sun, 12-Jun-2022 00:00:00 GMT",
+        "+5"                        => "Tue, 15-Jun-2010 00:00:05 GMT",
 
         1288817656 => "Wed, 03-Nov-2010 20:54:16 GMT",
         1288731256 => "Tue, 02-Nov-2010 20:54:16 GMT",
