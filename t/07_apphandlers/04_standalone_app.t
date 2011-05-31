@@ -5,6 +5,8 @@ use Dancer::ModuleLoader;
 
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP");
+plan skip_all => "Test::TCP is needed for this test"
+    unless Dancer::ModuleLoader->load("Plack::Loader");
 
 use LWP::UserAgent;
 
@@ -35,8 +37,10 @@ Test::TCP::test_tcp(
         use lib File::Spec->catdir( 't', 'lib' );
         use TestApp;
         Dancer::Config->load;
-
         set environment  => 'production', startup_info => 0, port => $port;
+        setting apphandler => 'PSGI';
+        my $app = Dancer::Handler->psgi_app;
+        Plack::Loader->auto( port => $port)->run($app);
         Dancer->dance();
     },
 );
