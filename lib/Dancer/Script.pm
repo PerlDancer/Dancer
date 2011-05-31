@@ -17,14 +17,86 @@ use constant FILE => 1;
 sub new { 
 	my $class = shift; 
 	my $self = bless {}, $class; 
+
+	if (@_){
+
+		my %args = @_;
+		$self->{appname} = $args{appname};
+		$self->{path} = $args{path};
+		$self->{check_version} = $args{check_version};
+
+	}else{
+		my ($appname,$path,$check_version) = $self->parse_opts();
+		$self->{appname} = $appname;
+		$self->{path} = $path;
+		$self->{check_version} = $check_version;
+	}
+	
+        $self->{do_overwrite_all} = 0;
+        $self->validate_app_name();
+        #my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
+        require Dancer;
+        $self->{dancer_version} = $Dancer::VERSION;
+	$self->{dancer_app_dir} = $self->set_application_path();
+	$self->{dancer_script}  = $self->set_script_path();
+	($self->{lib_file}, $self->{lib_path}) = $self->set_lib_path();
 	return $self;
 }
 
+sub run {
+	my $self = shift; 
+	$self->version_check() if $self->{do_check_dancer_version};
+	$self->safe_mkdir($self->{dancer_app_dir});
+	$self->create_node($self->app_tree(), $self->{dancer_app_dir});
+}
+
+# options
+sub parse_opts { 
+	my $self = shift;
+	my $help = 0;
+	my $do_check_dancer_version = 1;
+	my $name = undef;
+	my $path = '.';
+
+
+	GetOptions(
+	    "h|help"          => \$help,
+	    "a|application=s" => \$name,
+	    "p|path=s"        => \$path,
+	    "x|no-check"      => sub { $do_check_dancer_version = 0 },
+	    "v|version"       => \&version,
+	) or pod2usage( -verbose => 1 );
+
+	my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+
+	pod2usage( -verbose => 1 ) if $help;
+	pod2usage( -verbose => 1 ) if not defined $name;
+	pod2usage( -verbose => 1 ) unless -d $path && -w $path;
+	sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
+
+unless (Dancer::ModuleLoader->load('YAML')) {
+    print <<NOYAML;
+*****
+WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
+recommended; in particular, the scaffolded Dancer app being created will not be
+able to read settings from the config file without YAML.pm being installed.
+
+To resolve this, simply install YAML from CPAN, for instance using one of the
+following commands:
+
+  cpan YAML
+  perl -MCPAN -e 'install YAML'
+  curl -L http://cpanmin.us | perl - --sudo YAML
+*****
+NOYAML
+}
+
+	return ($name,$path,$do_check_dancer_version);
+}
 
 sub validate_app_name {
     my $self = shift;
-    my $name = shift;
-    if ($name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
+    if ($self->{appname} =~ /[^\w:]/ || $self->{appname} =~ /^\d/ || $self->{appname} =~ /\b:\b|:{3,}/) {
         print STDERR "Error: Invalid application name.\n";
         print STDERR "Application names must not contain colons,"
             ." dots, hyphens or start with a number.\n";
@@ -32,35 +104,32 @@ sub validate_app_name {
     }
 }
 
-sub get_application_path {
+sub set_application_path {
     my $self = shift;
-    my $path = shift;
-    my $app_name = shift;
-    catdir($path, $self->_dash_name($app_name));
+    catdir($self->{path}, $self->_dash_name());
 }
 
-sub get_lib_path {
+sub set_lib_path {
     my $self = shift;
-    my $name = shift;
-    my @lib_path = split('::', $name);
+    my @lib_path = split('::', $self->{appname});
     my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
     $lib_path = join('/', @lib_path);
     return ($lib_file, $lib_path);
 }
 
-sub get_script_path {
+sub set_script_path {
     my $self = shift;
-    $self->_dash_name(shift);
+    $self->_dash_name();
 }
 
 sub _dash_name {
     my $self = shift;
-    my $name = shift;
+    my $name = $self->{appname};
     $name =~ s/\:\:/-/g;
     return $name;
 }
 
-sub create_node($$;$) {
+sub create_node {
     my $self = shift;
     my $node = shift;
     my $root = shift;
@@ -88,7 +157,7 @@ sub _create_node {
     my $node = shift;
     my $root = shift;
 
-    my $templates = $self->templates($node);
+    my $templates = $self->templates();
 
     while ( my ($path, $content) = each %$node ) {
         $path = catfile($root, $path);
@@ -115,17 +184,15 @@ sub _create_node {
     }
 }
 
-sub app_tree($$) {
+sub app_tree {
     my $self = shift;
-    my $appname = shift;
-    my $path = shift;
 
     return {
         "Makefile.PL"        => FILE,
         "MANIFEST.SKIP"      => FILE,
         lib                  => {
-         $appname => {
-            $appname => FILE,}
+         $self->{appname} => {
+            "$self->{appname}.pm" => FILE,}
         },
         "bin" => {
             "+app.pl" => FILE,
@@ -149,13 +216,13 @@ sub app_tree($$) {
                 "error.css" => FILE,
             },
             "images"      => {
-                "perldancer-bg.jpg" => sub { $self->write_bg($path.'/'.$appname.'/public/images/perldancer-bg.jpg') }, 
-                "perldancer.jpg" => sub { $self->write_logo($path.'/'.$appname.'/public/images/perldancer.jpg') },
+                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{path},$self->{appname}).'/public/images/perldancer-bg.jpg') }, 
+                "perldancer.jpg" => sub { $self->write_logo(catfile($self->{path},$self->{appname}).'/public/images/perldancer.jpg')},
             },
             "javascripts" => {
                 "jquery.js" => FILE,
             },
-            "favicon.ico" => sub { $self->write_favicon($path.'/'.$appname.'/public/favicon.ico') },
+            "favicon.ico" => sub { $self->write_favicon(catfile($self->{path},$self->{appname}).'/public/favicon.ico') },
         },
         "t" => {
             "001_base.t"        => FILE,
@@ -163,7 +230,6 @@ sub app_tree($$) {
         },
     };
 }
-
 
 sub safe_mkdir {
     my $self = shift;
@@ -184,13 +250,13 @@ sub write_file {
     my $vars = shift;
     die "no template found for $path" unless defined $template;
 
-    #$vars->{dancer_version} = $self->DANCER_VERSION;
+    $vars->{dancer_version} = $self->{dancer_version};
 
     # if file already exists, ask for confirmation
-    if (-f $path && (not $self->DO_OVERWRITE_ALL)) {
+    if (-f $path && (not $self->{do_overwrite_all})) {
         print "! $path exists, overwrite? [N/y/a]: ";
         my $res = <STDIN>; chomp($res);
-        $self->DO_OVERWRITE_ALL = 1 if $res eq 'a';
+        $self->{do_overwrite_all} = 1 if $res eq 'a';
         return 0 unless ($res eq 'y') or ($res eq 'a');
     }
 
@@ -224,7 +290,6 @@ sub write_data_to_file {
     return 1;
 }
 
-
 sub send_http_request {
     my $self = shift;
     my $url = shift;
@@ -244,7 +309,6 @@ sub send_http_request {
 
 sub version_check {
     my $self = shift;
-    my $DANCER_VERSION = shift;
     my $latest_version = 0;
     require Dancer;
 
@@ -258,11 +322,11 @@ sub version_check {
         }
     }
 
-    return if $DANCER_VERSION =~  m/_/;
+    return if $self->{dancer_version} =~  m/_/;
 
-    if ($latest_version > $DANCER_VERSION) {
+    if ($latest_version > $self->{dancer_version}) {
         print qq|
-The latest stable Dancer release is $latest_version, you are currently using $DANCER_VERSION.
+The latest stable Dancer release is $latest_version, you are currently using $self->{dancer_version}.
 Please check http://search.cpan.org/dist/Dancer/ for updates.
 
 |;
@@ -282,11 +346,11 @@ sub download_file {
     return 1;
 }
 
-sub templates($) {
+sub templates {
     my $self = shift;
-    my $appname    = shift;
-    my $appfile    = $appname;
-    my $cleanfiles = $appname;
+    my $appname    = $self->{appname};
+    my $appfile    = $self->{appname};
+    my $cleanfiles = $self->{appname};
 
     $appfile    =~ s{::}{/}g;
     $cleanfiles =~ s{::}{-}g;
@@ -492,7 +556,8 @@ Powered by <a href="http://perldancer.org/">Dancer</a> <% dancer_version %>
 ',
 
 "dispatch.cgi" =>
-"$self->PERL_INTERPRETER
+#$self->PERL_INTERPRETER
+"#!/usr/bin/perl
 use Dancer ':syntax';
 use FindBin '\$RealBin';
 use Plack::Runner;
@@ -511,7 +576,8 @@ Plack::Runner->run(\$psgi);
 
 
 "dispatch.fcgi" =>
-qq{$self->PERL_INTERPRETER
+ #$self->PERL_INTERPRETER
+qq{#!/usr/bin/perl 
 use Dancer ':syntax';
 use FindBin '\$RealBin';
 use Plack::Handler::FCGI;
@@ -532,13 +598,13 @@ my \$server = Plack::Handler::FCGI->new(nproc => 5, detach => 1);
 
 "app.pl" =>
 
-"$self->PERL_INTERPRETER
+"#!/usr/bin/perl
 use Dancer;
 use $appname;
 dance;
 ",
 
-"$self->LIB_FILE" =>
+"$appfile.pm" =>
 
 "package $appname;
 use Dancer ':syntax';
@@ -1401,70 +1467,6 @@ f.top,left:d.left-f.left}},offsetParent:function(){return this.map(function(){fo
 "pageXOffset"]:c.support.boxModel&&j.document.documentElement[d]||j.document.body[d]:e[d]}});c.each(["Height","Width"],function(a,b){var d=b.toLowerCase();c.fn["inner"+b]=function(){return this[0]?c.css(this[0],d,false,"padding"):null};c.fn["outer"+b]=function(f){return this[0]?c.css(this[0],d,false,f?"margin":"border"):null};c.fn[d]=function(f){var e=this[0];if(!e)return f==null?null:this;if(c.isFunction(f))return this.each(function(j){var i=c(this);i[d](f.call(this,j,i[d]()))});return"scrollTo"in
 e&&e.document?e.document.compatMode==="CSS1Compat"&&e.document.documentElement["client"+b]||e.document.body["client"+b]:e.nodeType===9?Math.max(e.documentElement["client"+b],e.body["scroll"+b],e.documentElement["scroll"+b],e.body["offset"+b],e.documentElement["offset"+b]):f===w?c.css(e,d):this.css(d,typeof f==="string"?f:f+"px")}});A.jQuery=A.$=c})(window);
 EOF
-}
-
-# options
-sub parse_opts { 
-	my $self = shift;
-	my $help = 0;
-	my $do_check_dancer_version = 1;
-	my $name = undef;
-	my $path = '.';
-
-
-	GetOptions(
-	    "h|help"          => \$help,
-	    "a|application=s" => \$name,
-	    "p|path=s"        => \$path,
-	    "x|no-check"      => sub { $do_check_dancer_version = 0 },
-	    "v|version"       => \&version,
-	) or pod2usage( -verbose => 1 );
-
-	my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
-
-	pod2usage( -verbose => 1 ) if $help;
-	pod2usage( -verbose => 1 ) if not defined $name;
-	pod2usage( -verbose => 1 ) unless -d $path && -w $path;
-	sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
-
-unless (Dancer::ModuleLoader->load('YAML')) {
-    print <<NOYAML;
-*****
-WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
-recommended; in particular, the scaffolded Dancer app being created will not be
-able to read settings from the config file without YAML.pm being installed.
-
-To resolve this, simply install YAML from CPAN, for instance using one of the
-following commands:
-
-  cpan YAML
-  perl -MCPAN -e 'install YAML'
-  curl -L http://cpanmin.us | perl - --sudo YAML
-*****
-NOYAML
-}
-
-	return ($name,$path,$do_check_dancer_version);
-}
-
-sub run {
-       my $self = shift; 
-       my ($name,$path,$do_check_dancer_version) = $self->parse_opts();
-       $self->validate_app_name($name);
-
-my $DO_OVERWRITE_ALL = 0;
-my $DANCER_APP_DIR   = $self->get_application_path($path, $name);
-my $DANCER_SCRIPT    = $self->get_script_path($name);
-my ($LIB_FILE, $LIB_PATH) = $self->get_lib_path($name);
-my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
-
-require Dancer;
-my $DANCER_VERSION   = $Dancer::VERSION;
-
-$self->version_check($DANCER_VERSION) if $do_check_dancer_version;
-$self->safe_mkdir($DANCER_APP_DIR);
-$self->create_node($self->app_tree($name,$path), $DANCER_APP_DIR);
-
 }
 
 1;
