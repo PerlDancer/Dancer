@@ -1,4 +1,4 @@
-use Test::More tests => 4, import => ['!pass'];
+use Test::More tests => 5, import => ['!pass'];
 use strict;
 use warnings;
 use Dancer ':syntax';
@@ -15,3 +15,8 @@ $a = Dancer::Template::Abstract->new;
 $a->config->{extension} = 'foo';
 my $view = $a->_template_name('bar');
 is $view, "bar.foo";
+
+##
+set 'engines/simple/extension' => 'bar';
+$view = engine('template')->_template_name('bar');
+is $view, "bar.bar";

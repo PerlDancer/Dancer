@@ -175,8 +175,19 @@ sub setting {
         $self->_set_settings(@_)
     } else {
         my $name = shift;
-        exists($self->settings->{$name}) ? $self->settings->{$name}
-          : Dancer::Config::setting($name);
+        my $value = $self->_get_settings($name);
+        $value = Dancer::Config::setting($name) if not defined($value);
+        return $value;
+    }
+}
+
+sub _get_settings {
+    my ($self, $name) = @_;
+    if ($name =~ m{/}) {
+        Dancer::Config::_get_hierarchical_setting($self->settings,
+                                                  [split m{/}, $name]);
+    } else {
+        $self->settings->{$name};
     }
 }
 
@@ -186,8 +197,16 @@ sub _set_settings {
     while (@_) {
         my $name = shift;
         my $value = shift;
-        $self->settings->{$name} =
-          Dancer::Config->normalize_setting($name => $value);
+
+        $value = Dancer::Config->normalize_setting($name => $value);
+
+        if ($name =~ m{/}) {
+            Dancer::Config::_set_hierarchical_setting($self->settings,
+                                                      [split m{/}, $name],
+                                                      $value);
+        } else {
+            $self->settings->{$name} = $value;
+        }
     }
 }
 
