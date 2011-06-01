@@ -6,6 +6,8 @@
       Don't decode twice entries in the params hash table, file 
       uploads with UTF-8 characters in their name are now possible.
       (Toby Corkindale, Alexis Sukrieh)
+    * Fix broken test with old version of HTTP::Parser::XS
+      (Franck Cuny)
 
     [ ENHANCEMENTS ]
     * Fix for issue #516
