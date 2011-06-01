@@ -43,7 +43,7 @@ Test::TCP::test_tcp(
             get '/foo' => sub {request->path_info};
 
             my $env     = shift;
-            my $request = Dancer::Request->new($env);
+            my $request = Dancer::Request->new(env => $env);
             Dancer->dance($request);
         };
 

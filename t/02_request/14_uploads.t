@@ -55,14 +55,14 @@ plan tests => 21;
 do {
     open my $in, '<', \$content;
     my $req = Dancer::Request->new(
-        {
-            'psgi.input'   => $in,
-            CONTENT_LENGTH => length($content),
-            CONTENT_TYPE   => 'multipart/form-data; boundary=----BOUNDARY',
-            REQUEST_METHOD => 'POST',
-            SCRIPT_NAME    => '/',
-            SERVER_PORT    => 80,
-        }
+       env => {
+               'psgi.input'   => $in,
+               CONTENT_LENGTH => length($content),
+               CONTENT_TYPE   => 'multipart/form-data; boundary=----BOUNDARY',
+               REQUEST_METHOD => 'POST',
+               SCRIPT_NAME    => '/',
+               SERVER_PORT    => 80,
+              }
     );
     Dancer::SharedData->request($req);
 

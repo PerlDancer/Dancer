@@ -27,7 +27,7 @@ __PACKAGE__->attributes(
     'content_type', 'content_length',
     'body',         'id',
     'uploads',      'headers', 'path_info',
-    'ajax', 
+    'ajax',         'body_is_parsed',
     @http_env_keys,
 );
 
@@ -58,29 +58,36 @@ sub request_method { method(@_) }
 sub Vars           { params(@_) }
 sub input_handle   { $_[0]->env->{'psgi.input'} || $_[0]->env->{'PSGI.INPUT'} }
 
-sub new {
-    my ($class, $env) = @_;
+sub init {
+    my ($self) = @_;
 
-    $env ||= {};
+    $self->{env}          ||= {};
+    $self->{path}           = undef;
+    $self->{method}         = undef;
+    $self->{params}         = {};
+    $self->{body}           = '';
+    $self->{body_is_parsed} ||= 0;
+    $self->{content_length} = $self->env->{CONTENT_LENGTH} || 0;
+    $self->{content_type}   = $self->env->{CONTENT_TYPE} || '';
+    $self->{id}             = ++$count;
+    $self->{_chunk_size}    = 4096;
+    $self->{_read_position} = 0;
+    $self->{_body_params}   = undef;
+    $self->{_query_params}  = undef;
+    $self->{_route_params}  = {};
 
-    my $self = {
-        path           => undef,
-        method         => undef,
-        params         => {},
-        body           => '',
-        content_length => $env->{CONTENT_LENGTH} || 0,
-        content_type   => $env->{CONTENT_TYPE} || '',
-        env            => $env,
-        id             => ++$count,
-        _chunk_size    => 4096,
-        _read_position => 0,
-        _body_params   => undef,
-        _query_params  => undef,
-        _route_params  => {},
-    };
+    $self->_build_headers();
+    $self->_build_request_env();
+    $self->_build_path()      unless $self->path;
+    $self->_build_path_info() unless $self->path_info;
+    $self->_build_method()    unless $self->method;
 
-    bless $self, $class;
-    $self->_init();
+    $self->{_http_body} =
+      HTTP::Body->new($self->content_type, $self->content_length);
+    $self->{_http_body}->cleanup(1);
+    $self->_build_params();
+    $self->_build_uploads unless $self->uploads;
+    $self->{ajax} = $self->is_ajax;
 
     return $self;
 }
@@ -97,9 +104,9 @@ sub new_for_request {
     $params ||= {};
     $method = uc($method);
 
-    my $req = $class->new( { %ENV,
-                             PATH_INFO      => $path,
-                             REQUEST_METHOD => $method});
+    my $req = $class->new( env => { %ENV,
+                                    PATH_INFO      => $path,
+                                    REQUEST_METHOD => $method});
     $req->{params}  = {%{$req->{params}}, %{$params}};
     $req->{body}    = $body    if defined $body;
     $req->{headers} = $headers if $headers;
@@ -114,9 +121,8 @@ sub forward {
 
     my $env = $request->env;
     $env->{PATH_INFO} = $to_data->{to_url};
-    $env->{CONTENT_LENGTH} = 0; # make sure post data is empty.
 
-    my $new_request = $class->new($env);
+    my $new_request = $class->new(env => $env, body_is_parsed => 1);
     my $new_params  = _merge_params(scalar($request->params),
                                     $to_data->{params} || {});
 
@@ -206,8 +212,8 @@ sub params {
     my @caller = caller;
 
     if (not $self->{_params_are_decoded}) {
-        $self->{params} = _decode($self->{params});
-        $self->{_body_params} = _decode($self->{_body_params});
+        $self->{params}        = _decode($self->{params});
+        $self->{_body_params}  = _decode($self->{_body_params});
         $self->{_query_params} = _decode($self->{_query_params});
         $self->{_route_params} = _decode($self->{_route_params});
         $self->{_params_are_decoded} = 1;
@@ -274,25 +280,6 @@ sub upload {
     return (ref($res) eq 'ARRAY') ? @$res : $res;
 }
 
-# private
-
-sub _init {
-    my ($self) = @_;
-
-    $self->_build_headers();
-    $self->_build_request_env();
-    $self->_build_path()      unless $self->path;
-    $self->_build_path_info() unless $self->path_info;
-    $self->_build_method()    unless $self->method;
-
-    $self->{_http_body} =
-      HTTP::Body->new($self->content_type, $self->content_length);
-    $self->{_http_body}->cleanup(1);
-    $self->_build_params();
-    $self->_build_uploads unless $self->uploads;
-    $self->{ajax} = $self->is_ajax;
-}
-
 # Some Dancer's core components sometimes need to alter
 # the parsed request params, these protected accessors are provided
 # for this purpose
@@ -347,7 +334,11 @@ sub _build_params {
 
     # now parse environement params...
     $self->_parse_get_params();
-    $self->_parse_post_params();
+    if ($self->{body_is_parsed}) {
+        $self->{_body_params} = {};
+    } else {
+        $self->_parse_post_params();
+    }
 
     # and merge everything
     $self->{params} = {
@@ -407,6 +398,7 @@ sub _url_decode {
 sub _parse_post_params {
     my ($self) = @_;
     return $self->{_body_params} if defined $self->{_body_params};
+
     my $body = $self->_read_to_end();
     $self->{_body_params} = $self->{_http_body}->param;
 }
@@ -448,12 +440,14 @@ sub _read_to_end {
 
     my $content_length = $self->content_length;
     return unless $self->_has_something_to_read();
+
     if ($content_length > 0) {
         while (my $buffer = $self->_read()) {
             $self->{body} .= $buffer;
             $self->{_http_body}->add($buffer);
         }
     }
+
     return $self->{body};
 }
 
@@ -550,10 +544,21 @@ use the current request object.
 
 =head1 PUBLIC INTERFACE
 
-=head2 new($env)
+=head2 new()
 
 The constructor of the class, used internally by Dancer's core to create request
-objects. It uses the environment hash table given to build the request object.
+objects.
+
+It uses the environment hash table given to build the request object:
+
+    Dancer::Request->new(env => \%ENV);
+
+It also accepts the C<body_is_parsed> boolean flag, if the new request object should
+not parse request body.
+
+=head2 init()
+
+Used internally to define some default values and parse parameters.
 
 =head2 new_for_request($method, $path, $params, $body, $headers)
 

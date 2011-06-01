@@ -32,7 +32,7 @@ open my $in, '<', \$body;
           'psgi.input'   => $in,
           );
 
-my $req = Dancer::Request->new( \%ENV );
+my $req = Dancer::Request->new( env => \%ENV );
 
 $response = Dancer::Serializer->process_request($req);
 is_deeply $response, $req;

@@ -26,7 +26,7 @@ for my $separator ('&', ';') {
         int2 => 0,
     };
 
-    my $req = Dancer::Request->new(\%ENV);
+    my $req = Dancer::Request->new(env => \%ENV);
     is $req->path, '/', 'path is set';
     is $req->method, 'GET', 'method is set';
     ok $req->is_get, "request method is GET";

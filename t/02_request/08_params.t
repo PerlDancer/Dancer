@@ -31,11 +31,11 @@ my $post_params = {
     meth => 'post',
 };
 
-my $req = Dancer::Request->new($env);
+my $req = Dancer::Request->new(env => $env);
 is $req->path, '/', 'path is set';
 is $req->method, 'POST', 'method is set';
 
-is_deeply scalar($req->params), $mixed_params, 'params are OK';
-is_deeply scalar($req->params('body')), $post_params, 'body params are OK';
-is_deeply scalar($req->params('query')), $get_params, 'query params are OK';
+is_deeply scalar($req->params),          $mixed_params, 'params are OK';
+is_deeply scalar($req->params('body')),  $post_params,  'body params are OK';
+is_deeply scalar($req->params('query')), $get_params,   'query params are OK';
 

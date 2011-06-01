@@ -31,7 +31,7 @@ my $expected_params = {
     foo  => '42',
 };
 
-my $req = Dancer::Request->new($env);
+my $req = Dancer::Request->new(env => $env);
 is $req->body, $body, "body is untouched";
 
 my $processed_req = Dancer::Serializer->process_request($req);

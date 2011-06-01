@@ -12,7 +12,7 @@ use Dancer::Request;
           'QUERY_STRING' => 'foo=bar&number=42',
           );
 
-my $req = Dancer::Request->new(\%ENV);
+my $req = Dancer::Request->new(env => \%ENV);
 is $req->path, '/', 'path is /';
 is $req->method, 'GET', 'method is get';
 is_deeply scalar($req->params), {foo => 'bar', number => 42},

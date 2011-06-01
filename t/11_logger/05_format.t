@@ -46,7 +46,7 @@ my $env = {
 my $headers = HTTP::Headers->new();
 $headers->header('Accept-Type' => 'text/html');
 
-my $request = Dancer::Request->new($env);
+my $request = Dancer::Request->new(env => $env);
 $request->{headers} = $headers;
 
 Dancer::SharedData->request($request);

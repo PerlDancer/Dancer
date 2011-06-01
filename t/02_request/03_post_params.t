@@ -21,7 +21,7 @@ my $expected_params = {
     hash => [2, 4, 6],
 };
 
-my $req = Dancer::Request->new($env);
+my $req = Dancer::Request->new(env => $env);
 is $req->path, '/', 'path is set';
 is $req->method, 'POST', 'method is set';
 ok $req->is_post, 'method is post';

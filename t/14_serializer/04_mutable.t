@@ -52,7 +52,7 @@ is_deeply($result, $data, 'got same result');
     'HTTP_ACCEPT_TYPE' => 'text/x-yaml',
 );
 
-my $req = Dancer::Request->new(\%ENV);
+my $req = Dancer::Request->new(env => \%ENV);
 Dancer::SharedData->request($req);
 eval { $s->deserialize($data) };
 ok $@, 'died okay';
@@ -70,7 +70,7 @@ is $s->content_type, 'text/x-yaml', 'correct content_type';
     'PATH_INFO'      => '/',
 );
 
-$req = Dancer::Request->new(\%ENV);
+$req = Dancer::Request->new(env => \%ENV);
 Dancer::SharedData->request($req);
 my $ct = $s->_find_content_type($req);
 is_deeply $ct, ['text/xml', 'text/x-yaml', 'application/json'];
@@ -79,7 +79,7 @@ is_deeply $ct, ['text/xml', 'text/x-yaml', 'application/json'];
     'REQUEST_METHOD' => 'PUT',
     'PATH_INFO' => '/',
 );
-$req = Dancer::Request->new(\%ENV);
+$req = Dancer::Request->new(env => \%ENV);
 Dancer::SharedData->request($req);
 $ct = $s->_find_content_type($req);
 is_deeply $ct, ['application/json'];
@@ -90,7 +90,7 @@ is_deeply $ct, ['application/json'];
     'HTTP_ACCEPT' => 'text/xml',
     'CONTENT_TYPE' => 'application/json',
 );
-$req = Dancer::Request->new(\%ENV);
+$req = Dancer::Request->new(env => \%ENV);
 Dancer::SharedData->request($req);
 $ct = $s->_find_content_type($req);
 is_deeply $ct, ['application/json', 'text/xml'];

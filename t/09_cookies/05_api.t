@@ -36,7 +36,7 @@ my $env = {
     SCRIPT_NAME => '/',
     COOKIE => 'complex=token&foo&token_secret&bar',
 };
-my $request = Dancer::Request->new($env);
+my $request = Dancer::Request->new(env => $env);
 Dancer::SharedData->request($request);
 ok(Dancer::Cookies->init, "Dancer::Cookies->init");
 
