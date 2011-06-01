@@ -1,3 +1,4 @@
+# PODNAME: Plugins
 =head1 NAME
 
 Dancer::Plugins - interesting plugins to add to Dancer's capabilities

@@ -1,3 +1,4 @@
+# PODNAME: Integrator Guide
 =head1 NAME
 
 Dancer::Development::Integration - guide for Dancer's core-team members
