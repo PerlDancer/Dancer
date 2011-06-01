@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More;
 
-plan tests => 27;
+plan tests => 31;
 
 use Dancer qw/ :syntax :tests /;
 use Dancer::Test;
