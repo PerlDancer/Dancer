@@ -3,7 +3,6 @@ use strict;
 use warnings FATAL => 'all';
 use Dancer::Request;
 
-
 {
     # 1. - get params
 

@@ -412,6 +412,7 @@ sub _url_decode {
 sub _parse_post_params {
     my ($self) = @_;
     return $self->{_body_params} if defined $self->{_body_params};
+
     my $body = $self->_read_to_end();
     $self->{_body_params} = $self->{_http_body}->param;
 }
@@ -453,12 +454,14 @@ sub _read_to_end {
 
     my $content_length = $self->content_length;
     return unless $self->_has_something_to_read();
+
     if ($content_length > 0) {
         while (my $buffer = $self->_read()) {
             $self->{body} .= $buffer;
             $self->{_http_body}->add($buffer);
         }
     }
+
     return $self->{body};
 }
 
