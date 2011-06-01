@@ -1460,7 +1460,11 @@ see the AUTHORS file that comes with this distribution for details.
 =head1 SOURCE CODE
 
 The source code for this module is hosted on GitHub
-L<http://github.com/sukria/Dancer>
+L<http://github.com/sukria/Dancer>.  Feel free to fork the repository and submit
+pull requests!  (See L<Dancer::Development> for details on how to contribute).
+
+Also, why not L<watch the repo|https://github.com/sukria/Dancer/toggle_watch> to
+keep up to date with the latest upcoming changes?
 
 
 =head1 GETTING HELP / CONTRIBUTING
