@@ -2,6 +2,7 @@ package Dancer::Script;
 
 use strict;
 use warnings;
+use Dancer;
 use Dancer::ModuleLoader;
 use Dancer::Template::Simple;
 use Dancer::Renderer;
@@ -32,14 +33,13 @@ sub new {
 		$self->{check_version} = $check_version;
 	}
 	
-        $self->{do_overwrite_all} = 0;
-        $self->validate_app_name();
-        #my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
-        require Dancer;
-        $self->{dancer_version} = $Dancer::VERSION;
-	$self->{dancer_app_dir} = $self->set_application_path();
-	$self->{dancer_script}  = $self->set_script_path();
-	($self->{lib_file}, $self->{lib_path}) = $self->set_lib_path();
+	$self->{do_overwrite_all} = 0;
+	$self->validate_app_name();
+	#my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
+	$self->{dancer_version} = $Dancer::VERSION;
+	$self->_set_application_path();
+	$self->_set_script_path();
+	$self->_set_lib_path();
 	return $self;
 }
 
@@ -104,22 +104,23 @@ sub validate_app_name {
     }
 }
 
-sub set_application_path {
+sub _set_application_path {
     my $self = shift;
-    catdir($self->{path}, $self->_dash_name());
+    $self->{dancer_app_dir} = catdir($self->{path}, $self->_dash_name());
 }
 
-sub set_lib_path {
+sub _set_lib_path {
     my $self = shift;
     my @lib_path = split('::', $self->{appname});
     my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
     $lib_path = join('/', @lib_path);
-    return ($lib_file, $lib_path);
+    $self->{lib_file} = $lib_file;
+    $self->{lib_path} = $lib_path; 
 }
 
-sub set_script_path {
+sub _set_script_path {
     my $self = shift;
-    $self->_dash_name();
+    $self->{dancer_script} = $self->_dash_name();
 }
 
 sub _dash_name {
@@ -216,13 +217,13 @@ sub app_tree {
                 "error.css" => FILE,
             },
             "images"      => {
-                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{path},$self->{appname}).'/public/images/perldancer-bg.jpg') }, 
-                "perldancer.jpg" => sub { $self->write_logo(catfile($self->{path},$self->{appname}).'/public/images/perldancer.jpg')},
+                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{path},$self->{appname}, 'public', 'images', 'perldancer-bg.jpg')) }, 
+                "perldancer.jpg" => sub { $self->write_logo(catfile($self->{path},$self->{appname}, 'public', 'images', 'perldancer.jpg')) },
             },
             "javascripts" => {
                 "jquery.js" => FILE,
             },
-            "favicon.ico" => sub { $self->write_favicon(catfile($self->{path},$self->{appname}).'/public/favicon.ico') },
+            "favicon.ico" => sub { $self->write_favicon(catfile($self->{path},$self->{appname}, 'public', 'favicon.ico')) },
         },
         "t" => {
             "001_base.t"        => FILE,
