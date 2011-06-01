@@ -34,8 +34,16 @@ SKIP: {
       unless Dancer::ModuleLoader->load('Test::TCP');
     skip "Plack is required", 2
       unless Dancer::ModuleLoader->load('Plack::Loader');
+    skip "HTTP::Parser::XS is required", 2
+      unless Dancer::ModuleLoader->load('HTTP::Parser::XS');
+
+    require HTTP::Parser::XS;
     require HTTP::Request;
     require LWP::UserAgent;
+
+    if ($HTTP::Parser::XS::VERSION < 0.10) {
+        skip "HTTP::Parser::XS > 0.9 is required", 2;
+    }
 
     Test::TCP::test_tcp(
         client => sub {
