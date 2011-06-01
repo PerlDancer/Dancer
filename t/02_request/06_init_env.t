@@ -24,7 +24,7 @@ my $custom_env = {
 my @http_env = grep /^HTTP_/, keys (%$custom_env);
 plan tests => 6 + (2 * scalar(@http_env));
 
-my $req = Dancer::Request->new($custom_env);
+my $req = Dancer::Request->new(env => $custom_env);
 is $req->path, '/stuff', 'path is set from custom env';
 is $req->method, 'GET', 'method is set from custom env';
 is_deeply scalar($req->params), {foo => 'bar'}, 'params are set from custom env';

@@ -175,7 +175,7 @@ Start by creating a simple app.psgi file:
         setting appname => 'app1';
         load_app "app1";
         Dancer::Config->load;
-        my $request = Dancer::Request->new( $env );
+        my $request = Dancer::Request->new( env => $env );
         Dancer->dance( $request );
     };
     my $app2 = sub {
@@ -184,7 +184,7 @@ Start by creating a simple app.psgi file:
         setting appname => 'app2';
         load_app "app2";
         Dancer::Config->load;
-        my $request = Dancer::Request->new( $env );
+        my $request = Dancer::Request->new( env => $env );
         Dancer->dance( $request );
     };
 
