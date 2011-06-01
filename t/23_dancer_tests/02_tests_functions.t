@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More;
 
-plan tests => 27;
+plan tests => 31;
 
 use Dancer qw/ :syntax :tests /;
 use Dancer::Test;
@@ -37,6 +37,10 @@ del '/user/:id' => sub {
     my $deleted = $users->{$id};
     delete $users->{$id};
     { user => $deleted };
+};
+
+get '/query' => sub {
+    return join(":",params('query'));
 };
 
 my $resp = dancer_response GET => '/marco';
@@ -82,3 +86,5 @@ $r = dancer_response(
 is_deeply $r->{content}, { user => { id => 2, name => "Franck Cuny" } },
   "id is correctly increased";
 
+$r = dancer_response( GET => '/query', { params => {foo => 'bar'}});
+is $r->{content} => "foo:bar";

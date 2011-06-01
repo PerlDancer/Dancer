@@ -123,9 +123,10 @@ sub new_for_request {
     my $req = $class->new( env => { %ENV,
                                     PATH_INFO      => $path,
                                     REQUEST_METHOD => $method});
-    $req->{params}  = {%{$req->{params}}, %{$params}};
-    $req->{body}    = $body    if defined $body;
-    $req->{headers} = $headers if $headers;
+    $req->{params}        = {%{$req->{params}}, %{$params}};
+    $req->{_query_params} = $req->{params};
+    $req->{body}          = $body    if defined $body;
+    $req->{headers}       = $headers if $headers;
 
     return $req;
 }
