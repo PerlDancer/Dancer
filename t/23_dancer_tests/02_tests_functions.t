@@ -39,6 +39,10 @@ del '/user/:id' => sub {
     { user => $deleted };
 };
 
+get '/query' => sub {
+    return join(":",params('query'));
+};
+
 my $resp = dancer_response GET => '/marco';
 
 my @req = ( [ GET => $route ], $route, $resp );
@@ -82,3 +86,5 @@ $r = dancer_response(
 is_deeply $r->{content}, { user => { id => 2, name => "Franck Cuny" } },
   "id is correctly increased";
 
+$r = dancer_response( GET => '/query', { params => {foo => 'bar'}});
+is $r->{content} => "foo:bar";
