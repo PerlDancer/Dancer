@@ -1,4 +1,4 @@
-use Test::More tests => 16, import => ['!pass'];
+use Test::More tests => 23, import => ['!pass'];
 use strict;
 use warnings;
 
@@ -17,18 +17,29 @@ foreach my $method (qw(_log debug warning error)) {
     like $@, qr/_log not implemented/, "$method is a virtual method";
 }
 
+
+# core
+setting log => 'core';
+ok $l->_should('core'), "core level accepted";
+ok $l->_should('debug'), "debug level accepted";
+ok $l->_should('warning'), "warning level accepted";
+ok $l->_should('error'), "error level accepted";
+
 # debug
 setting log => 'debug';
+ok !$l->_should('core'), "core level not accepted";
 ok $l->_should('debug'), "debug level accepted";
 ok $l->_should('warning'), "warning level accepted";
 ok $l->_should('error'), "error level accepted";
 
 setting log => 'warning';
+ok !$l->_should('core'), "core level not accepted";
 ok !$l->_should('debug'), "debug level not accepted";
 ok $l->_should('warning'), "warning level accepted";
 ok $l->_should('error'), "error level accepted";
 
 setting log => 'error';
+ok !$l->_should('core'), "core level not accepted";
 ok !$l->_should('debug'), "debug level not accepted";
 ok !$l->_should('warning'), "warning level not accepted";
 ok $l->_should('error'), "error level accepted";
