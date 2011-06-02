@@ -2,7 +2,6 @@ package Dancer::Script;
 
 use strict;
 use warnings;
-use Dancer;
 use Dancer::ModuleLoader;
 use Dancer::Template::Simple;
 use Dancer::Renderer;
@@ -36,6 +35,7 @@ sub new {
 	$self->{do_overwrite_all} = 0;
 	$self->validate_app_name();
 	#my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
+	require Dancer;
 	$self->{dancer_version} = $Dancer::VERSION;
 	$self->_set_application_path();
 	$self->_set_script_path();
@@ -1471,86 +1471,3 @@ EOF
 }
 
 1;
-__END__
-=pod
-
-=head1 NAME
-
-dancer - helper script to create new Dancer applications
-
-=head1 SYNOPSIS
-
-dancer [options] -a <appname>
-
-=head1 OPTIONS
-
-    -h, --help            : print what you are currently reading
-    -a, --application     : the name of your application
-    -p, --path            : the path where to create your application
-                              (current directory if not specified)
-    -x, --no-check        : don't check for the latest version of Dancer
-                              (checking version implies internet connection)
-    -v, --version         : print the version of dancer being used
-
-=head1 DESCRIPTION
-
-Helper script for providing a bootstrapping method to quickly and easily create
-the framework for a new Dancer application.
-
-=head1 EXAMPLE
-
-Here is an application created with dancer:
-
-    $ dancer -a mywebapp
-    + mywebapp
-    + mywebapp/bin
-    + mywebapp/bin/app.pl
-    + mywebapp/config.yml
-    + mywebapp/environments
-    + mywebapp/environments/development.yml
-    + mywebapp/environments/production.yml
-    + mywebapp/views
-    + mywebapp/views/index.tt
-    + mywebapp/views/layouts
-    + mywebapp/views/layouts/main.tt
-    + mywebapp/lib
-    + mywebapp/lib/mywebapp.pm
-    + mywebapp/public
-    + mywebapp/public/css
-    + mywebapp/public/css/style.css
-    + mywebapp/public/css/error.css
-    + mywebapp/public/images
-    + mywebapp/public/500.html
-    + mywebapp/public/404.html
-    + mywebapp/public/dispatch.fcgi
-    + mywebapp/public/dispatch.cgi
-    + mywebapp/public/javascripts
-    + mywebapp/public/javascripts/jquery.js
-    + mywebapp/Makefile.PL
-    + mywebapp/t
-    + mywebapp/t/002_index_route.t
-    + mywebapp/t/001_base.t
-
-The application is ready to serve:
-
-    $ cd mywebapp
-    $ ./mywebapp.pl
-    >> Listening on 127.0.0.1:3000
-    == Entering the development dance floor ...
-
-=head1 AUTHOR
-
-This script has been written by Sebastien Deseille
-<sebastien.deseille@gmail.com> and Alexis Sukrieh
-<sukria@cpan.org>.
-
-=head1 SOURCE CODE
-
-See L<Dancer> for more information.
-
-=head1 LICENSE
-
-This module is free software and is published under the same
-terms as Perl itself.
-
-=cut
