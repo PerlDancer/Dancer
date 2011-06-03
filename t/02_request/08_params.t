@@ -1,4 +1,4 @@
-use Test::More tests => 24;
+use Test::More tests => 26;
 use strict;
 use warnings FATAL => 'all';
 use Dancer::Request;
@@ -34,6 +34,7 @@ use Dancer::Request;
         is $req->method, 'GET', 'method is set';
         ok $req->is_get, "request method is GET";
         is_deeply scalar($req->params), $expected_params, 'params are OK';
+        is_deeply scalar($req->Vars), $expected_params, 'params are OK (using Vars)';
         is $req->params->{'name'}, 'Alexis Sukrieh', 'params accessor works';
 
         my %params = $req->params;
