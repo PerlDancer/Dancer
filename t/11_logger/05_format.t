@@ -5,7 +5,7 @@ use Dancer::Config qw/setting/;
 use Dancer::Logger::File;
 use Dancer::Request;
 
-plan tests => 8;
+plan tests => 9;
 
 setting logger_format => '(%L) %m';
 my $l = Dancer::Logger::File->new;
@@ -29,6 +29,11 @@ is $fmt, '[%P] %L @%D> %i%m in %f l. %l';
 setting logger_format => '%m %{%H:%M}t';
 $str = $l->format_message('debug', 'this is debug');
 like $str, qr/this is debug \[\d\d:\d\d\]/;
+
+setting charset => 'UTF-8', logger_format => '%h %t %T';
+$str = $l->format_message('debug', 'this is debug');
+like $str, qr{- \s \d+/[a-z]{3}/\d+ \s \d+:\d+:\d+ \s \d+-\d+-\d+ \s \d+:\d+:\d+ }xi;
+
 
 my $env = {
     'psgi.url_scheme' => 'http',
