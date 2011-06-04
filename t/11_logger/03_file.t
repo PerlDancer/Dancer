@@ -29,7 +29,7 @@ ok($l->error("Perl Dancer test message 4/4"), "error works");
 
 #Create a new tmp directory to test log_path option
 my $dir2 = tempdir(CLEANUP => 1, TMPDIR => 1);
-setting log_path => $dir2;
+set log_path => $dir2;
 
 is(Dancer::Logger::File->logdir, $dir2, 
     "logir is ok");

@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 105, import => ['!pass'];
+use Test::More tests => 66, import => ['!pass'];
 use Dancer::Test;
 use Dancer ':syntax';
 setting route_cache => 1;
@@ -29,16 +29,16 @@ setting route_cache => 1;
         path_limit => 10,
     );
 
-    isa_ok( $cache, 'Dancer::Route::Cache' );
+    isa_ok $cache => 'Dancer::Route::Cache';
     cmp_ok( $cache->size_limit, '==', $sizes{'10M'}, 'setting size_limit' );
     cmp_ok( $cache->path_limit, '==', 10,            'setting path_limit' );
 }
 
 # running three routes
 # GET and POST with in pass to 'any'
-ok( get(  '/:p', sub { params->{'p'} eq 'in' or pass } ), 'adding POST /:p' );
-ok( post( '/:p', sub { params->{'p'} eq 'in' or pass } ), 'adding GET  /:p' );
-ok( any(  '/:p', sub { 'any' } ),                         'adding any  /:p' );
+get  '/:p', sub { params->{'p'} eq 'in' or pass };
+post '/:p', sub { params->{'p'} eq 'in' or pass };
+any  '/:p', sub { 'any' };
 
 my %reqs = (
     '/'    => 'GET / request',
@@ -47,30 +47,24 @@ my %reqs = (
 
 foreach my $method ( qw/get post/ ) {
     foreach my $path ( '/in', '/out', '/err' ) {
-        response_exists [$method => $path] => "$method $path request"
+        response_status_is [$method => $path] => 200;
     }
 }
 
 my $cache = Dancer::Route::Cache->get;
-isa_ok( $cache, 'Dancer::Route::Cache' );
+isa_ok $cache => 'Dancer::Route::Cache';
 
 # checking when path doesn't exist
-is(
-    $cache->route_from_path( get => '/wont/work'),
-    undef,
-    'non-existing path',
-);
+is $cache->route_from_path( get => '/wont/work') => undef,
+  'non-existing path';
 
-is(
-    $cache->route_from_path( post => '/wont/work'),
-    undef,
-    'non-existing path',
-);
+is $cache->route_from_path( post => '/wont/work') => undef,
+  'non-existing path';
 
 foreach my $method ( qw/get post/ ) {
     foreach my $path ( '/in', '/out', '/err' ) {
         my $route = $cache->route_from_path( $method, $path );
-        is( ref $route, 'Dancer::Route', "Got route for $path ($method)" );
+        is ref($route) => 'Dancer::Route', "Got route for $path ($method)";
     }
 }
 
@@ -81,14 +75,14 @@ foreach my $path ( '/out', '/err' ) {
     my %content; # by method
     foreach my $method ( qw/get post/ ) {
         my $handler = $cache->route_from_path( $method => $path );
-        ok( $handler, "Got handler for $method $path" );
+        ok $handler, "Got handler for $method $path";
         if ($handler) {
             $content{$method} = $handler->{'content'};
         }
     }
 
     if ( defined $content{'get'} and defined $content{'post'} ) {
-        is( $content{'get'}, $content{'post'}, "get/post $path is the same" );
+        is $content{'get'} => $content{'post'}, "get/post $path is the same";
     }
 }
 
@@ -104,11 +98,11 @@ $cache->{'cache_array'} = [];
 
     my @paths = 'a' .. 'z';
     foreach my $path (@paths) {
-        ok( get( "/$path", sub {1} ), 'Added path' );
+        get "/$path" => sub {1};
     }
 
     foreach my $path (@paths) {
-        response_exists [GET => "/$path"] => "get $path request";
+        response_status_is [GET => "/$path"] => 200, "get $path request";
     }
 
     # check that only 10 remained
@@ -147,11 +141,11 @@ SKIP: {
     }
 
     foreach my $path (@paths) {
-        ok( get( "/$path", sub {1} ), 'Added path' );
+        get "/$path" => sub {1};
     }
 
     foreach my $path (@paths) {
-        response_exists [GET => $path], 'get request';
+        response_status_is [GET => $path] => 200, 'get request';
     }
 
     # check that only 10 remained

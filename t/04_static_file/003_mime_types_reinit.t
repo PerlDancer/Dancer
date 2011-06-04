@@ -19,28 +19,28 @@ plan tests => 3;
 
 my @cts;
 for (my $i = 0; $i < 3; $i++) {
-        my ($p, $c) = (IO::Handle->new, IO::Handle->new);
-        pipe($p, $c);
+    my ($p, $c) = (IO::Handle->new, IO::Handle->new);
+    pipe($p, $c);
 
-        if (my $pid = fork()) {
-                # parent
-                $c->close;
-                my $ct = $p->getline;
-                $p->close();
-                waitpid($pid, 0);
-                push @cts, $ct;
-        }
-        else {
-                # child
-                $p->close;
-                my $mime = Dancer::MIME->instance();
-                my $type = $mime->for_name('css');
-                $c->print($type);
-                $c->close;
-                exit 0;
-        }
+    if (my $pid = fork()) {
+        # parent
+        $c->close;
+        my $ct = $p->getline;
+        $p->close();
+        waitpid($pid, 0);
+        push @cts, $ct;
+    }
+    else {
+        # child
+        $p->close;
+        my $mime = Dancer::MIME->instance();
+        my $type = $mime->for_name('css');
+        $c->print($type);
+        $c->close;
+        exit 0;
+    }
 }
 
-ok($cts[0] eq 'text/css');
-ok($cts[1] eq 'text/css');
-ok($cts[2] eq 'text/css');
+is $cts[0] => 'text/css';
+is $cts[1] => 'text/css';
+is $cts[2] => 'text/css';

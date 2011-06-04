@@ -4,6 +4,7 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
+plan skip_all => "skip test with Test::TCP in win32" if ( $^O eq 'MSWin32' );
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP');
 
