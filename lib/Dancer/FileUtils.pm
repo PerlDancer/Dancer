@@ -198,7 +198,7 @@ Returns the content and B<closes the file handle>.
 
     my $real_path=real_path ($path);
 
-Returns a canonized absolute path. Uses Cwd's realpath internally.
+Returns canonical pathname path. Uses Cwd's realpath internally.
 
 =head2 set_file_mode
 
