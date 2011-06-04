@@ -11,7 +11,7 @@ use Cwd 'realpath';
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(path real_path dirname read_file_content read_glob_content open_file set_file_mode);
+@EXPORT_OK = qw(dirname open_file path read_file_content read_glob_content real_path set_file_mode);
 
 # Undo UNC special-casing catfile-voodoo on cygwin
 sub _trim_UNC {
@@ -112,10 +112,26 @@ Dancer::FileUtils - helper providing file utilities
 
 =head1 SYNOPSIS
 
+    use Dancer::FileUtils qw/dirname/;
+
+    my $dir=dirname ($path);
+
+
     use Dancer::FileUtils qw/path read_file_content/;
 
     my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
     my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
+
+
+    use Dancer::FileUtils qw/read_glob_content/;
+
+    open my $fh, '<', $file or die "$!\n";
+    my $content = read_file_content($fh);
+    my @content = read_file_content($fh);
+
+    use Dancer::FileUtils qw/real_path/;
+    use Dancer::FileUtils qw/set_file_mode/;
+
 
 =head1 DESCRIPTION
 
@@ -124,22 +140,6 @@ uses internally. Developers may use it instead of writing their own
 file reading subroutines or using additional modules.
 
 =head1 SUBROUTINES/METHODS
-
-=head2 open_file
-
-    use Dancer::FileUtils 'open_file';
-    my $fh = open_file('<', $file) or die $message;
-
-Calls open and returns a filehandle. Takes in account the 'charset' setting to
-open the file in the proper encoding.
-
-=head2 path
-
-    use Dancer::FileUtils 'path';
-
-    my $path = path( 'folder', 'folder', 'filename');
-
-Provides comfortable path resolving, internally using L<File::Spec>.
 
 =head2 dirname
 
@@ -150,30 +150,67 @@ Provides comfortable path resolving, internally using L<File::Spec>.
 Exposes L<File::Basename>'s I<dirname>, to allow fetching a directory name from
 a path.
 
+=head2 open_file
+
+    use Dancer::FileUtils 'open_file';
+    my $fh = open_file('<', $file) or die $message;
+
+Calls open and returns a filehandle. Takes in account the 'charset' setting 
+from Dancer's configuration to open the file in the proper encoding (or 
+defaults to utf-8 if setting not present).
+
+=head2 path
+
+    use Dancer::FileUtils 'path';
+
+    my $path = path( 'folder', 'folder', 'filename');
+
+Provides comfortable path resolving, internally using L<File::Spec>.
+
 =head2 read_file_content
 
     use Dancer::FileUtils 'read_file_content';
 
-    my $content = read_file_content($file);
     my @content = read_file_content($file);
+    my $content = read_file_content($file);
+
 
 Returns either the content of a file (whose filename is the input), I<undef>
 if the file could not be opened.
 
-In array context it returns each line (as defined by $/) as a seperate element
-Scalar context returns the entire contents of the file.
+In array context it returns each line (as defined by $/) as a seperate element;
+in scalar context returns the entire contents of the file.
 
 =head2 read_glob_content
 
     use Dancer::FileUtils 'read_glob_content';
 
     open my $fh, '<', $file or die "$!\n";
-    my $content = read_glob_content($fh);
     my @content = read_glob_content($fh);
+    my $content = read_glob_content($fh);
+
 
 Same as I<read_file_content>, only it accepts a file handle.
 
 Returns the content and B<closes the file handle>.
+
+=head2 realpath
+
+    use Dancer::FileUtils 'real_path';
+
+    my $real_path=real_path ($path);
+
+Returns a canonized absolute path. Uses Cwd's realpath internally.
+
+=head2 set_file_mode
+
+    use Dancer::FileUtils 'set_file_mode';
+
+    my $fh=set_file_mode($fh);
+    
+
+Applies charset setting from Dancer's configuration. Defaults to utf-8 if no 
+charset setting.
 
 =head1 EXPORT
 
@@ -185,7 +222,7 @@ Alexis Sukrieh
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2009-2010 Alexis Sukrieh.
+Copyright 2009-2011 Alexis Sukrieh.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
