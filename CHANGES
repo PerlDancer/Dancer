@@ -8,6 +8,8 @@
       (Toby Corkindale, Alexis Sukrieh)
     * Fix broken test with old version of HTTP::Parser::XS
       (Franck Cuny)
+    * #492 - Don't run Test::TCP tests on win32
+      (Franck Cuny)
 
     [ ENHANCEMENTS ]
     * Fix for issue #516
@@ -22,6 +24,8 @@
       (Alberto Simões)
     * Implement session directory testing cache for Session::YAML
       (Damien Krotkine)
+    * tests rework (improve speed, remove useless tests, ...)
+      (Alberto Simões and Franck Cuny)
 
 1.3059_02   29.05.2011
 
