@@ -112,10 +112,10 @@ Dancer::FileUtils - helper providing file utilities
 
 =head1 SYNOPSIS
 
-    use Dancer::FileUtils qw/dirname/;
+    use Dancer::FileUtils qw/dirname real_path/;
 
     my $dir=dirname ($path);
-
+    my $real_path=real_path ($path);
 
     use Dancer::FileUtils qw/path read_file_content/;
 
@@ -123,14 +123,16 @@ Dancer::FileUtils - helper providing file utilities
     my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
 
 
-    use Dancer::FileUtils qw/read_glob_content/;
+    use Dancer::FileUtils qw/read_glob_content set_file_mode/;
 
     open my $fh, '<', $file or die "$!\n";
-    my $content = read_file_content($fh);
+    $fh=set_file_mode ($fh);
     my @content = read_file_content($fh);
+    my $content = read_file_content($fh);
 
-    use Dancer::FileUtils qw/real_path/;
-    use Dancer::FileUtils qw/set_file_mode/;
+
+
+
 
 
 =head1 DESCRIPTION
