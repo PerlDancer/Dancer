@@ -30,6 +30,7 @@ sub _trim_UNC {
     }
     return(@_);
 }
+
 sub d_catfile { File::Spec->catfile(_trim_UNC(@_)) }
 sub d_catdir { File::Spec->catdir(_trim_UNC(@_)) }
 sub d_canonpath { File::Spec->canonpath(_trim_UNC(@_)) }
@@ -38,7 +39,16 @@ sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
 
 sub path { d_catfile(@_) }
 
-sub real_path { realpath( d_catfile(@_) ) }
+sub real_path { 
+  my $path=d_catfile(@_);
+  #If Cwd's realpath encounters a path which does not exist it returns
+  #empty on linux, but croaks on windows. see http://blogs.perl.org/users/
+  #sawyer_x/2010/11/blessed-are-the-cpan-testers.html
+  if (! -e $path) {
+    return;
+  }
+  realpath($path); 
+}
 
 sub path_no_verify {
     my @nodes = File::Spec->splitpath(d_catdir(@_)); # 0=vol,1=dirs,2=file
@@ -114,8 +124,10 @@ Dancer::FileUtils - helper providing file utilities
 
     use Dancer::FileUtils qw/dirname real_path/;
 
-    my $dir=dirname ($path);
-    my $real_path=real_path ($path);
+    #for 'path/to/file' 	
+    my $dir=dirname ($path); #returns 'path/to'
+    my $real_path=real_path ($path); #returns '/abs/path/to/file'
+
 
     use Dancer::FileUtils qw/path read_file_content/;
 
@@ -146,7 +158,7 @@ file reading subroutines or using additional modules.
     my $dir = dirname($path);
 
 Exposes L<File::Basename>'s I<dirname>, to allow fetching a directory name from
-a path.
+a path. On most OS, returns all but level of file path. See L<File::Basename> for details.
 
 =head2 open_file
 
@@ -172,7 +184,6 @@ Provides comfortable path resolving, internally using L<File::Spec>.
     my @content = read_file_content($file);
     my $content = read_file_content($file);
 
-
 Returns either the content of a file (whose filename is the input), I<undef>
 if the file could not be opened.
 
@@ -187,18 +198,18 @@ in scalar context returns the entire contents of the file.
     my @content = read_glob_content($fh);
     my $content = read_glob_content($fh);
 
+Same as I<read_file_content>, only it accepts a file handle. Returns the 
+content and B<closes the file handle>.
 
-Same as I<read_file_content>, only it accepts a file handle.
-
-Returns the content and B<closes the file handle>.
-
-=head2 realpath
+=head2 real_path
 
     use Dancer::FileUtils 'real_path';
 
-    my $real_path=real_path ($path);
+    my $real_path=real_path ($path);  
 
-Returns canonical pathname path. Uses Cwd's realpath internally.
+Returns a canonical and absolute path. Uses Cwd's realpath internally which 
+resolves symbolic links and relative-path components ("." and ".."). If 
+specified path does not exist, real_path returns nothing. 
 
 =head2 set_file_mode
 
@@ -206,7 +217,6 @@ Returns canonical pathname path. Uses Cwd's realpath internally.
 
     my $fh=set_file_mode($fh);
     
-
 Applies charset setting from Dancer's configuration. Defaults to utf-8 if no 
 charset setting.
 
@@ -227,4 +237,3 @@ under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
 See http://dev.perl.org/licenses/ for more information.
-
