@@ -26,7 +26,7 @@
       (Alberto Simões)
     * Implement session directory testing cache for Session::YAML
       (Damien Krotkine)
-    * tests rework (improve speed, remove useless tests, ...)
+    * Tests rework (improve speed, remove useless tests, ...)
       (Alberto Simões and Franck Cuny)
 
 1.3059_02   29.05.2011
