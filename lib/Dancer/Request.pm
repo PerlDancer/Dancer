@@ -55,9 +55,9 @@ sub script_name           { $_[0]->env->{SCRIPT_NAME} }
 sub scheme                {
     my $scheme;
     if (setting('behind_proxy')) {
-        $scheme = $_[0]->env->{'X_FORWARDED_PROTOCOL'} || $_[0]->env->{'HTTP_FORWARDED_PROTO'}
+        $scheme = $_[0]->env->{'X_FORWARDED_PROTOCOL'} || $_[0]->env->{'HTTP_FORWARDED_PROTO'} || ""
     }
-    return $scheme || $_[0]->env->{'psgi.url_scheme'} || $_[0]->env->{'PSGI.URL_SCHEME'};
+    return $scheme || $_[0]->env->{'psgi.url_scheme'} || $_[0]->env->{'PSGI.URL_SCHEME'} || "";
 }
 sub secure                { $_[0]->scheme eq 'https' }
 sub uri                   { $_[0]->request_uri }
