@@ -65,7 +65,7 @@ SKIP: {
         'PATH_INFO'         => '/',
     );
 
-    my $req = Dancer::Request->new( \%ENV );
+    my $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
     my $ct = $s->_find_content_type($req);
     is_deeply $ct, [ 'text/xml', 'text/x-yaml', 'application/json' ];
@@ -74,7 +74,7 @@ SKIP: {
         'REQUEST_METHOD' => 'PUT',
         'PATH_INFO'      => '/',
     );
-    $req = Dancer::Request->new( \%ENV );
+    $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
     $ct = $s->_find_content_type($req);
     is_deeply $ct, ['application/json'];
@@ -85,7 +85,7 @@ SKIP: {
         'HTTP_ACCEPT'    => 'text/xml',
         'CONTENT_TYPE'   => 'application/json',
     );
-    $req = Dancer::Request->new( \%ENV );
+    $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
     $ct = $s->_find_content_type($req);
     is_deeply $ct, [ 'application/json', 'text/xml' ];
@@ -108,7 +108,7 @@ SKIP: {
 
     my $expected_params = { foo => '42', };
 
-    my $req = Dancer::Request->new($env);
+    my $req = Dancer::Request->new( env => $env);
     is $req->body, $body, "body is untouched";
 
     my $processed_req = Dancer::Serializer->process_request($req);
