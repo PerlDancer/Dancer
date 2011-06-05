@@ -42,8 +42,7 @@ sub path { d_catfile(@_) }
 sub real_path { 
   my $path=d_catfile(@_);
   #If Cwd's realpath encounters a path which does not exist it returns
-  #empty on linux, but croaks on windows. see http://blogs.perl.org/users/
-  #sawyer_x/2010/11/blessed-are-the-cpan-testers.html
+  #empty on linux, but croaks on windows. 
   if (! -e $path) {
     return;
   }
@@ -158,7 +157,8 @@ file reading subroutines or using additional modules.
     my $dir = dirname($path);
 
 Exposes L<File::Basename>'s I<dirname>, to allow fetching a directory name from
-a path. On most OS, returns all but level of file path. See L<File::Basename> for details.
+a path. On most OS, returns all but last level of file path. See 
+L<File::Basename> for details.
 
 =head2 open_file
 
@@ -205,7 +205,7 @@ content and B<closes the file handle>.
 
     use Dancer::FileUtils 'real_path';
 
-    my $real_path=real_path ($path);  
+    my $real_path=real_path ($path);
 
 Returns a canonical and absolute path. Uses Cwd's realpath internally which 
 resolves symbolic links and relative-path components ("." and ".."). If 
