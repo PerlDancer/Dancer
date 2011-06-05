@@ -43,7 +43,7 @@ Test::TCP::test_tcp(
 $ENV{REQUEST_METHOD} = 'GET';
 $ENV{PATH_INFO} = '/';
 
-my $request = Dancer::Request->new(\%ENV);
+my $request = Dancer::Request->new(env => \%ENV);
 is $request->method, 'GET';
 ok !$request->is_ajax, 'no headers';
 
