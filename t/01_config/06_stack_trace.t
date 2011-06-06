@@ -25,7 +25,7 @@ use Dancer::Template::TemplateToolkit;
     is(scalar(@error_lines), 3, "test verbose croak");
     like($error_lines[0], qr!^'/not/a/valid/file' doesn\'t exist or not a regular file at!, "test verbose croak");
     like($error_lines[1], qr!^\s*Dancer::Template::TemplateToolkit::render\('Dancer::Template::TemplateToolkit', '/not/a/valid/file'\) called at!, "test verbose croak stack trace");
-    like($error_lines[2], qr!^\s*eval {...} called at t/01_config/06_stack_trace.t!, "test verbose croak stack trace");
+    like($error_lines[2], qr!^\s*eval {...} called at (?:[.]/)?t/01_config/06_stack_trace.t!, "test verbose croak stack trace");
 }
 
 {
@@ -47,5 +47,5 @@ use Dancer::Template::TemplateToolkit;
     is(scalar(@error_lines), 3, "test verbose croak");
     like($error_lines[0], qr!^'/not/a/valid/file' doesn\'t exist or not a regular file at!, "test verbose croak");
     like($error_lines[1], qr!^\s*Dancer::Template::TemplateToolkit::render\('Dancer::Template::TemplateToolkit', '/not/a/valid/file'\) called at!, "test verbose croak stack trace");
-    like($error_lines[2], qr!^\s*eval {...} called at t/01_config/06_stack_trace.t!, "test verbose croak stack trace");
+    like($error_lines[2], qr!^\s*eval {...} called at (?:[.]/)?t/01_config/06_stack_trace.t!, "test verbose croak stack trace");
 }
