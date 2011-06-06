@@ -1043,6 +1043,16 @@ You can unset the prefix value:
     prefix undef;
     get '/page1' => sub {}; will match /page1
 
+For a safer alternative you can use lexical prefix like this:
+
+    prefix '/home' => sub {
+        ## Prefix is set to '/home' here
+        
+        get ...;
+        get ...;
+    };
+    ## prefix reset to the previous version here
+
 B<Notice:> once you have a prefix set, do not add a caret to the regex:
 
     prefix '/foo';

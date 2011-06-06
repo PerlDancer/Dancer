@@ -3,7 +3,7 @@ use Dancer ':syntax';
 use Dancer::Test;
 use Dancer::Route;
 
-plan tests => 21;
+plan tests => 25;
 
 eval { prefix 'say' };
 like $@ => qr/not a valid prefix/, 'prefix must start with a /';
@@ -25,6 +25,10 @@ like $@ => qr/not a valid prefix/, 'prefix must start with a /';
         "number: " . params->{number};
     };
 
+    prefix '/lex' => sub {
+      get '/foo'  => sub { 'it worked' };
+    };
+
     any '/any' => sub {"any"};
 
     get qr{/_(.*)} => sub {
@@ -42,6 +46,10 @@ like $@ => qr/not a valid prefix/, 'prefix must start with a /';
 
     prefix(undef);
 
+    prefix '/dura' => sub {
+      get '/us'  => sub { 'us worked' };
+    };
+
     get '/*' => sub {
         "trash: " . params->{splat}[0];
     };
@@ -58,6 +66,8 @@ my @tests = (
     { path => '/go_to_trash', expected => 'trash: go_to_trash' },
     { path => '/say/foo',     expected => 'it worked' },
     { path => '/say/foo/',    expected => 'it worked' },
+    { path => '/lex/foo',     expected => 'it worked' },
+    { path => '/dura/us',     expected => 'us worked' },
 );
 
 foreach my $test (@tests) {
