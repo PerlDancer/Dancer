@@ -481,9 +481,11 @@ All views must have a '.tt' extension. This may change in the future.
 
 In order to render a view, just call the C<template> keyword at the end of the
 action by giving the view name and the HASHREF of tokens to interpolate in the
-view (note that for convenience, the request, session and route params are
-automatically accessible in the view, named request, session and params) - for
-example:
+view (note that for convenience, the request, session, params and vars are
+automatically accessible in the view, named request, session, params and vars) - 
+for example:
+
+    before => sub { var time => localtime() };
 
     get '/hello/:name' => sub {
         my $name = params->{name};
@@ -497,6 +499,7 @@ The template 'hello.tt' could contain, for example:
     <% IF session.username %>
         <p>You're logged in as <% session.username %>
     <% END %>
+    It's currently <% vars.time %>
 
 
 

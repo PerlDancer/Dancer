@@ -18,6 +18,8 @@ my @tests = (
       expected => "$time\n"},
     { path => '/request',
       expected => "/request\n" },
+    { path => '/vars',
+      expected => "bar\n" },
 );
 
 plan tests => 2 + scalar(@tests);
@@ -55,6 +57,12 @@ get '/clock' => sub {
 # test request.foo in view
 get '/request' => sub {
     template 'request';
+};
+
+# test vars in view
+get '/vars' => sub {
+    var foo => 'bar';
+    template 'vars';
 };
 
 foreach my $test (@tests) {
