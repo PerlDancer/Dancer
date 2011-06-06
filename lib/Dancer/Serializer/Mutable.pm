@@ -137,16 +137,18 @@ The default is B<application/json>
 
 =head2 serialize
 
-Serialize a data structure to a structure. The type of structure depends of the
-request's content-type. For now, it can be one of YAML, XML, JSON.
+Serialize a data structure. The format it is serialized to is determined
+automatically as described above. It can be one of YAML, XML, JSON, defaulting
+to JSON if there's no clear preference from the request.
 
 =head2 deserialize
 
-Deserialize a YAML structure to a data structure. The type of structure depends of the
-request's content-type. For now, it can be one of YAML, XML, JSON.
+Deserialize the provided serialized data to a data structure.  The type of 
+serialization format depends on the request's content-type. For now, it can 
+be one of YAML, XML, JSON.
 
 =head2 content_type
 
-Returns the content-type that were used during the last C<serialize> /
+Returns the content-type that was used during the last C<serialize> /
 C<deserialize> call. B<WARNING> : you must call C<serialize> / C<deserialize>
-before calling C<content_type>. Otherwise he return value will be C<undef>.
+before calling C<content_type>. Otherwise the return value will be C<undef>.
