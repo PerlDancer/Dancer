@@ -2,6 +2,7 @@ package Dancer::Script;
 
 use strict;
 use warnings;
+use Dancer ':syntax'; 
 use Dancer::ModuleLoader;
 use Dancer::Template::Simple;
 use Dancer::Renderer;
@@ -72,7 +73,7 @@ sub parse_opts {
 	pod2usage( -verbose => 1 ) if $help;
 	pod2usage( -verbose => 1 ) if not defined $name;
 	pod2usage( -verbose => 1 ) unless -d $path && -w $path;
-	sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
+	sub version {print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
 
 unless (Dancer::ModuleLoader->load('YAML')) {
     print <<NOYAML;
@@ -311,7 +312,6 @@ sub send_http_request {
 sub version_check {
     my $self = shift;
     my $latest_version = 0;
-    require Dancer;
 
     my $resp = $self->send_http_request('http://search.cpan.org/api/module/Dancer');
 
