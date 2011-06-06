@@ -47,10 +47,12 @@ sub init {
 
     my $logdir = logdir();
     return unless ($logdir);
-    my $logfile = setting('environment');
+
+    my $logfile = setting('log_file') || setting('environment').".log";
 
     mkdir($logdir) unless(-d $logdir);
-    $logfile = File::Spec->catfile($logdir, "$logfile.log");
+    $logfile = File::Spec->catfile($logdir, $logfile);
+
     my $fh;
     unless($fh = open_file('>>', $logfile)) {
         carp "unable to create or append to $logfile";
