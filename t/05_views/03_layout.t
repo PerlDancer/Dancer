@@ -43,8 +43,8 @@ my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;
 
 my $conffile = Dancer::Config->conffile;
-ok( defined($conffile),   'Default conffile is defined'        );
-ok( Dancer::Config->load, 'Config load works without conffile' );
+ok(defined($conffile),   'Default conffile is defined'       );
+ok(Dancer::Config->load, 'Config load works without conffile');
 
 # create the conffile
 my $conf = '
@@ -93,9 +93,7 @@ get '/render_layout_only/custom_layout' => sub {
 foreach my $test (@tests) {
     my $path     = $test->{path};
     my $expected = $test->{expected};
-    my $resp     = dancer_response( GET => $path );
-
-    is( $resp->content, $expected, "content rendered looks good for $path" );
+    response_content_is [ GET => $path ] => $expected;
 }
 
 unlink $conffile;

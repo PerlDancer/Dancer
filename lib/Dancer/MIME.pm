@@ -41,9 +41,9 @@ sub add_type {
 
 sub add_alias {
     my($self, $alias, $orig) = @_;
-    my $type = $self->for_name($orig) || croak "Can't find a mime type for $orig to alias $alias to";
+    my $type = $self->for_name($orig);
     $self->add_type($alias, $type);
-    return;
+    return $type;
 }
 
 sub for_file {
@@ -62,7 +62,7 @@ sub name_or_type {
 
 sub for_name {
     my ($self, $name) = @_;
-    return $self->custom_types->{$name} || $self->mime_type->mimeTypeOf(lc $name) || $self->default;
+    return $self->custom_types->{lc $name} || $self->mime_type->mimeTypeOf(lc $name) || $self->default;
 }
 
 sub add_mime_type {

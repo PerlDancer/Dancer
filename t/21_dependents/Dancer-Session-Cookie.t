@@ -9,6 +9,7 @@ use Test::More import => ['!pass'];
 plan skip_all => "Dancer::Session::Cookie 0.14 required"
     unless Dancer::ModuleLoader->load( 'Dancer::Session::Cookie', '0.14' );
 
+plan skip_all => "skip test with Test::TCP in win32" if ( $^O eq 'MSWin32' );
 plan skip_all => "Test::TCP required"
     unless Dancer::ModuleLoader->load('Test::TCP');
 Test::TCP->import;

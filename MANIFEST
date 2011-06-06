@@ -116,8 +116,6 @@ t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
 t/02_request/000_create_fake_env.t
 t/02_request/01_load.t
-t/02_request/02_get_params.t
-t/02_request/03_post_params.t
 t/02_request/04_custom.t
 t/02_request/04_forward.t
 t/02_request/05_cgi_pm_compat.t
@@ -172,13 +170,11 @@ t/03_route_handler/public/404.html
 t/03_route_handler/public/utf8file.txt
 t/03_route_handler/views/error.tt
 t/03_route_handler/views/hello.tt
+t/04_static_file/01_mime_types.t
 t/04_static_file/001_base.t
-t/04_static_file/002_mime_types.t
 t/04_static_file/003_mime_types_reinit.t
-t/04_static_file/03_get_mime_type.t
 t/04_static_file/static/hello.foo
 t/04_static_file/static/hello.txt
-t/05_views/001_settings.t
 t/05_views/002_view_rendering.t
 t/05_views/03_layout.t
 t/05_views/views/clock.tt
@@ -291,7 +287,6 @@ t/15_plugins/05_keywords.t
 t/15_plugins/05_plugins_and_OO.t
 t/15_plugins/06_hook.t
 t/16_timer/00_base.t
-t/16_timer/02_hires.t
 t/17_apps/000_create_fake_env.t
 t/17_apps/00_base.t
 t/17_apps/01_settings.t

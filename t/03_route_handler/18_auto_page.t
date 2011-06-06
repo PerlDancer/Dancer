@@ -15,17 +15,13 @@ use Dancer::Test;
         $tokens->{title} = "Dancer";
     };
 
-    set views => path(dirname(__FILE__), 'views');
-    set auto_page => true;
+    set auto_page => true, views => path(dirname(__FILE__), 'views');
 
     get '/' => sub { 1 };
 }
 
-response_exists [GET => '/hello'], "response found for /hello";
+response_status_is  [GET => '/hello'] => 200, "response found for /hello";
+response_content_is [GET => '/hello'] => "Hello\n", "content looks good";
 
-response_content_is [GET => '/hello'], "Hello\n", "content looks good";
-
-eval { get_response_for_request('GET' => '/falsepage'); };
-ok $@, 'Failed to get response for nonexistent page';
-
+response_status_is  [GET => '/falsepage'] => 500;
 response_content_like [GET => '/error'] => qr/ERROR: Dancer\n/, "error page looks OK";

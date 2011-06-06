@@ -13,6 +13,7 @@ use Dancer::ModuleLoader;
 use Dancer;
 use Dancer::Cookie;
 
+plan skip_all => "skip test with Test::TCP in win32" if ( $^O eq 'MSWin32' );
 plan skip_all => "Test::TCP is needed for this test"
   unless Dancer::ModuleLoader->load("Test::TCP");
 plan skip_all => "YAML is needed for this test"

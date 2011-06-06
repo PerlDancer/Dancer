@@ -11,11 +11,10 @@ use Dancer::Test;
 my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
 my $logfile = Dancer::FileUtils::path($dir, "logs", "development.log");
 
-set environment => 'development';
-set appdir => $dir;
-
-set log    => 'debug';
-set logger => 'file';
+set(environment => 'development',
+    appdir      => $dir,
+    log         => 'debug',
+    logger      => 'file');
 
 
 get '/' => sub {

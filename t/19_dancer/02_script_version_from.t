@@ -2,7 +2,8 @@ use strict;
 use warnings;
 
 use Cwd;
-use Dancer;
+use Dancer::FileUtils;
+
 use Test::More tests => 6, import => ['!pass'];
 use File::Temp 'tempdir';
 use File::Spec;
@@ -31,17 +32,17 @@ foreach my $case ( keys %cases ) {
     qx{$cmd -a $case};
 
     # check for directory
-    ok( -d $casedir, "Created directory for $case" );
-    if ( -d $casedir ) {
+    my $exists = -d $casedir;
+    ok( $exists, "Created directory for $case" );
+    if ($exists ) {
         chdir $casedir;
 
-        ok( -f $casefile, "Created file for $case" );
+        $exists = -e $casefile && -f _;
+        ok( $exists, "Created file for $case" );
 
-        if ( -e $casefile ) {
+        if ( $exists ) {
             my $makefile = 'Makefile.PL';
-            open my $fh, '<', $makefile or die "Can't open $makefile: $!\n";
-            my $content = do { local $/ = undef; <$fh>; };
-            close $fh or die "Can't close $makefile: $!\n";
+            my $content = Dancer::FileUtils::read_file_content($makefile);
 
             like(
                 $content,

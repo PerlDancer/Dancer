@@ -27,6 +27,9 @@ my $setters = {
         my ($setting, $value) = @_;
         Dancer::Logger->init($value, settings());
     },
+    log_file => sub {
+        Dancer::Logger->init(setting("logger"), setting());
+    },
     session => sub {
         my ($setting, $value) = @_;
         Dancer::Session->init($value, settings());
@@ -71,6 +74,7 @@ my $setters = {
         $Carp::Verbose = $traces ? 1 : 0;
     },
 };
+$setters->{log_path} = $setters->{log_file};
 
 my $normalizers = {
     charset => sub {
@@ -111,6 +115,7 @@ sub setting {
         while (@_) {
             my $setting = shift;
             my $value   = shift;
+
             _set_setting  ($setting, $value);
 
             # At the moment, with any kind of hierarchical setter,
@@ -231,7 +236,10 @@ sub load_default_settings {
 load_default_settings();
 
 1;
+
 __END__
+
+## TODO: C<environment> is not documented.
 
 =pod
 
@@ -407,9 +415,18 @@ If set to true, tells Dancer to consider all warnings as blocking errors.
 If set to true, Dancer will display full stack traces when a warning or a die
 occurs. (Internally sets Carp::Verbose). Default to false.
 
+=head3 log_path (string)
+
+Folder where the ``file C<logger>'' saves logfiles.
+
+=head3 log_file (string)
+
+Name of the file to create when ``file C<logger>'' is active. It
+defaults to the C<environment> setting contents.
+
 =head3 logger (enum)
 
-Select which logger to use.  For example, to write to log files in C<logdir>:
+Select which logger to use.  For example, to write to log files in C<log_path>:
 
     logger: file
 
