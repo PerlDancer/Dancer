@@ -12,6 +12,7 @@
       (Franck Cuny)
     * Fix a bug that when forwarding a post with post data stalled the
       code (read on no data handle).  (Alberto Simões)
+    * Tweak tests regular expression to be more flexible (Pedro Melo)
 
     [ ENHANCEMENTS ]
     * Fix for issue #516
