@@ -155,7 +155,7 @@ sub forward {
     }
 
     $new_request->{params}  = $new_params;
-    $new_request->{_body_params} = {%{$request->{_body_params}}};
+    $new_request->{_body_params}  = $request->{_body_params};
     $new_request->{_query_params} = $request->{_query_params};
     $new_request->{_route_params} = $request->{_route_params};
     $new_request->{_params_are_decoded} = 1;
