@@ -15,6 +15,8 @@
     * Tweak tests regular expression to be more flexible (Pedro Melo)
     * Require a recent Test::TCP (1.13) to run tests. (Alberto Simões)
     * Fix hooks implementation that failed when user messes $_ (Pedro Melo)
+    * Fix broken params('query') and params('body') during forward and
+      dancer_request test function. (Alberto Simões and Squeek)
 
     [ ENHANCEMENTS ]
     * Fix for issue #516
