@@ -12,6 +12,8 @@
       (Franck Cuny)
     * Fix a bug that when forwarding a post with post data stalled the
       code (read on no data handle).  (Alberto Simões)
+    * Fix broken params('query') and params('body') during forward and
+      dancer_request test function. (Alberto Simões and Squeek)
 
     [ ENHANCEMENTS ]
     * Fix for issue #516
