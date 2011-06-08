@@ -32,6 +32,7 @@
     * Configuration for log_dir and log_file.
       (Alberto Simões)
     * Pass vars to templates automatically (David Precious)
+    * Support lexical prefix (Pedro Melo)
 
 1.3059_02   29.05.2011
 
