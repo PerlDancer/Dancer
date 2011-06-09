@@ -3,9 +3,9 @@ use strict;
 use warnings;
 use Dancer::ModuleLoader;
 
-plan skip_all => "skip test with Test::TCP in win32" if ( $^O eq 'MSWin32' );
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-    unless Dancer::ModuleLoader->load("Test::TCP");
+    unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Plack::Loader");
 
@@ -38,8 +38,10 @@ Test::TCP::test_tcp(
         use lib File::Spec->catdir( 't', 'lib' );
         use TestApp;
         Dancer::Config->load;
-        set environment  => 'production', startup_info => 0, port => $port;
-        setting apphandler => 'PSGI';
+        set( environment  => 'production',
+             startup_info => 0,
+             port         => $port,
+             apphandler   => 'PSGI');
         my $app = Dancer::Handler->psgi_app;
         Plack::Loader->auto( port => $port)->run($app);
         Dancer->dance();

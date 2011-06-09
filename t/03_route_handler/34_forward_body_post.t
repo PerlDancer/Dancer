@@ -11,7 +11,7 @@ BEGIN {
     plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 
     plan skip_all => 'Test::TCP is needed to run this test'
-        unless Dancer::ModuleLoader->load('Test::TCP');
+        unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
 }
 
 use Dancer;
@@ -33,9 +33,7 @@ Test::TCP::test_tcp(
       Dancer::Config->load;
       post '/foo' => sub { forward '/bar';  };
       post '/bar' => sub { join(":",params) };
-      setting startup_info => 0;
-      setting port         => $port;
-      setting show_errors  => 1;
+      set startup_info => 0, port => $port, show_errors  => 1;
       Dancer->dance();
   },
                    );
