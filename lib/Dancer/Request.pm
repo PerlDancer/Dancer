@@ -123,9 +123,10 @@ sub new_for_request {
     my $req = $class->new( env => { %ENV,
                                     PATH_INFO      => $path,
                                     REQUEST_METHOD => $method});
-    $req->{params}  = {%{$req->{params}}, %{$params}};
-    $req->{body}    = $body    if defined $body;
-    $req->{headers} = $headers if $headers;
+    $req->{params}        = {%{$req->{params}}, %{$params}};
+    $req->{_query_params} = $req->{params};
+    $req->{body}          = $body    if defined $body;
+    $req->{headers}       = $headers if $headers;
 
     return $req;
 }
@@ -148,6 +149,10 @@ sub forward {
     }
 
     $new_request->{params}  = $new_params;
+    $new_request->{_body_params}  = $request->{_body_params};
+    $new_request->{_query_params} = $request->{_query_params};
+    $new_request->{_route_params} = $request->{_route_params};
+    $new_request->{_params_are_decoded} = 1;
     $new_request->{body}    = $request->body;
     $new_request->{headers} = $request->headers;
 
@@ -349,7 +354,7 @@ sub _build_params {
     # now parse environement params...
     $self->_parse_get_params();
     if ($self->{body_is_parsed}) {
-        $self->{_body_params} = {};
+        $self->{_body_params} = $self->{_body_params} || {};
     } else {
         $self->_parse_post_params();
     }
