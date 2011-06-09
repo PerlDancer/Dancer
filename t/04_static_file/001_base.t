@@ -30,22 +30,17 @@ is $r->status,  400;
 is $r->content, 'Bad Request';
 
 SKIP: {
-    skip "Skip test with Test::TCP in win32", 2
-      if ( $^O eq 'MSWin32' );
+    skip "Skip test with Test::TCP in win32", 2 if $^O eq 'MSWin32';
     skip "Test::TCP is required", 2
-      unless Dancer::ModuleLoader->load('Test::TCP');
+      unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
     skip "Plack is required", 2
       unless Dancer::ModuleLoader->load('Plack::Loader');
     skip "HTTP::Parser::XS is required", 2
-      unless Dancer::ModuleLoader->load('HTTP::Parser::XS');
+      unless Dancer::ModuleLoader->load('HTTP::Parser::XS' => "0.10");
 
-    require HTTP::Parser::XS;
+    # require HTTP::Parser::XS;
     require HTTP::Request;
     require LWP::UserAgent;
-
-    if ($HTTP::Parser::XS::VERSION < 0.10) {
-        skip "HTTP::Parser::XS > 0.9 is required", 2;
-    }
 
     Test::TCP::test_tcp(
         client => sub {
