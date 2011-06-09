@@ -30,7 +30,8 @@ is $r->status,  400;
 is $r->content, 'Bad Request';
 
 SKIP: {
-    plan skip_all => "skip test with Test::TCP in win32" if ( $^O eq 'MSWin32' );
+    skip "Skip test with Test::TCP in win32", 2
+      if ( $^O eq 'MSWin32' );
     skip "Test::TCP is required", 2
       unless Dancer::ModuleLoader->load('Test::TCP');
     skip "Plack is required", 2
