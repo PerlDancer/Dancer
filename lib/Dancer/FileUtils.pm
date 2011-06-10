@@ -40,9 +40,9 @@ sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
 sub path { d_catfile(@_) }
 
 sub real_path { 
-  my $path=d_catfile(@_);
+  my $path = d_catfile(@_);
   #If Cwd's realpath encounters a path which does not exist it returns
-  #empty on linux, but croaks on windows. 
+  #empty on linux, but croaks on windows.
   if (! -e $path) {
     return;
   }
@@ -123,7 +123,7 @@ Dancer::FileUtils - helper providing file utilities
 
     use Dancer::FileUtils qw/dirname real_path/;
 
-    #for 'path/to/file' 	
+    # for 'path/to/file'
     my $dir=dirname ($path); #returns 'path/to'
     my $real_path=real_path ($path); #returns '/abs/path/to/file'
 
@@ -157,7 +157,7 @@ file reading subroutines or using additional modules.
     my $dir = dirname($path);
 
 Exposes L<File::Basename>'s I<dirname>, to allow fetching a directory name from
-a path. On most OS, returns all but last level of file path. See 
+a path. On most OS, returns all but last level of file path. See
 L<File::Basename> for details.
 
 =head2 open_file
@@ -165,8 +165,8 @@ L<File::Basename> for details.
     use Dancer::FileUtils 'open_file';
     my $fh = open_file('<', $file) or die $message;
 
-Calls open and returns a filehandle. Takes in account the 'charset' setting 
-from Dancer's configuration to open the file in the proper encoding (or 
+Calls open and returns a filehandle. Takes in account the 'charset' setting
+from Dancer's configuration to open the file in the proper encoding (or
 defaults to utf-8 if setting not present).
 
 =head2 path
@@ -198,7 +198,7 @@ in scalar context returns the entire contents of the file.
     my @content = read_glob_content($fh);
     my $content = read_glob_content($fh);
 
-Same as I<read_file_content>, only it accepts a file handle. Returns the 
+Same as I<read_file_content>, only it accepts a file handle. Returns the
 content and B<closes the file handle>.
 
 =head2 real_path
@@ -207,17 +207,17 @@ content and B<closes the file handle>.
 
     my $real_path=real_path ($path);
 
-Returns a canonical and absolute path. Uses Cwd's realpath internally which 
-resolves symbolic links and relative-path components ("." and ".."). If 
-specified path does not exist, real_path returns nothing. 
+Returns a canonical and absolute path. Uses Cwd's realpath internally which
+resolves symbolic links and relative-path components ("." and ".."). If
+specified path does not exist, real_path returns nothing.
 
 =head2 set_file_mode
 
     use Dancer::FileUtils 'set_file_mode';
 
-    my $fh=set_file_mode($fh);
-    
-Applies charset setting from Dancer's configuration. Defaults to utf-8 if no 
+    set_file_mode($fh);
+
+Applies charset setting from Dancer's configuration. Defaults to utf-8 if no
 charset setting.
 
 =head1 EXPORT
