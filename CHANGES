@@ -35,6 +35,9 @@
     * Pass vars to templates automatically (David Precious)
     * Support lexical prefix (Pedro Melo)
 
+    [ DOCUMENTATION ]
+    * Improve FileUtils documentation. (mokko)
+
 1.3059_02   29.05.2011
 
     [ BUG FIXES ]
