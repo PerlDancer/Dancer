@@ -1,4 +1,32 @@
 package Dancer::Cookies;
+# ABSTRACT: a singleton storage for all cookies
+
+
+=head1 SYNOPSIS
+
+    use Dancer::Cookies;
+
+    my $cookies = Dancer::Cookies->cookies;
+
+    foreach my $name ( keys %{$cookies} ) {
+        my $cookie = $cookies->{$name};
+        my $value  = $cookie->value;
+        print "$name => $value\n";
+    }
+
+
+    cookie lang => "fr-FR"; #set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";
+    cookie "lang"           #return a cookie value
+
+=head1 DESCRIPTION
+
+Dancer::Cookies keeps all the cookies defined by the application and makes them
+accessible and provides a few helper functions for cookie handling with regards
+to the stored cookies.
+
+=cut
+
 use strict;
 use warnings;
 
@@ -10,11 +38,39 @@ use URI::Escape;
 # all cookies defined by the application are store in that singleton
 # this is a hashref the represent all key/value pairs to store as cookies
 my $COOKIES = {};
+
+
+=method cookies
+
+Returns a hash reference of all cookies, all objects of L<Dancer::Cookie> type.
+
+The key is the cookie name, the value is the L<Dancer::Cookie> object.
+
+=cut
+
 sub cookies {$COOKIES}
+
+=method init
+
+This method is called when C<< ->new() >> is called. It creates a storage of
+cookies parsed from the environment using C<parse_cookies_from_env> described
+below.
+
+=cut
 
 sub init {
     $COOKIES = parse_cookie_from_env();
 }
+
+=method cookie
+
+C<cookie> method is useful to query or set cookies easily.
+
+    cookie lang => "fr-FR";              # set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
+    cookie "lang"                        # return a cookie value
+
+=cut
 
 sub cookie {
     my $class = shift;
@@ -23,6 +79,15 @@ sub cookie {
     defined $value && set_cookie( $class, $name, $value, @_ );
     cookies->{$name} ? cookies->{$name}->value : undef;
 }
+
+=method parse_cookie_from_env
+
+Fetches all the cookies from the environment, parses them and creates a hashref
+of all cookies.
+
+It also returns all the hashref it created.
+
+=cut
 
 sub parse_cookie_from_env {
     my $request = Dancer::SharedData->request;
@@ -70,75 +135,6 @@ sub set_cookie_object {
 
 1;
 
-__END__
-
-=head1 NAME
-
-Dancer::Cookies - a singleton storage for all cookies
-
-=head1 SYNOPSIS
-
-    use Dancer::Cookies;
-
-    my $cookies = Dancer::Cookies->cookies;
-
-    foreach my $name ( keys %{$cookies} ) {
-        my $cookie = $cookies->{$name};
-        my $value  = $cookie->value;
-        print "$name => $value\n";
-    }
 
 
-    cookie lang => "fr-FR"; #set a cookie and return its value
-    cookie lang => "fr-FR", expires => "2 hours";
-    cookie "lang"           #return a cookie value
-
-=head1 DESCRIPTION
-
-Dancer::Cookies keeps all the cookies defined by the application and makes them
-accessible and provides a few helper functions for cookie handling with regards
-to the stored cookies.
-
-=head1 METHODS
-
-=head2 init
-
-This method is called when C<< ->new() >> is called. It creates a storage of
-cookies parsed from the environment using C<parse_cookies_from_env> described
-below.
-
-=head2 cookies
-
-Returns a hash reference of all cookies, all objects of L<Dancer::Cookie> type.
-
-The key is the cookie name, the value is the L<Dancer::Cookie> object.
-
-=head2 cookie
-
-C<cookie> method is useful to query or set cookies easily.
-
-    cookie lang => "fr-FR";              # set a cookie and return its value
-    cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
-    cookie "lang"                        # return a cookie value
-
-=head2 parse_cookie_from_env
-
-Fetches all the cookies from the environment, parses them and creates a hashref
-of all cookies.
-
-It also returns all the hashref it created.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 
