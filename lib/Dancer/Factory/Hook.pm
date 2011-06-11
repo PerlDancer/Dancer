@@ -1,4 +1,5 @@
 package Dancer::Factory::Hook;
+# ABSTRACT: takes track of registered hooks
 
 use strict;
 use warnings;
@@ -6,7 +7,7 @@ use Carp;
 
 use base 'Dancer::Object::Singleton';
 
-__PACKAGE__->attributes(qw/ hooks registered_hooks/);
+__PACKAGE__->attributes(qw/hooks registered_hooks/);
 
 sub init {
     my ( $class, $self ) = @_;
@@ -14,6 +15,13 @@ sub init {
     $self->registered_hooks( [] );
     return $self;
 }
+
+
+=method install_hooks
+
+Receives a list of hooks to be installed in current object.
+
+=cut
 
 sub install_hooks {
     my ( $self, @hooks_name ) = @_;
@@ -35,20 +43,17 @@ sub register_hook {
     $self->_add_registered_hook( $hook->name, $hook->code );
 }
 
-sub _add_registered_hook {
-    my ($class, $hook_name, $compiled_filter) = @_;
-    push @{$class->hooks->{$hook_name}}, $compiled_filter;
-}
-
-sub _add_hook {
-    my ($self, $hook_name ) = @_;
-    push @{$self->registered_hooks}, $hook_name;
-}
-
 sub hook_is_registered {
     my ( $self, $hook_name ) = @_;
     return grep { $_ eq $hook_name } @{$self->registered_hooks};
 }
+
+=method execute_hooks
+
+Call with a hook name and optional hook arguments. Will execute
+registered hooks.
+
+=cut
 
 sub execute_hooks {
     my ($self, $hook_name, @args) = @_;
@@ -70,6 +75,18 @@ sub get_hooks_for {
     croak("Can't ask for hooks without a position") unless $hook_name;
 
     $self->hooks->{$hook_name} || [];
+}
+
+# private
+
+sub _add_registered_hook {
+    my ($class, $hook_name, $compiled_filter) = @_;
+    push @{$class->hooks->{$hook_name}}, $compiled_filter;
+}
+
+sub _add_hook {
+    my ($self, $hook_name ) = @_;
+    push @{$self->registered_hooks}, $hook_name;
 }
 
 
