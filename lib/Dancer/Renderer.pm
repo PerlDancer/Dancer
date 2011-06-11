@@ -1,4 +1,5 @@
 package Dancer::Renderer;
+# ABSTRACT: class responsible for rendering responses
 
 use strict;
 use warnings;

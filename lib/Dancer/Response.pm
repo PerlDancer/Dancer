@@ -1,4 +1,5 @@
 package Dancer::Response;
+# ABSTRACT: class representing a Dancer response
 
 use strict;
 use warnings;

@@ -1,4 +1,5 @@
 package Dancer::Serializer::Abstract;
+# ABSTRACT: interface for serializer engines
 
 use strict;
 use warnings;

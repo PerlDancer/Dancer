@@ -1,4 +1,5 @@
 package Dancer::Serializer::YAML;
+# ABSTRACT: YAML serializer engine
 
 use strict;
 use warnings;

@@ -1,4 +1,5 @@
 package Dancer::Serializer::XML;
+# ABSTRACT: XML serializer engine
 
 use strict;
 use warnings;

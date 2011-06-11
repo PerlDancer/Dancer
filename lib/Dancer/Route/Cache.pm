@@ -1,4 +1,5 @@
 package Dancer::Route::Cache;
+# ABSTRACT: Cache mechanism for route matching
 
 use strict;
 use warnings;

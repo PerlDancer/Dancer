@@ -1,4 +1,5 @@
 package Dancer::Error;
+# ABSTRACT: class representing an error
 
 use strict;
 use warnings;

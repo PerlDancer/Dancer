@@ -1,4 +1,5 @@
 package Dancer::Session::YAML;
+# ABSTRACT: session engine that stores session in YAML files
 
 use strict;
 use warnings;
