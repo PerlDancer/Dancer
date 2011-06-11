@@ -782,7 +782,7 @@ Supported B<before> hooks (in order of execution):
 
 This hook receives no arguments.
 
-  hook before_deserializer {
+  hook before_deserializer => sub {
     ...
   };
 
@@ -790,7 +790,7 @@ This hook receives no arguments.
 
 This hook receives as argument the path of the file to render.
 
-  hook before_file_render {
+  hook before_file_render => sub {
     my $path = shift;
     ...
   };
@@ -815,7 +815,7 @@ This hook receives no arguments.
 
 is equivalent to
 
-  hook before sub {
+  hook before => sub {
     ...
   };
 
@@ -825,14 +825,14 @@ This is an alias to 'before_template'.
 
 This hook receives as argument a HashRef, containing the tokens.
 
-  hook before_template_render sub {
+  hook before_template_render => sub {
     my $tokens = shift;
     delete $tokens->{user};
   };
 
 is equivalent to 
 
-  hook before_template sub {
+  hook before_template => sub {
     my $tokens = shift;
     delete $tokens->{user};
   };
@@ -842,7 +842,7 @@ is equivalent to
 This hook receives two arguments. The first one is a HashRef containing the
 tokens. The second is a ScalarRef representing the content of the template.
 
-  hook before_layout_render sub {
+  hook before_layout_render => sub {
     my ($tokens, $html_ref) = @_;
     ...
   };
@@ -851,7 +851,7 @@ tokens. The second is a ScalarRef representing the content of the template.
 
 This hook receives as argument a L<Dancer::Response> object.
 
-  hook before_serializer sub {
+  hook before_serializer => sub {
     my $response = shift;
     $response->content->{start_time} = time();
   };
@@ -866,7 +866,7 @@ Supported B<after> hooks (in order of execution):
 
 This hook receives no arguments.
 
-  hook after_deserializer sub {
+  hook after_deserializer => sub {
     ...
   };
 
@@ -874,7 +874,7 @@ This hook receives no arguments.
 
 This hook receives as argument a L<Dancer::Response> object.
 
-  hook after_file_render sub {
+  hook after_file_render => sub {
     my $response = shift;
   };
 
@@ -883,7 +883,7 @@ This hook receives as argument a L<Dancer::Response> object.
 This hook receives as argument a ScalarRef representing the content generated
 by the template.
 
-  hook after_template_render sub {
+  hook after_template_render => sub {
     my $html_ref = shift;
   };
 
@@ -892,7 +892,7 @@ by the template.
 This hook receives as argument a ScalarRef representing the content generated
 by the layout
 
-  hook after_layout_render sub {
+  hook after_layout_render => sub {
     my $html_ref = shift;
   };
 
@@ -902,7 +902,7 @@ This is an alias for 'after'.
 
 This hook receives as argument a L<Dancer::Response> object.
 
-  hook after sub {
+  hook after => sub {
     my $response = shift;
   };
 

@@ -4,7 +4,7 @@ use Test::More import => ['!pass'];
 
 use Dancer ':syntax';
 
-plan tests => 5;
+plan tests => 10;
 
 my $cpt = 0;
 
@@ -21,3 +21,21 @@ is $cpt, 1, 'execute hooks without args';
 
 Dancer::Factory::Hook->instance->execute_hooks( 'before', 2 );
 is $cpt, 3, 'execute hooks with one arg';
+
+
+sub exception (&) { eval { $_[0]->() }; return $@ }
+
+ok(
+    hook('before' => sub { $cpt += 2; undef $_ }),
+    'add a bad filter that manipulates $_'
+);
+
+$cpt = 0;
+is(exception { Dancer::Factory::Hook->instance->execute_hooks('before', 5) },
+    '', 'execute_hooks() lives with bad hooks');
+is($cpt, 7, 'execute hooks with one arg, ok result');
+
+$cpt = 0;
+is(exception { Dancer::Factory::Hook->instance->execute_hooks('before', 8) },
+    '', 'execute_hooks() lives second time with bad hooks');
+is($cpt, 10, 'execute hooks with one arg, ok result');

@@ -14,6 +14,7 @@
       code (read on no data handle).  (Alberto Simões)
     * Tweak tests regular expression to be more flexible (Pedro Melo)
     * Require a recent Test::TCP (1.13) to run tests. (Alberto Simões)
+    * Fix hooks implementation that failed when user messes $_ (Pedro Melo)
 
     [ ENHANCEMENTS ]
     * Fix for issue #516
@@ -34,6 +35,9 @@
       (Alberto Simões)
     * Pass vars to templates automatically (David Precious)
     * Support lexical prefix (Pedro Melo)
+
+    [ DOCUMENTATION ]
+    * Improve FileUtils documentation. (mokko)
 
 1.3059_02   29.05.2011
 
