@@ -1,4 +1,5 @@
 package Dancer::Request::Upload;
+# ABSTRACT: class representing a request upload
 
 use File::Spec;
 use Carp;

@@ -1,4 +1,5 @@
 package Dancer::Template;
+# ABSTRACT: template wrapper
 
 use strict;
 use warnings;

@@ -1,4 +1,5 @@
 package Dancer::Timer;
+# ABSTRACT: timer for dancer logger engines
 
 use strict;
 use warnings;

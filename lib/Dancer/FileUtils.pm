@@ -1,4 +1,5 @@
 package Dancer::FileUtils;
+# ABSTRACT: common tools for file-system related actions
 
 use strict;
 use warnings;

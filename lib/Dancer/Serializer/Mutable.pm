@@ -1,4 +1,5 @@
 package Dancer::Serializer::Mutable;
+# ABSTRACT: mutable serializer engine
 
 use strict;
 use warnings;

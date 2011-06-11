@@ -1,4 +1,6 @@
 package Dancer::Session::Abstract;
+# ABSTRACT: interface for session engines
+
 use strict;
 use warnings;
 use Carp;

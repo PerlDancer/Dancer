@@ -1,4 +1,5 @@
 package Dancer::Serializer::Dumper;
+# ABSTRACT: Data::Sumper serializer engine 
 
 use strict;
 use warnings;

@@ -1,4 +1,5 @@
 package Dancer::Serializer::JSON;
+# ABSTRACT: JSON serializer engine
 
 use strict;
 use warnings;

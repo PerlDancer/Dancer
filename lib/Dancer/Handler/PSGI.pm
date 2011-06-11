@@ -1,4 +1,5 @@
 package Dancer::Handler::PSGI;
+# ABSTRACT: PSGI frontend for Dancer
 
 use strict;
 use warnings;

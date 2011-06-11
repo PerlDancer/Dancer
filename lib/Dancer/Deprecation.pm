@@ -1,4 +1,5 @@
 package Dancer::Deprecation;
+# ABSTRACT: deprecation handler for Dancer core
 
 use strict;
 use warnings;

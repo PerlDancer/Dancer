@@ -1,4 +1,5 @@
 package Dancer::Session::Simple;
+# ABSTRACT: basic in-memory session engine
 
 use strict;
 use warnings;

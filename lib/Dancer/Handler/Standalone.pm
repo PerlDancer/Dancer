@@ -1,4 +1,5 @@
 package Dancer::Handler::Standalone;
+# ABSTRACT: standalone HTTP server frontend for Dancer
 
 use strict;
 use warnings;

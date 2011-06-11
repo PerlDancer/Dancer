@@ -1,4 +1,5 @@
 package Dancer::Handler::Debug;
+# ABSTRACT: debugging frontend for Dancer
 
 use strict;
 use warnings;

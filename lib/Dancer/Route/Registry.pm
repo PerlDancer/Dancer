@@ -1,4 +1,6 @@
 package Dancer::Route::Registry;
+# ABSTRACT: class representing a registry for storing route objects
+
 use strict;
 use warnings;
 use Carp;
