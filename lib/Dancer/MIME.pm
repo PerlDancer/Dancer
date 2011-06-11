@@ -129,7 +129,7 @@ sub for_file {
     return $self->for_name($ext);
 }
 
-=method
+=method name_or_type
 
 Resolves the $thing into a content $type whether it's the name of a
 MIME type like "txt" or already a mime type like "text/plain".
