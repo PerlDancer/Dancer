@@ -1,11 +1,80 @@
 package Dancer::Cookie;
+# ABSTRACT: class representing cookies
+
+=head1 SYNOPSIS
+
+    use Dancer::Cookie;
+
+    my $cookie = Dancer::Cookie->new(
+        name => $cookie_name, value => $cookie_value
+    );
+
+=cut
+
 use strict;
 use warnings;
 
 use URI::Escape;
 
 use base 'Dancer::Object';
+
+=attr name
+
+The cookie's name.
+
+=attr expires
+
+The cookie's expiration date.  There are several formats.
+
+Unix epoch time like 1288817656 to mean "Wed, 03-Nov-2010 20:54:16 GMT"
+
+A human readable offset from the current time such as "2 hours".  It currently
+understands...
+
+    s second seconds sec secs
+    m minute minutes min mins
+    h hr hour hours
+    d day days
+    w week weeks
+    M month months
+    y year years
+
+Months and years are currently fixed at 30 and 365 days.  This may change.
+
+Anything else is used verbatum.
+
+=attr domain
+
+The cookie's domain.
+
+=attr path
+
+The cookie's path.
+
+=attr secure
+
+If true, it instructs the client to only serve the cookie over secure
+connections such as https.
+
+=attr http_only
+
+By default, cookies are created with a property, named C<HttpOnly>,
+that can be used for security, forcing the cookie to be used only by
+the server (via HTTP) and not by any JavaScript code.
+
+If your cookie is meant to be used by some JavaScript code, set this
+attribute to 0.
+
+=cut
+
 __PACKAGE__->attributes( qw/name expires domain path secure http_only/ );
+
+
+=method init
+
+Runs an expiration test and sets a default path if not set.
+
+=cut
 
 sub init {
     my ($self, %args) = @_;
@@ -21,6 +90,12 @@ sub init {
     }
     $self->path('/') unless defined $self->path;
 }
+
+=method to_header
+
+Creates a proper HTTP cookie header from the content.
+
+=cut
 
 sub to_header {
     my $self   = shift;
@@ -39,6 +114,12 @@ sub to_header {
     return join '; ', @headers;
 }
 
+=method value
+
+The cookie's value.
+
+=cut
+
 sub value {
     my ( $self, $value ) = @_;
     if ( defined $value ) {
@@ -50,6 +131,8 @@ sub value {
     }
     return wantarray ? @{ $self->{'value'} } : $self->{'value'}->[0];
 }
+
+# private
 
 sub _epoch_to_gmtstring {
     my ($epoch) = @_;
@@ -113,107 +196,4 @@ sub _parse_duration {
 
 
 1;
-
-__END__
-
-=pod
-
-=head1 NAME
-
-Dancer::Cookie - class representing cookies
-
-=head1 SYNOPSIS
-
-    use Dancer::Cookie;
-
-    my $cookie = Dancer::Cookie->new(
-        name => $cookie_name, value => $cookie_value
-    );
-
-=head1 DESCRIPTION
-
-Dancer::Cookie provides a HTTP cookie object to work with cookies.
-
-=head1 ATTRIBUTES
-
-=head2 name
-
-The cookie's name.
-
-=head2 value
-
-The cookie's value.
-
-=head2 expires
-
-The cookie's expiration date.  There are several formats.
-
-Unix epoch time like 1288817656 to mean "Wed, 03-Nov-2010 20:54:16 GMT"
-
-A human readable offset from the current time such as "2 hours".  It currently
-understands...
-
-    s second seconds sec secs
-    m minute minutes min mins
-    h hr hour hours
-    d day days
-    w week weeks
-    M month months
-    y year years
-
-Months and years are currently fixed at 30 and 365 days.  This may change.
-
-Anything else is used verbatim.
-
-=head2 domain
-
-The cookie's domain.
-
-=head2 path
-
-The cookie's path.
-
-=head2 secure
-
-If true, it instructs the client to only serve the cookie over secure
-connections such as https.
-
-=head2 http_only
-
-By default, cookies are created with a property, named C<HttpOnly>,
-that can be used for security, forcing the cookie to be used only by
-the server (via HTTP) and not by any JavaScript code.
-
-If your cookie is meant to be used by some JavaScript code, set this
-attribute to 0.
-
-=head1 METHODS/SUBROUTINES
-
-=head2 new
-
-Create a new Dancer::Cookie object.
-
-You can set any attribute described in the I<ATTRIBUTES> section above.
-
-=head2 init
-
-Runs an expiration test and sets a default path if not set.
-
-=head2 to_header
-
-Creates a proper HTTP cookie header from the content.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 
