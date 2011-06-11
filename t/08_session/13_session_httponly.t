@@ -6,8 +6,9 @@ use Dancer::ModuleLoader;
 use Dancer;
 use Dancer::Cookie;
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-  unless Dancer::ModuleLoader->load("Test::TCP");
+  unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
 plan skip_all => "YAML is needed for this test"
   unless Dancer::ModuleLoader->load("YAML");
 
@@ -49,9 +50,9 @@ for my $setting ("default", "on", "off") {
         } elsif ($setting eq "off") {
             setting session_is_http_only => 0;
         }
-        setting environment          => 'production';
-        setting port                 => $port;
-        setting startup_info         => 0;
+        set( environment          => 'production',
+             port                 => $port,
+             startup_info         => 0 );
         Dancer->dance();
         },
     );

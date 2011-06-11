@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3059_02';
+our $VERSION   = '1.3059_03';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -63,6 +63,7 @@ our @EXPORT    = qw(
   logger
   mime
   options
+  param
   params
   pass
   path
@@ -139,6 +140,7 @@ sub logger          {
 sub mime            { Dancer::MIME->instance() }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
+sub param           { params->{$_[0]} }
 sub pass            { Dancer::SharedData->response->pass(1) }
 sub path            { realpath(Dancer::FileUtils::path(@_)) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
@@ -286,6 +288,7 @@ sub _init_script_dir {
     $res or croak "unable to set libdir : $error";
 }
 
+
 # Scheme grammar as defined in RFC 2396
 #  scheme = alpha *( alpha | digit | "+" | "-" | "." )
 my $scheme_re = qr{ [a-z][a-z0-9\+\-\.]* }ix;
@@ -365,7 +368,7 @@ Dancer - lightweight yet powerful web application framework
     use Dancer;
 
     get '/hello/:name' => sub {
-        return "Why, hello there " . params->{name};
+        return "Why, hello there " . param('name');
     };
 
     dance;
@@ -580,7 +583,7 @@ Sets the B<content-type> rendered, for the current route handler:
     get '/cat/:txtfile' => sub {
         content_type 'text/plain';
 
-        # here we can dump the contents of params->{txtfile}
+        # here we can dump the contents of param('txtfile')
     };
 
 You can use abbreviations for content types. For instance:
@@ -588,7 +591,7 @@ You can use abbreviations for content types. For instance:
     get '/svg/:id' => sub {
         content_type 'svg';
 
-        # here we can dump the image with id params->{id}
+        # here we can dump the image with id param('id')
     };
 
 Note that if you want to change the default content-type for every route, you
@@ -779,7 +782,7 @@ Supported B<before> hooks (in order of execution):
 
 This hook receives no arguments.
 
-  hook before_deserializer {
+  hook before_deserializer => sub {
     ...
   };
 
@@ -787,7 +790,7 @@ This hook receives no arguments.
 
 This hook receives as argument the path of the file to render.
 
-  hook before_file_render {
+  hook before_file_render => sub {
     my $path = shift;
     ...
   };
@@ -812,7 +815,7 @@ This hook receives no arguments.
 
 is equivalent to
 
-  hook before sub {
+  hook before => sub {
     ...
   };
 
@@ -822,14 +825,14 @@ This is an alias to 'before_template'.
 
 This hook receives as argument a HashRef, containing the tokens.
 
-  hook before_template_render sub {
+  hook before_template_render => sub {
     my $tokens = shift;
     delete $tokens->{user};
   };
 
 is equivalent to 
 
-  hook before_template sub {
+  hook before_template => sub {
     my $tokens = shift;
     delete $tokens->{user};
   };
@@ -839,7 +842,7 @@ is equivalent to
 This hook receives two arguments. The first one is a HashRef containing the
 tokens. The second is a ScalarRef representing the content of the template.
 
-  hook before_layout_render sub {
+  hook before_layout_render => sub {
     my ($tokens, $html_ref) = @_;
     ...
   };
@@ -848,7 +851,7 @@ tokens. The second is a ScalarRef representing the content of the template.
 
 This hook receives as argument a L<Dancer::Response> object.
 
-  hook before_serializer sub {
+  hook before_serializer => sub {
     my $response = shift;
     $response->content->{start_time} = time();
   };
@@ -863,7 +866,7 @@ Supported B<after> hooks (in order of execution):
 
 This hook receives no arguments.
 
-  hook after_deserializer sub {
+  hook after_deserializer => sub {
     ...
   };
 
@@ -871,7 +874,7 @@ This hook receives no arguments.
 
 This hook receives as argument a L<Dancer::Response> object.
 
-  hook after_file_render sub {
+  hook after_file_render => sub {
     my $response = shift;
   };
 
@@ -880,7 +883,7 @@ This hook receives as argument a L<Dancer::Response> object.
 This hook receives as argument a ScalarRef representing the content generated
 by the template.
 
-  hook after_template_render sub {
+  hook after_template_render => sub {
     my $html_ref = shift;
   };
 
@@ -889,7 +892,7 @@ by the template.
 This hook receives as argument a ScalarRef representing the content generated
 by the layout
 
-  hook after_layout_render sub {
+  hook after_layout_render => sub {
     my $html_ref = shift;
   };
 
@@ -899,7 +902,7 @@ This is an alias for 'after'.
 
 This hook receives as argument a L<Dancer::Response> object.
 
-  hook after sub {
+  hook after => sub {
     my $response = shift;
   };
 
@@ -980,7 +983,20 @@ commonly-used methods are summarized below:
 =head2 params
 
 I<This method should be called from a route handler>.
-It's an alias for the L<Dancer::Request params accessor|Dancer::Request/"params">.
+It's an alias for the L<Dancer::Request params accessor|Dancer::Request/"params">. It returns
+an hash reference to all defined parameters. Check C<param> bellow to access quickly to a single
+parameter value.
+
+=head2 param
+
+I<This method should be called from a route handler>.
+This method is an accessor to the parameters hash table.
+
+   post '/login' => sub {
+       my $username = param "user";
+       my $password = param "pass";
+       # ...
+   }
 
 =head2 pass
 
@@ -1026,6 +1042,16 @@ You can unset the prefix value:
 
     prefix undef;
     get '/page1' => sub {}; will match /page1
+
+For a safer alternative you can use lexical prefix like this:
+
+    prefix '/home' => sub {
+        ## Prefix is set to '/home' here
+        
+        get ...;
+        get ...;
+    };
+    ## prefix reset to the previous version here
 
 B<Notice:> once you have a prefix set, do not add a caret to the regex:
 
@@ -1228,6 +1254,11 @@ You may also need to clear a session:
         session->destroy;
         ...
     };
+
+If you need to fetch the session ID being used for any reason:
+
+    my $id = session->id;
+
 
 =head2 splat
 
@@ -1439,7 +1470,11 @@ see the AUTHORS file that comes with this distribution for details.
 =head1 SOURCE CODE
 
 The source code for this module is hosted on GitHub
-L<http://github.com/sukria/Dancer>
+L<http://github.com/sukria/Dancer>.  Feel free to fork the repository and submit
+pull requests!  (See L<Dancer::Development> for details on how to contribute).
+
+Also, why not L<watch the repo|https://github.com/sukria/Dancer/toggle_watch> to
+keep up to date with the latest upcoming changes?
 
 
 =head1 GETTING HELP / CONTRIBUTING

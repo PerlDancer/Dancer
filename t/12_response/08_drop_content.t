@@ -5,8 +5,9 @@ use LWP::UserAgent;
 
 BEGIN {
     use Dancer::ModuleLoader;
+    plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
     plan skip_all => 'Test::TCP is needed to run this test'
-      unless Dancer::ModuleLoader->load('Test::TCP');
+      unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
 }
 
 plan tests => 4;
@@ -32,8 +33,7 @@ sub test {
         },
         server => sub {
             my $port = shift;
-            setting port         => $port;
-            setting startup_info => 0;
+            set port => $port, startup_info => 0;
 
             get '/204' => sub {
                 status 204;

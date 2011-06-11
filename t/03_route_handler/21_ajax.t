@@ -4,8 +4,9 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
-    unless Dancer::ModuleLoader->load('Test::TCP');
+    unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
 
 use LWP::UserAgent;
 
@@ -64,8 +65,7 @@ Test::TCP::test_tcp(
         use Dancer;
         use Dancer::Plugin::Ajax;
 
-        setting startup_info => 0;
-        setting port         => $port;
+        set startup_info => 0, port => $port;
 
         ajax '/req' => sub {
             return 1;

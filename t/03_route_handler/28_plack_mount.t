@@ -4,9 +4,9 @@ use Test::More import => ['!pass'];
 
 BEGIN {
     use Dancer::ModuleLoader;
-
+    plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
     plan skip_all => "TEST::TCP is needed to run this test"
-      unless Dancer::ModuleLoader->load('Test::TCP');
+      unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
     plan skip_all => "Plack is needed to run this test"
       unless Dancer::ModuleLoader->load('Plack::Builder');
 }
@@ -36,14 +36,12 @@ Test::TCP::test_tcp(
         my $handler = sub {
             use Dancer;
 
-            setting port         => $port;
-            setting apphandler   => 'PSGI';
-            setting startup_info => 0;
+            set port => $port, apphandler   => 'PSGI', startup_info => 0;
 
             get '/foo' => sub {request->path_info};
 
             my $env     = shift;
-            my $request = Dancer::Request->new($env);
+            my $request = Dancer::Request->new(env => $env);
             Dancer->dance($request);
         };
 

@@ -10,7 +10,7 @@ use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 use EasyMocker;
 
-BEGIN { 
+BEGIN {
     plan skip_all => "need Template to run this test" 
         unless Dancer::ModuleLoader->load('Template');
     plan tests => 7;
@@ -27,19 +27,19 @@ mock 'Template'
 
 my $engine;
 eval { $engine = Dancer::Template::TemplateToolkit->new };
-like $@, qr/Template is needed by Dancer::Template::TemplateToolkit/, 
+like $@, qr/Template is needed by Dancer::Template::TemplateToolkit/,
     "Template dependency caught at init time";
 
 $mock->{Template} = 1;
 eval { $engine = Dancer::Template::TemplateToolkit->new };
-is $@, '', 
+is $@, '',
     "Template dependency is not triggered if Template is there";
 
 # as a file path
 my $template = path('t', '10_template', 'index.txt');
 my $result = $engine->render(
-    $template, 
-    { var1 => 1, 
+    $template,
+    { var1 => 1,
       var2 => 2,
       foo => 'one',
       bar => 'two',
@@ -55,7 +55,7 @@ my $fh;
 open $fh, '<', $template or die "cannot open file $template: $!";
 $result = $engine->render(
     $fh, 
-    { var1 => 1, 
+    { var1 => 1,
       var2 => 2,
       foo => 'one',
       bar => 'two',

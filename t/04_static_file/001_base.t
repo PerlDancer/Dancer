@@ -5,8 +5,23 @@ use warnings;
 # Using the pure perl via PERL_ONLY works
 BEGIN { $ENV{PERL_ONLY} = 1; }
 
-use Test::More tests => 8, import => ['!pass'];
+use Test::More import => ['!pass'];
 use Dancer::Test;
+
+
+plan skip_all => "Skip test with Test::TCP in win32"
+  if $^O eq 'MSWin32';
+    
+plan skip_all => "Test::TCP is required"
+  unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
+
+plan skip_all => "Plack is required"
+  unless Dancer::ModuleLoader->load('Plack::Loader');
+
+plan skip_all => "HTTP::Parser::XS is required"
+  unless Dancer::ModuleLoader->load('HTTP::Parser::XS' => "0.10");
+
+plan tests => 8;
 
 use Dancer ':syntax';
 
@@ -29,32 +44,26 @@ my $r = Dancer::SharedData->response();
 is $r->status,  400;
 is $r->content, 'Bad Request';
 
-SKIP: {
-    skip "Test::TCP is required", 2
-      unless Dancer::ModuleLoader->load('Test::TCP');
-    skip "Plack is required", 2
-      unless Dancer::ModuleLoader->load('Plack::Loader');
-    require HTTP::Request;
-    require LWP::UserAgent;
+require HTTP::Request;
+require LWP::UserAgent;
 
-    Test::TCP::test_tcp(
-        client => sub {
-            my $port = shift;
-            my $req =
-              HTTP::Request->new(
-                GET => "http://127.0.0.1:$port/hello%00.txt" );
-            my $ua  = LWP::UserAgent->new();
-            my $res = $ua->request($req);
-            ok !$res->is_success;
-            is $res->code, 400;
-        },
-        server => sub {
-            my $port = shift;
-            setting apphandler => 'PSGI';
-            Dancer::Config->load;
-            my $app = Dancer::Handler->psgi_app;
-            Plack::Loader->auto( port => $port )->run($app);
-            Dancer->dance();
-        }
-    );
-}
+Test::TCP::test_tcp(
+    client => sub {
+        my $port = shift;
+        my $req =
+          HTTP::Request->new(
+            GET => "http://127.0.0.1:$port/hello%00.txt" );
+        my $ua  = LWP::UserAgent->new();
+        my $res = $ua->request($req);
+        ok !$res->is_success;
+        is $res->code, 400;
+    },
+    server => sub {
+        my $port = shift;
+        setting apphandler => 'PSGI';
+        Dancer::Config->load;
+        my $app = Dancer::Handler->psgi_app;
+        Plack::Loader->auto( port => $port )->run($app);
+        Dancer->dance();
+    }
+);

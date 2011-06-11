@@ -6,8 +6,9 @@ use Dancer;
 use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-    unless Dancer::ModuleLoader->load("Test::TCP");
+    unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
 
 use LWP::UserAgent;
 
@@ -24,7 +25,7 @@ Test::TCP::test_tcp(
         $req->push_header($_, $headers->{$_}) foreach keys %$headers;
         $req->content($rawdata);
         my $res = $ua->request($req);
-        
+
         ok $res->is_success, 'req is success';
         is $res->content, $rawdata, "raw_data is OK";
     },
@@ -34,9 +35,9 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
 
-        setting environment  => 'production';
-        setting port         => $port;
-        setting startup_info => 0;
+        set( environment  => 'production',
+             port         => $port,
+             startup_info => 0);
         Dancer->dance();
     },
 );

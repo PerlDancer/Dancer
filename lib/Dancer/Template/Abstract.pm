@@ -110,6 +110,7 @@ sub _prepare_tokens_options {
     $tokens->{settings}       = Dancer::Config->settings;
     $tokens->{request}        = Dancer::SharedData->request;
     $tokens->{params}         = Dancer::SharedData->request->params;
+    $tokens->{vars}           = Dancer::SharedData->vars;
 
     Dancer::App->current->setting('session')
       and $tokens->{session} = Dancer::Session->get;

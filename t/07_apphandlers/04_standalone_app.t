@@ -3,8 +3,11 @@ use strict;
 use warnings;
 use Dancer::ModuleLoader;
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-    unless Dancer::ModuleLoader->load("Test::TCP");
+    unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
+plan skip_all => "Test::TCP is needed for this test"
+    unless Dancer::ModuleLoader->load("Plack::Loader");
 
 use LWP::UserAgent;
 
@@ -14,10 +17,10 @@ Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua = LWP::UserAgent->new;
-        
+
         my $res = $ua->get("http://127.0.0.1:$port/env");
         like $res->content, qr/PATH_INFO/, 'path info is found in response';
-        
+
         $res = $ua->get("http://127.0.0.1:$port/name/bar");
         like $res->content, qr/Your name: bar/, 'name is found on a GET';
 
@@ -35,8 +38,12 @@ Test::TCP::test_tcp(
         use lib File::Spec->catdir( 't', 'lib' );
         use TestApp;
         Dancer::Config->load;
-
-        set environment  => 'production', startup_info => 0, port => $port;
+        set( environment  => 'production',
+             startup_info => 0,
+             port         => $port,
+             apphandler   => 'PSGI');
+        my $app = Dancer::Handler->psgi_app;
+        Plack::Loader->auto( port => $port)->run($app);
         Dancer->dance();
     },
 );

@@ -7,12 +7,15 @@ use Encode;
 
 # Ensure a recent version of HTTP::Headers
 my $min_hh = 5.827;
+
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
+plan skip_all => "Test::TCP is needed for this test"
+    unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
+
 plan skip_all => "HTTP::Headers $min_hh required (use of content_type_charset)"
     unless Dancer::ModuleLoader->load( 'HTTP::Headers', $min_hh );
 plan skip_all => "HTTP::Request::Common is needed for this test"
     unless Dancer::ModuleLoader->load('HTTP::Request::Common');
-plan skip_all => "Test::TCP is needed for this test"
-    unless Dancer::ModuleLoader->load("Test::TCP");
 
 
 use LWP::UserAgent;
@@ -44,10 +47,10 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
 
-        setting charset      => 'utf-8';
-        setting environment  => 'production';
-        setting port         => $port;
-        setting startup_info => 0;
+        set( charset      => 'utf-8',
+             environment  => 'production',
+             port         => $port,
+             startup_info => 0 );
         Dancer->dance();
     },
 );

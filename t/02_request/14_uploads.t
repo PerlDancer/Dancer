@@ -14,9 +14,10 @@ sub test_path {
     is dirname($file), $dir, "dir of $file is $dir";
 }
 
+my $filename = "some_\x{1A9}_file.txt";
 
 my $content = qq{------BOUNDARY
-Content-Disposition: form-data; name="test_upload_file"; filename="yappo.txt"
+Content-Disposition: form-data; name="test_upload_file"; filename="$filename"
 Content-Type: text/plain
 
 SHOGUN
@@ -55,14 +56,14 @@ plan tests => 21;
 do {
     open my $in, '<', \$content;
     my $req = Dancer::Request->new(
-        {
-            'psgi.input'   => $in,
-            CONTENT_LENGTH => length($content),
-            CONTENT_TYPE   => 'multipart/form-data; boundary=----BOUNDARY',
-            REQUEST_METHOD => 'POST',
-            SCRIPT_NAME    => '/',
-            SERVER_PORT    => 80,
-        }
+       env => {
+               'psgi.input'   => $in,
+               CONTENT_LENGTH => length($content),
+               CONTENT_TYPE   => 'multipart/form-data; boundary=----BOUNDARY',
+               REQUEST_METHOD => 'POST',
+               SCRIPT_NAME    => '/',
+               SERVER_PORT    => 80,
+              }
     );
     Dancer::SharedData->request($req);
 
@@ -80,7 +81,7 @@ do {
 
     note "headers";
     is_deeply $uploads[0]->headers, {
-        'Content-Disposition' => q[form-data; name="test_upload_file"; filename="yappo.txt"],
+        'Content-Disposition' => qq[form-data; name="test_upload_file"; filename="$filename"],
         'Content-Type'        => 'text/plain',
     };
 

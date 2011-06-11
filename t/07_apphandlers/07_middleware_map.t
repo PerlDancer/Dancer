@@ -9,8 +9,9 @@ use LWP::UserAgent;
 use File::Spec;
 use lib File::Spec->catdir('t','lib');
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-  unless Dancer::ModuleLoader->load("Test::TCP");
+  unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
 plan skip_all => "Plack is needed to run this test"
   unless Dancer::ModuleLoader->load('Plack::Request');
 
@@ -48,11 +49,12 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
 
-        setting environment           => 'production';
-        setting apphandler            => 'PSGI';
-        setting port                  => $port;
-        setting startup_info          => 0;
-        setting plack_middlewares_map => $confs;
+        set( environment           => 'production',
+             apphandler            => 'PSGI',
+             port                  => $port,
+             startup_info          => 0,
+             plack_middlewares_map => $confs );
+
         my $app = Dancer::Handler->get_handler()->dance;
         Plack::Loader->auto( port => $port )->run($app);
     },

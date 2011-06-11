@@ -61,7 +61,7 @@ List of possible parameters:
 
 =item B<fatal> if set to true, croak instead of carp
 
-item B<reason> why is the feature deprecated
+=item B<reason> why is the feature deprecated
 
 =back
 

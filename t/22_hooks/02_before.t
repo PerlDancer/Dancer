@@ -47,15 +47,15 @@ get(
     }
 );
 
-route_exists    [ GET => '/' ];
-response_exists [ GET => '/' ];
+route_exists       [ GET => '/' ];
+response_status_is [ GET => '/' ] => 200;
 
 my $path = '/somewhere';
 my $request = [ GET => $path ];
 
 route_doesnt_exist $request, "there is no route handler for $path...";
 
-response_exists $request, "...but a response is returned though";
+response_status_is $request => 200, "...but a response is returned though";
 
 response_content_is $request, 'index',
   "which is the result of a redirection to /";

@@ -4,8 +4,9 @@ use Test::More;
 use Dancer::ModuleLoader;
 use LWP::UserAgent;
 
+plan skip_all => "skip test with Test::TCP in win32" if  $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
-    unless Dancer::ModuleLoader->load('Test::TCP');
+    unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
 
 plan skip_all => 'JSON is needed to run this test'
     unless Dancer::ModuleLoader->load('JSON');
@@ -42,10 +43,10 @@ Test::TCP::test_tcp(
         my $port = shift;
         use Dancer ':tests';
 
-        setting apphandler   => 'Standalone';
-        setting port         => $port;
-        setting show_errors  => 1;
-        setting startup_info => 0;
+        set( apphandler   => 'Standalone',
+             port         => $port,
+             show_errors  => 1,
+             startup_info => 0 );
 
         get '/' => sub { $data };
 

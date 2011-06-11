@@ -2,8 +2,9 @@ use Test::More import => ['!pass'];
 use strict;
 use warnings;
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
-    unless Dancer::ModuleLoader->load('Test::TCP');
+    unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
 
 use LWP::UserAgent;
 
@@ -34,17 +35,17 @@ Test::TCP::test_tcp(
     server => sub {
         my $port = shift;
         use Dancer;
-        
-        setting apphandler   => $handler;
-        setting port         => $port;
-        setting show_errors  => 1;
-        setting startup_info => 0;
+
+        set( apphandler   => $handler,
+             port         => $port,
+             show_errors  => 1,
+             startup_info => 0 );
 
         after sub {
             my $response = shift;
             $response->header('X-Foo', 2);
         };
-        
+
         get '/req' => sub {
             is(request->header('X-User-Head1'), 42,
                 "header X-User-Head1 is ok");
@@ -53,7 +54,7 @@ Test::TCP::test_tcp(
             headers('X-Bar', 3);
             content_type('text/plain');
         };
-        
+
         if ($handler eq 'PSGI') {
             my $app = Dancer::Handler->get_handler()->dance;
             Plack::Loader->auto(port => $port)->run($app);

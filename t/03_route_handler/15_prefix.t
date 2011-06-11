@@ -1,95 +1,59 @@
 use Test::More import => ['!pass'];
-use t::lib::TestUtils;
-
-plan tests => 32;
-
 use Dancer ':syntax';
 use Dancer::Test;
 use Dancer::Route;
 
+plan tests => 25;
+
 eval { prefix 'say' };
-like $@, qr/not a valid prefix/, 'prefix must start with a /';
+like $@ => qr/not a valid prefix/, 'prefix must start with a /';
 
-ok( prefix '/say', 'prefix defined' );
+{
+    prefix '/say' => 'prefix defined';
 
-ok(
-    get(
-        '/foo' => sub {
-            'it worked'
-        }
-    ),
-    'route /say/foo defined'
-);
+    get '/foo'  => sub { 'it worked' };
 
-ok(
-    get(
-        '/foo/' => sub {
-            'it worked'
-        }
-    ),
-    'route /say/foo/ defined'
-);
+    get '/foo/' => sub { 'it worked' };
 
-ok(
-    get(
-        '/:char' => sub {
-            pass and return false if length( params->{char} ) > 1;
-            "char: " . params->{char};
-        }
-    ),
-    'route /say/:char defined'
-);
+    get '/:char' => sub {
+        pass and return false if length( params->{char} ) > 1;
+        "char: " . params->{char};
+    };
 
-ok(
-    get(
-        '/:number' => sub {
-            pass and return false if params->{number} !~ /^\d+$/;
-            "number: " . params->{number};
-        }
-    ),
-    'route /say/:number defined'
-);
+    get '/:number' => sub {
+        pass and return false if params->{number} !~ /^\d+$/;
+        "number: " . params->{number};
+    };
 
-ok( any( '/any' => sub {"any"} ), 'route any /any defined' );
+    prefix '/lex' => sub {
+      get '/foo'  => sub { 'it worked' };
+    };
 
-ok(
-    get(
-        qr{/_(.*)} => sub {
-            "underscore: " . params->{splat}[0];
-        }
-    ),
-    'route /say/_(.*) defined'
-);
+    any '/any' => sub {"any"};
 
-ok(
-    get(
-        '/:word' => sub {
-            pass and return false if params->{word} =~ /trash/;
-            "word: " . params->{word};
-        }
-    ),
-    'route /:word defined'
-);
+    get qr{/_(.*)} => sub {
+        "underscore: " . params->{splat}[0];
+    };
 
-ok(
-    get(
-        '/' => sub {
-            "char: all";
-        }
-    ),
-    'route / defined'
-);
+    get '/:word' => sub {
+        pass and return false if params->{word} =~ /trash/;
+        "word: " . params->{word};
+    };
 
-ok( prefix(undef), "undef prefix" );
+    get '/' => sub {
+        "char: all";
+    };
 
-ok(
-    get(
-        '/*' => sub {
-            "trash: " . params->{splat}[0];
-        }
-    ),
-    'route /say/* defined'
-);
+    prefix(undef);
+
+    prefix '/dura' => sub {
+      get '/us'  => sub { 'us worked' };
+    };
+
+    get '/*' => sub {
+        "trash: " . params->{splat}[0];
+    };
+}
 
 my @tests = (
     { path => '/say/',        expected => 'char: all' },
@@ -102,13 +66,15 @@ my @tests = (
     { path => '/go_to_trash', expected => 'trash: go_to_trash' },
     { path => '/say/foo',     expected => 'it worked' },
     { path => '/say/foo/',    expected => 'it worked' },
+    { path => '/lex/foo',     expected => 'it worked' },
+    { path => '/dura/us',     expected => 'us worked' },
 );
 
 foreach my $test (@tests) {
     my $path     = $test->{path};
     my $expected = $test->{expected};
 
-    response_exists [GET => $path];
-    response_content_is_deeply [GET => $path], $expected;
+    response_status_is         [GET => $path] => 200;
+    response_content_is_deeply [GET => $path] => $expected;
 }
 

@@ -33,7 +33,7 @@ sub run {
         'SERVER_URL'      => "http://$host:$port/",
     };
 
-    $req = Dancer::Request->new($env);
+    $req = Dancer::Request->new(env => $env);
  
     my $headers = HTTP::Headers->new(
         'User-Agent' => 'curl',
@@ -59,7 +59,7 @@ sub start {
     my $dancer = Dancer::Handler::Debug->new();
     my $psgi = sub {
         my $env = shift;
-        my $req = Dancer::Request->new($env);
+        my $req = Dancer::Request->new(env => $env);
         $dancer->handle_request($req);
     };
     $dancer->{psgi_app} = $psgi;

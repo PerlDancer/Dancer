@@ -13,8 +13,9 @@ use Dancer::ModuleLoader;
 use Dancer;
 use Dancer::Cookie;
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-  unless Dancer::ModuleLoader->load("Test::TCP");
+  unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
 plan skip_all => "YAML is needed for this test"
   unless Dancer::ModuleLoader->load("YAML");
 
@@ -55,11 +56,11 @@ for my $session_expires (keys %tests) {
             use TestApp;
             Dancer::Config->load;
 
-            setting session         => 'YAML';
-            setting session_expires => $session_expires;
-            setting environment     => 'production';
-            setting port            => $port;
-            setting startup_info    => 0;
+            set( session         => 'YAML',
+                 session_expires => $session_expires,
+                 environment     => 'production',
+                 port            => $port,
+                 startup_info    => 0 );
             Dancer->dance();
         },
     );

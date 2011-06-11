@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More;
 
-plan tests => 30;
+plan tests => 28;
 
 use Dancer qw/ :syntax :tests /;
 use Dancer::Test;
@@ -39,19 +39,22 @@ del '/user/:id' => sub {
     { user => $deleted };
 };
 
+get '/query' => sub {
+    return join(":",params('query'));
+};
+
 my $resp = dancer_response GET => '/marco';
 
 my @req = ( [ GET => $route ], $route, $resp );
 
 test_helping_functions( $_ ) for @req;
 
-response_doesnt_exist [ GET => '/satisfaction' ], 'response_doesnt_exist';
-response_exists [ GET => '/marco' ], 'response_exists';
+response_status_is [ GET => '/satisfaction' ], 404, 'response_doesnt_exist';
+response_status_isnt [ GET => '/marco' ], 404, 'response_exists';
 
 sub test_helping_functions {
     my $req = shift;
 
-    response_exists $req;
     response_status_is $req => 200;
     response_status_isnt $req => 613;
 
@@ -83,3 +86,5 @@ $r = dancer_response(
 is_deeply $r->{content}, { user => { id => 2, name => "Franck Cuny" } },
   "id is correctly increased";
 
+$r = dancer_response( GET => '/query', { params => {foo => 'bar'}});
+is $r->{content} => "foo:bar";

@@ -5,8 +5,9 @@ use warnings;
 BEGIN {
     use Dancer::ModuleLoader;
 
+    plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
     plan skip_all => 'Test::TCP is needed to run this test'
-        unless Dancer::ModuleLoader->load('Test::TCP');
+        unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
     plan skip_all => 'YAML is needed to run this test'
         unless Dancer::ModuleLoader->load('YAML');
 }
@@ -49,8 +50,8 @@ Test::TCP::test_tcp(
             ok($res->is_success, "set_session for client $client");
 
             $res = $ua->get("http://127.0.0.1:$port/read_session");
-            like $res->content, qr/name='$client'/, 
-            "session looks good for client $client"; 
+            like $res->content, qr/name='$client'/,
+            "session looks good for client $client";
 
         }
 
@@ -67,10 +68,10 @@ Test::TCP::test_tcp(
         setting appdir => $tempdir;
         Dancer::Logger->init('File');
         ok(setting(session => $engine), "using engine $engine");
-        setting show_errors  => 1;
-        setting startup_info => 0;
-        setting environment  => 'production';
-        setting port         => $port;
+        set( show_errors  => 1,
+             startup_info => 0,
+             environment  => 'production',
+             port         => $port );
         Dancer->dance();
     },
 );

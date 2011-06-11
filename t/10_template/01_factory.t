@@ -8,7 +8,7 @@ use Dancer;
 plan skip_all => "Template needed" 
     unless Dancer::ModuleLoader->load('Template');
 
-plan tests => 7;
+plan tests => 6;
 
 use_ok 'Dancer::Template';
 
@@ -24,7 +24,7 @@ is(ref(Dancer::Template->engine), 'Dancer::Template::Simple',
     "template engine is Simple");
 
 
-ok(setting(template => 'template_toolkit'), "template init with 'toolkit' setting");
+set template => 'template_toolkit';
 is(ref(Dancer::Template->engine), 'Dancer::Template::TemplateToolkit',
     "template engine is TT");
 

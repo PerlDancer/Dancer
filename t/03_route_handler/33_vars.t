@@ -7,8 +7,9 @@ use Test::More;
 
 use LWP::UserAgent;
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-    unless Dancer::ModuleLoader->load("Test::TCP");
+    unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
 
 plan tests => 10;
 Test::TCP::test_tcp(
@@ -31,8 +32,7 @@ Test::TCP::test_tcp(
         # vars should be reset before the handler is called
         var foo => 42;
 
-        set startup_info => 0;
-        set port         => $port;
+        set startup_info => 0, port => $port;
 
         get "/getvarfoo" => sub {
             return ++vars->{foo};

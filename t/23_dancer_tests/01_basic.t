@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 24;
+use Test::More import => ['!pass'], tests => 21;
 
 use strict;
 use warnings;
@@ -20,18 +20,16 @@ my $false_req = [ GET => '/false/route' ];
 route_exists $req;
 route_doesnt_exist $false_req;
 
-response_exists $req;
-response_status_is $false_req, 404;
+response_status_is $req       => 200;
+response_status_is $false_req => 404;
 
-response_status_is $req, 200;
-response_status_isnt $req, 404;
-response_status_is [GET => '/forward_to_unavailable_route'] => 404;
+response_content_is   $req => "Hello, this is the home";
+response_content_isnt $req => "foo bar";
 
-response_content_is $req, "Hello, this is the home";
-response_content_isnt $req, "foo bar";
-response_content_is_deeply [GET => '/hash'], { a => 1, b => 2, c => 3};
-response_content_like $req, qr{Hello};
-response_content_unlike $req, qr{Goodbye};
+response_content_is_deeply [GET => '/hash'] => { a => 1, b => 2, c => 3};
+
+response_content_like   $req => qr{Hello};
+response_content_unlike $req => qr{Goodbye};
 
 response_headers_include [GET => '/with_headers'], [ 'Content-Type' => 'text/html' ];
 response_headers_include [GET => '/with_headers'], [ 'X-Foo-Dancer' => '42' ];

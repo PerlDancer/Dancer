@@ -8,4 +8,4 @@ my $routes = path('t', '06_helpers', 'routes.pl');
 ok( -f $routes, "file routes is found");
 load $routes;
 
-response_exists [GET => '/foo'] => "route /foo has been loaded";
+response_status_is [GET => '/foo'] => 200;

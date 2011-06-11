@@ -98,7 +98,7 @@ sub psgi_app {
     sub {
         my $env = shift;
         $self->init_request_headers($env);
-        my $request = Dancer::Request->new($env);
+        my $request = Dancer::Request->new(env => $env);
         $self->handle_request($request);
     };
 }

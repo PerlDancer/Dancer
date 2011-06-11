@@ -9,8 +9,9 @@ use Test::More import => ['!pass'];
 plan skip_all => "Dancer::Session::Cookie 0.14 required"
     unless Dancer::ModuleLoader->load( 'Dancer::Session::Cookie', '0.14' );
 
+plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP required"
-    unless Dancer::ModuleLoader->load('Test::TCP');
+    unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
 Test::TCP->import;
 
 plan skip_all => "HTTP::Cookies required"
@@ -52,12 +53,11 @@ test_tcp(
 
         use Dancer ':tests';
 
-        set port                => $port;
-        set appdir              => '';          # quiet warnings not having an appdir
-        set startup_info        => 0;           # quiet startup banner
-
-        set session_cookie_key  => "John has a long mustache";
-        set session             => "cookie";
+        set( port                => $port,
+             appdir              => '',          # quiet warnings not having an appdir
+             startup_info        => 0,           # quiet startup banner
+             session_cookie_key  => "John has a long mustache",
+             session             => "cookie" );
 
         get "/*" => sub {
             my $hits = session("hit_counter") || 0;
