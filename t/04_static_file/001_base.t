@@ -5,8 +5,23 @@ use warnings;
 # Using the pure perl via PERL_ONLY works
 BEGIN { $ENV{PERL_ONLY} = 1; }
 
-use Test::More tests => 8, import => ['!pass'];
+use Test::More import => ['!pass'];
 use Dancer::Test;
+
+
+plan skip_all => "Skip test with Test::TCP in win32"
+  if $^O eq 'MSWin32';
+    
+plan skip_all => "Test::TCP is required"
+  unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
+
+plan skip_all => "Plack is required"
+  unless Dancer::ModuleLoader->load('Plack::Loader');
+
+plan skip_all => "HTTP::Parser::XS is required"
+  unless Dancer::ModuleLoader->load('HTTP::Parser::XS' => "0.10");
+
+plan tests => 8;
 
 use Dancer ':syntax';
 
@@ -30,14 +45,6 @@ is $r->status,  400;
 is $r->content, 'Bad Request';
 
 SKIP: {
-    skip "Skip test with Test::TCP in win32", 2 if $^O eq 'MSWin32';
-    skip "Test::TCP is required", 2
-      unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
-    skip "Plack is required", 2
-      unless Dancer::ModuleLoader->load('Plack::Loader');
-    skip "HTTP::Parser::XS is required", 2
-      unless Dancer::ModuleLoader->load('HTTP::Parser::XS' => "0.10");
-
     # require HTTP::Parser::XS;
     require HTTP::Request;
     require LWP::UserAgent;
