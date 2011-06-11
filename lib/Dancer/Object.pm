@@ -1,13 +1,44 @@
 package Dancer::Object;
+# ABSTRACT: basic root class for Dancer's objects
 
-# This class is a root class for each object in Dancer.
-# It provides basic OO tools for Perl5 without being... Moose ;-)
+=head1 SYNOPSIS
+
+    package My::Dancer::Extension;
+
+    use strict;
+    use warnings;
+    use base 'Dancer::Object';
+
+    __PACKAGE__->attributes( qw/name value this that/ );
+
+    sub init {
+        # our initialization code, if we need one
+    }
+
+=head1 DESCRIPTION
+
+While we B<love> L<Moose>, we can't use it for Dancer and still keep Dancer
+minimal, so we wrote Dancer::Object instead.
+
+It provides you with attributes and an initializer.
+
+=cut
 
 use strict;
 use warnings;
 use Carp;
 
-# constructor
+=method new
+
+Creates a new object of whatever is based off Dancer::Object. This is a generic
+C<new> method so you don't have to write one yourself when extending
+C<Dancer::Object>.
+
+It accepts arguments in a hash and runs an additional C<init> method (described
+below) which you should implement.
+
+=cut
+
 sub new {
     my ($class, %args) = @_;
     my $self = \%args;
@@ -16,6 +47,13 @@ sub new {
     return $self;
 }
 
+=method clone
+
+Creates and returns a clone of the object using L<Clone>, which is loaded
+dynamically. If we cannot load L<Clone>, we throw an exception.
+
+=cut
+
 sub clone {
     my ($self) = @_;
     croak "The 'Clone' module is needed"
@@ -23,10 +61,21 @@ sub clone {
     return Clone::clone($self);
 }
 
-# initializer
+=method init
+
+Exists but does nothing. This is so you won't have to write an initializer if
+you don't want to.
+
+=cut
+
 sub init {1}
 
-# meta information about classes
+=method get_attributes
+
+Get the attributes of the specific class.
+
+=cut
+
 my $_attrs_per_class = {};
 sub get_attributes {
     my ($class, $visited_parents) = @_;
@@ -58,6 +107,46 @@ sub get_attributes {
     return \@attributes;
 }
 
+=method attributes
+
+Generates attributes for whatever object is extending Dancer::Object and saves
+them in an internal hashref so they can be later fetched using
+C<get_attributes>.
+
+=cut
+
+sub attributes {
+    my ($class, @attributes) = @_;
+
+    # save meta information
+    $_attrs_per_class->{$class} = \@attributes;
+
+    # define setters and getters for each attribute
+    foreach my $attr (@attributes) {
+        my $code = $class->_setter_code($attr);
+        my $method = "${class}::${attr}";
+        { no strict 'refs'; *$method = $code; }
+    }
+}
+
+=method attributes_defaults
+
+  $self->attributes_defaults(length => 2);
+
+given a hash (not a hashref), makes sure an object has the given attributes
+default values. Usually called from within an C<init> function.
+
+=cut
+
+sub attributes_defaults {
+    my ($self, %defaults) = @_;
+    while (my ($k, $v) = each %defaults) {
+        exists $self->{$k} or $self->{$k} = $v;
+    }
+}
+
+# private
+
 # accessor code for normal objects
 # (overloaded in D::O::Singleton for instance)
 sub _setter_code {
@@ -73,106 +162,5 @@ sub _setter_code {
     };
 }
 
-# accessors builder
-sub attributes {
-    my ($class, @attributes) = @_;
-
-    # save meta information
-    $_attrs_per_class->{$class} = \@attributes;
-
-    # define setters and getters for each attribute
-    foreach my $attr (@attributes) {
-        my $code = $class->_setter_code($attr);
-        my $method = "${class}::${attr}";
-        { no strict 'refs'; *$method = $code; }
-    }
-}
-
-sub attributes_defaults {
-    my ($self, %defaults) = @_;
-    while (my ($k, $v) = each %defaults) {
-        exists $self->{$k} or $self->{$k} = $v;
-    }
-}
-
 1;
-
-__END__
-
-=head1 NAME
-
-Dancer::Object - Objects base class for Dancer
-
-=head1 SYNOPSIS
-
-    package My::Dancer::Extension;
-
-    use strict;
-    use warnings;
-    use base 'Dancer::Object';
-
-    __PACKAGE__->attributes( qw/name value this that/ );
-
-    sub init {
-        # our initialization code, if we need one
-    }
-
-=head1 DESCRIPTION
-
-While we B<love> L<Moose>, we can't use it for Dancer and still keep Dancer
-minimal, so we wrote Dancer::Object instead.
-
-It provides you with attributes and an initializer.
-
-=head1 METHODS
-
-=head2 new
-
-Creates a new object of whatever is based off Dancer::Object. This is a generic
-C<new> method so you don't have to write one yourself when extending
-C<Dancer::Object>.
-
-It accepts arguments in a hash and runs an additional C<init> method (described
-below) which you should implement.
-
-=head2 init
-
-Exists but does nothing. This is so you won't have to write an initializer if
-you don't want to.
-
-=head2 clone
-
-Creates and returns a clone of the object using L<Clone>, which is loaded
-dynamically. If we cannot load L<Clone>, we throw an exception.
-
-=head2 get_attributes
-
-Get the attributes of the specific class.
-
-=head2 attributes
-
-Generates attributes for whatever object is extending Dancer::Object and saves
-them in an internal hashref so they can be later fetched using
-C<get_attributes>.
-
-=head2 attributes_defaults
-
-  $self->attributes_defaults(length => 2);
-
-given a hash (not a hashref), makes sure an object has the given attributes
-default values. Usually called from within an C<init> function.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 
