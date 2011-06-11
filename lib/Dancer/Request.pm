@@ -360,7 +360,7 @@ sub _build_params {
     # now parse environement params...
     $self->_parse_get_params();
     if ($self->{body_is_parsed}) {
-        $self->{_body_params} = $self->{_body_params} || {};
+        $self->{_body_params} ||= {};
     } else {
         $self->_parse_post_params();
     }
