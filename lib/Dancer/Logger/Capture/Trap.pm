@@ -1,11 +1,5 @@
 package Dancer::Logger::Capture::Trap;
-
-use base 'Dancer::Object';
-
-
-=head1 NAME
-
-Dancer::Logger::Capture::Trap - a place to store captured Dancer logs
+# ABSTRACT: a place to store captured Dancer logs
 
 =head1 SYNOPSIS
 
@@ -18,15 +12,11 @@ Dancer::Logger::Capture::Trap - a place to store captured Dancer logs
 This is a place to store and retrieve capture Dancer logs used by
 L<Dancer::Logger::Capture>.
 
-=head2 Methods
+=cut
 
-=head3 new
+use base 'Dancer::Object';
 
-=head3 store
-
-    $trap->store($level, $message);
-
-Stores a log $message and its $level.
+=method new
 
 =cut
 
@@ -37,6 +27,14 @@ sub init {
     $self->_storage([]) unless $self->_storage;
 }
 
+=method store
+
+    $trap->store($level, $message);
+
+Stores a log $message and its $level.
+
+=cut
+
 sub store {
     my($self, $level, $message) = @_;
 
@@ -44,7 +42,7 @@ sub store {
 }
 
 
-=head3 read
+=method read
 
     my $logs = $trap->read;
 
@@ -65,12 +63,5 @@ sub read {
     $self->_storage([]);
     return $logs;
 }
-
-
-=head1 SEE ALSO
-
-L<Dancer::Logger::Capture>
-
-=cut
 
 1;
