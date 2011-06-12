@@ -1,4 +1,5 @@
 package Dancer::GetOpt;
+# ABSTRACT: Dancer's interface to GetOpt
 
 use strict;
 use warnings;

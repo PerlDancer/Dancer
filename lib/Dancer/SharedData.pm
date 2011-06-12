@@ -1,4 +1,5 @@
 package Dancer::SharedData;
+# ABSTRACT: Dancer shared data
 
 use strict;
 use warnings;
