@@ -8,7 +8,7 @@ use Dancer::Test;
 plan tests => 2;
 
 SKIP: {
-    skip "Need perl >= 5.10", 3 unless $] >= 5.010;
+    skip "Need perl >= 5.10", 2 unless $] >= 5.010;
 
     my $route_regex =
       "/(?<class> user | content | post )/(?<action> delete | find )/(?<id> \\d+ )";
