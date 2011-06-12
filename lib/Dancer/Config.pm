@@ -1,251 +1,5 @@
 package Dancer::Config;
-
-use strict;
-use warnings;
-use base 'Exporter';
-use vars '@EXPORT_OK';
-
-use Dancer::Deprecation;
-use Dancer::Template;
-use Dancer::ModuleLoader;
-use Dancer::FileUtils 'path';
-use Carp;
-
-use Encode;
-
-@EXPORT_OK = qw(setting);
-
-my $SETTINGS = {};
-
-# mergeable settings
-my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
-
-sub settings {$SETTINGS}
-
-my $setters = {
-    logger => sub {
-        my ($setting, $value) = @_;
-        Dancer::Logger->init($value, settings());
-    },
-    log_file => sub {
-        Dancer::Logger->init(setting("logger"), setting());
-    },
-    session => sub {
-        my ($setting, $value) = @_;
-        Dancer::Session->init($value, settings());
-    },
-    template => sub {
-        my ($setting, $value) = @_;
-        Dancer::Template->init($value, settings());
-    },
-    route_cache => sub {
-        my ($setting, $value) = @_;
-        require Dancer::Route::Cache;
-        Dancer::Route::Cache->reset();
-    },
-    serializer => sub {
-        my ($setting, $value) = @_;
-        require Dancer::Serializer;
-        Dancer::Serializer->init($value);
-    },
-    import_warnings => sub {
-        my ($setting, $value) = @_;
-        $^W = $value ? 1 : 0;
-    },
-    auto_page => sub {
-        my ($setting, $auto_page) = @_;
-        if ($auto_page) {
-            require Dancer::App;
-            Dancer::App->current->registry->universal_add(
-                'get', '/:page',
-                sub {
-                    my $params = Dancer::SharedData->request->params;
-                    if  (-f Dancer::engine('template')->view($params->{page})) {
-                        return Dancer::template($params->{'page'});
-                    } else {
-                        return Dancer::pass();
-                    }
-                }
-            );
-        }
-    },
-    traces => sub {
-        my ($setting, $traces) = @_;
-        $Carp::Verbose = $traces ? 1 : 0;
-    },
-};
-$setters->{log_path} = $setters->{log_file};
-
-my $normalizers = {
-    charset => sub {
-        my ($setting, $charset) = @_;
-        length($charset || '')
-          or return $charset;
-        my $encoding = Encode::find_encoding($charset);
-        defined $encoding
-          or croak "Charset defined in configuration is wrong : couldn't identify '$charset'";
-        my $name = $encoding->name;
-        # Perl makes a distinction between the usual perl utf8, and the strict
-        # utf8 charset. But we don't want to make this distinction
-        $name eq 'utf-8-strict'
-          and $name = 'utf-8';
-        return $name;
-    },
-};
-
-sub normalize_setting {
-    my ($class, $setting, $value) = @_;
-
-    $value = $normalizers->{$setting}->($setting, $value)
-      if exists $normalizers->{$setting};
-
-    return $value;
-}
-
-# public accessor for get/set
-sub setting {
-    if (@_ == 1) {
-        return _get_setting(shift @_);
-    }
-    else {
-        # can be useful for debug! Use Logger, instead?
-        die "Odd number in 'set' assignment" unless scalar @_ % 2 == 0;
-
-        my $count = 0;
-        while (@_) {
-            my $setting = shift;
-            my $value   = shift;
-
-            _set_setting  ($setting, $value);
-
-            # At the moment, with any kind of hierarchical setter,
-            # there is no case where the same trigger will be run more
-            # than once. If/when a hierarchical setter is implemented,
-            # we should create a list of the hooks that should be run,
-            # and run them at the end of this while, only (efficiency
-            # purposes).
-            _trigger_hooks($setting, $value);
-            $count++
-        }
-        return $count; # just to return anything, the number of items set.
-    }
-}
-
-sub _trigger_hooks {
-    my ($setting, $value) = @_;
-
-    $setters->{$setting}->(@_) if defined $setters->{$setting};
-}
-
-sub _set_setting {
-    my ($setting, $value) = @_;
-
-    return unless @_ == 2;
-
-    # normalize the value if needed
-    $value = Dancer::Config->normalize_setting($setting, $value);
-    $SETTINGS->{$setting} = $value;
-    return $value;
-}
-
-sub _get_setting {
-    my $setting = shift;
-
-    return $SETTINGS->{$setting};
-}
-
-sub conffile { path(setting('confdir') || setting('appdir'), 'config.yml') }
-
-sub environment_file {
-    my $env = setting('environment');
-    return path(setting('appdir'), 'environments', "$env.yml");
-}
-
-sub init_confdir {
-    return setting('confdir') if setting('confdir');
-    setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
-}
-
-sub load {
-    init_confdir();
-
-    # look for the conffile
-    return 1 unless -f conffile;
-
-    # load YAML
-    confess "Configuration file found but YAML is not installed"
-      unless Dancer::ModuleLoader->load('YAML');
-
-    load_settings_from_yaml(conffile);
-
-    my $env = environment_file;
-    load_settings_from_yaml($env) if -f $env;
-
-    foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
-        $setters->{$key}->($key, $SETTINGS->{$key});
-    }
-
-    return 1;
-}
-
-sub load_settings_from_yaml {
-    my ($file) = @_;
-
-    my $config;
-
-    eval { $config = YAML::LoadFile($file) };
-    if (my $err = $@ || (!$config)) {
-        confess "Unable to parse the configuration file: $file: $@";
-    }
-
-    for my $key (keys %{$config}) {
-        if ($MERGEABLE{$key}) {
-            my $setting = setting($key);
-            $setting->{$_} = $config->{$key}{$_} for keys %{$config->{$key}};
-        }
-        else {
-            _set_setting($key, $config->{$key});
-        }
-    }
-
-    return scalar(keys %$config);
-}
-
-sub load_default_settings {
-    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER}       || '0.0.0.0';
-    $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
-    $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
-    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
-    $SETTINGS->{startup_info} ||= $ENV{DANCER_STARTUP_INFO} || 1;
-    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
-    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
-    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
-    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
-    $SETTINGS->{traces}       ||= $ENV{DANCER_TRACES}       || 0;
-    $SETTINGS->{logger}       ||= $ENV{DANCER_LOGGER}       || 'file';
-    $SETTINGS->{environment} ||=
-         $ENV{DANCER_ENVIRONMENT}
-      || $ENV{PLACK_ENV}
-      || 'development';
-
-    setting $_ => {} for keys %MERGEABLE;
-    setting template        => 'simple';
-    setting import_warnings => 1;
-}
-
-load_default_settings();
-
-1;
-
-__END__
-
-## TODO: C<environment> is not documented.
-
-=pod
-
-=head1 NAME
-
-Dancer::Config - how to configure Dancer to suit your needs
+# ABSTRACT: how to configure Dancer to suit your needs
 
 =head1 DESCRIPTION
 
@@ -567,19 +321,244 @@ Dancer will honor your C<before_template> code, and all default
 variables. They will be accessible and interpolated on automatic
 served pages.
 
-
-=head1 AUTHOR
-
-This module has been written by Alexis Sukrieh <sukria@cpan.org> and others,
-see the AUTHORS file that comes with this distribution for details.
-
-=head1 LICENSE
-
-This module is free software and is released under the same terms as Perl
-itself.
-
-=head1 SEE ALSO
-
-L<Dancer>
-
 =cut
+use strict;
+use warnings;
+use base 'Exporter';
+use vars '@EXPORT_OK';
+
+use Dancer::Deprecation;
+use Dancer::Template;
+use Dancer::ModuleLoader;
+use Dancer::FileUtils 'path';
+use Carp;
+
+use Encode;
+
+@EXPORT_OK = qw(setting);
+
+my $SETTINGS = {};
+
+# mergeable settings
+my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
+
+sub settings {$SETTINGS}
+
+my $setters = {
+    logger => sub {
+        my ($setting, $value) = @_;
+        Dancer::Logger->init($value, settings());
+    },
+    log_file => sub {
+        Dancer::Logger->init(setting("logger"), setting());
+    },
+    session => sub {
+        my ($setting, $value) = @_;
+        Dancer::Session->init($value, settings());
+    },
+    template => sub {
+        my ($setting, $value) = @_;
+        Dancer::Template->init($value, settings());
+    },
+    route_cache => sub {
+        my ($setting, $value) = @_;
+        require Dancer::Route::Cache;
+        Dancer::Route::Cache->reset();
+    },
+    serializer => sub {
+        my ($setting, $value) = @_;
+        require Dancer::Serializer;
+        Dancer::Serializer->init($value);
+    },
+    import_warnings => sub {
+        my ($setting, $value) = @_;
+        $^W = $value ? 1 : 0;
+    },
+    auto_page => sub {
+        my ($setting, $auto_page) = @_;
+        if ($auto_page) {
+            require Dancer::App;
+            Dancer::App->current->registry->universal_add(
+                'get', '/:page',
+                sub {
+                    my $params = Dancer::SharedData->request->params;
+                    if  (-f Dancer::engine('template')->view($params->{page})) {
+                        return Dancer::template($params->{'page'});
+                    } else {
+                        return Dancer::pass();
+                    }
+                }
+            );
+        }
+    },
+    traces => sub {
+        my ($setting, $traces) = @_;
+        $Carp::Verbose = $traces ? 1 : 0;
+    },
+};
+$setters->{log_path} = $setters->{log_file};
+
+my $normalizers = {
+    charset => sub {
+        my ($setting, $charset) = @_;
+        length($charset || '')
+          or return $charset;
+        my $encoding = Encode::find_encoding($charset);
+        defined $encoding
+          or croak "Charset defined in configuration is wrong : couldn't identify '$charset'";
+        my $name = $encoding->name;
+        # Perl makes a distinction between the usual perl utf8, and the strict
+        # utf8 charset. But we don't want to make this distinction
+        $name eq 'utf-8-strict'
+          and $name = 'utf-8';
+        return $name;
+    },
+};
+
+sub normalize_setting {
+    my ($class, $setting, $value) = @_;
+
+    $value = $normalizers->{$setting}->($setting, $value)
+      if exists $normalizers->{$setting};
+
+    return $value;
+}
+
+# public accessor for get/set
+sub setting {
+    if (@_ == 1) {
+        return _get_setting(shift @_);
+    }
+    else {
+        # can be useful for debug! Use Logger, instead?
+        die "Odd number in 'set' assignment" unless scalar @_ % 2 == 0;
+
+        my $count = 0;
+        while (@_) {
+            my $setting = shift;
+            my $value   = shift;
+
+            _set_setting  ($setting, $value);
+
+            # At the moment, with any kind of hierarchical setter,
+            # there is no case where the same trigger will be run more
+            # than once. If/when a hierarchical setter is implemented,
+            # we should create a list of the hooks that should be run,
+            # and run them at the end of this while, only (efficiency
+            # purposes).
+            _trigger_hooks($setting, $value);
+            $count++
+        }
+        return $count; # just to return anything, the number of items set.
+    }
+}
+
+sub _trigger_hooks {
+    my ($setting, $value) = @_;
+
+    $setters->{$setting}->(@_) if defined $setters->{$setting};
+}
+
+sub _set_setting {
+    my ($setting, $value) = @_;
+
+    return unless @_ == 2;
+
+    # normalize the value if needed
+    $value = Dancer::Config->normalize_setting($setting, $value);
+    $SETTINGS->{$setting} = $value;
+    return $value;
+}
+
+sub _get_setting {
+    my $setting = shift;
+
+    return $SETTINGS->{$setting};
+}
+
+sub conffile { path(setting('confdir') || setting('appdir'), 'config.yml') }
+
+sub environment_file {
+    my $env = setting('environment');
+    return path(setting('appdir'), 'environments', "$env.yml");
+}
+
+sub init_confdir {
+    return setting('confdir') if setting('confdir');
+    setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
+}
+
+sub load {
+    init_confdir();
+
+    # look for the conffile
+    return 1 unless -f conffile;
+
+    # load YAML
+    confess "Configuration file found but YAML is not installed"
+      unless Dancer::ModuleLoader->load('YAML');
+
+    load_settings_from_yaml(conffile);
+
+    my $env = environment_file;
+    load_settings_from_yaml($env) if -f $env;
+
+    foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
+        $setters->{$key}->($key, $SETTINGS->{$key});
+    }
+
+    return 1;
+}
+
+sub load_settings_from_yaml {
+    my ($file) = @_;
+
+    my $config;
+
+    eval { $config = YAML::LoadFile($file) };
+    if (my $err = $@ || (!$config)) {
+        confess "Unable to parse the configuration file: $file: $@";
+    }
+
+    for my $key (keys %{$config}) {
+        if ($MERGEABLE{$key}) {
+            my $setting = setting($key);
+            $setting->{$_} = $config->{$key}{$_} for keys %{$config->{$key}};
+        }
+        else {
+            _set_setting($key, $config->{$key});
+        }
+    }
+
+    return scalar(keys %$config);
+}
+
+sub load_default_settings {
+    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER}       || '0.0.0.0';
+    $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
+    $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
+    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
+    $SETTINGS->{startup_info} ||= $ENV{DANCER_STARTUP_INFO} || 1;
+    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
+    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
+    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
+    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
+    $SETTINGS->{traces}       ||= $ENV{DANCER_TRACES}       || 0;
+    $SETTINGS->{logger}       ||= $ENV{DANCER_LOGGER}       || 'file';
+    $SETTINGS->{environment} ||=
+         $ENV{DANCER_ENVIRONMENT}
+      || $ENV{PLACK_ENV}
+      || 'development';
+
+    setting $_ => {} for keys %MERGEABLE;
+    setting template        => 'simple';
+    setting import_warnings => 1;
+}
+
+load_default_settings();
+
+1;
+
+## TODO: C<environment> is not documented.
+
+
