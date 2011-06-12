@@ -48,7 +48,7 @@ SKIP: {
         "application/json is not supported" );
 }
 
-{
+SKIP: {
     skip 'JSON is needed to run this test', 3
       unless Dancer::ModuleLoader->load('JSON');
     skip 'YAML is needed to run this test', 3
@@ -92,7 +92,7 @@ SKIP: {
 }
 
 # handler helper
-{
+SKIP: {
     skip 'JSON is needed to run this test', 3
       unless Dancer::ModuleLoader->load('JSON');
 
@@ -108,6 +108,7 @@ SKIP: {
 
     my $expected_params = { foo => '42', };
 
+    # ---
     my $req = Dancer::Request->new( env => $env);
     is $req->body, $body, "body is untouched";
 
