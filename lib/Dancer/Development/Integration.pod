@@ -1,7 +1,5 @@
 # PODNAME: Integrator Guide
-=head1 NAME
-
-Dancer::Development::Integration - guide for Dancer's core-team members
+# ABSTRACT: guide for Dancer's core-team members
 
 =head1 DESCRIPTION
 
@@ -182,9 +180,5 @@ It's now possible for the team to continue working on new stuff in devel,
 bumping the version number to 1.5000_01
 
 =back
-
-=head1 AUTHOR
-
-This documentation has been written by Alexis Sukrieh C<< <sukria@sukria.net> >>.
 
 =cut
