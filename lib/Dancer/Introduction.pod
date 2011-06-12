@@ -1,4 +1,4 @@
-# PODNAME: Introduction
+# PODNAME: Dancer::Introduction
 # ABSTRACT: A gentle introduction to Dancer
 
 =head1 DESCRIPTION
