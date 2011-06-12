@@ -1,7 +1,5 @@
 # PODNAME: Deployment
-=head1 NAME
-
-Dancer::Deployment - common ways to put your Dancer app into use
+# ABSTRACT: common ways to put your Dancer app into use
 
 =head1 DESCRIPTION
 
@@ -486,3 +484,4 @@ Launch your application:
 
     plackup -s FCGI --listen /tmp/fcgi.sock bin/app.pl
 
+=cut
