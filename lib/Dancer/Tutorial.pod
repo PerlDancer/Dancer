@@ -1,3 +1,4 @@
+# PODNAME: Tutorial
 # ABSTRACT: An example to get you dancing
 =pod
 
