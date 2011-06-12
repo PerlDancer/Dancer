@@ -1,4 +1,5 @@
 package Dancer::App;
+# ABSTRACT: singleton for Dancer apps
 
 use strict;
 use warnings;
@@ -198,6 +199,5 @@ sub _set_settings {
           Dancer::Config->normalize_setting($name => $value);
     }
 }
-
 
 1;

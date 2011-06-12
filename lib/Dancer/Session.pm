@@ -1,66 +1,5 @@
 package Dancer::Session;
-
-use strict;
-use warnings;
-
-use Dancer::Cookies;
-use Dancer::Engine;
-
-# Singleton representing the session engine class to use
-my $ENGINE = undef;
-sub engine {$ENGINE}
-
-# This wrapper look for the session engine and try to load it.
-sub init {
-    my ($class, $name, $config) = @_;
-    $ENGINE = Dancer::Engine->build(session => $name, $config);
-
-    #$ENGINE->init(); already done
-}
-
-# retrieve or create a session for the client
-sub get_current_session {
-    my $sid     = engine->read_session_id;
-    my $session = undef;
-    my $class   = ref(engine);
-
-    $session = $class->retrieve($sid) if $sid;
-
-    if (not defined $session) {
-        $session = $class->create();
-        engine->write_session_id($session->id);
-    }
-    return $session;
-}
-
-sub get { get_current_session() }
-
-sub read {
-    my ($class, $key) = @_;
-    return unless $key;
-    my $session = get_current_session();
-    return $session->{$key};
-}
-
-sub write {
-    my ($class, $key, $value) = @_;
-    return unless $key;
-    my $session = get_current_session();
-    $session->{$key} = $value;
-
-    # TODO : should be moved as an "after" filter
-    $session->flush;
-    return $value;
-}
-
-1;
-__END__
-
-=pod
-
-=head1 NAME
-
-Dancer::Session - session engine for the Dancer framework
+# ABSTRACT: session engine for the Dancer framework
 
 =head1 DESCRIPTION
 
@@ -194,19 +133,64 @@ between a Dancer app and other Plack-based apps.
 Dancer::Session may depend on third-party modules, depending on the session
 engine used. See the session engine module for details.
 
-
-=head1 AUTHORS
-
-This module has been written by Alexis Sukrieh. See the AUTHORS file that comes
-with this distribution for details.
-
-=head1 LICENSE
-
-This module is free software and is released under the same terms as Perl
-itself.
-
-=head1 SEE ALSO
-
-See L<Dancer> for details about the complete framework.
-
 =cut
+
+
+
+use strict;
+use warnings;
+
+use Dancer::Cookies;
+use Dancer::Engine;
+
+# Singleton representing the session engine class to use
+my $ENGINE = undef;
+sub engine {$ENGINE}
+
+# This wrapper look for the session engine and try to load it.
+sub init {
+    my ($class, $name, $config) = @_;
+    $ENGINE = Dancer::Engine->build(session => $name, $config);
+
+    #$ENGINE->init(); already done
+}
+
+# retrieve or create a session for the client
+sub get_current_session {
+    my $sid     = engine->read_session_id;
+    my $session = undef;
+    my $class   = ref(engine);
+
+    $session = $class->retrieve($sid) if $sid;
+
+    if (not defined $session) {
+        $session = $class->create();
+        engine->write_session_id($session->id);
+    }
+    return $session;
+}
+
+sub get { get_current_session() }
+
+sub read {
+    my ($class, $key) = @_;
+    return unless $key;
+    my $session = get_current_session();
+    return $session->{$key};
+}
+
+sub write {
+    my ($class, $key, $value) = @_;
+    return unless $key;
+    my $session = get_current_session();
+    $session->{$key} = $value;
+
+    # TODO : should be moved as an "after" filter
+    $session->flush;
+    return $value;
+}
+
+1;
+__END__
+
+
