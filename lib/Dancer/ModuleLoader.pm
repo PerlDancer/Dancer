@@ -1,83 +1,5 @@
 package Dancer::ModuleLoader;
-
-# Abstraction layer for dynamic module loading
-
-use strict;
-use warnings;
-
-sub load {
-    my ($class, $module, $version) = @_;
-    # 0 is a valid version, so testing trueness of $version is not enough
-    if (defined $version && length $version) {
-        my ($res, $error) = $class->load_with_params($module);
-        $res or return wantarray ? (0, $error) : 0;
-        local $@;
-        eval { $module->VERSION($version) };
-        $error = $@;
-        $error and return wantarray ? (0, $error) : 0;
-        return 1;
-    }
-    # normal 'use', can be done via require + import
-    my ($res, $error) = $class->load_with_params($module);
-    return wantarray ? ($res, $error) : $res;
-}
-
-sub require {
-    my ($class, $module) = @_;
-    local $@;
-    my $module_filename = $module;
-    $module_filename =~ s!::|'!/!g;
-    $module_filename .= '.pm';
-    eval { require $module_filename };
-    my $error = $@;
-    $error and return wantarray ? (0, $error) : 0;
-    return 1;
-}
-
-sub load_with_params {
-    my ($class, $module, @args) = @_;
-    my ($res, $error) = $class->require($module);
-    $res or return wantarray ? (0, $error) : 0;
-    # From perlfunc : If no "import" method can be found then the call is
-    # skipped, even if there is an AUTOLOAD method.
-    if ($module->can('import')) {
-        # bump Exporter Level to import symbols in the caller
-        local $Exporter::ExportLevel = ( $Exporter::ExportLevel || 0 ) + 1;
-        local $@;
-        eval { $module->import(@args) };
-        my $error = $@;
-        $error and return wantarray ? (0, $error) : 0;
-    }
-    return 1;
-}
-
-sub use_lib {
-    my ($class, @args) = @_;
-    use lib;
-    local $@;
-    lib->import(@args);
-    my $error = $@;
-    $error and return wantarray ? (0, $error) : 0;
-    return 1;
-}
-
-sub class_from_setting {
-    my ($self, $namespace, $setting) = @_;
-
-    my $class = '';
-    for my $token (split /_/, $setting) {
-        $class .= ucfirst($token);
-    }
-    return "${namespace}::${class}";
-}
-
-1;
-
-__END__
-
-=head1 NAME
-
-Dancer::ModuleLoader - dynamic module loading helpers for Dancer core components
+# ABSTRACT: dynamic module loading helpers for Dancer core components
 
 =head1 SYNOPSIS
 
@@ -104,9 +26,11 @@ B<Please only use this for Dancer core modules>. If you're writing an external
 Dancer module (L<Dancer::Template::Tiny>, L<Dancer::Session::Cookie>, etc.),
 please simply "C<use ModuleYouNeed>" in your code and don't use this module.
 
-=head1 METHODS/SUBROUTINES
+=cut
+use strict;
+use warnings;
 
-=head2 load
+=method load
 
 Runs a "C<use ModuleYouNeed>".
 
@@ -123,14 +47,34 @@ Runs a "C<use ModuleYouNeed>".
     my ($res, $error) = Dancer::ModuleLoader->load('Something', '5.0');
     $res or die "Couldn't load Something : '$error'\n";
 
-Takes in arguments the module name, and optionally the minimum version number required.
+Takes in arguments the module name, and optionally the minimum version
+number required.
 
-In scalar context, returns 1 if successful, 0 if not.
-In list context, returns 1 if successful, C<(0, "error message")> if not.
+In scalar context, returns 1 if successful, 0 if not.  In list
+context, returns 1 if successful, C<(0, "error message")> if not.
 
-If you need to give argumentto the loading module, please use the method C<load_with_params>
+If you need to give argumentto the loading module, please use the
+method C<load_with_params>
 
-=head2 require
+=cut
+sub load {
+    my ($class, $module, $version) = @_;
+    # 0 is a valid version, so testing trueness of $version is not enough
+    if (defined $version && length $version) {
+        my ($res, $error) = $class->load_with_params($module);
+        $res or return wantarray ? (0, $error) : 0;
+        local $@;
+        eval { $module->VERSION($version) };
+        $error = $@;
+        $error and return wantarray ? (0, $error) : 0;
+        return 1;
+    }
+    # normal 'use', can be done via require + import
+    my ($res, $error) = $class->load_with_params($module);
+    return wantarray ? ($res, $error) : $res;
+}
+
+=method require
 
 Runs a "C<require ModuleYouNeed>".
 
@@ -149,7 +93,20 @@ Takes in arguments the module name.
 In scalar context, returns 1 if successful, 0 if not.
 In list context, returns 1 if successful, C<(0, "error message")> if not.
 
-=head2 load_with_params
+=cut
+sub require {
+    my ($class, $module) = @_;
+    local $@;
+    my $module_filename = $module;
+    $module_filename =~ s!::|'!/!g;
+    $module_filename .= '.pm';
+    eval { require $module_filename };
+    my $error = $@;
+    $error and return wantarray ? (0, $error) : 0;
+    return 1;
+}
+
+=method load_with_params
 
 Runs a "C<use ModuleYouNeed qw(param1 param2 ...)>".
 
@@ -161,12 +118,31 @@ Runs a "C<use ModuleYouNeed qw(param1 param2 ...)>".
     my ($res, $error) = Dancer::ModuleLoader->load('Something', @params);
     $res or die "Couldn't load Something : '$error'\n";
 
-Takes in arguments the module name, and optionally parameters to pass to the import internal method.
+Takes in arguments the module name, and optionally parameters to pass
+to the import internal method.
 
 In scalar context, returns 1 if successful, 0 if not.
 In list context, returns 1 if successful, C<(0, "error message")> if not.
 
-=head2 use_lib
+=cut
+sub load_with_params {
+    my ($class, $module, @args) = @_;
+    my ($res, $error) = $class->require($module);
+    $res or return wantarray ? (0, $error) : 0;
+    # From perlfunc : If no "import" method can be found then the call is
+    # skipped, even if there is an AUTOLOAD method.
+    if ($module->can('import')) {
+        # bump Exporter Level to import symbols in the caller
+        local $Exporter::ExportLevel = ( $Exporter::ExportLevel || 0 ) + 1;
+        local $@;
+        eval { $module->import(@args) };
+        my $error = $@;
+        $error and return wantarray ? (0, $error) : 0;
+    }
+    return 1;
+}
+
+=method use_lib
 
 Runs a "C<use lib qw(path1 path2)>" at run time instead of compile time.
 
@@ -184,6 +160,18 @@ can be generated and dynamic.
 
 In scalar context, returns 1 if successful, 0 if not.
 In list context, returns 1 if successful, C<(0, "error message")> if not.
+
+=cut
+sub use_lib {
+    my ($class, @args) = @_;
+    use lib;
+    local $@;
+    lib->import(@args);
+    my $error = $@;
+    $error and return wantarray ? (0, $error) : 0;
+    return 1;
+}
+
 
 =head2 class_from_setting
 
@@ -213,17 +201,17 @@ Example:
 
     # class == 'Dancer::Template::Tiny
 
-=head1 AUTHOR
+=cut
+sub class_from_setting {
+    my ($self, $namespace, $setting) = @_;
 
-Alexis Sukrieh
+    my $class = '';
+    for my $token (split /_/, $setting) {
+        $class .= ucfirst($token);
+    }
+    return "${namespace}::${class}";
+}
 
-=head1 LICENSE AND COPYRIGHT
+1;
 
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 
