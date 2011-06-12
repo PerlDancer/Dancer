@@ -1,14 +1,10 @@
 # PODNAME: Cookbook
-=head1 NAME
-
-Dancer::Cookbook - a quick-start guide to the Dancer web framework
+# ABSTRACT: a quick-start guide to the Dancer web framework
 
 =head1 DESCRIPTION
 
 A quick-start guide with examples to get you up and running with the Dancer web
 framework.
-
-
 
 =head1 BEGINNER'S DANCE
 
@@ -887,8 +883,4 @@ C<plack_middlewares_map>. You'll need L<Plack::App::URLMap> to do that.
         '/':      ['Debug']
         '/timer': ['Timer'],
 
-=head1 AUTHORS
-
-Dancer contributors - see AUTHORS file.
-
-
+=cut
