@@ -1,6 +1,35 @@
 package Dancer::Serializer;
+# ABSTRACT: serializer wrapper for Dancer
 
-# Factory for serializer engines
+=head1 DESCRIPTION
+
+This module is the wrapper that provides support for different
+serializers.
+
+=head1 USAGE
+
+=head2 Default engine
+
+The default serializer used by Dancer::Serializer is
+L<Dancer::Serializer::JSON>.
+You can choose another serializer by setting the B<serializer> configuration
+variable.
+
+=head2 Configuration
+
+The B<serializer> configuration variable tells Dancer which serializer to use
+to deserialize request and serialize response.
+
+You change it either in your config.yml file:
+
+    serializer: "YAML"
+
+Or in the application code:
+
+    # setting JSON as the default serializer
+    set serializer => 'JSON';
+
+=cut
 
 use strict;
 use warnings;
@@ -102,55 +131,3 @@ sub process_request {
 
 
 1;
-
-__END__
-
-=pod
-
-=head1 NAME
-
-Dancer::Serializer - serializer wrapper for Dancer
-
-=head1 DESCRIPTION
-
-This module is the wrapper that provides support for different
-serializers.
-
-=head1 USAGE
-
-=head2 Default engine
-
-The default serializer used by Dancer::Serializer is
-L<Dancer::Serializer::JSON>.
-You can choose another serializer by setting the B<serializer> configuration
-variable.
-
-=head2 Configuration
-
-The B<serializer> configuration variable tells Dancer which serializer to use
-to deserialize request and serialize response.
-
-You change it either in your config.yml file:
-
-    serializer: "YAML"
-
-Or in the application code:
-
-    # setting JSON as the default serializer
-    set serializer => 'JSON';
-
-=head1 AUTHORS
-
-This module has been written by Alexis Sukrieh and Franck Cuny.
-See the AUTHORS file that comes with this distribution for details.
-
-=head1 LICENSE
-
-This module is free software and is released under the same terms as Perl
-itself.
-
-=head1 SEE ALSO
-
-See L<Dancer> for details about the complete framework.
-
-=cut
