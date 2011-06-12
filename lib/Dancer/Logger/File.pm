@@ -1,4 +1,15 @@
 package Dancer::Logger::File;
+# ABSTRACT: file-based logging engine for Dancer
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+This is a file-based logging engine that allows you to save your logs to files
+on disk.
+
+=cut
+
 use strict;
 use warnings;
 use Carp;
@@ -9,6 +20,15 @@ use Dancer::Config 'setting';
 use Dancer::FileUtils qw(open_file);
 use IO::File;
 
+=method logdir
+
+Returns the log directory, decided by "logs" either in "appdir"
+setting or in a temp directory. It's also possible to specify a logs
+directory with the log_path option.
+
+  set log_path => $dir;
+
+=cut
 sub logdir {
     my $altpath = setting('log_path');
     return $altpath if $altpath;
@@ -41,6 +61,13 @@ sub logdir {
     return $expected_path;
 }
 
+=method init
+
+This method is called when C<< ->new() >> is called. It initializes the log
+directory, creates if it doesn't already exist and opens the designated log
+file.
+
+=cut
 sub init {
     my $self = shift;
     $self->SUPER::init(@_);
@@ -63,6 +90,12 @@ sub init {
     $self->{fh} = $fh;
 }
 
+
+=method _log
+
+Writes the log message to the file.
+
+=cut
 sub _log {
     my ($self, $level, $message) = @_;
     my $fh = $self->{fh};
@@ -74,50 +107,3 @@ sub _log {
 }
 
 1;
-
-__END__
-
-=head1 NAME
-
-Dancer::Logger::File - file-based logging engine for Dancer
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-This is a file-based logging engine that allows you to save your logs to files
-on disk.
-
-=head1 METHODS
-
-=head2 init
-
-This method is called when C<< ->new() >> is called. It initializes the log
-directory, creates if it doesn't already exist and opens the designated log
-file.
-
-=head2 logdir
-
-Returns the log directory, decided by "logs" either in "appdir" setting or in a
-temp directory. It's also possible to specify a logs directory with the log_path option.
-
-  setting log_path => $dir;
-
-=head2 _log
-
-Writes the log message to the file.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
-
