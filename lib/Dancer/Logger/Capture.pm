@@ -1,12 +1,5 @@
 package Dancer::Logger::Capture;
-
-use strict;
-use warnings;
-
-
-=head1 NAME
-
-Dancer::Logger::Capture - Capture dancer logs
+# ABSTRACT: Capture dancer logs
 
 =head1 SYNOPSIS
 
@@ -20,32 +13,6 @@ Dancer::Logger::Capture - Capture dancer logs
 This is a logger class for L<Dancer> which captures all logs to an object.
 
 It's primary purpose is for testing.
-
-=head2 Methods
-
-=head3 trap
-
-Returns the L<Dancer::Logger::Capture::Trap> object used to capture
-and read logs.
-
-=cut
-
-use base "Dancer::Logger::Abstract";
-
-use Dancer::Logger::Capture::Trap;
-my $Trap = Dancer::Logger::Capture::Trap->new;
-
-sub _log {
-    my($self, $level, $message) = @_;
-
-    $Trap->store( $level => $message );
-    return;
-}
-
-sub trap {
-    return $Trap;
-}
-
 
 =head1 EXAMPLE
 
@@ -66,11 +33,35 @@ sub trap {
     # each call to read cleans the trap
     is_deeply $trap->read, [];
 
+=cut
 
-=head1 SEE ALSO
+use strict;
+use warnings;
 
-L<Dancer::Logger>, L<Dancer::Logger::Capture::Trap>
+use base "Dancer::Logger::Abstract";
+
+use Dancer::Logger::Capture::Trap;
+my $Trap = Dancer::Logger::Capture::Trap->new;
+
+=method trap
+
+Returns the L<Dancer::Logger::Capture::Trap> object used to capture
+and read logs.
 
 =cut
+
+sub trap {
+    return $Trap;
+}
+
+# private
+
+sub _log {
+    my($self, $level, $message) = @_;
+
+    $Trap->store( $level => $message );
+    return;
+}
+
 
 1;
