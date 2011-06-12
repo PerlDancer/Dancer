@@ -1,4 +1,4 @@
-# PODNAME: Deployment
+# PODNAME: Dancer::Deployment
 # ABSTRACT: common ways to put your Dancer app into use
 
 =head1 DESCRIPTION
