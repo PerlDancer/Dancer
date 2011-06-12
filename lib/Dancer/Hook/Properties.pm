@@ -1,5 +1,13 @@
 package Dancer::Hook::Properties;
+# ABSTRACT: Properties attached to a hook
 
+=head1 DESCRIPTION
+
+Properties attached to a hook
+
+=head1 SYNOPSIS
+
+=cut
 use strict;
 use warnings;
 
@@ -36,24 +44,3 @@ sub should_run_this_app {
 }
 
 1;
-
-=head1 NAME
-
-Dancer::Hook::Properties - Properties attached to a hook
-
-=head1 DESCRIPTION
-
-Properties attached to a hook
-
-=head1 SYNOPSIS
-
-=head1 METHODS
-
-=head1 AUTHORS
-
-This module has been written by Alexis Sukrieh and others.
-
-=head1 LICENSE
-
-This module is free software and is published under the same
-terms as Perl itself.
