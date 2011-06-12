@@ -57,8 +57,6 @@ Examples :
     my $template = "here is <% var %>";
     $content = $engine->render(\$template, { var => 42 });
 
-=back
-
 =cut
 sub render { confess "render not implemented" }
 
