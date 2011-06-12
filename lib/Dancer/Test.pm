@@ -323,7 +323,7 @@ Content-Type: text/plain
         $l = length $content if defined $content;
         open my $in, '<', \$content;
         $ENV{'CONTENT_LENGTH'} = $l;
-        $ENV{'CONTENT_TYPE'}   = $content_type;
+        $ENV{'CONTENT_TYPE'}   = $content_type || "";
         $ENV{'psgi.input'}     = $in;
     }
 
