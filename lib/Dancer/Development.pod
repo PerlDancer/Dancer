@@ -1,4 +1,4 @@
-# PODNAME: Development
+# PODNAME: Dancer::Development
 # ABSTRACT: guide for developers interested in contributing
 
 =head1 DESCRIPTION
