@@ -1,5 +1,5 @@
 package Dancer::Handler;
-
+# ABSTRACT: Dancer request's handler code
 use strict;
 use warnings;
 use Carp 'croak';
