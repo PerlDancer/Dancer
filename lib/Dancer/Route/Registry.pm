@@ -12,6 +12,12 @@ Dancer::Route::Registry->attributes(qw( id ));
 
 my $id = 1;
 
+=method init
+
+Initializes the object.
+
+=cut
+
 sub init {
     my ($self) = @_;
 
@@ -23,6 +29,13 @@ sub init {
     return $self;
 }
 
+=method is_empty
+
+Returns a boolean telling if the registry is empty or not (being empty means it
+has no routes registered).
+
+=cut
+
 sub is_empty {
     my ($self) = @_;
     for my $method ( keys %{ $self->routes } ) {
@@ -31,8 +44,12 @@ sub is_empty {
     return 1;
 }
 
-# replace any ':foo' by '(.+)' and stores all the named
-# matches defined in $REG->{route_params}{$route}
+=method routes
+
+Return all the route objects stored in the registry.
+
+=cut
+
 sub routes {
     my ($self, $method) = @_;
 
@@ -44,6 +61,12 @@ sub routes {
         return $self->{routes};
     }
 }
+
+=method add_route
+
+Register a route in the registry
+
+=cut
 
 sub add_route {
     my ($self, $route) = @_;
