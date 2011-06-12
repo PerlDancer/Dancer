@@ -1,4 +1,32 @@
 package Dancer::HTTP;
+# ABSTRACT: helper for rendering HTTP status codes for Dancer
+
+=head1 DESCRIPTION
+
+Helper for rendering HTTP status codes for Dancer
+
+=head1 HTTP CODES 
+
+The following codes/aliases are understood by any status() call made
+from a Dancer script.
+
+=head2 200
+
+returns 200 OK, alias : 'ok'
+
+=head2 403
+
+returns 403 Forbidden, alias 'forbidden'
+
+=head2 404
+
+returns 404 Not Found, alias : 'not_found'
+
+=head2 500
+
+returns 500 Internal Server Error, alias: 'error'
+
+=cut
 
 use strict;
 use warnings;
@@ -83,51 +111,5 @@ sub status {
 }
 
 1;
-__END__
 
-=pod
 
-=head1 NAME
-
-Dancer::HTTP - helper for rendering HTTP status codes for Dancer
-
-=head1 DESCRIPTION
-
-Helper for rendering HTTP status codes for Dancer
-
-=head1 HTTP CODES 
-
-The following codes/aliases are understood by any status() call made
-from a Dancer script.
-
-=head2 200
-
-returns 200 OK, alias : 'ok'
-
-=head2 403
-
-returns 403 Forbidden, alias 'forbidden'
-
-=head2 404
-
-returns 404 Not Found, alias : 'not_found'
-
-=head2 500
-
-returns 500 Internal Server Error, alias: 'error'
-
-=head1 AUTHOR
-
-This module has been written by Alexis Sukrieh <sukria@cpan.org>
-
-=head1 SOURCE CODE
-
-The source code for this module is hosted on GitHub
-L<http://github.com/sukria/Dancer>
-
-=head1 LICENSE
-
-This module is free software and is published under the same
-terms as Perl itself.
-
-=cut
