@@ -1153,7 +1153,7 @@ saying C<return send_error(...)> instead.
 
 Lets the current route handler send a file to the client. Note that
 the path of the file must be relative to the B<public> directory unless you use
-the C<absolute> option (see below).
+the C<system_path> option (see below).
 
     get '/download/:file' => sub {
         send_file(params->{file});
