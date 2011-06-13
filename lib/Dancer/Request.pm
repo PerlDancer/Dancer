@@ -16,11 +16,11 @@ use URI::Escape;
 
 sub new {
     # To provide good error messages for those burnt by upgrading.
-    my $self, @args = @_;
+    my ($self, @args) = @_;
     if (@args == 1) {
         croak 'Attempt to instantiate a request object with a single argument - the syntax has changed to Dancer::Request->new(env => $env)';
     }
-    $self->SUPER->new(@args);
+    $self->SUPER::new(@args);
 }
 
 my @http_env_keys = (
