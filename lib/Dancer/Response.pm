@@ -1,166 +1,11 @@
 package Dancer::Response;
 # ABSTRACT: class representing a Dancer response
 
-use strict;
-use warnings;
-use Carp;
+=head1 CORE LIBRARY
 
-use base 'Dancer::Object';
-
-use Scalar::Util qw/blessed/;
-use Dancer::HTTP;
-use Dancer::MIME;
-use HTTP::Headers;
-use Dancer::SharedData;
-
-__PACKAGE__->attributes(qw/content pass/);
-
-# constructor
-sub init {
-    my ( $self, %args ) = @_;
-    $self->attributes_defaults(
-        status  => 200,
-        content => '',
-        pass    => 0,
-        halted  => 0,
-        forward => '',
-        encoded => 0,
-    );
-    $self->{headers} = HTTP::Headers->new(@{ $args{headers} || [] });
-    Dancer::SharedData->response($self);
-}
-
-# helpers for the route handlers
-sub exists {
-    my $self = shift;
-    return length($self->content);
-}
-
-sub status {
-    my $self = shift;
-
-    if (scalar @_ > 0) {
-        my $status = shift;
-        my $numeric_status = Dancer::HTTP->status($status);
-        if ($numeric_status) {
-            return $self->{status} = $numeric_status;
-        } else {
-            carp "Unrecognised HTTP status $status";
-            return;
-        }
-    } else {
-        return $self->{status};
-    }
-}
-
-sub content_type {
-    my $self = shift;
-
-    if (scalar @_ > 0) {
-        my $mimetype = Dancer::MIME->instance();
-        $self->header('Content-Type' => $mimetype->name_or_type(shift));
-    } else {
-        return $self->header('Content-Type');
-    }
-}
-
-sub has_passed {
-    my $self = shift;
-    return $self->pass;
-}
-
-sub forward {
-    my ($self, $uri, $params, $opts) = @_;
-    $self->{forward} = { to_url  => $uri,
-                         params  => $params,
-                         options => $opts };
-}
-
-sub is_forwarded {
-    my $self = shift;
-    $self->{forward};
-}
-
-sub _already_encoded {
-    my $self = shift;
-    $self->{encoded};
-}
-
-sub halt {
-    my ($self, $content) = @_;
-
-    if ( blessed($content) && $content->isa('Dancer::Response') ) {
-        $content->{halted} = 1;
-        Dancer::SharedData->response($content);
-    }
-    else {
-        Dancer::Response->new(
-            status => ($self->status || 200),
-            content => $content,
-            halted => 1,
-        );
-    }
-    return $content;
-}
-
-sub halted {
-    my $self = shift;
-    return $self->{halted}
-}
-
-sub header {
-    my $self   = shift;
-    my $header = shift;
-
-    if (@_) {
-        $self->{headers}->header( $header => @_ );
-    }
-    else {
-        return $self->{headers}->header($header);
-    }
-}
-
-sub push_header {
-    my $self   = shift;
-    my $header = shift;
-
-    if (@_) {
-        foreach my $h(@_) {
-            $self->{headers}->push_header( $header => $h );
-        }
-    }
-    else {
-        return $self->{headers}->header($header);
-    }
-}
-
-sub headers {
-    my $self = shift;
-    $self->{headers}->header(@_);
-}
-
-sub headers_to_array {
-    my $self = shift;
-
-    my $headers = [
-        map {
-            my $k = $_;
-            map {
-                my $v = $_;
-                $v =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
-                ( $k => $v )
-            } $self->{headers}->header($_);
-          } $self->{headers}->header_field_names
-    ];
-
-    return $headers;
-}
-
-1;
-
-=head1 NAME
-
-Dancer::Response - Response object for Dancer
+This class is part of the core, it is provided for developers only.
+Dancer users should not need to read this documentation as it documents 
+internal parts of the code only.
 
 =head1 SYNOPSIS
 
@@ -181,9 +26,40 @@ Dancer::Response - Response object for Dancer
     # change the status
     $response->status(500);
 
-=head1 PUBLIC API
+=cut
 
-=head2 new
+use strict;
+use warnings;
+use Carp;
+
+use base 'Dancer::Object';
+
+use Scalar::Util qw/blessed/;
+use Dancer::HTTP;
+use Dancer::MIME;
+use HTTP::Headers;
+use Dancer::SharedData;
+
+=attr content
+
+Accessor for the response's content.
+
+    my $content = $response->content;
+    $response->content('my new content');
+
+=attr pass
+
+Accessor for the boolean "pass" flag 
+
+    ... if $response->pass;
+
+=cut
+
+__PACKAGE__->attributes(qw/content pass/);
+
+=method init
+
+This method is called whenever a new object is created.
 
     Dancer::Response->new(
         status  => 200,
@@ -191,117 +67,259 @@ Dancer::Response - Response object for Dancer
         headers => HTTP::Headers->new(...),
     );
 
-create and return a new L<Dancer::Response> object
+It initializes the object with sane default values and saves the object in
+L<Dancer::SharedData>.
 
-=head2 current
+=cut
 
-    my $response = Dancer::SharedData->response->current();
+# TODO : we should stop having Dancer::SharedData here, it's a design issue
+# that needs some love.
+sub init {
+    my ( $self, %args ) = @_;
+    $self->attributes_defaults(
+        status  => 200,
+        content => '',
+        pass    => 0,
+        halted  => 0,
+        forward => '',
+        encoded => 0,
+    );
+    $self->{headers} = HTTP::Headers->new(@{ $args{headers} || [] });
+    Dancer::SharedData->response($self);
+}
 
-return the current Dancer::Response object, and reset the object
+=method exists
 
-=head2 exists
-
+Test if the Dancer::Response contains a non-null content.
 
     if ($response->exists) {
         ...
     }
 
-test if the Dancer::Response object exists
+=cut
 
-=head2 content
+# TODO: should be renamed has_content
+sub exists {
+    my $self = shift;
+    return length($self->content);
+}
 
-    # get the content
-    my $content = $response->content;
-    my $content = Dancer::SharedData->response->content;
+=method status
 
-    # set the content
-    $response->content('my new content');
-    Dancer::SharedData->response->content('my new content');
+Set or get the status of the current response object
 
-set or get the content of the current response object
-
-=head2 status
-
-    # get the status
     my $status = $response->status;
-    my $status = Dancer::SharedData->response->status;
-
-    # set the status
     $response->status(201);
-    Dancer::SharedData->response->status(201);
 
-set or get the status of the current response object
+=cut
 
-=head2 content_type
+sub status {
+    my $self = shift;
 
-    # get the status
+    if (scalar @_ > 0) {
+        my $status = shift;
+        my $numeric_status = Dancer::HTTP->status($status);
+        if ($numeric_status) {
+            return $self->{status} = $numeric_status;
+        } else {
+            carp "Unrecognised HTTP status $status";
+            return;
+        }
+    } else {
+        return $self->{status};
+    }
+}
+
+=attr content_type
+
+Accessor for the content type of the response.
+
     my $ct = $response->content_type;
-    my $ct = Dancer::SharedData->response->content_type;
-
-    # set the status
     $response->content_type('application/json');
-    Dancer::SharedData->response->content_type('application/json');
 
-set or get the status of the current response object
+=cut
 
-=head2 pass
+sub content_type {
+    my $self = shift;
 
-    $response->pass;
-    Dancer::SharedData->response->pass;
-
-set the pass value to one for this response
-
-=head2 has_passed
-
-    if ($response->has_passed) {
-        ...
+    if (scalar @_ > 0) {
+        my $mimetype = Dancer::MIME->instance();
+        $self->header('Content-Type' => $mimetype->name_or_type(shift));
+    } else {
+        return $self->header('Content-Type');
     }
+}
 
-    if (Dancer::SharedData->response->has_passed) {
-        ...
+=method has_passed
+
+Syntactic sugar over the C<pass> boolean flag.
+
+=cut
+
+sub has_passed {
+    my $self = shift;
+    return $self->pass;
+}
+
+=method forward 
+
+Register a forward destination for the current response.
+
+=cut
+
+sub forward {
+    my ($self, $uri, $params, $opts) = @_;
+    $self->{forward} = { to_url  => $uri,
+                         params  => $params,
+                         options => $opts };
+}
+
+=method is_forwarded
+
+Boolean flag that tells if the response is forwarded or not.
+
+=cut
+
+sub is_forwarded {
+    my $self = shift;
+    $self->{forward};
+}
+
+=method halt
+
+Flags the response with the C<halt> flag. This flag is used in the upper layers
+of the core to know if the rendering flow should stop here or not.
+
+This method can be passed either a L<Dancer::Response> object or a string
+representing the content of the response (it will then be coerced as a 
+L<Dancer::Response> object transparently).
+
+    $response->halt($response);
+
+=cut
+
+sub halt {
+    my ($self, $content) = @_;
+
+    if ( blessed($content) && $content->isa('Dancer::Response') ) {
+        $content->{halted} = 1;
+        Dancer::SharedData->response($content);
     }
-
-test if the pass value is set to true
-
-=head2 halt
-
-    Dancer::SharedData->response->halt();
-    $response->halt;
-
-=head2 halted
-
-    if (Dancer::SharedData->response->halted) {
-       ...
+    else {
+        Dancer::Response->new(
+            status => ($self->status || 200),
+            content => $content,
+            halted => 1,
+        );
     }
+    return $content;
+}
 
-    if ($response->halted) {
-        ...
-    }
+=method halted
 
-=head2 header
+Syntactic sugar over the boolean C<halted> flag.
+
+=cut
+
+sub halted {
+    my $self = shift;
+    return $self->{halted}
+}
+
+=method header
+
+Get or set the value of a header in the current response object.
 
     # set the header
     $response->header('X-Foo' => 'bar');
-    Dancer::SharedData->response->header('X-Foo' => 'bar');
 
     # get the header
     my $header = $response->header('X-Foo');
-    my $header = Dancer::SharedData->response->header('X-Foo');
 
-get or set the value of a header
+=cut
 
-=head2 headers
+sub header {
+    my $self   = shift;
+    my $header = shift;
 
-    $response->headers(HTTP::Headers->new(...));
-    Dancer::SharedData->response->headers(HTTP::Headers->new(...));
+    if (@_) {
+        $self->{headers}->header( $header => @_ );
+    }
+    else {
+        return $self->{headers}->header($header);
+    }
+}
 
-return the list of headers for the current response
+=method push_header
 
-=head2 headers_to_array
+Add a header to the current response object, but don't overrite it if it already
+exists.
 
-    my $headers_psgi = $response->headers_to_array();
-    my $headers_psgi = Dancer::SharedData->response->headers_to_array();
+    my $header = $response->push_header('X-Foo' => 42);
 
-this method is called before returning a PSGI response. It transforms the list of headers to an array reference.
+=cut
 
+sub push_header {
+    my $self   = shift;
+    my $header = shift;
 
+    if (@_) {
+        foreach my $h(@_) {
+            $self->{headers}->push_header( $header => $h );
+        }
+    }
+    else {
+        return $self->{headers}->header($header);
+    }
+}
+
+=method headers
+
+Returns the list of headers registered in the current response object, as
+L<HTTP::Header> objects.
+
+=cut
+
+sub headers {
+    my $self = shift;
+    $self->{headers}->header(@_);
+}
+
+=method headers_to_array
+
+Returns an array ref of all the registered headers of the response. The array
+ref will contain only key-value pairs that are PSGI-compatible. If you need a
+list of L<HTTP::Header> objects, use the C<headers> method.
+
+=cut
+
+sub headers_to_array {
+    my $self = shift;
+
+    my $headers = [
+        map {
+            my $k = $_;
+            map {
+                my $v = $_;
+                $v =~ s/^(.+)\r?\n(.*)$/$1\r\n $2/;
+                ( $k => $v )
+            } $self->{headers}->header($_);
+          } $self->{headers}->header_field_names
+    ];
+
+    return $headers;
+}
+
+=method already_encoded
+
+Boolean flag that tells if the response's content has already been encoded or
+not. It's needed for the forward mechanism to avoid double encoding of content.
+
+=cut
+
+sub already_encoded {
+    my $self = shift;
+    $self->{encoded};
+}
+
+1;
