@@ -24,7 +24,6 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3060';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
