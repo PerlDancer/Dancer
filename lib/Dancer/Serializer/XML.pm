@@ -10,39 +10,40 @@ use base 'Dancer::Serializer::Abstract';
 # singleton for the XML::Simple object
 my $_xs;
 
-# helpers
+sub init {
+    my ($self) = @_;
+    die 'XML::Simple is needed and is not installed'
+      unless $self->_loaded_xmlsimple;
+    die 'XML::Simple needs XML::Parser or XML::SAX and neither is installed'
+      unless $self->_loaded_xmlbackends;
+    $_xs = XML::Simple->new();
+}
 
+=method from_xml
+
+Helpder subroutine that deserializes from XML.
+
+=cut
 sub from_xml {
     my $s = Dancer::Serializer::XML->new;
     $s->deserialize(@_);
 }
 
+=method to_xml
+
+Helpder subroutine that serializes to XML.
+
+=cut
 sub to_xml {
     my $s = Dancer::Serializer::XML->new;
     $s->serialize(@_);
 }
 
-# class definition
+=method serialize
 
-sub loaded_xmlsimple {
-    Dancer::ModuleLoader->load('XML::Simple');
-}
+Serialize a data structure to a XML structure.
 
-sub loaded_xmlbackends {
-    # we need either XML::Parser or XML::SAX too
-    Dancer::ModuleLoader->load('XML::Parser') or
-    Dancer::ModuleLoader->load('XML::SAX');
-}
-
-sub init {
-    my ($self) = @_;
-    die 'XML::Simple is needed and is not installed'
-      unless $self->loaded_xmlsimple;
-    die 'XML::Simple needs XML::Parser or XML::SAX and neither is installed'
-      unless $self->loaded_xmlbackends;
-    $_xs = XML::Simple->new();
-}
-
+=cut
 sub serialize {
     my $self    = shift;
     my $entity  = shift;
@@ -50,34 +51,39 @@ sub serialize {
     $_xs->XMLout($entity, %options);
 }
 
+=method deserialize
+
+Deserialize a XML structure to a data structure
+
+=cut
 sub deserialize {
     my $self = shift;
     $_xs->XMLin(@_);
 }
 
+=method content_type
+
+Return 'text/xml'
+
+=cut
 sub content_type {'text/xml'}
+
+
+# privates
+
+sub _loaded_xmlsimple {
+    Dancer::ModuleLoader->load('XML::Simple');
+}
+
+sub _loaded_xmlbackends {
+    # we need either XML::Parser or XML::SAX too
+    Dancer::ModuleLoader->load('XML::Parser') or
+    Dancer::ModuleLoader->load('XML::SAX');
+}
+
+
 
 1;
 __END__
 
-=head1 NAME
 
-Dancer::Serializer::XML - serializer for handling XML data
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-=head2 METHODS
-
-=head2 serialize
-
-Serialize a data structure to a XML structure.
-
-=head2 deserialize
-
-Deserialize a XML structure to a data structure
-
-=head2 content_type
-
-Return 'text/xml'
