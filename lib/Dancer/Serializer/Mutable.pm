@@ -1,6 +1,33 @@
 package Dancer::Serializer::Mutable;
 # ABSTRACT: mutable serializer engine
 
+=head1 DESCRIPTION
+
+This serializer will try find the best (de)serializer for a given
+request.  For this, it will go through:
+
+=over
+
+=item
+
+The B<content_type> from the request headers
+
+=item
+
+the B<content_type> parameter from the URL
+
+=item
+
+the B<accept> from the request headers
+
+=item
+
+The default is B<application/json>
+
+=back
+
+=cut
+
 use strict;
 use warnings;
 
@@ -17,6 +44,65 @@ my $serializer = {
 
 my $loaded_serializer = {};
 my $_content_type;
+
+
+=method serialize
+
+Serialize a data structure. The format it is serialized to is
+determined automatically as described above. It can be one of YAML,
+XML or JSON, defaulting to JSON if there's no clear preference from
+the request.
+
+=cut
+sub serialize {
+    my ($self, $entity) = @_;
+    my $request    = Dancer::SharedData->request;
+    my $serializer = $self->_load_serializer($request);
+    return $serializer->serialize($entity);
+}
+
+
+=method deserialize
+
+Deserialize the provided serialized data to a data structure.  The
+type of serialization format depends on the request's
+content-type. For now, it can be one of YAML, XML or JSON.
+
+=cut
+sub deserialize {
+    my ($self, $content) = @_;
+    my $request    = Dancer::SharedData->request;
+    my $serializer = $self->_load_serializer($request);
+    return $serializer->deserialize($content);
+}
+
+
+=method content_type
+
+Returns the content-type that was used during the last C<serialize> /
+C<deserialize> call.
+
+B<WARNING>: you must call C<serialize> / C<deserialize> before calling
+C<content_type>. Otherwise the return value will be C<undef>.
+
+=cut
+sub content_type {
+    my $self = shift;
+    $_content_type;
+}
+
+=method support_content_type
+
+Checks if a specific content type is supported by this serialzier.
+
+=cut
+sub support_content_type {
+    my ($self, $ct) = @_;
+    grep /^$ct$/, keys %$serializer;
+}
+
+
+# privates
 
 sub _find_content_type {
     my ($self, $request) = @_;
@@ -57,30 +143,6 @@ sub _find_content_type {
     ];
 }
 
-sub serialize {
-    my ($self, $entity) = @_;
-    my $request    = Dancer::SharedData->request;
-    my $serializer = $self->_load_serializer($request);
-    return $serializer->serialize($entity);
-}
-
-sub deserialize {
-    my ($self, $content) = @_;
-    my $request    = Dancer::SharedData->request;
-    my $serializer = $self->_load_serializer($request);
-    return $serializer->deserialize($content);
-}
-
-sub content_type {
-    my $self = shift;
-    $_content_type;
-}
-
-sub support_content_type {
-    my ($self, $ct) = @_;
-    grep /^$ct$/, keys %$serializer;
-}
-
 sub _load_serializer {
     my ($self, $request) = @_;
 
@@ -103,53 +165,4 @@ sub _load_serializer {
 1;
 __END__
 
-=head1 NAME
 
-Dancer::Serializer::Mutable - (De)Serialize content using the appropriate HTTP header
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-This serializer will try find the best (de)serializer for a given request.
-For this, it will go through:
-
-=over
-
-=item
-
-The B<content_type> from the request headers
-
-=item
-
-the B<content_type> parameter from the URL
-
-=item
-
-the B<accept> from the request headers
-
-=item
-
-The default is B<application/json>
-
-=back
-
-=head2 METHODS
-
-=head2 serialize
-
-Serialize a data structure. The format it is serialized to is determined
-automatically as described above. It can be one of YAML, XML, JSON, defaulting
-to JSON if there's no clear preference from the request.
-
-=head2 deserialize
-
-Deserialize the provided serialized data to a data structure.  The type of 
-serialization format depends on the request's content-type. For now, it can 
-be one of YAML, XML, JSON.
-
-=head2 content_type
-
-Returns the content-type that was used during the last C<serialize> /
-C<deserialize> call. B<WARNING> : you must call C<serialize> / C<deserialize>
-before calling C<content_type>. Otherwise the return value will be C<undef>.
