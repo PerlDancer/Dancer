@@ -1,6 +1,13 @@
 package Dancer::Template;
 # ABSTRACT: template wrapper
 
+=head1 DESCRIPTION
+
+This module is the wrapper that provides support for different 
+template engines.
+
+=cut
+
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
@@ -8,10 +15,28 @@ use Dancer::Engine;
 
 # singleton for the current template engine
 my $_engine;
+
+=method engine 
+
+Accessor to the singleton containing the active engine.
+
+    my $e = Dancer::Template->engine;
+
+=cut
+
 sub engine { $_engine }
 
-# init the engine according to the settings the template engine module will
-# take from the setting name.
+
+=method init
+
+Init the engine according to the settings the template engine module will
+take from the setting name. The initialized engine will be accessible via the
+C<engine> accessor.
+
+    Dancer::Template->init('template_toolkit', $options);
+
+=cut
+
 sub init {
     my ($class, $name, $config) = @_;
     $name ||= 'simple';
@@ -20,17 +45,6 @@ sub init {
 
 1;
 __END__
-
-=pod
-
-=head1 NAME
-
-Dancer::Template - template wrapper for Dancer
-
-=head1 DESCRIPTION
-
-This module is the wrapper that provides support for different 
-template engines.
 
 =head1 USAGE
 
@@ -54,22 +68,5 @@ Or in the application code:
 
     # setting TT as the template engine
     set template => 'template_toolkit';
-
-=head1 AUTHORS
-
-This module has been written by Alexis Sukrieh. See the AUTHORS file that comes
-with this distribution for details.
-
-=head1 LICENSE
-
-This module is free software and is released under the same terms as Perl
-itself.
-
-=head1 SEE ALSO
-
-See L<Dancer> for details about the complete framework.
-
-You can also search the CPAN for existing engines in the Dancer::Template
-namespace.
 
 =cut
