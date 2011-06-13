@@ -1,6 +1,32 @@
 package Dancer::Route::Cache;
 # ABSTRACT: Cache mechanism for route matching
 
+=head1 SYNOPSIS
+
+    my $cache = Dancer::Route::Cache->new(
+        path_limit => 300, # optional
+    );
+
+    # storing a path
+    # /new/item/ is the path, $route is a compiled route
+    $cache->store_path( 'get', '/new/item/', $route );
+    my $cached_route = $cache->route_from_path('/new/item/');
+
+=head1 DESCRIPTION
+
+When L<Dancer> first starts, it has to compile a regexp list of all
+the routes.  Then, on each request it goes over the compiled routes
+list and tries to compare the requested path to a route.
+
+A major drawback is that L<Dancer> has to go over the matching on
+every request, which (especially on CGI-based applications) can be
+very time consuming.
+
+The caching mechanism allows to cache some requests to specific routes
+(but B<NOT> specific results) and run those routes on a specific
+path. This allows us to speed up L<Dancer> quite a lot.
+
+=cut
 use strict;
 use warnings;
 use Carp;
@@ -9,6 +35,38 @@ use base 'Dancer::Object';
 
 use Dancer::Config 'setting';
 use Dancer::Error;
+
+=method new(@args)
+
+Creates a new route cache object.
+
+    my $cache = Dancer::Route::Cache->new(
+        path_limit => 100,   # only 100 paths will be cached
+        size_limit => '30M', # max size for cache is 30MB
+    );
+
+Please check the C<ATTRIBUTES> section below to learn about the
+arguments for C<new()>.
+
+=method path_limit($limit)
+
+A path limit. That is, the amount of paths that whose routes will be cached.
+
+Returns the limit (post-set).
+
+    $cache->path_limit('100');      # sets limit
+    my $limit = $cache->path_limit; # gets limit
+
+=method size_limit($limit)
+
+Allows to set a size limit of the cache.
+
+Returns the limit (post-set).
+
+    $cache->size_limit('10K');      # sets limit
+    my $limit = $cache->size_limit; # gets limit
+
+=cut
 
 Dancer::Route::Cache->attributes('size_limit', 'path_limit');
 
@@ -53,6 +111,19 @@ sub build_size_limit {
     return $self->{'size_limit'};
 }
 
+=method parse_size($size)
+
+Parses the size wanted to bytes. It can handle Kilobytes, Megabytes or
+Gigabytes.
+
+B<NOTICE:> handles bytes, not bits!
+
+    my $bytes = $cache->parse_size('30M');
+
+    # doesn't need an existing object
+    $bytes = Dancer::Route::Cache->parse_size('300G'); # works this way too
+
+=cut
 sub parse_size {
     my ($self, $size) = @_;
 
@@ -68,6 +139,12 @@ sub parse_size {
     }
 }
 
+
+=method route_from_path($path)
+
+Fetches the route from the path in the cache.
+
+=cut
 sub route_from_path {
     my ($self, $method, $path) = @_;
 
@@ -77,6 +154,16 @@ sub route_from_path {
     return $self->{'cache'}{$method}{$path} || undef;
 }
 
+
+=method store_path( $method, $path => $route )
+
+Stores the route in the cache according to the path and $method.
+
+For developers: the reason we're using an object for this and not
+directly using the registry hash is because we need to enforce the
+limits.
+
+=cut
 sub store_path {
     my ($self, $method, $path, $route) = @_;
 
@@ -102,6 +189,14 @@ sub store_path {
     }
 }
 
+
+
+=method route_cache_size
+
+Returns a rough calculation the size of the cache. This is used to
+enforce the size limit.
+
+=cut
 sub route_cache_size {
     my $self  = shift;
     my %cache = %{$self->{'cache'}};
@@ -123,6 +218,12 @@ sub route_cache_size {
     return $size;
 }
 
+=method route_cache_paths
+
+Returns all the paths in the cache. This is used to enforce the path
+limit.
+
+=cut
 sub route_cache_paths {
     my $self = shift;
     my %cache = $self->{'cache'} ? %{$self->{'cache'}} : ();
@@ -132,113 +233,6 @@ sub route_cache_paths {
 
 1;
 
-__END__
 
-=head1 NAME
 
-Dancer::Route::Cache - route caching mechanism for L<Dancer>
-
-=head1 SYNOPSIS
-
-    my $cache = Dancer::Route::Cache->new(
-        path_limit => 300, # optional
-    );
-
-    # storing a path
-    # /new/item/ is the path, $route is a compiled route
-    $cache->store_path( 'get', '/new/item/', $route );
-    my $cached_route = $cache->route_from_path('/new/item/');
-
-=head1 DESCRIPTION
-
-When L<Dancer> first starts, it has to compile a regexp list of all the routes.
-Then, on each request it goes over the compiled routes list and tries to compare
-the requested path to a route.
-
-A major drawback is that L<Dancer> has to go over the matching on every request,
-which (especially on CGI-based applications) can be very time consuming.
-
-The caching mechanism allows to cache some requests to specific routes (but
-B<NOT> specific results) and run those routes on a specific path. This allows us
-to speed up L<Dancer> quite a lot.
-
-=head1 METHODS/SUBROUTINES
-
-=head2 new(@args)
-
-Creates a new route cache object.
-
-    my $cache = Dancer::Route::Cache->new(
-        path_limit => 100,   # only 100 paths will be cached
-        size_limit => '30M', # max size for cache is 30MB
-    );
-
-Please check the C<ATTRIBUTES> section below to learn about the arguments for
-C<new()>.
-
-=head2 route_from_path($path)
-
-Fetches the route from the path in the cache.
-
-=head2 store_path( $method, $path => $route )
-
-Stores the route in the cache according to the path and $method.
-
-For developers: the reason we're using an object for this and not directly using
-the registry hash is because we need to enforce the limits.
-
-=head2 parse_size($size)
-
-Parses the size wanted to bytes. It can handle Kilobytes, Megabytes or
-Gigabytes.
-
-B<NOTICE:> handles bytes, not bits!
-
-    my $bytes = $cache->parse_size('30M');
-
-    # doesn't need an existing object
-    $bytes = Dancer::Route::Cache->parse_size('300G'); # works this way too
-
-=head2 route_cache_size
-
-Returns a rough calculation the size of the cache. This is used to enforce the
-size limit.
-
-=head2 route_cache_paths
-
-Returns all the paths in the cache. This is used to enforce the path limit.
-
-=head1 ATTRIBUTES
-
-=head2 size_limit($limit)
-
-Allows to set a size limit of the cache.
-
-Returns the limit (post-set).
-
-    $cache->size_limit('10K');      # sets limit
-    my $limit = $cache->size_limit; # gets limit
-
-=head2 path_limit($limit)
-
-A path limit. That is, the amount of paths that whose routes will be cached.
-
-Returns the limit (post-set).
-
-    $cache->path_limit('100');      # sets limit
-    my $limit = $cache->path_limit; # gets limit
-
-=head1 AUTHOR
-
-Sawyer X
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2010 Sawyer X.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 
