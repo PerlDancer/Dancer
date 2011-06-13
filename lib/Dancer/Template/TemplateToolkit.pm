@@ -33,6 +33,74 @@ subclass with the C<subclass> option.
         template_toolkit:
             subclass: My::Template
 
+=cut
+
+use strict;
+use warnings;
+use Carp;
+use Dancer::Config 'setting';
+use Dancer::ModuleLoader;
+use Dancer::FileUtils 'path';
+
+use base 'Dancer::Template::Abstract';
+
+my $_engine;
+
+sub init {
+    my ($self) = @_;
+
+    my $class = $self->config->{subclass} || "Template";
+    croak "$class is needed by Dancer::Template::TemplateToolkit"
+      if !$class->can("process") and !Dancer::ModuleLoader->load($class);
+
+    my $charset = setting('charset') || '';
+    my @encoding = length($charset) ? ( ENCODING => $charset ) : ();
+
+    my $tt_config = {
+        ANYCASE  => 1,
+        ABSOLUTE => 1, # revise me
+        @encoding,
+        %{$self->config},
+    };
+
+    my $start_tag = $self->config->{start_tag} || '<%';
+    my $stop_tag =
+         $self->config->{stop_tag}
+      || $self->config->{end_tag}
+      || '%>';
+
+    # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
+    # so I only change them if their value is different
+    $tt_config->{START_TAG} = $start_tag if $start_tag ne '[%';
+    $tt_config->{END_TAG}   = $stop_tag  if $stop_tag  ne '%]';
+
+    $tt_config->{INCLUDE_PATH} = setting('views');
+
+    $_engine = $class->new(%$tt_config);
+}
+
+
+=method render
+
+Check the L<Dancer::Template::Abstract> documentation for this method.
+
+=cut
+sub render {
+    my ($self, $template, $tokens) = @_;
+
+    if ( ! ref $template ) {
+        -f $template or croak "'$template' doesn't exist or not a regular file";
+    }
+
+    my $content = "";
+    my $charset = setting('charset') || '';
+    my @options = length($charset) ? ( binmode => ":encoding($charset)" ) : ();
+    $_engine->process($template, $tokens, \$content, @options) or croak $_engine->error;
+    return $content;
+}
+
+1;
+
 
 =head1 WRAPPER, META variables, SETs
 
@@ -73,64 +141,3 @@ Done! Everything will work fine out of the box, including variables and META
 variables.
 
 =cut
-
-use strict;
-use warnings;
-use Carp;
-use Dancer::Config 'setting';
-use Dancer::ModuleLoader;
-use Dancer::FileUtils 'path';
-
-use base 'Dancer::Template::Abstract';
-
-my $_engine;
-
-sub init {
-    my ($self) = @_;
-
-    my $class = $self->config->{subclass} || "Template";
-    croak "$class is needed by Dancer::Template::TemplateToolkit"
-      if !$class->can("process") and !Dancer::ModuleLoader->load($class);
-
-    my $charset = setting('charset') || '';
-    my @encoding = length($charset) ? ( ENCODING => $charset ) : ();
-
-    my $tt_config = {
-        ANYCASE  => 1,
-        ABSOLUTE => 1,
-        @encoding,
-        %{$self->config},
-    };
-
-    my $start_tag = $self->config->{start_tag} || '<%';
-    my $stop_tag =
-         $self->config->{stop_tag}
-      || $self->config->{end_tag}
-      || '%>';
-
-    # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
-    # so I only change them if their value is different
-    $tt_config->{START_TAG} = $start_tag if $start_tag ne '[%';
-    $tt_config->{END_TAG}   = $stop_tag  if $stop_tag  ne '%]';
-
-    $tt_config->{INCLUDE_PATH} = setting('views');
-
-    $_engine = $class->new(%$tt_config);
-}
-
-sub render {
-    my ($self, $template, $tokens) = @_;
-
-    if ( ! ref $template ) {
-        -f $template or croak "'$template' doesn't exist or not a regular file";
-    }
-
-    my $content = "";
-    my $charset = setting('charset') || '';
-    my @options = length($charset) ? ( binmode => ":encoding($charset)" ) : ();
-    $_engine->process($template, $tokens, \$content, @options) or croak $_engine->error;
-    return $content;
-}
-
-1;
-
