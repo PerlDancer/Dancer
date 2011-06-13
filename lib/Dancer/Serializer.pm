@@ -6,31 +6,7 @@ package Dancer::Serializer;
 This module is the wrapper that provides support for different
 serializers.
 
-=head1 USAGE
-
-=head2 Default engine
-
-The default serializer used by Dancer::Serializer is
-L<Dancer::Serializer::JSON>.
-You can choose another serializer by setting the B<serializer> configuration
-variable.
-
-=head2 Configuration
-
-The B<serializer> configuration variable tells Dancer which serializer to use
-to deserialize request and serialize response.
-
-You change it either in your config.yml file:
-
-    serializer: "YAML"
-
-Or in the application code:
-
-    # setting JSON as the default serializer
-    set serializer => 'JSON';
-
 =cut
-
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
@@ -43,9 +19,15 @@ Dancer::Factory::Hook->instance->install_hooks(qw/before_deserializer after_dese
 
 my $_engine;
 
+=method engine
+
+Returns the current serializer engine.
+
+=cut
 sub engine {
     $_engine
       and return $_engine;
+
     # don't create a new serializer unless it's defined in the config
     # (else it's created using json, and that's *not* what we want)
     my $serializer_name = Dancer::App->current->setting('serializer');
@@ -61,9 +43,12 @@ sub init {
     return $_engine;
 }
 
-# takes a response object and checks whether or not it should be
-# serialized.
-# returns an error object if the serializer fails
+=method process_response
+
+Takes a response object and checks whether or not it should be
+serialized. Returns an error object if the serializer fails.
+
+=cut
 sub process_response {
     my ($class, $response) = @_;
 
@@ -95,8 +80,12 @@ sub process_response {
     return $response;
 }
 
-# deserialize input params in the request body, if matching the Serializer's
-# content-type.
+=method process_request
+
+Deserialize input params in the request body, if matching the
+Serializer's content-type.
+
+=cut
 sub process_request {
     my ($class, $request) = @_;
 
@@ -129,5 +118,31 @@ sub process_request {
     return $request;
 }
 
-
 1;
+
+__END__
+
+=head1 USAGE
+
+=head2 Default engine
+
+The default serializer used by Dancer::Serializer is
+L<Dancer::Serializer::JSON>.
+You can choose another serializer by setting the B<serializer> configuration
+variable.
+
+=head2 Configuration
+
+The B<serializer> configuration variable tells Dancer which serializer to use
+to deserialize request and serialize response.
+
+You change it either in your config.yml file:
+
+    serializer: "YAML"
+
+Or in the application code:
+
+    # setting JSON as the default serializer
+    set serializer => 'JSON';
+
+=cut
