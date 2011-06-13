@@ -14,6 +14,15 @@ use HTTP::Body;
 use URI;
 use URI::Escape;
 
+sub new {
+    # To provide good error messages for those burnt by upgrading.
+    my $self, @args = @_;
+    if (@args == 1) {
+        croak 'Attempt to instantiate a request object with a single argument - the syntax has changed to Dancer::Request->new(env => $env)';
+    }
+    $self->SUPER->new(@args);
+}
+
 my @http_env_keys = (
     'user_agent',      'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive', 'connection',      'accept',
