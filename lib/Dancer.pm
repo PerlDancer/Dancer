@@ -38,134 +38,6 @@ Dancer apps can be used with a an embedded web server (great for easy testing),
 and can run under PSGI/Plack for easy deployment in a variety of webserver
 environments.
 
-=head1 MORE DOCUMENTATION
-
-This documentation describes all the exported symbols of Dancer. If you want
-a quick start guide to discover the framework, you should look at
-L<Dancer::Introduction>, or L<Dancer::Tutorial> to learn by example.
-
-If you want to have specific examples of code for real-life problems, see the
-L<Dancer::Cookbook>.
-
-If you want to see configuration examples of different deployment solutions
-involving Dancer and Plack, see L<Dancer::Deployment>.
-
-You can find out more about the many useful plugins available for Dancer in
-L<Dancer::Plugins>.
-
-=head1 EXPORTS
-
-By default, C<use Dancer> exports all the functions below plus sets up
-your app.  You can control the exporting through the normal
-L<Exporter> mechanism.  For example:
-
-    # Just export the route controllers
-    use Dancer qw(before after get post);
-
-    # Export everything but pass to avoid clashing with Test::More
-    use Test::More;
-    use Dancer qw(!pass);
-
-There are also some special tags to control exports and behaviour.
-
-=head2 :moose
-
-This will export everything except functions which clash with
-Moose. Currently these are C<after> and C<before>.
-
-=head2 :syntax
-
-This tells Dancer to just export symbols and not set up your app.
-This is most useful for writing Dancer code outside of your main route
-handler.
-
-=head2 :tests
-
-This will export everything except functions which clash with
-commonly used testing modules. Currently these are C<pass>.
-
-It can be combined with other export pragmas. For example, while testing...
-
-    use Test::More;
-    use Dancer qw(:syntax :tests);
-
-    # Test::Most also exports "set" and "any"
-    use Test::Most;
-    use Dancer qw(:syntax :tests !set !any);
-
-    # Alternatively, if you want to use Dancer's set and any...
-    use Test::Most qw(!set !any);
-    use Dancer qw(:syntax :tests);
-
-=head2 :script
-
-This will export all the keywords, and will also load the configuration.
-
-This is useful when you want to use your Dancer application from a script.
-
-    use MyApp;
-    use Dancer ':script';
-    MyApp::schema('DBSchema')->deploy();
-
-
-=head1 DEPENDENCIES
-
-The following modules are mandatory (Dancer cannot run without them):
-
-=over 8
-
-=item L<HTTP::Server::Simple::PSGI>
-
-=item L<HTTP::Body>
-
-=item L<LWP>
-
-=item L<MIME::Types>
-
-=item L<URI>
-
-=back
-
-The following modules are optional:
-
-=over 8
-
-=item L<JSON> : needed to use JSON serializer
-
-=item L<Plack> : in order to use PSGI
-
-=item L<Template> : in order to use TT for rendering views
-
-=item L<XML::Simple> and L<XML:SAX> or L<XML:Parser> for XML serialization
-
-=item L<YAML> : needed for configuration file support
-
-=back
-
-=head1 SOURCE CODE
-
-The source code for this module is hosted on GitHub
-L<http://github.com/sukria/Dancer>.  Feel free to fork the repository and submit
-pull requests!  (See L<Dancer::Development> for details on how to contribute).
-
-Also, why not L<watch the repo|https://github.com/sukria/Dancer/toggle_watch> to
-keep up to date with the latest upcoming changes?
-
-=head1 GETTING HELP / CONTRIBUTING
-
-The Dancer development team can be found on #dancer on irc.perl.org:
-L<irc://irc.perl.org/dancer>
-
-If you don't have an IRC client installed/configured, there is a simple web chat
-client at L<http://www.perldancer.org/irc> for you.
-
-There is also a Dancer users mailing list available - subscribe at:
-
-L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
-
-If you'd like to contribute to the Dancer project, please see
-L<http://www.perldancer.org/contribute> for all the ways you can help!
-
 =cut
 
 use strict;
@@ -264,6 +136,12 @@ our @EXPORT    = qw(
   warning
 );
 
+=method import
+
+Responsible for exporting Dancer methods. Check the B<EXPORTS> section
+for further information about how to specify what methods to import.
+
+=cut
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
@@ -1641,3 +1519,136 @@ sub _start {
 }
 
 1;
+
+__END__
+
+
+=head1 MORE DOCUMENTATION
+
+This documentation describes all the exported symbols of Dancer. If you want
+a quick start guide to discover the framework, you should look at
+L<Dancer::Introduction>, or L<Dancer::Tutorial> to learn by example.
+
+If you want to have specific examples of code for real-life problems, see the
+L<Dancer::Cookbook>.
+
+If you want to see configuration examples of different deployment solutions
+involving Dancer and Plack, see L<Dancer::Deployment>.
+
+You can find out more about the many useful plugins available for Dancer in
+L<Dancer::Plugins>.
+
+=head1 EXPORTS
+
+By default, C<use Dancer> exports all the functions below plus sets up
+your app.  You can control the exporting through the normal
+L<Exporter> mechanism.  For example:
+
+    # Just export the route controllers
+    use Dancer qw(before after get post);
+
+    # Export everything but pass to avoid clashing with Test::More
+    use Test::More;
+    use Dancer qw(!pass);
+
+There are also some special tags to control exports and behaviour.
+
+=head2 :moose
+
+This will export everything except functions which clash with
+Moose. Currently these are C<after> and C<before>.
+
+=head2 :syntax
+
+This tells Dancer to just export symbols and not set up your app.
+This is most useful for writing Dancer code outside of your main route
+handler.
+
+=head2 :tests
+
+This will export everything except functions which clash with
+commonly used testing modules. Currently these are C<pass>.
+
+It can be combined with other export pragmas. For example, while testing...
+
+    use Test::More;
+    use Dancer qw(:syntax :tests);
+
+    # Test::Most also exports "set" and "any"
+    use Test::Most;
+    use Dancer qw(:syntax :tests !set !any);
+
+    # Alternatively, if you want to use Dancer's set and any...
+    use Test::Most qw(!set !any);
+    use Dancer qw(:syntax :tests);
+
+=head2 :script
+
+This will export all the keywords, and will also load the configuration.
+
+This is useful when you want to use your Dancer application from a script.
+
+    use MyApp;
+    use Dancer ':script';
+    MyApp::schema('DBSchema')->deploy();
+
+
+=head1 DEPENDENCIES
+
+The following modules are mandatory (Dancer cannot run without them):
+
+=over 8
+
+=item L<HTTP::Server::Simple::PSGI>
+
+=item L<HTTP::Body>
+
+=item L<LWP>
+
+=item L<MIME::Types>
+
+=item L<URI>
+
+=back
+
+The following modules are optional:
+
+=over 8
+
+=item L<JSON> : needed to use JSON serializer
+
+=item L<Plack> : in order to use PSGI
+
+=item L<Template> : in order to use TT for rendering views
+
+=item L<XML::Simple> and L<XML:SAX> or L<XML:Parser> for XML serialization
+
+=item L<YAML> : needed for configuration file support
+
+=back
+
+=head1 SOURCE CODE
+
+The source code for this module is hosted on GitHub
+L<http://github.com/sukria/Dancer>.  Feel free to fork the repository and submit
+pull requests!  (See L<Dancer::Development> for details on how to contribute).
+
+Also, why not L<watch the repo|https://github.com/sukria/Dancer/toggle_watch> to
+keep up to date with the latest upcoming changes?
+
+=head1 GETTING HELP / CONTRIBUTING
+
+The Dancer development team can be found on #dancer on irc.perl.org:
+L<irc://irc.perl.org/dancer>
+
+If you don't have an IRC client installed/configured, there is a simple web chat
+client at L<http://www.perldancer.org/irc> for you.
+
+There is also a Dancer users mailing list available - subscribe at:
+
+L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
+
+If you'd like to contribute to the Dancer project, please see
+L<http://www.perldancer.org/contribute> for all the ways you can help!
+
+=cut
