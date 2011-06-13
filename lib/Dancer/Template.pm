@@ -16,7 +16,7 @@ use Dancer::Engine;
 # singleton for the current template engine
 my $_engine;
 
-=method engine 
+=method engine
 
 Accessor to the singleton containing the active engine.
 
@@ -25,7 +25,6 @@ Accessor to the singleton containing the active engine.
 =cut
 
 sub engine { $_engine }
-
 
 =method init
 
