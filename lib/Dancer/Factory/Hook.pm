@@ -59,7 +59,9 @@ sub execute_hooks {
         croak("The hook '$hook_name' doesn't exists");
     }
 
-   $_->(@args) foreach @{$self->get_hooks_for($hook_name)};
+   foreach my $h (@{$self->get_hooks_for($hook_name)}) {
+       $h->(@args);
+   }
 }
 
 sub get_hooks_for {

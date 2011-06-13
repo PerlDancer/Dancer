@@ -323,7 +323,7 @@ Content-Type: text/plain
         $l = length $content if defined $content;
         open my $in, '<', \$content;
         $ENV{'CONTENT_LENGTH'} = $l;
-        $ENV{'CONTENT_TYPE'}   = $content_type;
+        $ENV{'CONTENT_TYPE'}   = $content_type || "";
         $ENV{'psgi.input'}     = $in;
     }
 
@@ -351,23 +351,8 @@ Content-Type: text/plain
     # XXX this is a hack!!
     $request = Dancer::Serializer->process_request($request)
       if Dancer::App->current->setting('serializer');
-    
-    # duplicate some code from Dancer::Handler
-    my $get_action = eval {
-             Dancer::Renderer->render_file
-          || Dancer::Renderer->render_action
-          || Dancer::Renderer->render_error(404);
-    };
-    if ($@) {
-        Dancer::Logger::error(
-            'request to ' . $request->path_info . " crashed: $@");
-        Dancer::Error->new(
-            code    => 500,
-            title   => "Runtime Error",
-            message => $@
-        )->render();
-    }
 
+    my $get_action = Dancer::Handler::render_request($request);
     my $response = Dancer::SharedData->response();
 
     $response->content('') if $method eq 'HEAD';

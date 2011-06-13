@@ -8,7 +8,7 @@ use HTTP::Request;
 plan tests => 13;
 
 # issue 57829
-{
+SKIP: {
     skip 'JSON is needed to run this test', 2
       unless Dancer::ModuleLoader->load('JSON');
 
@@ -21,7 +21,7 @@ plan tests => 13;
 }
 
 # issue gh-106
-{
+SKIP: {
     skip 'JSON is needed to run this test', 1
       unless Dancer::ModuleLoader->load('JSON');
 
@@ -38,7 +38,7 @@ plan tests => 13;
 }
 
 # issue gh-299
-{
+SKIP: {
     skip 'JSON is needed to run this test', 5
       unless Dancer::ModuleLoader->load('JSON');
 
@@ -59,7 +59,7 @@ plan tests => 13;
 #
 # Serializer issue: params hash not populated when the Content-Type is a
 # supported media type with additional parameters
-{
+SKIP: {
     skip 'JSON is needed to run this test', 3
       unless Dancer::ModuleLoader->load('JSON');
 
@@ -88,12 +88,12 @@ plan tests => 13;
 }
 
 # show errors
-{
+SKIP: {
     skip 'JSON is needed to run this test', 2
         unless Dancer::ModuleLoader->load('JSON');
 
     set environment => 'production';
-    
+
     get '/with_errors' => sub {
         setting show_errors => 1;
         # bam!
