@@ -18,6 +18,14 @@ use Dancer::FileUtils 'path';
 
 use base 'Dancer::Engine';
 
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/before_template_render after_template_render before_layout_render after_layout_render/
+);
+
+
+
+# I think this comment is relevant, as it gives the subclassing user
+# information that the method exists and can be overloaded.
 
 =method init()
 
@@ -29,9 +37,7 @@ The base class provides a plain init() method that only returns true.
 =cut
 
 
-Dancer::Factory::Hook->instance->install_hooks(
-    qw/before_template_render after_template_render before_layout_render after_layout_render/
-);
+
 
 =method render($self, $template, $tokens)
 
@@ -117,6 +123,12 @@ sub layout {
     $full_content;
 }
 
+=method apply_renderer($view, $tokens)
+
+Applies the template renderer, given a view (name of the template to
+use) and the tokens to be interpolated.
+
+=cut
 sub apply_renderer {
     my ($self, $view, $tokens) = @_;
 
@@ -136,15 +148,22 @@ sub apply_renderer {
     return;
 }
 
+=method apply_layout($content, $tokens, $options)
+
+Apply a template layout using the supplied contents and interpolating
+the supplied tokens.
+
+In the options the key C<layout> can be set to a true value stating a
+layout should be used or to a false value, stating a layout should not
+be used. If it doesn't exist in the C<options> hash ref the current
+C<layout> setting will be used.
+
+=cut
 sub apply_layout {
     my ($self, $content, $tokens, $options) = @_;
 
     ($tokens, $options) = _prepare_tokens_options($tokens, $options);
 
-    # If 'layout' was given in the options hashref, use it if it's a true value,
-    # or don't use a layout if it was false (0, or undef); if layout wasn't
-    # given in the options hashref, go with whatever the current layout setting
-    # is.
     my $layout =
       exists $options->{layout}
       ? ($options->{layout} ? $options->{layout} : undef)
@@ -167,37 +186,12 @@ sub apply_layout {
     return;
 }
 
-sub _prepare_tokens_options {
-    my ($tokens, $options) = @_;
+=method template($view, $tokens, $options)
 
-    $options ||= {};
+Applies the template engine renderer and layout (calls
+C<apply_renderer> and C<apply_layout>) with the supplied parameters.
 
-    # these are the default tokens provided for template processing
-    $tokens ||= {};
-    $tokens->{perl_version}   = $];
-    $tokens->{dancer_version} = $Dancer::VERSION;
-    $tokens->{settings}       = Dancer::Config->settings;
-    $tokens->{request}        = Dancer::SharedData->request;
-    $tokens->{params}         = Dancer::SharedData->request->params;
-    $tokens->{vars}           = Dancer::SharedData->vars;
-
-    Dancer::App->current->setting('session')
-      and $tokens->{session} = Dancer::Session->get;
-
-    return ($tokens, $options);
-}
-
-sub _render_with_layout {
-    my ($class, $content, $tokens, $options) = @_;
-
-    Dancer::Deprecation::deprecated(
-        feature => 'render_with_layout',
-        version => '1.3000',
-        fatal   => 1,
-        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
-    );
-}
-
+=cut
 sub template {
     my ($class, $view, $tokens, $options) = @_;
     my ($content, $full_content);
@@ -222,7 +216,28 @@ sub template {
     )->render();
 }
 
-# private
+
+# privates
+
+sub _prepare_tokens_options {
+    my ($tokens, $options) = @_;
+
+    $options ||= {};
+
+    # these are the default tokens provided for template processing
+    $tokens ||= {};
+    $tokens->{perl_version}   = $];
+    $tokens->{dancer_version} = $Dancer::VERSION;
+    $tokens->{settings}       = Dancer::Config->settings;
+    $tokens->{request}        = Dancer::SharedData->request;
+    $tokens->{params}         = Dancer::SharedData->request->params;
+    $tokens->{vars}           = Dancer::SharedData->vars;
+
+    Dancer::App->current->setting('session')
+      and $tokens->{session} = Dancer::Session->get;
+
+    return ($tokens, $options);
+}
 
 sub _template_name {
     my ( $self, $view ) = @_;
