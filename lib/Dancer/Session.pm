@@ -7,6 +7,98 @@ This module provides support for server-side sessions for the L<Dancer> web
 framework. The session is accessible to the user via an abstraction layer
 implemented by the L<Dancer::Session> class.
 
+=cut
+
+use strict;
+use warnings;
+
+use Dancer::Cookies;
+use Dancer::Engine;
+
+# Singleton representing the session engine class to use
+my $_ENGINE = undef;
+
+=method engine
+
+Acessor to the current session engine.
+
+=cut
+sub engine { $_ENGINE }
+
+=method init
+
+Called internally when creating a new session engine (using C<new>).
+
+=cut
+sub init {
+    my ($class, $name, $config) = @_;
+    $_ENGINE = Dancer::Engine->build(session => $name, $config);
+
+    #$_ENGINE->init(); already done
+}
+
+=method get
+
+Returns the current session (a Dancer::Session object).
+
+=cut
+sub get { _get_current_session() }
+
+=method read
+
+Reads a session value given a key.
+
+  my $value = Dancer::Session->read("foo");
+
+=cut
+sub read {
+    my ($class, $key) = @_;
+    return unless $key;
+    my $session = _get_current_session();
+    return $session->{$key};
+}
+
+=method write
+
+Sets a session key/value pair.
+
+  Dancer::Session->write( foo => 'bar' );
+
+=cut
+sub write {
+    my ($class, $key, $value) = @_;
+    return unless $key;
+    my $session = _get_current_session();
+    $session->{$key} = $value;
+
+    # TODO : should be moved as an "after" filter
+    $session->flush;
+    return $value;
+}
+
+
+# privates
+
+# retrieve or create a session for the client
+sub _get_current_session {
+    my $sid     = engine->read_session_id;
+    my $session = undef;
+    my $class   = ref(engine);
+
+    $session = $class->retrieve($sid) if $sid;
+
+    if (not defined $session) {
+        $session = $class->create();
+        engine->write_session_id($session->id);
+    }
+    return $session;
+}
+
+
+1;
+__END__
+
+
 =head1 USAGE
 
 =head2 Configuration
@@ -134,63 +226,5 @@ Dancer::Session may depend on third-party modules, depending on the session
 engine used. See the session engine module for details.
 
 =cut
-
-
-
-use strict;
-use warnings;
-
-use Dancer::Cookies;
-use Dancer::Engine;
-
-# Singleton representing the session engine class to use
-my $ENGINE = undef;
-sub engine {$ENGINE}
-
-# This wrapper look for the session engine and try to load it.
-sub init {
-    my ($class, $name, $config) = @_;
-    $ENGINE = Dancer::Engine->build(session => $name, $config);
-
-    #$ENGINE->init(); already done
-}
-
-# retrieve or create a session for the client
-sub get_current_session {
-    my $sid     = engine->read_session_id;
-    my $session = undef;
-    my $class   = ref(engine);
-
-    $session = $class->retrieve($sid) if $sid;
-
-    if (not defined $session) {
-        $session = $class->create();
-        engine->write_session_id($session->id);
-    }
-    return $session;
-}
-
-sub get { get_current_session() }
-
-sub read {
-    my ($class, $key) = @_;
-    return unless $key;
-    my $session = get_current_session();
-    return $session->{$key};
-}
-
-sub write {
-    my ($class, $key, $value) = @_;
-    return unless $key;
-    my $session = get_current_session();
-    $session->{$key} = $value;
-
-    # TODO : should be moved as an "after" filter
-    $session->flush;
-    return $value;
-}
-
-1;
-__END__
 
 
