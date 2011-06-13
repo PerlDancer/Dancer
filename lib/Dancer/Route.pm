@@ -44,10 +44,10 @@ my %_options_aliases = (agent => 'user_agent');
 
 =method init
 
-Whenever a route object is created, this method is called to prepare the object.
+Whenever a route object is created, this method is called to prepare
+the object.
 
 =cut
-
 sub init {
     my ($self) = @_;
     $self->{'_compiled_regexp'} = undef;
@@ -75,13 +75,12 @@ sub init {
 When Dancer parses the route declared by the application, it builds a
 chained-list of routes, in their order of declaration.
 
-This method allows to register the previous route
-of the current one, in the matching tree of the application.
+This method allows to register the previous route of the current one,
+in the matching tree of the application.
 
     $route->set_previous($other_route);
 
 =cut
-
 sub set_previous {
     my ($self, $prev) = @_;
     $self->prev($prev);
@@ -105,7 +104,6 @@ Note that this method uses the logger engine (core level) to give some feedback
 about what it sees and how it matches or not.
 
 =cut
-
 sub match {
     my ($self, $request) = @_;
 
@@ -130,9 +128,9 @@ sub match {
     }
 
     Dancer::Logger::core("  --> got ".
-        map { defined $_ ? $_ : 'undef' } @values) 
+        map { defined $_ ? $_ : 'undef' } @values)
         if @values;
-    
+
     # if some named captures found, return captures
     # no warnings is for perl < 5.10
     if (my %captures =
@@ -148,8 +146,8 @@ sub match {
     return unless @values;
 
     # save the route pattern that matched
-    # TODO : as soon as we have proper Dancer::Internal, we should remove 
-    # that, it's just a quick hack for plugins to access the matching 
+    # TODO : as soon as we have proper Dancer::Internal, we should remove
+    # that, it's just a quick hack for plugins to access the matching
     # pattern.
     # NOTE: YOU SHOULD NOT USE THAT, OR IF YOU DO, YOU MUST KNOW
     # IT WILL MOVE VERY SOON
@@ -178,18 +176,16 @@ sub match {
 Boolean that tells if the route object has registered options or not.
 
 =cut
-
 sub has_options {
     my ($self) = @_;
     return keys(%{$self->options}) ? 1 : 0;
 }
 
-=method validate_options 
+=method validate_options
 
 Boolean that tells if all the options given are supported or not.
 
 =cut
-
 sub validate_options {
     my ($self, $request) = @_;
 
@@ -212,7 +208,6 @@ current route passes, or if it uses C<forward>.
 It returns a L<Dancer::Response> object.
 
 =cut
-
 sub run {
     my ($self, $request) = @_;
 
@@ -272,19 +267,20 @@ sub run {
     );
 }
 
-=method equals 
+=method equals
 
 Boolean that tells if the current route is the same as the one given as
 argument. The equality is performed on the internal Regexp of the route.
 
 =cut
-
 sub equals {
     my ($self, $route) = @_;
     return $self->regexp eq $route->regexp;
 }
 
-# private
+
+
+# privates
 
 sub _is_regexp {
     my ($self) = @_;
