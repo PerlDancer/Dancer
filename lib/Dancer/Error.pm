@@ -16,10 +16,12 @@ use Dancer::FileUtils qw(open_file);
 use Dancer::Engine;
 
 Dancer::Factory::Hook->instance->install_hooks(
-    qw/before_error_render after_error_render/);
+    qw/before_error_render after_error_render before_error_init/);
 
 sub init {
     my ($self) = @_;
+
+    Dancer::Factory::Hook->instance->execute_hooks('before_error_init', $self);
 
     $self->attributes_defaults(
         title => 'Error ' . $self->code,

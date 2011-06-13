@@ -795,6 +795,17 @@ This hook receives as argument the path of the file to render.
     ...
   };
 
+
+=item before_error_init
+
+This hook receives as argument a L<Dancer::Error> object.
+
+  hook before_error_init => sub {
+    my $error = shift;
+    ...
+  };
+
+
 =item before_error_render
 
 This hook receives as argument a L<Dancer::Error> object.
