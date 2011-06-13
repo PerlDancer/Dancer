@@ -11,7 +11,7 @@ use EasyMocker;
 my $fake_session = bless { foo => 42 }, 'Dancer::Session::YAML';
 
 mock 'Dancer::Session'
-    => method 'get_current_session' => should sub { $fake_session };
+    => method 'get' => should sub { $fake_session };
 mock 'Dancer::Session::YAML'
     => method 'init' => should sub { 1 };
 mock 'Dancer::Session::YAML'

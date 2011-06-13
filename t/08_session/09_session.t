@@ -11,4 +11,4 @@ ok $session;
 
 is_deeply($session, Dancer::Session->engine);
 
-ok my $session_desc = Dancer::Session->get_current_session;
+ok my $session_desc = Dancer::Session->get;
