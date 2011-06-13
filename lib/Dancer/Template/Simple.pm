@@ -13,23 +13,6 @@ template processing.
 If you want to power an application with Dancer in production environment, it's
 strongly advised to switch to Dancer::Template::TemplateToolkit.
 
-=head1 SYNTAX
-
-A template written for Dancer::Template::Simple should be working just fine with
-Dancer::Template::TemplateToolkit. The opposite is not true though.
-
-=over 4
-
-=item B<variables>
-
-To interpolate a variable in the template, use the following syntax:
-
-    <% var1 %>
-
-If 'var1' exists in the tokens hash given, its value will be written there.
-
-=back
-
 =cut
 
 use strict;
@@ -51,17 +34,25 @@ sub init {
     $self->stop_tag($stop)   unless defined $self->stop_tag;
 }
 
+=method render
+
+Check the L<Dancer::Template::Abstract> documentation for this method.
+
+=cut
 sub render {
     my ($self, $template, $tokens) = @_;
     my $content;
 
     $content = _read_content_from_template($template);
-    $content = $self->parse_branches($content, $tokens);
+    $content = $self->_parse_branches($content, $tokens);
 
     return $content;
 }
 
-sub parse_branches {
+
+# privates
+
+sub _parse_branches {
     my ($self, $content, $tokens) = @_;
     my ($start, $stop) = ($self->start_tag, $self->stop_tag);
 
@@ -129,8 +120,6 @@ sub parse_branches {
     return join "", @buffer;
 }
 
-# private
-
 sub _read_content_from_template {
     my ($template) = @_;
     my $content = undef;
@@ -185,6 +174,25 @@ sub _interpolate_value {
 }
 
 1;
+__END__
 
+=head1 SYNTAX
+
+A template written for Dancer::Template::Simple should be working just fine with
+Dancer::Template::TemplateToolkit. The opposite is not true though.
+
+=over 4
+
+=item B<variables>
+
+To interpolate a variable in the template, use the following syntax:
+
+    <% var1 %>
+
+If 'var1' exists in the tokens hash given, its value will be written there.
+
+=back
+
+=cut
 
 
