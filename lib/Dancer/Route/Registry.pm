@@ -17,7 +17,6 @@ my $id = 1;
 Initializes the object.
 
 =cut
-
 sub init {
     my ($self) = @_;
 
@@ -31,11 +30,10 @@ sub init {
 
 =method is_empty
 
-Returns a boolean telling if the registry is empty or not (being empty means it
-has no routes registered).
+Returns a boolean telling if the registry is empty or not (being empty
+means it has no routes registered).
 
 =cut
-
 sub is_empty {
     my ($self) = @_;
     for my $method ( keys %{ $self->routes } ) {
@@ -49,7 +47,6 @@ sub is_empty {
 Return all the route objects stored in the registry.
 
 =cut
-
 sub routes {
     my ($self, $method) = @_;
 
@@ -67,7 +64,6 @@ sub routes {
 Register a route in the registry
 
 =cut
-
 sub add_route {
     my ($self, $route) = @_;
     $self->{routes}{$route->method} ||= [];
@@ -88,31 +84,18 @@ sub add_route {
     return $route;
 }
 
-# sugar for add_route
+=method any_add
 
-sub register_route {
-    my ($self, %args) = @_;
+Sugar for Dancer.pm
 
-    # look if the caller (where the route is declared) exists as a Dancer::App
-    # object
-    my ($package) = caller(2);
-    if ($package && Dancer::App->app_exists($package)) {
-        my $app = Dancer::App->get($package);
-        my $route = Dancer::Route->new(prefix => $app->prefix, %args);
-        return $app->registry->add_route($route);
-    }
-    else {
+      class, any, ARRAY(0x9864818), '/path', CODE(0x990ac88)
 
-        # FIXME maybe this code is useless, drop it later if so
-        my $route = Dancer::Route->new(%args);
-        return $self->add_route($route);
-    }
-}
+or
+      class, any, '/path', CODE(0x990ac88)
 
-# sugar for Dancer.pm
-# class, any, ARRAY(0x9864818), '/path', CODE(0x990ac88)
-# or
-# class, any, '/path', CODE(0x990ac88)
+Used to register one C<any> route.
+
+=cut
 sub any_add {
     my ($self, $pattern, @rest) = @_;
 
@@ -130,6 +113,11 @@ sub any_add {
     return scalar(@methods);
 }
 
+=method universal_add
+
+Registers a route.
+
+=cut
 sub universal_add {
     my ($self, $method, $pattern, @rest) = @_;
 
@@ -151,16 +139,41 @@ sub universal_add {
         pattern => $pattern,
     );
 
-    return $self->register_route(%route_args);
+    return $self->_register_route(%route_args);
 }
 
+# private
+
+
 # look for a route in the given array
-sub find_route {
+sub _NOT_USED_ANYWHERE_find_route {
     my ($self, $r, $reg) = @_;
     foreach my $route (@$reg) {
         return $route if $r->equals($route);
     }
     return;
 }
+
+# sugar for add_route
+
+sub _register_route {
+    my ($self, %args) = @_;
+
+    # look if the caller (where the route is declared) exists as a Dancer::App
+    # object
+    my ($package) = caller(2);
+    if ($package && Dancer::App->app_exists($package)) {
+        my $app = Dancer::App->get($package);
+        my $route = Dancer::Route->new(prefix => $app->prefix, %args);
+        return $app->registry->add_route($route);
+    }
+    else {
+
+        # FIXME maybe this code is useless, drop it later if so
+        my $route = Dancer::Route->new(%args);
+        return $self->add_route($route);
+    }
+}
+
 
 1;
