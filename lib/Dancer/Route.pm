@@ -1,5 +1,16 @@
 package Dancer::Route;
-# ABSTRACT: represent Dancer routes
+# ABSTRACT: class that represents Dancer routes
+
+=head1 DESCRIPTION
+
+This class represents a route and is used internally by Dancer. A route contains
+a path, a method and a coderef to be executed on matching request, to produce a
+response.
+
+The route object provides everything needed to store new routes, parse them and
+execute matching against incoming requests.
+
+=cut
 
 use strict;
 use warnings;
@@ -31,6 +42,12 @@ Dancer::Route->attributes(
 my @_supported_options = Dancer::Request->get_attributes();
 my %_options_aliases = (agent => 'user_agent');
 
+=method init
+
+Whenever a route object is created, this method is called to prepare the object.
+
+=cut
+
 sub init {
     my ($self) = @_;
     $self->{'_compiled_regexp'} = undef;
@@ -43,7 +60,7 @@ sub init {
     $self->regexp($self->pattern) 
       if ref($self->pattern) eq 'Regexp';
 
-    $self->check_options();
+    $self->_check_options();
     $self->app(Dancer::App->current);
     $self->prefix(Dancer::App->current->prefix) if not $self->prefix;
     $self->_init_prefix() if $self->prefix;
@@ -53,6 +70,18 @@ sub init {
     return $self;
 }
 
+=method set_previous
+
+When Dancer parses the route declared by the application, it builds a
+chained-list of routes, in their order of declaration.
+
+This method allows to register the previous route
+of the current one, in the matching tree of the application.
+
+    $route->set_previous($other_route);
+
+=cut
+
 sub set_previous {
     my ($self, $prev) = @_;
     $self->prev($prev);
@@ -60,15 +89,23 @@ sub set_previous {
     return $prev;
 }
 
-sub save_match_data {
-    my ($self, $request, $match_data) = @_;
-    $self->match_data($match_data);
-    $request->_set_route_params($match_data);
 
-    return $match_data;
-}
+=method match
 
-# Does the route match the request
+Takes a L<Dancer::Request> object and looks if the route matches the request.
+The matching is performed using the HTTP method and route pattern of the route.
+If there is a match, all the params are processed and saved so the route action
+can be executed.
+
+    if ($route->match($request)) {
+         ...
+    }
+
+Note that this method uses the logger engine (core level) to give some feedback
+about what it sees and how it matches or not.
+
+=cut
+
 sub match {
     my ($self, $request) = @_;
 
@@ -105,7 +142,7 @@ sub match {
         Dancer::Logger::core(
             "  --> captures are: " . join(", ", keys(%captures)))
           if keys %captures;
-        return $self->save_match_data($request, {captures => \%captures});
+        return $self->_save_match_data($request, {captures => \%captures});
     }
 
     return unless @values;
@@ -126,32 +163,32 @@ sub match {
         for (my $i = 0; $i < @tokens; $i++) {
             $params{$tokens[$i]} = $values[$i];
         }
-        return $self->save_match_data($request, \%params);
+        return $self->_save_match_data($request, \%params);
     }
 
     elsif ($self->{_should_capture}) {
-        return $self->save_match_data($request, {splat => \@values});
+        return $self->_save_match_data($request, {splat => \@values});
     }
 
-    return $self->save_match_data($request, {});
+    return $self->_save_match_data($request, {});
 }
+
+=method has_options
+
+Boolean that tells if the route object has registered options or not.
+
+=cut
 
 sub has_options {
     my ($self) = @_;
     return keys(%{$self->options}) ? 1 : 0;
 }
 
-sub check_options {
-    my ($self) = @_;
-    return 1 unless defined $self->options;
+=method validate_options 
 
-    for my $opt (keys %{$self->options}) {
-        croak "Not a valid option for route matching: `$opt'"
-          if not(    (grep {/^$opt$/} @{$_supported_options[0]})
-                  || (grep {/^$opt$/} keys(%_options_aliases)));
-    }
-    return 1;
-}
+Boolean that tells if all the options given are supported or not.
+
+=cut
 
 sub validate_options {
     my ($self, $request) = @_;
@@ -164,10 +201,22 @@ sub validate_options {
     return 1;
 }
 
+=method run
+
+This method runs the route's action on the given request. It takes care of doing
+anything needed to prepare the environement.
+
+It also takes care of passing the baton to the next matching route if the
+current route passes, or if it uses C<forward>.
+
+It returns a L<Dancer::Response> object.
+
+=cut
+
 sub run {
     my ($self, $request) = @_;
 
-    my $content  = $self->execute();
+    my $content  = $self->_execute();
     my $response = Dancer::SharedData->response;
 
     if ( $response && $response->is_forwarded ) {
@@ -187,7 +236,7 @@ sub run {
     if ($response && $response->has_passed) {
         $response->pass(0);
         if ($self->next) {
-            my $next_route = $self->find_next_matching_route($request);
+            my $next_route = $self->_find_next_matching_route($request);
             return $next_route->run($request);
         }
         else {
@@ -223,40 +272,30 @@ sub run {
     );
 }
 
-sub find_next_matching_route {
-    my ($self, $request) = @_;
-    my $next = $self->next;
-    return unless $next;
+=method equals 
 
-    return $next if $next->match($request);
-    return $next->find_next_matching_route($request);
+Boolean that tells if the current route is the same as the one given as
+argument. The equality is performed on the internal Regexp of the route.
+
+=cut
+
+sub equals {
+    my ($self, $route) = @_;
+    return $self->regexp eq $route->regexp;
 }
 
-sub execute {
-    my ($self) = @_;
+# private
 
-    if (Dancer::Config::setting('warnings')) {
-        my $warning;
-        local $SIG{__WARN__} = sub { $warning = $_[0] };
-        my $content = $self->code->();
-        if ($warning) {
-            return Dancer::Error->new(
-                code    => 500,
-                message => "Warning caught during route execution: $warning",
-            )->render;
-        }
-        return $content;
-    }
-    else {
-        return $self->code->();
-    }
+sub _is_regexp {
+    my ($self) = @_;
+    return defined $self->regexp;
 }
 
 sub _init_prefix {
     my ($self) = @_;
     my $prefix = $self->prefix;
 
-    if ($self->is_regexp) {
+    if ($self->_is_regexp) {
         my $regexp = $self->regexp;
         if ($regexp !~ /^$prefix/) {
             $self->regexp(qr{${prefix}${regexp}});
@@ -281,20 +320,18 @@ sub _init_prefix {
     return $prefix;
 }
 
-sub equals {
-    my ($self, $route) = @_;
-    return $self->regexp eq $route->regexp;
-}
+sub _save_match_data {
+    my ($self, $request, $match_data) = @_;
+    $self->match_data($match_data);
+    $request->_set_route_params($match_data);
 
-sub is_regexp {
-    my ($self) = @_;
-    return defined $self->regexp;
+    return $match_data;
 }
 
 sub _build_regexp {
     my ($self) = @_;
 
-    if ($self->is_regexp) {
+    if ($self->_is_regexp) {
         $self->{_compiled_regexp} = $self->regexp;
         $self->{_compiled_regexp} = qr/^$self->{_compiled_regexp}$/;
         $self->{_should_capture} = 1;
@@ -340,5 +377,47 @@ sub _build_regexp_from_string {
 
     return $self->{_compiled_regexp};
 }
+
+sub _check_options {
+    my ($self) = @_;
+    return 1 unless defined $self->options;
+
+    for my $opt (keys %{$self->options}) {
+        croak "Not a valid option for route matching: `$opt'"
+          if not(    (grep {/^$opt$/} @{$_supported_options[0]})
+                  || (grep {/^$opt$/} keys(%_options_aliases)));
+    }
+    return 1;
+}
+
+sub _find_next_matching_route {
+    my ($self, $request) = @_;
+    my $next = $self->next;
+    return unless $next;
+
+    return $next if $next->match($request);
+    return $next->_find_next_matching_route($request);
+}
+
+sub _execute {
+    my ($self) = @_;
+
+    if (Dancer::Config::setting('warnings')) {
+        my $warning;
+        local $SIG{__WARN__} = sub { $warning = $_[0] };
+        my $content = $self->code->();
+        if ($warning) {
+            return Dancer::Error->new(
+                code    => 500,
+                message => "Warning caught during route execution: $warning",
+            )->render;
+        }
+        return $content;
+    }
+    else {
+        return $self->code->();
+    }
+}
+
 
 1;
