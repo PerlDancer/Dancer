@@ -185,6 +185,7 @@ Asserts that no response is found when processing the given request.
 
     response_doesnt_exist [GET => '/unknown_path'],
         "response not found for unknown path";
+
 =cut
 
 sub response_doesnt_exist {
@@ -340,16 +341,6 @@ sub response_content_is_deeply {
     is_deeply $response->{content}, $matcher, $test_name;
 }
 
-sub response_is_file {
-    my ($req, $test_name) = @_;
-    $test_name ||= "a file is returned for " . _req_label($req);
-
-    my $response = _get_file_response($req);
-    my $tb = Test::Builder->new;
-    return $tb->ok(defined($response), $test_name);
-}
-
-
 =method response_headers_are_deeply([$method, $path], $expected, $test_name)
 
 Asserts that the response headers data structure equals the one given.
@@ -384,32 +375,6 @@ sub response_headers_include {
     return $tb->ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 
-
-# make sure the given header sublist is included in the full headers array
-sub _include_in_headers {
-    my ($full_headers, $expected_subset) = @_;
-
-    # walk through all the expected header pairs, make sure 
-    # they exist with the same value in the full_headers list
-    # return false as soon as one is not.
-    for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
-        my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
-        return 0 
-          unless _check_header($full_headers, $name, $value);
-    }
-
-    # we've found all the expected pairs in the $full_headers list
-    return 1;
-}
-
-sub _check_header {
-    my ($headers, $key, $value) = @_;
-    for (my $i=0; $i<scalar(@$headers); $i+=2) {
-        my ($name, $val) = ($headers->[$i], $headers->[$i + 1]);
-        return 1 if $name eq $key && $value eq $val;
-    }
-    return 0;
-}
 
 
 =method dancer_response($method, $path, { params => $params, body => $body, headers => $headers, files => [{filename => '/path/to/file', name => 'my_file'}] })
@@ -584,6 +549,33 @@ sub read_logs {
 
 
 # private
+
+# make sure the given header sublist is included in the full headers array
+sub _include_in_headers {
+    my ($full_headers, $expected_subset) = @_;
+
+    # walk through all the expected header pairs, make sure 
+    # they exist with the same value in the full_headers list
+    # return false as soon as one is not.
+    for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
+        my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
+        return 0 
+          unless _check_header($full_headers, $name, $value);
+    }
+
+    # we've found all the expected pairs in the $full_headers list
+    return 1;
+}
+
+sub _check_header {
+    my ($headers, $key, $value) = @_;
+    for (my $i=0; $i<scalar(@$headers); $i+=2) {
+        my ($name, $val) = ($headers->[$i], $headers->[$i + 1]);
+        return 1 if $name eq $key && $value eq $val;
+    }
+    return 0;
+}
+
 
 sub _url_encode {
     my $string = shift;

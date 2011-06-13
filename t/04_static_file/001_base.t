@@ -29,7 +29,7 @@ set public => path( dirname(__FILE__), 'static' );
 my $public = setting('public');
 
 my $req = [ GET => '/hello.txt' ];
-response_is_file $req;
+response_status_is $req => 200;
 
 my $resp = Dancer::Test::_get_file_response($req);
 is_deeply(
