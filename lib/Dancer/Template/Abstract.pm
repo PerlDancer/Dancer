@@ -246,4 +246,16 @@ sub _template_name {
     return $view;
 }
 
+
+sub _render_with_layout {
+    my ($class, $content, $tokens, $options) = @_;
+
+    Dancer::Deprecation::deprecated(
+        feature => 'render_with_layout',
+        version => '1.3000',
+        fatal   => 1,
+        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
+    );
+}
+
 1;
