@@ -115,6 +115,12 @@ our @EXPORT    = qw(
   warning
 );
 
+=method import
+
+Responsible for exporting Dancer methods. Check the B<EXPORTS> section
+for further information about how to specify what methods to import.
+
+=cut
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
 sub import {
