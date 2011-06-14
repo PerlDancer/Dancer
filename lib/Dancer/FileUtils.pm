@@ -95,10 +95,6 @@ sub set_file_mode {
     my $charset = Dancer::Config::setting('charset') || 'utf-8';
     binmode $fh, ":encoding($charset)";
 
-    if($charset) {
-        binmode($fh, ":encoding($charset)");
-    }
-
     return $fh;
 }
 
