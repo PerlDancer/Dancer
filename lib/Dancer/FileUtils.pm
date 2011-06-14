@@ -18,29 +18,35 @@ use vars '@EXPORT_OK';
 
 # Undo UNC special-casing catfile-voodoo on cygwin
 sub _trim_UNC {
-    if ($^O eq 'cygwin') {
-        return if ($#_ < 0);
+    my @args = @_;
 
-        my ($slashes, $part, @parts) = (0, undef, @_);
+    # if we're using cygwin
+    if ( $^O eq 'cygwin' ) {
+        # no @args, no problem
+        @args or return;
 
-        while ( defined ( $part = shift(@parts) ) ) {
-            last if ($part);
+        my ( $slashes, $part, @parts) = ( 0, undef, @args );
+
+        # start pulling part from @parts
+        while ( defined ( $part = shift @parts ) ) {
+            last if $part;
             $slashes++;
         }
 
-        $slashes += ($part =~ s/^[\/\\]+//);
+        # count slashes in $part
+        $slashes += ( $part =~ s/^[\/\\]+// );
 
-        if ($slashes == 2) {
-            return("/" . $part, @parts);
+        if ( $slashes == 2 ) {
+            return ( '/' . $part, @parts );
         } else {
             my $slashstr = '';
-            $slashstr .= '/' for (1 .. $slashes);
+            $slashstr .= '/' for ( 1 .. $slashes );
 
-            return($slashstr . $part, @parts);
+            return ( $slashstr . $part, @parts );
         }
     }
 
-    return(@_);
+    return @args;
 }
 
 sub d_catfile { File::Spec->catfile(_trim_UNC(@_)) }
