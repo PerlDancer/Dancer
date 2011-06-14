@@ -82,7 +82,7 @@ sub path_no_verify {
 sub dirname { File::Basename::dirname(@_) }
 
 sub set_file_mode {
-    my ($fh) = @_;
+    my $fh = shift;
 
     require Dancer::Config;
     my $charset = Dancer::Config::setting('charset') || 'utf-8';
