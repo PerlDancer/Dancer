@@ -107,7 +107,9 @@ sub read_file_content {
     if ($file) {
         $fh = open_file( '<', $file );
 
-        return wantarray ? read_glob_content($fh) : scalar read_glob_content($fh);
+        return wantarray              ?
+               read_glob_content($fh) :
+               scalar read_glob_content($fh);
     }
     else {
         return;
