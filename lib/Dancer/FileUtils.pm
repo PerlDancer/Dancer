@@ -11,23 +11,35 @@ use Cwd 'realpath';
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(dirname open_file path read_file_content read_glob_content real_path set_file_mode);
+@EXPORT_OK = qw(
+    dirname open_file path read_file_content read_glob_content
+    real_path set_file_mode
+);
 
 # Undo UNC special-casing catfile-voodoo on cygwin
 sub _trim_UNC {
     if ($^O eq 'cygwin') {
         return if ($#_ < 0);
+
         my ($slashes, $part, @parts) = (0, undef, @_);
-        while(defined($part = shift(@parts))) { last if ($part); $slashes++ }
+
+        while ( defined ( $part = shift(@parts) ) ) {
+            last if ($part);
+            $slashes++;
+        }
+
         $slashes += ($part =~ s/^[\/\\]+//);
+
         if ($slashes == 2) {
             return("/" . $part, @parts);
         } else {
             my $slashstr = '';
             $slashstr .= '/' for (1 .. $slashes);
+
             return($slashstr . $part, @parts);
         }
     }
+
     return(@_);
 }
 
@@ -41,11 +53,13 @@ sub path { d_catfile(@_) }
 
 sub real_path { 
   my $path = d_catfile(@_);
+
   #If Cwd's realpath encounters a path which does not exist it returns
   #empty on linux, but croaks on windows.
   if (! -e $path) {
     return;
   }
+
   realpath($path); 
 }
 
@@ -59,7 +73,9 @@ sub path_no_verify {
     } else {
         $path = Cwd::cwd . '/';
     }
+
     $path .= $nodes[2];
+
     return $path;
 }
 
@@ -73,13 +89,16 @@ sub set_file_mode {
     if($charset) {
         binmode($fh, ":encoding($charset)");
     }
+
     return $fh;
 }
 
 sub open_file {
     my ($mode, $filename) = @_;
+
     open(my $fh, $mode, $filename)
       or croak "$! while opening '$filename' using mode '$mode'";
+
     return set_file_mode($fh);
 }
 
@@ -109,7 +128,7 @@ sub read_glob_content {
     return wantarray ? @content : join("", @content);
 }
 
-'Dancer::FileUtils';
+1;
 
 __END__
 
