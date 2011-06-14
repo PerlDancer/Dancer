@@ -42,7 +42,7 @@ set appdir => $dir;
 my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;
 
-my $conffile = Dancer::Config->conffile;
+my $conffile = Dancer::Config->_conffile;
 ok(defined($conffile),   'Default conffile is defined'       );
 ok(Dancer::Config->load, 'Config load works without conffile');
 

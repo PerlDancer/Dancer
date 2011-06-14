@@ -11,7 +11,7 @@ plan skip_all => "YAML needed to run this tests"
 plan tests => 2;
 
 eval {
-    Dancer::Config::load_settings_from_yaml('foo');
+    Dancer::Config::_load_settings_from_yaml('foo');
 };
 
 like $@, qr/Unable to parse the configuration file/;
@@ -25,7 +25,7 @@ print $fh '---foo\n';
 close $fh;
 
 eval {
-    Dancer::Config::load_settings_from_yaml($config_file);
+    Dancer::Config::_load_settings_from_yaml($config_file);
 };
 
 like $@, qr/Unable to parse the configuration file/;

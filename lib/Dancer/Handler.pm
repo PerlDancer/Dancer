@@ -129,7 +129,7 @@ sub render_response {
         my $ctype   = $response->header('Content-Type');
 
         if ( $charset && $ctype && _is_text($ctype) ) {
-            $content = Encode::encode( $charset, $content ) unless $response->_already_encoded;
+            $content = Encode::encode( $charset, $content ) unless $response->already_encoded;
             $response->header( 'Content-Type' => "$ctype; charset=$charset" )
               if $ctype !~ /$charset/;
         }
