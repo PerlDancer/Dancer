@@ -99,9 +99,9 @@ sub set_file_mode {
 }
 
 sub open_file {
-    my ($mode, $filename) = @_;
+    my ( $mode, $filename ) = @_;
 
-    open(my $fh, $mode, $filename)
+    open my $fh, $mode, $filename
       or croak "$! while opening '$filename' using mode '$mode'";
 
     return set_file_mode($fh);
