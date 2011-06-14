@@ -13,40 +13,34 @@ use vars '@EXPORT_OK';
 
 @EXPORT_OK = qw(
     dirname open_file path read_file_content read_glob_content
-    real_path set_file_mode normalize_path
+    real_path set_file_mode
 );
 
 # Undo UNC special-casing catfile-voodoo on cygwin
 sub _trim_UNC {
-    my @args = @_;
+    if ($^O eq 'cygwin') {
+        return if ($#_ < 0);
 
-    # if we're using cygwin
-    if ( $^O eq 'cygwin' ) {
-        # no @args, no problem
-        @args or return;
+        my ($slashes, $part, @parts) = (0, undef, @_);
 
-        my ( $slashes, $part, @parts) = ( 0, undef, @args );
-
-        # start pulling part from @parts
-        while ( defined ( $part = shift @parts ) ) {
-            last if $part;
+        while ( defined ( $part = shift(@parts) ) ) {
+            last if ($part);
             $slashes++;
         }
 
-        # count slashes in $part
-        $slashes += ( $part =~ s/^[\/\\]+// );
+        $slashes += ($part =~ s/^[\/\\]+//);
 
-        if ( $slashes == 2 ) {
-            return ( '/' . $part, @parts );
+        if ($slashes == 2) {
+            return("/" . $part, @parts);
         } else {
             my $slashstr = '';
-            $slashstr .= '/' for ( 1 .. $slashes );
+            $slashstr .= '/' for (1 .. $slashes);
 
-            return ( $slashstr . $part, @parts );
+            return($slashstr . $part, @parts);
         }
     }
 
-    return @args;
+    return(@_);
 }
 
 sub d_catfile { File::Spec->catfile(_trim_UNC(@_)) }
@@ -101,13 +95,17 @@ sub set_file_mode {
     my $charset = Dancer::Config::setting('charset') || 'utf-8';
     binmode $fh, ":encoding($charset)";
 
+    if($charset) {
+        binmode($fh, ":encoding($charset)");
+    }
+
     return $fh;
 }
 
 sub open_file {
-    my ( $mode, $filename ) = @_;
+    my ($mode, $filename) = @_;
 
-    open my $fh, $mode, $filename
+    open(my $fh, $mode, $filename)
       or croak "$! while opening '$filename' using mode '$mode'";
 
     return set_file_mode($fh);
@@ -132,22 +130,6 @@ sub read_glob_content {
     close $fh;
 
     return wantarray ? @content : join '', @content;
-}
-
-sub normalize_path {
-    # this is a revised version of what is described in
-    # http://www.linuxjournal.com/content/normalizing-path-names-bash
-    # by Mitch Frazier
-    my $path     = shift or return;
-    my $seqregex = qr{
-        [^/]*  # anything without a slash
-        /\.\./ # that is accompanied by two dots as such
-    }x;
-
-    $path =~ s{/\./}{/}g;
-    $path =~ s{$seqregex}{}g;
-
-    return $path;
 }
 
 1;
