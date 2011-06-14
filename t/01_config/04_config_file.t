@@ -17,7 +17,7 @@ set appdir => $dir;
 my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;
 
-my $conffile = Dancer::Config->conffile;
+my $conffile = Dancer::Config->_conffile;
 ok(defined($conffile), 'default conffile is defined');
 
 ok(Dancer::Config->load, 'Config load works without conffile');
@@ -51,12 +51,12 @@ log: debug
 startup_info: 1
 foo_test: 54
 ';
-write_file(Dancer::Config->environment_file, $test_env);
+write_file(Dancer::Config->_environment_file, $test_env);
 ok(Dancer::Config->load, 'load test environment');
 is(setting('log'), 'debug', 'log setting looks good'); 
 is(setting('startup_info'), '1', 'startup_info setting looks good'); 
 is(setting('foo_test'), '54', 'random setting set'); 
-unlink Dancer::Config->environment_file;
+unlink Dancer::Config->_environment_file;
 
 my $prod_env = '
 log: "warning"
@@ -65,7 +65,7 @@ foo_prod: 42
 ';
 
 setting('environment' => 'prod');
-write_file(Dancer::Config->environment_file, $prod_env);
+write_file(Dancer::Config->_environment_file, $prod_env);
 
 ok(Dancer::Config->load, 'load prod environment');
 is(setting('log'), 'warning', 'log setting looks good'); 
@@ -73,6 +73,6 @@ is(setting('foo_prod'), '42', 'random setting set');
 is(setting('startup_info'), '0', 'startup_info setting looks good'); 
 
 Dancer::Logger::logger->{fh}->close;
-unlink Dancer::Config->environment_file;
+unlink Dancer::Config->_environment_file;
 unlink $conffile;
 File::Temp::cleanup();

@@ -10,7 +10,7 @@ use lib File::Spec->catdir( 't', 'lib' );
 use EasyMocker;
 
 mock 'Dancer::Config'
-    => method 'conffile'
+    => method '_conffile'
     => should sub { __FILE__ };
 
 mock 'Dancer::ModuleLoader'
@@ -24,6 +24,6 @@ like $@, qr/Configuration file found but YAML is not installed/,
 mock 'YAML'
     => method 'LoadFile'
     => should sub { undef };
-eval { Dancer::Config::load_settings_from_yaml('foo.yml') };
+eval { Dancer::Config::_load_settings_from_yaml('foo.yml') };
 like $@, qr/Unable to parse the configuration file: foo.yml/, "YAML error caught";
 
