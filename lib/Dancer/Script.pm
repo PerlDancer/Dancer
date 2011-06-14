@@ -36,7 +36,6 @@ sub new {
 	$self->{do_overwrite_all} = 0;
 	$self->validate_app_name();
 	#my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
-	require Dancer;
 	$self->{dancer_version} = $Dancer::VERSION;
 	$self->_set_application_path();
 	$self->_set_script_path();
