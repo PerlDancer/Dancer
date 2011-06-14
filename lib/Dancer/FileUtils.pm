@@ -83,12 +83,10 @@ sub dirname { File::Basename::dirname(@_) }
 
 sub set_file_mode {
     my ($fh) = @_;
+
     require Dancer::Config;
     my $charset = Dancer::Config::setting('charset') || 'utf-8';
-
-    if($charset) {
-        binmode($fh, ":encoding($charset)");
-    }
+    binmode $fh, ":encoding($charset)";
 
     return $fh;
 }
@@ -156,7 +154,7 @@ Dancer::FileUtils - helper providing file utilities
     use Dancer::FileUtils qw/read_glob_content set_file_mode/;
 
     open my $fh, '<', $file or die "$!\n";
-    set_file_mode ($fh);
+    set_file_mode($fh);
     my @content = read_file_content($fh);
     my $content = read_file_content($fh);
 
