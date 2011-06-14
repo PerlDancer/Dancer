@@ -92,9 +92,9 @@ sub set_file_mode {
 }
 
 sub open_file {
-    my ($mode, $filename) = @_;
+    my ( $mode, $filename ) = @_;
 
-    open(my $fh, $mode, $filename)
+    open my $fh, $mode, $filename
       or croak "$! while opening '$filename' using mode '$mode'";
 
     return set_file_mode($fh);
@@ -105,7 +105,7 @@ sub read_file_content {
     my $fh;
 
     if ($file) {
-        $fh = open_file('<', $file);
+        $fh = open_file( '<', $file );
 
         return wantarray ? read_glob_content($fh) : scalar read_glob_content($fh);
     }
@@ -123,7 +123,7 @@ sub read_glob_content {
     my @content = <$fh>;
     close $fh;
 
-    return wantarray ? @content : join("", @content);
+    return wantarray ? @content : join( '', @content );
 }
 
 1;
