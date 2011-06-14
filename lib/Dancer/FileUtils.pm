@@ -110,7 +110,7 @@ sub read_file_content {
 }
 
 sub read_glob_content {
-    my ($fh) = @_;
+    my $fh = shift;
 
     # we don't want to do that as we'll encode the stuff later
     # binmode $fh;
@@ -118,7 +118,7 @@ sub read_glob_content {
     my @content = <$fh>;
     close $fh;
 
-    return wantarray ? @content : join( '', @content );
+    return wantarray ? @content : join '', @content;
 }
 
 1;
