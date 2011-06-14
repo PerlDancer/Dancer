@@ -195,8 +195,10 @@ sub _set_settings {
     while (@_) {
         my $name = shift;
         my $value = shift;
+
+        # FIXME: obviously, we're using a private method from Dancer::Config here, design issue
         $self->settings->{$name} =
-          Dancer::Config->normalize_setting($name => $value);
+          Dancer::Config->_normalize_setting($name => $value);
     }
 }
 
