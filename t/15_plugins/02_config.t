@@ -20,7 +20,7 @@ set appdir => $dir, confdir => $dir;
 mkdir File::Spec->catdir( $dir, 'environments' );
 set environment => 'test';
 
-my $conffile = Dancer::Config->conffile;
+my $conffile = Dancer::Config->_conffile;
 write_file( $conffile => << 'CONF' );
 logger: Null
 plugins:
@@ -30,7 +30,7 @@ plugins:
     path: /
 CONF
 
-my $envfile = Dancer::Config->environment_file;
+my $envfile = Dancer::Config->_environment_file;
 write_file( $envfile => << 'CONF' );
 plugins:
   Test:
