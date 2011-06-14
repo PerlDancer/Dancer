@@ -101,19 +101,12 @@ sub open_file {
 }
 
 sub read_file_content {
-    my ($file) = @_;
-    my $fh;
+    my $file = shift or return;
+    my $fh   = open_file( '<', $file );
 
-    if ($file) {
-        $fh = open_file( '<', $file );
-
-        return wantarray              ?
-               read_glob_content($fh) :
-               scalar read_glob_content($fh);
-    }
-    else {
-        return;
-    }
+    return wantarray              ?
+           read_glob_content($fh) :
+           scalar read_glob_content($fh);
 }
 
 sub read_glob_content {
