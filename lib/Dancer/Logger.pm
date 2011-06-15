@@ -13,14 +13,49 @@ use warnings;
 use Data::Dumper;
 use Dancer::Engine;
 
-# singleton used for logging messages
-my $logger;
-sub logger {$logger}
+my $_logger;
 
 sub init {
     my ($class, $name, $config) = @_;
-    $logger = Dancer::Engine->build(logger => $name, $config);
+    $_logger = Dancer::Engine->build(logger => $name, $config);
 }
+
+=method logger
+
+Returns the current active logger engine.
+
+=cut
+sub logger {$_logger}
+
+=method core
+
+Writes to the logger in the C<core> level.
+
+=cut
+sub core    { defined($_logger) and $_logger->core(    _serialize(@_) ) }
+
+=method debug
+
+Writes to the logger in the C<debug> level.
+
+=cut
+sub debug   { defined($_logger) and $_logger->debug(   _serialize(@_) ) }
+
+=method warning
+
+Writes to the logger in the C<warning> level.
+
+=cut
+sub warning { defined($_logger) and $_logger->warning( _serialize(@_) ) }
+
+=method error
+
+Writes to the logger in the C<error> level.
+
+=cut
+sub error   { defined($_logger) and $_logger->error(   _serialize(@_) ) }
+
+# private
 
 sub _serialize {
     my @vars = @_;
@@ -36,34 +71,9 @@ sub _serialize {
     } @vars;
 }
 
-=method core
+1;
 
-Writes to the logger in the C<core> level.
-
-=cut
-sub core    { defined($logger) and $logger->core(    _serialize(@_) ) }
-
-=method debug
-
-Writes to the logger in the C<debug> level.
-
-=cut
-sub debug   { defined($logger) and $logger->debug(   _serialize(@_) ) }
-
-=method warning
-
-Writes to the logger in the C<warning> level.
-
-=cut
-sub warning { defined($logger) and $logger->warning( _serialize(@_) ) }
-
-=method error
-
-Writes to the logger in the C<error> level.
-
-=cut
-sub error   { defined($logger) and $logger->error(   _serialize(@_) ) }
-
+__END__
 
 =head1 USAGE
 
@@ -101,4 +111,4 @@ reference dump.
 
 =cut
 
-1;
+
