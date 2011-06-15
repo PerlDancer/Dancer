@@ -3,22 +3,22 @@ package Dancer::Template::TemplateToolkit;
 
 =head1 DESCRIPTION
 
-This class is an interface between Dancer's template engine abstraction layer
-and the L<Template> module.
+This class is an interface between Dancer's template engine
+abstraction layer and the L<Template> module.
 
-This template engine is recomended for production purposes, but depends on the
-Template module.
+This template engine is recomended for production purposes, but
+depends on the Template module.
 
 In order to use this engine, use the template setting:
 
     template: template_toolkit
 
-This can be done in your config.yml file or directly in your app code with the
-B<set> keyword.
+This can be done in your config.yml file or directly in your app code
+with the B<set> keyword.
 
-Note that by default,  Dancer configures the Template::Toolkit engine to use 
-<% %> brackets instead of its default [% %] brackets.  This can be changed
-within your config file - for example:
+Note that by default, Dancer configures the Template::Toolkit engine
+to use <% %> brackets instead of its default [% %] brackets.  This can
+be changed within your config file - for example:
 
     template: template_toolkit
     engines:
@@ -104,12 +104,13 @@ sub render {
 
 =head1 WRAPPER, META variables, SETs
 
-Dancer already provides a WRAPPER-like ability, which we call a "layout". The
-reason we do not use TT's WRAPPER (which also makes it incompatible with it) is
-because not all template systems support it. Actually, most don't.
+Dancer already provides a WRAPPER-like ability, which we call a
+"layout". The reason we do not use TT's WRAPPER (which also makes it
+incompatible with it) is because not all template systems support
+it. Actually, most don't.
 
-However, you might want to use it, and be able to define META variables and
-regular L<Template::Toolkit> variables.
+However, you might want to use it, and be able to define META
+variables and regular L<Template::Toolkit> variables.
 
 These few steps will get you there:
 
@@ -117,8 +118,8 @@ These few steps will get you there:
 
 =item * Disable the layout in Dancer
 
-You can do this by simply commenting (or removing) the C<layout> configuration
-in the F<config.yml> file.
+You can do this by simply commenting (or removing) the C<layout>
+configuration in the F<config.yml> file.
 
 =item * Use Template Toolkit template engine
 
@@ -137,7 +138,7 @@ Change the configuration of the template to Template Toolkit:
 
 =back
 
-Done! Everything will work fine out of the box, including variables and META
-variables.
+Done! Everything will work fine out of the box, including variables
+and META variables.
 
 =cut

@@ -3,8 +3,9 @@ package Dancer::Template::Abstract;
 
 =head1 DESCRIPTION
 
-This class is provided as a base class for each template engine. Any template
-engine must inherit from it and provide a set of methods described below.
+This class is provided as a base class for each template engine. Any
+template engine must inherit from it and provide a set of methods
+described below.
 
 =cut
 
@@ -22,11 +23,6 @@ Dancer::Factory::Hook->instance->install_hooks(
     qw/before_template_render after_template_render before_layout_render after_layout_render/
 );
 
-
-
-# I think this comment is relevant, as it gives the subclassing user
-# information that the method exists and can be overloaded.
-
 =method init()
 
 The template engine can overload this method if some initialization
@@ -34,20 +30,16 @@ stuff has to be done before the template engine is used.
 
 The base class provides a plain init() method that only returns true.
 
-=cut
-
-
-
-
 =method render($self, $template, $tokens)
 
-This method must be implemented by the template engine. Given a template and a
-set of tokens, it returns a processed string.
+This method must be implemented by the template engine. Given a
+template and a set of tokens, it returns a processed string.
 
-If C<$template> is a reference, it's assumed to be a reference to a string that
-contains the template itself. If it's not a reference, it's assumed to be the
-path to template file, as a string. The render method will then have to open it
-and read its content (Dancer::FileUtils::read_file_content does that job).
+If C<$template> is a reference, it's assumed to be a reference to a
+string that contains the template itself. If it's not a reference,
+it's assumed to be the path to template file, as a string. The render
+method will then have to open it and read its content
+(Dancer::FileUtils::read_file_content does that job).
 
 This method's return value must be a string which is the result of the
 interpolation of C<$tokens> in C<$template>.
@@ -95,7 +87,8 @@ sub default_tmpl_ext { "tt" }
 
 =method view($view)
 
-The default behavior of this method is to return the path of the given view.
+The default behavior of this method is to return the path of the given
+view.
 
 =cut
 sub view {
@@ -108,7 +101,8 @@ sub view {
 
 =method layout($layout, $tokens, $content)
 
-The default behavior of this method is to merge a content with a layout.
+The default behavior of this method is to merge a content with a
+layout.
 
 =cut
 sub layout {

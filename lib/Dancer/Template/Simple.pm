@@ -6,12 +6,13 @@ package Dancer::Template::Simple;
 This template engine is provided as a default one for the Dancer micro
 framework.
 
-This template engine should be fine for development purposes but is not a
-powerful one, it's written in pure Perl and has no C bindings to accelerate the
-template processing.
+This template engine should be fine for development purposes but is
+not a powerful one, it's written in pure Perl and has no C bindings to
+accelerate the template processing.
 
-If you want to power an application with Dancer in production environment, it's
-strongly advised to switch to Dancer::Template::TemplateToolkit.
+If you want to power an application with Dancer in production
+environment, it's strongly advised to switch to
+Dancer::Template::TemplateToolkit.
 
 =cut
 
