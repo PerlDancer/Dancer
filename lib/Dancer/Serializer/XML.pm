@@ -19,7 +19,7 @@ sub init {
     $_xs = XML::Simple->new();
 }
 
-=method from_xml
+=func from_xml
 
 Helpder subroutine that deserializes from XML.
 
@@ -29,7 +29,7 @@ sub from_xml {
     $s->deserialize(@_);
 }
 
-=method to_xml
+=func to_xml
 
 Helpder subroutine that serializes to XML.
 

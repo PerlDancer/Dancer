@@ -15,7 +15,7 @@ sub init {
 }
 
 
-=method from_yaml
+=func from_yaml
 
 Helper subroutine, deserializes a YAML string.
 
@@ -26,7 +26,7 @@ sub from_yaml {
     $s->deserialize($yaml);
 }
 
-=method to_yaml
+=func to_yaml
 
 Helper subroutine, serializes to a YAML string.
 
