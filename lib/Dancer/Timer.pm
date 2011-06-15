@@ -35,6 +35,13 @@ use base 'Dancer::Object';
 use Time::HiRes 'gettimeofday', 'tv_interval';
 
 use Dancer::ModuleLoader;
+
+=attr start_time
+
+Retains the starting time of the timer. The default value is when the object is
+created. It fetches that using C<gettimeofday> from L<Time::HiRes>.
+
+=cut
 Dancer::Timer->attributes('start_time');
 
 =method init
@@ -74,13 +81,6 @@ sub to_string {
 1;
 
 __END__
-
-=head1 ATTRIBUTES
-
-=head2 start_time
-
-Retains the starting time of the timer. The default value is when the object is
-created. It fetches that using C<gettimeofday> from L<Time::HiRes>.
 
 
 
