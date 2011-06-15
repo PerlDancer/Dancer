@@ -1,10 +1,16 @@
-1.3059_04      12.06.2011
+1.3060      15.06.2011
+    ** Codename: Pirouetting Pedro // Pedro Melo **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+1.3059_04   12.06.2011
 
     [ BUG FIXES ]
     * Fix a bunch of cpan testers reports 
     (Alberto Simões)
 
-1.3059_03      11.06.2011
+1.3059_03   11.06.2011
 
     [ BUG FIXES ]
     * Fix for issue #539
