@@ -1,6 +1,41 @@
 package Dancer::FileUtils;
 # ABSTRACT: common tools for file-system related actions
 
+=head1 SYNOPSIS
+
+    use Dancer::FileUtils qw/dirname real_path/;
+
+    # for 'path/to/file'
+    my $dir=dirname ($path); #returns 'path/to'
+    my $real_path=real_path ($path); #returns '/abs/path/to/file'
+
+
+    use Dancer::FileUtils qw/path read_file_content/;
+
+    my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
+    my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
+
+
+    use Dancer::FileUtils qw/read_glob_content set_file_mode/;
+
+    open my $fh, '<', $file or die "$!\n";
+    set_file_mode ($fh);
+    my @content = read_file_content($fh);
+    my $content = read_file_content($fh);
+
+
+=head1 DESCRIPTION
+
+Dancer::FileUtils includes a few file related utilities related that Dancer
+uses internally. Developers may use it instead of writing their own
+file reading subroutines or using additional modules.
+
+=head1 EXPORT
+
+Nothing by default. You can provide a list of subroutines to import.
+
+=cut
+
 use strict;
 use warnings;
 
@@ -38,16 +73,38 @@ sub d_canonpath { File::Spec->canonpath(_trim_UNC(@_)) }
 sub d_catpath { File::Spec->catpath(_trim_UNC(@_)) }
 sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
 
+=func path
+
+    use Dancer::FileUtils 'path';
+
+    my $path = path( 'folder', 'folder', 'filename');
+
+Provides comfortable path resolving, internally using L<File::Spec>.
+
+=cut
+
 sub path { d_catfile(@_) }
 
-sub real_path { 
+=func real_path
+
+    use Dancer::FileUtils 'real_path';
+
+    my $real_path=real_path ($path);
+
+Returns a canonical and absolute path. Uses Cwd's realpath internally which
+resolves symbolic links and relative-path components ("." and ".."). If
+specified path does not exist, real_path returns nothing.
+
+=cut
+
+sub real_path {
   my $path = d_catfile(@_);
   #If Cwd's realpath encounters a path which does not exist it returns
   #empty on linux, but croaks on windows.
   if (! -e $path) {
     return;
   }
-  realpath($path); 
+  realpath($path);
 }
 
 sub path_no_verify {
@@ -64,7 +121,30 @@ sub path_no_verify {
     return $path;
 }
 
+=func dirname
+
+    use Dancer::FileUtils 'dirname';
+
+    my $dir = dirname($path);
+
+Exposes L<File::Basename>'s I<dirname>, to allow fetching a directory name from
+a path. On most OS, returns all but last level of file path. See
+L<File::Basename> for details.
+
+=cut
+
 sub dirname { File::Basename::dirname(@_) }
+
+=func set_file_mode
+
+    use Dancer::FileUtils 'set_file_mode';
+
+    set_file_mode($fh);
+
+Applies charset setting from Dancer's configuration. Defaults to utf-8 if no
+charset setting.
+
+=cut
 
 sub set_file_mode {
     my ($fh) = @_;
@@ -77,12 +157,38 @@ sub set_file_mode {
     return $fh;
 }
 
+=func open_file
+
+    use Dancer::FileUtils 'open_file';
+    my $fh = open_file('<', $file) or die $message;
+
+Calls open and returns a filehandle. Takes in account the 'charset' setting
+from Dancer's configuration to open the file in the proper encoding (or
+defaults to utf-8 if setting not present).
+
+=cut
+
 sub open_file {
     my ($mode, $filename) = @_;
     open(my $fh, $mode, $filename)
       or croak "$! while opening '$filename' using mode '$mode'";
     return set_file_mode($fh);
 }
+
+=func read_file_content
+
+    use Dancer::FileUtils 'read_file_content';
+
+    my @content = read_file_content($file);
+    my $content = read_file_content($file);
+
+Returns either the content of a file (whose filename is the input), I<undef>
+if the file could not be opened.
+
+In array context it returns each line (as defined by $/) as a seperate element;
+in scalar context returns the entire contents of the file.
+
+=cut
 
 sub read_file_content {
     my ($file) = @_;
@@ -98,6 +204,19 @@ sub read_file_content {
     }
 }
 
+=func read_glob_content
+
+    use Dancer::FileUtils 'read_glob_content';
+
+    open my $fh, '<', $file or die "$!\n";
+    my @content = read_glob_content($fh);
+    my $content = read_glob_content($fh);
+
+Same as I<read_file_content>, only it accepts a file handle. Returns the
+content and B<closes the file handle>.
+
+=cut
+
 sub read_glob_content {
     my ($fh) = @_;
 
@@ -111,130 +230,3 @@ sub read_glob_content {
 }
 
 'Dancer::FileUtils';
-
-__END__
-
-=pod
-
-=head1 NAME
-
-Dancer::FileUtils - helper providing file utilities
-
-=head1 SYNOPSIS
-
-    use Dancer::FileUtils qw/dirname real_path/;
-
-    # for 'path/to/file'
-    my $dir=dirname ($path); #returns 'path/to'
-    my $real_path=real_path ($path); #returns '/abs/path/to/file'
-
-
-    use Dancer::FileUtils qw/path read_file_content/;
-
-    my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
-    my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
-
-
-    use Dancer::FileUtils qw/read_glob_content set_file_mode/;
-
-    open my $fh, '<', $file or die "$!\n";
-    set_file_mode ($fh);
-    my @content = read_file_content($fh);
-    my $content = read_file_content($fh);
-
-
-=head1 DESCRIPTION
-
-Dancer::FileUtils includes a few file related utilities related that Dancer
-uses internally. Developers may use it instead of writing their own
-file reading subroutines or using additional modules.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 dirname
-
-    use Dancer::FileUtils 'dirname';
-
-    my $dir = dirname($path);
-
-Exposes L<File::Basename>'s I<dirname>, to allow fetching a directory name from
-a path. On most OS, returns all but last level of file path. See
-L<File::Basename> for details.
-
-=head2 open_file
-
-    use Dancer::FileUtils 'open_file';
-    my $fh = open_file('<', $file) or die $message;
-
-Calls open and returns a filehandle. Takes in account the 'charset' setting
-from Dancer's configuration to open the file in the proper encoding (or
-defaults to utf-8 if setting not present).
-
-=head2 path
-
-    use Dancer::FileUtils 'path';
-
-    my $path = path( 'folder', 'folder', 'filename');
-
-Provides comfortable path resolving, internally using L<File::Spec>.
-
-=head2 read_file_content
-
-    use Dancer::FileUtils 'read_file_content';
-
-    my @content = read_file_content($file);
-    my $content = read_file_content($file);
-
-Returns either the content of a file (whose filename is the input), I<undef>
-if the file could not be opened.
-
-In array context it returns each line (as defined by $/) as a seperate element;
-in scalar context returns the entire contents of the file.
-
-=head2 read_glob_content
-
-    use Dancer::FileUtils 'read_glob_content';
-
-    open my $fh, '<', $file or die "$!\n";
-    my @content = read_glob_content($fh);
-    my $content = read_glob_content($fh);
-
-Same as I<read_file_content>, only it accepts a file handle. Returns the
-content and B<closes the file handle>.
-
-=head2 real_path
-
-    use Dancer::FileUtils 'real_path';
-
-    my $real_path=real_path ($path);
-
-Returns a canonical and absolute path. Uses Cwd's realpath internally which
-resolves symbolic links and relative-path components ("." and ".."). If
-specified path does not exist, real_path returns nothing.
-
-=head2 set_file_mode
-
-    use Dancer::FileUtils 'set_file_mode';
-
-    set_file_mode($fh);
-
-Applies charset setting from Dancer's configuration. Defaults to utf-8 if no
-charset setting.
-
-=head1 EXPORT
-
-Nothing by default. You can provide a list of subroutines to import.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2011 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
