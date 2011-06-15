@@ -1,17 +1,20 @@
 package Dancer::Test;
 # ABSTRACT: Test helpers to test a Dancer application
 
-=head1 SYNOPSYS
+=head1 SYNOPSIS
 
-    use strict;
-    use warnings;
-    use Test::More tests => 2;
+  use strict;
+  use warnings;
+  use Test::More tests => 2;
 
-    use MyWebApp;
-    use Dancer::Test;
+  use MyWebApp;
+  use Dancer::Test;
 
-    response_status_is [GET => '/'], 200, "GET / is found";
-    response_content_like [GET => '/'], qr/hello, world/, "content looks good for /";
+  response_status_is [GET => '/'] => 200,
+        "GET / is found";
+
+  response_content_like [GET => '/'] => qr/hello, world/,
+        "content looks good for /";
 
 
 =head1 DESCRIPTION
@@ -108,7 +111,7 @@ sub import {
 }
 
 
-=method route_exists([$method, $path], $test_name)
+=func route_exists([$method, $path], $test_name)
 
 Asserts that the given request matches a route handler in Dancer's
 registry.
@@ -129,12 +132,13 @@ sub route_exists {
     return $tb->ok(Dancer::App->find_route_through_apps($req), $test_name);
 }
 
-=method route_doesnt_exist([$method, $path], $test_name)
+=func route_doesnt_exist([$method, $path], $test_name)
 
-Asserts that the given request does not match any route handler 
-in Dancer's registry.
+Asserts that the given request does not match any route handler in
+Dancer's registry.
 
-    route_doesnt_exist [GET => '/bogus_path'], "GET /bogus_path is not handled";
+    route_doesnt_exist [GET => '/bogus_path'],
+                          "GET /bogus_path is not handled";
 
 =cut
 
@@ -150,14 +154,14 @@ sub route_doesnt_exist {
 }
 
 
-=method response_exists([$method, $path], $test_name)
+=func response_exists([$method, $path], $test_name)
 
-Asserts that a response is found for the given request (note that even though 
-a route for that path might not exist, a response can be found during request
-processing, because of filters).
+Asserts that a response is found for the given request (note that even
+though a route for that path might not exist, a response can be found
+during request processing, because of filters).
 
     response_exists [GET => '/path_that_gets_redirected_to_home'],
-        "response found for unknown path";
+                                   "response found for unknown path";
 
 =cut
 
@@ -179,12 +183,12 @@ sub response_exists {
     goto &response_status_isnt;
 }
 
-=method response_doesnt_exist([$method, $path], $test_name)
+=func response_doesnt_exist([$method, $path], $test_name)
 
 Asserts that no response is found when processing the given request.
 
     response_doesnt_exist [GET => '/unknown_path'],
-        "response not found for unknown path";
+                         "response not found for unknown path";
 
 =cut
 
@@ -207,12 +211,13 @@ sub response_doesnt_exist {
 }
 
 
-=method response_status_is([$method, $path], $status, $test_name)
+=func response_status_is([$method, $path], $status, $test_name)
 
-Asserts that Dancer's response for the given request has a status equal to the
-one given.
+Asserts that Dancer's response for the given request has a status
+equal to the one given.
 
-    response_status_is [GET => '/'], 200, "response for GET / is 200";
+    response_status_is [GET => '/'] => 200,
+                            "response for GET / is 200";
 
 =cut
 
@@ -225,12 +230,13 @@ sub response_status_is {
     return $tb->is_eq($response->status, $status, $test_name);
 }
 
-=method response_status_isnt([$method, $path], $status, $test_name)
+=func response_status_isnt([$method, $path], $status, $test_name)
 
-Asserts that the status of Dancer's response is not equal to the
-one given.
+Asserts that the status of Dancer's response is not equal to the one
+given.
 
-    response_status_isnt [GET => '/'], 404, "response for GET / is not a 404";
+    response_status_isnt [GET => '/'] => 404,
+                         "response for GET / is not a 404";
 
 =cut
 
@@ -243,12 +249,12 @@ sub response_status_isnt {
     $tb->isnt_eq( $response->{status}, $status, $test_name );
 }
 
-=method response_content_is([$method, $path], $expected, $test_name)
+=func response_content_is([$method, $path], $expected, $test_name)
 
 Asserts that the response content is equal to the C<$expected> string.
 
-    response_content_is [GET => '/'], "Hello, World", 
-        "got expected response content for GET /";
+   response_content_is [GET => '/'] => "Hello, World",
+                     "got expected response content for GET /";
 
 =cut
 
@@ -261,12 +267,13 @@ sub response_content_is {
     return $tb->is_eq( $response->{content}, $matcher, $test_name );
 }
 
-=method response_content_isnt([$method, $path], $not_expected, $test_name)
+=func response_content_isnt([$method, $path], $not_expected, $test_name)
 
-Asserts that the response content is not equal to the C<$not_expected> string.
+Asserts that the response content is not equal to the C<$not_expected>
+string.
 
-    response_content_isnt [GET => '/'], "Hello, World", 
-        "got expected response content for GET /";
+    response_content_isnt [GET => '/'] => "Hello, World",
+                          "got expected response content for GET /";
 
 =cut
 
@@ -279,13 +286,13 @@ sub response_content_isnt {
     return $tb->isnt_eq( $response->{content}, $matcher, $test_name );
 }
 
-=method response_content_like([$method, $path], $regexp, $test_name)
+=func response_content_like([$method, $path], $regexp, $test_name)
 
-Asserts that the response content for the given request matches the regexp
-given.
+Asserts that the response content for the given request matches the
+regexp given.
 
-    response_content_like [GET => '/'], qr/Hello, World/, 
-        "response content looks good for GET /";
+    response_content_like [GET => '/'] => qr/Hello, World/,
+                         "response content looks good for GET /";
 
 =cut
 
@@ -298,13 +305,13 @@ sub response_content_like {
     return $tb->like( $response->{content}, $matcher, $test_name );
 }
 
-=method response_content_unlike([$method, $path], $regexp, $test_name)
+=func response_content_unlike([$method, $path], $regexp, $test_name)
 
-Asserts that the response content for the given request does not match the regexp
-given.
+Asserts that the response content for the given request does not match
+the regexp given.
 
-    response_content_unlike [GET => '/'], qr/Page not found/, 
-        "response content looks good for GET /";
+    response_content_unlike [GET => '/'] => qr/Page not found/,
+                               "response content looks good for GET /";
 
 =cut
 
@@ -317,17 +324,17 @@ sub response_content_unlike {
     return $tb->unlike( $response->{content}, $matcher, $test_name );
 }
 
-=method response_content_is_deeply([$method, $path], $expected_struct, $test_name)
+=func response_content_is_deeply([$method, $path], $expected_struct, $test_name)
 
-Similar to response_content_is(), except that if response content and 
-$expected_struct are references, it does a deep comparison walking each data 
-structure to see if they are equivalent.  
+Similar to response_content_is(), except that if response content and
+$expected_struct are references, it does a deep comparison walking
+each data structure to see if they are equivalent.
 
-If the two structures are different, it will display the place where they start
-differing.
+If the two structures are different, it will display the place where
+they start differing.
 
-    response_content_is_deeply [GET => '/complex_struct'], 
-        { foo => 42, bar => 24}, 
+    response_content_is_deeply [GET => '/complex_struct'],
+        { foo => 42, bar => 24},
         "got expected response structure for GET /complex_struct";
 
 =cut
@@ -341,11 +348,12 @@ sub response_content_is_deeply {
     is_deeply $response->{content}, $matcher, $test_name;
 }
 
-=method response_headers_are_deeply([$method, $path], $expected, $test_name)
+=func response_headers_are_deeply([$method, $path], $expected, $test_name)
 
 Asserts that the response headers data structure equals the one given.
 
-    response_headers_are_deeply [GET => '/'], [ 'X-Powered-By' => 'Dancer 1.150' ];
+    response_headers_are_deeply [ GET => '/' ],
+                                [ 'X-Powered-By' => 'Dancer 1.150' ];
 
 =cut
 
@@ -358,11 +366,13 @@ sub response_headers_are_deeply {
     is_deeply($response->headers_to_array, $expected, $test_name);
 }
 
-=method response_headers_include([$method, $path], $expected, $test_name)
+=func response_headers_include([$method, $path], $expected, $test_name)
 
-Asserts that the response headers data structure includes some of the defined ones.
+Asserts that the response headers data structure includes some of the
+defined ones.
 
-    response_headers_include [GET => '/'], [ 'Content-Type' => 'text/plain' ];
+    response_headers_include [ GET => '/' ],
+                             [ 'Content-Type' => 'text/plain' ];
 
 =cut
 
@@ -375,13 +385,20 @@ sub response_headers_include {
     return $tb->ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 
-
-
-=method dancer_response($method, $path, { params => $params, body => $body, headers => $headers, files => [{filename => '/path/to/file', name => 'my_file'}] })
+=func dancer_response($method, $path, $options)
 
 Returns a Dancer::Response object for the given request.
 
 Only $method and $path are required.
+
+The options are passed in a hashref:
+
+   $options = {
+       params  => $params,
+       body    => $body,
+       headers => $headers,
+       files => [  {filename => '/path/to/file', name => 'my_file'} ]
+   };
 
 $params is a hashref, $body is a string and $headers can be an
 arrayref or a HTTP::Headers object, $files is an arrayref of hashref,
@@ -500,7 +517,7 @@ Content-Type: text/plain
 }
 
 
-=method get_response([$method, $path])
+=func get_response([$method, $path])
 
 This method is B<DEPRECATED>.  Use dancer_response() instead.
 
@@ -516,7 +533,7 @@ sub get_response {
 
 
 
-=method read_logs
+=func read_logs
 
     my $logs = read_logs;
 
