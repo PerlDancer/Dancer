@@ -1,6 +1,12 @@
 package Dancer::Session::Simple;
 # ABSTRACT: basic in-memory session engine
 
+=head1 DESCRIPTION
+
+This module implements a very simple session backend, holding all session data
+in memory.  This means that sessions are volatile, and no longer exist when the
+process exits.  This module is likely to be most useful for testing purposes.
+
 use strict;
 use warnings;
 use base 'Dancer::Session::Abstract';
@@ -9,11 +15,15 @@ use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils 'path';
 
+=cut
 
 my %sessions;
 
-# create a new session and return the newborn object
-# representing that session
+=method create
+
+Check C<create> documentation on L<Dancer::Session>.
+
+=cut
 sub create {
     my ($class) = @_;
 
@@ -22,19 +32,32 @@ sub create {
     return $self;
 }
 
-# Return the session object corresponding to the given id
+=method retrieve
+
+Check C<retrieve> documentation on L<Dancer::Session>.
+
+=cut
 sub retrieve {
     my ($class, $id) = @_;
 
     return $sessions{$id};
 }
 
+=method destroy
 
+Check C<destroy> documentation on L<Dancer::Session>.
+
+=cut
 sub destroy {
     my ($self) = @_;
     undef $sessions{$self->id};
 }
 
+=method flush
+
+Check C<flush> documentation on L<Dancer::Session>.
+
+=cut
 sub flush {
     my $self = shift;
     $sessions{$self->id} = $self;
@@ -44,41 +67,10 @@ sub flush {
 1;
 __END__
 
-=pod
-
-=head1 NAME
-
-Dancer::Session::Simple - in-memory session backend for Dancer
-
-=head1 DESCRIPTION
-
-This module implements a very simple session backend, holding all session data
-in memory.  This means that sessions are volatile, and no longer exist when the
-process exits.  This module is likely to be most useful for testing purposes.
-
 
 =head1 CONFIGURATION
 
 The setting B<session> should be set to C<Simple> in order to use this session
 engine in a Dancer application.
-
-
-=head1 AUTHOR
-
-This module has been written by David Precious, see the AUTHORS file for
-details.
-
-=head1 SEE ALSO
-
-See L<Dancer::Session> for details about session usage in route handlers.
-
-=head1 COPYRIGHT
-
-This module is copyright (c) 2010 David Precious <davidp@preshweb.co.uk>
-
-=head1 LICENSE
-
-This module is free software and is released under the same terms as Perl
-itself.
 
 =cut
