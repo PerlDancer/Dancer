@@ -32,6 +32,20 @@ __PACKAGE__->attributes(
     @http_env_keys,
 );
 
+sub new {
+    my ($self, @args) = @_;
+    if (@args == 1) {
+        @args = ('env' => $args[0]);
+        Dancer::Deprecation->deprecated(
+                      fatal   => 0,
+                      feature => 'Calling Dancer::Request->new($env)',
+                      version => 1.3059,
+                      reason  => 'Please use Dancer::Request->new( env => $env ) instead',
+         );
+    }
+    $self->SUPER::new(@args);
+}
+
 # aliases
 sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->address }
