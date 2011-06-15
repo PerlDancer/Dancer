@@ -21,9 +21,9 @@ package Dancer::Cookies;
 
 =head1 DESCRIPTION
 
-Dancer::Cookies keeps all the cookies defined by the application and makes them
-accessible and provides a few helper functions for cookie handling with regards
-to the stored cookies.
+Dancer::Cookies keeps all the cookies defined by the application and
+makes them accessible and provides a few helper functions for cookie
+handling with regards to the stored cookies.
 
 =cut
 
@@ -36,28 +36,28 @@ use Dancer::SharedData;
 use URI::Escape;
 
 # all cookies defined by the application are store in that singleton
-# this is a hashref the represent all key/value pairs to store as cookies
+# this is a hashref the represent all key/value pairs to store as
+# cookies
 my $COOKIES = {};
 
 
 =method cookies
 
-Returns a hash reference of all cookies, all objects of L<Dancer::Cookie> type.
+Returns a hash reference of all cookies, all objects of
+L<Dancer::Cookie> type.
 
 The key is the cookie name, the value is the L<Dancer::Cookie> object.
 
 =cut
-
 sub cookies {$COOKIES}
 
 =method init
 
-This method is called when C<< ->new() >> is called. It creates a storage of
-cookies parsed from the environment using C<parse_cookies_from_env> described
-below.
+This method is called when C<< ->new() >> is called. It creates a
+storage of cookies parsed from the environment using
+C<parse_cookies_from_env> described below.
 
 =cut
-
 sub init {
     $COOKIES = parse_cookie_from_env();
 }
@@ -71,7 +71,6 @@ C<cookie> method is useful to query or set cookies easily.
     cookie "lang"                        # return a cookie value
 
 =cut
-
 sub cookie {
     my $class = shift;
     my $name  = shift;
@@ -82,13 +81,12 @@ sub cookie {
 
 =method parse_cookie_from_env
 
-Fetches all the cookies from the environment, parses them and creates a hashref
-of all cookies.
+Fetches all the cookies from the environment, parses them and creates
+a hashref of all cookies.
 
 It also returns all the hashref it created.
 
 =cut
-
 sub parse_cookie_from_env {
     my $request = Dancer::SharedData->request;
     my $env     = (defined $request) ? $request->env : {};
@@ -113,9 +111,18 @@ sub parse_cookie_from_env {
     return $cookies;
 }
 
-# set_cookie name => value,
-#     expires => time() + 3600, domain => '.foo.com'
-#     http_only => 0 # defaults to 1
+=method set_cookie
+
+Creates and sets a cookie:
+
+  Dancer::Cookies->set_cookie(
+      name => value,
+      expires => time() + 3600,
+      domain => '.foo.com'
+      http_only => 0 # defaults to 1
+  );
+
+=cut
 sub set_cookie {
     my ( $class, $name, $value, %options ) = @_;
     my $cookie =  Dancer::Cookie->new(
@@ -126,10 +133,19 @@ sub set_cookie {
     Dancer::Cookies->set_cookie_object($name => $cookie);
 }
 
+
+=method set_cookie_object
+
+Sets an already existing cookie object.
+
+  Dancer::Cookies->set_cookie_object( cookieName => $cookieObject );
+
+=cut
 sub set_cookie_object {
     my ($class, $name, $cookie) = @_;
     Dancer::SharedData->response->push_header(
-        'Set-Cookie' => $cookie->to_header);
+        'Set-Cookie' => $cookie->to_header
+    );
     Dancer::Cookies->cookies->{$name} = $cookie;
 }
 
