@@ -1,11 +1,15 @@
 package Dancer::Hook::Properties;
 # ABSTRACT: Properties attached to a hook
 
+=head1 CORE LIBRARY
+
+This class is part of the core, it is provided for developers only.
+Dancer users should not need to read this documentation as it
+documents internal parts of the code only.
+
 =head1 DESCRIPTION
 
 Properties attached to a hook
-
-=head1 SYNOPSIS
 
 =cut
 use strict;
@@ -33,6 +37,12 @@ sub _init_apps {
     }
 }
 
+=method should_run_this_app
+
+Auxiliary method for Hooks system that verifies if a hook should be
+run for a specific application (passed as argument).
+
+=cut
 sub should_run_this_app {
     my ( $self, $app ) = @_;
 
