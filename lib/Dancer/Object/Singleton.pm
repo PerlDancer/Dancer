@@ -23,9 +23,9 @@ package Dancer::Object::Singleton;
 
 =head1 DESCRIPTION
 
-Dancer::Object::Singleton is meantto be used instead of Dancer::Object, if you
-want your object to be a singleton, that is, a class that has only one instance
-in the application.
+Dancer::Object::Singleton is meant to be used instead of
+L<Dancer::Object>, if you want your object to be a singleton, that is,
+a class that has only one instance in the application.
 
 It provides you with attributes and an initializer.
 
@@ -37,10 +37,9 @@ use Carp;
 
 =method attributes
 
-Generates attributes for whatever object is extending Dancer::Object and saves
-them in an internal hashref so they can be later fetched using
-C<get_attributes>.
-
+Generates attributes for whatever object is extending Dancer::Object
+and saves them in an internal hashref so they can be later fetched
+using C<get_attributes>.
 
 =method get_attributes
 
@@ -48,8 +47,10 @@ Get the attributes of the specific class.
 
 =method init
 
-Exists but does nothing. This is so you won't have to write an initializer if
-you don't want to. init receives the instance as argument.
+Exists but does nothing. This is so you won't have to write an
+initializer if you don't want to. init receives the instance as
+argument.
+
 =cut
 
 
@@ -58,11 +59,24 @@ use base qw(Dancer::Object);
 # pool of instances (only one per package name)
 my %instances;
 
-# constructor
+=method new
+
+The method C<new> does not exist for singletons. Its implementation
+exists just to warn the user that the operation is not possible.
+
+=cut
+
 sub new {
     my ($class) = @_;
     croak "you can't call 'new' on $class, as it's a singleton. Try to call 'instance'";
 }
+
+=method clone
+
+The method C<clone> does not exist for singletons. Its implementation
+exists just to warn the user that the operation is not possible.
+
+=cut
 
 sub clone {
     my ($class) = @_;
@@ -72,8 +86,9 @@ sub clone {
 
 =method instance
 
-Returns the instance of the singleton. The instance is created only when
-needed. The creation will call the C<init()> method, which you should implement.
+Returns the instance of the singleton. The instance is created only
+when needed. The creation will call the C<init()> method, which you
+should implement.
 
 =cut
 
