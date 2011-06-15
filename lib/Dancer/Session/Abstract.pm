@@ -50,7 +50,12 @@ sub destroy {
     confess "destroy not implemented";
 }
 
-# does nothing in most cases (exception is YAML)
+=method reset()
+
+Resets the Session cache. This method is empty for most backends.
+Check L<Dancer::Session::YAML> for an implementation example.
+
+=cut
 sub reset {
     return;
 }
