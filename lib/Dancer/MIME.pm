@@ -62,7 +62,7 @@ Return the Dancer::MIME instance object.
 
     my $mime = Dancer::MIME->instance();
 
-=method custom_types
+=attr custom_types
 
 Retrieve the full hash table of added mime types.
 
@@ -77,11 +77,22 @@ sub init {
     $instance->custom_types({});
 }
 
+=method default
+
+Returns the default mime type. It can be changed in the configuration
+file:
+
+   default_mime_type: foo/bar
+
+You can also C<set> it directly on your code:
+
+   set default_mime_type => 'ugh/zbr';
+
+=cut
 sub default {
     my $instance = shift;
     return Dancer::Config::setting("default_mime_type") || "application/data";
 }
-
 
 =method add_type
 
@@ -90,14 +101,11 @@ Add a non standard mime type or overrides an existing one.
     $mime->add_type( foo => "text/foo" );
 
 =cut
-
-
 sub add_type {
     my ($self, $name, $type) = @_;
     $self->custom_types->{$name} = $type;
     return;
 }
-
 
 =method add_alias
 
@@ -106,7 +114,6 @@ Adds an alias to an existing mime type.
     $mime->add_alias( my_jpg => 'jpg' );
 
 =cut
-
 sub add_alias {
     my($self, $alias, $orig) = @_;
     my $type = $self->for_name($orig);
@@ -121,7 +128,6 @@ Retrieve the mime type for a file, based on a file extension.
     $mime->for_file( 'file.jpg' );
 
 =cut
-
 sub for_file {
     my ($self, $filename) = @_;
     my ($ext) = $filename =~ /\.([^.]+)$/;
@@ -137,7 +143,6 @@ MIME type like "txt" or already a mime type like "text/plain".
     my $type = $mime->name_or_type($thing);
 
 =cut
-
 sub name_or_type {
     my($self, $name) = @_;
 
@@ -152,10 +157,11 @@ Retrieve the mime type for a standard or non standard mime type.
     $mime->for_name( 'jpg' );
 
 =cut
-
 sub for_name {
     my ($self, $name) = @_;
-    return $self->custom_types->{lc $name} || $self->mime_type->mimeTypeOf(lc $name) || $self->default;
+    return $self->custom_types->{lc $name}
+        || $self->mime_type->mimeTypeOf(lc $name)
+        || $self->default;
 }
 
 
@@ -164,7 +170,6 @@ sub for_name {
 B<DEPRECATED:> Check the new C<add> method.
 
 =cut
-
 sub add_mime_type {
     Dancer::Deprecation->deprecated(feature => 'add_mime_type',
                                     fatal => 1,
@@ -176,7 +181,6 @@ sub add_mime_type {
 B<DEPRECATED:> Check the new C<add> method.
 
 =cut
-
 sub add_mime_alias {
     Dancer::Deprecation->deprecated(feature => 'add_mime_alias',
                                     fatal => 1,
@@ -188,7 +192,6 @@ sub add_mime_alias {
 B<DEPRECATED:> Check the new C<for_name> and C<name_or_type> methods.
 
 =cut
-
 sub mime_type_for {
     Dancer::Deprecation->deprecated(feature => 'mime_type_for',
                                     fatal => 1,
