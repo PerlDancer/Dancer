@@ -15,10 +15,15 @@ use URI;
 use URI::Escape;
 
 sub new {
-    # To provide good error messages for those burnt by upgrading.
+    # Deprecate the one arg style of initialization.
     my ($self, @args) = @_;
     if (@args == 1) {
-        croak 'Attempt to instantiate a request object with a single argument - the syntax has changed to Dancer::Request->new(env => $env)';
+        @args = ('env' => $args[0]);
+        Dancer::Deprecation->deprecated(
+            feature => 'Calling Dancer::Request->new($env)',
+            version => 1.3052,
+            reason => 'Please use Dancer::Request->new( env => $env ) instead',
+        );
     }
     $self->SUPER::new(@args);
 }
