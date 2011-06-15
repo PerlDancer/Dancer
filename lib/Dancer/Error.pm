@@ -1,6 +1,28 @@
 package Dancer::Error;
 # ABSTRACT: class representing an error
 
+=head1 SYNOPSIS
+
+    # taken from send_file:
+    use Dancer::Error;
+
+    my $error = Dancer::Error->new(
+        code    => 404,
+        message => "No such file: `$path'"
+    );
+
+    Dancer::Response->set($error->render);
+
+=head1 DESCRIPTION
+
+With Dancer::Error you can throw reasonable-looking errors to the user
+instead of crashing the application and filling up the logs.
+
+This is usually used in debugging environments, and it's what Dancer
+uses as well under debugging to catch errors and show them on screen.
+
+=cut
+
 use strict;
 use warnings;
 use Carp;
@@ -19,6 +41,33 @@ use Dancer::Engine;
 Dancer::Factory::Hook->instance->install_hooks(
     qw/before_error_render after_error_render/);
 
+
+=attr code
+
+The code that caused the error.
+
+This is only an attribute getter, you'll have to set it at C<new>.
+
+=attr title
+
+The title of the error page.
+
+This is only an attribute getter, you'll have to set it at C<new>.
+
+=attr message
+
+The message of the error page.
+
+This is only an attribute getter, you'll have to set it at C<new>.
+
+=cut
+
+=method new
+
+Create a new Dancer::Error object.
+
+=cut
+
 sub init {
     my ($self) = @_;
 
@@ -27,7 +76,7 @@ sub init {
         type  => 'runtime error',
     );
 
-    $self->has_serializer
+    $self->_has_serializer
       and return;
 
     my $html_output = "<h2>" . $self->{type} . "</h2>";
@@ -37,11 +86,40 @@ sub init {
     $self->{message} = $html_output;
 }
 
-sub has_serializer { setting('serializer') }
+
+=method code
+
+The code that caused the error.
+
+=cut
 sub code           { $_[0]->{code} }
+
+=method title
+
+The title of the error page.
+
+=cut
 sub title          { $_[0]->{title} }
+
+=method message
+
+The message that will appear to the user.
+
+=cut
 sub message        { $_[0]->{message} }
 
+
+=method backtrace
+
+Create a backtrace of the code where the error is caused.
+
+This method tries to find out where the error appeared according to
+the actual error message (using the C<message> attribute) and tries to
+parse it (supporting the regular/default Perl warning or error pattern
+and the L<Devel::SimpleTrace> output) and then returns an
+error-higlighted C<message>.
+
+=cut
 sub backtrace {
     my ($self) = @_;
 
@@ -100,6 +178,12 @@ sub backtrace {
     return $backtrace;
 }
 
+
+=method tabulate
+
+Small subroutine to help output nicer.
+
+=cut
 sub tabulate {
     my ($number, $max) = @_;
     my $len = length($max);
@@ -107,6 +191,13 @@ sub tabulate {
     return " $number";
 }
 
+
+=method dumper
+
+This uses L<Data::Dumper> to create nice content output with a few
+predefined options.
+
+=cut
 sub dumper {
     my $obj = shift;
     return "Unavailable without Data::Dumper"
@@ -131,42 +222,12 @@ sub dumper {
     return $content;
 }
 
-# Given a hashref, censor anything that looks sensitive.  Returns number of
-# items which were "censored".
-sub _censor {
-    my $hash = shift;
-    if (!$hash || ref $hash ne 'HASH') {
-        carp "_censor given incorrect input: $hash";
-        return;
-    }
 
-    my $censored = 0;
-    for my $key (keys %$hash) {
-        if (ref $hash->{$key} eq 'HASH') {
-            $censored += _censor($hash->{$key});
-        }
-        elsif ($key =~ /(pass|card?num|pan|secret)/i) {
-            $hash->{$key} = "Hidden (looks potentially sensitive)";
-            $censored++;
-        }
-    }
+=method render
 
-    return $censored;
-}
+Renders a response using L<Dancer::Response>.
 
-# Replaces the entities that are illegal in (X)HTML.
-sub _html_encode {
-    my $value = shift;
-
-    $value =~ s/&/&amp;/g;
-    $value =~ s/</&lt;/g;
-    $value =~ s/>/&gt;/g;
-    $value =~ s/'/&#39;/g;
-    $value =~ s/"/&quot;/g;
-
-    return $value;
-}
-
+=cut
 sub render {
     my $self = shift;
 
@@ -231,6 +292,14 @@ sub _render_html {
     }
 }
 
+
+=method environment
+
+A main function to render environment information: the caller (using
+C<get_caller>), the settings and environment (using C<dumper>) and
+more.
+
+=cut
 sub environment {
     my ($self) = @_;
 
@@ -261,6 +330,11 @@ sub environment {
     return "$source $settings $session $env";
 }
 
+=method get_caller
+
+Creates a strack trace of callers.
+
+=cut
 sub get_caller {
     my ($self) = @_;
     my @stack;
@@ -273,132 +347,64 @@ sub get_caller {
     return join("\n", reverse(@stack));
 }
 
+# privates
+
+
+# =head2 _html_encode
+
+# Internal method to encode entities that are illegal in (X)HTML. We output as
+# UTF-8, so no need to encode all non-ASCII characters or use a module.
+# FIXME : this is not true anymore, output can be any charset. Need fixing.
+sub _html_encode {
+    my $value = shift;
+
+    $value =~ s/&/&amp;/g;
+    $value =~ s/</&lt;/g;
+    $value =~ s/>/&gt;/g;
+    $value =~ s/'/&#39;/g;
+    $value =~ s/"/&quot;/g;
+
+    return $value;
+}
+
+sub _has_serializer { setting('serializer') }
+
+
+# =head2 _censor
+
+# An internal method that tries to censor out content which should be protected.
+
+# C<dumper> calls this method to censor things like passwords and such.
+
+# Given a hashref, censor anything that looks sensitive.  Returns number of
+# items which were "censored".
+sub _censor {
+    my $hash = shift;
+    if (!$hash || ref $hash ne 'HASH') {
+        carp "_censor given incorrect input: $hash";
+        return;
+    }
+
+    my $censored = 0;
+    for my $key (keys %$hash) {
+        if (ref $hash->{$key} eq 'HASH') {
+            $censored += _censor($hash->{$key});
+        }
+        elsif ($key =~ /(pass|card?num|pan|secret)/i) {
+            $hash->{$key} = "Hidden (looks potentially sensitive)";
+            $censored++;
+        }
+    }
+
+    return $censored;
+}
+
+
 1;
 
 __END__
 
-=pod
 
-=head1 NAME
 
-Dancer::Error - class for representing fatal errors
 
-=head1 SYNOPSIS
-
-    # taken from send_file:
-    use Dancer::Error;
-
-    my $error = Dancer::Error->new(
-        code    => 404,
-        message => "No such file: `$path'"
-    );
-
-    Dancer::Response->set($error->render);
-
-=head1 DESCRIPTION
-
-With Dancer::Error you can throw reasonable-looking errors to the user instead
-of crashing the application and filling up the logs.
-
-This is usually used in debugging environments, and it's what Dancer uses as
-well under debugging to catch errors and show them on screen.
-
-=head1 ATTRIBUTES
-
-=head2 code
-
-The code that caused the error.
-
-This is only an attribute getter, you'll have to set it at C<new>.
-
-=head2 title
-
-The title of the error page.
-
-This is only an attribute getter, you'll have to set it at C<new>.
-
-=head2 message
-
-The message of the error page.
-
-This is only an attribute getter, you'll have to set it at C<new>.
-
-=head1 METHODS/SUBROUTINES
-
-=head2 new
-
-Create a new Dancer::Error object.
-
-=head3 title
-
-The title of the error page.
-
-=head3 type
-
-What type of error this is.
-
-=head3 code
-
-The code that caused the error.
-
-=head3 message
-
-The message that will appear to the user.
-
-=head2 backtrace
-
-Create a backtrace of the code where the error is caused.
-
-This method tries to find out where the error appeared according to the actual
-error message (using the C<message> attribute) and tries to parse it (supporting
-the regular/default Perl warning or error pattern and the L<Devel::SimpleTrace>
-output) and then returns an error-higlighted C<message>.
-
-=head2 tabulate
-
-Small subroutine to help output nicer.
-
-=head2 dumper
-
-This uses L<Data::Dumper> to create nice content output with a few predefined
-options.
-
-=head2 render
-
-Renders a response using L<Dancer::Response>.
-
-=head2 environment
-
-A main function to render environment information: the caller (using
-C<get_caller>), the settings and environment (using C<dumper>) and more.
-
-=head2 get_caller
-
-Creates a strack trace of callers.
-
-=head2 _censor
-
-An internal method that tries to censor out content which should be protected.
-
-C<dumper> calls this method to censor things like passwords and such.
-
-=head2 _html_encode
-
-Internal method to encode entities that are illegal in (X)HTML. We output as
-UTF-8, so no need to encode all non-ASCII characters or use a module.
-FIXME : this is not true anymore, output can be any charset. Need fixing.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 
