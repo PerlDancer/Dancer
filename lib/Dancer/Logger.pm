@@ -6,6 +6,65 @@ package Dancer::Logger;
 This module is the wrapper that provides support for different 
 logger engines.
 
+=cut
+
+use strict;
+use warnings;
+use Data::Dumper;
+use Dancer::Engine;
+
+# singleton used for logging messages
+my $logger;
+sub logger {$logger}
+
+sub init {
+    my ($class, $name, $config) = @_;
+    $logger = Dancer::Engine->build(logger => $name, $config);
+}
+
+sub _serialize {
+    my @vars = @_;
+
+    return join q{}, map {
+        ref $_                      ?
+            Data::Dumper->new([$_])
+                        ->Terse(1)
+                        ->Purity(1)
+                        ->Indent(0)
+                        ->Dump()    :
+            $_
+    } @vars;
+}
+
+=method core
+
+Writes to the logger in the C<core> level.
+
+=cut
+sub core    { defined($logger) and $logger->core(    _serialize(@_) ) }
+
+=method debug
+
+Writes to the logger in the C<debug> level.
+
+=cut
+sub debug   { defined($logger) and $logger->debug(   _serialize(@_) ) }
+
+=method warning
+
+Writes to the logger in the C<warning> level.
+
+=cut
+sub warning { defined($logger) and $logger->warning( _serialize(@_) ) }
+
+=method error
+
+Writes to the logger in the C<error> level.
+
+=cut
+sub error   { defined($logger) and $logger->error(   _serialize(@_) ) }
+
+
 =head1 USAGE
 
 =head2 Default engine
@@ -41,37 +100,5 @@ Will provide you with an output in a single log message of the string and the
 reference dump.
 
 =cut
-use strict;
-use warnings;
-use Data::Dumper;
-use Dancer::Engine;
-
-# singleton used for logging messages
-my $logger;
-sub logger {$logger}
-
-sub init {
-    my ($class, $name, $config) = @_;
-    $logger = Dancer::Engine->build(logger => $name, $config);
-}
-
-sub _serialize {
-    my @vars = @_;
-
-    return join q{}, map {
-        ref $_                      ?
-            Data::Dumper->new([$_])
-                        ->Terse(1)
-                        ->Purity(1)
-                        ->Indent(0)
-                        ->Dump()    :
-            $_
-    } @vars;
-}
-
-sub core    { defined($logger) and $logger->core(    _serialize(@_) ) }
-sub debug   { defined($logger) and $logger->debug(   _serialize(@_) ) }
-sub warning { defined($logger) and $logger->warning( _serialize(@_) ) }
-sub error   { defined($logger) and $logger->error(   _serialize(@_) ) }
 
 1;
