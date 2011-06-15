@@ -16,10 +16,6 @@ L<Dancer::Logger::Capture>.
 
 use base 'Dancer::Object';
 
-=method new
-
-=cut
-
 __PACKAGE__->attributes( "_storage" );
 
 sub init {
