@@ -20,6 +20,14 @@ __PACKAGE__->attributes(qw/name code properties/);
 use Dancer::Factory::Hook;
 use Dancer::Hook::Properties;
 
+=method new ($name => $code)
+
+Creates a new hook object given a name and a code clock.  An optional
+hashref can be passed after the name (and before the code) with hook
+properties.
+
+=cut
+
 sub new {
     my ($class, @args) = @_;
 
