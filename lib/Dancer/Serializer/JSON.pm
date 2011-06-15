@@ -1,24 +1,25 @@
 package Dancer::Serializer::JSON;
 # ABSTRACT: JSON serializer engine
 
-
 =head1 DESCRIPTION
 
-This class is an interface between Dancer's serializer engine abstraction layer
-and the L<JSON> module.
+This class is an interface between Dancer's serializer engine
+abstraction layer and the L<JSON> module.
 
 In order to use this engine, use the template setting:
 
     serializer: JSON
 
-This can be done in your config.yml file or directly in your app code with the
-B<set> keyword. This serializer will also be used when the serializer is set
-to B<mutable> and the correct Accept headers are supplied.
+This can be done in your config.yml file or directly in your app code
+with the B<set> keyword. This serializer will also be used when the
+serializer is set to B<mutable> and the correct Accept headers are
+supplied.
 
-The L<JSON> module has 2 configuration variables that can be useful when working
-with ORM's like L<DBIx::Class>: B<allow_blessed> and B<convert_blessed>.
-Please consult the L<JSON> documentation for more information. You can add
-extra settings to the B<engines> configuration to turn these on.
+The L<JSON> module has 2 configuration variables that can be useful
+when working with ORM's like L<DBIx::Class>: B<allow_blessed> and
+B<convert_blessed>.  Please consult the L<JSON> documentation for more
+information. You can add extra settings to the B<engines>
+configuration to turn these on.
 
     engines:
         JSON:
@@ -43,7 +44,7 @@ sub init {
 
 
 
-=method from_json
+=func from_json
 
 Helper subroutine deserialize a JSON string into a Perl data structure.
 
@@ -53,7 +54,7 @@ sub from_json {
     $s->deserialize(@_);
 }
 
-=method to_json
+=func to_json
 
 Helper subroutine serializes Perl data structures into a JSON string.
 
@@ -144,6 +145,4 @@ sub _options_as_hashref {
 
 
 1;
-
-
 

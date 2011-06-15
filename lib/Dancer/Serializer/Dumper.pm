@@ -1,7 +1,7 @@
 package Dancer::Serializer::Dumper;
 # ABSTRACT: Data::Sumper serializer engine
 
-=head1 ABSTRACT
+=head1 DESCRIPTION
 
 Perl dumper format serializer.
 
@@ -13,7 +13,7 @@ use Carp;
 use base 'Dancer::Serializer::Abstract';
 use Data::Dumper;
 
-=method from_dumper
+=func from_dumper
 
 Subroutine that converts a Dumper string in the respective data
 structure.
@@ -25,7 +25,7 @@ sub from_dumper {
     $s->deserialize($string);
 }
 
-=method to_dumper
+=func to_dumper
 
 Subroutine that converts a data structure in a Dumper string.
 
