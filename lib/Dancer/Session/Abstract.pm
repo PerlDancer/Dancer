@@ -1,5 +1,5 @@
 package Dancer::Session::Abstract;
-# ABSTRACT: interface for session engines
+# ABSTRACT: abstract class for session engine
 
 use strict;
 use warnings;
@@ -13,27 +13,39 @@ use File::Spec;
 
 __PACKAGE__->attributes('id');
 
-# args: ($class, $id)
-# receives a session id and should return a session object if found, or undef
-# otherwise.
+=method retrieve($id)
+
+Look for a session with the given id, return the session object if
+found, undef if not.
+
+=cut
 sub retrieve {
     confess "retrieve not implemented";
 }
 
-# args: ($class)
-# create a new empty session, flush it and return it.
+=method create()
+
+Create a new session, return the session object.
+
+=cut
 sub create {
     confess "create not implemented";
 }
 
-# args: ($self)
-# write the (serialized) current session to the session storage
+=method flush()
+
+Write the session object to the storage engine.
+
+=cut
 sub flush {
     confess "flush not implemented";
 }
 
-# args: ($self)
-# remove the session from the session storage
+=method destroy()
+
+Remove the current session object from the storage engine.
+
+=cut
 sub destroy {
     confess "destroy not implemented";
 }
@@ -43,17 +55,30 @@ sub reset {
     return;
 }
 
-# This is the default constructor for the session object, the only mandatory
-# attribute is 'id'. The whole object should be serialized by the session
-# engine.
-# If you override this constructor, remember to call $self->SUPER::init() so
-# that the session ID is still generated.
+=method init
+
+This is the default constructor for the session object, the only
+mandatory attribute is 'id'. The whole object should be serialized by
+the session engine.
+
+If you override this constructor, remember to call
+$self->SUPER::init() so that the session ID is still generated.
+
+=cut
 sub init {
     my ($self) = @_;
-    $self->id(build_id());
+    $self->id(_build_id());
 }
 
-# this method can be overwritten in any Dancer::Session::* module
+=method session_name (optional)
+
+Returns a string with the name of cookie used for storing the session
+ID.
+
+You should probably not override this; the user can control the cookie
+name using the C<session_name> setting.
+
+=cut
 sub session_name {
     setting('session_name') || 'dancer.session';
 }
@@ -61,31 +86,29 @@ sub session_name {
 
 # Methods below this this line should not be overloaded.
 
-# we try to make the best random number
-# with native Perl 5 code.
-# to rebuild a session id, an attacker should know:
-# - the running PID of the server
-# - the current timestamp of the time it was built
-# - the path of the installation directory
-# - guess the correct number between 0 and 1000000000
-# - should be able to reproduce that 3 times
-sub build_id {
-    my $session_id = "";
-    foreach my $seed (rand(1000), rand(1000), rand(1000)) {
-        my $c = 0;
-        $c += ord($_) for (split //, File::Spec->rel2abs(File::Spec->curdir));
-        my $current = int($seed * 1000000000) + time + $$ + $c;
-        $session_id .= $current;
-    }
-    return $session_id;
-}
+=method read_session_id()
 
+Reads the C<dancer.session> cookie.
+
+B<NOTE:> This method is not supposed to be overloaded, they is generic
+and should be OK for each session engine.
+
+=cut
 sub read_session_id {
     my $name = session_name();
     my $c = Dancer::Cookies->cookies->{$name};
     return (defined $c) ? $c->value : undef;
 }
 
+
+=method write_session_id($id)
+
+Write the current session id to the C<dancer.session> cookie.
+
+B<NOTE:> This method is not supposed to be overloaded, they is generic
+and should be OK for each session engine.
+
+=cut
 sub write_session_id {
     my ($class, $id) = @_;
 
@@ -108,14 +131,31 @@ sub write_session_id {
     Dancer::Cookies->set_cookie_object($name => $c);
 }
 
+# privates
+
+
+# we try to make the best random number
+# with native Perl 5 code.
+# to rebuild a session id, an attacker should know:
+# - the running PID of the server
+# - the current timestamp of the time it was built
+# - the path of the installation directory
+# - guess the correct number between 0 and 1000000000
+# - should be able to reproduce that 3 times
+sub _build_id {
+    my $session_id = "";
+    foreach my $seed (rand(1000), rand(1000), rand(1000)) {
+        my $c = 0;
+        $c += ord($_) for (split //, File::Spec->rel2abs(File::Spec->curdir));
+        my $current = int($seed * 1000000000) + time + $$ + $c;
+        $session_id .= $current;
+    }
+    return $session_id;
+}
+
+
 1;
 __END__
-
-=pod
-
-=head1 NAME
-
-Dancer::Session::Abstract - abstract class for session engine
 
 =head1 SPEC
 
@@ -123,40 +163,44 @@ Dancer::Session::Abstract - abstract class for session engine
 
 =item B<role>
 
-A Dancer::Session object represents a session engine and should provide anything
-needed to manipulate a session, whatever its storing engine is.
+A Dancer::Session object represents a session engine and should
+provide anything needed to manipulate a session, whatever its storing
+engine is.
 
 =item B<id>
 
-The session id will be written to a cookie, by default named C<dancer.session>, 
-it is assumed that a client must accept cookies to be able to use a 
-session-aware Dancer webapp. (The cookie name can be change using the
-C<session_name> config setting.)
+The session id will be written to a cookie, by default named
+C<dancer.session>, it is assumed that a client must accept cookies to
+be able to use a session-aware Dancer webapp. (The cookie name can be
+change using the C<session_name> config setting.)
 
 =item B<storage engine>
 
-When the session engine is enabled, a I<before> filter takes care to initialize
-the appropriate session engine (according to the setting C<session>).
+When the session engine is enabled, a I<before> filter takes care to
+initialize the appropriate session engine (according to the setting
+C<session>).
 
-Then, the filter looks for a cookie named C<dancer.session> (or whatever you've
-set the C<ssesion_name> setting to, if you've used it) in order to
-I<retrieve> the current session object. If not found, a new session object is
-I<created> and its id written to the cookie.
+Then, the filter looks for a cookie named C<dancer.session> (or
+whatever you've set the C<ssesion_name> setting to, if you've used it)
+in order to I<retrieve> the current session object. If not found, a
+new session object is I<created> and its id written to the cookie.
 
 Whenever a session call is made within a route handler, the singleton
 representing the current session object is modified.
 
-After terminating the request, a I<flush> is made to the session object.
+After terminating the request, a I<flush> is made to the session
+object.
 
 =back
 
 =head1 DESCRIPTION
 
-This virtual class describes how to build a session engine for Dancer. This is
-done in order to allow multiple session storage backends with a common interface.
+This virtual class describes how to build a session engine for
+Dancer. This is done in order to allow multiple session storage
+backends with a common interface.
 
-Any session engine must inherit from Dancer::Session::Abstract and implement
-the following abstract methods.
+Any session engine must inherit from Dancer::Session::Abstract and
+implement the following abstract methods.
 
 =head2 Configuration
 
@@ -164,9 +208,10 @@ These settings control how a session acts.
 
 =head3 session_name
 
-The default session name is "dancer_session". This can be set in your config file:
+The default session name is "dancer_session". This can be set in your
+config file:
 
-    setting session_name: "mydancer_session"
+    session_name: "mydancer_session"
 
 =head3 session_secure
 
@@ -187,55 +232,8 @@ This setting defaults to 1 and instructs the session cookie to be
 created with the C<HttpOnly> option active, meaning that JavaScript
 will not be able to access to its value.
 
-=head2 Abstract Methods
 
-=over 4
 
-=item B<retrieve($id)>
+#######........
 
-Look for a session with the given id, return the session object if found, undef
-if not.
 
-=item B<create()>
-
-Create a new session, return the session object.
-
-=item B<flush()>
-
-Write the session object to the storage engine.
-
-=item B<destroy()>
-
-Remove the current session object from the storage engine.
-
-=item B<session_name> (optional)
-
-Returns a string with the name of cookie used for storing the session ID.
-
-You should probably not override this; the user can control the cookie name
-using the C<session_name> setting.
-
-=back
-
-=head2 Inherited Methods
-
-The following methods are not supposed to be overloaded, they are generic and
-should be OK for each session engine.
-
-=over 4
-
-=item B<build_id>
-
-Build a new uniq id.
-
-=item B<read_session_id>
-
-Reads the C<dancer.session> cookie.
-
-=item B<write_session_id>
-
-Write the current session id to the C<dancer.session> cookie.
-
-=back
-
-=cut
