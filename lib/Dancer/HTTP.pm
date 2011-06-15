@@ -5,27 +5,6 @@ package Dancer::HTTP;
 
 Helper for rendering HTTP status codes for Dancer
 
-=head1 HTTP CODES 
-
-The following codes/aliases are understood by any status() call made
-from a Dancer script.
-
-=head2 200
-
-returns 200 OK, alias : 'ok'
-
-=head2 403
-
-returns 403 Forbidden, alias 'forbidden'
-
-=head2 404
-
-returns 404 Not Found, alias : 'not_found'
-
-=head2 500
-
-returns 500 Internal Server Error, alias: 'error'
-
 =cut
 
 use strict;
@@ -101,8 +80,15 @@ for my $code (keys %$HTTP_CODES) {
 # own aliases
 $HTTP_CODES->{error} = $HTTP_CODES->{internal_server_error};
 
-# always return a numeric status code
-# if alias, return the corresponding code
+=method status
+
+Auxiliary method to return the HTTP error code given the full official
+name, in lowercase and with spaces substituted by underscores:
+
+   my $code = Dancer::HTTP->status("not_found");  # returns 404
+
+=cut
+
 sub status {
     my ($class, $name) = @_;
     return $name if $name =~ /^\d+$/;
@@ -112,4 +98,27 @@ sub status {
 
 1;
 
+
+=head1 HTTP CODES 
+
+The following codes/aliases are understood by any status() call made
+from a Dancer script.
+
+=head2 200
+
+returns 200 OK, alias : 'ok'
+
+=head2 403
+
+returns 403 Forbidden, alias 'forbidden'
+
+=head2 404
+
+returns 404 Not Found, alias : 'not_found'
+
+=head2 500
+
+returns 500 Internal Server Error, alias: 'error'
+
+=cut
 
