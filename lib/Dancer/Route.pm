@@ -3,12 +3,12 @@ package Dancer::Route;
 
 =head1 DESCRIPTION
 
-This class represents a route and is used internally by Dancer. A route contains
-a path, a method and a coderef to be executed on matching request, to produce a
-response.
+This class represents a route and is used internally by Dancer. A
+route contains a path, a method and a coderef to be executed on
+matching request, to produce a response.
 
-The route object provides everything needed to store new routes, parse them and
-execute matching against incoming requests.
+The route object provides everything needed to store new routes, parse
+them and execute matching against incoming requests.
 
 =cut
 
@@ -91,17 +91,17 @@ sub set_previous {
 
 =method match
 
-Takes a L<Dancer::Request> object and looks if the route matches the request.
-The matching is performed using the HTTP method and route pattern of the route.
-If there is a match, all the params are processed and saved so the route action
-can be executed.
+Takes a L<Dancer::Request> object and looks if the route matches the
+request.  The matching is performed using the HTTP method and route
+pattern of the route.  If there is a match, all the params are
+processed and saved so the route action can be executed.
 
     if ($route->match($request)) {
          ...
     }
 
-Note that this method uses the logger engine (core level) to give some feedback
-about what it sees and how it matches or not.
+Note that this method uses the logger engine (core level) to give some
+feedback about what it sees and how it matches or not.
 
 =cut
 sub match {
@@ -199,11 +199,11 @@ sub validate_options {
 
 =method run
 
-This method runs the route's action on the given request. It takes care of doing
-anything needed to prepare the environement.
+This method runs the route's action on the given request. It takes
+care of doing anything needed to prepare the environement.
 
-It also takes care of passing the baton to the next matching route if the
-current route passes, or if it uses C<forward>.
+It also takes care of passing the baton to the next matching route if
+the current route passes, or if it uses C<forward>.
 
 It returns a L<Dancer::Response> object.
 
@@ -269,8 +269,9 @@ sub run {
 
 =method equals
 
-Boolean that tells if the current route is the same as the one given as
-argument. The equality is performed on the internal Regexp of the route.
+Boolean that tells if the current route is the same as the one given
+as argument. The equality is performed on the internal Regexp of the
+route.
 
 =cut
 sub equals {
