@@ -26,7 +26,8 @@ sub vars {$_vars}
 
 =method var
 
-This accessor sets (or queries) a variable from the shared data variables table.
+This accessor sets (or queries) a variable from the shared data
+variables table.
 
   my $value = Dancer::SharedData->var( 'foo' );
 
