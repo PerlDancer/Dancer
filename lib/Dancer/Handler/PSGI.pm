@@ -13,6 +13,11 @@ use Dancer::ModuleLoader;
 use Dancer::SharedData;
 use Dancer::Logger;
 
+=method new
+
+Creates a new PSGI handler.
+
+=cut
 sub new {
     my $class = shift;
 
@@ -24,13 +29,18 @@ sub new {
     return $self;
 }
 
+=method start
+
+Starts the PSGI handler.
+
+=cut
 sub start {
     my $self = shift;
     my $app  = $self->psgi_app();
 
     foreach my $setting (qw/plack_middlewares plack_middlewares_map/) {
         if (Dancer::Config::setting($setting)) {
-            my $method = 'apply_'.$setting;
+            my $method = '_apply_'.$setting;
             $app = $self->$method($app);
         }
     }
@@ -38,13 +48,24 @@ sub start {
     return $app;
 }
 
-sub apply_plack_middlewares_map {
+=method init_request_headers
+
+Given an environment creates the sharead data headers.
+
+=cut
+sub init_request_headers {
+    my ($self, $env) = @_;
+    my $plack = Plack::Request->new($env);
+    Dancer::SharedData->headers($plack->headers);
+}
+
+sub _apply_plack_middlewares_map {
     my ($self, $app) = @_;
 
     my $mw_map = Dancer::Config::setting('plack_middlewares_map');
 
     foreach my $req (qw(Plack::App::URLMap Plack::Builder)) {
-        croak "$req is needed to use apply_plack_middlewares_map"
+        croak "$req is needed to use _apply_plack_middlewares_map"
           unless Dancer::ModuleLoader->load($req);
     }
 
@@ -60,7 +81,7 @@ sub apply_plack_middlewares_map {
     return $urlmap->to_app;
 }
 
-sub apply_plack_middlewares {
+sub _apply_plack_middlewares {
     my ($self, $app) = @_;
 
     my $middlewares = Dancer::Config::setting('plack_middlewares');
@@ -81,12 +102,6 @@ sub apply_plack_middlewares {
     $app = $builder->to_app($app);
 
     return $app;
-}
-
-sub init_request_headers {
-    my ($self, $env) = @_;
-    my $plack = Plack::Request->new($env);
-    Dancer::SharedData->headers($plack->headers);
 }
 
 1;
