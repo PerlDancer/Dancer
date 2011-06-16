@@ -1,8 +1,6 @@
 package Dancer::Logger::Note;
 # ABSTRACT: Test::More note() logging engine for Dancer
 
-=head1 SYNOPSIS
-
 =head1 DESCRIPTION
 
 This logging engine uses L<Test::More>'s note() to output as TAP comments.

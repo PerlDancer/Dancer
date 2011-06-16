@@ -14,25 +14,6 @@ This is a logger class for L<Dancer> which captures all logs to an object.
 
 It's primary purpose is for testing.
 
-=head1 EXAMPLE
-
-    use Test::More import => ['!pass'], tests => 2;
-    use Dancer;
-
-    set logger => 'capture';
-
-    warning "Danger!  Warning!";
-    debug   "I like pie.";
-
-    my $trap = Dancer::Logger::Capture->trap;
-    is_deeply $trap->read, [
-        { level => "warning", message => "Danger!  Warning!" },
-        { level => "debug",   message => "I like pie.", }
-    ];
-
-    # each call to read cleans the trap
-    is_deeply $trap->read, [];
-
 =cut
 
 use strict;
@@ -65,3 +46,26 @@ sub _log {
 
 
 1;
+
+__END__
+
+=head1 EXAMPLE
+
+    use Test::More import => ['!pass'], tests => 2;
+    use Dancer;
+
+    set logger => 'capture';
+
+    warning "Danger!  Warning!";
+    debug   "I like pie.";
+
+    my $trap = Dancer::Logger::Capture->trap;
+    is_deeply $trap->read, [
+        { level => "warning", message => "Danger!  Warning!" },
+        { level => "debug",   message => "I like pie.", }
+    ];
+
+    # each call to read cleans the trap
+    is_deeply $trap->read, [];
+
+=cut

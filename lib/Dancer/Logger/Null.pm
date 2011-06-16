@@ -1,8 +1,6 @@
 package Dancer::Logger::Null;
 # ABSTRACT: blackhole-like silent logging engine for Dancer
 
-=head1 SYNOPSIS
-
 =head1 DESCRIPTION
 
 This logger acts as a blackhole (or /dev/null, if you will) that discards all

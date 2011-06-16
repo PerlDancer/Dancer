@@ -1,6 +1,12 @@
 package Dancer::Handler::Standalone;
 # ABSTRACT: standalone HTTP server frontend for Dancer
 
+=head1 DESCRIPTION
+
+A standalone HTTP server handler. Great for debugging.
+
+=cut
+
 use strict;
 use warnings;
 
