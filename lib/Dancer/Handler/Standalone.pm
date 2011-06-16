@@ -13,8 +13,12 @@ use Dancer::Config 'setting';
 use Dancer::FileUtils qw(read_glob_content);
 use Dancer::SharedData;
 
-# in standalone mode, this method initializes the process
-# and start an HTTP server
+=method start
+
+When in standalone mode, this method initializes the process and start
+an HTTP server.
+
+=cut
 sub start {
     my $self = shift;
 
@@ -29,16 +33,16 @@ sub start {
 
     if (setting('daemon')) {
         my $pid = $dancer->background();
-        print_startup_info($pid);
+        _print_startup_info($pid);
         return $pid;
     }
     else {
-        print_startup_info($$);
+        _print_startup_info($$);
         $dancer->run();
     }
 }
 
-sub print_startup_info {
+sub _print_startup_info {
     my $pid    = shift;
     my $ipaddr = setting('server');
     my $port   = setting('port');
