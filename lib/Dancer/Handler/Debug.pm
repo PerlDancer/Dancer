@@ -1,6 +1,14 @@
 package Dancer::Handler::Debug;
 # ABSTRACT: a debug handler for easy tracing
 
+=head1 SYNOPSIS
+
+    # in bin/app.pl
+    set apphandler => 'Debug';
+
+    # then, run the app the following way
+    perl -d bin/app.pl GET '/some/path/to/test' 'with=parameters&other=42'
+
 =head1 DESCRIPTION
 
 When developing a Dancer application, it can be useful to trace
@@ -10,15 +18,6 @@ application with the Perl debugger.
 
 This handler will process ony one query, based on the first argument
 given on the command line ($ARGV[0]).
-
-
-=head1 SYNOPSIS
-
-    # in bin/app.pl
-    set apphandler => 'Debug';
-
-    # then, run the app the following way
-    perl -d bin/app.pl GET '/some/path/to/test' 'with=parameters&other=42'
 
 =cut
 

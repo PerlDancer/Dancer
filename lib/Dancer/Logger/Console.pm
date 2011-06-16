@@ -1,8 +1,6 @@
 package Dancer::Logger::Console;
 # ABSTRACT: console-based logging engine for Dancer
 
-=head1 SYNOPSIS
-
 =head1 DESCRIPTION
 
 This is a console-based logging engine that prints your logs to the console.

@@ -18,77 +18,8 @@ In your configuration file:
 This is an abstract logging engine that provides loggers with basic
 functionality and some sanity checking.
 
-=head1 CONFIGURATION
-
-=head2 logger_format
-
-This is a format string (or a preset name) to specify the log format.
-
-The possible values are:
-
-=over 4
-
-=item %h
-
-host emiting the request
-
-=item %t
-
-date (formated like %d/%b/%Y %H:%M:%S)
-
-=item %P
-
-PID
-
-=item %L
-
-log level
-
-=item %D
-
-timer
-
-=item %m
-
-message
-
-=item %f
-
-file name that emit the message
-
-=item %l
-
-line from the file
-
-=item %i
-
-request ID
-
-=item %{$fmt}t
-
-timer formatted with a valid time format
-
-=item %{header}h
-
-header value
-
-=back
-
-There is two preset possible:
-
-=over 4
-
-=item simple
-
-will format the message like: [%P] %L @%D> %m in %f l. %l
-
-=item with_id
-
-will format the message like: [%P] %L @%D> [hit #%i] %m in %f l. %l
-
-=back
-
 =cut
+
 use strict;
 use warnings;
 use Carp;
@@ -268,3 +199,75 @@ Logs messages as error.
 sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
 
 1;
+
+=head1 CONFIGURATION
+
+=head2 logger_format
+
+This is a format string (or a preset name) to specify the log format.
+
+The possible values are:
+
+=over 4
+
+=item %h
+
+host emiting the request
+
+=item %t
+
+date (formated like %d/%b/%Y %H:%M:%S)
+
+=item %P
+
+PID
+
+=item %L
+
+log level
+
+=item %D
+
+timer
+
+=item %m
+
+message
+
+=item %f
+
+file name that emit the message
+
+=item %l
+
+line from the file
+
+=item %i
+
+request ID
+
+=item %{$fmt}t
+
+timer formatted with a valid time format
+
+=item %{header}h
+
+header value
+
+=back
+
+There is two preset possible:
+
+=over 4
+
+=item simple
+
+will format the message like: [%P] %L @%D> %m in %f l. %l
+
+=item with_id
+
+will format the message like: [%P] %L @%D> [hit #%i] %m in %f l. %l
+
+=back
+
+=cut
