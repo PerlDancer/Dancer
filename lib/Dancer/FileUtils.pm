@@ -26,16 +26,11 @@ package Dancer::FileUtils;
 
 =head1 DESCRIPTION
 
-Dancer::FileUtils includes a few file related utilities related that Dancer
-uses internally. Developers may use it instead of writing their own
-file reading subroutines or using additional modules.
-
-=head1 EXPORT
-
-Nothing by default. You can provide a list of subroutines to import.
+Dancer::FileUtils includes a few file related utilities related that
+Dancer uses internally. Developers may use it instead of writing their
+own file reading subroutines or using additional modules.
 
 =cut
-
 use strict;
 use warnings;
 
@@ -47,31 +42,43 @@ use Cwd 'realpath';
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(dirname open_file path read_file_content read_glob_content real_path set_file_mode);
+@EXPORT_OK = qw(dirname open_file path read_file_content
+                read_glob_content real_path set_file_mode);
 
-# Undo UNC special-casing catfile-voodoo on cygwin
-sub _trim_UNC {
-    if ($^O eq 'cygwin') {
-        return if ($#_ < 0);
-        my ($slashes, $part, @parts) = (0, undef, @_);
-        while(defined($part = shift(@parts))) { last if ($part); $slashes++ }
-        $slashes += ($part =~ s/^[\/\\]+//);
-        if ($slashes == 2) {
-            return("/" . $part, @parts);
-        } else {
-            my $slashstr = '';
-            $slashstr .= '/' for (1 .. $slashes);
-            return($slashstr . $part, @parts);
-        }
-    }
-    return(@_);
-}
+=func catfile
 
-sub d_catfile { File::Spec->catfile(_trim_UNC(@_)) }
-sub d_catdir { File::Spec->catdir(_trim_UNC(@_)) }
-sub d_canonpath { File::Spec->canonpath(_trim_UNC(@_)) }
-sub d_catpath { File::Spec->catpath(_trim_UNC(@_)) }
-sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
+Wrapper to L<File::Spec> catfile, with some cygwin magic.
+
+=cut
+sub catfile { File::Spec->catfile(_trim_UNC(@_)) }
+
+=func catdir
+
+Wrapper to L<File::Spec> catdir, with some cygwin magic.
+
+=cut
+sub catdir { File::Spec->catdir(_trim_UNC(@_)) }
+
+=func canonpath
+
+Wrapper to L<File::Spec> canonpath, with some cygwin magic.
+
+=cut
+sub canonpath { File::Spec->canonpath(_trim_UNC(@_)) }
+
+=func catpath
+
+Wrapper to L<File::Spec> catpath, with some cygwin magic.
+
+=cut
+sub catpath { File::Spec->catpath(_trim_UNC(@_)) }
+
+=func splitpath
+
+Wrapper to L<File::Spec> splitpath, with some cygwin magic.
+
+=cut
+sub splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
 
 =func path
 
@@ -82,8 +89,7 @@ sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
 Provides comfortable path resolving, internally using L<File::Spec>.
 
 =cut
-
-sub path { d_catfile(@_) }
+sub path { catfile(@_) }
 
 =func real_path
 
@@ -96,9 +102,8 @@ resolves symbolic links and relative-path components ("." and ".."). If
 specified path does not exist, real_path returns nothing.
 
 =cut
-
 sub real_path {
-  my $path = d_catfile(@_);
+  my $path = catfile(@_);
   #If Cwd's realpath encounters a path which does not exist it returns
   #empty on linux, but croaks on windows.
   if (! -e $path) {
@@ -107,8 +112,15 @@ sub real_path {
   realpath($path);
 }
 
+
+=func path_no_verify
+
+Same behavior as C<real_path>, but does not verify if the specified
+path exists.
+
+=cut
 sub path_no_verify {
-    my @nodes = File::Spec->splitpath(d_catdir(@_)); # 0=vol,1=dirs,2=file
+    my @nodes = File::Spec->splitpath(catdir(@_)); # 0=vol,1=dirs,2=file
     my $path = '';
 
     # [0->?] path(must exist),[last] file(maybe exists)
@@ -132,7 +144,6 @@ a path. On most OS, returns all but last level of file path. See
 L<File::Basename> for details.
 
 =cut
-
 sub dirname { File::Basename::dirname(@_) }
 
 =func set_file_mode
@@ -145,7 +156,6 @@ Applies charset setting from Dancer's configuration. Defaults to utf-8 if no
 charset setting.
 
 =cut
-
 sub set_file_mode {
     my ($fh) = @_;
     require Dancer::Config;
@@ -167,7 +177,6 @@ from Dancer's configuration to open the file in the proper encoding (or
 defaults to utf-8 if setting not present).
 
 =cut
-
 sub open_file {
     my ($mode, $filename) = @_;
     open(my $fh, $mode, $filename)
@@ -189,7 +198,6 @@ In array context it returns each line (as defined by $/) as a seperate element;
 in scalar context returns the entire contents of the file.
 
 =cut
-
 sub read_file_content {
     my ($file) = @_;
     my $fh;
@@ -216,7 +224,6 @@ Same as I<read_file_content>, only it accepts a file handle. Returns the
 content and B<closes the file handle>.
 
 =cut
-
 sub read_glob_content {
     my ($fh) = @_;
 
@@ -229,4 +236,36 @@ sub read_glob_content {
     return wantarray ? @content : join("", @content);
 }
 
+# privates
+
+
+# Undo UNC special-casing catfile-voodoo on cygwin
+sub _trim_UNC {
+    if ($^O eq 'cygwin') {
+        return if ($#_ < 0);
+        my ($slashes, $part, @parts) = (0, undef, @_);
+        while(defined($part = shift(@parts))) { last if ($part); $slashes++ }
+        $slashes += ($part =~ s/^[\/\\]+//);
+        if ($slashes == 2) {
+            return("/" . $part, @parts);
+        } else {
+            my $slashstr = '';
+            $slashstr .= '/' for (1 .. $slashes);
+            return($slashstr . $part, @parts);
+        }
+    }
+    return(@_);
+}
+
+
+
 'Dancer::FileUtils';
+
+__END__
+
+
+=head1 EXPORT
+
+Nothing by default. You can provide a list of subroutines to import.
+
+=cut
