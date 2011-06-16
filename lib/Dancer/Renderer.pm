@@ -1,6 +1,19 @@
 package Dancer::Renderer;
 # ABSTRACT: class responsible for rendering responses
 
+=head1 CORE LIBRARY
+
+This class is part of the core, it is provided for developers only.
+Dancer users should not need to read this documentation as it
+documents internal parts of the code only.
+
+=head1 DESCRIPTION
+
+This class is responsible for rendering response accordingly with its
+type.
+
+=cut
+
 use strict;
 use warnings;
 use Carp;
