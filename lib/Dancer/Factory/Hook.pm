@@ -22,7 +22,6 @@ sub init {
 Receives a list of hooks to be installed in current object.
 
 =cut
-
 sub install_hooks {
     my ( $self, @hooks_name ) = @_;
 
@@ -38,11 +37,21 @@ sub install_hooks {
     }
 }
 
+=method register_hook
+
+given a C<Dancer::Hook> object, this method registers it.
+
+=cut
 sub register_hook {
     my ( $self, $hook ) = @_;
     $self->_add_registered_hook( $hook->name, $hook->code );
 }
 
+=method hook_is_regitered
+
+Given an hook name, return a true value if it is currently registered.
+
+=cut
 sub hook_is_registered {
     my ( $self, $hook_name ) = @_;
     return grep { $_ eq $hook_name } @{$self->registered_hooks};
@@ -54,7 +63,6 @@ Call with a hook name and optional hook arguments. Will execute
 registered hooks.
 
 =cut
-
 sub execute_hooks {
     my ($self, $hook_name, @args) = @_;
 
@@ -69,6 +77,11 @@ sub execute_hooks {
    }
 }
 
+=method get_hooks_for
+
+Given an hook name, return the L<Dancer::Hook> object.
+
+=cut
 sub get_hooks_for {
     my ( $self, $hook_name ) = @_;
 
