@@ -19,47 +19,6 @@ method, like in the following example:
 A route handler should not read the environment by itself, but should instead
 use the current request object.
 
-=head1 HTTP environment variables
-
-All HTTP environment variables that are in %ENV will be provided in the
-Dancer::Request object through specific accessors, here are those supported:
-
-=over 4
-
-=item C<accept>
-
-=item C<accept_charset>
-
-=item C<accept_encoding>
-
-=item C<accept_language>
-
-=item C<accept_type>
-
-=item C<agent> (alias for C<user_agent>)
-
-=item C<connection>
-
-=item C<forwarded_for_address>
-
-=item C<forwarded_protocol>
-
-=item C<forwarded_host>
-
-=item C<host>
-
-=item C<keep_alive>
-
-=item C<path_info>
-
-=item C<referer>
-
-=item C<remote_address>
-
-=item C<user_agent>
-
-=back
-
 =cut
 
 use strict;
@@ -963,3 +922,45 @@ __END__
 
 
 
+=head1 HTTP environment variables
+
+All HTTP environment variables that are in %ENV will be provided in the
+Dancer::Request object through specific accessors, here are those supported:
+
+=over 4
+
+=item C<accept>
+
+=item C<accept_charset>
+
+=item C<accept_encoding>
+
+=item C<accept_language>
+
+=item C<accept_type>
+
+=item C<agent> (alias for C<user_agent>)
+
+=item C<connection>
+
+=item C<forwarded_for_address>
+
+=item C<forwarded_protocol>
+
+=item C<forwarded_host>
+
+=item C<host>
+
+=item C<keep_alive>
+
+=item C<path_info>
+
+=item C<referer>
+
+=item C<remote_address>
+
+=item C<user_agent>
+
+=back
+
+=cut

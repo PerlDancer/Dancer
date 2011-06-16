@@ -21,13 +21,14 @@ L<Dancer::Engine>.
 If a new type of Dancer engine is created, it is best it inherits from this
 class.
 
-=head1 ATTRIBUTES
+=cut
 
-=head2 name
+
+=attr name
 
 The name of the engine, such as I<JSON>, or I<Simple>.
 
-=head2 type
+=attr type
 
 The type of the engine, such as I<Serializer>, or I<Session>.
 
