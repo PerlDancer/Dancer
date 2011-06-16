@@ -3,9 +3,9 @@ package Dancer::Config;
 
 =head1 DESCRIPTION
 
-Dancer::Config handles reading and changing the configuration of your Dancer
-apps.  The documentation for this module aims to describe how to change
-settings, and which settings are available.
+Dancer::Config handles reading and changing the configuration of your
+Dancer apps.  The documentation for this module aims to describe how
+to change settings, and which settings are available.
 
 =cut
 
@@ -299,12 +299,13 @@ You can change a setting with the keyword B<set>, like the following:
     set content_type => 'text/plain';
     set startup_info => 0;
 
-A better way of defining settings exists: using YAML file. For this to be
-possible, you have to install the L<YAML> module. If a file named B<config.yml>
-exists in the application directory, it will be loaded, as a setting group.
+A better way of defining settings exists: using YAML file. For this to
+be possible, you have to install the L<YAML> module. If a file named
+B<config.yml> exists in the application directory, it will be loaded,
+as a setting group.
 
-The same is done for the environment file located in the B<environments>
-directory.
+The same is done for the environment file located in the
+B<environments> directory.
 
 =head1 SUPPORTED SETTINGS
 
@@ -535,17 +536,19 @@ The code throwing that error.
 
 Requires L<Module::Refresh> and L<Clone>.
 
-If set to true, Dancer will reload the route handlers whenever the file where
-they are defined is changed. This is very useful in development environment but
-B<should not be enabled in production>. Enabling this flag in production yields
-a major negative effect on performance because of L<Module::Refresh>.
+If set to true, Dancer will reload the route handlers whenever the
+file where they are defined is changed. This is very useful in
+development environment but B<should not be enabled in
+production>. Enabling this flag in production yields a major negative
+effect on performance because of L<Module::Refresh>.
 
-When this flag is set, you don't have to restart your webserver whenever you
-make a change in a route handler.
+When this flag is set, you don't have to restart your webserver
+whenever you make a change in a route handler.
 
-Note that L<Module::Refresh> only operates on files in C<%INC>, so if the script
-your Dancer app is started from changes, even with auto_reload enabled, you will
-still not see the changes reflected until you start your app.
+Note that L<Module::Refresh> only operates on files in C<%INC>, so if
+the script your Dancer app is started from changes, even with
+auto_reload enabled, you will still not see the changes reflected
+until you start your app.
 
 =head2 Session engine
 
@@ -569,9 +572,9 @@ C<dancer.session>.  This can be overridden by certain session engines.
 
 =head3 session_secure
 
-The user's session ID is stored in a cookie.  If the C<session_secure> setting
-is set to a true value, the cookie will be marked as secure, meaning it should
-only be sent over HTTPS connections.
+The user's session ID is stored in a cookie.  If the C<session_secure>
+setting is set to a true value, the cookie will be marked as secure,
+meaning it should only be sent over HTTPS connections.
 
 =head3 session_is_http_only
 
