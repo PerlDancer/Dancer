@@ -70,13 +70,25 @@ Returns the limit (post-set).
 
 Dancer::Route::Cache->attributes('size_limit', 'path_limit');
 
+
+
+
 # static
 
-# singleton for the current cache object
 my $_cache;
 
+=method get
+
+Returns the current cache object.
+
+=cut
 sub get {$_cache}
 
+=method reset
+
+Resets (clean up) the current cache object.
+
+=cut
 sub reset {
     $_cache = Dancer::Route::Cache->new();
     $_cache->{size_limit} = setting('route_cache_size_limit')
@@ -89,26 +101,8 @@ sub reset {
 
 sub init {
     my ($self, %args) = @_;
-    $self->build_size_limit($args{'size_limit'} || '10M');
-    $self->build_path_limit($args{'path_limit'} || 600);
-}
-
-sub build_path_limit {
-    my ($self, $limit) = @_;
-    if ($limit) {
-        $self->{'path_limit'} = $limit;
-    }
-
-    return $self->{'path_limit'};
-}
-
-sub build_size_limit {
-    my ($self, $limit) = @_;
-    if ($limit) {
-        $self->{'size_limit'} = $self->parse_size($limit);
-    }
-
-    return $self->{'size_limit'};
+    $self->_build_size_limit($args{'size_limit'} || '10M');
+    $self->_build_path_limit($args{'path_limit'} || 600);
 }
 
 =method parse_size($size)
@@ -229,6 +223,27 @@ sub route_cache_paths {
     my %cache = $self->{'cache'} ? %{$self->{'cache'}} : ();
 
     return scalar map { keys %{$cache{$_}} } keys %cache;
+}
+
+# privates
+
+sub _build_size_limit {
+    my ($self, $limit) = @_;
+    if ($limit) {
+        $self->{'size_limit'} = $self->parse_size($limit);
+    }
+
+    return $self->{'size_limit'};
+}
+
+
+sub _build_path_limit {
+    my ($self, $limit) = @_;
+    if ($limit) {
+        $self->{'path_limit'} = $limit;
+    }
+
+    return $self->{'path_limit'};
 }
 
 1;
