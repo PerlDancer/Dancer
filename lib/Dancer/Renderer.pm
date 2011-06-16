@@ -23,15 +23,33 @@ Dancer::Factory::Hook->instance->install_hooks(
     qw/before after before_serializer after_serializer before_file_render after_file_render/
 );
 
+=method render_file
+
+Alias to C<get_file_response>.
+
+=cut
 sub render_file { get_file_response() }
 
+=method render_action
+
+Renders the L<Dancer::Response> for the current request (got through
+L<Dancer::SharedData>).
+
+=cut
 sub render_action {
-    my $resp = get_action_response();
+    my $resp = _get_action_response();
     return (defined $resp)
-      ? response_with_headers()
+      ? _response_with_headers()
       : undef;
 }
 
+=method render_error ($error_code)
+
+Renders and error page given the error code. If a static file with
+that error code exists in the C<public> folder it is returned. If not,
+a default error page is rendered by Dancer.
+
+=cut
 sub render_error {
     my ($class, $error_code) = @_;
 
@@ -51,21 +69,18 @@ sub render_error {
     );
 }
 
-# Takes a response object and add default headers
-sub response_with_headers {
-    my $response = Dancer::SharedData->response();
+=method html_page ($title, $content, $style)
 
-   $response->{headers} ||= HTTP::Headers->new;
-   $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+Renders a simple HTML page using the built-in template. Required
+arguments are the page C<$title> and page C<$contents>. Optionally a
+C<$style> file can be provided.
 
-    return $response;
-}
-
+=cut
 sub html_page {
     my ($class, $title, $content, $style) = @_;
     $style ||= 'style';
 
-    my $template = $class->templates->{'default'};
+    my $template = $class->_templates->{'default'};
     my $ts       = Dancer::Template::Simple->new;
 
     return $ts->render(
@@ -78,7 +93,133 @@ sub html_page {
     );
 }
 
-sub get_action_response {
+=method get_file_response
+
+Given the current L<Dancer::Response> (got from L<Dancer::SharedData>)
+searches for a file in the C<public> folder that satisfies it.
+
+=cut
+sub get_file_response {
+    my $request   = Dancer::SharedData->request;
+    my $path_info = $request->path_info;
+
+    # requests that have \0 in path are forbidden
+    if ( $path_info =~ /\0/ ) {
+        _bad_request();
+        return 1;
+    }
+
+    my $app = Dancer::App->current;
+    my $static_file = real_path( $app->setting('public'), $path_info );
+
+    return if ( !$static_file
+        || index( $static_file, real_path( $app->setting('public') ) ) != 0 );
+
+    return Dancer::Renderer->get_file_response_for_path( $static_file, undef,
+        $request->content_type );
+}
+
+=method get_file_response_for_path ($static_file, $status, $mime)
+
+Creates a L<Dancer::Response> object given a C<$static_file>
+path. Optionally a C<$status> answer can be set (defaults to 200) and
+a response C<$mime> type (defaults to guessing the C<$static_file>
+mime type).
+
+=cut
+sub get_file_response_for_path {
+    my ($class, $static_file, $status, $mime) = @_;
+    $status ||= 200;
+
+    if ( -f $static_file ) {
+        Dancer::Factory::Hook->execute_hooks( 'before_file_render',
+            $static_file );
+
+        my $fh = open_file( '<', $static_file );
+        binmode $fh;
+        my $response = Dancer::SharedData->response() || Dancer::Response->new();
+        $response->status($status);
+        $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
+                                             _get_mime_type($static_file)));
+        $response->content($fh);
+
+        Dancer::Factory::Hook->execute_hooks( 'after_file_render', $response );
+
+        return $response;
+    }
+    return;
+}
+
+# privates
+
+# set of builtin templates needed by Dancer when rendering HTML pages
+sub _templates {
+    my $charset = setting('charset') || 'UTF-8';
+    {   default =>
+          '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title><% title %></title>
+<link rel="stylesheet" href="/css/<% style %>.css" />
+<meta http-equiv="Content-type" content="text/html; charset=' . $charset
+          . '" />
+</head>
+<body>
+<h1><% title %></h1>
+<div id="content">
+<% content %>
+</div>
+<div id="footer">
+Powered by <a href="http://perldancer.org/">Dancer</a> <% version %>
+</div>
+</body>
+</html>',
+    };
+}
+
+sub _get_full_mime_type {
+    my $mime = Dancer::MIME->instance();
+    return $mime->name_or_type(shift @_);
+}
+
+sub _get_mime_type {
+    my $file = shift;
+    my $mime = Dancer::MIME->instance();
+    return $mime->for_file($file);
+}
+
+sub _bad_request{
+    my $response = Dancer::SharedData->response() || Dancer::Response->new();
+    $response->status(400);
+    $response->content('Bad Request');
+}
+
+
+# Takes a response object and add default headers
+sub _response_with_headers {
+    my $response = Dancer::SharedData->response();
+
+   $response->{headers} ||= HTTP::Headers->new;
+   $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+
+    return $response;
+}
+
+
+sub _serialize_response_if_needed {
+    my $response = Dancer::SharedData->response();
+
+    if (Dancer::App->current->setting('serializer') && $response->content()){
+        Dancer::Factory::Hook->execute_hooks('before_serializer', $response);
+        Dancer::Serializer->process_response($response);
+        Dancer::Factory::Hook->execute_hooks('after_serializer', $response);
+    }
+    return $response;
+}
+
+
+sub _get_action_response {
     my $depth = shift || 1;
 
     # save the request before the filters are ran
@@ -105,14 +246,14 @@ sub get_action_response {
               . $method . ' '
               . $path;
         }
-        return get_action_response($depth + 1);
+        return _get_action_response($depth + 1);
     }
 
     # redirect immediately - skip route execution
     my $response = Dancer::SharedData->response();
     if (defined $response && (my $status = $response->status)) {
         if ($status == 302 || $status == 301) {
-            serialize_response_if_needed();
+            _serialize_response_if_needed();
             return $response;
         }
     }
@@ -120,11 +261,11 @@ sub get_action_response {
     # execute the action
     if ($handler) {
         # a response may exist, produced by a before filter
-        return serialize_response_if_needed() if defined $response && $response->exists;
+        return _serialize_response_if_needed() if defined $response && $response->exists;
         # else, get the route handler's response
         Dancer::App->current($handler->{app});
         $handler->run($request);
-        serialize_response_if_needed();
+        _serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
         Dancer::Factory::Hook->instance->execute_hooks('after', $resp);
         return $resp;
@@ -133,104 +274,5 @@ sub get_action_response {
         return undef;    # 404
     }
 }
-
-sub serialize_response_if_needed {
-    my $response = Dancer::SharedData->response();
-
-    if (Dancer::App->current->setting('serializer') && $response->content()){
-        Dancer::Factory::Hook->execute_hooks('before_serializer', $response);
-        Dancer::Serializer->process_response($response);
-        Dancer::Factory::Hook->execute_hooks('after_serializer', $response);
-    }
-    return $response;
-}
-
-sub get_file_response {
-    my $request   = Dancer::SharedData->request;
-    my $path_info = $request->path_info;
-
-    # requests that have \0 in path are forbidden
-    if ( $path_info =~ /\0/ ) {
-        _bad_request();
-        return 1;
-    }
-
-    my $app = Dancer::App->current;
-    my $static_file = real_path( $app->setting('public'), $path_info );
-
-    return if ( !$static_file
-        || index( $static_file, real_path( $app->setting('public') ) ) != 0 );
-
-    return Dancer::Renderer->get_file_response_for_path( $static_file, undef,
-        $request->content_type );
-}
-
-sub get_file_response_for_path {
-    my ($class, $static_file, $status, $mime) = @_;
-    $status ||= 200;
-
-    if ( -f $static_file ) {
-        Dancer::Factory::Hook->execute_hooks( 'before_file_render',
-            $static_file );
-
-        my $fh = open_file( '<', $static_file );
-        binmode $fh;
-        my $response = Dancer::SharedData->response() || Dancer::Response->new();
-        $response->status($status);
-        $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
-                                             _get_mime_type($static_file)));
-        $response->content($fh);
-
-        Dancer::Factory::Hook->execute_hooks( 'after_file_render', $response );
-
-        return $response;
-    }
-    return;
-}
-
-# private
-sub _get_full_mime_type {
-    my $mime = Dancer::MIME->instance();
-    return $mime->name_or_type(shift @_);
-}
-
-sub _get_mime_type {
-    my $file = shift;
-    my $mime = Dancer::MIME->instance();
-    return $mime->for_file($file);
-}
-
-sub _bad_request{
-    my $response = Dancer::SharedData->response() || Dancer::Response->new();
-    $response->status(400);
-    $response->content('Bad Request');
-}
-
-# set of builtin templates needed by Dancer when rendering HTML pages
-sub templates {
-    my $charset = setting('charset') || 'UTF-8';
-    {   default =>
-          '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-<head>
-<title><% title %></title>
-<link rel="stylesheet" href="/css/<% style %>.css" />
-<meta http-equiv="Content-type" content="text/html; charset=' . $charset
-          . '" />
-</head>
-<body>
-<h1><% title %></h1>
-<div id="content">
-<% content %>
-</div>
-<div id="footer">
-Powered by <a href="http://perldancer.org/">Dancer</a> <% version %>
-</div>
-</body>
-</html>',
-    };
-}
-
 
 1;
