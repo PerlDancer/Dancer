@@ -16,7 +16,12 @@ use Dancer::ModuleLoader;
 
 use Encode;
 
-# This is where we choose which application handler to return
+=func get_handler
+
+This is where we choose which application handler to return given the
+environment and application settings.
+
+=cut
 sub get_handler {
     my $handler = 'Dancer::Handler::Standalone';
 
@@ -41,7 +46,12 @@ sub get_handler {
     return $handler->new;
 }
 
-# handle an incoming request, process it and return a response
+=method handle_request
+
+Handle an incoming L<Dancer::Request>, process it, and return a
+L<Dancer::Response>.
+
+=cut
 sub handle_request {
     my ($self, $request) = @_;
     my $ip_addr = $request->remote_address || '-';
@@ -68,31 +78,15 @@ sub handle_request {
         Dancer::App->reload_apps;
     }
 
-    render_request($request);
+    _render_request($request);
     return $self->render_response();
 }
 
-sub render_request {
-    my $request = shift;
-    my $action;
-    $action = eval {
-        Dancer::Renderer->render_file
-          || Dancer::Renderer->render_action
-          || Dancer::Renderer->render_error(404);
-    };
-    if ($@) {
-        Dancer::Logger::error(
-            'request to ' . $request->path_info . " crashed: $@");
+=method psgi_app ($env)
 
-        Dancer::Error->new(
-            code    => 500,
-            title   => "Runtime Error",
-            message => $@
-        )->render();
-    }
-    return $action;
-}
+Returns a PSGI Application.
 
+=cut
 sub psgi_app {
     my $self = shift;
     sub {
@@ -103,6 +97,11 @@ sub psgi_app {
     };
 }
 
+=method init_request_headers ($env)
+
+Initializes L<HTTP::Headers> accordingly with the current environment.
+
+=cut
 sub init_request_headers {
     my ($self, $env) = @_;
 
@@ -116,8 +115,12 @@ sub init_request_headers {
     Dancer::SharedData->headers($psgi_headers);
 }
 
-# render a PSGI-formated response from a response built by
-# handle_request()
+=method render_response
+
+Renders a PSGI-formated response from a response built by
+handle_request()
+
+=cut
 sub render_response {
     my $self     = shift;
     my $response = Dancer::SharedData->response();
@@ -163,19 +166,51 @@ sub render_response {
     return [ $status, $headers, $content ];
 }
 
+=method dance
+
+Starts the configured L<Dancer::Handler>
+
+=cut
+sub dance { (shift)->start(@_) }
+
+
+
+# privates
+
 sub _is_text {
     my ($content_type) = @_;
     return $content_type =~ /(text|json)/;
 }
 
+# This one is also used in Test.pm, but should be private
+sub _render_request {
+    my $request = shift;
+    my $action;
+    $action = eval {
+        Dancer::Renderer->render_file
+          || Dancer::Renderer->render_action
+          || Dancer::Renderer->render_error(404);
+    };
+    if ($@) {
+        Dancer::Logger::error(
+            'request to ' . $request->path_info . " crashed: $@");
+
+        Dancer::Error->new(
+            code    => 500,
+            title   => "Runtime Error",
+            message => $@
+        )->render();
+    }
+    return $action;
+}
+
+
 # Fancy banner to print on startup
-sub print_banner {
+sub _THIS_IS_NOT_BEING_USED_print_banner {
     if (setting('startup_info')) {
         my $env = setting('environment');
         print "== Entering the $env dance floor ...\n";
     }
 }
-
-sub dance { (shift)->start(@_) }
 
 1;
