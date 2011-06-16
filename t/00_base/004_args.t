@@ -36,7 +36,7 @@ foreach my $test (@tests) {
         "arg processing looks good for: ".join(' ', @{$test->{args}}));
 }
 
-ok(Dancer::GetOpt->print_usage());
+ok(Dancer::GetOpt->_print_usage());
 
 # Dancer->import process ARGV
 @ARGV = ('--port=1234');

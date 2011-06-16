@@ -16,28 +16,31 @@ my $options = {
     environment => 'development',
 };
 
-sub arg_to_setting {
-    my ($option, $value) = @_;
-    setting($option => $value);
-}
+=method process_args
 
+Processes command line argument and defines corresponding Dancer
+settings.
+
+=cut
 sub process_args {
     my $help = 0;
     GetOptions(
         'help'          => \$help,
-        'port=i'        => sub { arg_to_setting(@_) },
-        'daemon'        => sub { arg_to_setting(@_) },
-        'environment=s' => sub { arg_to_setting(@_) },
-        'confdir=s'     => sub { arg_to_setting(@_) },
-        'restart=s'     => sub { arg_to_setting( auto_reload => $_[1] ) },
-    ) || usage_and_exit();
+        'port=i'        => sub { _arg_to_setting(@_) },
+        'daemon'        => sub { _arg_to_setting(@_) },
+        'environment=s' => sub { _arg_to_setting(@_) },
+        'confdir=s'     => sub { _arg_to_setting(@_) },
+        'restart=s'     => sub { _arg_to_setting( auto_reload => $_[1] ) },
+    ) || _usage_and_exit();
 
-    usage_and_exit() if $help;
+    _usage_and_exit() if $help;
 }
 
-sub usage_and_exit { print_usage() && exit(0) }
+# privates:
 
-sub print_usage {
+sub _usage_and_exit { _print_usage() && exit(0) }
+
+sub _print_usage {
     my $app = File::Spec->catfile( $FindBin::RealBin, $FindBin::RealScript );
     print <<EOF
 \$ $app [options]
@@ -86,5 +89,11 @@ file.
 
 EOF
 }
+
+sub _arg_to_setting {
+    my ($option, $value) = @_;
+    setting($option => $value);
+}
+
 
 'Dancer::GetOpt';
