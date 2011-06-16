@@ -34,18 +34,6 @@ And in your application:
 
 Create plugins for Dancer
 
-=head1 PLUGINS
-
-You can extend Dancer by writing your own Plugin.
-
-A plugin is a module that exports a bunch of symbols to the current namespace
-(the caller will see all the symbols defined via C<register>).
-
-Note that you have to C<use> the plugin wherever you want to use its symbols.
-For instance, if you have Webapp::App1 and Webapp::App2, both loaded from your
-main application, they both need to C<use FooPlugin> if they want to use the
-symbols exported by C<FooPlugin>.
-
 =cut
 
 use strict;
@@ -69,12 +57,18 @@ sub register($&);
 
 my $_keywords = {};
 
-sub add_hook { Dancer::Hook->new(@_) }
+=method add_hook
 
+Creates a new L<Dancer::Hook> object. Check L<Dancer::Hook::new>
+documentation for details on arguments.
+
+=cut
+sub add_hook { Dancer::Hook->new(@_) }
 
 =method plugin_setting
 
-Configuration for plugin should be structured like this in the config.yaml of the application:
+Configuration for plugin should be structured like this in the
+config.yaml of the application:
 
   plugins:
     plugin_name:
@@ -115,9 +109,12 @@ sub register($&) {
     my $plugin_name = caller();
 
     $keyword =~ /^[a-zA-Z_]+[a-zA-Z0-9_]*$/
-      or croak "You can't use '$keyword', it is an invalid name (it should match ^[a-zA-Z_]+[a-zA-Z0-9_]*$ )";
+      or croak "You can't use '$keyword', it is an invalid name ".
+               "(it should match ^[a-zA-Z_]+[a-zA-Z0-9_]*$ )";
 
-    if (grep { $_ eq $keyword } map { s/^(?:\$|%|&|@|\*)//; $_ } (@Dancer::EXPORT, @Dancer::EXPORT_OK)) {
+    if (grep { $_ eq $keyword } map {
+                 s/^(?:\$|%|&|@|\*)//; $_
+             } (@Dancer::EXPORT, @Dancer::EXPORT_OK)) {
         croak "You can't use '$keyword', this is a reserved keyword";
     }
     while (my ($plugin, $keywords) = each %$_keywords) {
@@ -132,9 +129,9 @@ sub register($&) {
 
 =method register_plugin
 
-A Dancer plugin must end with this statement. This lets the plugin register all
-the symbols define with C<register> as exported symbols (via the L<Exporter>
-module).
+A Dancer plugin must end with this statement. This lets the plugin
+register all the symbols define with C<register> as exported symbols
+(via the L<Exporter> module).
 
 A Dancer plugin inherits from Dancer::Plugin and Exporter transparently.
 
@@ -144,7 +141,7 @@ sub register_plugin {
     my ($application) = shift || caller(1);
     my ($plugin) = caller();
 
-    my @symbols = set_plugin_symbols($plugin);
+    my @symbols = _set_plugin_symbols($plugin);
     {
         no strict 'refs';
         # tried to use unshift, but it yields an undef warning on $plugin (perl v5.12.1)
@@ -154,7 +151,9 @@ sub register_plugin {
     return 1;
 }
 
-sub set_plugin_symbols {
+# privates
+
+sub _set_plugin_symbols {
     my ($plugin) = @_;
 
     for my $keyword (@{$_keywords->{$plugin}}) {
@@ -169,3 +168,18 @@ sub set_plugin_symbols {
 
 1;
 
+__END__
+
+=head1 PLUGINS
+
+You can extend Dancer by writing your own Plugin.
+
+A plugin is a module that exports a bunch of symbols to the current namespace
+(the caller will see all the symbols defined via C<register>).
+
+Note that you have to C<use> the plugin wherever you want to use its symbols.
+For instance, if you have Webapp::App1 and Webapp::App2, both loaded from your
+main application, they both need to C<use FooPlugin> if they want to use the
+symbols exported by C<FooPlugin>.
+
+=cut
