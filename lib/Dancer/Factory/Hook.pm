@@ -47,7 +47,7 @@ sub register_hook {
     $self->_add_registered_hook( $hook->name, $hook->code );
 }
 
-=method hook_is_regitered
+=method hook_is_registered
 
 Given an hook name, return a true value if it is currently registered.
 
