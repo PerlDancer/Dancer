@@ -108,7 +108,7 @@ Currently supported properties:
 
 =head2 register_hooks_name
 
-Add a new hook name, so developpers of application can insert some code at this point.
+Add a new hook name, so application developers can insert some code at this point.
 
     package My::Dancer::Plugin;
     Dancer::Hook->instance->register_hooks_name(qw/before_auth after_auth/);
