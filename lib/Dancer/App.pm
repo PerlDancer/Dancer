@@ -15,13 +15,30 @@ Dancer::App->attributes(qw(name prefix registry settings));
 
 # singleton that saves any app created, we want unicity for app names
 my $_apps = {};
+
+=method applications
+
+Returns an array of all running applications (C<Dancer::App> objects).
+
+=cut
 sub applications { values %$_apps }
 
+=method app_exists ($name)
+
+Returns a true value if the application identified by the C<$name> is
+defined.
+
+=cut
 sub app_exists {
     my ( $self, $name ) = @_;
     grep { $_ eq $name } keys %$_apps;
 }
 
+=method set_running_app ($name)
+
+Switchs the currently running application.
+
+=cut
 sub set_running_app {
     my ($self, $name) = @_;
     my $app = Dancer::App->get($name);
@@ -29,6 +46,11 @@ sub set_running_app {
     Dancer::App->current($app);
 }
 
+=method set_prefix ($prefix, $codeblock)
+
+Set a temporary route prefix to all code present in the C<$codeblock>.
+
+=cut
 sub set_prefix {
     my ($self, $prefix, $cb) = @_;
     croak "not a valid prefix: `$prefix', must start with a /"
@@ -44,11 +66,21 @@ sub set_prefix {
     return 1;    # prefix may have been set to undef
 }
 
+=method routes ($method)
+
+Returns an array of all routes for a given C<$method> type.
+
+=cut
 sub routes {
     my ($self, $method) = @_;
     map { $_->pattern } @{$self->registry->{'routes'}{$method}};
 }
 
+=method reload_apps
+
+Reloads all running applications. This method is highly experimental.
+
+=cut
 sub reload_apps {
     my ($class) = @_;
 
@@ -80,10 +112,17 @@ sub reload_apps {
     }
 }
 
+=method find_route_through_apps ($request)
+
+Given a C<$request>, this method will search which route can satisfy
+it through all defined applications.
+
+=cut
+
 sub find_route_through_apps {
     my ($class, $request) = @_;
     for my $app (Dancer::App->applications) {
-        my $route = $app->find_route($request);
+        my $route = $app->_find_route($request);
         if ($route) {
             Dancer::App->current($route->app);
             return $route;
@@ -93,9 +132,82 @@ sub find_route_through_apps {
     return;
 }
 
-# instance
+sub init {
+    my ($self) = @_;
+    $self->name('main') unless defined $self->name;
 
-sub find_route {
+    croak "an app named '" . $self->name . "' already exists"
+      if exists $_apps->{$self->name};
+
+    # default values for properties
+    $self->settings({});
+    $self->_init_registry();
+
+    $_apps->{$self->name} = $self;
+}
+
+# singleton that saves the current active Dancer::App object
+my $_current;
+
+=method current ($app)
+
+If a C<Dancer::App> is passed in C<$app>, it is set as the current
+application. If not, the current application is returned. if none
+exists, a new one is created.
+
+=cut
+sub current {
+    my ($class, $app) = @_;
+    return $_current = $app if defined $app;
+
+    if (not defined $_current) {
+        $_current = Dancer::App->get('main') || Dancer::App->new();
+    }
+
+    return $_current;
+}
+
+=method get
+
+Given an app name, returns the app object.
+
+=cut
+sub get {
+    my ($class, $name) = @_;
+    $_apps->{$name};
+}
+
+=method setting
+
+Used to set or query a configuration variable on an application. When
+querying will go through the local settings and then the main settings
+to find the defined value.
+
+=cut
+
+sub setting {
+    my $self = shift;
+
+    if ($self->name eq 'main') {
+        return (@_ > 1)
+          ? Dancer::Config::setting( @_ )
+          : Dancer::Config::setting( $_[0] );
+    }
+
+    if (@_ > 1) {
+        $self->_set_settings(@_)
+    } else {
+        my $name = shift;
+        exists($self->settings->{$name}) ? $self->settings->{$name}
+          : Dancer::Config::setting($name);
+    }
+}
+
+# privates
+
+
+# instance
+sub _find_route {
     my ($self, $request) = @_;
     my $method = lc($request->method);
 
@@ -131,61 +243,10 @@ sub find_route {
     return;
 }
 
-sub init {
-    my ($self) = @_;
-    $self->name('main') unless defined $self->name;
-
-    croak "an app named '" . $self->name . "' already exists"
-      if exists $_apps->{$self->name};
-
-    # default values for properties
-    $self->settings({});
-    $self->init_registry();
-
-    $_apps->{$self->name} = $self;
-}
-
-sub init_registry {
+sub _init_registry {
     my ($self, $reg) = @_;
     $self->registry($reg || Dancer::Route::Registry->new);
 
-}
-
-# singleton that saves the current active Dancer::App object
-my $_current;
-
-sub current {
-    my ($class, $app) = @_;
-    return $_current = $app if defined $app;
-
-    if (not defined $_current) {
-        $_current = Dancer::App->get('main') || Dancer::App->new();
-    }
-
-    return $_current;
-}
-
-sub get {
-    my ($class, $name) = @_;
-    $_apps->{$name};
-}
-
-sub setting {
-    my $self = shift;
-
-    if ($self->name eq 'main') {
-        return (@_ > 1)
-          ? Dancer::Config::setting( @_ )
-          : Dancer::Config::setting( $_[0] );
-    }
-
-    if (@_ > 1) {
-        $self->_set_settings(@_)
-    } else {
-        my $name = shift;
-        exists($self->settings->{$name}) ? $self->settings->{$name}
-          : Dancer::Config::setting($name);
-    }
 }
 
 sub _set_settings {
