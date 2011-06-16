@@ -1,5 +1,26 @@
 package Dancer::Handler::Debug;
-# ABSTRACT: debugging frontend for Dancer
+# ABSTRACT: a debug handler for easy tracing
+
+=head1 DESCRIPTION
+
+When developing a Dancer application, it can be useful to trace
+precisely what happen when a query is processed. This handler is here
+to provide the developer with a way to easily run the dancer
+application with the Perl debugger.
+
+This handler will process ony one query, based on the first argument
+given on the command line ($ARGV[0]).
+
+
+=head1 SYNOPSIS
+
+    # in bin/app.pl
+    set apphandler => 'Debug';
+
+    # then, run the app the following way
+    perl -d bin/app.pl GET '/some/path/to/test' 'with=parameters&other=42'
+
+=cut
 
 use strict;
 use warnings;
@@ -11,7 +32,36 @@ use base 'Dancer::Object', 'Dancer::Handler', 'HTTP::Server::Simple::PSGI';
 use Dancer::Config 'setting';
 use Dancer::SharedData;
 
-sub run {
+=method start
+
+Starts the dummy debug server. Call it with the request that should be
+debugged.
+
+=cut
+sub start {
+    my ($self, $req) = @_;
+    print STDERR ">> Dancer dummy debug server\n" if setting('startup_info');
+
+    my $dancer = Dancer::Handler::Debug->new();
+    my $psgi = sub {
+        my $env = shift;
+        my $req = Dancer::Request->new(env => $env);
+        $dancer->handle_request($req);
+    };
+    $dancer->{psgi_app} = $psgi;
+    $dancer->_run($req);
+}
+
+=method dance
+
+Alias to the c<start> method.
+
+=cut
+sub dance { start(@_) }
+
+# privates
+
+sub _run {
     my ($self, $req) = @_;
 
     my ($method, $path, $query) = @ARGV;
@@ -35,7 +85,7 @@ sub run {
     };
 
     $req = Dancer::Request->new(env => $env);
- 
+
     my $headers = HTTP::Headers->new(
         'User-Agent' => 'curl',
         'Host',   "$host:$port",
@@ -53,47 +103,6 @@ sub run {
     return $res;
 }
 
-sub start {
-    my ($self, $req) = @_;
-    print STDERR ">> Dancer dummy debug server\n" if setting('startup_info');
-    
-    my $dancer = Dancer::Handler::Debug->new();
-    my $psgi = sub {
-        my $env = shift;
-        my $req = Dancer::Request->new(env => $env);
-        $dancer->handle_request($req);
-    };
-    $dancer->{psgi_app} = $psgi;
-    $dancer->run($req);
-}
 
-sub dance { start(@_) }
 1;
 
-__END__
-
-=pod
-
-=head1 NAME
-
-Dancer::Handler::Debug - a debug handler for easy tracing
-
-=head1 DESCRIPTION
-
-When developing a Dancer application, it can be useful to trace precisely what
-happen when a query is processed. This handler is here to provide the developer
-with a way to easily run the dancer application with the Perl debugger.
-
-This handler will process ony one query, based on the first argument given on
-the command line ($ARGV[0]).
-
-=head1 USAGE
-    # in bin/app.pl
-    set apphandler => 'Debug';
-
-    # then, run the app the following way
-    perl -d bin/app.pl GET '/some/path/to/test' 'with=parameters&other=42'
-
-=head1 AUTHORS
-
-Dancer contributors
