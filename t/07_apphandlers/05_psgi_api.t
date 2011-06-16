@@ -32,7 +32,7 @@ my $app = sub {
 
 set 'plack_middlewares' => [['Runtime']], 'public' => '.';
 
-ok $app = $handler->apply_plack_middlewares($app);
+ok $app = $handler->_apply_plack_middlewares($app);
 my $res = $app->( \%ENV );
 is $res->[0], 404;
 ok grep { /X-Runtime/ } @{ $res->[1] };
