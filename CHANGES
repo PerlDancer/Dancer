@@ -1,4 +1,8 @@
 
+    [ BUG FIXES ]
+    * Fix a bug while parsing some cookies
+    (Franck Cuny)
+
     [ ENHANCEMENTS ]
     * Error Hook (PR 563 - JT Smith)
 
