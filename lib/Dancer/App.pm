@@ -30,6 +30,7 @@ sub set_running_app {
 
 sub set_prefix {
     my ($self, $prefix, $cb) = @_;
+    undef $prefix if defined($prefix) and $prefix eq "/";
     croak "not a valid prefix: `$prefix', must start with a /"
       if defined($prefix) && $prefix !~ /^\//;
     my $previous = Dancer::App->current->prefix;

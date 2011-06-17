@@ -50,6 +50,8 @@ like $@ => qr/not a valid prefix/, 'prefix must start with a /';
       get '/us'  => sub { 'us worked' };
     };
 
+    prefix('/');
+
     get '/*' => sub {
         "trash: " . params->{splat}[0];
     };
