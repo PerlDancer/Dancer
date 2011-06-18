@@ -5,6 +5,7 @@
 
     [ ENHANCEMENTS ]
     * Error Hook (PR 563 - JT Smith)
+    * The no prefix can be set using 'prefix "/";' (Alberto Simões)
 
 1.3060      15.06.2011
     ** Codename: Pirouetting Pedro // Pedro Melo **
