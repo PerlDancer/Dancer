@@ -14,6 +14,20 @@ use HTTP::Body;
 use URI;
 use URI::Escape;
 
+sub new {
+    # Deprecate the one arg style of initialization.
+    my ($self, @args) = @_;
+    if (@args == 1) {
+        @args = ('env' => $args[0]);
+        Dancer::Deprecation->deprecated(
+            feature => 'Calling Dancer::Request->new($env)',
+            version => 1.3052,
+            reason => 'Please use Dancer::Request->new( env => $env ) instead',
+        );
+    }
+    $self->SUPER::new(@args);
+}
+
 my @http_env_keys = (
     'user_agent',      'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive', 'connection',      'accept',
