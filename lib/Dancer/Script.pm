@@ -27,27 +27,20 @@ sub new {
 		$self->{check_version} = $args{check_version};
 
 	}else{
-		my ($appname,$path,$check_version) = $self->parse_opts();
+		my ($appname,$path,$check_version) = $self->parse_opts;
 		$self->{appname} = $appname;
 		$self->{path} = $path;
 		$self->{check_version} = $check_version;
 	}
 	
 	$self->{do_overwrite_all} = 0;
-	$self->validate_app_name();
+	$self->validate_app_name;
 	#my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
 	$self->{dancer_version} = $Dancer::VERSION;
-	$self->_set_application_path();
-	$self->_set_script_path();
-	$self->_set_lib_path();
+	$self->_set_application_path;
+	$self->_set_script_path;
+	$self->_set_lib_path;
 	return $self;
-}
-
-sub run {
-	my $self = shift; 
-	$self->version_check() if $self->{do_check_dancer_version};
-	$self->safe_mkdir($self->{dancer_app_dir});
-	$self->create_node($self->app_tree(), $self->{dancer_app_dir});
 }
 
 # options
@@ -94,6 +87,61 @@ NOYAML
 	return ($name,$path,$do_check_dancer_version);
 }
 
+sub run {
+	my $self = shift; 
+	$self->version_check if $self->{do_check_dancer_version};
+	$self->safe_mkdir($self->{dancer_app_dir});
+	$self->create_node($self->app_tree, $self->{dancer_app_dir});
+}
+
+sub run_scaffold {
+	my $class = shift;
+	my $type = shift;
+	my $method = "run_scaffold_$type";
+	if ( $class->can($method) ) { $class->$method; } 
+	else { die "Wrong type of script: $type"; } 
+}
+# must change run_scaffold_* for something 
+# more intuitive 
+sub run_scaffold_cgi {
+	my $self = shift; 
+
+	use Dancer ':syntax';
+	use FindBin '$RealBin';
+	use Plack::Runner;
+# For some reason Apache SetEnv directives dont propagate
+# correctly to the dispatchers, so forcing PSGI and env here 
+# is safer.
+	set apphandler => 'PSGI';
+	set environment => 'production';
+
+	my $psgi = path($RealBin, '..', 'bin', 'app.pl');
+	die "Unable to read startup script: $psgi" unless -r $psgi;
+
+	Plack::Runner->run($psgi); 
+}
+
+sub run_scaffold_fcgi {
+    my $self = shift;
+	
+	use Dancer ':syntax';
+	use FindBin '$RealBin';
+	use Plack::Handler::FCGI;
+
+# For some reason Apache SetEnv directives dont propagate
+# correctly to the dispatchers, so forcing PSGI and env here 
+# is safer.
+	set apphandler => 'PSGI';
+	set environment => 'production';
+
+	my $psgi = path($RealBin, '..', 'bin', 'app.pl');
+	my $app = do($psgi);
+	die "Unable to read startup script: $@" if $@;
+	my $server = Plack::Handler::FCGI->new(nproc => 5, detach => 1);
+
+	$server->run($app);
+}
+
 sub validate_app_name {
     my $self = shift;
     if ($self->{appname} =~ /[^\w:]/ || $self->{appname} =~ /^\d/ || $self->{appname} =~ /\b:\b|:{3,}/) {
@@ -106,7 +154,7 @@ sub validate_app_name {
 
 sub _set_application_path {
     my $self = shift;
-    $self->{dancer_app_dir} = catdir($self->{path}, $self->_dash_name());
+    $self->{dancer_app_dir} = catdir($self->{path}, $self->_dash_name);
 }
 
 sub _set_lib_path {
@@ -158,7 +206,7 @@ sub _create_node {
     my $node = shift;
     my $root = shift;
 
-    my $templates = $self->templates();
+    my $templates = $self->templates;
 
     while ( my ($path, $content) = each %$node ) {
         $path = catfile($root, $path);
@@ -556,45 +604,20 @@ Powered by <a href="http://perldancer.org/">Dancer</a> <% dancer_version %>
 ',
 
 "dispatch.cgi" =>
-#$self->PERL_INTERPRETER
-"#!/usr/bin/perl
-use Dancer ':syntax';
-use FindBin '\$RealBin';
-use Plack::Runner;
+"#!/usr/bin/env perl
+use Dancer::Script;
 
-# For some reason Apache SetEnv directives dont propagate
-# correctly to the dispatchers, so forcing PSGI and env here 
-# is safer.
-set apphandler => 'PSGI';
-set environment => 'production';
+Dancer::Script->run_scaffold('cgi');
 
-my \$psgi = path(\$RealBin, '..', 'bin', 'app.pl');
-die \"Unable to read startup script: \$psgi\" unless -r \$psgi;
-
-Plack::Runner->run(\$psgi);
 ",
 
 
 "dispatch.fcgi" =>
- #$self->PERL_INTERPRETER
-qq{#!/usr/bin/perl 
-use Dancer ':syntax';
-use FindBin '\$RealBin';
-use Plack::Handler::FCGI;
+"#!/usr/bin/env perl 
+use Dancer::Script;
 
-# For some reason Apache SetEnv directives dont propagate
-# correctly to the dispatchers, so forcing PSGI and env here 
-# is safer.
-set apphandler => 'PSGI';
-set environment => 'production';
-
-my \$psgi = path(\$RealBin, '..', 'bin', 'app.pl');
-my \$app = do(\$psgi);
-die "Unable to read startup script: \$@" if \$@;
-my \$server = Plack::Handler::FCGI->new(nproc => 5, detach => 1);
-
-\$server->run(\$app);
-},
+Dancer::Script->run_scaffold('fcgi');
+",
 
 "app.pl" =>
 
@@ -931,9 +954,9 @@ template: \"simple\"
 
 ",
 
-'jquery.js' => $self->jquery_minified(),
+'jquery.js' => $self->jquery_minified,
 
-'MANIFEST.SKIP' => $self->manifest_skip(),
+'MANIFEST.SKIP' => $self->manifest_skip,
 
 'development.yml' =>
 "# configuration file for development environment
