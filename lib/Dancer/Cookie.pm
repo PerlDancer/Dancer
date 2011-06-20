@@ -163,7 +163,7 @@ understands...
 
 Months and years are currently fixed at 30 and 365 days.  This may change.
 
-Anything else is used verbatum.
+Anything else is used verbatim.
 
 =head2 domain
 
