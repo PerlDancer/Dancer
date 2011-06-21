@@ -959,7 +959,7 @@ C<./lib> directory:
     load_app 'Webapp';
 	# or with options
     load_app 'Forum', prefix => '/forum';
-	load_app 'Webapp', settings=>'foo'=>'bar';
+    load_app 'Webapp', settings=>'foo'=>'bar';
 
 Note that the package loaded using load_app B<must> import Dancer with the
 C<:syntax> option.
