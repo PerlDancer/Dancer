@@ -116,7 +116,7 @@ contributions submitted via GitHub, as it makes tracking these contributions and
 applying them much, much easier. This gives your contribution a much better
 chance of being integrated into Dancer quickly!
 
-To help us achieve high-quality, stable releases, git-flow workflow is used to 
+To help us achieve high-quality, stable releases, git-flow workflow is used to
 handle pull-requests, that means contributors must work on their C<devel> branch
 rather than on their C<master>.  (Master should be touched only by the core dev
 team when preparing a release to CPAN; all ongoing development happens in
@@ -278,6 +278,50 @@ to master when the next release is being prepared.
 
 =back
 
+=head2 Dist::Zilla
+
+=head3 Building on devel branch
+
+Dancer switched to Dist::Zilla as a contribution builder. If you are developing
+Dancer, you might now need Dist::Zilla to build and test Dancer:
+
+	#instead of make test
+	dzil test
+
+	#instead of make
+	dzil build
+
+See L<dzil.org|http://dzil.org> for more information
+
+=head3 POD enhancements
+
+Dancer's Dist::Zilla configuration allows us to use POD enhancements which
+make the code more concise and less error-prone.
+
+=over 4
+
+=item * name and version
+
+are created from the abstract which has this format:
+
+	# ABSTRACT: tag line
+
+=item * copyright and license information
+
+are created automatically at the end of the file
+
+=item * list of functions and methods is now created from
+
+=item * new directives
+
+	=method
+	=function
+	=attr
+
+=back
+
+For more information on podweaver's possibilities see L<dzil.org|http://dzil.org> and.
+
 =head1 CODING GUIDELINES
 
 This section describes standards and requirements for coding. For more broad
@@ -292,6 +336,9 @@ the wheel either.
 
 We not likely to accept a new dependency to the core unless there is a
 very good reason.
+
+The balance is not easy to do but you can keep in mind that unless for a very
+good reason, the team won't accept a new dependency to be added to the core.
 
 If a patch provides a new feature that depends on a module, the solution is to
 perform a dynamic loading. Dancer has a class dedicated to that job:
