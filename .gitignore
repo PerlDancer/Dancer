@@ -9,7 +9,8 @@ TestApp
 t/sessions/
 tags
 MYMETA.yml
-
+#Dist::Zilla
+Dancer-*
 
 # From: https://github.com/github/gitignore/blob/master/Global/Linux.gitignore
 .*
