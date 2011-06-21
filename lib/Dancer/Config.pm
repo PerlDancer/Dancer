@@ -112,10 +112,9 @@ my $normalizers = {
 
 
 
-=method setting
+=func setting
 
-Public accessor for a setting. Allows to set or get a setting. This method is
-exported by the module, it's supposed to be used as a function:
+Public accessor for a setting. Allows to set or get a setting:
 
     use Dancer::Config 'setting';
 
@@ -241,10 +240,10 @@ sub _load_settings_from_yaml {
     return scalar(keys %$config);
 }
 
-sub _conffile { 
+sub _conffile {
     path(
-        setting('confdir') || setting('appdir'), 
-        'config.yml') 
+        setting('confdir') || setting('appdir'),
+        'config.yml')
 }
 
 sub _environment_file {
@@ -365,7 +364,7 @@ encoded.
 =item *
 
 If you're using L<Dancer::Plugin::Database>, UTF-8 support will automatically be
-enabled for your database - see 
+enabled for your database - see
 L<Dancer::Plugin::Database/"AUTOMATIC UTF-8 SUPPORT">
 
 =back
@@ -471,7 +470,7 @@ in standalone mode,
 
     logger: console
 
-Various other logger backends are available on CPAN, including 
+Various other logger backends are available on CPAN, including
 L<Dancer::Logger::Syslog>, L<Dancer::Logger::Log4perl>, L<Dancer::Logger::PSGI>
 (which can, with the aid of Plack middlewares, send log messages to a browser's
 console window) and others.
