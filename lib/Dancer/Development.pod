@@ -320,7 +320,7 @@ are created automatically at the end of the file
 
 =back
 
-For more information on podweaver's possibilities see L<dzil.org|http://dzil.org> and.
+For more information pod enhancements, see L<dzil.org|http://dzil.org>.
 
 =head1 CODING GUIDELINES
 
