@@ -310,9 +310,10 @@ are created from the abstract which has this format:
 
 are created automatically at the end of the file
 
-=item * list of functions and methods is now created from
-
 =item * new directives
+
+List of functions, methods and attributes are now created from corresponding
+directives:
 
 	=method
 	=function
