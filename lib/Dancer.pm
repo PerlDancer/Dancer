@@ -205,7 +205,7 @@ sub import {
     return if $syntax_only;
 
     $as_script = 1 if $ENV{PLACK_ENV};
-    
+
     Dancer::GetOpt->process_args() if !$as_script;
 
     _init_script_dir($script);
@@ -238,7 +238,7 @@ sub _load_app {
 
 sub _init_script_dir {
     my ($script) = @_;
-    
+
     my ($script_vol, $script_dirs, $script_name) =
       File::Spec->splitpath(File::Spec->rel2abs($script));
 
@@ -705,8 +705,8 @@ Deserializes a Data::Dumper structure.
 
 =head2 from_json ($structure, %options)
 
-Deserializes a JSON structure. Can receive optional arguments. Those arguments 
-are valid L<JSON> arguments to change the behaviour of the default 
+Deserializes a JSON structure. Can receive optional arguments. Those arguments
+are valid L<JSON> arguments to change the behaviour of the default
 C<JSON::from_json> function.
 
 =head2 from_yaml ($structure)
@@ -715,8 +715,8 @@ Deserializes a YAML structure.
 
 =head2 from_xml ($structure, %options)
 
-Deserializes a XML structure. Can receive optional arguments. These arguments 
-are valid L<XML::Simple> arguments to change the behaviour of the default 
+Deserializes a XML structure. Can receive optional arguments. These arguments
+are valid L<XML::Simple> arguments to change the behaviour of the default
 C<XML::Simple::XMLin> function.
 
 =head2 get
@@ -849,7 +849,7 @@ This hook receives as argument a HashRef, containing the tokens.
     delete $tokens->{user};
   };
 
-is equivalent to 
+is equivalent to
 
   hook before_template => sub {
     my $tokens = shift;
@@ -965,10 +965,20 @@ C<./lib> directory:
 
     # if we have lib/Webapp.pm, we can load it like:
     load_app 'Webapp';
+	# or with options
+    load_app 'Forum', prefix => '/forum';
+	load_app 'Webapp', settings=>'foo'=>'bar';
 
-Note that a package loaded using load_app B<must> import Dancer with the
-C<:syntax> option, in order not to change the application directory
-(which has been previously set for the caller script).
+Note that the package loaded using load_app B<must> import Dancer with the
+C<:syntax> option.
+
+Multiple apps:
+The old way of loading multiple apps in one go (load_app 'one', 'two'),
+doesn't work at the moment (v.13060), but might come back.
+
+Currently use:
+    load_app 'one';
+    load_app 'two';
 
 =head2 mime_type
 
@@ -1066,7 +1076,7 @@ For a safer alternative you can use lexical prefix like this:
 
     prefix '/home' => sub {
         ## Prefix is set to '/home' here
-        
+
         get ...;
         get ...;
     };
@@ -1124,7 +1134,7 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
     get '/old/:resource', sub {
         redirect '/new/'.params->{resource}, 301;
     };
-    
+
 It is important to note that issuing a redirect by itself does not exit and
 redirect immediately, redirection is deferred until after the current route
 or filter has been processed. To exit and redirect immediately, use the return
@@ -1356,7 +1366,7 @@ produce an C<HTTP 200 OK> status code, meaning everything is OK:
 In that example, Dancer will notice that the status has changed, and will
 render the response accordingly.
 
-The status keyword receives either a numeric status code or its name in 
+The status keyword receives either a numeric status code or its name in
 lower case, with underscores as a separator for blanks - see the list in
 L<Dancer::HTTP/"HTTP CODES">.
 
