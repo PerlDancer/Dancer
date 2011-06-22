@@ -159,6 +159,10 @@ sub _set_application_path {
 
 sub _set_lib_path {
     my $self = shift;
+	unless ($self->{appname} =~ /::/) {
+		$self->{lib_file} = "";
+		$self->{lib_path} = $self->{appname}; 
+	}
     my @lib_path = split('::', $self->{appname});
     my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
     $lib_path = join('/', @lib_path);
@@ -240,8 +244,8 @@ sub app_tree {
         "Makefile.PL"        => FILE,
         "MANIFEST.SKIP"      => FILE,
         lib                  => {
-         $self->{appname} => {
-            "$self->{appname}.pm" => FILE,}
+         $self->{lib_path} => {
+            "$self->{lib_file}" => FILE,}
         },
         "bin" => {
             "+app.pl" => FILE,
@@ -265,13 +269,13 @@ sub app_tree {
                 "error.css" => FILE,
             },
             "images"      => {
-                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{path},$self->{appname}, 'public', 'images', 'perldancer-bg.jpg')) }, 
-                "perldancer.jpg" => sub { $self->write_logo(catfile($self->{path},$self->{appname}, 'public', 'images', 'perldancer.jpg')) },
+                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{path},$self->{dancer_app_dir}, 'public', 'images', 'perldancer-bg.jpg')) }, 
+                "perldancer.jpg" => sub { $self->write_logo(catfile($self->{path},$self->{dancer_app_dir}, 'public', 'images', 'perldancer.jpg')) },
             },
             "javascripts" => {
                 "jquery.js" => FILE,
             },
-            "favicon.ico" => sub { $self->write_favicon(catfile($self->{path},$self->{appname}, 'public', 'favicon.ico')) },
+            "favicon.ico" => sub { $self->write_favicon(catfile($self->{path},$self->{dancer_app_dir}, 'public', 'favicon.ico')) },
         },
         "t" => {
             "001_base.t"        => FILE,
@@ -397,8 +401,10 @@ sub download_file {
 sub templates {
     my $self = shift;
     my $appname    = $self->{appname};
-    my $appfile    = $self->{appname};
+    my $appfile    = $self->{lib_file};
+    my $lib_path   = $self->{lib_path};
     my $cleanfiles = $self->{appname};
+	unless($lib_path eq ""){ $lib_path .= "/"; } 
 
     $appfile    =~ s{::}{/}g;
     $cleanfiles =~ s{::}{-}g;
@@ -413,7 +419,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME                => '$appname',
     AUTHOR              => q{YOUR NAME <youremail\@example.com>},
-    VERSION_FROM        => 'lib/$appfile.pm',
+    VERSION_FROM        => 'lib/$lib_path$appfile',
     ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
     (\$ExtUtils::MakeMaker::VERSION >= 6.3002
       ? ('LICENSE'=> 'perl')
@@ -559,7 +565,7 @@ WriteMakefile(
               it\'s just here to help you get started. The template used to
               generate this content is located in 
               <code>views/index.tt</code>.
-              You can add some routes to <tt>lib/'.$appname.'/'.$appfile.'.pm</tt>. 
+              You can add some routes to <tt>lib/'.$lib_path.$self->{lib_file}.'</tt>. 
               </p>
             </li>
 
@@ -627,7 +633,7 @@ use $appname;
 dance;
 ",
 
-"$appfile.pm" =>
+"$self->{lib_file}" =>
 
 "package $appname;
 use Dancer ':syntax';
