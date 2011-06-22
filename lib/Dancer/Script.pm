@@ -160,8 +160,9 @@ sub _set_application_path {
 sub _set_lib_path {
     my $self = shift;
 	unless ($self->{appname} =~ /::/) {
-		$self->{lib_file} = "";
-		$self->{lib_path} = $self->{appname}; 
+		
+		$self->{lib_file} = $self->{appname}; 
+		$self->{lib_path} = "";
 	}
     my @lib_path = split('::', $self->{appname});
     my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
