@@ -1,20 +1,18 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7, import => ['!pass'];
+use Test::More tests => 3, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 use Time::HiRes qw/gettimeofday tv_interval/;
 
 my ($t0, $elapsed);
 
-ok(
-    before_template sub {
-        die "plop";
-    }
-);
+before_template sub {
+    die "plop";
+};
 
-setting views => path( 't', '22_hooks', 'views' );
+set views => path( 't', '22_hooks', 'views' );
 
 get '/' => sub {
     template 'index', { foo => 'baz' };
