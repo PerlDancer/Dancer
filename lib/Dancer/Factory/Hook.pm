@@ -62,8 +62,8 @@ sub execute_hooks {
    foreach my $h (@{$self->get_hooks_for($hook_name)}) {
        $h->(@args);
        my $response = Dancer::SharedData->response;
-       defined $response or next;
-       $response->halted and die;
+       defined $response && $response->halted
+         and die;
    }
 }
 
