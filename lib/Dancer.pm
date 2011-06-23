@@ -960,13 +960,13 @@ sugar around Perl's C<require>:
 
 =head2 load_app
 
-Loads a Dancer package. This method takes sets the libdir to the current
-C<./lib> directory:
+Loads a Dancer package. This method sets the libdir to the current C<./lib>
+directory:
 
     # if we have lib/Webapp.pm, we can load it like:
     load_app 'Webapp';
 	# or with options
-    load_app 'forum', prefix => '/forum',settings => {foo => 'bar'};
+    load_app 'Forum', prefix => '/forum', settings => {foo => 'bar'};
 
 Note that the package loaded using load_app B<must> import Dancer with the
 C<:syntax> option.
