@@ -960,25 +960,24 @@ sugar around Perl's C<require>:
 
 =head2 load_app
 
-Loads a Dancer package. This method takes care to set the libdir to the current
+Loads a Dancer package. This method takes sets the libdir to the current
 C<./lib> directory:
 
     # if we have lib/Webapp.pm, we can load it like:
     load_app 'Webapp';
 	# or with options
-    load_app 'Forum', prefix => '/forum';
-    load_app 'Webapp', settings=>'foo'=>'bar';
+    load_app 'forum', prefix => '/forum',settings => {foo => 'bar'};
 
 Note that the package loaded using load_app B<must> import Dancer with the
 C<:syntax> option.
 
-Multiple apps:
-The old way of loading multiple apps in one go (load_app 'one', 'two'),
-doesn't work at the moment (v.13060), but might come back.
+To load multiple apps repeat load_app
 
-Currently use:
     load_app 'one';
     load_app 'two';
+
+The old way of loading multiple apps in one go (load_app 'one', 'two') is
+deprecated.
 
 =head2 mime_type
 
