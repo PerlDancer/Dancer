@@ -9,11 +9,11 @@ This guide has been written to help anyone interested in contributing to the
 development of Dancer.
 
 First of all - thank you for your interest in the project!  It's the community
-of helpful contributors who've helped Dancer experience phenominal growth to get
+of helpful contributors who've helped Dancer experience phenomenal growth to get
 to where it is today.
 
 Please read this guide before contributing to Dancer, to avoid wasted effort and
-maximise the chances of your contributions being used.
+maximize the chances of your contributions being used.
 
 =head1 WAYS TO CONTRIBUTE
 
@@ -42,7 +42,7 @@ help other new users find us!
 
 =head2 Mailing list / IRC community
 
-Subscribing to the mailing list and/or hanging our on our IRC channel and
+Subscribing to the mailing list and/or hanging out on our IRC channel and
 providing assistance to new users is incredibly valuable.
 
 =over 4
@@ -79,7 +79,7 @@ functionality or contribute to Dancer's core code, see "Patch Submission" below.
 =head1 GENERAL DEVELOPMENT GUIDELINES
 
 This section lists high-level recommendations for developing Dancer, for more
-detailled guidelines, see "Coding Guidelines" below.
+detailed guidelines, see "Coding Guidelines" below.
 
 =head2 Quality Assurance
 
@@ -222,7 +222,7 @@ After some discussion with the core-team members, it has been agreed
 that the 1.2xx release series will be the first of this kind, and will
 live as long as 1.3xx lives.
 
-As soon as the last 1.3xx release is mature enough and tha the core
+As soon as the last 1.3xx release is mature enough and the core
 team is happy with, it will be uploaded as the first version of the
 1.4xx series, and 1.2xx will become obsolete.
 
@@ -251,7 +251,7 @@ L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
 
 =head2 IRC Channels
 
-You can reach the development team on irc.perl.org, chan #dancer or via a web
+You can reach the development team on irc.perl.org, channel #dancer or via a web
 chat interface at L<http://www.perldancer.org/irc>.  We're always happy to hear
 from users and contributors.
 
@@ -264,7 +264,7 @@ Official developers have write access to this repository, contributors are
 invited to fork it if they want to submit patches, as explained in the
 I<Patch submission> section.
 
-The repository layout is organised as follows:
+The repository layout is organized as follows:
 
 =over 4
 
