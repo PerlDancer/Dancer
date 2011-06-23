@@ -957,18 +957,18 @@ directory:
 
     # if we have lib/Webapp.pm, we can load it like:
     load_app 'Webapp';
-	# or with options
+    # or with options
     load_app 'Forum', prefix => '/forum', settings => {foo => 'bar'};
 
 Note that the package loaded using load_app B<must> import Dancer with the
 C<:syntax> option.
 
-To load multiple apps repeat load_app
+To load multiple apps repeat load_app:
 
     load_app 'one';
     load_app 'two';
 
-The old way of loading multiple apps in one go (load_app 'one', 'two') is
+The old way of loading multiple apps in one go (load_app 'one', 'two';) is
 deprecated.
 
 =head2 mime_type
