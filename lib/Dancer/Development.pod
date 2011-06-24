@@ -87,9 +87,9 @@ platform for which Perl exists. We focus mainly on GNU/Linux (any distribution),
 *BSD and Windows (native and Cygwin).
 
 We should avoid regressions as much as possible and keep backwards
-compatibility in mind when refactoring. Stable releases will not break
-functionality and new releases provide upgrade path and upgrade tips such as
-warning the user about deprecated functionality.
+compatibility in mind when refactoring. Stable releases should not break
+functionality and new releases should provide an upgrade path and upgrade tips
+such as warning the user about deprecated functionality.
 
 =head2 Quality Supervision
 
@@ -167,7 +167,7 @@ name you want (it should describe the purpose of the pull request you're
 preparing).
 
 In that branch, do all the commits you need (the more the better) and when
-done, push the branch on your fork:
+done, push the branch to your fork:
 
     # ... commits ...
     git push origin pr/$name
@@ -183,17 +183,17 @@ appropriate commits only.
 It's also a good idea to summarize your work in a report sent to the users
 mailing list (see below), in order to make sure the team is aware of it.
 
-You could also notify the core team on IRC, on C<irc.perl.org>, chan C<#dancer>
-or L<http://www.perldancer.org/irc>.
+You could also notify the core team on IRC, on C<irc.perl.org>, channel
+C<#dancer> or L<http://www.perldancer.org/irc>.
 
 =item *
 
 When the core team reviews your pull request, it will either accept (and
 then merge into I<devel>) or refuse your request.
 
-If it's refused, make sure to understand the reasons explained by the team for
+If it's refused, try to understand the reasons explained by the team for
 the denial. Most of the time, communicating with the core team is enough to
-understand what was the mistake.  Above all, please don't be offended.
+understand what the mistake was. Above all, please don't be offended.
 
 If your pull-request is merged into I<devel>, then all you have to do is to
 remove your local and remote I<pr/$name> branch:
@@ -226,7 +226,7 @@ As soon as the last 1.3xx release is mature enough and the core
 team is happy with, it will be uploaded as the first version of the
 1.4xx series, and 1.2xx will become obsolete.
 
-This let us evolves quickly in our main track (devel in GitHub will
+This lets us evolve quickly in our main track (devel in GitHub will
 contain all the daily work we want to make 1.3xx better) but as well,
 it lets us assure maintainability for the 1.2 series, as we will
 probably have to fix a bug somewhere in 1.2 without merging with new
@@ -289,11 +289,11 @@ guidelines, see "GENERAL DEVELOPMENT GUIDELINES" above.
 
 Dancer is intended to be a micro-framework. That means among other things that
 it should remain lightweight. For this reason we try very hard to keep the
-dependency bag as low as possible. But we don't want to reinvent the wheel
-either.
+dependencies as low as possible. On the other hand, we don't want to reinvent
+the wheel either.
 
-The balance is not easy to do but you can keep in mind that unless for a very 
-good reason, the team won't accept a new dependency to be added to the core.
+We not likely to accept a new dependency to the core unless there is a
+very good reason.
 
 If a patch provides a new feature that depends on a module, the solution is to
 perform a dynamic loading. Dancer has a class dedicated to that job:
@@ -307,8 +307,8 @@ L<Dancer::ModuleLoader>. Here is an example of how to use it:
             or croak "the feature provided by Dancer::Some::Thing needs Some::Deps";
     }
 
-That way, an optional feature doesn't block Dancer from being installed as the
-dependency check is performed at runtime.
+That way, an optional feature doesn't block Dancer from being installed since
+the dependency check is performed at runtime.
 
 =head2 Perltidy
 
