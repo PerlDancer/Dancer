@@ -9,11 +9,11 @@ This guide has been written to help anyone interested in contributing to the
 development of Dancer.
 
 First of all - thank you for your interest in the project!  It's the community
-of helpful contributors who've helped Dancer experience phenominal growth to get
+of helpful contributors who've helped Dancer experience phenomenal growth to get
 to where it is today.
 
 Please read this guide before contributing to Dancer, to avoid wasted effort and
-maximise the chances of your contributions being used.
+maximizing the chances of your contributions being used.
 
 =head1 WAYS TO CONTRIBUTE
 
@@ -30,19 +30,18 @@ If you have a blog, just feel free to speak about Dancer.
 If you're a Twitter user, you can tweet about it with the hashtag C<#perl> (and
 feel free to follow C<@PerlDancer> for news and updates on Dancer!).
 
-Of course, dissemination efforts don't have to limited to blogs or Twitter.
+Of course, it doesn't have to be limited to blogs or Twitter.
 Feel free to spread the word in whatever way you consider fit and drop us a
-line on the Dancer user mailing list, see below.
+line on the Dancer user mailing list noted below.
 
 Also, if you're using and enjoying Dancer,
-L<http://cpanratings.perl.org/dist/Dancer|rating us on cpanratings.perl.org>
-explaining what you like about Dancer is another very valuable contribution, to
-help other new users find us!
-
+L<http://cpanratings.perl.org/dist/Dancer|rating us on cpanratings.perl.org>,
+explaining what you like about Dancer is another very valuable contribution that
+helps other new users find us!
 
 =head2 Mailing list / IRC community
 
-Subscribing to the mailing list and/or hanging our on our IRC channel and
+Subscribing to the mailing list and/or hanging out on our IRC channel and
 providing assistance to new users is incredibly valuable.
 
 =over 4
@@ -55,45 +54,46 @@ subscribe or view archives
 =item *
 
 IRC: C<#dancer> on C<irc.perl.org>, or L<http://www.perldancer.org/irc> for
-quick web client.
+a quick web client.
 
 =back
 
 =head2 Documentation
 
-We do value documentation very much, but it's difficult to keep it up-to-date.
+While we value documentation very much, it's difficult to keep it up-to-date.
 If you find a typo or an error in the documentation please do let us know -
-ideally, by submitting a patch with your fix (see "Patch Submission").
+ideally by submitting a patch with your fix (see "Patch Submission").
 
 =head2 Contribute to CPAN Testers
 
-Especially, if you have access to perl on rare operating systems, please
+If you have access to perl on rare operating systems, please
 consider contributing tests. See
 L<http://wiki.cpantesters.org/wiki/TestDuringInstall> for more information.
 
 =head2 Code
 
-You can write extensions (so-called plugins) for Dancer extending Dancer's core
+You can write extensions (plugins) for Dancer extending Dancer's core
 functionality or contribute to Dancer's core code, see "Patch Submission" below.
 
 =head1 GENERAL DEVELOPMENT GUIDELINES
 
 This section lists high-level recommendations for developing Dancer, for more
-detailled guidelines, see "Coding Guidelines" below.
+detailed guidelines, see "Coding Guidelines" below.
 
 =head2 Quality Assurance
 
 Dancer should be able to install for all Perl versions since 5.8, on any
-platform for which Perl exists.
+platform for which Perl exists. We focus mainly on GNU/Linux (any distribution),
+*BSD and Windows (native and Cygwin).
 
 We should avoid regressions as much as possible and keep backwards
-compatibility in mind when refactoring. Stable releases will not break
-functionality and new releases provide upgrade path and upgrade tips, e.g.
-warn about deprecated functionality.
+compatibility in mind when refactoring. Stable releases should not break
+functionality and new releases should provide an upgrade path and upgrade tips
+such as warning the user about deprecated functionality.
 
 =head2 Quality Supervision
 
-Our weapon for being aware of our quality is the CPAN testers platform:
+We can measure our quality using the CPAN testers platform:
 L<http://www.cpantesters.org>.
 
 A good way to help the project is to find a failing build log on the CPAN
@@ -105,7 +105,7 @@ L<http://github.com/sukria/Dancer/issues>.
 =head2 Reporting Bugs
 
 We prefer to have all our bug reports on GitHub, in the issues section:
-<http://github.com/sukria/Dancer/issues>. It's possible though to report bugs
+L<http://github.com/sukria/Dancer/issues>. It's possible though to report bugs
 on RT as well: L<https://rt.cpan.org/Dist/Display.html?Queue=Dancer>
 
 Please make sure the bug you're reporting does not yet exist. In doubt please
@@ -115,8 +115,8 @@ ask on IRC.
 
 The Dancer development team uses GitHub to collaborate.  We greatly appreciate
 contributions submitted via GitHub, as it makes tracking these contributions and
-applying them much, much easier - therefore giving a much better chance of your
-contribution being integrated into Dancer quickly!
+applying them much, much easier. This gives your contribution a much better
+chance of being integrated into Dancer quickly!
 
 To help us achieve high-quality, stable releases, git-flow workflow is used to 
 handle pull-requests, that means contributors must work on their C<devel> branch
@@ -134,7 +134,7 @@ Fork the repository L<http://github.com/sukria/Dancer> (click "Fork")
 
 =item *
 
-Clone your fork like the following, e.g.:
+Clone your fork to have a local copy using the following command:
 
     $ git clone git://github.com/myname/Dancer.git
 
@@ -167,7 +167,7 @@ name you want (it should describe the purpose of the pull request you're
 preparing).
 
 In that branch, do all the commits you need (the more the better) and when
-done, push the branch on your fork:
+done, push the branch to your fork:
 
     # ... commits ...
     git push origin pr/$name
@@ -183,17 +183,17 @@ appropriate commits only.
 It's also a good idea to summarize your work in a report sent to the users
 mailing list (see below), in order to make sure the team is aware of it.
 
-You could also notify the core team on IRC, on C<irc.perl.org>, chan C<#dancer>
-or L<http://www.perldancer.org/irc>.
+You could also notify the core team on IRC, on C<irc.perl.org>, channel
+C<#dancer> or L<http://www.perldancer.org/irc>.
 
 =item *
 
 When the core team reviews your pull request, it will either accept (and
 then merge into I<devel>) or refuse your request.
 
-If it's refused, make sure to understand the reasons explained by the team for
+If it's refused, try to understand the reasons explained by the team for
 the denial. Most of the time, communicating with the core team is enough to
-understand what was the mistake.  Above all, please don't be offended.
+understand what the mistake was. Above all, please don't be offended.
 
 If your pull-request is merged into I<devel>, then all you have to do is to
 remove your local and remote I<pr/$name> branch:
@@ -222,11 +222,11 @@ After some discussion with the core-team members, it has been agreed
 that the 1.2xx release series will be the first of this kind, and will
 live as long as 1.3xx lives.
 
-As soon as the last 1.3xx release is mature enough and tha the core
+As soon as the last 1.3xx release is mature enough and the core
 team is happy with, it will be uploaded as the first version of the
 1.4xx series, and 1.2xx will become obsolete.
 
-This let us evolves quickly in our main track (devel in GitHub will
+This lets us evolve quickly in our main track (devel in GitHub will
 contain all the daily work we want to make 1.3xx better) but as well,
 it lets us assure maintainability for the 1.2 series, as we will
 probably have to fix a bug somewhere in 1.2 without merging with new
@@ -251,7 +251,7 @@ L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
 
 =head2 IRC Channels
 
-You can reach the development team on irc.perl.org, chan #dancer or via a web
+You can reach the development team on irc.perl.org, channel #dancer or via a web
 chat interface at L<http://www.perldancer.org/irc>.  We're always happy to hear
 from users and contributors.
 
@@ -264,7 +264,7 @@ Official developers have write access to this repository, contributors are
 invited to fork it if they want to submit patches, as explained in the
 I<Patch submission> section.
 
-The repository layout is organised as follows:
+The repository layout is organized as follows:
 
 =over 4
 
@@ -289,11 +289,11 @@ guidelines, see "GENERAL DEVELOPMENT GUIDELINES" above.
 
 Dancer is intended to be a micro-framework. That means among other things that
 it should remain lightweight. For this reason we try very hard to keep the
-dependency bag as low as possible. But we don't want to reinvent the wheel
-either.
+dependencies as low as possible. On the other hand, we don't want to reinvent
+the wheel either.
 
-The balance is not easy to do but you can keep in mind that unless for a very 
-good reason, the team won't accept a new dependency to be added to the core.
+We not likely to accept a new dependency to the core unless there is a
+very good reason.
 
 If a patch provides a new feature that depends on a module, the solution is to
 perform a dynamic loading. Dancer has a class dedicated to that job:
@@ -307,8 +307,8 @@ L<Dancer::ModuleLoader>. Here is an example of how to use it:
             or croak "the feature provided by Dancer::Some::Thing needs Some::Deps";
     }
 
-That way, an optional feature doesn't block Dancer from being installed as the
-dependency check is performed at runtime.
+That way, an optional feature doesn't block Dancer from being installed since
+the dependency check is performed at runtime.
 
 =head2 Perltidy
 
