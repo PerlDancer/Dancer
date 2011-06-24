@@ -2,17 +2,22 @@
 
 Dancer::Introduction - A gentle introduction to Dancer
 
+=head1 DESCRIPTION
+
+Dancer is a free and open source micro web application framework written in
+Perl.
+
 =head1 INSTALL
 
 Installation of Dancer is simple:
 
-    # perl -MCPAN -e 'install Dancer'
+    perl -MCPAN -e 'install Dancer'
 
 Thanks to the magic of cpanminus, if you do not have CPAN.pm configured, or just
 want a quickfire way to get running, the following should work, at least on
 Unix-like systems:
 
-    # wget -O - http://cpanmin.us | sudo perl - Dancer
+    wget -O - http://cpanmin.us | sudo perl - Dancer
 
 (If you don't have root access, omit the 'sudo', and cpanminus will install
 Dancer and prereqs into C<~/perl5>.)
@@ -23,12 +28,24 @@ Create a web application using the dancer script:
 
     dancer -a MyApp
 
+Run the web application:
+
+    cd MyApp
+    bin/app.pl
+
+You can read the output of C<bin/app.pl --help> to change any settings such as
+the port number.
+
+View the web application at:
+
+    http://localhost:3000
+
 =head1 USAGE
 
-As soon as Dancer is imported to a script, that script becomes a webapp.  All
-the script has to do is to declare a list of B<routes>.  A route handler is
-composed by an HTTP method, a path pattern and a code block. C<strict> and
-C<warnings> pragma are also imported with Dancer.
+When Dancer is imported to a script, that script becomes a webapp, and at this
+point, all the script has to do is declare a list of B<routes>.  A route
+handler is composed by an HTTP method, a path pattern and a code block.
+C<strict> and C<warnings> pragmas are also imported with Dancer.
 
 The code block given to the route handler has to return a string which will be
 used as the content to render to the client.
@@ -36,23 +53,20 @@ used as the content to render to the client.
 Routes are defined for a given HTTP method. For each method
 supported, a keyword is exported by the module.
 
-Here is an example of a route definition:
+The following is an example of a route definition. The route is defined for the
+method 'get', so only GET requests will be honoured by that route:
 
     get '/hello/:name' => sub {
-        # do something important here
+        # do something
 
         return "Hello ".params->{name};
     };
 
-The route is defined for the method 'get', so only GET requests will be honoured
-by that route.
 
 =head2 HTTP METHODS
 
-All existing HTTP methods are defined in the RFC 2616
-L<http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html>.
-
-Here are the ones you can use to define your route handlers.
+Here are some of the standard HTTP methods which you can use to define your
+route handlers.
 
 =over 8
 
@@ -75,9 +89,9 @@ Here are the ones you can use to define your route handlers.
 
 =back
 
-You can also use the special keyword B<any> to define a route for multiple
-methods at once. For instance, you may want to define a route for both GET and
-POST methods, this is done like the following:
+To define a route for multiple methods you can also use the special keyword
+B<any>. This example illustrates how to define a route for both GET and
+POST methods:
 
     any ['get', 'post'] => '/myaction' => sub {
         # code
@@ -92,8 +106,8 @@ Or even, a route handler that would match any HTTP methods:
 
 =head2 ROUTE HANDLERS
 
-The route action is the code reference declared. It can access parameters through
-the `params' keyword, which returns a hashref.
+The route action is the code reference declared. It can access parameters
+through the `params' keyword, which returns a hashref.
 This hashref is a merge of the route pattern matches and the request params.
 
 You can have more details about how params are built and how to access them in
@@ -110,7 +124,7 @@ be set in the params hashref.
         "Hey ".params->{name}.", welcome here!";
     };
 
-Tokens can be made optional, for instance:
+Tokens can be optional, for example:
 
     get '/hello/:name?' => sub {
         "Hello there " . params->{name} || "whoever you are!";
@@ -141,7 +155,8 @@ be defined explicitly with C<qr{}>, like the following:
 
 =head2 CONDITIONAL MATCHING
 
-Routes may include some matching conditions (on the useragent and the hostname at the moment):
+Routes may include some matching conditions (on the useragent and the hostname
+at the moment):
 
     get '/foo', {agent => 'Songbird (\d\.\d)[\d\/]*?'} => sub {
       'foo method for songbird'
@@ -163,7 +178,7 @@ From here, any route handler is defined to /home/*
 
 You can unset the prefix value
 
-    prefix undef;
+    prefix '/'; # or: prefix undef;
     get '/page1' => sub {}; will match /page1
 
 Alternatively, to prevent you from ever forgetting to undef the prefix,
@@ -174,21 +189,6 @@ you can use lexical prefix like this:
     }; ## prefix reset to previous value on exit
     
     get '/page1' => sub {}; will match /page1
-
-=head2 RUNNING THE WEBSERVER
-
-Once the script is ready, you can run the webserver just by running the
-script. The following options are supported:
-
-=over 8
-
-=item B<--port=XXXX>    set the port to listen to (default is 3000)
-
-=item B<--daemon>       run the webserver in the background
-
-=item B<--help>         display a detailed help message
-
-=back
 
 =head1 ACTION SKIPPING
 
@@ -206,7 +206,6 @@ This is done with the B<pass> keyword, like in the following example
         "I say a number: ".params->{number};
     };
 
-=head1 ERROR HANDLING
 
 =head2 DEFAULT ERROR PAGES
 
@@ -263,7 +262,8 @@ give non-logged-in users a login page:
 
 
 The request keyword returns the current Dancer::Request object representing the
-incoming request. See the documentation of the L<Dancer::Request> module for details.
+incoming request. See the documentation of the L<Dancer::Request> module for
+details.
 
 =head2 After filters 
 
@@ -281,8 +281,8 @@ The filter is given the response object as its first argument:
 
 =head2 Before template filters
 
-C<before_template> hooks are called whenever a template is going to be processed,
-they are passed the tokens hash which they can alter.
+C<before_template> hooks are called whenever a template is going to be
+processed, they are passed the tokens hash which they can alter.
 
     before_template sub {
         my $tokens = shift;
@@ -519,20 +519,6 @@ different location by setting the 'public' option:
 Note that the public directory name is not included in the URL. A file
 ./public/css/style.css is made available as example.com/css/style.css.
 
-=head2 MIME-TYPES CONFIGURATION
-
-By default, Dancer will automatically detect the mime-types to use for
-the static files accessed.
-
-It's possible to choose specific mime-type per file extensions. For instance,
-we can imagine you want to serve *.foo as a text/foo content, instead of
-text/plain (which would be the content type detected by Dancer if *.foo are
-text files).
-
-        mime_type foo => 'text/foo';
-
-This configures the 'text/foo' content type for any file matching '*.foo'.
-
 =head2 STATIC FILE FROM A ROUTE HANDLER
 
 It's possible for a route handler to send a static file, as follows:
@@ -549,30 +535,6 @@ Or even if you want your index page to be a plain old index.html file, just do:
     get '/' => sub {
         send_file '/index.html'
     };
-
-=head2 ROUTE CACHING
-
-Dancer automatically supports default caching for routes. What this means is
-that Dancer remembers for each path what route it took, so it doesn't have to
-match it again.
-
-This makes things B<much> faster, especially when dealing with many routes.
-There are default limitations on the size of the cache and the number of
-entries, so it doesn't get out of proportion.
-
-Route caching can turned on using the I<route_cache> option in the
-configuration:
-
-    route_cache = 1
-
-The default limitations are 10M in size or 600 entries in the cache, however you
-can override these by settings the following settings:
-
-    # limiting the size of the route cache
-    route_cache_size_limit: 50M
-
-    # limiting the number of paths that will be cached
-    route_cache_path_limit: 300
 
 =head1 SETTINGS
 
@@ -615,7 +577,8 @@ As soon as the content is not a scalar - and a serializer is set, which is not
 the case by default - Dancer renders the response via the current
 serializer.
 
-Hence, with the JSON serializer set, the route handler above would result in a content like the following:
+Hence, with the JSON serializer set, the route handler above would result in a
+content like the following:
 
     {"number":100234,"foo":42,"list":["one","two","three"]}
 
@@ -638,7 +601,8 @@ requires L<XML::Simple>
 
 =item B<Mutable>
 
-will try to find the appropriate serializer using the B<Content-Type> and B<Accept-type> header of the request.
+will try to find the appropriate serializer using the B<Content-Type> and
+B<Accept-type> header of the request.
 
 =back
 
