@@ -560,13 +560,21 @@ In the case you have stored something else than a Scalar in your cookie:
 
 =head2 cookie
 
-Accesses a cookie value (ot set it). Note that this method will
-eventually be preferred to C<set_cookie>.
+Accesses a cookie value (or sets it). Note that this method will
+eventually be preferred over C<set_cookie>.
 
     cookie lang => "fr-FR";              # set a cookie and return its value
     cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
     cookie "lang"                        # return a cookie value
 
+If your cookie value is a key/value URI string, like
+
+    token=ABC&user=foo
+
+C<cookie> will only return the first part (C<token=ABC>) if called in scalar context.
+Use list context to fetch them all:
+
+    my @values = cookie "name";
 
 =head2 config
 
