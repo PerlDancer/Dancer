@@ -1,16 +1,5 @@
 package Dancer::Cookie;
 # ABSTRACT: class representing cookies
-
-=head1 SYNOPSIS
-
-    use Dancer::Cookie;
-
-    my $cookie = Dancer::Cookie->new(
-        name => $cookie_name, value => $cookie_value
-    );
-
-=cut
-
 use strict;
 use warnings;
 
@@ -196,4 +185,16 @@ sub _parse_duration {
 
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+    use Dancer::Cookie;
+
+    my $cookie = Dancer::Cookie->new(
+        name => $cookie_name, value => $cookie_value
+    );
+
+=cut
 

@@ -1,32 +1,5 @@
 package Dancer::Cookies;
 # ABSTRACT: a singleton storage for all cookies
-
-
-=head1 SYNOPSIS
-
-    use Dancer::Cookies;
-
-    my $cookies = Dancer::Cookies->cookies;
-
-    foreach my $name ( keys %{$cookies} ) {
-        my $cookie = $cookies->{$name};
-        my $value  = $cookie->value;
-        print "$name => $value\n";
-    }
-
-
-    cookie lang => "fr-FR"; #set a cookie and return its value
-    cookie lang => "fr-FR", expires => "2 hours";
-    cookie "lang"           #return a cookie value
-
-=head1 DESCRIPTION
-
-Dancer::Cookies keeps all the cookies defined by the application and
-makes them accessible and provides a few helper functions for cookie
-handling with regards to the stored cookies.
-
-=cut
-
 use strict;
 use warnings;
 
@@ -150,6 +123,34 @@ sub set_cookie_object {
 }
 
 1;
+
+__END__
+
+
+=head1 SYNOPSIS
+
+    use Dancer::Cookies;
+
+    my $cookies = Dancer::Cookies->cookies;
+
+    foreach my $name ( keys %{$cookies} ) {
+        my $cookie = $cookies->{$name};
+        my $value  = $cookie->value;
+        print "$name => $value\n";
+    }
+
+
+    cookie lang => "fr-FR"; #set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";
+    cookie "lang"           #return a cookie value
+
+=head1 DESCRIPTION
+
+Dancer::Cookies keeps all the cookies defined by the application and
+makes them accessible and provides a few helper functions for cookie
+handling with regards to the stored cookies.
+
+=cut
 
 
 

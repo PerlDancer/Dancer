@@ -1,18 +1,5 @@
 package Dancer::App;
 # ABSTRACT: singleton for Dancer apps
-
-=head1 CORE LIBRARY
-
-This class is part of the core, it is provided for developers only.
-Dancer users should not need to read this documentation as it
-documents internal parts of the code only.
-
-=head1 DESCRIPTION
-
-Manage multiple Dancer applications.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -276,3 +263,17 @@ sub _set_settings {
 }
 
 1;
+
+__END__
+
+=head1 CORE LIBRARY
+
+This class is part of the core, it is provided for developers only.
+Dancer users should not need to read this documentation as it
+documents internal parts of the code only.
+
+=head1 DESCRIPTION
+
+Manage multiple Dancer applications.
+
+=cut

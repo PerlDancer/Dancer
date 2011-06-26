@@ -1,14 +1,5 @@
 package Dancer::Config;
 # ABSTRACT: how to configure Dancer to suit your needs
-
-=head1 DESCRIPTION
-
-Dancer::Config handles reading and changing the configuration of your
-Dancer apps.  The documentation for this module aims to describe how
-to change settings, and which settings are available.
-
-=cut
-
 use strict;
 use warnings;
 use base 'Exporter';
@@ -286,6 +277,12 @@ _load_default_settings();
 ## TODO: C<environment> is not documented.
 
 __END__
+
+=head1 DESCRIPTION
+
+Dancer::Config handles reading and changing the configuration of your
+Dancer apps.  The documentation for this module aims to describe how
+to change settings, and which settings are available.
 
 =head1 SETTINGS
 
