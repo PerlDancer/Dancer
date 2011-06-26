@@ -279,12 +279,12 @@ sub _init_script_dir {
       || $appdir);
 
     Dancer::setting(public => $ENV{DANCER_PUBLIC}
-      || Dancer::FileUtils::path_no_verify($appdir, 'public'));
+      || Dancer::FileUtils::path($appdir, 'public'));
 
     Dancer::setting(views => $ENV{DANCER_VIEWS}
-      || Dancer::FileUtils::path_no_verify($appdir, 'views'));
+      || Dancer::FileUtils::path($appdir, 'views'));
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
