@@ -16,45 +16,6 @@ use vars '@EXPORT_OK';
     real_path set_file_mode normalize_path
 );
 
-# Undo UNC special-casing catfile-voodoo on cygwin
-sub _trim_UNC {
-    my @args = @_;
-
-    # if we're using cygwin
-    if ( $^O eq 'cygwin' ) {
-        # no @args, no problem
-        @args or return;
-
-        my ( $slashes, $part, @parts) = ( 0, undef, @args );
-
-        # start pulling part from @parts
-        while ( defined ( $part = shift @parts ) ) {
-            last if $part;
-            $slashes++;
-        }
-
-        # count slashes in $part
-        $slashes += ( $part =~ s/^[\/\\]+// );
-
-        if ( $slashes == 2 ) {
-            return ( '/' . $part, @parts );
-        } else {
-            my $slashstr = '';
-            $slashstr .= '/' for ( 1 .. $slashes );
-
-            return ( $slashstr . $part, @parts );
-        }
-    }
-
-    return @args;
-}
-
-sub d_catfile { File::Spec->catfile(_trim_UNC(@_)) }
-sub d_catdir { File::Spec->catdir(_trim_UNC(@_)) }
-sub d_canonpath { File::Spec->canonpath(_trim_UNC(@_)) }
-sub d_catpath { File::Spec->catpath(_trim_UNC(@_)) }
-sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
-
 # path should not verify paths
 # just normalize
 sub path {
@@ -65,7 +26,7 @@ sub path {
 }
 
 sub real_path { 
-  my $path = d_catfile(@_);
+  my $path = shift;
 
   #If Cwd's realpath encounters a path which does not exist it returns
   #empty on linux, but croaks on windows.
@@ -148,6 +109,40 @@ sub normalize_path {
     $path =~ s{$seqregex}{}g;
 
     return $path;
+}
+
+# !! currently unused
+# Undo UNC special-casing catfile-voodoo on cygwin
+sub _trim_UNC {
+    my @args = @_;
+
+    # if we're using cygwin
+    if ( $^O eq 'cygwin' ) {
+        # no @args, no problem
+        @args or return;
+
+        my ( $slashes, $part, @parts) = ( 0, undef, @args );
+
+        # start pulling part from @parts
+        while ( defined ( $part = shift @parts ) ) {
+            last if $part;
+            $slashes++;
+        }
+
+        # count slashes in $part
+        $slashes += ( $part =~ s/^[\/\\]+// );
+
+        if ( $slashes == 2 ) {
+            return ( '/' . $part, @parts );
+        } else {
+            my $slashstr = '';
+            $slashstr .= '/' for ( 1 .. $slashes );
+
+            return ( $slashstr . $part, @parts );
+        }
+    }
+
+    return @args;
 }
 
 1;
