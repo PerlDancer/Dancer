@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 2;
 use File::Temp;
 use File::Spec::Functions;
 use Dancer::Script;
