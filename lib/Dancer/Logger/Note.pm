@@ -1,17 +1,5 @@
 package Dancer::Logger::Note;
 # ABSTRACT: Test::More note() logging engine for Dancer
-
-=head1 DESCRIPTION
-
-This logging engine uses L<Test::More>'s note() to output as TAP comments.
-
-This is very useful in case you're writing a test and want to have logging
-messages as part of your TAP.
-
-"Like C<diag()>, except the message will not be seen when the test is run in a
-harness. It will only be visible in the verbose TAP stream." -- Test::More.
-
-=cut
 use strict;
 use warnings;
 use base 'Dancer::Logger::Abstract';
@@ -45,3 +33,16 @@ sub _log {
 
 
 
+__END__
+
+=head1 DESCRIPTION
+
+This logging engine uses L<Test::More>'s note() to output as TAP comments.
+
+This is very useful in case you're writing a test and want to have logging
+messages as part of your TAP.
+
+"Like C<diag()>, except the message will not be seen when the test is run in a
+harness. It will only be visible in the verbose TAP stream." -- Test::More.
+
+=cut

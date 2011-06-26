@@ -1,13 +1,5 @@
 package Dancer::Logger;
 # ABSTRACT: common interface for loggin in Dancer
-
-=head1 DESCRIPTION
-
-This module is the wrapper that provides support for different 
-logger engines.
-
-=cut
-
 use strict;
 use warnings;
 use Data::Dumper;
@@ -74,6 +66,11 @@ sub _serialize {
 1;
 
 __END__
+
+=head1 DESCRIPTION
+
+This module is the wrapper that provides support for different 
+logger engines.
 
 =head1 USAGE
 

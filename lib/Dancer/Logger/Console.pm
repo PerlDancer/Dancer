@@ -1,11 +1,5 @@
 package Dancer::Logger::Console;
 # ABSTRACT: console-based logging engine for Dancer
-
-=head1 DESCRIPTION
-
-This is a console-based logging engine that prints your logs to the console.
-
-=cut
 use strict;
 use warnings;
 use base 'Dancer::Logger::Abstract';
@@ -22,3 +16,10 @@ sub _log {
 
 1;
 
+__END__
+
+=head1 DESCRIPTION
+
+This is a console-based logging engine that prints your logs to the console.
+
+=cut

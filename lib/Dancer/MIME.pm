@@ -1,40 +1,5 @@
 package Dancer::MIME;
 # ABSTRACT: singleton object to handle MimeTypes
-
-=head1 SYNOPSIS
-
-    # retrieve object instance
-    my $mime = Data::MIME->instance();
-
-    # return a hash reference of user defined types
-    my $types = $mime->custom_types;
-
-    # return the default mime-type for unknown files
-    $mime->default
-
-    # set the default mime-type with Dancer::Config or Dancer, like
-    set default_mime_type => "text/plain";
-    # or directly in your config.yml file.
-
-    # add non standard mime type
-    $mime->add_type( foo => "text/foo" );
-
-    # add an alias to an existing type
-    $mime->add_alias( bar => "foo" );
-
-    # get mime type for standard or non standard types
-    $nonstandard_type = $mime->for_name('foo');
-    $standard_type    = $mime->for_name('svg');
-
-    # get mime type for a file (given the extension)
-    $mime_type = $mime->for_file("foo.bar");
-
-=head1 DESCRIPTION
-
-Simplistic Dancer interface to L<MIME::Types>.
-
-=cut
-
 use strict;
 use warnings;
 use base 'Dancer::Object::Singleton';
@@ -199,3 +164,39 @@ sub mime_type_for {
 }
 
 42;
+__END__
+
+=head1 SYNOPSIS
+
+    # retrieve object instance
+    my $mime = Data::MIME->instance();
+
+    # return a hash reference of user defined types
+    my $types = $mime->custom_types;
+
+    # return the default mime-type for unknown files
+    $mime->default
+
+    # set the default mime-type with Dancer::Config or Dancer, like
+    set default_mime_type => "text/plain";
+    # or directly in your config.yml file.
+
+    # add non standard mime type
+    $mime->add_type( foo => "text/foo" );
+
+    # add an alias to an existing type
+    $mime->add_alias( bar => "foo" );
+
+    # get mime type for standard or non standard types
+    $nonstandard_type = $mime->for_name('foo');
+    $standard_type    = $mime->for_name('svg');
+
+    # get mime type for a file (given the extension)
+    $mime_type = $mime->for_file("foo.bar");
+
+=head1 DESCRIPTION
+
+Simplistic Dancer interface to L<MIME::Types>.
+
+=cut
+

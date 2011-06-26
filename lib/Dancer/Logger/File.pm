@@ -1,15 +1,5 @@
 package Dancer::Logger::File;
 # ABSTRACT: file-based logging engine for Dancer
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-This is a file-based logging engine that allows you to save your logs to files
-on disk.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -107,3 +97,14 @@ sub _log {
 }
 
 1;
+__END__
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+This is a file-based logging engine that allows you to save your logs to files
+on disk.
+
+=cut
+

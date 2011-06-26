@@ -1,20 +1,5 @@
 package Dancer::Logger::Diag;
 # ABSTRACT: Test::More diag() logging engine for Dancer
-
-=head1 SYNOPSIS
-
-  my $diag = Dancer::Logger::Diag->new();
-  $diag->_log( $level, $message);
-
-=head1 DESCRIPTION
-
-This logging engine uses L<Test::More>'s diag() to output as TAP comments.
-
-This is very useful in case you're writing a test and want to have logging
-messages as part of your TAP.
-
-=cut
-
 use strict;
 use warnings;
 use base 'Dancer::Logger::Abstract';
@@ -48,4 +33,20 @@ sub _log {
 }
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+  my $diag = Dancer::Logger::Diag->new();
+  $diag->_log( $level, $message);
+
+=head1 DESCRIPTION
+
+This logging engine uses L<Test::More>'s diag() to output as TAP comments.
+
+This is very useful in case you're writing a test and want to have logging
+messages as part of your TAP.
+
+=cut
 

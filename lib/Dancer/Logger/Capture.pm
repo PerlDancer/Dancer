@@ -1,21 +1,5 @@
 package Dancer::Logger::Capture;
 # ABSTRACT: Capture dancer logs
-
-=head1 SYNOPSIS
-
-    set logger => "capture";
-
-    my $trap = Dancer::Logger::Capture->trap;
-    my $logs = $trap->read;
-
-=head1 DESCRIPTION
-
-This is a logger class for L<Dancer> which captures all logs to an object.
-
-It's primary purpose is for testing.
-
-=cut
-
 use strict;
 use warnings;
 
@@ -48,6 +32,20 @@ sub _log {
 1;
 
 __END__
+
+
+=head1 SYNOPSIS
+
+    set logger => "capture";
+
+    my $trap = Dancer::Logger::Capture->trap;
+    my $logs = $trap->read;
+
+=head1 DESCRIPTION
+
+This is a logger class for L<Dancer> which captures all logs to an object.
+
+It's primary purpose is for testing.
 
 =head1 EXAMPLE
 

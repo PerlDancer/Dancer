@@ -1,25 +1,5 @@
 package Dancer::Logger::Abstract;
 # ABSTRACT: Abstract logging engine for Dancer
-
-=head1 SYNOPSIS
-
-In your configuration file:
-
-    # default
-    logger_format: simple
-    # [1234] debug @0.12> [hit #123]message from your log in File.pm line 12
-
-    # custom
-    logger_format: %m %{%H:%M}t [%{accept_type}h]
-    # message from your log [11:59] [text/html]
-
-=head1 DESCRIPTION
-
-This is an abstract logging engine that provides loggers with basic
-functionality and some sanity checking.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -199,6 +179,25 @@ Logs messages as error.
 sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
 
 1;
+__END__
+
+
+=head1 SYNOPSIS
+
+In your configuration file:
+
+    # default
+    logger_format: simple
+    # [1234] debug @0.12> [hit #123]message from your log in File.pm line 12
+
+    # custom
+    logger_format: %m %{%H:%M}t [%{accept_type}h]
+    # message from your log [11:59] [text/html]
+
+=head1 DESCRIPTION
+
+This is an abstract logging engine that provides loggers with basic
+functionality and some sanity checking.
 
 =head1 CONFIGURATION
 
