@@ -238,17 +238,17 @@ sub _load_app {
 
 sub _init_script_dir {
     my ($script) = @_;
-    
+    my $run_from_cmdline = 0;
+    if ($script eq "-e") {
+        $script = "./_run-from-command-line_"; # arbitrary filename to avoid splitting last directory as file
+        $run_from_cmdline = 1;
+    } # this will set vol, dirs, and name as sane values, even for one-liners
+
     my ($script_vol, $script_dirs, $script_name) =
       File::Spec->splitpath(File::Spec->rel2abs($script));
 
-    # normalize
-    if ( -d ( my $fulldir = File::Spec->catdir( $script_dirs, $script_name ) ) ) {
-        $script_dirs = $fulldir;
-        $script_name = '';
-    }
-
     my @script_dirs = File::Spec->splitdir($script_dirs);
+    pop(@script_dirs); # splitpath creates a trailing dirsep...
     my $script_path;
     if ($script_vol) {
         $script_path = Dancer::path($script_vol, $script_dirs);
@@ -260,8 +260,9 @@ sub _init_script_dir {
 
     # in bin/ or public/ we need to go one level upper to find the appdir
     $LAYOUT_PRE_DANCER_1_2 = 0
-      if ($script_dirs[$#script_dirs - 1] eq 'bin')
-      or ($script_dirs[$#script_dirs - 1] eq 'public');
+      if (not $run_from_cmdline)
+      and ($script_dirs[$#script_dirs] eq 'bin')
+      or ($script_dirs[$#script_dirs] eq 'public');
 
     my $appdir = $ENV{DANCER_APPDIR} || (
           $LAYOUT_PRE_DANCER_1_2
