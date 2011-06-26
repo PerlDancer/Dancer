@@ -1,29 +1,5 @@
 package Dancer::Object;
 # ABSTRACT: basic root class for Dancer's objects
-
-=head1 SYNOPSIS
-
-    package My::Dancer::Extension;
-
-    use strict;
-    use warnings;
-    use base 'Dancer::Object';
-
-    __PACKAGE__->attributes( qw/name value this that/ );
-
-    sub init {
-        # our initialization code, if we need one
-    }
-
-=head1 DESCRIPTION
-
-While we B<love> L<Moose>, we can't use it for Dancer and still keep Dancer
-minimal, so we wrote Dancer::Object instead.
-
-It provides you with attributes and an initializer.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -163,4 +139,29 @@ sub _setter_code {
 }
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+    package My::Dancer::Extension;
+
+    use strict;
+    use warnings;
+    use base 'Dancer::Object';
+
+    __PACKAGE__->attributes( qw/name value this that/ );
+
+    sub init {
+        # our initialization code, if we need one
+    }
+
+=head1 DESCRIPTION
+
+While we B<love> L<Moose>, we can't use it for Dancer and still keep Dancer
+minimal, so we wrote Dancer::Object instead.
+
+It provides you with attributes and an initializer.
+
+=cut
 

@@ -1,32 +1,5 @@
 package Dancer::ModuleLoader;
 # ABSTRACT: dynamic module loading helpers for Dancer core components
-
-=head1 SYNOPSIS
-
-Taken directly from Dancer::Template::TemplateToolkit (which is core):
-
-    die "Template is needed by Dancer::Template::TemplateToolkit"
-      unless Dancer::ModuleLoader->load('Template');
-
-    # we now have Template loaded
-
-=head1 DESCRIPTION
-
-Sometimes in Dancer core we need to use modules, but we don't want to declare
-them all in advance in compile-time. These could be because the specific modules
-provide extra features which depend on code that isn't (and shouldn't) be in
-core, or perhaps because we only want these components loaded in lazy style,
-saving loading time a bit. For example, why load L<Template> (which isn't
-required by L<Dancer>) when you don't use L<Dancer::Template::TemplateToolkit>?
-
-To do such things takes a bit of code for localizing C<$@> and C<eval>ing. That
-code has been refactored into this module to help Dancer core developers.
-
-B<Please only use this for Dancer core modules>. If you're writing an external
-Dancer module (L<Dancer::Template::Tiny>, L<Dancer::Session::Cookie>, etc.),
-please simply "C<use ModuleYouNeed>" in your code and don't use this module.
-
-=cut
 use strict;
 use warnings;
 
@@ -213,5 +186,33 @@ sub class_from_setting {
 }
 
 1;
+__END__
+
+=head1 SYNOPSIS
+
+Taken directly from Dancer::Template::TemplateToolkit (which is core):
+
+    die "Template is needed by Dancer::Template::TemplateToolkit"
+      unless Dancer::ModuleLoader->load('Template');
+
+    # we now have Template loaded
+
+=head1 DESCRIPTION
+
+Sometimes in Dancer core we need to use modules, but we don't want to declare
+them all in advance in compile-time. These could be because the specific modules
+provide extra features which depend on code that isn't (and shouldn't) be in
+core, or perhaps because we only want these components loaded in lazy style,
+saving loading time a bit. For example, why load L<Template> (which isn't
+required by L<Dancer>) when you don't use L<Dancer::Template::TemplateToolkit>?
+
+To do such things takes a bit of code for localizing C<$@> and C<eval>ing. That
+code has been refactored into this module to help Dancer core developers.
+
+B<Please only use this for Dancer core modules>. If you're writing an external
+Dancer module (L<Dancer::Template::Tiny>, L<Dancer::Session::Cookie>, etc.),
+please simply "C<use ModuleYouNeed>" in your code and don't use this module.
+
+=cut
 
 

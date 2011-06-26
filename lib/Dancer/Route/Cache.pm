@@ -1,32 +1,5 @@
 package Dancer::Route::Cache;
 # ABSTRACT: Cache mechanism for route matching
-
-=head1 SYNOPSIS
-
-    my $cache = Dancer::Route::Cache->new(
-        path_limit => 300, # optional
-    );
-
-    # storing a path
-    # /new/item/ is the path, $route is a compiled route
-    $cache->store_path( 'get', '/new/item/', $route );
-    my $cached_route = $cache->route_from_path('/new/item/');
-
-=head1 DESCRIPTION
-
-When L<Dancer> first starts, it has to compile a regexp list of all
-the routes.  Then, on each request it goes over the compiled routes
-list and tries to compare the requested path to a route.
-
-A major drawback is that L<Dancer> has to go over the matching on
-every request, which (especially on CGI-based applications) can be
-very time consuming.
-
-The caching mechanism allows to cache some requests to specific routes
-(but B<NOT> specific results) and run those routes on a specific
-path. This allows us to speed up L<Dancer> quite a lot.
-
-=cut
 use strict;
 use warnings;
 use Carp;
@@ -248,6 +221,34 @@ sub _build_path_limit {
 
 1;
 
+__END__
+
+=head1 SYNOPSIS
+
+    my $cache = Dancer::Route::Cache->new(
+        path_limit => 300, # optional
+    );
+
+    # storing a path
+    # /new/item/ is the path, $route is a compiled route
+    $cache->store_path( 'get', '/new/item/', $route );
+    my $cached_route = $cache->route_from_path('/new/item/');
+
+=head1 DESCRIPTION
+
+When L<Dancer> first starts, it has to compile a regexp list of all
+the routes.  Then, on each request it goes over the compiled routes
+list and tries to compare the requested path to a route.
+
+A major drawback is that L<Dancer> has to go over the matching on
+every request, which (especially on CGI-based applications) can be
+very time consuming.
+
+The caching mechanism allows to cache some requests to specific routes
+(but B<NOT> specific results) and run those routes on a specific
+path. This allows us to speed up L<Dancer> quite a lot.
+
+=cut
 
 
 

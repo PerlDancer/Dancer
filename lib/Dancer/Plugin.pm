@@ -1,41 +1,5 @@
 package Dancer::Plugin;
 # ABSTRACT: helper for writing Dancer plugins
-
-=head1 SYNOPSIS
-
-  package Dancer::Plugin::LinkBlocker;
-  use Dancer ':syntax';
-  use Dancer::Plugin;
-
-  register block_links_from => sub {
-    my $conf = plugin_setting();
-    my $re = join ('|', @{$conf->{hosts}});
-    before sub {
-        if (request->referer && request->referer =~ /$re/) {
-            status 403 || $conf->{http_code};
-        }
-    };
-  };
-
-  register_plugin;
-  1;
-
-And in your application:
-
-    package My::Webapp;
-    
-    use Dancer ':syntax';
-    use Dancer::Plugin::LinkBlocker;
-
-    block_links_from; # this is exported by the plugin
-
-
-=head1 DESCRIPTION
-
-Create plugins for Dancer
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -169,6 +133,40 @@ sub _set_plugin_symbols {
 1;
 
 __END__
+
+
+=head1 SYNOPSIS
+
+  package Dancer::Plugin::LinkBlocker;
+  use Dancer ':syntax';
+  use Dancer::Plugin;
+
+  register block_links_from => sub {
+    my $conf = plugin_setting();
+    my $re = join ('|', @{$conf->{hosts}});
+    before sub {
+        if (request->referer && request->referer =~ /$re/) {
+            status 403 || $conf->{http_code};
+        }
+    };
+  };
+
+  register_plugin;
+  1;
+
+And in your application:
+
+    package My::Webapp;
+    
+    use Dancer ':syntax';
+    use Dancer::Plugin::LinkBlocker;
+
+    block_links_from; # this is exported by the plugin
+
+
+=head1 DESCRIPTION
+
+Create plugins for Dancer
 
 =head1 PLUGINS
 

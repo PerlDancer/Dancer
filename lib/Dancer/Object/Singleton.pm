@@ -1,36 +1,5 @@
 package Dancer::Object::Singleton;
 # ABSTRACT: Singleton base class for Dancer
-
-=head1 SYNOPSIS
-
-    package My::Dancer::Extension;
-
-    use strict;
-    use warnings;
-    use base 'Dancer::Object::Singleton';
-
-    __PACKAGE__->attributes( qw/name value this that/ );
-
-    sub init {
-        my ($class, $instance) = @_;
-        # our initialization code, if we need one
-    }
-
-    # .. later on ..
-
-    # returns the unique instance
-    my $singleton_intance = My::Dancer::Extension->instance();
-
-=head1 DESCRIPTION
-
-Dancer::Object::Singleton is meant to be used instead of
-L<Dancer::Object>, if you want your object to be a singleton, that is,
-a class that has only one instance in the application.
-
-It provides you with attributes and an initializer.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -130,4 +99,36 @@ sub _setter_code {
 }
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+    package My::Dancer::Extension;
+
+    use strict;
+    use warnings;
+    use base 'Dancer::Object::Singleton';
+
+    __PACKAGE__->attributes( qw/name value this that/ );
+
+    sub init {
+        my ($class, $instance) = @_;
+        # our initialization code, if we need one
+    }
+
+    # .. later on ..
+
+    # returns the unique instance
+    my $singleton_intance = My::Dancer::Extension->instance();
+
+=head1 DESCRIPTION
+
+Dancer::Object::Singleton is meant to be used instead of
+L<Dancer::Object>, if you want your object to be a singleton, that is,
+a class that has only one instance in the application.
+
+It provides you with attributes and an initializer.
+
+=cut
 

@@ -1,33 +1,5 @@
 package Dancer::Response;
 # ABSTRACT: class representing a Dancer response
-
-=head1 CORE LIBRARY
-
-This class is part of the core, it is provided for developers only.
-Dancer users should not need to read this documentation as it documents 
-internal parts of the code only.
-
-=head1 SYNOPSIS
-
-    # create a new response object
-    Dancer::Response->new(
-        status => 200,
-        content => 'this is my content'
-    );
-
-    Dancer::SharedData->response->status; # 200
-
-    # fetch current response object
-    my $response = Dancer::SharedData->response;
-
-    # fetch the current status
-    $response->status; # 200
-
-    # change the status
-    $response->status(500);
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -323,3 +295,33 @@ sub already_encoded {
 }
 
 1;
+
+__END__
+
+=head1 CORE LIBRARY
+
+This class is part of the core, it is provided for developers only.
+Dancer users should not need to read this documentation as it documents 
+internal parts of the code only.
+
+=head1 SYNOPSIS
+
+    # create a new response object
+    Dancer::Response->new(
+        status => 200,
+        content => 'this is my content'
+    );
+
+    Dancer::SharedData->response->status; # 200
+
+    # fetch current response object
+    my $response = Dancer::SharedData->response;
+
+    # fetch the current status
+    $response->status; # 200
+
+    # change the status
+    $response->status(500);
+
+=cut
+

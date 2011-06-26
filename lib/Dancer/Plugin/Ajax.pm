@@ -1,43 +1,5 @@
 package Dancer::Plugin::Ajax;
 # ABSTRACT: a plugin for adding Ajax route handlers
-
-=head1 SYNOPSIS
-
-    package MyWebApp;
-
-    use Dancer;
-    use Dancer::Plugin::Ajax;
-
-    ajax '/check_for_update' => sub {
-        # ... some Ajax code
-    };
-
-    dance;
-
-=head1 DESCRIPTION
-
-The C<ajax> keyword which is exported by this plugin allow you to define a route
-handler optimized for Ajax queries.
-
-The route handler code will be compiled to behave like the following:
-
-=over 4
-
-=item *
-
-Pass if the request header X-Requested-With doesnt equal XMLHttpRequest
-
-=item *
-
-Disable the layout
-
-=item *
-
-The action built is a POST request.
-
-=back
-
-=cut
 use strict;
 use warnings;
 
@@ -88,3 +50,42 @@ sub ajax {
 
 register_plugin;
 1;
+__END__
+
+=head1 SYNOPSIS
+
+    package MyWebApp;
+
+    use Dancer;
+    use Dancer::Plugin::Ajax;
+
+    ajax '/check_for_update' => sub {
+        # ... some Ajax code
+    };
+
+    dance;
+
+=head1 DESCRIPTION
+
+The C<ajax> keyword which is exported by this plugin allow you to define a route
+handler optimized for Ajax queries.
+
+The route handler code will be compiled to behave like the following:
+
+=over 4
+
+=item *
+
+Pass if the request header X-Requested-With doesnt equal XMLHttpRequest
+
+=item *
+
+Disable the layout
+
+=item *
+
+The action built is a POST request.
+
+=back
+
+=cut

@@ -1,26 +1,5 @@
 package Dancer::Request;
 # ABSTRACT: interface for accessing incoming requests
-
-=head1 DESCRIPTION
-
-This class implements a common interface for accessing incoming requests in
-a Dancer application.
-
-In a route handler, the current request object can be accessed by the C<request>
-method, like in the following example:
-
-    get '/foo' => sub {
-        request->params; # request, params parsed as a hash ref
-        request->body; # returns the request body, unparsed
-        request->path; # the path requested by the client
-        # ...
-    };
-
-A route handler should not read the environment by itself, but should instead
-use the current request object.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -921,6 +900,23 @@ __END__
 
 
 
+=head1 DESCRIPTION
+
+This class implements a common interface for accessing incoming requests in
+a Dancer application.
+
+In a route handler, the current request object can be accessed by the C<request>
+method, like in the following example:
+
+    get '/foo' => sub {
+        request->params; # request, params parsed as a hash ref
+        request->body; # returns the request body, unparsed
+        request->path; # the path requested by the client
+        # ...
+    };
+
+A route handler should not read the environment by itself, but should instead
+use the current request object.
 
 =head1 HTTP environment variables
 

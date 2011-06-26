@@ -1,17 +1,5 @@
 package Dancer::Route;
 # ABSTRACT: class that represents Dancer routes
-
-=head1 DESCRIPTION
-
-This class represents a route and is used internally by Dancer. A
-route contains a path, a method and a coderef to be executed on
-matching request, to produce a response.
-
-The route object provides everything needed to store new routes, parse
-them and execute matching against incoming requests.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -418,3 +406,16 @@ sub _execute {
 
 
 1;
+__END__
+
+=head1 DESCRIPTION
+
+This class represents a route and is used internally by Dancer. A
+route contains a path, a method and a coderef to be executed on
+matching request, to produce a response.
+
+The route object provides everything needed to store new routes, parse
+them and execute matching against incoming requests.
+
+=cut
+
