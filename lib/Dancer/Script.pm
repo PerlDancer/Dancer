@@ -2,13 +2,14 @@ package Dancer::Script;
 
 use strict;
 use warnings;
+use FindBin '$RealBin';
 use Dancer ':syntax'; 
 use Dancer::ModuleLoader;
 use Dancer::Template::Simple;
 use Dancer::Renderer;
-use File::Basename 'basename', 'dirname';
+use File::Basename 'basename';
 use File::Path 'mkpath';
-use File::Spec::Functions;
+use File::Spec::Functions qw/catdir catfile/;
 use Getopt::Long;
 use Pod::Usage;
 use LWP::UserAgent;
@@ -106,9 +107,7 @@ sub run_scaffold {
 sub run_scaffold_cgi {
 	my $self = shift; 
 
-	use Dancer ':syntax';
-	use FindBin '$RealBin';
-	use Plack::Runner;
+	require Plack::Runner;
 # For some reason Apache SetEnv directives dont propagate
 # correctly to the dispatchers, so forcing PSGI and env here 
 # is safer.
@@ -124,9 +123,7 @@ sub run_scaffold_cgi {
 sub run_scaffold_fcgi {
     my $self = shift;
 	
-	use Dancer ':syntax';
-	use FindBin '$RealBin';
-	use Plack::Handler::FCGI;
+	require Plack::Handler::FCGI;
 
 # For some reason Apache SetEnv directives dont propagate
 # correctly to the dispatchers, so forcing PSGI and env here 
