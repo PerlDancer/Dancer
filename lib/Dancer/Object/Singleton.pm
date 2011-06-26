@@ -33,7 +33,9 @@ sub instance {
 
     # create the instance
     $instance = bless {}, $class;
-    $class->init($instance);
+    $class->can('BUILD')
+      ? $class->BUILD($instance)
+      : $class->init($instance);
 
     # save and return it
     $instances{$class} = $instance;

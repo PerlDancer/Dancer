@@ -12,7 +12,9 @@ sub new {
     my ($class, %args) = @_;
     my $self = \%args;
     bless $self, $class;
-    $self->init(%args);
+    $self->can('BUILD')
+      ? $self->BUILD(%args)
+      : $self->init(%args);
     return $self;
 }
 
@@ -23,8 +25,11 @@ sub clone {
     return Clone::clone($self);
 }
 
-# initializer
+# old initializer
 sub init {1}
+
+# new initializer
+sub BUILD {1}
 
 # meta information about classes
 my $_attrs_per_class = {};
@@ -113,7 +118,7 @@ Dancer::Object - Objects base class for Dancer
 
     __PACKAGE__->attributes( qw/name value this that/ );
 
-    sub init {
+    sub BUILD {
         # our initialization code, if we need one
     }
 
@@ -135,7 +140,7 @@ C<Dancer::Object>.
 It accepts arguments in a hash and runs an additional C<init> method (described
 below) which you should implement.
 
-=head2 init
+=head2 BUILD
 
 Exists but does nothing. This is so you won't have to write an initializer if
 you don't want to.
@@ -160,7 +165,7 @@ C<get_attributes>.
   $self->attributes_defaults(length => 2);
 
 given a hash (not a hashref), makes sure an object has the given attributes
-default values. Usually called from within an C<init> function.
+default values. Usually called from within an C<BUILD> function.
 
 =head1 AUTHOR
 
