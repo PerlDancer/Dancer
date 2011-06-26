@@ -1,14 +1,5 @@
 package Dancer::Session;
 # ABSTRACT: session engine for the Dancer framework
-
-=head1 DESCRIPTION
-
-This module provides support for server-side sessions for the
-L<Dancer> web framework. The session is accessible to the user via an
-abstraction layer implemented by the L<Dancer::Session> class.
-
-=cut
-
 use strict;
 use warnings;
 
@@ -98,6 +89,12 @@ sub _get_current_session {
 1;
 __END__
 
+
+=head1 DESCRIPTION
+
+This module provides support for server-side sessions for the
+L<Dancer> web framework. The session is accessible to the user via an
+abstraction layer implemented by the L<Dancer::Session> class.
 
 =head1 USAGE
 

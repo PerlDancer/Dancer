@@ -1,21 +1,5 @@
 package Dancer::Template::Simple;
 # ABSTRACT: pure Perl 5 template engine for Dancer
-
-=head1 DESCRIPTION
-
-This template engine is provided as a default one for the Dancer micro
-framework.
-
-This template engine should be fine for development purposes but is
-not a powerful one, it's written in pure Perl and has no C bindings to
-accelerate the template processing.
-
-If you want to power an application with Dancer in production
-environment, it's strongly advised to switch to
-Dancer::Template::TemplateToolkit.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -176,6 +160,20 @@ sub _interpolate_value {
 
 1;
 __END__
+
+
+=head1 DESCRIPTION
+
+This template engine is provided as a default one for the Dancer micro
+framework.
+
+This template engine should be fine for development purposes but is
+not a powerful one, it's written in pure Perl and has no C bindings to
+accelerate the template processing.
+
+If you want to power an application with Dancer in production
+environment, it's strongly advised to switch to
+Dancer::Template::TemplateToolkit.
 
 =head1 SYNTAX
 

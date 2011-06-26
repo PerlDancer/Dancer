@@ -1,20 +1,5 @@
 package Dancer::Session::YAML;
 # ABSTRACT: YAML-file-based session backend for Dancer
-
-=head1 DESCRIPTION
-
-This module implements a session engine based on YAML files. Session
-are stored in a I<session_dir> as YAML files. The idea behind this
-module was to provide a transparent session storage for the developer.
-
-This backend is intended to be used in development environments, when
-looking inside a session can be useful.
-
-It's not recommended to use this session engine in production
-environments.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -144,6 +129,19 @@ sub _yaml_file {
 
 1;
 __END__
+
+
+=head1 DESCRIPTION
+
+This module implements a session engine based on YAML files. Session
+are stored in a I<session_dir> as YAML files. The idea behind this
+module was to provide a transparent session storage for the developer.
+
+This backend is intended to be used in development environments, when
+looking inside a session can be useful.
+
+It's not recommended to use this session engine in production
+environments.
 
 =head1 CONFIGURATION
 

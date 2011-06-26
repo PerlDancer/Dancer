@@ -1,46 +1,5 @@
 package Dancer::Test;
 # ABSTRACT: Test helpers to test a Dancer application
-
-=head1 SYNOPSIS
-
-  use strict;
-  use warnings;
-  use Test::More tests => 2;
-
-  use MyWebApp;
-  use Dancer::Test;
-
-  response_status_is [GET => '/'] => 200,
-        "GET / is found";
-
-  response_content_like [GET => '/'] => qr/hello, world/,
-        "content looks good for /";
-
-
-=head1 DESCRIPTION
-
-This module provides test helpers for testing Dancer apps.
-
-Be careful, the module loading order in the example above is very important.
-Make sure to use C<Dancer::Test> B<after> importing the application package
-otherwise your appdir will be automatically set to C<lib> and your test script
-won't be able to find views, conffiles and other application content.
-
-For all test methods, the first argument can be either an
-array ref of the method and route, or a scalar containing the
-route (in which case the method is assumed to be C<GET>), or
-a L<Dancer::Response> object.
-
-    # all 3 are equivalent
-    response_status_is [ GET => '/' ], 200, 'GET / status is ok';
-
-    response_status_is '/', 200, 'GET / status is ok';
-
-    my $resp = dancer_response GET => '/';
-    response_status_is $resp => 200, 'GET / status is ok';
-
-=cut
-
 use strict;
 use warnings;
 use Test::Builder;
@@ -641,3 +600,46 @@ sub _expand_req {
 }
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+  use strict;
+  use warnings;
+  use Test::More tests => 2;
+
+  use MyWebApp;
+  use Dancer::Test;
+
+  response_status_is [GET => '/'] => 200,
+        "GET / is found";
+
+  response_content_like [GET => '/'] => qr/hello, world/,
+        "content looks good for /";
+
+
+=head1 DESCRIPTION
+
+This module provides test helpers for testing Dancer apps.
+
+Be careful, the module loading order in the example above is very important.
+Make sure to use C<Dancer::Test> B<after> importing the application package
+otherwise your appdir will be automatically set to C<lib> and your test script
+won't be able to find views, conffiles and other application content.
+
+For all test methods, the first argument can be either an
+array ref of the method and route, or a scalar containing the
+route (in which case the method is assumed to be C<GET>), or
+a L<Dancer::Response> object.
+
+    # all 3 are equivalent
+    response_status_is [ GET => '/' ], 200, 'GET / status is ok';
+
+    response_status_is '/', 200, 'GET / status is ok';
+
+    my $resp = dancer_response GET => '/';
+    response_status_is $resp => 200, 'GET / status is ok';
+
+=cut
+

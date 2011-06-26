@@ -1,12 +1,5 @@
 package Dancer::Serializer::Abstract;
 # ABSTRACT: interface for serializer engines
-
-=head1 DESCRIPTION
-
-Abstract class for all serializer engines.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -64,3 +57,11 @@ sub support_content_type {
 }
 
 1;
+__END__
+
+=head1 DESCRIPTION
+
+Abstract class for all serializer engines.
+
+=cut
+

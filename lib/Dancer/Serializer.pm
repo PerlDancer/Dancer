@@ -1,12 +1,5 @@
 package Dancer::Serializer;
 # ABSTRACT: serializer wrapper for Dancer
-
-=head1 DESCRIPTION
-
-This module is the wrapper that provides support for different
-serializers.
-
-=cut
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
@@ -121,6 +114,12 @@ sub process_request {
 1;
 
 __END__
+
+
+=head1 DESCRIPTION
+
+This module is the wrapper that provides support for different
+serializers.
 
 =head1 USAGE
 

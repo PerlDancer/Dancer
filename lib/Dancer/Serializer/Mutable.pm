@@ -1,33 +1,5 @@
 package Dancer::Serializer::Mutable;
 # ABSTRACT: mutable serializer engine
-
-=head1 DESCRIPTION
-
-This serializer will try find the best (de)serializer for a given
-request.  For this, it will go through:
-
-=over
-
-=item
-
-The B<content_type> from the request headers
-
-=item
-
-the B<content_type> parameter from the URL
-
-=item
-
-the B<accept> from the request headers
-
-=item
-
-The default is B<application/json>
-
-=back
-
-=cut
-
 use strict;
 use warnings;
 
@@ -164,5 +136,33 @@ sub _load_serializer {
 
 1;
 __END__
+
+
+=head1 DESCRIPTION
+
+This serializer will try find the best (de)serializer for a given
+request.  For this, it will go through:
+
+=over
+
+=item
+
+The B<content_type> from the request headers
+
+=item
+
+the B<content_type> parameter from the URL
+
+=item
+
+the B<accept> from the request headers
+
+=item
+
+The default is B<application/json>
+
+=back
+
+=cut
 
 

@@ -1,40 +1,5 @@
 package Dancer::Template::TemplateToolkit;
 # ABSTRACT: Template Toolkit wrapper for Dancer
-
-=head1 DESCRIPTION
-
-This class is an interface between Dancer's template engine
-abstraction layer and the L<Template> module.
-
-This template engine is recomended for production purposes, but
-depends on the Template module.
-
-In order to use this engine, use the template setting:
-
-    template: template_toolkit
-
-This can be done in your config.yml file or directly in your app code
-with the B<set> keyword.
-
-Note that by default, Dancer configures the Template::Toolkit engine
-to use <% %> brackets instead of its default [% %] brackets.  This can
-be changed within your config file - for example:
-
-    template: template_toolkit
-    engines:
-        template_toolkit:
-            start_tag: '[%'
-            stop_tag: '%]'
-
-By default, L<Template> is used, but you can configure Dancer to use a
-subclass with the C<subclass> option.
-
-    engines:
-        template_toolkit:
-            subclass: My::Template
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -101,6 +66,38 @@ sub render {
 
 1;
 
+
+=head1 DESCRIPTION
+
+This class is an interface between Dancer's template engine
+abstraction layer and the L<Template> module.
+
+This template engine is recomended for production purposes, but
+depends on the Template module.
+
+In order to use this engine, use the template setting:
+
+    template: template_toolkit
+
+This can be done in your config.yml file or directly in your app code
+with the B<set> keyword.
+
+Note that by default, Dancer configures the Template::Toolkit engine
+to use <% %> brackets instead of its default [% %] brackets.  This can
+be changed within your config file - for example:
+
+    template: template_toolkit
+    engines:
+        template_toolkit:
+            start_tag: '[%'
+            stop_tag: '%]'
+
+By default, L<Template> is used, but you can configure Dancer to use a
+subclass with the C<subclass> option.
+
+    engines:
+        template_toolkit:
+            subclass: My::Template
 
 =head1 WRAPPER, META variables, SETs
 

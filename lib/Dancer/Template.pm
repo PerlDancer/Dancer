@@ -1,13 +1,5 @@
 package Dancer::Template;
 # ABSTRACT: template wrapper
-
-=head1 DESCRIPTION
-
-This module is the wrapper that provides support for different 
-template engines.
-
-=cut
-
 use strict;
 use warnings;
 use Dancer::ModuleLoader;
@@ -44,6 +36,12 @@ sub init {
 
 1;
 __END__
+
+
+=head1 DESCRIPTION
+
+This module is the wrapper that provides support for different 
+template engines.
 
 =head1 USAGE
 

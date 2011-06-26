@@ -1,12 +1,5 @@
 package Dancer::Serializer::Dumper;
 # ABSTRACT: Data::Sumper serializer engine
-
-=head1 DESCRIPTION
-
-Perl dumper format serializer.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -69,3 +62,11 @@ Returns Perl data dumper content type string.
 sub content_type {'text/x-data-dumper'}
 
 1;
+__END__
+
+=head1 DESCRIPTION
+
+Perl dumper format serializer.
+
+=cut
+

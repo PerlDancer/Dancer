@@ -1,14 +1,5 @@
 package Dancer::Template::Abstract;
 # ABSTRACT: abstract class for Dancer's template engines
-
-=head1 DESCRIPTION
-
-This class is provided as a base class for each template engine. Any
-template engine must inherit from it and provide a set of methods
-described below.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -253,3 +244,14 @@ sub _render_with_layout {
 }
 
 1;
+__END__
+
+
+=head1 DESCRIPTION
+
+This class is provided as a base class for each template engine. Any
+template engine must inherit from it and provide a set of methods
+described below.
+
+=cut
+

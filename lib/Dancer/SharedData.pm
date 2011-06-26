@@ -1,11 +1,5 @@
 package Dancer::SharedData;
 # ABSTRACT: Dancer shared data
-
-=head1 DESCRIPTION
-
-Manages global/shared data for all classes.
-
-=cut
 use strict;
 use warnings;
 use Dancer::Timer;
@@ -117,3 +111,11 @@ sub reset_all {
 }
 
 'Dancer::SharedData';
+
+__END__
+
+=head1 DESCRIPTION
+
+Manages global/shared data for all classes.
+
+=cut
