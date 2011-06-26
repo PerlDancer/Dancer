@@ -13,7 +13,7 @@ use vars '@EXPORT_OK';
 
 @EXPORT_OK = qw(
     dirname open_file path read_file_content read_glob_content
-    real_path set_file_mode normalize_path
+    path_or_empty set_file_mode normalize_path
 );
 
 # path should not verify paths
@@ -153,18 +153,17 @@ Dancer::FileUtils - helper providing file utilities
 
 =head1 SYNOPSIS
 
-    use Dancer::FileUtils qw/dirname real_path/;
+    use Dancer::FileUtils qw/dirname path/;
 
     # for 'path/to/file'
-    my $dir=dirname ($path); #returns 'path/to'
-    my $real_path=real_path ($path); #returns '/abs/path/to/file'
+    my $dir  = dirname($path); # returns 'path/to'
+    my $path = path($path);    # returns '/abs/path/to/file'
 
 
     use Dancer::FileUtils qw/path read_file_content/;
 
     my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
     my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
-
 
     use Dancer::FileUtils qw/read_glob_content set_file_mode/;
 
@@ -232,16 +231,6 @@ in scalar context returns the entire contents of the file.
 
 Same as I<read_file_content>, only it accepts a file handle. Returns the
 content and B<closes the file handle>.
-
-=head2 real_path
-
-    use Dancer::FileUtils 'real_path';
-
-    my $real_path=real_path ($path);
-
-Returns a canonical and absolute path. Uses Cwd's realpath internally which
-resolves symbolic links and relative-path components ("." and ".."). If
-specified path does not exist, real_path returns nothing.
 
 =head2 set_file_mode
 

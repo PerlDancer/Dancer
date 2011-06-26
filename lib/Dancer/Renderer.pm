@@ -13,7 +13,7 @@ use Dancer::Request;
 use Dancer::Response;
 use Dancer::Serializer;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path real_path dirname read_file_content open_file);
+use Dancer::FileUtils qw(path path_or_empty dirname read_file_content open_file);
 use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
