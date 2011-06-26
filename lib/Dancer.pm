@@ -142,7 +142,7 @@ sub options         { Dancer::App->current->registry->universal_add('options', @
 sub params          { Dancer::SharedData->request->params(@_) }
 sub param           { params->{$_[0]} }
 sub pass            { Dancer::SharedData->response->pass(1) }
-sub path            { realpath(Dancer::FileUtils::path(@_)) }
+sub path            { Dancer::FileUtils::path(@_) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
@@ -1047,6 +1047,9 @@ Concatenates multiple paths together, without worrying about the underlying
 operating system:
 
     my $path = path(dirname($0), 'lib', 'File.pm');
+
+It also normalizes (cleans) the path aesthetically. It does not verify the
+path exists.
 
 =head2 post
 

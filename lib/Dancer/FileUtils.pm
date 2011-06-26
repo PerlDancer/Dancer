@@ -25,16 +25,12 @@ sub path {
     return normalize_path($path);
 }
 
-sub real_path { 
-  my $path = shift;
+sub path_or_empty {
+    my @parts = @_;
+    my $path  = path(@parts);
 
-  #If Cwd's realpath encounters a path which does not exist it returns
-  #empty on linux, but croaks on windows.
-  if (! -e $path) {
-    return;
-  }
-
-  realpath($path); 
+    # return empty if it doesn't exist
+    return -e $path ? $path : '';
 }
 
 sub path_no_verify {
