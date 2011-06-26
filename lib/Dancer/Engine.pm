@@ -1,28 +1,6 @@
 package Dancer::Engine;
 # ABSTRACT: base class for Dancer engines
 
-=head1 SYNOPSIS
-
-   my $engine = Dancer::Engine->build( Serializer => 'JSON', $configuration );
-
-=head1 DESCRIPTION
-
-Dancer has various engines such Serializer engines, Template engines, Logger
-engines and Session handlers engines. This is the base class for all Dancer
-engines.
-
-If you're writing an engine of a common type (such as those mentioned above),
-you probably want to simply use their base class, which in turn use
-L<Dancer::Engine>. For example, Template engines inherit from
-L<Dancer::Template::Abstract> and Serializer engines inherit from
-L<Dancer::Serializer::Abstract>. Those I<Abstract> base classes inherit from
-L<Dancer::Engine>.
-
-If a new type of Dancer engine is created, it is best it inherits from this
-class.
-
-=cut
-
 
 =attr name
 
@@ -117,3 +95,26 @@ sub _engine_class {
 
 1;
 
+__END__
+
+=head1 SYNOPSIS
+
+   my $engine = Dancer::Engine->build( Serializer => 'JSON', $configuration );
+
+=head1 DESCRIPTION
+
+Dancer has various engines such Serializer engines, Template engines, Logger
+engines and Session handlers engines. This is the base class for all Dancer
+engines.
+
+If you're writing an engine of a common type (such as those mentioned above),
+you probably want to simply use their base class, which in turn use
+L<Dancer::Engine>. For example, Template engines inherit from
+L<Dancer::Template::Abstract> and Serializer engines inherit from
+L<Dancer::Serializer::Abstract>. Those I<Abstract> base classes inherit from
+L<Dancer::Engine>.
+
+If a new type of Dancer engine is created, it is best it inherits from this
+class.
+
+=cut

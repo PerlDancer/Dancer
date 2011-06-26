@@ -1,28 +1,5 @@
 package Dancer::Error;
 # ABSTRACT: class representing an error
-
-=head1 SYNOPSIS
-
-    # taken from send_file:
-    use Dancer::Error;
-
-    my $error = Dancer::Error->new(
-        code    => 404,
-        message => "No such file: `$path'"
-    );
-
-    Dancer::Response->set($error->render);
-
-=head1 DESCRIPTION
-
-With Dancer::Error you can throw reasonable-looking errors to the user
-instead of crashing the application and filling up the logs.
-
-This is usually used in debugging environments, and it's what Dancer
-uses as well under debugging to catch errors and show them on screen.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -408,5 +385,25 @@ __END__
 
 
 
+=head1 SYNOPSIS
 
+    # taken from send_file:
+    use Dancer::Error;
+
+    my $error = Dancer::Error->new(
+        code    => 404,
+        message => "No such file: `$path'"
+    );
+
+    Dancer::Response->set($error->render);
+
+=head1 DESCRIPTION
+
+With Dancer::Error you can throw reasonable-looking errors to the user
+instead of crashing the application and filling up the logs.
+
+This is usually used in debugging environments, and it's what Dancer
+uses as well under debugging to catch errors and show them on screen.
+
+=cut
 

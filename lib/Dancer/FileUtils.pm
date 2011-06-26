@@ -1,36 +1,5 @@
 package Dancer::FileUtils;
 # ABSTRACT: common tools for file-system related actions
-
-=head1 SYNOPSIS
-
-    use Dancer::FileUtils qw/dirname real_path/;
-
-    # for 'path/to/file'
-    my $dir=dirname ($path); #returns 'path/to'
-    my $real_path=real_path ($path); #returns '/abs/path/to/file'
-
-
-    use Dancer::FileUtils qw/path read_file_content/;
-
-    my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
-    my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
-
-
-    use Dancer::FileUtils qw/read_glob_content set_file_mode/;
-
-    open my $fh, '<', $file or die "$!\n";
-    set_file_mode ($fh);
-    my @content = read_file_content($fh);
-    my $content = read_file_content($fh);
-
-
-=head1 DESCRIPTION
-
-Dancer::FileUtils includes a few file related utilities related that
-Dancer uses internally. Developers may use it instead of writing their
-own file reading subroutines or using additional modules.
-
-=cut
 use strict;
 use warnings;
 
@@ -263,6 +232,35 @@ sub _trim_UNC {
 
 __END__
 
+
+=head1 SYNOPSIS
+
+    use Dancer::FileUtils qw/dirname real_path/;
+
+    # for 'path/to/file'
+    my $dir=dirname ($path); #returns 'path/to'
+    my $real_path=real_path ($path); #returns '/abs/path/to/file'
+
+
+    use Dancer::FileUtils qw/path read_file_content/;
+
+    my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
+    my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
+
+
+    use Dancer::FileUtils qw/read_glob_content set_file_mode/;
+
+    open my $fh, '<', $file or die "$!\n";
+    set_file_mode ($fh);
+    my @content = read_file_content($fh);
+    my $content = read_file_content($fh);
+
+
+=head1 DESCRIPTION
+
+Dancer::FileUtils includes a few file related utilities related that
+Dancer uses internally. Developers may use it instead of writing their
+own file reading subroutines or using additional modules.
 
 =head1 EXPORT
 

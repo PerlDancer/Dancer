@@ -1,14 +1,5 @@
 package Dancer::Hook;
 # ABSTRACT: Class to manipulate hooks with Dancer
-
-=head1 SYNOPSIS
-
-  # inside a plugin
-  use Dancer::Hook;
-  Dancer::Hook->register_hooks_name(qw/before_auth after_auth/);
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -89,7 +80,19 @@ sub new {
 
 1;
 
+
+
+
+=head1 SYNOPSIS
+
+  # inside a plugin
+  use Dancer::Hook;
+  Dancer::Hook->register_hooks_name(qw/before_auth after_auth/);
+
+=cut
+
 # FIXME: where are these coming from?
+
 =pod
 
 =method register_hook ($hook_name, [$properties], $code)

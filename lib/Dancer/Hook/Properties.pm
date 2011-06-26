@@ -1,17 +1,5 @@
 package Dancer::Hook::Properties;
 # ABSTRACT: Properties attached to a hook
-
-=head1 CORE LIBRARY
-
-This class is part of the core, it is provided for developers only.
-Dancer users should not need to read this documentation as it
-documents internal parts of the code only.
-
-=head1 DESCRIPTION
-
-Properties attached to a hook
-
-=cut
 use strict;
 use warnings;
 
@@ -54,3 +42,16 @@ sub should_run_this_app {
 }
 
 1;
+__END__
+
+=head1 CORE LIBRARY
+
+This class is part of the core, it is provided for developers only.
+Dancer users should not need to read this documentation as it
+documents internal parts of the code only.
+
+=head1 DESCRIPTION
+
+Properties attached to a hook
+
+=cut

@@ -1,12 +1,5 @@
 package Dancer::GetOpt;
 # ABSTRACT: Dancer's interface to GetOpt
-
-=head1 DESCRIPTION
-
-Dancer's interface to GetOpt for line argument parsing.
-
-=cut
-
 use strict;
 use warnings;
 
@@ -103,3 +96,13 @@ sub _arg_to_setting {
 
 
 'Dancer::GetOpt';
+
+__END__
+
+=head1 DESCRIPTION
+
+Dancer's interface to GetOpt for line argument parsing.
+
+=cut
+
+

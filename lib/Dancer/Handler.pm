@@ -1,18 +1,5 @@
 package Dancer::Handler;
 # ABSTRACT: Dancer request's handler code
-
-=head1 CORE LIBRARY
-
-This class is part of the core, it is provided for developers only.
-Dancer users should not need to read this documentation as it
-documents internal parts of the code only.
-
-=head1 DESCRIPTION
-
-Handle Dancer requests.
-
-=cut
-
 use strict;
 use warnings;
 use Carp 'croak';
@@ -227,3 +214,17 @@ sub _THIS_IS_NOT_BEING_USED_print_banner {
 }
 
 1;
+__END__
+
+=head1 CORE LIBRARY
+
+This class is part of the core, it is provided for developers only.
+Dancer users should not need to read this documentation as it
+documents internal parts of the code only.
+
+=head1 DESCRIPTION
+
+Handle Dancer requests.
+
+=cut
+

@@ -1,16 +1,5 @@
 package Dancer::Deprecation;
 # ABSTRACT: deprecation handler for Dancer core
-
-=head1 SYNOPSIS
-
-  Dancer::Deprecation->deprecated(
-    feature => 'sub_name',
-    version => '1.3000',
-    reason  => '...',
-  );
-
-=cut
-
 use strict;
 use warnings;
 use Carp qw/croak carp/;
@@ -63,5 +52,17 @@ sub deprecated {
 }
 
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+  Dancer::Deprecation->deprecated(
+    feature => 'sub_name',
+    version => '1.3000',
+    reason  => '...',
+  );
+
+=cut
 
 

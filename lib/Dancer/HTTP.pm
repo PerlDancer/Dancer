@@ -1,12 +1,5 @@
 package Dancer::HTTP;
 # ABSTRACT: helper for rendering HTTP status codes for Dancer
-
-=head1 DESCRIPTION
-
-Helper for rendering HTTP status codes for Dancer
-
-=cut
-
 use strict;
 use warnings;
 use base 'Exporter';
@@ -99,7 +92,11 @@ sub status {
 1;
 
 
-=head1 HTTP CODES 
+=head1 DESCRIPTION
+
+Helper for rendering HTTP status codes for Dancer
+
+=head1 HTTP CODES
 
 The following codes/aliases are understood by any status() call made
 from a Dancer script.

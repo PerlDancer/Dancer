@@ -1,12 +1,5 @@
 package Dancer::Handler::PSGI;
 # ABSTRACT: PSGI frontend for Dancer
-
-=head1 DESCRIPTION
-
-A PSGI handler for Dancer.
-
-=cut
-
 use strict;
 use warnings;
 use Carp;
@@ -111,3 +104,11 @@ sub _apply_plack_middlewares {
 }
 
 1;
+__END__
+
+=head1 DESCRIPTION
+
+A PSGI handler for Dancer.
+
+=cut
+
