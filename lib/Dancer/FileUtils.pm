@@ -13,7 +13,7 @@ use vars '@EXPORT_OK';
 
 @EXPORT_OK = qw(
     dirname open_file path read_file_content read_glob_content
-    real_path set_file_mode
+    real_path set_file_mode normalize_path
 );
 
 # Undo UNC special-casing catfile-voodoo on cygwin
@@ -132,6 +132,22 @@ sub read_glob_content {
     close $fh;
 
     return wantarray ? @content : join '', @content;
+}
+
+sub normalize_path {
+    # this is a revised version of what is described in
+    # http://www.linuxjournal.com/content/normalizing-path-names-bash
+    # by Mitch Frazier
+    my $path     = shift or return;
+    my $seqregex = qr{
+        [^/]*  # anything without a slash
+        /\.\./ # that is accompanied by two dots as such
+    }x;
+
+    $path =~ s{/\./}{/}g;
+    $path =~ s{$seqregex}{}g;
+
+    return $path;
 }
 
 1;
