@@ -20,10 +20,10 @@ ok(debug($message), "debug sent");
 ok(warning($message), "warning sent");
 ok(error($message), "error sent");
 
-my $logdir = Dancer::FileUtils::path_no_verify(setting('appdir'), 'logs');
+my $logdir = Dancer::FileUtils::path(setting('appdir'), 'logs');
 ok((-d $logdir), "log directory exists");
 
-my $dev_logfile = Dancer::FileUtils::d_catfile($logdir, "development.log");
+my $dev_logfile = Dancer::FileUtils::path($logdir, "development.log");
 ok((-r $dev_logfile), "logfile exists");
 
 open LOGFILE, '<', $dev_logfile;
@@ -37,7 +37,7 @@ ok(grep(/error \@.*$message/, @content), 'error message found');
 set environment => 'test';
 set logger => 'file';
 
-my $test_logfile = Dancer::FileUtils::d_catfile($logdir, "test.log");
+my $test_logfile = Dancer::FileUtils::path($logdir, "test.log");
 ok((-r $test_logfile), "environment logfile exists");
 
 open LOGFILE, '<', $test_logfile;
