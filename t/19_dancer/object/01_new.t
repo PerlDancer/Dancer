@@ -13,9 +13,9 @@ isnt( $script->_dash_name, $script->{appname}, '_dash_name parses appname correc
 
 is( $script->{dancer_app_dir}, $script->{dancer_script}, "_set_application_path sets correctly ->{dancer_app_dir}");
 
-
 my @lib_path = split('::', $script->{appname});
 my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
+$lib_path = join('/', @lib_path);
 
 is( $script->{lib_file}, $lib_file, "_set_lib_path sets correctly ->{lib_file} and ->{lib_path}");
 is( $script->{lib_path}, $lib_path, "_set_lib_path sets correctly ->{lib_file} and ->{lib_path}");

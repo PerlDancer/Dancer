@@ -267,13 +267,13 @@ sub app_tree {
                 "error.css" => FILE,
             },
             "images"      => {
-                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{path},$self->{dancer_app_dir}, 'public', 'images', 'perldancer-bg.jpg')) }, 
-                "perldancer.jpg" => sub { $self->write_logo(catfile($self->{path},$self->{dancer_app_dir}, 'public', 'images', 'perldancer.jpg')) },
+                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer-bg.jpg')) }, 
+                "perldancer.jpg" => sub { $self->write_logo(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer.jpg')) },
             },
             "javascripts" => {
                 "jquery.js" => FILE,
             },
-            "favicon.ico" => sub { $self->write_favicon(catfile($self->{path},$self->{dancer_app_dir}, 'public', 'favicon.ico')) },
+            "favicon.ico" => sub { $self->write_favicon(catfile($self->{dancer_app_dir}, 'public', 'favicon.ico')) },
         },
         "t" => {
             "001_base.t"        => FILE,
