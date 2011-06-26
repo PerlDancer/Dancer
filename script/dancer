@@ -44,6 +44,7 @@ my $DO_OVERWRITE_ALL = 0;
 my $DANCER_APP_DIR   = get_application_path($path, $name);
 my $DANCER_SCRIPT    = get_script_path($name);
 my ($LIB_FILE, $LIB_PATH) = get_lib_path($name);
+
 my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
 
 require Dancer;
@@ -92,6 +93,7 @@ sub get_lib_path {
     my @lib_path = split('::', $name);
     my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
     $lib_path = join('/', @lib_path);
+    $lib_path .= '/' if length $lib_path;
     return ($lib_file, $lib_path);
 }
 
@@ -470,7 +472,7 @@ WriteMakefile(
               it\'s just here to help you get started. The template used to
               generate this content is located in 
               <code>views/index.tt</code>.
-              You can add some routes to <tt>lib/'.$LIB_PATH.'/'.$LIB_FILE.'</tt>. 
+              You can add some routes to <tt>lib/'.$LIB_PATH.$LIB_FILE.'</tt>. 
               </p>
             </li>
 
