@@ -284,6 +284,18 @@ sub _app_tree {
         "public" => {
             "404.html"       => FILE,
             "500.html"       => FILE,
+            "css"            => {
+                "style.css" => FILE,
+                "error.css" => FILE,
+            },
+            "images"      => {
+                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer-bg.jpg')) },
+                "perldancer.jpg"    => sub { $self->write_logo(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer.jpg'))  },
+            },
+            "javascripts" => {
+                "jquery.js" => FILE,
+            },
+            "favicon.ico" => sub { $self->write_favicon(catfile($self->{dancer_app_dir}, 'public', 'favicon.ico')) },
         },
         "t" => {
             "001_base.t"        => FILE,
