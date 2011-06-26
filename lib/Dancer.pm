@@ -1072,6 +1072,20 @@ For a safer alternative you can use lexical prefix like this:
     };
     ## prefix reset to the previous version here
 
+This makes it possible to nest prefixes:
+
+   prefix '/home' => sub {
+       ## some routes
+       
+      prefix '/private' => sub {
+         ## here we are under /home/private...
+
+         ## some more routes
+      };
+      ## back to /home
+   };
+   ## back to the root
+
 B<Notice:> once you have a prefix set, do not add a caret to the regex:
 
     prefix '/foo';
