@@ -19,6 +19,7 @@ my $SETTINGS = {};
 
 # mergeable settings
 my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
+my %_LOADED;
 
 sub settings {$SETTINGS}
 
@@ -176,10 +177,16 @@ sub load {
     confess "Configuration file found but YAML is not installed"
       unless Dancer::ModuleLoader->load('YAML');
 
-    load_settings_from_yaml(conffile);
+    if (!$_LOADED{conffile()}) {
+        load_settings_from_yaml(conffile);
+        $_LOADED{conffile()}++;
+    }
 
     my $env = environment_file;
-    load_settings_from_yaml($env) if -f $env;
+    if (-f $env && !$_LOADED{$env}) {
+        load_settings_from_yaml($env);
+        $_LOADED{$env}++;
+    }
 
     foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
         $setters->{$key}->($key, $SETTINGS->{$key});
