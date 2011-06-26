@@ -16,14 +16,16 @@ use Plack::Builder;
 use LWP::UserAgent;
 use HTTP::Server::Simple::PSGI;
 
-plan tests => 2;
+plan tests => 100;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
 
+        my @apps = (qw/app1 app2/);
         my $ua = LWP::UserAgent->new();
-        foreach my $app (qw/app1 app2/){
+        for(1..100){
+            my $app = $apps[int(rand(scalar @apps - 1))];
             my $req = HTTP::Request->new(GET => "http://127.0.0.1:$port/$app");
             my $res = $ua->request($req);
             like $res->content, qr/Hello $app/;
