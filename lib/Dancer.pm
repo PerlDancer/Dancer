@@ -848,11 +848,14 @@ is equivalent to
 
 This is an alias to 'before_template'.
 
-This hook receives as argument a HashRef, containing the tokens.
+This hook receives as argument a HashRef, containing the tokens that
+will be passed to the template. You can use it to add more tokens, or
+delete some specific token.
 
   hook before_template_render => sub {
     my $tokens = shift;
     delete $tokens->{user};
+    $tokens->{time} = localtime;
   };
 
 is equivalent to
@@ -860,6 +863,7 @@ is equivalent to
   hook before_template => sub {
     my $tokens = shift;
     delete $tokens->{user};
+    $tokens->{time} = localtime;
   };
 
 =item before_layout_render
