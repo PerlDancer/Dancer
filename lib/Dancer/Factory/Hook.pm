@@ -63,7 +63,7 @@ sub execute_hooks {
        $h->(@args);
        my $response = Dancer::SharedData->response;
        defined $response && $response->halted
-         and die;
+         and die($response->content);
    }
 }
 
