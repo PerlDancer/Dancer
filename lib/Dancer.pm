@@ -532,6 +532,9 @@ Defines a before_template filter:
     before_template sub {
         my $tokens = shift;
         # do something with request, vars or params
+        
+        # for example, adding a token to the template
+        $tokens->{token_name} = "some value";
     };
 
 The anonymous function which is given to C<before_template> will be executed
@@ -539,6 +542,9 @@ before sending data and tokens to the template. Receives a HashRef of the
 tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
+
+Now the preferred way for this is to use C<hook>s (namely, the
+C<before_template> one). Check C<hook> documentation bellow.
 
 =head2 cookies
 
@@ -842,11 +848,14 @@ is equivalent to
 
 This is an alias to 'before_template'.
 
-This hook receives as argument a HashRef, containing the tokens.
+This hook receives as argument a HashRef, containing the tokens that
+will be passed to the template. You can use it to add more tokens, or
+delete some specific token.
 
   hook before_template_render => sub {
     my $tokens = shift;
     delete $tokens->{user};
+    $tokens->{time} = localtime;
   };
 
 is equivalent to
@@ -854,6 +863,7 @@ is equivalent to
   hook before_template => sub {
     my $tokens = shift;
     delete $tokens->{user};
+    $tokens->{time} = localtime;
   };
 
 =item before_layout_render
