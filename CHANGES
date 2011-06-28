@@ -8,6 +8,7 @@
     * More flexible test for locale-aware logging (Alberto Simões)
     * Do not re-read config files when dance starts if they were
       already loaded.  (Alberto Simões)
+    * Fixed shell-dependent tests for Window testing. (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * Error Hook (PR 563 - JT Smith)
