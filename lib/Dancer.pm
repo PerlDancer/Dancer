@@ -142,7 +142,7 @@ sub options         { Dancer::App->current->registry->universal_add('options', @
 sub params          { Dancer::SharedData->request->params(@_) }
 sub param           { params->{$_[0]} }
 sub pass            { Dancer::SharedData->response->pass(1) }
-sub path            { realpath(Dancer::FileUtils::path(@_)) }
+sub path            { Dancer::FileUtils::path(@_) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
@@ -279,12 +279,12 @@ sub _init_script_dir {
       || $appdir);
 
     Dancer::setting(public => $ENV{DANCER_PUBLIC}
-      || Dancer::FileUtils::path_no_verify($appdir, 'public'));
+      || Dancer::FileUtils::path($appdir, 'public'));
 
     Dancer::setting(views => $ENV{DANCER_VIEWS}
-      || Dancer::FileUtils::path_no_verify($appdir, 'views'));
+      || Dancer::FileUtils::path($appdir, 'views'));
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
@@ -1047,6 +1047,9 @@ Concatenates multiple paths together, without worrying about the underlying
 operating system:
 
     my $path = path(dirname($0), 'lib', 'File.pm');
+
+It also normalizes (cleans) the path aesthetically. It does not verify the
+path exists.
 
 =head2 post
 
