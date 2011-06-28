@@ -25,9 +25,15 @@ END {
     chdir $cwd;
 }
 
-my $cmd = "$^X -I "                                       .
-          File::Spec->catdir(  $cwd, 'blib',   'lib'    ) . '  ' .
-          File::Spec->catfile( $cwd, 'script', 'dancer' );
+my $libdir = File::Spec->catdir($cwd,'blib','lib');
+$libdir = '"'.$libdir.'"' if $libdir =~ / /; # this is for windows, but works in UNIX systems as well...
+
+my $dancer = File::Spec->catfile( $cwd, 'script', 'dancer' );
+$dancer = '"'.$dancer.'"' if $dancer =~ / /; #same here.
+
+# the same can happen with perl itself, but while nobody complain, keep it quiet.
+my $cmd = "$^X -I $libdir $dancer";
+
 chomp( my $version = qx{$cmd -v} );
 is($version, "Dancer $Dancer::VERSION", "dancer -v");
 

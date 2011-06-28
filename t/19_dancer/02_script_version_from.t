@@ -21,9 +21,13 @@ END {
     chdir $cwd;
 }
 
-my $cmd = "$^X -I"                                    .
-          File::Spec->catdir(  $cwd, 'blib', 'lib', ) . ' ' .
-          File::Spec->catfile( $cwd, 'script', 'dancer' );
+my $libdir = File::Spec->catdir($cwd, 'blib', 'lib');
+$libdir = '"'.$libdir.'"' if $libdir =~ / /;
+
+my $dancer = File::Spec->catdir($cwd, 'script', 'dancer');
+$dancer = '"'.$dancer.'"' if $dancer =~ / /;
+
+my $cmd = "$^X -I $libdir $dancer";
 
 foreach my $case ( keys %cases ) {
     my ( $casedir, $casefile ) = @{ $cases{$case} };
