@@ -54,8 +54,8 @@ sub render_error {
 sub response_with_headers {
     my $response = Dancer::SharedData->response();
 
-   $response->{headers} ||= HTTP::Headers->new;
-   $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+    $response->{headers} ||= HTTP::Headers->new;
+    $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
 
     return $response;
 }
