@@ -9,6 +9,8 @@
     * Do not re-read config files when dance starts if they were
       already loaded.  (Alberto Simões)
     * Fixed shell-dependent tests for Window testing. (Alberto Simões)
+    * Die properly if halt is call inside an hook.
+      (Damien Krotkine and Alberto Simões)
 
     [ ENHANCEMENTS ]
     * Error Hook (PR 563 - JT Smith)
