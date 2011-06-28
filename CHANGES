@@ -5,6 +5,9 @@
     * Documentation and tests on how to use many Dancer application
       inside one PSGI file (PR 564)
       (Alex Kalderimis and Franck Cuny)
+    * More flexible test for locale-aware logging (Alberto Simões)
+    * Do not re-read config files when dance starts if they were
+      already loaded.  (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * Error Hook (PR 563 - JT Smith)
