@@ -77,18 +77,22 @@ sub render_request {
     my $action;
     $action = eval {
         Dancer::Renderer->render_file
-          || Dancer::Renderer->render_action
-          || Dancer::Renderer->render_error(404);
+        || Dancer::Renderer->render_action
+        || Dancer::Renderer->render_error(404);
     };
     if ($@) {
-        Dancer::Logger::error(
-            'request to ' . $request->path_info . " crashed: $@");
+        if (Dancer::SharedData->response->halted) {
+            Dancer::Serializer->process_response(Dancer::SharedData->response);
+        } else {
+            Dancer::Logger::error(
+              'request to ' . $request->path_info . " crashed: $@");
 
-        Dancer::Error->new(
-            code    => 500,
-            title   => "Runtime Error",
-            message => $@
-        )->render();
+            Dancer::Error->new(
+              code    => 500,
+              title   => "Runtime Error",
+              message => $@
+            )->render();
+        }
     }
     return $action;
 }
