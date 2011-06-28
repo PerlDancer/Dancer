@@ -14,6 +14,7 @@
     * Error Hook (PR 563 - JT Smith)
     * The no prefix can be set using 'prefix "/";' (Alberto Simões)
     * Support for nested prefixes (Alberto Simões)
+    * Cleanup on Dancer::FileUtils (Sawyer X)
 
 1.3060      15.06.2011
     ** Codename: Pirouetting Pedro // Pedro Melo **
