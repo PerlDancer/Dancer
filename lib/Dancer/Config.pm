@@ -246,8 +246,6 @@ load_default_settings();
 
 __END__
 
-## TODO: C<environment> is not documented.
-
 =pod
 
 =head1 NAME
@@ -363,6 +361,22 @@ C<text/plain>.
 
 
 =head2 File / directory locations
+
+=head3 environment (string)
+
+This is the name of the environment that should be used. Standard
+Dancer applications have a C<environments> folder with specific
+configuration files for different environments (usually development
+and production environments). They specify different kind of error
+reporting, deployment details, etc. These files are read after the
+generic C<config.yml> configuration file.
+
+The running environment can be set with:
+
+   set environment => "production";
+
+Note that this variable is also used as a default value if other
+values are not defined.
 
 =head3 appdir (directory)
 
