@@ -83,8 +83,6 @@ sub render_request {
     };
 
     my $value = is_dancer_exception(my $exception = $@);
-    ref($exception) and
-      print STDERR " ----  ref : " . ref($exception) . " value : " . $$exception . "\n";
     if ($value && $value & E_HALTED) {
         # special case for halted workflow exception: still render the response
         Dancer::Serializer->process_response(Dancer::SharedData->response);
@@ -95,7 +93,10 @@ sub render_request {
         Dancer::Error->new(
           code    => 500,
           title   => "Runtime Error",
-          message => $exception
+          message => $exception,
+          $value ? ( exception => $value,
+                     exceptions => { },
+                   ) : (),
         )->render();
     }
     return $action;

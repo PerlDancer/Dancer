@@ -8,12 +8,23 @@ use base qw(Exporter);
 
 my @exceptions = qw(E_HALTED E_GENERIC);
 our @EXPORT_OK = (@exceptions, qw(raise list_exceptions is_dancer_exception));
+our %value_to_custom_name;
+our %custom_name_to_value;
 our %EXPORT_TAGS = ( exceptions => [ @exceptions],
-                     utils => => [ qw(raise list_exceptions is_dancer_exception) ],
+                     internal_exceptions => [ @exceptions],
+                     custom_exceptions => [],
+                     utils => => [ qw(raise list_exceptions is_dancer_exception register_custom_exception) ],
                      all => \@EXPORT_OK,
                    );
 
-my %custom_exceptions = ();
+
+sub import {
+    my ($class, @args) = @_;
+    my %args = map { $_ , 1 } @args;
+    $args{':all'} || $args{':exceptions'} || $args{':custom_exceptions'}
+      and push @args, keys %custom_name_to_value;
+    __PACKAGE__->export_to_level(1, @args);
+}
 
 =head1 SYNOPSIS
 
@@ -54,13 +65,19 @@ to be able to use this module, you should use it with these options :
   use Dancer::Exception qw(E_HALTED E_PLOP);
 
   # loads the utility functions
-  use Dancer::Exception qw(raise list_exceptions);
+  use Dancer::Exception qw(raise list_exceptions is_dancer_exception register_custom_exception);
 
   # this does the same thing as above
   use Dancer::Exception qw(:utils);
 
   # loads all exception names, but not the utils
   use Dancer::Exception qw(:exceptions);
+
+  # loads only the internal exception names
+  use Dancer::Exception qw(:internal_exceptions);
+
+  # loads only the custom exception names
+  use Dancer::Exception qw(:custom_exceptions);
 
   # loads everything
   use Dancer::Exception qw(:all);
@@ -90,24 +107,63 @@ Returns a list of strings, the names of available exceptions.
 
 sub list_exceptions { @exceptions }
 
-=head2 is_dancer_exception
+=head2 is_dancer_internal_exception
 
-  my $value = is_dancer_exception;
+  # test if it's a Dancer exception
+  my $value = is_dancer_exception($@);
+  # test if it's a Dancer internal exception
+  my $value = is_dancer_exception($@, type => 'internal');
+  # test if it's a Dancer custom exception
+  my $value = is_dancer_exception($@, type => 'custom');
 
-This function tests if an exception is a Dancer one, and if yes
-get its value. If not, it returns void
+This function tests if an exception is a Dancer exception, and if yes get its
+value. If not, it returns void
 
-First parameter is the exception to test. Returns the exception value (which is always true), or void (empty list) if the exception was not a dancer exception.
+First parameter is the exception to test. Other parameters are an optional list
+of key values. Accepted keys are for now only C<type>, to restrict the test on
+the type of the Dancer exception. C<type> can be 'internal' or 'custom'.
+
+Returns the exception value (which is always true), or void (empty list) if the
+exception was not a dancer exception (of the right type if specified).
 
 =cut
 
 sub is_dancer_exception {
     ref $_[0] eq __PACKAGE__
       or return;
-    return ${$_[0]};
+    @_ > 1
+      or return ${$_[0]};
+    my $v = ${shift()};
+    +{@_}->{type} eq 'internal' && $v < 2**16
+      and return $v;
+    +{@_}->{type} eq 'custom' && $v >= 2**16
+      and return $v;
+    return;
 }
 
-=head1 EXCEPTIONS
+=head2 register_custom_exception
+
+  register_custom_exception('E_FROBNICATOR');
+  # now I can use this exception for raising
+  raise E_FROBNICATOR;
+
+=cut
+
+sub register_custom_exception {
+    my ($exception_name) = @_;
+    exists $value_to_custom_name{$exception_name}
+      or croak "can't create '$exception_name' custom exception, it already exists";
+    keys %value_to_custom_name < 16
+      or croak "can't create '$exception_name' custom exception, all 16 custom slots are registered";
+    my $value = 2**16;
+    while($value_to_custom_name{$value}) { $value*=2; }
+    $value_to_custom_name{$value} = $exception_name;
+    $custom_name_to_value{$exception_name} = $value;
+    return;
+}
+
+
+=head1 INTERNAL EXCEPTIONS
 
 =head2 E_GENERIC
 
@@ -129,20 +185,9 @@ sub E_HALTED () { 2 }
 =head1 CUSTOM EXCEPTIONS
 
 In addition to internal (and the generic one) exception, users have the ability
-to create more Dancer exceptionsfor their need. To do that, use 'create_exception'
+to create more Dancer exceptions for their need. To do that, see
+'create_custom_exception'.
 
 =cut
-
-=head2 create_exception
-
-
-=cut
-
-sub create_custom_exception {
-    my ($exception_name) = @_;
-    exists $custom_exceptions{$exception_name}
-      or die;
-}
-
 
 1;
