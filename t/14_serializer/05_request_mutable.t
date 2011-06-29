@@ -13,9 +13,9 @@ BEGIN {
 
 plan tests => 6;
 
-setting(serializer => 'mutable');
+set serializer => 'mutable';
 
-get '/' => sub { { foo => 1 } };
+get  '/' => sub { { foo => 1 } };
 post '/' => sub { request->params };
 
 for my $ct (qw/Accept Accept-Type/) {

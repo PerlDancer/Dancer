@@ -10,8 +10,7 @@ SKIP: {
     skip 'YAML is needed to run this test', 10
       unless Dancer::ModuleLoader->load('JSON');
 
-    setting( 'serializer' => 'JSON' );
-    setting( 'show_errors' => 1);
+    set 'serializer' => 'JSON', 'show_errors' => 1;
 
     get '/' => sub { { foo => 'bar' } };
     post '/'     => sub { request->params };
