@@ -139,6 +139,22 @@ Or in the application code:
     # setting JSON as the default serializer
     set serializer => 'JSON';
 
+In your routes you can access parameters just like any route.
+
+When in a route you return a Perl data structure, it will be
+serialized automatically to the respective serialized engine (for
+instance, C<JSON>).
+
+For C<PUT> and C<POST> methods you can access the
+C<request->body>. Just note you B<must> unserialize it if you are
+expecting it to be serialized in some language (for instance,
+C<JSON>):
+
+   put "/(:id)" => sub {
+        my ($id) = splat;
+        $data->{$id} = from_json(request->body);
+   }
+
 =head1 AUTHORS
 
 This module has been written by Alexis Sukrieh and Franck Cuny.
