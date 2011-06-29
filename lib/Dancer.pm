@@ -1401,6 +1401,10 @@ For example, to disable the layout for a specific request:
         template 'index.tt', {}, { layout => undef };
     };
 
+Some tokens are automatically added to your template (C<perl_version>,
+C<dancer_version>, C<settings>, C<request>, C<params>, C<vars> and, if
+you have sessions enabled, C<session>).  Check
+L<Dancer::Template::Abstract> for further details.
 
 =head2 to_dumper ($structure)
 
