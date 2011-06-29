@@ -4,7 +4,7 @@ use Dancer::Test;
 use Dancer::Error;
 use Dancer::ModuleLoader;
 
-plan tests => 12;
+plan tests => 13;
 
 set show_errors => 1;
 
@@ -36,6 +36,7 @@ SKIP: {
 
     get '/warning'        => sub { my $a = undef; @$a; };
     get '/warning/:param' => sub { my $a = undef; @$a; };
+    get '/fatal' => sub { die "this is a fatal error" };
 
     response_content_like [GET => '/warning'],
       qr/ERROR: Runtime Error/,
@@ -55,5 +56,8 @@ SKIP: {
 
     response_content_like [GET => '/warning/value'],
       qr/PARAM VALUE: value/, "params are available";
+
+    response_content_like [GET => "/fatal"],
+        qr/this is a fatal error/;
 };
 

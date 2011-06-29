@@ -1,4 +1,5 @@
 ERROR: <% title %>
+MESSAGE: <% message %>
 PERL VERSION: <% perl_version %>
 DANCER VERSION: <% dancer_version %>
 ERROR TEMPLATE: <% settings.error_template %>
