@@ -18,6 +18,10 @@
     * Support for nested prefixes (Alberto Simões)
     * Cleanup on Dancer::FileUtils (Sawyer X)
 
+    [ DOCUMENTATION ]
+    * Documentation on tokens automatically added to templates.
+      (Alberto Simões)
+
 1.3060      15.06.2011
     ** Codename: Pirouetting Pedro // Pedro Melo **
 
