@@ -202,7 +202,7 @@ Hash to access your defined variables (using C<vars>).
 
 Hash to access your session (if you have session enabled)
 
-=cut
+=back
 
 =head1 INTERFACE
 
