@@ -2,15 +2,18 @@ package Dancer::Exception;
 
 use strict;
 use warnings;
+use Carp;
 
 use base qw(Exporter);
 
-my @exceptions = qw(E_HALTED);
+my @exceptions = qw(E_HALTED E_GENERIC);
 our @EXPORT_OK = (@exceptions, qw(raise list_exceptions is_dancer_exception));
 our %EXPORT_TAGS = ( exceptions => [ @exceptions],
                      utils => => [ qw(raise list_exceptions is_dancer_exception) ],
                      all => \@EXPORT_OK,
                    );
+
+my %custom_exceptions = ();
 
 =head1 SYNOPSIS
 
@@ -25,7 +28,7 @@ our %EXPORT_TAGS = ( exceptions => [ @exceptions],
   # catch an exception
   eval { ... };
   if ( my $value = is_dancer_exception(my $exception = $@) ) {
-    if ($value | E_HALTED | E_FOO) {
+    if ($value == ( E_HALTED | E_FOO ) ) {
         # it's a halt or foo exception...
     }
   } elsif ($exception) {
@@ -104,14 +107,42 @@ sub is_dancer_exception {
     return ${$_[0]};
 }
 
-# Dancer exceptions start at 1024
+=head1 EXCEPTIONS
 
-# Exception sent when halt() is called: workflow is to be halted
-sub E_HALTED () { 1 }
+=head2 E_GENERIC
 
-# future other exceptions :
-# sub E_FOO () { 2 }
-# sub E_FOO () { 4 }
+A generic purpose exception. Not used by internal code, so this exception can
+be used by user code safely, without having to create a custom user exception.
+
+=cut
+
+sub E_GENERIC () { 1 }
+
+=head2 E_HALTED
+
+Internal exception, generated when C<halt()> is called (see in L<Dancer> POD).
+
+=cut
+
+sub E_HALTED () { 2 }
+
+=head1 CUSTOM EXCEPTIONS
+
+In addition to internal (and the generic one) exception, users have the ability
+to create more Dancer exceptionsfor their need. To do that, use 'create_exception'
+
+=cut
+
+=head2 create_exception
+
+
+=cut
+
+sub create_custom_exception {
+    my ($exception_name) = @_;
+    exists $custom_exceptions{$exception_name}
+      or die;
+}
 
 
 1;

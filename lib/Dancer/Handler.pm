@@ -83,7 +83,9 @@ sub render_request {
     };
 
     my $value = is_dancer_exception(my $exception = $@);
-    if ($value && $value | E_HALTED) {
+    ref($exception) and
+      print STDERR " ----  ref : " . ref($exception) . " value : " . $$exception . "\n";
+    if ($value && $value & E_HALTED) {
         # special case for halted workflow exception: still render the response
         Dancer::Serializer->process_response(Dancer::SharedData->response);
     } elsif ($exception) {
