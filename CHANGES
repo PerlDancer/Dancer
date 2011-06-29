@@ -21,6 +21,8 @@
     [ DOCUMENTATION ]
     * Documentation on tokens automatically added to templates.
       (Alberto Simões)
+    * Documentation on serializer magical access to put/posted data.
+      (Alberto Simões)
 
 1.3060      15.06.2011
     ** Codename: Pirouetting Pedro // Pedro Melo **
