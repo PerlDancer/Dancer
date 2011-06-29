@@ -13,13 +13,18 @@ SKIP: {
     set 'serializer' => 'JSON', 'show_errors' => 1;
 
     get  '/'          => sub { { foo => 'bar' } };
-    post '/'          => sub { request->params };
-    put  '/'          => sub { my $a = from_json(request->body); $a->{id}; };
+    post '/'          => sub { params };
+    put  '/'          => sub { param("id") };
     get  '/json'      => sub { to_json( { foo => 'bar' } ) };
     get  '/error'     => sub { send_error( { foo => 42 }, 401 ) };
     get  '/error_bis' => sub { send_error( 42, 402 ) };
 
-    response_content_is [ PUT => '/', { body => '{"id": "foo"}' } ] => 'foo';
+    response_content_is [ PUT => '/',
+                          {
+                           body    => '{"id": "foo"}' ,
+                           headers => [ 'Content-Type' => 'application/json' ],
+                          }
+                        ] => 'foo';
 
 
     for ( '/', '/json' ) {
