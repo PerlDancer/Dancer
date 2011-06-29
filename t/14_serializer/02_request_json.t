@@ -4,20 +4,28 @@ use warnings;
 use Dancer ':tests';
 use Dancer::Test;
 
-plan tests => 10;
+plan tests => 11;
 
 SKIP: {
     skip 'YAML is needed to run this test', 10
       unless Dancer::ModuleLoader->load('JSON');
 
-    setting( 'serializer' => 'JSON' );
-    setting( 'show_errors' => 1);
+    set 'serializer' => 'JSON', 'show_errors' => 1;
 
-    get '/' => sub { { foo => 'bar' } };
-    post '/'     => sub { request->params };
-    get '/json'  => sub { to_json( { foo => 'bar' } ) };
-    get '/error' => sub { send_error( { foo => 42 }, 401 ) };
-    get '/error_bis' => sub { send_error( 42, 402 ) };
+    get  '/'          => sub { { foo => 'bar' } };
+    post '/'          => sub { params };
+    put  '/'          => sub { param("id") };
+    get  '/json'      => sub { to_json( { foo => 'bar' } ) };
+    get  '/error'     => sub { send_error( { foo => 42 }, 401 ) };
+    get  '/error_bis' => sub { send_error( 42, 402 ) };
+
+    response_content_is [ PUT => '/',
+                          {
+                           body    => '{"id": "foo"}' ,
+                           headers => [ 'Content-Type' => 'application/json' ],
+                          }
+                        ] => 'foo';
+
 
     for ( '/', '/json' ) {
         my $res = dancer_response( GET => '/' );
