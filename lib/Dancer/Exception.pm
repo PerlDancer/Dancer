@@ -92,22 +92,22 @@ sub raise { die bless \ do { my $e = $_[0] }, __PACKAGE__ }
 =head2 list_exceptions
 
   my @exception_names = list_exceptions;
-  my @exception_names = list_exceptions(of_type => 'internal');
-  my @exception_names = list_exceptions(of_type => 'custom');
+  my @exception_names = list_exceptions(type => 'internal');
+  my @exception_names = list_exceptions(type => 'custom');
 
 Returns a list of strings, the names of available exceptions.
 
 Parameters are an optional list of key values. Accepted keys are for now only
-C<of_type>, to restrict the list of exceptions on the type of the Dancer
-exception. C<of_type> can be 'internal' or 'custom'.
+C<type>, to restrict the list of exceptions on the type of the Dancer
+exception. C<type> can be 'internal' or 'custom'.
 
 =cut
 
 sub list_exceptions {
     my %params = @_;
-    ( $params{of_type} || '' ) eq 'internal'
+    ( $params{type} || '' ) eq 'internal'
       and return @exceptions;
-    ( $params{of_type} || '' ) eq 'custom'
+    ( $params{type} || '' ) eq 'custom'
       and return keys %custom_name_to_value;
     return @exceptions, keys %custom_name_to_value;
 }
@@ -117,16 +117,16 @@ sub list_exceptions {
   # test if it's a Dancer exception
   my $value = is_dancer_exception($@);
   # test if it's a Dancer internal exception
-  my $value = is_dancer_exception($@, of_type => 'internal');
+  my $value = is_dancer_exception($@, type => 'internal');
   # test if it's a Dancer custom exception
-  my $value = is_dancer_exception($@, of_type => 'custom');
+  my $value = is_dancer_exception($@, type => 'custom');
 
 This function tests if an exception is a Dancer exception, and if yes get its
 value. If not, it returns void
 
 First parameter is the exception to test. Other parameters are an optional list
-of key values. Accepted keys are for now only C<of_type>, to restrict the test on
-the type of the Dancer exception. C<of_type> can be 'internal' or 'custom'.
+of key values. Accepted keys are for now only C<type>, to restrict the test on
+the type of the Dancer exception. C<type> can be 'internal' or 'custom'.
 
 Returns the exception value (which is always true), or void (empty list) if the
 exception was not a dancer exception (of the right type if specified).
@@ -136,15 +136,15 @@ exception was not a dancer exception (of the right type if specified).
 sub is_dancer_exception {
     my ($exception, %params) = @_;
     ref $exception eq __PACKAGE__
-      or return;
+      or return 0;
     my $value = $$exception;
     @_ > 1
       or return $value;
-    $params{of_type} eq 'internal' && $value < 2**16
+    $params{type} eq 'internal' && $value < 2**16
       and return $value;
-    $params{of_type} eq 'custom' && $value >= 2**16
+    $params{type} eq 'custom' && $value >= 2**16
       and return $value;
-    return;
+    return 0;
 }
 
 =head2 register_custom_exception
