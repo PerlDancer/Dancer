@@ -33,7 +33,7 @@ foreach my $case ( keys %cases ) {
     my ( $casedir, $casefile ) = @{ $cases{$case} };
 
     # create the app
-    qx{$cmd -a $case};
+    qx{$cmd -x -a $case};
 
     # check for directory
     my $exists = -d $casedir;
