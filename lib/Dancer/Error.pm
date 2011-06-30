@@ -184,7 +184,7 @@ sub _render_serialized {
 
     my $message =
       !ref $self->message ? {error => $self->message} : $self->message;
-    ref $message eq 'HASH'
+    ref $message eq 'HASH' && defined $self->exception
       and $message->{exception} = $self->exception;
 
     if (setting('show_errors')) {
@@ -217,7 +217,7 @@ sub _render_html {
                    title => $self->title,
                    message => $self->message,
                    code => $self->code,
-                   exception => $self->exception,
+                   defined $self->exception ? ( exception => $self->exception ) : (),
                   };
         my $content = Dancer::Engine->engine("template")->apply_renderer($template_name, $ops);
         return Dancer::Response->new(

@@ -73,4 +73,27 @@ set error_template => "error.tt";
     response_status_is( [ GET => '/raise_in_hook' ], 500 => "We get a 500 status" );
 }
 
+{
+    # register new custom exception
+    register_custom_exception('E_MY_EXCEPTION');
+    ok(E_MY_EXCEPTION(), 'exception registered and imported');
+}
+
+{
+    # register new custom exception but don't import it
+    register_custom_exception('E_MY_EXCEPTION2', no_import => 1);
+
+    eval { E_MY_EXCEPTION2() };
+    like( $@, qr/Undefined subroutine/, "exception were not imported");
+
+    # now reuse Dancer::Exception;
+    eval "use Dancer::Exception qw(:all)";
+
+    ok(E_MY_EXCEPTION2(), "exception is now imported");
+
+    eval { raise E_MY_EXCEPTION2() };
+    ok(my $value = is_dancer_exception($@), "custom exception is properly caught");
+    is($value, E_MY_EXCEPTION2(), "custom exception has the proper value");
+}
+
 done_testing();

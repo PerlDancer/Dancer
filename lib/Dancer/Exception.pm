@@ -7,7 +7,7 @@ use Carp;
 use base qw(Exporter);
 
 my @exceptions = qw(E_HALTED E_GENERIC);
-our @EXPORT_OK = (@exceptions, qw(raise list_exceptions is_dancer_exception));
+our @EXPORT_OK = (@exceptions, qw(raise list_exceptions is_dancer_exception register_custom_exception));
 our %value_to_custom_name;
 our %custom_name_to_value;
 our %EXPORT_TAGS = ( exceptions => [ @exceptions],
@@ -17,14 +17,6 @@ our %EXPORT_TAGS = ( exceptions => [ @exceptions],
                      all => \@EXPORT_OK,
                    );
 
-
-sub import {
-    my ($class, @args) = @_;
-    my %args = map { $_ , 1 } @args;
-    $args{':all'} || $args{':exceptions'} || $args{':custom_exceptions'}
-      and push @args, keys %custom_name_to_value;
-    __PACKAGE__->export_to_level(1, @args);
-}
 
 =head1 SYNOPSIS
 
@@ -129,15 +121,16 @@ exception was not a dancer exception (of the right type if specified).
 =cut
 
 sub is_dancer_exception {
-    ref $_[0] eq __PACKAGE__
+    my ($exception, %params) = @_;
+    ref $exception eq __PACKAGE__
       or return;
+    my $value = $$exception;
     @_ > 1
-      or return ${$_[0]};
-    my $v = ${shift()};
-    +{@_}->{type} eq 'internal' && $v < 2**16
-      and return $v;
-    +{@_}->{type} eq 'custom' && $v >= 2**16
-      and return $v;
+      or return $value;
+    $params{type} eq 'internal' && $value < 2**16
+      and return $value;
+    $params{type} eq 'custom' && $value >= 2**16
+      and return $value;
     return;
 }
 
@@ -147,18 +140,29 @@ sub is_dancer_exception {
   # now I can use this exception for raising
   raise E_FROBNICATOR;
 
+
 =cut
 
 sub register_custom_exception {
-    my ($exception_name) = @_;
+    my ($exception_name, %params) = @_;
     exists $value_to_custom_name{$exception_name}
-      or croak "can't create '$exception_name' custom exception, it already exists";
+      and croak "can't create '$exception_name' custom exception, it already exists";
     keys %value_to_custom_name < 16
       or croak "can't create '$exception_name' custom exception, all 16 custom slots are registered";
     my $value = 2**16;
     while($value_to_custom_name{$value}) { $value*=2; }
     $value_to_custom_name{$value} = $exception_name;
     $custom_name_to_value{$exception_name} = $value;
+
+    my $pkg = __PACKAGE__;
+    no strict 'refs';
+    *{"$pkg\::$exception_name"} = sub { $value };
+
+    push @EXPORT_OK, $exception_name;
+    push @{$EXPORT_TAGS{custom_exceptions}}, $exception_name;
+    $params{no_import}
+      or $pkg->export_to_level(1, $pkg, $exception_name);
+
     return;
 }
 
