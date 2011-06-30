@@ -44,7 +44,6 @@ my $help = qx{$cmd};
 like($help, qr{Usage: .* dancer .* options}sx, 'dancer (without parameters)');
 
 foreach my $case (@cases) {
-    my $create_here = qx{$cmd -a $case 2> err};
+    my $create_here = qx{$cmd -x -a $case 2> err};
     ok (-z 'err', "create $case did not return error");
 }
-
