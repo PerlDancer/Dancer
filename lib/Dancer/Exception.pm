@@ -146,9 +146,9 @@ sub is_dancer_exception {
 sub register_custom_exception {
     my ($exception_name, %params) = @_;
     exists $value_to_custom_name{$exception_name}
-      and croak "can't create '$exception_name' custom exception, it already exists";
+      and croak "can't register '$exception_name' custom exception, it already exists";
     keys %value_to_custom_name < 16
-      or croak "can't create '$exception_name' custom exception, all 16 custom slots are registered";
+      or croak "can't register '$exception_name' custom exception, all 16 custom slots are registered";
     my $value = 2**16;
     while($value_to_custom_name{$value}) { $value*=2; }
     $value_to_custom_name{$value} = $exception_name;
@@ -172,7 +172,7 @@ sub register_custom_exception {
 =head2 E_GENERIC
 
 A generic purpose exception. Not used by internal code, so this exception can
-be used by user code safely, without having to create a custom user exception.
+be used by user code safely, without having to register a custom user exception.
 
 =cut
 
@@ -189,8 +189,8 @@ sub E_HALTED () { 2 }
 =head1 CUSTOM EXCEPTIONS
 
 In addition to internal (and the generic one) exception, users have the ability
-to create more Dancer exceptions for their need. To do that, see
-'create_custom_exception'.
+to register more Dancer exceptions for their need. To do that, see
+C<register_custom_exception>.
 
 =cut
 
