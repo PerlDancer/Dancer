@@ -104,16 +104,16 @@ sub list_exceptions { @exceptions }
   # test if it's a Dancer exception
   my $value = is_dancer_exception($@);
   # test if it's a Dancer internal exception
-  my $value = is_dancer_exception($@, type => 'internal');
+  my $value = is_dancer_exception($@, of_type => 'internal');
   # test if it's a Dancer custom exception
-  my $value = is_dancer_exception($@, type => 'custom');
+  my $value = is_dancer_exception($@, of_type => 'custom');
 
 This function tests if an exception is a Dancer exception, and if yes get its
 value. If not, it returns void
 
 First parameter is the exception to test. Other parameters are an optional list
-of key values. Accepted keys are for now only C<type>, to restrict the test on
-the type of the Dancer exception. C<type> can be 'internal' or 'custom'.
+of key values. Accepted keys are for now only C<of_type>, to restrict the test on
+the type of the Dancer exception. C<of_type> can be 'internal' or 'custom'.
 
 Returns the exception value (which is always true), or void (empty list) if the
 exception was not a dancer exception (of the right type if specified).
@@ -127,9 +127,9 @@ sub is_dancer_exception {
     my $value = $$exception;
     @_ > 1
       or return $value;
-    $params{type} eq 'internal' && $value < 2**16
+    $params{of_type} eq 'internal' && $value < 2**16
       and return $value;
-    $params{type} eq 'custom' && $value >= 2**16
+    $params{of_type} eq 'custom' && $value >= 2**16
       and return $value;
     return;
 }
