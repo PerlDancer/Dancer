@@ -92,12 +92,25 @@ sub raise { die bless \ do { my $e = $_[0] }, __PACKAGE__ }
 =head2 list_exceptions
 
   my @exception_names = list_exceptions;
+  my @exception_names = list_exceptions(of_type => 'internal');
+  my @exception_names = list_exceptions(of_type => 'custom');
 
 Returns a list of strings, the names of available exceptions.
 
+Parameters are an optional list of key values. Accepted keys are for now only
+C<of_type>, to restrict the list of exceptions on the type of the Dancer
+exception. C<of_type> can be 'internal' or 'custom'.
+
 =cut
 
-sub list_exceptions { @exceptions }
+sub list_exceptions {
+    my %params = @_;
+    ( $params{of_type} || '' ) eq 'internal'
+      and return @exceptions;
+    ( $params{of_type} || '' ) eq 'custom'
+      and return keys %custom_name_to_value;
+    return @exceptions, keys %custom_name_to_value;
+}
 
 =head2 is_dancer_internal_exception
 

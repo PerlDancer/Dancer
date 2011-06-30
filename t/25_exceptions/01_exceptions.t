@@ -96,4 +96,20 @@ set error_template => "error.tt";
     is($value, E_MY_EXCEPTION2(), "custom exception has the proper value");
 }
 
+{
+    # list of exceptions
+    is_deeply( [sort { $a cmp $b } list_exceptions()],
+               [ qw(E_GENERIC E_HALTED E_MY_EXCEPTION E_MY_EXCEPTION2) ],
+               'listing all exceptions',
+             );
+    is_deeply( [sort { $a cmp $b } list_exceptions(of_type => 'internal')],
+               [ qw(E_GENERIC E_HALTED) ],
+               'listing internal exceptions',
+             );
+    is_deeply([sort { $a cmp $b } list_exceptions(of_type => 'custom')],
+              [ qw(E_MY_EXCEPTION E_MY_EXCEPTION2) ],
+               'listing custom exceptions',
+             );
+}
+
 done_testing();
