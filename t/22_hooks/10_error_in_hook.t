@@ -4,9 +4,6 @@ use warnings;
 use Test::More tests => 3, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
-use Time::HiRes qw/gettimeofday tv_interval/;
-
-my ($t0, $elapsed);
 
 before_template sub {
     die "plop";

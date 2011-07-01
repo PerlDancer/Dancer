@@ -42,6 +42,7 @@ sub has_serializer { setting('serializer') }
 sub code           { $_[0]->{code} }
 sub title          { $_[0]->{title} }
 sub message        { $_[0]->{message} }
+sub exception      { $_[0]->{exception} }
 
 sub backtrace {
     my ($self) = @_;
@@ -183,6 +184,8 @@ sub _render_serialized {
 
     my $message =
       !ref $self->message ? {error => $self->message} : $self->message;
+    ref $message eq 'HASH' && defined $self->exception
+      and $message->{exception} = $self->exception;
 
     if (setting('show_errors')) {
         Dancer::Response->new(
@@ -214,6 +217,7 @@ sub _render_html {
                    title => $self->title,
                    message => $self->message,
                    code => $self->code,
+                   defined $self->exception ? ( exception => $self->exception ) : (),
                   };
         my $content = Dancer::Engine->engine("template")->apply_renderer($template_name, $ops);
         return Dancer::Response->new(

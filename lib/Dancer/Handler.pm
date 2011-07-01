@@ -13,6 +13,7 @@ use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
+use Dancer::Exception qw(:all);
 
 use Encode;
 
@@ -80,19 +81,23 @@ sub render_request {
         || Dancer::Renderer->render_action
         || Dancer::Renderer->render_error(404);
     };
-    if ($@) {
-        if (Dancer::SharedData->response->halted) {
-            Dancer::Serializer->process_response(Dancer::SharedData->response);
-        } else {
-            Dancer::Logger::error(
-              'request to ' . $request->path_info . " crashed: $@");
 
-            Dancer::Error->new(
-              code    => 500,
-              title   => "Runtime Error",
-              message => $@
-            )->render();
-        }
+    my $value = is_dancer_exception(my $exception = $@);
+    if ($value && $value & E_HALTED) {
+        # special case for halted workflow exception: still render the response
+        Dancer::Serializer->process_response(Dancer::SharedData->response);
+    } elsif ($exception) {
+        Dancer::Logger::error(
+          'request to ' . $request->path_info . " crashed: $exception");
+
+        Dancer::Error->new(
+          code    => 500,
+          title   => "Runtime Error",
+          message => $exception,
+          $value ? ( exception => $value,
+                     exceptions => { },
+                   ) : (),
+        )->render();
     }
     return $action;
 }
