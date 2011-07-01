@@ -102,11 +102,11 @@ set error_template => "error.tt";
                [ qw(E_GENERIC E_HALTED E_MY_EXCEPTION E_MY_EXCEPTION2) ],
                'listing all exceptions',
              );
-    is_deeply( [sort { $a cmp $b } list_exceptions(of_type => 'internal')],
+    is_deeply( [sort { $a cmp $b } list_exceptions(type => 'internal')],
                [ qw(E_GENERIC E_HALTED) ],
                'listing internal exceptions',
              );
-    is_deeply([sort { $a cmp $b } list_exceptions(of_type => 'custom')],
+    is_deeply([sort { $a cmp $b } list_exceptions(type => 'custom')],
               [ qw(E_MY_EXCEPTION E_MY_EXCEPTION2) ],
                'listing custom exceptions',
              );
