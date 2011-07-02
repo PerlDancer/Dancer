@@ -4,7 +4,6 @@ use warnings;
 use Test::More tests => 3, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
-use Time::HiRes qw/gettimeofday tv_interval/;
 
 before_template sub {
     status 500;

@@ -17,6 +17,7 @@
     * The no prefix can be set using 'prefix "/";' (Alberto Simões)
     * Support for nested prefixes (Alberto Simões)
     * Cleanup on Dancer::FileUtils (Sawyer X)
+    * Exceptions system (Damien Krotkine)
 
     [ DOCUMENTATION ]
     * Documentation on tokens automatically added to templates.

@@ -10,6 +10,7 @@ __PACKAGE__->attributes(qw/name code properties/);
 
 use Dancer::Factory::Hook;
 use Dancer::Hook::Properties;
+use Dancer::Exception qw(:all);
 
 sub new {
     my ($class, @args) = @_;
@@ -52,14 +53,18 @@ sub new {
 
         Dancer::Logger::core( "entering " . $hook_name . " hook" );
         eval { $code->(@_) };
-
-        if ($@) {
+        if ( is_dancer_exception(my $exception = $@) ) {
+            # propagate the exception
+            die $exception;
+        } elsif ($exception) {
+            # exception is not a workflow halt but a genuine error
             my $err = Dancer::Error->new(
                 code    => 500,
                 title   => $hook_name . ' filter error',
-                message => "An error occured while executing the filter named $hook_name: $@"
+                message => "An error occured while executing the filter named $hook_name: $exception"
             );
-            return Dancer::halt( $err->render );
+            # raise a new halt exception
+            Dancer::halt( $err->render );
         }
     };
 
