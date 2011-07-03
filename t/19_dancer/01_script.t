@@ -10,14 +10,15 @@ my @cases = (
     'A::B::C::D',
 );
 
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
 plan tests => 3 + @cases;
 
-use Cwd        qw(cwd);
-use File::Temp qw(tempdir);
-
+use Cwd qw(cwd);
 use Dancer;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 my $cwd = cwd;
 
 chdir $dir;

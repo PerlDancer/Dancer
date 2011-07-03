@@ -3,9 +3,11 @@ use Test::More;
 use Dancer ':syntax', ':tests';
 use Dancer::Test;
 use Dancer::Logger;
-use File::Temp qw/tempdir/;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 Dancer::Logger->init('File');
 

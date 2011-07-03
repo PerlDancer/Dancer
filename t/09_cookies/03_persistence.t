@@ -8,14 +8,15 @@ BEGIN {
     plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
     plan skip_all => 'Test::TCP is needed to run this test'
         unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
+    plan skip_all => "File::Temp 0.22 required"
+        unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 };
 
 use LWP::UserAgent;
 use Dancer;
 
 use File::Spec;
-use File::Temp 'tempdir';
-my $tempdir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $tempdir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 
 plan tests => 9;
 Test::TCP::test_tcp(
