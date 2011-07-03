@@ -21,8 +21,13 @@ sub logdir {
         }
     }
 
-    my $expected_path = Dancer::FileUtils::path($logroot, 'logs');
+    my $expected_path = $logroot                                  ?
+                        Dancer::FileUtils::path($logroot, 'logs') :
+                        Dancer::FileUtils::path('logs');
+
     return $expected_path if (-d $expected_path && -x _ && -w _);
+
+    print "Expected path: $expected_path\n";
 
     unless (-w $logroot and -x _) {
         my $perm = (stat $logroot)[2] & 07777;
