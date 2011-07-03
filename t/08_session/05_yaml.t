@@ -55,7 +55,11 @@ ok( -d $session_dir, "session dir was created");
 rmtree($session_dir);
 eval { $session = Dancer::Session::YAML->create() };
 my $error = $@;
-like ($@, qr/Parent directory .* does not exist/, "session dir was not recreated");
+like(
+    $@,
+    qr/Can't open .* No such file or directory/,
+    'session dir was not recreated',
+);
 
 Dancer::Session::YAML->reset();
 $session = Dancer::Session::YAML->create();

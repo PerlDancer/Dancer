@@ -5,12 +5,11 @@ use warnings;
 use Carp;
 use base 'Dancer::Session::Abstract';
 
+use Fcntl ':flock';
 use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path set_file_mode);
-use File::Copy;
-use File::Temp qw(tempfile);
 
 # static
 
@@ -60,9 +59,16 @@ sub reset {
 # Return the session object corresponding to the given id
 sub retrieve {
     my ($class, $id) = @_;
+    my $session_file = yaml_file($id);
 
-    return unless -f yaml_file($id);
-    return YAML::LoadFile(yaml_file($id));
+    return unless -f $session_file;
+
+    open my $fh, '<', $session_file or die "Can't open '$session_file': $!\n";
+    flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
+    my $content = YAML::LoadFile($session_file);
+    close $fh or die "Can't close '$session_file': $!\n";
+
+    return $content;
 }
 
 # instance
@@ -70,11 +76,6 @@ sub retrieve {
 sub yaml_file {
     my ($id) = @_;
     return path(setting('session_dir'), "$id.yml");
-}
-
-sub tmp_yaml_file {
-    my ($id) = @_;
-    return path(setting('session_dir'), "$id.tmp");
 }
 
 sub destroy {
@@ -86,13 +87,15 @@ sub destroy {
 }
 
 sub flush {
-    my $self = shift;
-    my ( $fh, $tmpname ) =
-      tempfile( $self->id . '.XXXXXXXX', DIR => setting('session_dir') );
+    my $self         = shift;
+    my $session_file = yaml_file( $self->id );
+
+    open my $fh, '>', $session_file or die "Can't open '$session_file': $!\n";
+    flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
     set_file_mode($fh);
     print {$fh} YAML::Dump($self);
-    close $fh;
-    move($tmpname, yaml_file($self->id));
+    close $fh or die "Can't close '$session_file': $!\n";
+
     return $self;
 }
 
