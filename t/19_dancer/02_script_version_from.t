@@ -22,9 +22,6 @@ my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 my $cwd = cwd;
 
 chdir $dir;
-END {
-    chdir $cwd;
-}
 
 my $libdir = File::Spec->catdir($cwd, 'blib', 'lib');
 $libdir = '"'.$libdir.'"' if $libdir =~ / /;
@@ -63,3 +60,5 @@ foreach my $case ( keys %cases ) {
         chdir $dir;
     }
 }
+
+chdir $cwd;
