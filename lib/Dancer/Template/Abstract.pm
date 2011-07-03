@@ -108,9 +108,14 @@ sub _prepare_tokens_options {
     $tokens->{perl_version}   = $];
     $tokens->{dancer_version} = $Dancer::VERSION;
     $tokens->{settings}       = Dancer::Config->settings;
-    $tokens->{request}        = Dancer::SharedData->request;
-    $tokens->{params}         = Dancer::SharedData->request->params;
-    $tokens->{vars}           = Dancer::SharedData->vars;
+
+    # If we're processing a request, also add the request object, params and
+    # vars as tokens:
+    if (my $request = Dancer::SharedData->request) {
+        $tokens->{request}        = $request;
+        $tokens->{params}         = $request->params;
+        $tokens->{vars}           = Dancer::SharedData->vars;
+    }
 
     Dancer::App->current->setting('session')
       and $tokens->{session} = Dancer::Session->get;
