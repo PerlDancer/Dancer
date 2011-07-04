@@ -12,6 +12,7 @@
     * Die properly if halt is call inside an hook.
       (Damien Krotkine and Alberto Simões)
     * Make template work outside of requests (Issue 592) (David Precious)
+    * Cleanup session tests folder (Issue 594) (Sawyer X)
 
     [ ENHANCEMENTS ]
     * Error Hook (PR 563 - JT Smith)
