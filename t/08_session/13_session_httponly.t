@@ -15,6 +15,8 @@ plan skip_all => "YAML is needed for this test"
 plan tests => 3 * 3;
 
 use LWP::UserAgent;
+use File::Path 'rmtree';
+use Dancer::Config;
 
 for my $setting ("default", "on", "off") {
     Test::TCP::test_tcp(
@@ -58,3 +60,7 @@ for my $setting ("default", "on", "off") {
     );
 
 }
+
+# clean up after ourselves
+rmtree( path( Dancer::Config::settings->{'appdir'}, 'sessions' ) );
+
