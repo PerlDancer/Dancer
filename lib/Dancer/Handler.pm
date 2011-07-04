@@ -174,7 +174,7 @@ sub render_response {
 
 sub _is_text {
     my ($content_type) = @_;
-    return $content_type =~ /(text|json)/;
+    return $content_type =~ /(x(?:ht)?ml|text|json|javascript)/;
 }
 
 # Fancy banner to print on startup
