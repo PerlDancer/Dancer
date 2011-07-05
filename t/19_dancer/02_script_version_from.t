@@ -3,23 +3,25 @@ use warnings;
 
 use Cwd;
 use Dancer::FileUtils;
+use Dancer::ModuleLoader;
 
-use Test::More tests => 6, import => ['!pass'];
-use File::Temp 'tempdir';
+use Test::More import => ['!pass'];
 use File::Spec;
+
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
+plan tests => 6;
 
 my %cases = (
     'A'    => [ 'A',   'lib/A.pm'   ],
     'A::B' => [ 'A-B', 'lib/A/B.pm' ],
 );
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 my $cwd = cwd;
 
 chdir $dir;
-END {
-    chdir $cwd;
-}
 
 my $libdir = File::Spec->catdir($cwd, 'blib', 'lib');
 $libdir = '"'.$libdir.'"' if $libdir =~ / /;
@@ -58,3 +60,5 @@ foreach my $case ( keys %cases ) {
         chdir $dir;
     }
 }
+
+chdir $cwd;

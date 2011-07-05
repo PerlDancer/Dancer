@@ -1,6 +1,5 @@
 use Test::More import => ['!pass'];
 use File::Spec;
-use File::Temp;
 
 use Dancer ':syntax';
 use Dancer::FileUtils qw/read_file_content path_or_empty/;
@@ -11,8 +10,10 @@ use TestUtils;
 use strict;
 use warnings;
 
-plan tests => 3;
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 
+plan tests => 3;
 
 my $tmp = File::Temp->new();
 write_file($tmp, "one$/two");

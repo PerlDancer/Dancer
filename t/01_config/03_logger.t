@@ -1,12 +1,16 @@
-use Test::More tests => 15, import => ['!pass'];
+use Test::More import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::FileUtils;
 
-use File::Temp qw/tempdir/;
 use File::Spec qw/catfile/;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
+plan tests => 15;
+
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 
 eval { set logger => 'foobar' };

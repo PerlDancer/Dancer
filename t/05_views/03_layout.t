@@ -7,6 +7,9 @@ BEGIN {
         unless Dancer::ModuleLoader->load('Template');
     plan skip_all => "YAML needed to run this tests"
         unless Dancer::ModuleLoader->load('YAML');
+    plan skip_all => "File::Temp 0.22 required"
+        unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
 
     use File::Spec;
     use lib File::Spec->catdir( 't', 'lib' );
@@ -14,7 +17,6 @@ BEGIN {
 };
 
 use Dancer::Test;
-use File::Temp qw/tempdir/;
 
 set views => path(dirname(__FILE__), 'views');
 
@@ -37,7 +39,7 @@ my @tests = (
 
 plan tests => scalar(@tests) + 4;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;

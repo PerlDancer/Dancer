@@ -10,17 +10,17 @@ use File::Path qw(mkpath rmtree);
 # use t::lib::TestUtils;
 # use t::lib::EasyMocker;
 
-use File::Temp qw/tempdir/;
-
 BEGIN {
     plan skip_all => "need YAML"
         unless Dancer::ModuleLoader->load('YAML');
+    plan skip_all => "File::Temp 0.22 required"
+        unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
     plan tests => 12;
     use_ok 'Dancer::Session::YAML'
 }
 
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 
 my $session = Dancer::Session::YAML->create();
@@ -55,7 +55,11 @@ ok( -d $session_dir, "session dir was created");
 rmtree($session_dir);
 eval { $session = Dancer::Session::YAML->create() };
 my $error = $@;
-like ($@, qr/Parent directory .* does not exist/, "session dir was not recreated");
+like(
+    $@,
+    qr/Can't open .* No such file or directory/,
+    'session dir was not recreated',
+);
 
 Dancer::Session::YAML->reset();
 $session = Dancer::Session::YAML->create();

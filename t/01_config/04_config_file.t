@@ -4,15 +4,16 @@ use Test::More import => ['!pass'];
 
 plan skip_all => "YAML needed to run this tests"
     unless Dancer::ModuleLoader->load('YAML');
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 plan tests => 17;
 
-use File::Temp qw/tempdir/;
 use Dancer ':syntax';
 use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 use TestUtils;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;
