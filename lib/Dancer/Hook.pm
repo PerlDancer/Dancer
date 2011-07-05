@@ -42,8 +42,11 @@ sub new {
         $code       = shift @args;
     }
     else {
-        croak "something's wrong";
+        croak "something's wrong with parameters passed to Hook constructor";
     }
+    ref $code eq 'CODE'
+      or croak "the code argument passed to hook construction was not a CodeRef. Value was : '$code'";
+
 
     my $compiled_filter = sub {
         return if Dancer::SharedData->response->halted;
