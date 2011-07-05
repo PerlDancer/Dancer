@@ -289,7 +289,7 @@ sub safe_mkdir {
     if (not -d $dir) {
         debug ("Writing directory: $dir\n");
         mkpath $dir or die "could not write the directory $dir: $!";
-        debug ("Sucesffully wrote the directory: $dir\n");
+        debug ("Successfully wrote the directory: $dir\n");
     }
     else {
         print "  $dir\n";
@@ -318,7 +318,7 @@ sub write_file {
 	debug ("Writing file: $path\n");
     open $fh, '>', $path or die "unable to open file `$path' for writing: $!";
     print $fh $content;
-    debug ("Sucesffully wrote: $path\n");
+    debug ("Successfully wrote: $path\n");
     close $fh;
 }
 
@@ -341,7 +341,7 @@ sub write_data_to_file {
       or warn "Failed to write file to $path - $!" and return;
     binmode($fh);
     print {$fh} unpack 'u*', $data;
-    debug ("Sucesffully wrote: $path\n");
+    debug ("Successfully wrote: $path\n");
     close $fh;
     return 1;
 }
