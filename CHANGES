@@ -19,6 +19,7 @@
     * The no prefix can be set using 'prefix "/";' (Alberto Simões)
     * Support for nested prefixes (Alberto Simões)
     * Cleanup on Dancer::FileUtils (Sawyer X)
+    * Cleanup on File::Temp dependencies (Sawyer X)
     * Exceptions system (Damien Krotkine)
 
     [ DOCUMENTATION ]
