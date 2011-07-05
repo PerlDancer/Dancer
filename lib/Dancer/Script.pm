@@ -14,6 +14,7 @@ use Getopt::Long;
 use Pod::Usage;
 use LWP::UserAgent;
 use constant FILE => 1;
+set logger => 'console';
 
 # subs
 sub new { 
@@ -286,8 +287,9 @@ sub safe_mkdir {
     my $self = shift;
     my $dir = shift;
     if (not -d $dir) {
-        print "+ $dir\n";
-        mkpath $dir or die "could not mkpath $dir: $!";
+        debug ("Writing directory: $dir\n");
+        mkpath $dir or die "could not write the directory $dir: $!";
+        debug ("Sucesffully wrote the directory: $dir\n");
     }
     else {
         print "  $dir\n";
@@ -313,9 +315,10 @@ sub write_file {
 
     my $fh;
     my $content = $self->process_template($template, $vars);
-    print "+ $path\n";
+	debug ("Writing file: $path\n");
     open $fh, '>', $path or die "unable to open file `$path' for writing: $!";
     print $fh $content;
+    debug ("Sucesffully wrote: $path\n");
     close $fh;
 }
 
@@ -333,10 +336,12 @@ sub write_data_to_file {
     my $self = shift;
     my $data = shift;
     my $path = shift;
+	debug ("Writing file: $path\n");
     open(my $fh, '>', $path)
       or warn "Failed to write file to $path - $!" and return;
     binmode($fh);
     print {$fh} unpack 'u*', $data;
+    debug ("Sucesffully wrote: $path\n");
     close $fh;
     return 1;
 }
