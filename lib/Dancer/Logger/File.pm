@@ -27,8 +27,6 @@ sub logdir {
 
     return $expected_path if (-d $expected_path && -x _ && -w _);
 
-    print "Expected path: $expected_path\n";
-
     unless (-w $logroot and -x _) {
         my $perm = (stat $logroot)[2] & 07777;
         chmod($perm | 0700, $logroot);
