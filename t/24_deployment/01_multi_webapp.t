@@ -11,42 +11,48 @@ BEGIN {
       unless Dancer::ModuleLoader->load('Plack::Builder');
 }
 
-use HTTP::Request;
+use Dancer;
+use Plack::Builder;
 use LWP::UserAgent;
-
-use Plack::Builder; # should be loaded in BEGIN block, but it seems that it's not the case ...
 use HTTP::Server::Simple::PSGI;
 
-plan tests => 3;
+plan tests => 100;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $url = "http://127.0.0.1:$port/mount/test/foo";
 
-        my $req = HTTP::Request->new(GET => $url);
+        my @apps = (qw/app1 app2/);
         my $ua = LWP::UserAgent->new();
-        ok my $res = $ua->request($req);
-        ok $res->is_success;
-        is $res->content, '/foo';
+        for(1..100){
+            my $app = $apps[int(rand(scalar @apps - 1))];
+            my $req = HTTP::Request->new(GET => "http://127.0.0.1:$port/$app");
+            my $res = $ua->request($req);
+            like $res->content, qr/Hello $app/;
+        }
     },
     server => sub {
-        my $port    = shift;
+        my $port = shift;
 
-        my $handler = sub {
-            use Dancer;
+        my $app1 = sub {
+            my $env = shift;
+            Dancer::App->set_running_app('APP1');
+            get "/" => sub { return "Hello app1"; };
+            my $request = Dancer::Request->new(env => $env);
+            Dancer->dance($request);
+        };
 
-            set port => $port, apphandler   => 'PSGI', startup_info => 0;
-
-            get '/foo' => sub {request->path_info};
-
-            my $env     = shift;
+        my $app2 = sub {
+            my $env = shift;
+            Dancer::App->set_running_app('APP2');
+            get "/" => sub { return "Hello app2"; };
             my $request = Dancer::Request->new(env => $env);
             Dancer->dance($request);
         };
 
         my $app = builder {
-            mount "/mount/test" => $handler;
+            mount "/app1" => builder {$app1};
+            mount "/app2" => builder {$app2};
         };
 
         my $server = HTTP::Server::Simple::PSGI->new($port);

@@ -1,13 +1,17 @@
 use strict;
 use warnings;
-use Test::More tests => 16, import => ['!pass'];
+use Test::More import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::Logger;
-use File::Temp qw/tempdir/;
 use Dancer::Test;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
+plan tests => 16;
+
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 Dancer::Logger->init('File');
 

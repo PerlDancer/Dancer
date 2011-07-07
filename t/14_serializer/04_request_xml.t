@@ -14,13 +14,12 @@ SKIP: {
         unless Dancer::ModuleLoader->load('XML::Parser') or
                Dancer::ModuleLoader->load('XML::SAX');
 
-    setting( 'serializer' => 'XML' );
-    setting( 'show_errors' => 1);
+    set serializer => 'XML', show_errors => 1;
 
-    get '/' => sub { { foo => 'bar' } };
-    post '/'     => sub { request->params };
-    get '/xml'  => sub { to_xml( { foo => 'bar' } ) };
-    get '/error' => sub { send_error( { foo => 42 }, 401 ) };
+    get '/'          => sub { { foo => 'bar' } };
+    post '/'         => sub { request->params };
+    get '/xml'       => sub { to_xml( { foo => 'bar' } ) };
+    get '/error'     => sub { send_error( { foo => 42 }, 401 ) };
     get '/error_bis' => sub { send_error( 42, 402 ) };
 
     for ( '/', '/xml' ) {

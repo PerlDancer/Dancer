@@ -19,6 +19,8 @@
 * <dams> : the serializer keyword should limit the serializer scope the route (if used inside a route definition) or to the app (if used outside of a route definition)
 * <dams> : Change Dancer::Plugin API : Dancer::Plugin::Foo should inherit from Dancer::Plugin themselves.
 
+* <ambs> : Dancer::Error could be rewritten to use dancer::object attributes.
+
 
 [ Tests ]
 

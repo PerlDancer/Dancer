@@ -108,9 +108,14 @@ sub _prepare_tokens_options {
     $tokens->{perl_version}   = $];
     $tokens->{dancer_version} = $Dancer::VERSION;
     $tokens->{settings}       = Dancer::Config->settings;
-    $tokens->{request}        = Dancer::SharedData->request;
-    $tokens->{params}         = Dancer::SharedData->request->params;
-    $tokens->{vars}           = Dancer::SharedData->vars;
+
+    # If we're processing a request, also add the request object, params and
+    # vars as tokens:
+    if (my $request = Dancer::SharedData->request) {
+        $tokens->{request}        = $request;
+        $tokens->{params}         = $request->params;
+        $tokens->{vars}           = Dancer::SharedData->vars;
+    }
 
     Dancer::App->current->setting('session')
       and $tokens->{session} = Dancer::Session->get;
@@ -166,6 +171,43 @@ Dancer::Template::Abstract - abstract class for Dancer's template engines
 
 This class is provided as a base class for each template engine. Any template
 engine must inherit from it and provide a set of methods described below.
+
+=head1 TEMPLATE TOKENS
+
+By default Dancer injects some tokens (or variables) to templates. The
+available templates are:
+
+=over 4
+
+=item C<perl_version>
+
+The current running Perl version.
+
+=item C<dancer_version>
+
+The current running Dancer version.
+
+=item C<settings>
+
+Hash to access current application settings.
+
+=item C<request>
+
+Hash to access your current request.
+
+=item C<params>
+
+Hash to access your request parameters.
+
+=item C<vars>
+
+Hash to access your defined variables (using C<vars>).
+
+=item C<session>
+
+Hash to access your session (if you have session enabled)
+
+=back
 
 =head1 INTERFACE
 

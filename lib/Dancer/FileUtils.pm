@@ -11,42 +11,26 @@ use Cwd 'realpath';
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-@EXPORT_OK = qw(dirname open_file path read_file_content read_glob_content real_path set_file_mode);
+@EXPORT_OK = qw(
+    dirname open_file path read_file_content read_glob_content
+    path_or_empty set_file_mode normalize_path
+);
 
-# Undo UNC special-casing catfile-voodoo on cygwin
-sub _trim_UNC {
-    if ($^O eq 'cygwin') {
-        return if ($#_ < 0);
-        my ($slashes, $part, @parts) = (0, undef, @_);
-        while(defined($part = shift(@parts))) { last if ($part); $slashes++ }
-        $slashes += ($part =~ s/^[\/\\]+//);
-        if ($slashes == 2) {
-            return("/" . $part, @parts);
-        } else {
-            my $slashstr = '';
-            $slashstr .= '/' for (1 .. $slashes);
-            return($slashstr . $part, @parts);
-        }
-    }
-    return(@_);
+# path should not verify paths
+# just normalize
+sub path {
+    my @parts = @_;
+    my $path  = File::Spec->catfile(@parts);
+
+    return normalize_path($path);
 }
 
-sub d_catfile { File::Spec->catfile(_trim_UNC(@_)) }
-sub d_catdir { File::Spec->catdir(_trim_UNC(@_)) }
-sub d_canonpath { File::Spec->canonpath(_trim_UNC(@_)) }
-sub d_catpath { File::Spec->catpath(_trim_UNC(@_)) }
-sub d_splitpath { File::Spec->splitpath(_trim_UNC(@_)) }
+sub path_or_empty {
+    my @parts = @_;
+    my $path  = path(@parts);
 
-sub path { d_catfile(@_) }
-
-sub real_path { 
-  my $path = d_catfile(@_);
-  #If Cwd's realpath encounters a path which does not exist it returns
-  #empty on linux, but croaks on windows.
-  if (! -e $path) {
-    return;
-  }
-  realpath($path); 
+    # return empty if it doesn't exist
+    return -e $path ? $path : '';
 }
 
 sub path_no_verify {
@@ -59,46 +43,44 @@ sub path_no_verify {
     } else {
         $path = Cwd::cwd . '/';
     }
+
     $path .= $nodes[2];
+
     return $path;
 }
 
 sub dirname { File::Basename::dirname(@_) }
 
 sub set_file_mode {
-    my ($fh) = @_;
+    my $fh = shift;
+
     require Dancer::Config;
     my $charset = Dancer::Config::setting('charset') || 'utf-8';
+    binmode $fh, ":encoding($charset)";
 
-    if($charset) {
-        binmode($fh, ":encoding($charset)");
-    }
     return $fh;
 }
 
 sub open_file {
-    my ($mode, $filename) = @_;
-    open(my $fh, $mode, $filename)
+    my ( $mode, $filename ) = @_;
+
+    open my $fh, $mode, $filename
       or croak "$! while opening '$filename' using mode '$mode'";
+
     return set_file_mode($fh);
 }
 
 sub read_file_content {
-    my ($file) = @_;
-    my $fh;
+    my $file = shift or return;
+    my $fh   = open_file( '<', $file );
 
-    if ($file) {
-        $fh = open_file('<', $file);
-
-        return wantarray ? read_glob_content($fh) : scalar read_glob_content($fh);
-    }
-    else {
-        return;
-    }
+    return wantarray              ?
+           read_glob_content($fh) :
+           scalar read_glob_content($fh);
 }
 
 sub read_glob_content {
-    my ($fh) = @_;
+    my $fh = shift;
 
     # we don't want to do that as we'll encode the stuff later
     # binmode $fh;
@@ -106,10 +88,60 @@ sub read_glob_content {
     my @content = <$fh>;
     close $fh;
 
-    return wantarray ? @content : join("", @content);
+    return wantarray ? @content : join '', @content;
 }
 
-'Dancer::FileUtils';
+sub normalize_path {
+    # this is a revised version of what is described in
+    # http://www.linuxjournal.com/content/normalizing-path-names-bash
+    # by Mitch Frazier
+    my $path     = shift or return;
+    my $seqregex = qr{
+        [^/]*  # anything without a slash
+        /\.\./ # that is accompanied by two dots as such
+    }x;
+
+    $path =~ s{/\./}{/}g;
+    $path =~ s{$seqregex}{}g;
+
+    return $path;
+}
+
+# !! currently unused
+# Undo UNC special-casing catfile-voodoo on cygwin
+sub _trim_UNC {
+    my @args = @_;
+
+    # if we're using cygwin
+    if ( $^O eq 'cygwin' ) {
+        # no @args, no problem
+        @args or return;
+
+        my ( $slashes, $part, @parts) = ( 0, undef, @args );
+
+        # start pulling part from @parts
+        while ( defined ( $part = shift @parts ) ) {
+            last if $part;
+            $slashes++;
+        }
+
+        # count slashes in $part
+        $slashes += ( $part =~ s/^[\/\\]+// );
+
+        if ( $slashes == 2 ) {
+            return ( '/' . $part, @parts );
+        } else {
+            my $slashstr = '';
+            $slashstr .= '/' for ( 1 .. $slashes );
+
+            return ( $slashstr . $part, @parts );
+        }
+    }
+
+    return @args;
+}
+
+1;
 
 __END__
 
@@ -121,11 +153,11 @@ Dancer::FileUtils - helper providing file utilities
 
 =head1 SYNOPSIS
 
-    use Dancer::FileUtils qw/dirname real_path/;
+    use Dancer::FileUtils qw/dirname path/;
 
     # for 'path/to/file'
-    my $dir=dirname ($path); #returns 'path/to'
-    my $real_path=real_path ($path); #returns '/abs/path/to/file'
+    my $dir  = dirname($path); # returns 'path/to'
+    my $path = path($path);    # returns '/abs/path/to/file'
 
 
     use Dancer::FileUtils qw/path read_file_content/;
@@ -133,11 +165,10 @@ Dancer::FileUtils - helper providing file utilities
     my $content = read_file_content( path( 'folder', 'folder', 'file' ) );
     my @content = read_file_content( path( 'folder', 'folder', 'file' ) );
 
-
     use Dancer::FileUtils qw/read_glob_content set_file_mode/;
 
     open my $fh, '<', $file or die "$!\n";
-    set_file_mode ($fh);
+    set_file_mode($fh);
     my @content = read_file_content($fh);
     my $content = read_file_content($fh);
 
@@ -200,16 +231,6 @@ in scalar context returns the entire contents of the file.
 
 Same as I<read_file_content>, only it accepts a file handle. Returns the
 content and B<closes the file handle>.
-
-=head2 real_path
-
-    use Dancer::FileUtils 'real_path';
-
-    my $real_path=real_path ($path);
-
-Returns a canonical and absolute path. Uses Cwd's realpath internally which
-resolves symbolic links and relative-path components ("." and ".."). If
-specified path does not exist, real_path returns nothing.
 
 =head2 set_file_mode
 

@@ -8,7 +8,7 @@ my @tests = (
     { name => 'msg', value => 'hello; world', opts => { http_only => 0 } },
 );
 
-plan tests => scalar (@tests * 5) + 10;
+plan tests => scalar (@tests * 5) + 11;
 
 is_deeply(cookies, {}, "cookies() return a hashref");
 
@@ -50,3 +50,16 @@ is cookie('answer'), 42, "cookie get";
 is cookies->{answer}->path, 'dtc', "cookie option correctly set";
 is cookie('zorglub'), undef, "unknown cookie";
 
+### test for im0
+$env = {
+    REQUEST_METHOD => 'GET',
+    SCRIPT_NAME => '/',
+    HTTP_COOKIE => 'dancer.session=1209039; fbs_102="access_token=xxxxxxxxxx%7Cffffff"',
+};
+
+$request = Dancer::Request->new(env => $env);
+Dancer::SharedData->request($request);
+Dancer::Cookies->init;
+
+$cookies = Dancer::Cookies->cookies;
+like $cookies->{fbs_102}->value, qr/access_token\=/;

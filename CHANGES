@@ -1,3 +1,34 @@
+1.3069_01   07.07.2011
+
+    [ BUG FIXES ]
+    * Fix a bug while parsing some cookies
+      (Franck Cuny)
+    * Documentation and tests on how to use many Dancer application
+      inside one PSGI file (PR 564)
+      (Alex Kalderimis and Franck Cuny)
+    * More flexible test for locale-aware logging (Alberto Simões)
+    * Do not re-read config files when dance starts if they were
+      already loaded.  (Alberto Simões)
+    * Fixed shell-dependent tests for Window testing. (Alberto Simões)
+    * Die properly if halt is call inside an hook.
+      (Damien Krotkine and Alberto Simões)
+    * Make template work outside of requests (Issue 592) (David Precious)
+    * Cleanup session tests folder (Issue 594) (Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * Error Hook (PR 563 - JT Smith)
+    * Exceptions system (Damien Krotkine)
+    * The no prefix can be set using 'prefix "/";' (Alberto Simões)
+    * Support for nested prefixes (Alberto Simões)
+    * Cleanup on Dancer::FileUtils (Sawyer X)
+    * Cleanup on File::Temp dependencies (Sawyer X)
+
+    [ DOCUMENTATION ]
+    * Documentation on tokens automatically added to templates.
+      (Alberto Simões)
+    * Documentation on serializer magical access to put/posted data.
+      (Alberto Simões)
+
 1.3060      15.06.2011
     ** Codename: Pirouetting Pedro // Pedro Melo **
 

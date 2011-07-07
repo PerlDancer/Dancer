@@ -32,7 +32,11 @@ sub parse_cookie_from_env {
 
     my $cookies = {};
     foreach my $cookie ( split( /[,;]\s/, $env_str ) ) {
-        my ( $name, $value ) = split( '=', $cookie );
+        # here, we don't want more than the 2 first elements
+        # a cookie string can contains something like:
+        # cookie_name="foo=bar"
+        # we want `cookie_name' as the value and `foo=bar' as the value
+        my( $name,$value ) = split(/\s*=\s*/, $cookie, 2);
         my @values;
         if ( $value ne '' ) {
             @values = map { uri_unescape($_) } split( /[&;]/, $value );

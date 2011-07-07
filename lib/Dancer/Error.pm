@@ -16,10 +16,12 @@ use Dancer::FileUtils qw(open_file);
 use Dancer::Engine;
 
 Dancer::Factory::Hook->instance->install_hooks(
-    qw/before_error_render after_error_render/);
+    qw/before_error_render after_error_render before_error_init/);
 
 sub init {
     my ($self) = @_;
+
+    Dancer::Factory::Hook->instance->execute_hooks('before_error_init', $self);
 
     $self->attributes_defaults(
         title => 'Error ' . $self->code,
@@ -40,6 +42,7 @@ sub has_serializer { setting('serializer') }
 sub code           { $_[0]->{code} }
 sub title          { $_[0]->{title} }
 sub message        { $_[0]->{message} }
+sub exception      { $_[0]->{exception} }
 
 sub backtrace {
     my ($self) = @_;
@@ -181,6 +184,8 @@ sub _render_serialized {
 
     my $message =
       !ref $self->message ? {error => $self->message} : $self->message;
+    ref $message eq 'HASH' && defined $self->exception
+      and $message->{exception} = $self->exception;
 
     if (setting('show_errors')) {
         Dancer::Response->new(
@@ -212,6 +217,7 @@ sub _render_html {
                    title => $self->title,
                    message => $self->message,
                    code => $self->code,
+                   defined $self->exception ? ( exception => $self->exception ) : (),
                   };
         my $content = Dancer::Engine->engine("template")->apply_renderer($template_name, $ops);
         return Dancer::Response->new(

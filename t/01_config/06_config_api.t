@@ -3,10 +3,12 @@ use warnings;
 use Test::More import => ['!pass'];
 
 use Dancer::Config;
-use File::Temp qw/tempdir/;
 
 plan skip_all => "YAML needed to run this tests"
     unless Dancer::ModuleLoader->load('YAML');
+
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 
 plan tests => 2;
 
@@ -16,7 +18,7 @@ eval {
 
 like $@, qr/Unable to parse the configuration file/;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 
 my $config_file = File::Spec->catfile($dir, 'settings.yml');
 

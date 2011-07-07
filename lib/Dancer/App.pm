@@ -10,7 +10,7 @@ use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
 use Dancer::Logger;
 
-Dancer::App->attributes(qw(name prefix registry settings));
+Dancer::App->attributes(qw(name prefix registry settings on_lexical_prefix));
 
 # singleton that saves any app created, we want unicity for app names
 my $_apps = {};
@@ -30,13 +30,23 @@ sub set_running_app {
 
 sub set_prefix {
     my ($self, $prefix, $cb) = @_;
+    undef $prefix if defined($prefix) and $prefix eq "/";
     croak "not a valid prefix: `$prefix', must start with a /"
       if defined($prefix) && $prefix !~ /^\//;
+
     my $previous = Dancer::App->current->prefix;
-    Dancer::App->current->prefix($prefix);
+
+    if (Dancer::App->current->on_lexical_prefix) {
+        Dancer::App->current->prefix($previous.$prefix);
+    } else {
+        Dancer::App->current->prefix($prefix);
+    }
+
     if (ref($cb) eq 'CODE') {
+        Dancer::App->current->on_lexical_prefix(1);
         eval { $cb->() };
         my $e = $@;
+        Dancer::App->current->on_lexical_prefix(0);
         Dancer::App->current->prefix($previous);
         die $e if $e;
     }
@@ -81,7 +91,7 @@ sub reload_apps {
 
 sub find_route_through_apps {
     my ($class, $request) = @_;
-    for my $app (Dancer::App->applications) {
+    for my $app (Dancer::App->current, Dancer::App->applications) {
         my $route = $app->find_route($request);
         if ($route) {
             Dancer::App->current($route->app);

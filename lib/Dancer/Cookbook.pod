@@ -501,7 +501,9 @@ The template 'hello.tt' could contain, for example:
     <% END %>
     It's currently <% vars.time %>
 
-
+For a full list of the tokens automatically added to your template
+(like C<session>, C<request> and C<vars>, refer to
+L<Dancer::Template::Abstract>).
 
 =head3 Layouts
 

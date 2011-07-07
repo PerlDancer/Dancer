@@ -22,6 +22,8 @@ plan skip_all => "YAML is needed for this test"
 plan tests => 8;
 
 use LWP::UserAgent;
+use File::Path 'rmtree';
+use Dancer::Config;
 
 my %tests = (
     42          => 'Mon, 11-Apr-2011 00:59:08 GMT',
@@ -65,3 +67,7 @@ for my $session_expires (keys %tests) {
         },
     );
 }
+
+# clean up after ourselves
+rmtree( path( Dancer::Config::settings->{'appdir'}, 'sessions' ) );
+

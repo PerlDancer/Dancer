@@ -3,7 +3,24 @@ use Dancer ':syntax';
 use Dancer::Test;
 use Dancer::Route;
 
-plan tests => 25;
+my @tests = (
+    { path => '/say/',        expected => 'char: all' },
+    { path => '/say/A',       expected => 'char: A' },
+    { path => '/say/24',      expected => 'number: 24' },
+    { path => '/say/B',       expected => 'char: B' },
+    { path => '/say/Perl',    expected => 'word: Perl' },
+    { path => '/say/_stuff',  expected => 'underscore: stuff' },
+    { path => '/say/any',     expected => 'any' },
+    { path => '/go_to_trash', expected => 'trash: go_to_trash' },
+    { path => '/say/foo',     expected => 'it worked' },
+    { path => '/say/foo/',    expected => 'it worked' },
+    { path => '/lex/foo',     expected => 'it worked' },
+    { path => '/lex/sublex/foo', expected => 'it still works' },
+    { path => '/lex/bar',     expected => 'back to normal' },
+    { path => '/dura/us',     expected => 'us worked' },
+);
+
+plan tests => 1 + 2*@tests;
 
 eval { prefix 'say' };
 like $@ => qr/not a valid prefix/, 'prefix must start with a /';
@@ -27,6 +44,10 @@ like $@ => qr/not a valid prefix/, 'prefix must start with a /';
 
     prefix '/lex' => sub {
       get '/foo'  => sub { 'it worked' };
+      prefix '/sublex' => sub {
+          get '/foo'  => sub { 'it still works' };
+      };
+      get '/bar'  => sub { 'back to normal' };
     };
 
     any '/any' => sub {"any"};
@@ -50,25 +71,12 @@ like $@ => qr/not a valid prefix/, 'prefix must start with a /';
       get '/us'  => sub { 'us worked' };
     };
 
+    prefix('/');
+
     get '/*' => sub {
         "trash: " . params->{splat}[0];
     };
 }
-
-my @tests = (
-    { path => '/say/',        expected => 'char: all' },
-    { path => '/say/A',       expected => 'char: A' },
-    { path => '/say/24',      expected => 'number: 24' },
-    { path => '/say/B',       expected => 'char: B' },
-    { path => '/say/Perl',    expected => 'word: Perl' },
-    { path => '/say/_stuff',  expected => 'underscore: stuff' },
-    { path => '/say/any',     expected => 'any' },
-    { path => '/go_to_trash', expected => 'trash: go_to_trash' },
-    { path => '/say/foo',     expected => 'it worked' },
-    { path => '/say/foo/',    expected => 'it worked' },
-    { path => '/lex/foo',     expected => 'it worked' },
-    { path => '/dura/us',     expected => 'us worked' },
-);
 
 foreach my $test (@tests) {
     my $path     = $test->{path};

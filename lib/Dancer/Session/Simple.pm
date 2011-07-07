@@ -4,11 +4,6 @@ use strict;
 use warnings;
 use base 'Dancer::Session::Abstract';
 
-use Dancer::ModuleLoader;
-use Dancer::Config 'setting';
-use Dancer::FileUtils 'path';
-
-
 my %sessions;
 
 # create a new session and return the newborn object

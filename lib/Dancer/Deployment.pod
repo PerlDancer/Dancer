@@ -171,21 +171,24 @@ Start by creating a simple app.psgi file:
 
     my $app1 = sub {
         my $env = shift;
-        setting appdir => '/path/to/app1',
-        setting appname => 'app1';
+        local $ENV{DANCER_APPDIR} = '/Users/franck/tmp/app1';
+        setting appdir => '/Users/franck/tmp/app1';
         load_app "app1";
+        Dancer::App->set_running_app('app1');
         Dancer::Config->load;
         my $request = Dancer::Request->new( env => $env );
-        Dancer->dance( $request );
+        Dancer->dance($request);
     };
+
     my $app2 = sub {
         my $env = shift;
-        setting appdir => '/path/to/app2',
-        setting appname => 'app2';
+        local $ENV{DANCER_APPDIR} = '/Users/franck/tmp/app2';
+        setting appdir => '/Users/franck/tmp/app2';
         load_app "app2";
+        Dancer::App->set_running_app('app2');
         Dancer::Config->load;
         my $request = Dancer::Request->new( env => $env );
-        Dancer->dance( $request );
+        Dancer->dance($request);
     };
 
     builder {

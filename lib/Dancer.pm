@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3060';
+our $VERSION   = '1.3069_01';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -142,7 +142,7 @@ sub options         { Dancer::App->current->registry->universal_add('options', @
 sub params          { Dancer::SharedData->request->params(@_) }
 sub param           { params->{$_[0]} }
 sub pass            { Dancer::SharedData->response->pass(1) }
-sub path            { realpath(Dancer::FileUtils::path(@_)) }
+sub path            { Dancer::FileUtils::path(@_) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
@@ -205,7 +205,7 @@ sub import {
     return if $syntax_only;
 
     $as_script = 1 if $ENV{PLACK_ENV};
-    
+
     Dancer::GetOpt->process_args() if !$as_script;
 
     _init_script_dir($script);
@@ -238,7 +238,7 @@ sub _load_app {
 
 sub _init_script_dir {
     my ($script) = @_;
-    
+
     my ($script_vol, $script_dirs, $script_name) =
       File::Spec->splitpath(File::Spec->rel2abs($script));
 
@@ -279,12 +279,12 @@ sub _init_script_dir {
       || $appdir);
 
     Dancer::setting(public => $ENV{DANCER_PUBLIC}
-      || Dancer::FileUtils::path_no_verify($appdir, 'public'));
+      || Dancer::FileUtils::path($appdir, 'public'));
 
     Dancer::setting(views => $ENV{DANCER_VIEWS}
-      || Dancer::FileUtils::path_no_verify($appdir, 'views'));
+      || Dancer::FileUtils::path($appdir, 'views'));
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
@@ -532,6 +532,9 @@ Defines a before_template filter:
     before_template sub {
         my $tokens = shift;
         # do something with request, vars or params
+        
+        # for example, adding a token to the template
+        $tokens->{token_name} = "some value";
     };
 
 The anonymous function which is given to C<before_template> will be executed
@@ -539,6 +542,9 @@ before sending data and tokens to the template. Receives a HashRef of the
 tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
+
+Now the preferred way for this is to use C<hook>s (namely, the
+C<before_template> one). Check C<hook> documentation bellow.
 
 =head2 cookies
 
@@ -560,13 +566,21 @@ In the case you have stored something else than a Scalar in your cookie:
 
 =head2 cookie
 
-Accesses a cookie value (ot set it). Note that this method will
-eventually be preferred to C<set_cookie>.
+Accesses a cookie value (or sets it). Note that this method will
+eventually be preferred over C<set_cookie>.
 
     cookie lang => "fr-FR";              # set a cookie and return its value
     cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
     cookie "lang"                        # return a cookie value
 
+If your cookie value is a key/value URI string, like
+
+    token=ABC&user=foo
+
+C<cookie> will only return the first part (C<token=ABC>) if called in scalar context.
+Use list context to fetch them all:
+
+    my @values = cookie "name";
 
 =head2 config
 
@@ -697,8 +711,8 @@ Deserializes a Data::Dumper structure.
 
 =head2 from_json ($structure, %options)
 
-Deserializes a JSON structure. Can receive optional arguments. Those arguments 
-are valid L<JSON> arguments to change the behaviour of the default 
+Deserializes a JSON structure. Can receive optional arguments. Those arguments
+are valid L<JSON> arguments to change the behaviour of the default
 C<JSON::from_json> function.
 
 =head2 from_yaml ($structure)
@@ -707,8 +721,8 @@ Deserializes a YAML structure.
 
 =head2 from_xml ($structure, %options)
 
-Deserializes a XML structure. Can receive optional arguments. These arguments 
-are valid L<XML::Simple> arguments to change the behaviour of the default 
+Deserializes a XML structure. Can receive optional arguments. These arguments
+are valid L<XML::Simple> arguments to change the behaviour of the default
 C<XML::Simple::XMLin> function.
 
 =head2 get
@@ -795,6 +809,17 @@ This hook receives as argument the path of the file to render.
     ...
   };
 
+
+=item before_error_init
+
+This hook receives as argument a L<Dancer::Error> object.
+
+  hook before_error_init => sub {
+    my $error = shift;
+    ...
+  };
+
+
 =item before_error_render
 
 This hook receives as argument a L<Dancer::Error> object.
@@ -823,18 +848,22 @@ is equivalent to
 
 This is an alias to 'before_template'.
 
-This hook receives as argument a HashRef, containing the tokens.
+This hook receives as argument a HashRef, containing the tokens that
+will be passed to the template. You can use it to add more tokens, or
+delete some specific token.
 
   hook before_template_render => sub {
     my $tokens = shift;
     delete $tokens->{user};
+    $tokens->{time} = localtime;
   };
 
-is equivalent to 
+is equivalent to
 
   hook before_template => sub {
     my $tokens = shift;
     delete $tokens->{user};
+    $tokens->{time} = localtime;
   };
 
 =item before_layout_render
@@ -930,7 +959,7 @@ This method is deprecated. Use C<set>:
 
 =head2 logger
 
-Deprecated. Use C<set logger => 'console'> to change current logger engine.
+Deprecated. Use C<<set logger => 'console'>> to change current logger engine.
 
 =head2 load
 
@@ -941,15 +970,24 @@ sugar around Perl's C<require>:
 
 =head2 load_app
 
-Loads a Dancer package. This method takes care to set the libdir to the current
-C<./lib> directory:
+Loads a Dancer package. This method sets the libdir to the current C<./lib>
+directory:
 
     # if we have lib/Webapp.pm, we can load it like:
     load_app 'Webapp';
+    # or with options
+    load_app 'Forum', prefix => '/forum', settings => {foo => 'bar'};
 
-Note that a package loaded using load_app B<must> import Dancer with the
-C<:syntax> option, in order not to change the application directory
-(which has been previously set for the caller script).
+Note that the package loaded using load_app B<must> import Dancer with the
+C<:syntax> option.
+
+To load multiple apps repeat load_app:
+
+    load_app 'one';
+    load_app 'two';
+
+The old way of loading multiple apps in one go (load_app 'one', 'two';) is
+deprecated.
 
 =head2 mime_type
 
@@ -1020,6 +1058,9 @@ operating system:
 
     my $path = path(dirname($0), 'lib', 'File.pm');
 
+It also normalizes (cleans) the path aesthetically. It does not verify the
+path exists.
+
 =head2 post
 
 Defines a route for HTTP B<POST> requests to the given URL:
@@ -1047,11 +1088,25 @@ For a safer alternative you can use lexical prefix like this:
 
     prefix '/home' => sub {
         ## Prefix is set to '/home' here
-        
+
         get ...;
         get ...;
     };
     ## prefix reset to the previous version here
+
+This makes it possible to nest prefixes:
+
+   prefix '/home' => sub {
+       ## some routes
+       
+      prefix '/private' => sub {
+         ## here we are under /home/private...
+
+         ## some more routes
+      };
+      ## back to /home
+   };
+   ## back to the root
 
 B<Notice:> once you have a prefix set, do not add a caret to the regex:
 
@@ -1091,7 +1146,7 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
     get '/old/:resource', sub {
         redirect '/new/'.params->{resource}, 301;
     };
-    
+
 It is important to note that issuing a redirect by itself does not exit and
 redirect immediately, redirection is deferred until after the current route
 or filter has been processed. To exit and redirect immediately, use the return
@@ -1323,7 +1378,7 @@ produce an C<HTTP 200 OK> status code, meaning everything is OK:
 In that example, Dancer will notice that the status has changed, and will
 render the response accordingly.
 
-The status keyword receives either a numeric status code or its name in 
+The status keyword receives either a numeric status code or its name in
 lower case, with underscores as a separator for blanks - see the list in
 L<Dancer::HTTP/"HTTP CODES">.
 
@@ -1346,6 +1401,10 @@ For example, to disable the layout for a specific request:
         template 'index.tt', {}, { layout => undef };
     };
 
+Some tokens are automatically added to your template (C<perl_version>,
+C<dancer_version>, C<settings>, C<request>, C<params>, C<vars> and, if
+you have sessions enabled, C<session>).  Check
+L<Dancer::Template::Abstract> for further details.
 
 =head2 to_dumper ($structure)
 
