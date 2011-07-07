@@ -292,7 +292,7 @@ sub safe_mkdir {
         debug ("Successfully wrote the directory: $dir\n");
     }
     else {
-        print "  $dir\n";
+        debug ("Not Writing directory: $dir\n");
     }
 }
 
