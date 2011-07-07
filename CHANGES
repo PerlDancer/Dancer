@@ -1,3 +1,4 @@
+1.3069_01   07.07.2011
 
     [ BUG FIXES ]
     * Fix a bug while parsing some cookies
@@ -16,11 +17,11 @@
 
     [ ENHANCEMENTS ]
     * Error Hook (PR 563 - JT Smith)
+    * Exceptions system (Damien Krotkine)
     * The no prefix can be set using 'prefix "/";' (Alberto Simões)
     * Support for nested prefixes (Alberto Simões)
     * Cleanup on Dancer::FileUtils (Sawyer X)
     * Cleanup on File::Temp dependencies (Sawyer X)
-    * Exceptions system (Damien Krotkine)
 
     [ DOCUMENTATION ]
     * Documentation on tokens automatically added to templates.
