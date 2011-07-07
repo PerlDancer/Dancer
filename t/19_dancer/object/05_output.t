@@ -31,7 +31,7 @@ Test::Output::stderr_like( sub { $script->run },
 
 Test::Output::stderr_like( sub { $script->write_bg(catfile($dancer_app_dir, 'public', 'images', 'perldancer-bg.jpg')) },
     qr/\[\d+\] debug @.+> /,
-    "debug outputs correctly a binary data file.");
+    "debug outputs correctly while writing a binary data file.");
 
 Test::Output::stderr_like( sub { $script->write_file(catfile($dancer_app_dir,'t','test'),$template)},
     qr/\[\d+\] debug @.+> /,
