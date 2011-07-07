@@ -1,3 +1,8 @@
+
+    [ ENHANCEMENTS ]
+    * send_file can send data (pass a reference to a scalar), and can
+      specify a content-disposition filename. (Alberto Simões)
+
 1.3069_01   07.07.2011
 
     [ BUG FIXES ]
