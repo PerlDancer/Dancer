@@ -325,10 +325,23 @@ sub _send_file {
     }
 
     my $resp;
-    if ($options{system_path} && -f $path) {
-        $resp = Dancer::Renderer->get_file_response_for_path($path);
+    if (ref($path) eq "SCALAR") {
+        # send_data
+        $resp = Dancer::SharedData->response() || Dancer::Response->new();
+        $resp->status(200);
+        $resp->header('Content-Type' => exists($options{content_type}) ?
+                                        $options{content_type} : Dancer::MIME->default());
+        $resp->content($$path);
     } else {
-        $resp = Dancer::Renderer->get_file_response();
+        # real send_file
+        if ($options{system_path} && -f $path) {
+            $resp = Dancer::Renderer->get_file_response_for_path($path);
+        } else {
+            $resp = Dancer::Renderer->get_file_response();
+        }
+    }
+    if (exists($options{filename})) {
+        $resp->push_header('Content-Disposition' => "attachment; filename=$options{filename}");
     }
     return $resp if $resp;
 
@@ -1232,6 +1245,18 @@ switch. Just bear in mind that its use needs caution as it can be
 dangerous.
 
    send_file('/etc/passwd', system_path => 1);
+
+If you have your data in a scalar variable, C<send_file> can be useful
+as well. Pass a reference to that scalar, and C<send_file> will behave
+as if there was a file with that contents:
+
+   send_file( \$data, content_type => 'image/png' );
+
+Note that Dancer is unable to guess the content type from the data
+contents. Therefore you might need to set the C<content_type>
+properly. For this kind of usage an attribute named C<filename> can be
+useful.  It is used as the Content-Disposition header, to hint the
+brower about the filename it should use.
 
 =head2 set
 
