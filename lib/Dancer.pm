@@ -1258,6 +1258,9 @@ properly. For this kind of usage an attribute named C<filename> can be
 useful.  It is used as the Content-Disposition header, to hint the
 brower about the filename it should use.
 
+   send_file( \$data, content_type => 'image/png'
+                      filename     => 'onion.png' );
+
 =head2 set
 
 Defines a setting:
