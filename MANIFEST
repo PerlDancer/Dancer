@@ -22,6 +22,7 @@ lib/Dancer/Development.pod
 lib/Dancer/Development/Integration.pod
 lib/Dancer/Engine.pm
 lib/Dancer/Error.pm
+lib/Dancer/Exception.pm
 lib/Dancer/Factory/Hook.pm
 lib/Dancer/FileUtils.pm
 lib/Dancer/GetOpt.pm
@@ -103,6 +104,7 @@ t/00_base/15_dependent_modules.t
 t/00_base/config.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
+t/00_base/normalize_path.t
 t/00_base/optional-module-versions.t
 t/00_base/uri_for.t
 t/00_base/utf8.tt
@@ -290,10 +292,18 @@ t/22_hooks/05_layout.t
 t/22_hooks/06_serializer.t
 t/22_hooks/07_file.t
 t/22_hooks/08_error.t
+t/22_hooks/09_before_error_init.t
+t/22_hooks/10_error_in_hook.t
+t/22_hooks/11_error_in_hook.t
 t/22_hooks/views/index.tt
 t/22_hooks/views/layouts/main.tt
 t/23_dancer_tests/01_basic.t
 t/23_dancer_tests/02_tests_functions.t
+t/24_deployment/01_multi_webapp.t
+t/25_exceptions/01_exceptions.t
+t/25_exceptions/views/error.tt
+t/25_exceptions/views/index.tt
+t/25_exceptions/views/layouts/main.tt
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm

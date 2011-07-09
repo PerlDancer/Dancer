@@ -11,6 +11,7 @@ use Dancer::HTTP;
 use Dancer::MIME;
 use HTTP::Headers;
 use Dancer::SharedData;
+use Dancer::Exception qw(:all);
 
 __PACKAGE__->attributes(qw/content pass/);
 
@@ -93,13 +94,14 @@ sub halt {
         Dancer::SharedData->response($content);
     }
     else {
+        # This also sets the Response as the current one (SharedData)
         Dancer::Response->new(
             status => ($self->status || 200),
             content => $content,
             halted => 1,
         );
     }
-    return $content;
+    raise E_HALTED;
 }
 
 sub halted {

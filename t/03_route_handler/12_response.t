@@ -45,7 +45,7 @@ is(Dancer::SharedData->response->content => 'bar');
 
 # test for halt && halted
 Dancer::Response->new(content => 'this is ok');
-Dancer::SharedData->response->halt('this is not ok');
+eval { Dancer::SharedData->response->halt('this is not ok'); };
 $r = Dancer::SharedData->response();
 
 is $r->status  => 200;
@@ -53,8 +53,10 @@ is $r->content => 'this is not ok';
 is $r->halted  => 1;
 
 Dancer::Response->new(content => 'this is ok');
-Dancer::SharedData->response->halt(Dancer::Response->new(status => 500,
-                                                         content => 'this is not ok'));
+eval {
+    Dancer::SharedData->response->halt(Dancer::Response->new(status => 500,
+                                                             content => 'this is not ok'));
+};
 $r = Dancer::SharedData->response();
 is $r->status  => 500;
 is $r->content => 'this is not ok';

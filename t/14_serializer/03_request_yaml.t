@@ -10,10 +10,9 @@ SKIP: {
     skip 'YAML is needed to run this test', 10
       unless Dancer::ModuleLoader->load('YAML');
 
-    setting( 'serializer' => 'YAML' );
-    setting( 'show_errors' => 1);
+    set serializer => 'YAML', show_errors => 1;
 
-    get '/' => sub { { foo => 'bar' } };
+    get '/'      => sub { { foo => 'bar' } };
     post '/'     => sub { request->params };
     get '/yaml'  => sub { to_yaml( { foo => 'bar' } ) };
     get '/error' => sub { send_error( { foo => 42 }, 401 ) };

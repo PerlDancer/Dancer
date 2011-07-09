@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3060';
+our $VERSION   = '1.3069_01';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -142,7 +142,7 @@ sub options         { Dancer::App->current->registry->universal_add('options', @
 sub params          { Dancer::SharedData->request->params(@_) }
 sub param           { params->{$_[0]} }
 sub pass            { Dancer::SharedData->response->pass(1) }
-sub path            { realpath(Dancer::FileUtils::path(@_)) }
+sub path            { Dancer::FileUtils::path(@_) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
@@ -279,12 +279,12 @@ sub _init_script_dir {
       || $appdir);
 
     Dancer::setting(public => $ENV{DANCER_PUBLIC}
-      || Dancer::FileUtils::path_no_verify($appdir, 'public'));
+      || Dancer::FileUtils::path($appdir, 'public'));
 
     Dancer::setting(views => $ENV{DANCER_VIEWS}
-      || Dancer::FileUtils::path_no_verify($appdir, 'views'));
+      || Dancer::FileUtils::path($appdir, 'views'));
 
-    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path_no_verify($appdir, 'lib'));
+    my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path($appdir, 'lib'));
     $res or croak "unable to set libdir : $error";
 }
 
@@ -532,6 +532,9 @@ Defines a before_template filter:
     before_template sub {
         my $tokens = shift;
         # do something with request, vars or params
+        
+        # for example, adding a token to the template
+        $tokens->{token_name} = "some value";
     };
 
 The anonymous function which is given to C<before_template> will be executed
@@ -539,6 +542,9 @@ before sending data and tokens to the template. Receives a HashRef of the
 tokens that will be inserted into the template.
 
 This filter works as the C<before> and C<after> filter.
+
+Now the preferred way for this is to use C<hook>s (namely, the
+C<before_template> one). Check C<hook> documentation bellow.
 
 =head2 cookies
 
@@ -842,11 +848,14 @@ is equivalent to
 
 This is an alias to 'before_template'.
 
-This hook receives as argument a HashRef, containing the tokens.
+This hook receives as argument a HashRef, containing the tokens that
+will be passed to the template. You can use it to add more tokens, or
+delete some specific token.
 
   hook before_template_render => sub {
     my $tokens = shift;
     delete $tokens->{user};
+    $tokens->{time} = localtime;
   };
 
 is equivalent to
@@ -854,6 +863,7 @@ is equivalent to
   hook before_template => sub {
     my $tokens = shift;
     delete $tokens->{user};
+    $tokens->{time} = localtime;
   };
 
 =item before_layout_render
@@ -949,7 +959,7 @@ This method is deprecated. Use C<set>:
 
 =head2 logger
 
-Deprecated. Use C<set logger => 'console'> to change current logger engine.
+Deprecated. Use C<<set logger => 'console'>> to change current logger engine.
 
 =head2 load
 
@@ -1047,6 +1057,9 @@ Concatenates multiple paths together, without worrying about the underlying
 operating system:
 
     my $path = path(dirname($0), 'lib', 'File.pm');
+
+It also normalizes (cleans) the path aesthetically. It does not verify the
+path exists.
 
 =head2 post
 
@@ -1388,6 +1401,10 @@ For example, to disable the layout for a specific request:
         template 'index.tt', {}, { layout => undef };
     };
 
+Some tokens are automatically added to your template (C<perl_version>,
+C<dancer_version>, C<settings>, C<request>, C<params>, C<vars> and, if
+you have sessions enabled, C<session>).  Check
+L<Dancer::Template::Abstract> for further details.
 
 =head2 to_dumper ($structure)
 

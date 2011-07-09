@@ -33,7 +33,7 @@ like $str, qr/this is debug \[\d\d:\d\d\]/;
 setting charset => 'UTF-8', logger_format => '%h %t %T';
 $str = $l->format_message('debug', 'this is debug');
 like $str, qr{- \s
-              \d+/[a-z]+/\d+ \s \d+:\d+:\d+ \s
+              \d+/[^/]+/\d+ \s \d+:\d+:\d+ \s
               \d+-\d+-\d+ \s \d+:\d+:\d+ }xi;
 
 

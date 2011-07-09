@@ -5,7 +5,6 @@ use warnings;
 use Carp;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
-use Dancer::FileUtils 'path';
 
 use base 'Dancer::Template::Abstract';
 

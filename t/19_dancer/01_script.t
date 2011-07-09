@@ -10,14 +10,16 @@ my @cases = (
     'A::B::C::D',
 );
 
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
 plan tests => 3 + @cases;
 
-use Cwd        qw(cwd);
-use File::Temp qw(tempdir);
-
+use Cwd qw(cwd);
 use Dancer;
+use Dancer::FileUtils;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 my $cwd = cwd;
 
 chdir $dir;
@@ -44,7 +46,7 @@ my $help = qx{$cmd};
 like($help, qr{Usage: .* dancer .* options}sx, 'dancer (without parameters)');
 
 foreach my $case (@cases) {
-    my $create_here = qx{$cmd -a $case 2> err};
-    ok (-z 'err', "create $case did not return error");
+    my $create_here = qx{$cmd -x -a $case 2> err};
+    is scalar(Dancer::FileUtils::read_file_content('err')) => '',
+      "create $case did not return error";
 }
-
