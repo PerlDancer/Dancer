@@ -1,12 +1,16 @@
-use Test::More tests => 15, import => ['!pass'];
+use Test::More import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::FileUtils;
 
-use File::Temp qw/tempdir/;
 use File::Spec qw/catfile/;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
+plan tests => 15;
+
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 
 eval { set logger => 'foobar' };
@@ -20,10 +24,10 @@ ok(debug($message), "debug sent");
 ok(warning($message), "warning sent");
 ok(error($message), "error sent");
 
-my $logdir = Dancer::FileUtils::path_no_verify(setting('appdir'), 'logs');
+my $logdir = Dancer::FileUtils::path(setting('appdir'), 'logs');
 ok((-d $logdir), "log directory exists");
 
-my $dev_logfile = Dancer::FileUtils::d_catfile($logdir, "development.log");
+my $dev_logfile = Dancer::FileUtils::path($logdir, "development.log");
 ok((-r $dev_logfile), "logfile exists");
 
 open LOGFILE, '<', $dev_logfile;
@@ -37,7 +41,7 @@ ok(grep(/error \@.*$message/, @content), 'error message found');
 set environment => 'test';
 set logger => 'file';
 
-my $test_logfile = Dancer::FileUtils::d_catfile($logdir, "test.log");
+my $test_logfile = Dancer::FileUtils::path($logdir, "test.log");
 ok((-r $test_logfile), "environment logfile exists");
 
 open LOGFILE, '<', $test_logfile;

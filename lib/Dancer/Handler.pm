@@ -13,6 +13,7 @@ use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
+use Dancer::Exception qw(:all);
 
 use Encode;
 
@@ -77,17 +78,25 @@ sub render_request {
     my $action;
     $action = eval {
         Dancer::Renderer->render_file
-          || Dancer::Renderer->render_action
-          || Dancer::Renderer->render_error(404);
+        || Dancer::Renderer->render_action
+        || Dancer::Renderer->render_error(404);
     };
-    if ($@) {
+
+    my $value = is_dancer_exception(my $exception = $@);
+    if ($value && $value & E_HALTED) {
+        # special case for halted workflow exception: still render the response
+        Dancer::Serializer->process_response(Dancer::SharedData->response);
+    } elsif ($exception) {
         Dancer::Logger::error(
-            'request to ' . $request->path_info . " crashed: $@");
+          'request to ' . $request->path_info . " crashed: $exception");
 
         Dancer::Error->new(
-            code    => 500,
-            title   => "Runtime Error",
-            message => $@
+          code    => 500,
+          title   => "Runtime Error",
+          message => $exception,
+          $value ? ( exception => $value,
+                     exceptions => { },
+                   ) : (),
         )->render();
     }
     return $action;
@@ -165,7 +174,7 @@ sub render_response {
 
 sub _is_text {
     my ($content_type) = @_;
-    return $content_type =~ /(text|json)/;
+    return $content_type =~ /(x(?:ht)?ml|text|json|javascript)/;
 }
 
 # Fancy banner to print on startup

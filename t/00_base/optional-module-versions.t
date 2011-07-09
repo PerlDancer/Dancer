@@ -14,6 +14,7 @@ my @modules = qw(
     Test::TCP
     Test::More
     JSON
+	YAML
     Clone
     Plack
     XML::Simple

@@ -104,8 +104,7 @@ sub route_exists {
     $test_name ||= "a route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
-
-    return $tb->ok(Dancer::App->find_route_through_apps($req), $test_name);
+    return $tb->ok(defined(Dancer::App->find_route_through_apps($req)), $test_name);
 }
 
 sub route_doesnt_exist {

@@ -92,9 +92,9 @@ sub match {
     }
 
     Dancer::Logger::core("  --> got ".
-        map { defined $_ ? $_ : 'undef' } @values) 
+        map { defined $_ ? $_ : 'undef' } @values)
         if @values;
-    
+
     # if some named captures found, return captures
     # no warnings is for perl < 5.10
     if (my %captures =
@@ -110,8 +110,8 @@ sub match {
     return unless @values;
 
     # save the route pattern that matched
-    # TODO : as soon as we have proper Dancer::Internal, we should remove 
-    # that, it's just a quick hack for plugins to access the matching 
+    # TODO : as soon as we have proper Dancer::Internal, we should remove
+    # that, it's just a quick hack for plugins to access the matching
     # pattern.
     # NOTE: YOU SHOULD NOT USE THAT, OR IF YOU DO, YOU MUST KNOW
     # IT WILL MOVE VERY SOON
@@ -170,7 +170,7 @@ sub run {
     my $response = Dancer::SharedData->response;
 
     if ( $response && $response->is_forwarded ) {
-        my $new_req = 
+        my $new_req =
             Dancer::Request->forward($request, $response->{forward});
         my $marshalled = Dancer::Handler->handle_request($new_req);
 

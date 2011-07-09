@@ -5,11 +5,13 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 use Dancer::FileUtils 'read_glob_content';
-use File::Temp 'tempdir';
+
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 
 plan tests => 5;
 
-my $dir = tempdir( CLEANUP => 1 );
+my $dir = File::Temp::tempdir( CLEANUP => 1 );
 
 setting public => $dir;
 

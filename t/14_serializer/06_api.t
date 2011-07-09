@@ -54,7 +54,7 @@ SKIP: {
     skip 'YAML is needed to run this test', 3
       unless Dancer::ModuleLoader->load('YAML');
 
-    setting('serializer' => 'Mutable');
+    set serializer => 'Mutable';
     my $s = Dancer::Serializer->engine;
 
     %ENV = (

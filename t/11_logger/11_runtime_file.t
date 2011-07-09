@@ -1,14 +1,18 @@
 use strict;
 use warnings;
 
-use File::Temp qw/tempdir/;
-use Test::More tests => 3, import => ['!pass'];
+use Test::More import => ['!pass'];
 
 use Dancer;
 use Dancer::FileUtils;
 use Dancer::Test;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
+plan tests => 3;
+
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 my $logfile = Dancer::FileUtils::path($dir, "logs", "development.log");
 
 set(environment => 'development',

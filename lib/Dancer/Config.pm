@@ -19,6 +19,7 @@ my $SETTINGS = {};
 
 # mergeable settings
 my %MERGEABLE = map { ($_ => 1) } qw( plugins handlers );
+my %_LOADED;
 
 sub settings {$SETTINGS}
 
@@ -176,10 +177,16 @@ sub load {
     confess "Configuration file found but YAML is not installed"
       unless Dancer::ModuleLoader->load('YAML');
 
-    load_settings_from_yaml(conffile);
+    if (!$_LOADED{conffile()}) {
+        load_settings_from_yaml(conffile);
+        $_LOADED{conffile()}++;
+    }
 
     my $env = environment_file;
-    load_settings_from_yaml($env) if -f $env;
+    if (-f $env && !$_LOADED{$env}) {
+        load_settings_from_yaml($env);
+        $_LOADED{$env}++;
+    }
 
     foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
         $setters->{$key}->($key, $SETTINGS->{$key});
@@ -238,8 +245,6 @@ load_default_settings();
 1;
 
 __END__
-
-## TODO: C<environment> is not documented.
 
 =pod
 
@@ -356,6 +361,22 @@ C<text/plain>.
 
 
 =head2 File / directory locations
+
+=head3 environment (string)
+
+This is the name of the environment that should be used. Standard
+Dancer applications have a C<environments> folder with specific
+configuration files for different environments (usually development
+and production environments). They specify different kind of error
+reporting, deployment details, etc. These files are read after the
+generic C<config.yml> configuration file.
+
+The running environment can be set with:
+
+   set environment => "production";
+
+Note that this variable is also used as a default value if other
+values are not defined.
 
 =head3 appdir (directory)
 

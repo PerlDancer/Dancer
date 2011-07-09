@@ -5,9 +5,10 @@ use Dancer ':syntax';
 use Dancer::Request;
 use Dancer::Test;
 use Dancer::FileUtils;
-use File::Temp qw(tempdir);
 use Test::More 'import' => ['!pass'];
 
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 
 sub test_path {
     my ($file, $dir) = @_;
@@ -104,7 +105,7 @@ do {
       "filename is accessible via params";
 
     # copy_to, link_to
-    my $dest_dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+    my $dest_dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
     my $dest_file = File::Spec->catfile( $dest_dir, $upload->basename );
     $upload->copy_to($dest_file);
     ok( ( -f $dest_file ), "file '$dest_file' has been copied" );
@@ -126,7 +127,7 @@ do {
 };
 
 # test with Dancer::Test
-my $dest_dir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $dest_dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 my $dest_file = File::Spec->catfile( $dest_dir, 'foo' );
 
 post(
