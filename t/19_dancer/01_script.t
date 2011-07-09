@@ -17,6 +17,7 @@ plan tests => 3 + @cases;
 
 use Cwd qw(cwd);
 use Dancer;
+use Dancer::FileUtils;
 
 my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 my $cwd = cwd;
@@ -46,5 +47,6 @@ like($help, qr{Usage: .* dancer .* options}sx, 'dancer (without parameters)');
 
 foreach my $case (@cases) {
     my $create_here = qx{$cmd -x -a $case 2> err};
-    ok (-z 'err', "create $case did not return error");
+    is scalar(Dancer::FileUtils::read_file_content('err')) => '',
+      "create $case did not return error";
 }
