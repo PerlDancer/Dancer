@@ -65,7 +65,7 @@ sub retrieve {
 
     open my $fh, '+<', $session_file or die "Can't open '$session_file': $!\n";
     flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
-    my $content = YAML::LoadFile($session_file);
+    my $content = YAML::LoadFile($fh);
     close $fh or die "Can't close '$session_file': $!\n";
 
     return $content;

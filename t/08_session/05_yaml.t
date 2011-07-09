@@ -55,10 +55,9 @@ ok( -d $session_dir, "session dir was created");
 rmtree($session_dir);
 eval { $session = Dancer::Session::YAML->create() };
 my $error = $@;
-my $quoted_dir = quotemeta($session_dir);
 like(
     $@,
-    qr{Can't open '$quoted_dir.*yml':.*},
+    qr{Can't open '.*\.*yml':.*},
     'session dir was not recreated',
 );
 
