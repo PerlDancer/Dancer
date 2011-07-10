@@ -57,7 +57,7 @@ eval { $session = Dancer::Session::YAML->create() };
 my $error = $@;
 like(
     $@,
-    qr/Can't open .* No such file or directory/,
+    qr{Can't open '.*\.*yml':.*},
     'session dir was not recreated',
 );
 
