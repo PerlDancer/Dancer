@@ -172,11 +172,11 @@ The possible values are:
 
 =item %h
 
-host emiting the request
+host emitting the request
 
 =item %t
 
-date (formated like %d/%b/%Y %H:%M:%S)
+date (formatted like %d/%b/%Y %H:%M:%S)
 
 =item %P
 
