@@ -75,6 +75,9 @@ Or in the application code:
     # logging to file 
     set logger => 'file';
 
+The log format can also be configured, 
+please see L<Dancer::Logger::Abstract/"logger_format"> for details.
+
 =head2 Auto-serializing
 
 The loggers allow auto-serializing of all inputs:
