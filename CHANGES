@@ -1,3 +1,8 @@
+
+    [ ENHANCEMENTS ]
+    * send_file can send data (pass a reference to a scalar), and can
+      specify a content-disposition filename. (Alberto Simões)
+
 1.3070      14.07.2011
     ** Codename: The Exceptional Mr. Dams // Damien Krotkine (dams) **
 
