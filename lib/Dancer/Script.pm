@@ -194,7 +194,8 @@ sub create_node {
     # argument on _create_node
     my $add_to_manifest = sub {
         my $file = shift;
-        $file =~ s{^$root/?}{};
+		my $root_regex = quotemeta($root);
+		$file =~ s{^$root_regex/?}{};
         print $manifest "$file\n";
     };
 
