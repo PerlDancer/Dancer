@@ -8,7 +8,7 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 11;
+plan tests => 16;
 
 get '/cat/:file' => sub {
     send_file(params->{file});
@@ -16,7 +16,12 @@ get '/cat/:file' => sub {
 
 get '/catheader/:file' => sub {
     header 'FooHeader' => 42;
-    send_file(params->{file});
+    send_file(params->{file}, filename => 'header.foo');
+};
+
+get '/scalar/file' => sub {
+    my $data = 'FOObar';
+    send_file( \$data, content_type => 'text/plain', filename => 'foo.bar');
 };
 
 get '/as_png/:file' => sub {
@@ -40,6 +45,7 @@ is_deeply( [split(/\n/, $content)], [1,2,3], 'send_file worked as expected');
 $resp = dancer_response(GET => '/catheader/file.txt');
 %headers = @{$resp->headers_to_array};
 is $headers{FooHeader}, 42, 'FooHeader is kept';
+is($headers{'Content-Disposition'}, 'attachment; filename=header.foo', 'filename is ok');
 
 my $png = dancer_response(GET => '/as_png/file.txt');
 ok(defined($png), "route handler found for /as_png/file.txt");
@@ -55,3 +61,13 @@ is($headers{'Content-Type'}, 'application/x-perl', 'mime_type is ok');
 is(ref($resp->{content}), 'GLOB', "content is a File handle");
 $content = read_glob_content($resp->{content});
 like($content, qr/'foo loaded'/, "content is ok");
+
+
+$resp = undef; # just to be sure
+$resp = dancer_response(GET => '/scalar/file');
+ok(defined($resp), "route handler found for /scalar/fil");
+%headers = @{$resp->headers_to_array};
+is($headers{'Content-Type'}, 'text/plain', 'mime_type is ok');
+is($headers{'Content-Disposition'}, 'attachment; filename=foo.bar', 'filename is ok');
+$content = $resp->{content};
+like($content, qr/FOObar/, "content is ok");
