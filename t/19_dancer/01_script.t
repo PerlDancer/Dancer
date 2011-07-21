@@ -47,6 +47,6 @@ like($help, qr{Usage: .* dancer .* options}sx, 'dancer (without parameters)');
 
 foreach my $case (@cases) {
     my $create_here = qx{$cmd -a $case > err};
-    my $err = slurp('err');
-    is($err, '', "create $case did not return error");
+	is scalar(Dancer::FileUtils::read_file_content('err')) => '',
+	      "create $case did not return error";
 }
