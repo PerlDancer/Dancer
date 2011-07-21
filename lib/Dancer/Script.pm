@@ -29,14 +29,14 @@ sub new {
 		$self->{check_version} = $args{check_version};
 
 	}else{
-		my ($appname,$path,$check_version) = $self->parse_opts;
+		my ($appname,$path,$check_version) = $self->_parse_opts;
 		$self->{appname} = $appname;
 		$self->{path} = $path;
 		$self->{check_version} = $check_version;
 	}
 	
 	$self->{do_overwrite_all} = 0;
-	$self->validate_app_name;
+	$self->_validate_app_name;
 	#my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
 	$self->{dancer_version} = $Dancer::VERSION;
 	$self->_set_application_path;
@@ -46,7 +46,7 @@ sub new {
 }
 
 # options
-sub parse_opts { 
+sub _parse_opts { 
 	my $self = shift;
 	my $help = 0;
 	my $do_check_dancer_version = 1;
@@ -91,21 +91,21 @@ NOYAML
 
 sub run {
 	my $self = shift; 
-	$self->version_check if $self->{do_check_dancer_version};
-	$self->safe_mkdir($self->{dancer_app_dir});
-	$self->create_node($self->app_tree, $self->{dancer_app_dir});
+	$self->_version_check if $self->{do_check_dancer_version};
+	$self->_safe_mkdir($self->{dancer_app_dir});
+	$self->create_node($self->_app_tree, $self->{dancer_app_dir});
 }
 
 sub run_scaffold {
 	my $class = shift;
 	my $type = shift;
-	my $method = "run_scaffold_$type";
+	my $method = "_run_scaffold_$type";
 	if ( $class->can($method) ) { $class->$method; } 
 	else { die "Wrong type of script: $type"; } 
 }
 # must change run_scaffold_* for something 
 # more intuitive 
-sub run_scaffold_cgi {
+sub _run_scaffold_cgi {
 	my $self = shift; 
 
 	require Plack::Runner;
@@ -121,7 +121,7 @@ sub run_scaffold_cgi {
 	Plack::Runner->run($psgi); 
 }
 
-sub run_scaffold_fcgi {
+sub _run_scaffold_fcgi {
     my $self = shift;
 	
 	require Plack::Handler::FCGI;
@@ -140,7 +140,7 @@ sub run_scaffold_fcgi {
 	$server->run($app);
 }
 
-sub validate_app_name {
+sub _validate_app_name {
     my $self = shift;
     if ($self->{appname} =~ /[^\w:]/ || $self->{appname} =~ /^\d/ || $self->{appname} =~ /\b:\b|:{3,}/) {
         print STDERR "Error: Invalid application name.\n";
@@ -210,13 +210,13 @@ sub _create_node {
     my $node = shift;
     my $root = shift;
 
-    my $templates = $self->templates;
+    my $templates = $self->_templates;
 
     while ( my ($path, $content) = each %$node ) {
         $path = catfile($root, $path);
 
         if (ref($content) eq 'HASH') {
-            $self->safe_mkdir($path);
+            $self->_safe_mkdir($path);
             $self->_create_node($add_to_manifest, $content, $path);
         } elsif (ref($content) eq 'CODE') {
             # The content is a coderef, which, given the path to the file it
@@ -230,14 +230,14 @@ sub _create_node {
             my $template = $templates->{$file};
 
             $path = catfile($dir, $file); # rebuild the path without the '+' flag
-            $self->write_file($path, $template, {appdir => File::Spec->rel2abs($root)});
+            $self->_write_file($path, $template, {appdir => File::Spec->rel2abs($root)});
             chmod 0755, $path if $ex;
             $add_to_manifest->($path);
         }
     }
 }
 
-sub app_tree {
+sub _app_tree {
     my $self = shift;
 
     return {
@@ -269,13 +269,13 @@ sub app_tree {
                 "error.css" => FILE,
             },
             "images"      => {
-                "perldancer-bg.jpg" => sub { $self->write_bg(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer-bg.jpg')) }, 
-                "perldancer.jpg" => sub { $self->write_logo(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer.jpg')) },
+                "perldancer-bg.jpg" => sub { $self->_write_bg(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer-bg.jpg')) }, 
+                "perldancer.jpg" => sub { $self->_write_logo(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer.jpg')) },
             },
             "javascripts" => {
                 "jquery.js" => FILE,
             },
-            "favicon.ico" => sub { $self->write_favicon(catfile($self->{dancer_app_dir}, 'public', 'favicon.ico')) },
+            "favicon.ico" => sub { $self->_write_favicon(catfile($self->{dancer_app_dir}, 'public', 'favicon.ico')) },
         },
         "t" => {
             "001_base.t"        => FILE,
@@ -284,7 +284,7 @@ sub app_tree {
     };
 }
 
-sub safe_mkdir {
+sub _safe_mkdir {
     my $self = shift;
     my $dir = shift;
     if (not -d $dir) {
@@ -297,7 +297,7 @@ sub safe_mkdir {
     }
 }
 
-sub write_file {
+sub _write_file {
     my $self = shift;
     my $path = shift;
     my $template = shift;
@@ -315,7 +315,7 @@ sub write_file {
     }
 
     my $fh;
-    my $content = $self->process_template($template, $vars);
+    my $content = $self->_process_template($template, $vars);
 	debug ("Writing file: $path\n");
     open $fh, '>', $path or die "unable to open file `$path' for writing: $!";
     print $fh $content;
@@ -323,7 +323,7 @@ sub write_file {
     close $fh;
 }
 
-sub process_template {
+sub _process_template {
     my $self = shift;
     my $template = shift;
     my $tokens = shift;
@@ -333,7 +333,7 @@ sub process_template {
     return $engine->render(\$template, $tokens);
 }
 
-sub write_data_to_file {
+sub _write_data_to_file {
     my $self = shift;
     my $data = shift;
     my $path = shift;
@@ -347,7 +347,7 @@ sub write_data_to_file {
     return 1;
 }
 
-sub send_http_request {
+sub _send_http_request {
     my $self = shift;
     my $url = shift;
     my $ua = LWP::UserAgent->new;
@@ -364,11 +364,11 @@ sub send_http_request {
     }
 }
 
-sub version_check {
+sub _version_check {
     my $self = shift;
     my $latest_version = 0;
 
-    my $resp = $self->send_http_request('http://search.cpan.org/api/module/Dancer');
+    my $resp = $self->_send_http_request('http://search.cpan.org/api/module/Dancer');
 
     if ($resp) {
         if ( $resp =~ /"version" (?:\s+)? \: (?:\s+)? "(\d\.\d+)"/x ) {
@@ -389,11 +389,11 @@ Please check http://search.cpan.org/dist/Dancer/ for updates.
     }
 }
 
-sub download_file {
+sub _download_file {
     my $self = shift;
     my $path = shift;
     my $url = shift;
-    my $resp = $self->send_http_request($url);
+    my $resp = $self->_send_http_request($url);
     if ($resp) {
         open my $fh, '>', $path or die "cannot open $path for writing: $!";
         print $fh $resp;
@@ -402,7 +402,7 @@ sub download_file {
     return 1;
 }
 
-sub templates {
+sub _templates {
     my $self = shift;
     my $appname    = $self->{appname};
     my $appfile    = $self->{lib_file};
@@ -964,9 +964,9 @@ template: \"simple\"
 
 ",
 
-'jquery.js' => $self->jquery_minified,
+'jquery.js' => $self->_jquery_minified,
 
-'MANIFEST.SKIP' => $self->manifest_skip,
+'MANIFEST.SKIP' => $self->_manifest_skip,
 
 'development.yml' =>
 "# configuration file for development environment
@@ -1042,7 +1042,7 @@ response_status_is ['GET' => '/'], 200, 'response status is 200 for /';
     };
 }
 
-sub write_bg {
+sub _write_bg {
     my $self = shift;
     my $path = shift;
     my $data =<<'EOF';
@@ -1215,10 +1215,10 @@ M````````````````````````````````````````````````````````````
 M````````````````````````````````````````````````````````````
 <``````````````````````````````````__V0``
 EOF
-    $self->write_data_to_file($data, $path);
+    $self->_write_data_to_file($data, $path);
 }
 
-sub write_favicon {
+sub _write_favicon {
     my $self = shift;
     my $path = shift;
     my $data =<<'EOF';
@@ -1256,10 +1256,10 @@ MH,/&R<;'JB$L;)&08QXNO</&R<;)QL')FU,W.ENYR<3&R<D`````````````
 M````````````````````````````````````````````````````````````
 )````````````
 EOF
-    $self->write_data_to_file($data, $path);
+    $self->_write_data_to_file($data, $path);
 }
 
-sub write_logo {
+sub _write_logo {
     my $self = shift;
     my $path = shift;
     my $data =<<'EOF';
@@ -1320,10 +1320,10 @@ M<^J5I.K7;O9WW%N:<BRXN;J5/8"@OV/7J4AA1_\`5PGG<^9.>@\1'31S2!0V
 M"S:;SM#[O36UR'8>Q8+OXZ:.B9(!_L-']6<>)0Z>@Z>>LZ:NB5-7&K8#*&(T
 J9M+;3:1@)2!@#7Q04U70U3%73P6(4-A`0VRR@)2D#W`:GZC5:6F</__9
 EOF
-    $self->write_data_to_file($data, $path);
+    $self->_write_data_to_file($data, $path);
 }
 
-sub manifest_skip {
+sub _manifest_skip {
     my $self = shift;
     return <<'EOF';
 ^\.git\/
@@ -1342,7 +1342,7 @@ Makefile$
 EOF
 }
 
-sub jquery_minified {
+sub _jquery_minified {
     my $self = shift;
     return <<'EOF';
 /*!
