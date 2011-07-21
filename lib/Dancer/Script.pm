@@ -30,64 +30,60 @@ Dancer::Script->attributes(
 
 
 # subs
-sub init {
-    my $class = shift;
-    my $self = bless {}, $class;
+sub new { 
+	my $class = shift; 
+	my $self = bless {}, $class; 
 
-    if (@_) {
+	if (@_){
 
-        my %args = @_;
-        $self->appname($args{appname});
-        $self->root_path($args{path});
-        $self->check_version($args{check_version});
+		my %args = @_;
+		$self->{appname} = $args{appname};
+		$self->{path} = $args{path};
+		$self->{check_version} = $args{check_version};
 
-    }
-    else {
-        my ($appname, $path, $check_version) = $self->_parse_opts;
-        $self->appname($appname);
-        $self->root_path($path);
-        $self->check_version($check_version);
-    }
-
-    $self->do_overwrite_all(0);
-    $self->_validate_app_name;
-
-   #my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
-    $self->dancer_version($Dancer::VERSION);
-    $self->_set_application_path;
-    $self->_set_script_path;
-    $self->_set_lib_path;
-    return $self;
+	}else{
+		my ($appname,$path,$check_version) = $self->_parse_opts;
+		$self->{appname} = $appname;
+		$self->{path} = $path;
+		$self->{check_version} = $check_version;
+	}
+	
+	$self->{do_overwrite_all} = 0;
+	$self->_validate_app_name;
+	#my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
+	$self->{dancer_version} = $Dancer::VERSION;
+	$self->_set_application_path;
+	$self->_set_script_path;
+	$self->_set_lib_path;
+	return $self;
 }
 
 # options
-sub _parse_opts {
-    my $self                    = shift;
-    my $help                    = 0;
-    my $do_check_dancer_version = 1;
-    my $name                    = undef;
-    my $path                    = '.';
+sub _parse_opts { 
+	my $self = shift;
+	my $help = 0;
+	my $do_check_dancer_version = 1;
+	my $name = undef;
+	my $path = '.';
 
 
-    GetOptions(
-        "h|help"          => \$help,
-        "a|application=s" => \$name,
-        "p|path=s"        => \$path,
-        "x|no-check"      => sub { $do_check_dancer_version = 0 },
-        "v|version"       => \&version,
-    ) or pod2usage(-verbose => 1);
+	GetOptions(
+	    "h|help"          => \$help,
+	    "a|application=s" => \$name,
+	    "p|path=s"        => \$path,
+	    "x|no-check"      => sub { $do_check_dancer_version = 0 },
+	    "v|version"       => \&version,
+	) or pod2usage( -verbose => 1 );
 
-# TODO no need to capitalize it there: store this var inside $self->{perl_interpreter}
-# or something similar. Even better, use a Dancer::Object attribute
-    my $perl_interpreter = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+	my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 
-    pod2usage(-verbose => 1) if $help;
-    pod2usage(-verbose => 1) if not defined $name;
-    pod2usage(-verbose => 1) unless -d $path && -w $path;
-    sub version { print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0; }
+	pod2usage( -verbose => 1 ) if $help;
+	pod2usage( -verbose => 1 ) if not defined $name;
+	pod2usage( -verbose => 1 ) unless -d $path && -w $path;
+	sub version {print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
 
-    unless (Dancer::ModuleLoader->load('YAML')) {
-        print <<NOYAML;
+unless (Dancer::ModuleLoader->load('YAML')) {
+    print <<NOYAML;
 *****
 WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
 recommended; in particular, the scaffolded Dancer app being created will not be
@@ -107,21 +103,23 @@ NOYAML
 }
 
 sub run {
-    my $self = shift;
-    $self->_version_check if $self->do_check_dancer_version;
-    $self->_safe_mkdir($self->dancer_app_dir);
-
-    # TODO private method for _create_node
-    $self->create_node($self->_app_tree, $self->dancer_app_dir);
+	my $self = shift; 
+	$self->_version_check if $self->{do_check_dancer_version};
+	$self->_safe_mkdir($self->{dancer_app_dir});
+	$self->create_node($self->_app_tree, $self->{dancer_app_dir});
 }
 
 sub run_scaffold {
-    my $class  = shift;
-    my $type   = shift;
-    my $method = "_run_scaffold_$type";
-    if   ($class->can($method)) { $class->$method; }
-    else                        { die "Wrong type of script: $type"; }
+	my $class = shift;
+	my $type = shift;
+	my $method = "_run_scaffold_$type";
+	if ( $class->can($method) ) { $class->$method; } 
+	else { die "Wrong type of script: $type"; } 
 }
+# must change run_scaffold_* for something 
+# more intuitive 
+sub _run_scaffold_cgi {
+	my $self = shift; 
 
 # must change run_scaffold_* for something
 # more intuitive
@@ -258,10 +256,8 @@ sub _create_node {
             my $ex       = ($file =~ s/^\+//); # look for '+' flag (executable)
             my $template = $templates->{$file};
 
-            $path =
-              catfile($dir, $file);    # rebuild the path without the '+' flag
-            $self->_write_file($path, $template,
-                {appdir => File::Spec->rel2abs($root)});
+            $path = catfile($dir, $file); # rebuild the path without the '+' flag
+            $self->_write_file($path, $template, {appdir => File::Spec->rel2abs($root)});
             chmod 0755, $path if $ex;
             $add_to_manifest->($path);
         }
@@ -295,7 +291,7 @@ sub _app_tree {
             "javascripts" => {
                 "jquery.js" => FILE,
             },
-            "favicon.ico" => sub { $self->write_favicon(catfile($self->{dancer_app_dir}, 'public', 'favicon.ico')) },
+            "favicon.ico" => sub { $self->_write_favicon(catfile($self->{dancer_app_dir}, 'public', 'favicon.ico')) },
         },
         "t" => {
             "001_base.t"        => FILE,
@@ -726,11 +722,12 @@ route_exists [GET => '/'], 'a route handler is defined for /';
 response_status_is ['GET' => '/'], 200, 'response status is 200 for /';
 ",
 
+        'jquery.js' => $self->_jquery_minified,
+        'MANIFEST.SKIP' => $self->_manifest_skip,
     };
 }
 
 1;
-
 __END__
 =pod
 
