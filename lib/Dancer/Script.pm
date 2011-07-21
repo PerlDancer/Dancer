@@ -16,6 +16,12 @@ use LWP::UserAgent;
 use constant FILE => 1;
 set logger => 'console';
 
+# TODO fix tab / space
+# TODO remove whitespace at end of line
+# TODO switch to Dancer::Object
+# TODO when you have $self->{foo}, create an attribute foo with Dancer::Object instead
+#      and then you'll be able to do $self->foo: it's cleaner and easier to read
+
 # subs
 sub new { 
 	my $class = shift; 
@@ -62,6 +68,8 @@ sub _parse_opts {
 	    "v|version"       => \&version,
 	) or pod2usage( -verbose => 1 );
 
+        # TODO no need to capitalize it there: store this var inside $self->{perl_interpreter}
+        # or something similar. Even better, use a Dancer::Object attribute
 	my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 
 	pod2usage( -verbose => 1 ) if $help;
@@ -93,6 +101,7 @@ sub run {
 	my $self = shift; 
 	$self->_version_check if $self->{do_check_dancer_version};
 	$self->_safe_mkdir($self->{dancer_app_dir});
+        # TODO private method for _create_node
 	$self->create_node($self->_app_tree, $self->{dancer_app_dir});
 }
 
@@ -143,6 +152,7 @@ sub _run_scaffold_fcgi {
 sub _validate_app_name {
     my $self = shift;
     if ($self->{appname} =~ /[^\w:]/ || $self->{appname} =~ /^\d/ || $self->{appname} =~ /\b:\b|:{3,}/) {
+        # TODO use error() instead of STDERR
         print STDERR "Error: Invalid application name.\n";
         print STDERR "Application names must not contain colons,"
             ." dots, hyphens or start with a number.\n";
