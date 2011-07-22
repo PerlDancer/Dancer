@@ -10,7 +10,7 @@ use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
 use Dancer::Logger;
 
-Dancer::App->attributes(qw(name prefix registry settings on_lexical_prefix));
+Dancer::App->attributes(qw(name app_prefix prefix registry settings on_lexical_prefix));
 
 # singleton that saves any app created, we want unicity for app names
 my $_apps = {};
@@ -34,12 +34,13 @@ sub set_prefix {
     croak "not a valid prefix: `$prefix', must start with a /"
       if defined($prefix) && $prefix !~ /^\//;
 
+    my $app_prefix = defined $self->app_prefix ? $self->app_prefix : "";
     my $previous = Dancer::App->current->prefix;
 
     if (Dancer::App->current->on_lexical_prefix) {
         Dancer::App->current->prefix($previous.$prefix);
     } else {
-        Dancer::App->current->prefix($prefix);
+        Dancer::App->current->prefix($app_prefix.$prefix);
     }
 
     if (ref($cb) eq 'CODE') {
