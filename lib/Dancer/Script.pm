@@ -15,6 +15,7 @@ use Pod::Usage;
 use LWP::UserAgent;
 use constant FILE => 1;
 set logger => 'console';
+set logger_format => '%L> %m';
 
 # TODO fix tab / space
 # TODO remove whitespace at end of line
@@ -153,9 +154,9 @@ sub _validate_app_name {
     my $self = shift;
     if ($self->{appname} =~ /[^\w:]/ || $self->{appname} =~ /^\d/ || $self->{appname} =~ /\b:\b|:{3,}/) {
         # TODO use error() instead of STDERR
-        print STDERR "Error: Invalid application name.\n";
-        print STDERR "Application names must not contain colons,"
-            ." dots, hyphens or start with a number.\n";
+        error("Error: Invalid application name.\n");
+        error("Application names must not contain colons,"
+            ." dots, hyphens or start with a number.\n");
         exit;
     }
 }
