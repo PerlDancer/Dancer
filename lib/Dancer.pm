@@ -224,7 +224,7 @@ sub _load_app {
     my $app = Dancer::App->set_running_app($app_name);
 
     # Application options
-    $app->prefix($options{prefix})     if $options{prefix};
+    $app->app_prefix($options{prefix}) if $options{prefix};
     $app->settings($options{settings}) if $options{settings};
 
     # load the application
