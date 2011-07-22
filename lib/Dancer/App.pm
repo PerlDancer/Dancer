@@ -28,6 +28,12 @@ sub set_running_app {
     Dancer::App->current($app);
 }
 
+sub set_app_prefix {
+    my ($self, $prefix) = @_;
+    $self->app_prefix($prefix);
+    $self->prefix($prefix);
+}
+
 sub set_prefix {
     my ($self, $prefix, $cb) = @_;
     undef $prefix if defined($prefix) and $prefix eq "/";
