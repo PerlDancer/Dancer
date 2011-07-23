@@ -1,4 +1,7 @@
 
+    [ BUG FIXES ]
+    * Fix prefix behavior with load_app (alexrj)
+
     [ ENHANCEMENTS ]
     * send_file can send data (pass a reference to a scalar), and can
       specify a content-disposition filename. (Alberto Simões)
