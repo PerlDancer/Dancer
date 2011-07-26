@@ -14,7 +14,7 @@ my @try_paths = qw(
     ../../../../../../../../../../../../etc/passwd
 );
 
-plan tests => scalar @try_paths * 3;
+plan tests => scalar @try_paths;
 
 use Dancer ':syntax';
 
@@ -22,9 +22,7 @@ set public => path( dirname(__FILE__), 'static' );
 my $public = setting('public');
 
 for my $path (@try_paths) {
-    ok my $resp = Dancer::Test::_get_file_response( [ GET => $path ] ),
-        "Got a response for request to $path";;
-    is $resp->{status},  404, "Response status was 404 for request to $path";
-    ok !$resp->{content}, "No content returned for request to $path";
+    my $resp = Dancer::Test::_get_file_response( [ GET => $path ] );
+    ok !$resp, "Request to $path did not return a file response";
 }
 
