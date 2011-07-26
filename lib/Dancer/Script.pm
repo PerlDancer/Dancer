@@ -2,8 +2,9 @@ package Dancer::Script;
 
 use strict;
 use warnings;
+use base 'Dancer::Object';
 use FindBin '$RealBin';
-use Dancer ':syntax'; 
+use Dancer ':syntax';
 use Dancer::ModuleLoader;
 use Dancer::Template::Simple;
 use Dancer::Renderer;
@@ -14,7 +15,7 @@ use Getopt::Long;
 use Pod::Usage;
 use LWP::UserAgent;
 use constant FILE => 1;
-set logger => 'console';
+set logger        => 'console';
 set logger_format => '%L> %m';
 
 # TODO fix tab / space
@@ -22,64 +23,70 @@ set logger_format => '%L> %m';
 # TODO switch to Dancer::Object
 # TODO when you have $self->{foo}, create an attribute foo with Dancer::Object instead
 #      and then you'll be able to do $self->foo: it's cleaner and easier to read
+Dancer::Script->attributes(
+    qw(appname root_path check_version dancer_app_dir dancer_script
+      dancer_version do_check_dancer_version do_overwrite_all lib_file lib_path)
+);
 
 # subs
-sub new { 
-	my $class = shift; 
-	my $self = bless {}, $class; 
+sub init {
+    my $class = shift;
+    my $self = bless {}, $class;
 
-	if (@_){
+    if (@_) {
 
-		my %args = @_;
-		$self->{appname} = $args{appname};
-		$self->{path} = $args{path};
-		$self->{check_version} = $args{check_version};
+        my %args = @_;
+        $self->appname($args{appname});
+        $self->root_path($args{path});
+        $self->check_version($args{check_version});
 
-	}else{
-		my ($appname,$path,$check_version) = $self->_parse_opts;
-		$self->{appname} = $appname;
-		$self->{path} = $path;
-		$self->{check_version} = $check_version;
-	}
-	
-	$self->{do_overwrite_all} = 0;
-	$self->_validate_app_name;
-	#my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
-	$self->{dancer_version} = $Dancer::VERSION;
-	$self->_set_application_path;
-	$self->_set_script_path;
-	$self->_set_lib_path;
-	return $self;
+    }
+    else {
+        my ($appname, $path, $check_version) = $self->_parse_opts;
+        $self->appname($appname);
+        $self->root_path($path);
+        $self->check_version($check_version);
+    }
+
+    $self->do_overwrite_all(0);
+    $self->_validate_app_name;
+
+   #my $AUTO_RELOAD = eval "require Module::Refresh and require Clone" ? 1 : 0;
+    $self->dancer_version($Dancer::VERSION);
+    $self->_set_application_path;
+    $self->_set_script_path;
+    $self->_set_lib_path;
+    return $self;
 }
 
 # options
-sub _parse_opts { 
-	my $self = shift;
-	my $help = 0;
-	my $do_check_dancer_version = 1;
-	my $name = undef;
-	my $path = '.';
+sub _parse_opts {
+    my $self                    = shift;
+    my $help                    = 0;
+    my $do_check_dancer_version = 1;
+    my $name                    = undef;
+    my $path                    = '.';
 
 
-	GetOptions(
-	    "h|help"          => \$help,
-	    "a|application=s" => \$name,
-	    "p|path=s"        => \$path,
-	    "x|no-check"      => sub { $do_check_dancer_version = 0 },
-	    "v|version"       => \&version,
-	) or pod2usage( -verbose => 1 );
+    GetOptions(
+        "h|help"          => \$help,
+        "a|application=s" => \$name,
+        "p|path=s"        => \$path,
+        "x|no-check"      => sub { $do_check_dancer_version = 0 },
+        "v|version"       => \&version,
+    ) or pod2usage(-verbose => 1);
 
-        # TODO no need to capitalize it there: store this var inside $self->{perl_interpreter}
-        # or something similar. Even better, use a Dancer::Object attribute
-	my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+# TODO no need to capitalize it there: store this var inside $self->{perl_interpreter}
+# or something similar. Even better, use a Dancer::Object attribute
+    my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 
-	pod2usage( -verbose => 1 ) if $help;
-	pod2usage( -verbose => 1 ) if not defined $name;
-	pod2usage( -verbose => 1 ) unless -d $path && -w $path;
-	sub version {print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
+    pod2usage(-verbose => 1) if $help;
+    pod2usage(-verbose => 1) if not defined $name;
+    pod2usage(-verbose => 1) unless -d $path && -w $path;
+    sub version { print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0; }
 
-unless (Dancer::ModuleLoader->load('YAML')) {
-    print <<NOYAML;
+    unless (Dancer::ModuleLoader->load('YAML')) {
+        print <<NOYAML;
 *****
 WARNING: YAML.pm is not installed.  This is not a full dependency, but is highly
 recommended; in particular, the scaffolded Dancer app being created will not be
@@ -93,101 +100,108 @@ following commands:
   curl -L http://cpanmin.us | perl - --sudo YAML
 *****
 NOYAML
-}
+    }
 
-	return ($name,$path,$do_check_dancer_version);
+    return ($name, $path, $do_check_dancer_version);
 }
 
 sub run {
-	my $self = shift; 
-	$self->_version_check if $self->{do_check_dancer_version};
-	$self->_safe_mkdir($self->{dancer_app_dir});
-        # TODO private method for _create_node
-	$self->create_node($self->_app_tree, $self->{dancer_app_dir});
+    my $self = shift;
+    $self->_version_check if $self->do_check_dancer_version;
+    $self->_safe_mkdir($self->dancer_app_dir);
+
+    # TODO private method for _create_node
+    $self->create_node($self->_app_tree, $self->dancer_app_dir);
 }
 
 sub run_scaffold {
-	my $class = shift;
-	my $type = shift;
-	my $method = "_run_scaffold_$type";
-	if ( $class->can($method) ) { $class->$method; } 
-	else { die "Wrong type of script: $type"; } 
+    my $class  = shift;
+    my $type   = shift;
+    my $method = "_run_scaffold_$type";
+    if   ($class->can($method)) { $class->$method; }
+    else                        { die "Wrong type of script: $type"; }
 }
-# must change run_scaffold_* for something 
-# more intuitive 
+
+# must change run_scaffold_* for something
+# more intuitive
 sub _run_scaffold_cgi {
-	my $self = shift; 
+    my $self = shift;
 
-	require Plack::Runner;
+    require Plack::Runner;
+
 # For some reason Apache SetEnv directives dont propagate
-# correctly to the dispatchers, so forcing PSGI and env here 
+# correctly to the dispatchers, so forcing PSGI and env here
 # is safer.
-	set apphandler => 'PSGI';
-	set environment => 'production';
+    set apphandler  => 'PSGI';
+    set environment => 'production';
 
-	my $psgi = path($RealBin, '..', 'bin', 'app.pl');
-	die "Unable to read startup script: $psgi" unless -r $psgi;
+    my $psgi = path($RealBin, '..', 'bin', 'app.pl');
+    die "Unable to read startup script: $psgi" unless -r $psgi;
 
-	Plack::Runner->run($psgi); 
+    Plack::Runner->run($psgi);
 }
 
 sub _run_scaffold_fcgi {
     my $self = shift;
-	
-	require Plack::Handler::FCGI;
+
+    require Plack::Handler::FCGI;
 
 # For some reason Apache SetEnv directives dont propagate
-# correctly to the dispatchers, so forcing PSGI and env here 
+# correctly to the dispatchers, so forcing PSGI and env here
 # is safer.
-	set apphandler => 'PSGI';
-	set environment => 'production';
+    set apphandler  => 'PSGI';
+    set environment => 'production';
 
-	my $psgi = path($RealBin, '..', 'bin', 'app.pl');
-	my $app = do($psgi);
-	die "Unable to read startup script: $@" if $@;
-	my $server = Plack::Handler::FCGI->new(nproc => 5, detach => 1);
+    my $psgi = path($RealBin, '..', 'bin', 'app.pl');
+    my $app = do($psgi);
+    die "Unable to read startup script: $@" if $@;
+    my $server = Plack::Handler::FCGI->new(nproc => 5, detach => 1);
 
-	$server->run($app);
+    $server->run($app);
 }
 
 sub _validate_app_name {
     my $self = shift;
-    if ($self->{appname} =~ /[^\w:]/ || $self->{appname} =~ /^\d/ || $self->{appname} =~ /\b:\b|:{3,}/) {
+    if (   $self->appname =~ /[^\w:]/
+        || $self->appname =~ /^\d/
+        || $self->appname =~ /\b:\b|:{3,}/)
+    {
+
         # TODO use error() instead of STDERR
         error("Error: Invalid application name.\n");
-        error("Application names must not contain colons,"
-            ." dots, hyphens or start with a number.\n");
+        error(  "Application names must not contain colons,"
+              . " dots, hyphens or start with a number.\n");
         exit;
     }
 }
 
 sub _set_application_path {
     my $self = shift;
-    $self->{dancer_app_dir} = catdir($self->{path}, $self->_dash_name);
+    $self->dancer_app_dir(catdir($self->root_path, $self->_dash_name));
 }
 
 sub _set_lib_path {
     my $self = shift;
-	unless ($self->{appname} =~ /::/) {
-		
-		$self->{lib_file} = $self->{appname}; 
-		$self->{lib_path} = "";
-	}
-    my @lib_path = split('::', $self->{appname});
+    unless ($self->appname =~ /::/) {
+
+        $self->lib_file($self->appname);
+        $self->lib_path("");
+    }
+    my @lib_path = split('::', $self->appname);
     my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
     $lib_path = join('/', @lib_path);
-    $self->{lib_file} = $lib_file;
-    $self->{lib_path} = $lib_path; 
+    $self->lib_file($lib_file);
+    $self->lib_path($lib_path);
 }
 
 sub _set_script_path {
     my $self = shift;
-    $self->{dancer_script} = $self->_dash_name();
+    $self->dancer_script($self->_dash_name);
 }
 
 sub _dash_name {
     my $self = shift;
-    my $name = $self->{appname};
+    my $name = $self->appname;
     $name =~ s/\:\:/-/g;
     return $name;
 }
@@ -204,9 +218,9 @@ sub create_node {
     # create a closure, so we do not need to get $root passed as
     # argument on _create_node
     my $add_to_manifest = sub {
-        my $file = shift;
-		my $root_regex = quotemeta($root);
-		$file =~ s{^$root_regex/?}{};
+        my $file       = shift;
+        my $root_regex = quotemeta($root);
+        $file =~ s{^$root_regex/?}{};
         print $manifest "$file\n";
     };
 
@@ -215,33 +229,38 @@ sub create_node {
     close $manifest;
 }
 
-sub _create_node {               
-    my $self = shift;
+sub _create_node {
+    my $self            = shift;
     my $add_to_manifest = shift;
-    my $node = shift;
-    my $root = shift;
+    my $node            = shift;
+    my $root            = shift;
 
     my $templates = $self->_templates;
 
-    while ( my ($path, $content) = each %$node ) {
+    while (my ($path, $content) = each %$node) {
         $path = catfile($root, $path);
 
         if (ref($content) eq 'HASH') {
             $self->_safe_mkdir($path);
             $self->_create_node($add_to_manifest, $content, $path);
-        } elsif (ref($content) eq 'CODE') {
+        }
+        elsif (ref($content) eq 'CODE') {
+
             # The content is a coderef, which, given the path to the file it
             # should create, will do the appropriate thing:
             $content->($path);
             $add_to_manifest->($path);
-       } else {
-            my $file = basename($path);
-            my $dir  = dirname($path);
-            my $ex = ($file =~ s/^\+//); # look for '+' flag (executable)
+        }
+        else {
+            my $file     = basename($path);
+            my $dir      = dirname($path);
+            my $ex       = ($file =~ s/^\+//); # look for '+' flag (executable)
             my $template = $templates->{$file};
 
-            $path = catfile($dir, $file); # rebuild the path without the '+' flag
-            $self->_write_file($path, $template, {appdir => File::Spec->rel2abs($root)});
+            $path =
+              catfile($dir, $file);    # rebuild the path without the '+' flag
+            $self->_write_file($path, $template,
+                {appdir => File::Spec->rel2abs($root)});
             chmod 0755, $path if $ex;
             $add_to_manifest->($path);
         }
@@ -252,17 +271,12 @@ sub _app_tree {
     my $self = shift;
 
     return {
-        "Makefile.PL"        => FILE,
-        "MANIFEST.SKIP"      => FILE,
-        lib                  => {
-         $self->{lib_path} => {
-            "$self->{lib_file}" => FILE,}
-        },
-        "bin" => {
-            "+app.pl" => FILE,
-        },
-        "config.yml"         => FILE,
-        "environments"       => {
+        "Makefile.PL"   => FILE,
+        "MANIFEST.SKIP" => FILE,
+        lib             => {$self->lib_path => {$self->lib_file => FILE,}},
+        "bin"          => {"+app.pl" => FILE,},
+        "config.yml"   => FILE,
+        "environments" => {
             "development.yml" => FILE,
             "production.yml"  => FILE,
         },
@@ -279,14 +293,29 @@ sub _app_tree {
                 "style.css" => FILE,
                 "error.css" => FILE,
             },
-            "images"      => {
-                "perldancer-bg.jpg" => sub { $self->_write_bg(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer-bg.jpg')) }, 
-                "perldancer.jpg" => sub { $self->_write_logo(catfile($self->{dancer_app_dir}, 'public', 'images', 'perldancer.jpg')) },
+            "images" => {
+                "perldancer-bg.jpg" => sub {
+                    $self->_write_bg(
+                        catfile(
+                            $self->dancer_app_dir, 'public',
+                            'images',              'perldancer-bg.jpg'
+                        )
+                    );
+                },
+                "perldancer.jpg" => sub {
+                    $self->_write_logo(
+                        catfile(
+                            $self->dancer_app_dir, 'public',
+                            'images',              'perldancer.jpg'
+                        )
+                    );
+                },
             },
-            "javascripts" => {
-                "jquery.js" => FILE,
+            "javascripts" => {"jquery.js" => FILE,},
+            "favicon.ico" => sub {
+                $self->_write_favicon(
+                    catfile($self->dancer_app_dir, 'public', 'favicon.ico'));
             },
-            "favicon.ico" => sub { $self->_write_favicon(catfile($self->{dancer_app_dir}, 'public', 'favicon.ico')) },
         },
         "t" => {
             "001_base.t"        => FILE,
@@ -297,50 +326,51 @@ sub _app_tree {
 
 sub _safe_mkdir {
     my $self = shift;
-    my $dir = shift;
+    my $dir  = shift;
     if (not -d $dir) {
-        debug ("Writing directory: $dir\n");
+        debug("Writing directory: $dir\n");
         mkpath $dir or die "could not write the directory $dir: $!";
-        debug ("Successfully wrote the directory: $dir\n");
+        debug("Successfully wrote the directory: $dir\n");
     }
     else {
-        debug ("Not Writing directory: $dir\n");
+        debug("Not Writing directory: $dir\n");
     }
 }
 
 sub _write_file {
-    my $self = shift;
-    my $path = shift;
+    my $self     = shift;
+    my $path     = shift;
     my $template = shift;
-    my $vars = shift;
+    my $vars     = shift;
     die "no template found for $path" unless defined $template;
 
-    $vars->{dancer_version} = $self->{dancer_version};
+    $vars->{dancer_version} = $self->dancer_version;
 
     # if file already exists, ask for confirmation
-    if (-f $path && (not $self->{do_overwrite_all})) {
+    if (-f $path && (not $self->do_overwrite_all)) {
         print "! $path exists, overwrite? [N/y/a]: ";
-        my $res = <STDIN>; chomp($res);
-        $self->{do_overwrite_all} = 1 if $res eq 'a';
+        my $res = <STDIN>;
+        chomp($res);
+        $self->do_overwrite_all = 1 if $res eq 'a';
         return 0 unless ($res eq 'y') or ($res eq 'a');
     }
 
     my $fh;
     my $content = $self->_process_template($template, $vars);
-	debug ("Writing file: $path\n");
+    debug("Writing file: $path\n");
     open $fh, '>', $path or die "unable to open file `$path' for writing: $!";
     print $fh $content;
-    debug ("Successfully wrote: $path\n");
+    debug("Successfully wrote: $path\n");
     close $fh;
 }
 
 sub _process_template {
-    my $self = shift;
+    my $self     = shift;
     my $template = shift;
-    my $tokens = shift;
-    my $engine = Dancer::Template::Simple->new;
+    my $tokens   = shift;
+    my $engine   = Dancer::Template::Simple->new;
     $engine->{start_tag} = '[%';
-    $engine->{stop_tag} = '%]';
+    $engine->{stop_tag}  = '%]';
     return $engine->render(\$template, $tokens);
 }
 
@@ -348,20 +378,20 @@ sub _write_data_to_file {
     my $self = shift;
     my $data = shift;
     my $path = shift;
-	debug ("Writing file: $path\n");
+    debug("Writing file: $path\n");
     open(my $fh, '>', $path)
       or warn "Failed to write file to $path - $!" and return;
     binmode($fh);
     print {$fh} unpack 'u*', $data;
-    debug ("Successfully wrote: $path\n");
+    debug("Successfully wrote: $path\n");
     close $fh;
     return 1;
 }
 
 sub _send_http_request {
     my $self = shift;
-    my $url = shift;
-    my $ua = LWP::UserAgent->new;
+    my $url  = shift;
+    my $ua   = LWP::UserAgent->new;
     $ua->timeout(5);
     $ua->env_proxy();
 
@@ -376,24 +406,26 @@ sub _send_http_request {
 }
 
 sub _version_check {
-    my $self = shift;
+    my $self           = shift;
     my $latest_version = 0;
 
-    my $resp = $self->_send_http_request('http://search.cpan.org/api/module/Dancer');
+    my $resp =
+      $self->_send_http_request('http://search.cpan.org/api/module/Dancer');
 
     if ($resp) {
-        if ( $resp =~ /"version" (?:\s+)? \: (?:\s+)? "(\d\.\d+)"/x ) {
+        if ($resp =~ /"version" (?:\s+)? \: (?:\s+)? "(\d\.\d+)"/x) {
             $latest_version = $1;
-        } else {
+        }
+        else {
             die "Can't understand search.cpan.org's reply.\n";
         }
     }
 
-    return if $self->{dancer_version} =~  m/_/;
+    return if $self->dancer_version =~ m/_/;
 
-    if ($latest_version > $self->{dancer_version}) {
+    if ($latest_version > $self->dancer_version) {
         print qq|
-The latest stable Dancer release is $latest_version, you are currently using $self->{dancer_version}.
+The latest stable Dancer release is $latest_version, you are currently using $self->dancer_version.
 Please check http://search.cpan.org/dist/Dancer/ for updates.
 
 |;
@@ -403,31 +435,30 @@ Please check http://search.cpan.org/dist/Dancer/ for updates.
 sub _download_file {
     my $self = shift;
     my $path = shift;
-    my $url = shift;
+    my $url  = shift;
     my $resp = $self->_send_http_request($url);
     if ($resp) {
         open my $fh, '>', $path or die "cannot open $path for writing: $!";
         print $fh $resp;
-        close $fh
+        close $fh;
     }
     return 1;
 }
 
 sub _templates {
-    my $self = shift;
-    my $appname    = $self->{appname};
-    my $appfile    = $self->{lib_file};
-    my $lib_path   = $self->{lib_path};
-    my $cleanfiles = $self->{appname};
-	unless($lib_path eq ""){ $lib_path .= "/"; } 
+    my $self       = shift;
+    my $appname    = $self->appname;
+    my $appfile    = $self->lib_file;
+    my $lib_path   = $self->lib_path;
+    my $cleanfiles = $self->appname;
+    unless ($lib_path eq "") { $lib_path .= "/"; }
 
     $appfile    =~ s{::}{/}g;
     $cleanfiles =~ s{::}{-}g;
 
     return {
 
-'Makefile.PL' =>
-"use strict;
+        'Makefile.PL' => "use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
@@ -449,8 +480,7 @@ WriteMakefile(
     clean               => { FILES => '$cleanfiles-*' },
 );
 ",
-'index.tt'  => 
-'  
+        'index.tt' => '  
 <!-- 
     Credit goes to the Ruby on Rails team for this page 
     has been heavily based on the default Rails page that is 
@@ -580,7 +610,10 @@ WriteMakefile(
               it\'s just here to help you get started. The template used to
               generate this content is located in 
               <code>views/index.tt</code>.
-              You can add some routes to <tt>lib/'.$lib_path.$self->{lib_file}.'</tt>. 
+              You can add some routes to <tt>lib/'
+          . $lib_path
+          . $self->lib_file
+          . '</tt>. 
               </p>
             </li>
 
@@ -599,13 +632,13 @@ WriteMakefile(
     </div>
 ',
 
-'main.tt'   =>
-'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        'main.tt' =>
+          '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=<% settings.charset %>" />
-<title>'.$appname.'</title>
+<title>' . $appname . '</title>
 <link rel="stylesheet" href="<% request.uri_base %>/css/style.css" />
 
 <!-- Grab Google CDN\'s jQuery. fall back to local if necessary -->
@@ -624,8 +657,7 @@ Powered by <a href="http://perldancer.org/">Dancer</a> <% dancer_version %>
 </html>
 ',
 
-"dispatch.cgi" =>
-"#!/usr/bin/env perl
+        "dispatch.cgi" => "#!/usr/bin/env perl
 use Dancer::Script;
 
 Dancer::Script->run_scaffold('cgi');
@@ -633,24 +665,23 @@ Dancer::Script->run_scaffold('cgi');
 ",
 
 
-"dispatch.fcgi" =>
-"#!/usr/bin/env perl 
+        "dispatch.fcgi" => "#!/usr/bin/env perl 
 use Dancer::Script;
 
 Dancer::Script->run_scaffold('fcgi');
 ",
 
-"app.pl" =>
+        "app.pl" =>
 
-"#!/usr/bin/perl
+          "#!/usr/bin/perl
 use Dancer;
 use $appname;
 dance;
 ",
 
-"$self->{lib_file}" =>
+        $self->lib_file =>
 
-"package $appname;
+          "package $appname;
 use Dancer ':syntax';
 
 our \$VERSION = '0.1';
@@ -662,8 +693,7 @@ get '/' => sub {
 true;
 ",
 
-'style.css' =>
-'
+        'style.css' => '
 body {
 margin: 0;
 margin-bottom: 25px;
@@ -855,9 +885,9 @@ font-size: 10px;
 ',
 
 # error.css
-"error.css" =>
+        "error.css" =>
 
-"body {
+          "body {
     font-family: Lucida,sans-serif;
 }
 
@@ -929,22 +959,21 @@ pre.error {
 
 ",
 
-"404.html" =>
-    Dancer::Renderer->html_page(
-        "Error 404",
-        '<h2>Page Not Found</h2><p>Sorry, this is the void.</p>',
-        'error'),
+        "404.html" => Dancer::Renderer->html_page(
+            "Error 404",
+            '<h2>Page Not Found</h2><p>Sorry, this is the void.</p>', 'error'
+        ),
 
-"500.html" =>
-    Dancer::Renderer->html_page(
-        "Error 500",
-        '<h2>Internal Server Error</h2>'
-                 . '<p>Wooops, something went wrong</p>',
-        'error'),
+        "500.html" => Dancer::Renderer->html_page(
+            "Error 500",
+            '<h2>Internal Server Error</h2>'
+              . '<p>Wooops, something went wrong</p>',
+            'error'
+        ),
 
-'config.yml' =>
+        'config.yml' =>
 
-"# This is the main configuration file of your Dancer app
+          "# This is the main configuration file of your Dancer app
 # env-related settings should go to environments/\$env.yml
 # all the settings in this file will be loaded at Dancer's startup.
 
@@ -975,12 +1004,11 @@ template: \"simple\"
 
 ",
 
-'jquery.js' => $self->_jquery_minified,
+        'jquery.js' => $self->_jquery_minified,
 
-'MANIFEST.SKIP' => $self->_manifest_skip,
+        'MANIFEST.SKIP' => $self->_manifest_skip,
 
-'development.yml' =>
-"# configuration file for development environment
+        'development.yml' => "# configuration file for development environment
 
 # the logger engine to use
 # console: log messages to STDOUT (your console where you started the
@@ -1009,8 +1037,7 @@ show_errors: 1
 auto_reload: 0
 ",
 
-'production.yml' =>
-'# configuration file for production environment
+        'production.yml' => '# configuration file for production environment
 
 # only log warning and error messsages
 log: "warning"
@@ -1029,16 +1056,14 @@ route_cache: 1
 
 ',
 
-"001_base.t" =>
-"use Test::More tests => 1;
+        "001_base.t" => "use Test::More tests => 1;
 use strict;
 use warnings;
 
 use_ok '$appname';
 ",
 
-"002_index_route.t" =>
-"use Test::More tests => 2;
+        "002_index_route.t" => "use Test::More tests => 2;
 use strict;
 use warnings;
 
@@ -1056,7 +1081,7 @@ response_status_is ['GET' => '/'], 200, 'response status is 200 for /';
 sub _write_bg {
     my $self = shift;
     my $path = shift;
-    my $data =<<'EOF';
+    my $data = <<'EOF';
 M_]C_X``02D9)1@`!`0$`2`!(``#_VP!#``4#!`0$`P4$!`0%!04&!PP(!P<'
 M!P\+"PD,$0\2$A$/$1$3%AP7$Q0:%1$1&"$8&AT='Q\?$Q<B)"(>)!P>'Q[_
 MVP!#`04%!0<&!PX("`X>%!$4'AX>'AX>'AX>'AX>'AX>'AX>'AX>'AX>'AX>
@@ -1232,7 +1257,7 @@ EOF
 sub _write_favicon {
     my $self = shift;
     my $path = shift;
-    my $data =<<'EOF';
+    my $data = <<'EOF';
 M```!``$`$!````$`"`!H!0``%@```"@````0````(`````$`"```````````
 M```````````````````````("`D`%103`!D7%0`;&A@`'1L9`!X<&@`E)"(`
 M)B0B`"<E(@`G)2,`*"8C`"DG)0`J)R4`*2@E`"TJ)P`P,"P`,S$O`#0Q+P`T
@@ -1273,7 +1298,7 @@ EOF
 sub _write_logo {
     my $self = shift;
     my $path = shift;
-    my $data =<<'EOF';
+    my $data = <<'EOF';
 M_]C_X``02D9)1@`!`0$`2`!(``#__@`30W)E871E9"!W:71H($=)35#_VP!#
 M``4#!`0$`P4$!`0%!04&!PP(!P<'!P\+"PD,$0\2$A$/$1$3%AP7$Q0:%1$1
 M&"$8&AT='Q\?$Q<B)"(>)!P>'Q[_VP!#`04%!0<&!PX("`X>%!$4'AX>'AX>
