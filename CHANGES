@@ -4,8 +4,9 @@
 
     [ SECURITY ]
     * FIX directory traversal issue
-      Before this fix, it was possible to download any file within the public/.. 
-      directory.
+      Since 1.3070, it was possible to abuse the static file serving feature to
+      obtain files from a directory immediately above the directory configured to
+      serve static files from.
       (Vladimir Lettiev and David Precious)
 
 1.3070      14.07.2011
