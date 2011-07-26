@@ -5,7 +5,7 @@ use warnings;
 
 use Dancer::Script;
 
-Dancer::Script->new->run;
+Dancer::Script->init->run;
 
 __END__
 =pod
