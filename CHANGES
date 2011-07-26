@@ -1,3 +1,12 @@
+NEXT
+    ** Security release based on 1.3070 **
+
+    [ SECURITY ]
+    * FIX directory traversal issue
+      Before this fix, it was possible to download any file within the public/.. 
+      directory.
+      (Vladimir Lettiev and David Precious)
+
 1.3070      14.07.2011
     ** Codename: The Exceptional Mr. Dams // Damien Krotkine (dams) **
 
