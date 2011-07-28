@@ -801,6 +801,11 @@ Adds a hook at some position. For example :
     $response->content->{generated_at} = localtime();
   };
 
+There can be multiple hooks assigned to a given position, and each will be
+executed in order.
+
+(For details on how to register new hooks from within plugins, see
+L<Dancer::Hook>.)
 Supported B<before> hooks (in order of execution):
 
 =over
