@@ -1539,3 +1539,68 @@ EOF
 }
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+Dancer::Script - Object script to create new Dancer applications
+
+=head1 SYNOPSIS
+
+    package My::Dancer::Application;
+
+    use strict;
+    use warnings;
+    use Dancer::Script;
+
+    #Create a new Dancer application.
+	Dancer::Script->init(%params)->run;
+
+    #Deploy in FastCGI.
+	Dancer::Script->run_scaffold("fcgi");
+	
+
+=head1 DESCRIPTION
+
+Helper script for providing a bootstrapping method to quickly and easily create
+the framework for a new Dancer application.
+
+=head1 METHODS
+
+=head2 init
+
+Creates a new object of Dancer::Object.
+
+It accepts arguments in a hash and won't run
+until the C<run> method (described
+below) is called.
+
+=head2 run
+
+Exists but does not accept any arguments. This method constructs and scaffold any given application by the params in C<init>.
+
+=head2 run_scaffold
+
+Runs the object for the deployment of the Dancer application.
+
+It accepts a string defining which deployment method to use.
+For now, the strings accept are C<cgi> for B<CGI> and C<fcgi> for B<FastCGI>. 
+
+=head1 AUTHOR
+
+This module has been written by Carlos Ivan Sosa <gnusosa@gnusosa.net> based on
+the script L<dancer> written by Sebastien Deseille
+<sebastien.deseille@gmail.com> and Alexis Sukrieh <sukria@cpan.org>.  
+
+=head1 SOURCE CODE
+
+See L<Dancer> for more information.
+
+=head1 LICENSE
+
+This module is free software and is published under the same
+terms as Perl itself.
+
+=cut
