@@ -7,7 +7,7 @@ use Dancer::Script;
 
 my $dir = File::Temp->newdir();
 my $tmpdir = $dir->dirname;
-my $script = Dancer::Script->new(appname => 'Hello', path => $tmpdir, check_version => '1');
+my $script = Dancer::Script->init(appname => 'Hello', path => $tmpdir, check_version => '1');
 
 #tests
 # TODO: Supress the print messages from the *print* outputs. 
