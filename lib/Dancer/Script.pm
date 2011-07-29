@@ -1063,8 +1063,12 @@ Dancer::Script - Object script to create new Dancer applications
 
 =head1 DESCRIPTION
 
-Helper script for providing a bootstrapping method to quickly and easily create
+Object with methods to quickly and easily create
 the framework for a new Dancer application.
+
+This object assists the L<dancer> script which
+accepts parameters from the temrinal. For more
+information see L<dancer>.
 
 =head1 METHODS
 
