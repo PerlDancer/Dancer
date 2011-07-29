@@ -1564,8 +1564,12 @@ Dancer::Script - Object script to create new Dancer applications
 
 =head1 DESCRIPTION
 
-Helper script for providing a bootstrapping method to quickly and easily create
+Object with methods to quickly and easily create
 the framework for a new Dancer application.
+
+This object assists the L<dancer> script which
+accepts parameters from the temrinal. For more
+information see L<dancer>.
 
 =head1 METHODS
 
@@ -1579,14 +1583,14 @@ below) is called.
 
 =head2 run
 
-Exists but does not accept any arguments. This method constructs and scaffold any given application by the params in C<init>.
+Exists but does not accept any arguments. This method constructs and scaffolds any given application by the params in C<init>.
 
 =head2 run_scaffold
 
-Runs the object for the deployment of the Dancer application.
+Runs the object for the deployment of a Dancer application.
 
 It accepts a string defining which deployment method to use.
-For now, the strings accept are C<cgi> for B<CGI> and C<fcgi> for B<FastCGI>. 
+For now, the strings/keywords accepted are C<cgi> for B<CGI> and C<fcgi> for B<FastCGI>. 
 
 =head1 AUTHOR
 
