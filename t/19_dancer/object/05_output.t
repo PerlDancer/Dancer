@@ -17,22 +17,22 @@ use_ok 'Dancer::Logger::Console';
 my $dir = File::Temp->newdir();
 my $tmpdir = $dir->dirname;
 my $template = { 'test' => 'testing', };  
-my $script = Dancer::Script->new(appname => 'Hello', path => $tmpdir, check_version => '1');
+my $script = Dancer::Script->init(appname => 'Hello', path => $tmpdir, check_version => '1');
 my $dancer_app_dir = $script->{dancer_app_dir};
 
 
-Test::Output::stderr_like( sub { $script->safe_mkdir($dancer_app_dir)},
-    qr/\[\d+\] debug @.+> /,
+Test::Output::stderr_like( sub { $script->_safe_mkdir($dancer_app_dir)},
+    qr/debug> */,
     "debug outputs correctly while writing a dir.");
 
 Test::Output::stderr_like( sub { $script->run },
-    qr/\[\d+\] debug @.+> /,
+    qr/debug> */,
     "debug outputs correctly");
 
-Test::Output::stderr_like( sub { $script->write_bg(catfile($dancer_app_dir, 'public', 'images', 'perldancer-bg.jpg')) },
-    qr/\[\d+\] debug @.+> /,
+Test::Output::stderr_like( sub { $script->_write_bg(catfile($dancer_app_dir, 'public', 'images', 'perldancer-bg.jpg')) },
+    qr/debug> */,
     "debug outputs correctly while writing a binary data file.");
 
-Test::Output::stderr_like( sub { $script->write_file(catfile($dancer_app_dir,'t','test'),$template)},
-    qr/\[\d+\] debug @.+> /,
+Test::Output::stderr_like( sub { $script->_write_file(catfile($dancer_app_dir,'t','test'),$template)},
+    qr/debug> */,
     "debug outputs correctly while writing a file.");
