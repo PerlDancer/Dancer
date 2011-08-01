@@ -1,3 +1,14 @@
+1.3071     26.07.2011
+
+    ** Security release based on 1.3070 **
+
+    [ SECURITY ]
+    * FIX directory traversal issue
+      Since 1.3070, it was possible to abuse the static file serving feature to
+      obtain files from a directory immediately above the directory configured to
+      serve static files from.
+      (Vladimir Lettiev and David Precious)
+
 1.3070      14.07.2011
     ** Codename: The Exceptional Mr. Dams // Damien Krotkine (dams) **
 

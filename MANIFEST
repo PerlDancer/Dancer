@@ -168,6 +168,8 @@ t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/003_mime_types_reinit.t
 t/04_static_file/01_mime_types.t
+t/04_static_file/02_dir_traversal.t
+t/04_static_file/secretfile
 t/04_static_file/static/hello.foo
 t/04_static_file/static/hello.txt
 t/05_views/002_view_rendering.t
