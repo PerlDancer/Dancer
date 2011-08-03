@@ -55,7 +55,9 @@ sub response_with_headers {
     my $response = Dancer::SharedData->response();
 
     $response->{headers} ||= HTTP::Headers->new;
-    $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+    my $powered_by = "Perl Dancer " . $Dancer::VERSION;
+    $response->header('X-Powered-By' => $powered_by);
+    $response->header('Server'       => $powered_by);
 
     return $response;
 }
