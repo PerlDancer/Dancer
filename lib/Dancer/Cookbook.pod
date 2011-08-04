@@ -39,7 +39,9 @@ route specification, whose value is made available through C<params>
 - more on that later.
 
 Note that you don't need to use the C<strict> and C<warnings> pragma, they are
-already loaded by Dancer.
+already loaded by Dancer.  (If you don't want the C<warnings> pragma (which can
+lead to undesired warnings about use of undef values, for example), then set the
+L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
 
 
 
