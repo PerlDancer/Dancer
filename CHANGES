@@ -16,6 +16,8 @@ ${{NEXT}}
       (David Precious)
     * Docs for debug/warning/error link to Dancer::Logger for details on how to
       control where logs go (David Precious)
+    * Document import_warnings option, and mention it & link to that
+      documentation in opportune places.
 
 1.3071     26.07.2011
     ** Security release based on 1.3070 **
