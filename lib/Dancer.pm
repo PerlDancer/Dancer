@@ -482,6 +482,11 @@ This is useful when you want to use your Dancer application from a script.
     use Dancer ':script';
     MyApp::schema('DBSchema')->deploy();
 
+By default, the L<warnings> pragma will also be exported, meaning your
+app/script will be running under C<use warnings>.  If you do not want this, set
+the L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
+
+
 =head1 FUNCTIONS
 
 =head2 after
