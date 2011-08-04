@@ -6,6 +6,16 @@ ${{NEXT}}
     [ ENHANCEMENTS ]
     * send_file can send data (pass a reference to a scalar), and can
       specify a content-disposition filename. (Alberto Simões)
+    * Set 'Server' HTTP response header as well as 'X-Powered-By'.  For cases
+      where Dancer is being accessed directly, or the proxy passes on this
+      header, it's nice to see it.  (David Precious)
+
+    [ DOCUMENTATION ]
+    * Cookbook links to canonical documentation of keywords in Dancer.pm, so
+      readers encountering a new keyword can easily see the docs for it
+      (David Precious)
+    * Docs for debug/warning/error link to Dancer::Logger for details on how to
+    * control where logs go (David Precious)
 
 1.3071     26.07.2011
     ** Security release based on 1.3070 **
