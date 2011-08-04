@@ -633,6 +633,8 @@ Alias for the C<start> keyword.
 Logs a message of debug level:
 
     debug "This is a debug message";
+    
+See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head2 dirname
 
@@ -653,6 +655,8 @@ Given a namespace, returns the current engine object
 Logs a message of error level:
 
     error "This is an error message";
+
+See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head2 false
 
@@ -1552,7 +1556,11 @@ chain:
 
 =head2 warning
 
-Logs a warning message through the current logger engine.
+Logs a warning message through the current logger engine:
+
+    warning "This is a warning";
+
+See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head1 AUTHOR
 
