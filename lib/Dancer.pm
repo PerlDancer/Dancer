@@ -1241,7 +1241,7 @@ the path of the file must be relative to the B<public> directory unless you use
 the C<system_path> option (see below).
 
     get '/download/:file' => sub {
-        send_file(params->{file});
+        return send_file(params->{file});
     }
 
 The content-type will be set depending on the current MIME types definition
@@ -1250,24 +1250,24 @@ The content-type will be set depending on the current MIME types definition
 If your filename does not have an extension, or you need to force a
 specific mime type, you can pass it to C<send_file> as follows:
 
-    send_file(params->{file}, content_type => 'image/png');
+    return send_file(params->{file}, content_type => 'image/png');
 
 Also, you can use your aliases or file extension names on
 C<content_type>, like this:
 
-    send_file(params->{file}, content_type => 'png');
+    return send_file(params->{file}, content_type => 'png');
 
 For files outside your B<public> folder, you can use the C<system_path>
 switch. Just bear in mind that its use needs caution as it can be
 dangerous.
 
-   send_file('/etc/passwd', system_path => 1);
+   return send_file('/etc/passwd', system_path => 1);
 
 If you have your data in a scalar variable, C<send_file> can be useful
 as well. Pass a reference to that scalar, and C<send_file> will behave
 as if there was a file with that contents:
 
-   send_file( \$data, content_type => 'image/png' );
+   return send_file( \$data, content_type => 'image/png' );
 
 Note that Dancer is unable to guess the content type from the data
 contents. Therefore you might need to set the C<content_type>
@@ -1275,8 +1275,11 @@ properly. For this kind of usage an attribute named C<filename> can be
 useful.  It is used as the Content-Disposition header, to hint the
 brower about the filename it should use.
 
-   send_file( \$data, content_type => 'image/png'
-                      filename     => 'onion.png' );
+   return send_file( \$data, content_type => 'image/png'
+                             filename     => 'onion.png' );
+
+Note that you should always use C<return send_file ...> to stop execution of
+your route handler at that point.
 
 =head2 set
 
