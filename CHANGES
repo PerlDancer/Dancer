@@ -18,6 +18,9 @@ ${{NEXT}}
       control where logs go (David Precious)
     * Document import_warnings option, and mention it & link to that
       documentation in opportune places.
+    * Document that 'get' also creates a route for 'HEAD' requests
+      (David Precious, prompted by Matt S Trout)
+
 
 1.3071     26.07.2011
     ** Security release based on 1.3070 **
