@@ -20,6 +20,7 @@ ${{NEXT}}
       documentation in opportune places.
     * Document that 'get' also creates a route for 'HEAD' requests
       (David Precious, prompted by Matt S Trout)
+    * Extend request() keyword docs with examples (David Precious)
 
 
 1.3071     26.07.2011
