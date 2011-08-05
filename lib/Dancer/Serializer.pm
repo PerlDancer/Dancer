@@ -118,13 +118,6 @@ serializers.
 
 =head1 USAGE
 
-=head2 Default engine
-
-The default serializer used by Dancer::Serializer is
-L<Dancer::Serializer::JSON>.
-You can choose another serializer by setting the B<serializer> configuration
-variable.
-
 =head2 Configuration
 
 The B<serializer> configuration variable tells Dancer which serializer to use
