@@ -1217,6 +1217,14 @@ instance, to use a custom layout:
 
 Returns a L<Dancer::Request> object representing the current request.
 
+See the L<Dancer::Request> documention for the methods you can call, for
+example:
+
+    request->referer;         # value of the HTTP referer header
+    request->remote_address;  # user's IP address
+    request->user_agent;      # User-Agent header value
+
+
 =head2 send_error
 
 Returns a HTTP error.  By default the HTTP code returned is 500:
