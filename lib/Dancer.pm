@@ -756,6 +756,8 @@ Defines a route for HTTP B<GET> requests to the given path:
     }
 
 Note that a route to match B<HEAD> requests is automatically created as well.
+
+
 =head2 halt
 
 Sets a response object with the content given.
