@@ -247,7 +247,7 @@ sub response_headers_are_deeply {
 # Sort arrayref of headers (turn it into a list of arrayrefs, sort by the header
 # & value, then turn it back into an arrayref)
 sub _sort_headers {
-    my @originalheaders = @{ shift() };
+    my @originalheaders = @{ shift() }; # take a copy we can modify
     my @headerpairs;
     while (my ($header, $value) = splice @originalheaders, 0, 2) {
         push @headerpairs, [ $header, $value ];
