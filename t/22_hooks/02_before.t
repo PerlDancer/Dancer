@@ -64,6 +64,7 @@ response_headers_are_deeply [ GET => '/redirect_from' ],
   [
     'Location'     => 'http://localhost/redirect_to',
     'Content-Type' => 'text/xhtml',
+    'Server'       => "Perl Dancer ${Dancer::VERSION}",
     'X-Powered-By' => "Perl Dancer ${Dancer::VERSION}",
   ];
 
