@@ -1097,7 +1097,7 @@ path exists.
 
 Defines a route for HTTP B<POST> requests to the given URL:
 
-    POST '/' => sub {
+    post '/' => sub {
         return "Hello world";
     }
 
