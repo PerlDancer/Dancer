@@ -342,7 +342,7 @@ sub _send_file {
     }
     if (exists($options{filename})) {
         $resp->push_header('Content-Disposition' => 
-            "attachment;filename=\"$options{filename}\""
+            "attachment; filename=\"$options{filename}\""
         );
     }
     return $resp if $resp;
