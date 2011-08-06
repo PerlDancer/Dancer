@@ -45,7 +45,11 @@ is_deeply( [split(/\n/, $content)], [1,2,3], 'send_file worked as expected');
 $resp = dancer_response(GET => '/catheader/file.txt');
 %headers = @{$resp->headers_to_array};
 is $headers{FooHeader}, 42, 'FooHeader is kept';
-is($headers{'Content-Disposition'}, 'attachment; filename=header.foo', 'filename is ok');
+is(
+    $headers{'Content-Disposition'}, 
+    'attachment; filename="header.foo"', 
+    'Content-Disposition header contains expected filename'
+);
 
 my $png = dancer_response(GET => '/as_png/file.txt');
 ok(defined($png), "route handler found for /as_png/file.txt");
@@ -68,6 +72,10 @@ $resp = dancer_response(GET => '/scalar/file');
 ok(defined($resp), "route handler found for /scalar/fil");
 %headers = @{$resp->headers_to_array};
 is($headers{'Content-Type'}, 'text/plain', 'mime_type is ok');
-is($headers{'Content-Disposition'}, 'attachment; filename=foo.bar', 'filename is ok');
+is(
+    $headers{'Content-Disposition'}, 
+    'attachment; filename="foo.bar"',
+    'Content-Disposition hedaer contains expected filename'
+);
 $content = $resp->{content};
 like($content, qr/FOObar/, "content is ok");
