@@ -496,7 +496,7 @@ This example configuration uses TCP/IP:
 
 Launch your application:
 
-    plackup -s FCGI --port 8080 bin/app.pl
+    plackup -s FCGI --port 5000 bin/app.pl
 
 This example configuration uses a socket:
 
