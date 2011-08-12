@@ -29,16 +29,6 @@ Dancer::Script->attributes(
 #
 
 
-# TODO fix tab / space
-# TODO remove whitespace at end of line
-# TODO switch to Dancer::Object
-# TODO when you have $self->{foo}, create an attribute foo with Dancer::Object instead
-#      and then you'll be able to do $self->foo: it's cleaner and easier to read
-Dancer::Script->attributes(
-    qw(appname root_path check_version dancer_app_dir dancer_script
-      dancer_version do_check_dancer_version do_overwrite_all lib_file lib_path)
-);
-
 # subs
 sub init {
     my $class = shift;
@@ -89,7 +79,7 @@ sub _parse_opts {
 
 # TODO no need to capitalize it there: store this var inside $self->{perl_interpreter}
 # or something similar. Even better, use a Dancer::Object attribute
-    my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
+    my $perl_interpreter = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 
     pod2usage(-verbose => 1) if $help;
     pod2usage(-verbose => 1) if not defined $name;
@@ -287,10 +277,6 @@ sub _app_tree {
         lib             => {$self->lib_path => {$self->lib_file => FILE,}},
         "bin"          => {"+app.pl" => FILE,},
         "config.yml"   => FILE,
-        "environments" => {
-            "development.yml" => FILE,
-            "production.yml"  => FILE,
-        },
         "views" => {
             "layouts"  => {"main.tt" => FILE,},
             "index.tt" => FILE,
@@ -298,33 +284,6 @@ sub _app_tree {
         "public" => {
             "404.html"       => FILE,
             "500.html"       => FILE,
-            "css"            => {
-                "style.css" => FILE,
-                "error.css" => FILE,
-            },
-            "images" => {
-                "perldancer-bg.jpg" => sub {
-                    $self->_write_bg(
-                        catfile(
-                            $self->dancer_app_dir, 'public',
-                            'images',              'perldancer-bg.jpg'
-                        )
-                    );
-                },
-                "perldancer.jpg" => sub {
-                    $self->_write_logo(
-                        catfile(
-                            $self->dancer_app_dir, 'public',
-                            'images',              'perldancer.jpg'
-                        )
-                    );
-                },
-            },
-            "javascripts" => {"jquery.js" => FILE,},
-            "favicon.ico" => sub {
-                $self->_write_favicon(
-                    catfile($self->dancer_app_dir, 'public', 'favicon.ico'));
-            },
         },
         "t" => {
             "001_base.t"        => FILE,
@@ -666,23 +625,9 @@ Powered by <a href="http://perldancer.org/">Dancer</a> <% dancer_version %>
 </html>
 ',
 
-        "dispatch.cgi" => "#!/usr/bin/env perl
-use Dancer::Script;
-
-Dancer::Script->run_scaffold('cgi');
-
-",
-
-
-        "dispatch.fcgi" => "#!/usr/bin/env perl 
-use Dancer::Script;
-
-Dancer::Script->run_scaffold('fcgi');
-",
-
         "app.pl" =>
 
-          "#!/usr/bin/perl
+          "#!/usr/bin/env perl 
 use Dancer;
 use $appname;
 dance;
@@ -702,272 +647,9 @@ get '/' => sub {
 true;
 ",
 
-        'style.css' => '
-body {
-margin: 0;
-margin-bottom: 25px;
-padding: 0;
-background-color: #ddd;
-background-image: url("/images/perldancer-bg.jpg");
-background-repeat: no-repeat;
-background-position: top left;
-
-font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
-font-size: 13px;
-color: #333;
-}
-
-h1 {
-font-size: 28px;
-color: #000;
-}
-
-a  {color: #03c}
-a:hover {
-background-color: #03c;
-color: white;
-text-decoration: none;
-}
-
-#page {
-background-color: #ddd;
-width: 750px;
-margin: auto;
-margin-left: auto;
-padding-left: 0px;
-margin-right: auto;
-}
-
-#content {
-background-color: white;
-border: 3px solid #aaa;
-border-top: none;
-padding: 25px;
-width: 500px;
-}
-
-#sidebar {
-float: right;
-width: 175px;
-}
-
-#header, #about, #getting-started {
-padding-left: 75px;
-padding-right: 30px;
-}
-
-
-#header {
-background-image: url("/images/perldancer.jpg");
-background-repeat: no-repeat;
-background-position: top left;
-height: 64px;
-}
-#header h1, #header h2 {margin: 0}
-#header h2 {
-color: #888;
-font-weight: normal;
-font-size: 16px;
-}
-
-#about h3 {
-margin: 0;
-margin-bottom: 10px;
-font-size: 14px;
-}
-
-#about-content {
-background-color: #ffd;
-border: 1px solid #fc0;
-margin-left: -11px;
-}
-#about-content table {
-margin-top: 10px;
-margin-bottom: 10px;
-font-size: 11px;
-border-collapse: collapse;
-}
-#about-content td {
-padding: 10px;
-padding-top: 3px;
-padding-bottom: 3px;
-}
-#about-content td.name  {color: #555}
-#about-content td.value {color: #000}
-
-#about-content.failure {
-background-color: #fcc;
-border: 1px solid #f00;
-}
-#about-content.failure p {
-margin: 0;
-padding: 10px;
-}
-
-#getting-started {
-border-top: 1px solid #ccc;
-margin-top: 25px;
-padding-top: 15px;
-}
-#getting-started h1 {
-margin: 0;
-font-size: 20px;
-}
-#getting-started h2 {
-margin: 0;
-font-size: 14px;
-font-weight: normal;
-color: #333;
-margin-bottom: 25px;
-}
-#getting-started ol {
-margin-left: 0;
-padding-left: 0;
-}
-#getting-started li {
-font-size: 18px;
-color: #888;
-margin-bottom: 25px;
-}
-#getting-started li h2 {
-margin: 0;
-font-weight: normal;
-font-size: 18px;
-color: #333;
-}
-#getting-started li p {
-color: #555;
-font-size: 13px;
-}
-
-#search {
-margin: 0;
-padding-top: 10px;
-padding-bottom: 10px;
-font-size: 11px;
-}
-#search input {
-font-size: 11px;
-margin: 2px;
-}
-#search-text {width: 170px}
-
-#sidebar ul {
-margin-left: 0;
-padding-left: 0;
-}
-#sidebar ul h3 {
-margin-top: 25px;
-font-size: 16px;
-padding-bottom: 10px;
-border-bottom: 1px solid #ccc;
-}
-#sidebar li {
-list-style-type: none;
-}
-#sidebar ul.links li {
-margin-bottom: 5px;
-}
-
-h1, h2, h3, h4, h5 {
-font-family: sans-serif;
-margin: 1.2em 0 0.6em 0;
-}
-
-p {
-line-height: 1.5em;
-margin: 1.6em 0;
-}
-
-code, tt {
-    font-family: \'Andale Mono\', Monaco, \'Liberation Mono\', \'Bitstream Vera Sans Mono\', \'DejaVu Sans Mono\', monospace;
-}
-
-#footer {
-clear: both;
-padding-top: 2em;
-text-align: center;
-padding-right: 160px;
-font-family: sans-serif;
-font-size: 10px;
-}
-',
+# style.css
 
 # error.css
-        "error.css" =>
-
-          "body {
-    font-family: Lucida,sans-serif;
-}
-
-h1 {
-    color: #AA0000;
-    border-bottom: 1px solid #444;
-}
-
-h2 { color: #444; }
-
-pre {
-    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
-    font-size: 12px;
-    border-left: 2px solid #777;
-    padding-left: 1em;
-}
-
-footer {
-    font-size: 10px;
-}
-
-span.key {
-    color: #449;
-    font-weight: bold;
-    width: 120px;
-    display: inline;
-}
-
-span.value {
-    color: #494;
-}
-
-/* these are for the message boxes */
-
-pre.content {
-    background-color: #eee;
-    color: #000;
-    padding: 1em;
-    margin: 0;
-    border: 1px solid #aaa;
-    border-top: 0;
-    margin-bottom: 1em;
-}
-
-div.title {
-    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
-    font-size: 12px;
-    background-color: #aaa;
-    color: #444;
-    font-weight: bold;
-    padding: 3px;
-    padding-left: 10px;
-}
-
-pre.content span.nu {
-    color: #889;
-    margin-right: 10px;
-}
-
-pre.error {
-    background: #334;
-    color: #ccd;
-    padding: 1em;
-    border-top: 1px solid #000;
-    border-left: 1px solid #000;
-    border-right: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-}
-
-",
-
         "404.html" => Dancer::Renderer->html_page(
             "Error 404",
             '<h2>Page Not Found</h2><p>Sorry, this is the void.</p>', 'error'
