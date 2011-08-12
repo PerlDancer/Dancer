@@ -328,7 +328,6 @@ sub _send_file {
     if (ref($path) eq "SCALAR") {
         # send_data
         $resp = Dancer::SharedData->response() || Dancer::Response->new();
-        $resp->status(200);
         $resp->header('Content-Type' => exists($options{content_type}) ?
                                         $options{content_type} : Dancer::MIME->default());
         $resp->content($$path);

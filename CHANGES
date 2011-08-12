@@ -2,6 +2,8 @@ ${{NEXT}}
 
     [ BUG FIXES ]
     * Fix prefix behavior with load_app (alexrj)
+    * send_file() shouldn't clobber previously-set response status
+      (David Precious, reported by tylerdu - thanks!)
 
     [ ENHANCEMENTS ]
     * send_file can send data (pass a reference to a scalar), and can
