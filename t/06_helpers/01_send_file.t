@@ -8,7 +8,7 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 16;
+plan tests => 20;
 
 get '/cat/:file' => sub {
     send_file(params->{file});
@@ -30,6 +30,11 @@ get '/as_png/:file' => sub {
 
 get '/absolute/:file' => sub {
     send_file(path(dirname(__FILE__), "routes.pl"), system_path => 1);
+};
+
+get '/custom_status' => sub {
+    status 'not_found';
+    send_file('file.txt');
 };
 
 my $resp = dancer_response(GET => '/cat/file.txt');
@@ -79,3 +84,14 @@ is(
 );
 $content = $resp->{content};
 like($content, qr/FOObar/, "content is ok");
+
+$resp = undef; # just to be sure
+$resp = dancer_response(GET => '/custom_status');
+ok(defined($resp), "route handler found for /custom_status");
+is(  $resp->{status},  404,       "Status 404 for /custom_status");
+is(ref($resp->{content}), 'GLOB', "content is a filehandle");
+$content = read_glob_content($resp->{content});
+$content =~ s/\r//g;
+is_deeply( [split(/\n/, $content)], [1,2,3], 'send_file worked as expected');
+
+
