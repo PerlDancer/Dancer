@@ -1,0 +1,13 @@
+^\.git\/
+maint
+^tags$
+.last_cover_stats
+Makefile$
+^blib
+^pm_to_blib
+^.*.bak
+^.*.old
+^t.*sessions
+^cover_db
+^.*\.log
+^.*\.swp$
