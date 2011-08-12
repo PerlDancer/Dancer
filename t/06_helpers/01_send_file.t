@@ -74,7 +74,7 @@ like($content, qr/'foo loaded'/, "content is ok");
 
 $resp = undef; # just to be sure
 $resp = dancer_response(GET => '/scalar/file');
-ok(defined($resp), "route handler found for /scalar/fil");
+ok(defined($resp), "route handler found for /scalar/file");
 %headers = @{$resp->headers_to_array};
 is($headers{'Content-Type'}, 'text/plain', 'mime_type is ok');
 is(
