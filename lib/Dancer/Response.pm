@@ -13,7 +13,7 @@ use HTTP::Headers;
 use Dancer::SharedData;
 use Dancer::Exception qw(:all);
 
-__PACKAGE__->attributes(qw/content pass/);
+__PACKAGE__->attributes(qw/content pass streamed/);
 
 # constructor
 sub init {
