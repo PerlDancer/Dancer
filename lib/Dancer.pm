@@ -316,9 +316,16 @@ sub _session {
 
 sub _send_file {
     my ($path, %options) = @_;
+    my $env = Dancer::SharedData->request->env;
 
     my $request = Dancer::Request->new_for_request('GET' => $path);
     Dancer::SharedData->request($request);
+
+    # if you asked for streaming but it's not supported in PSGI
+    if ( $options{'streaming'} && ! $env->{'psgi.streaming'} ) {
+        # TODO: throw a fit (AKA "exception") or a Dancer::Error (or croak)?
+        croak 'Sorry, streaming is not supported on this server.';
+    }
 
     if (exists($options{content_type})) {
         $request->content_type($options{content_type});
@@ -339,11 +346,48 @@ sub _send_file {
             $resp = Dancer::Renderer->get_file_response();
         }
     }
+
     if (exists($options{filename})) {
         $resp->push_header('Content-Disposition' => 
             "attachment; filename=\"$options{filename}\""
         );
     }
+
+    if ( $options{'streaming'} ) {
+        # handle streaming
+        $resp->streamed( sub {
+            my ( $status, $headers ) = @_;
+
+            return sub {
+                my $respond = shift;
+                exists $options{'override_cb'}
+                    and return $options{'override_cb'}->( $respond, $resp );
+
+                # get respond callback and set headers, get writer in return
+                my $writer  = $respond->( [
+                    $status,
+                    $headers,
+                ] );
+
+                # get content from original response
+                my $content = $resp->content;
+
+                exists $options{'around_cb'}
+                    and return $options{'around_cb'}->($content);
+
+                while ( my $line = <$content> ) {
+                    exists $options{'before_cb'}
+                        and $options{'before_cb'}->($line);
+
+                    $writer->write($line);
+
+                    exists $options{'after_cb'}
+                        and $options{'after_cb'}->($line);
+                }
+            };
+        } );
+    }
+
     return $resp if $resp;
 
     Dancer::Error->new(
