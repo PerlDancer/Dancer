@@ -364,7 +364,7 @@ sub _send_file {
                     and return $options{'override_cb'}->( $respond, $resp );
 
                 # get respond callback and set headers, get writer in return
-                my $writer  = $respond->( [
+                my $writer = $respond->( [
                     $status,
                     $headers,
                 ] );
@@ -1295,6 +1295,45 @@ the C<system_path> option (see below).
 
     get '/download/:file' => sub {
         return send_file(params->{file});
+    }
+
+Send file supports streaming possibility using PSGI streaming. The server should
+support it but normal streaming is supported on most, if not all.
+
+    get '/download/:file' => sub {
+        return send_file( params->{file}, streaming => 1 );
+    }
+
+There are several callbacks available when using streaming:
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            before_cb => sub { my $line = shift; ... },
+            after_cb  => sub { my $line = shift; ... },
+        );
+    }
+
+You can use C<around_cb> to all get all the content and decide what to do with
+it or use C<override_cb> to control the entire streaming callback request:
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            around_cb => sub { my $content = shift; ... } # filehandle
+        );
+    }
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            override_cb => sub {
+                my ( $respond, $response ) = @_;
+
+                my $writer = $respond->( [ $newstatus, $newheaders ] );
+                $writer->write("some line");
+            },
+        );
     }
 
 The content-type will be set depending on the current MIME types definition
