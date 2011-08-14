@@ -375,14 +375,18 @@ sub _send_file {
                 exists $options{'around_cb'}
                     and return $options{'around_cb'}->($content);
 
-                while ( my $line = <$content> ) {
-                    exists $options{'before_cb'}
-                        and $options{'before_cb'}->($line);
+                if ( ref $content ) {
+                    while ( my $line = <$content> ) {
+                        exists $options{'before_cb'}
+                            and $options{'before_cb'}->($line);
 
-                    $writer->write($line);
+                        $writer->write($line);
 
-                    exists $options{'after_cb'}
-                        and $options{'after_cb'}->($line);
+                        exists $options{'after_cb'}
+                            and $options{'after_cb'}->($line);
+                    }
+                } else {
+                    $writer->write($content);
                 }
             };
         } );
