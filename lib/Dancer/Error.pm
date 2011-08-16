@@ -27,22 +27,20 @@ sub init {
         title => 'Error ' . $self->code,
         type  => 'runtime error',
     );
-
-    $self->has_serializer
-      and return;
-
-    my $html_output = "<h2>" . $self->{type} . "</h2>";
-    $html_output .= $self->backtrace;
-    $html_output .= $self->environment;
-
-    $self->{message} = $html_output;
 }
 
-sub has_serializer { setting('serializer') }
 sub code           { $_[0]->{code} }
 sub title          { $_[0]->{title} }
 sub message        { $_[0]->{message} }
 sub exception      { $_[0]->{exception} }
+sub client_error   { $_[0]->{client_error} }
+
+sub debug_message {
+    my $self = shift;
+    return "<h2>" . $self->{type} . "</h2>"
+        . $self->backtrace
+        . $self->environment;
+}
 
 sub backtrace {
     my ($self) = @_;
@@ -187,7 +185,7 @@ sub _render_serialized {
     ref $message eq 'HASH' && defined $self->exception
       and $message->{exception} = $self->exception;
 
-    if (setting('show_errors')) {
+    if ($self->client_error || setting('show_errors')) {
         Dancer::Response->new(
             status  => $self->code,
             content => Dancer::Serializer->engine->serialize($message),
@@ -215,7 +213,8 @@ sub _render_html {
         my $template_name = setting("error_template");
         my $ops = {
                    title => $self->title,
-                   message => $self->message,
+                   message_raw => $self->message,
+                   message => $self->debug_message,
                    code => $self->code,
                    defined $self->exception ? ( exception => $self->exception ) : (),
                   };
@@ -225,12 +224,13 @@ sub _render_html {
             headers => ['Content-Type' => 'text/html'],
             content => $content);
     } else {
+        my $message = setting('show_errors') ? $self->debug_message : $self->message;
         return Dancer::Response->new(
             status  => $self->code,
             headers => ['Content-Type' => 'text/html'],
             content =>
-                Dancer::Renderer->html_page($self->title, $self->message, 'error')
-        ) if setting('show_errors');
+                Dancer::Renderer->html_page($self->title, $message, 'error')
+        ) if $self->client_error || setting('show_errors');
 
         return Dancer::Renderer->render_error($self->code);
     }
@@ -295,7 +295,8 @@ Dancer::Error - class for representing fatal errors
 
     my $error = Dancer::Error->new(
         code    => 404,
-        message => "No such file: `$path'"
+        message => "No such file: `$path'",
+        client_error => 1,
     );
 
     Dancer::Response->set($error->render);
@@ -328,6 +329,13 @@ The message of the error page.
 
 This is only an attribute getter, you'll have to set it at C<new>.
 
+=head2 client_error
+
+True if the error is a client error (visible to the client);
+false if it's a server error.
+
+This is only an attribute getter, you'll have to set it at C<new>.
+
 =head1 METHODS/SUBROUTINES
 
 =head2 new
@@ -349,6 +357,16 @@ The code that caused the error.
 =head3 message
 
 The message that will appear to the user.
+
+=head3 client_error
+
+Whether this is a client error (whose name is visible to the client), or a
+server error (whose name is visible to the client only if show_errors is true).
+
+=head2 debug_message
+
+Computes the debug version of the message, which includes the backtrace and
+runtime environment, in HTML.
 
 =head2 backtrace
 

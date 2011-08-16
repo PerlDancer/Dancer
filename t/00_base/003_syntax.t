@@ -43,6 +43,7 @@ my @keywords = qw(
     request
     send_file
     send_error
+    send_client_error
     set
     setting
     set_cookie
