@@ -809,7 +809,7 @@ Do the same as C<header>, but allow for multiple headers with the same name.
 
 Adds a hook at some position. For example :
 
-  hook before_serialization => sub {
+  hook before_serializer => sub {
     my $response = shift;
     $response->content->{generated_at} = localtime();
   };
@@ -907,7 +907,7 @@ tokens. The second is a ScalarRef representing the content of the template.
     ...
   };
 
-=item before_serialization
+=item before_serializer
 
 This hook receives as argument a L<Dancer::Response> object.
 
