@@ -563,7 +563,7 @@ tokens that will be inserted into the template.
 This filter works as the C<before> and C<after> filter.
 
 Now the preferred way for this is to use C<hook>s (namely, the
-C<before_template> one). Check C<hook> documentation bellow.
+C<before_template> one). Check C<hook> documentation below.
 
 =head2 cookies
 
