@@ -46,7 +46,7 @@ WriteMakefile1(
         'HTTP::Body'                 => '1.07', # needed for cleanup()
         'HTTP::Server::Simple::PSGI' => '0.11',
         'MIME::Types'                => '0',
-        'URI'                        => '0',
+        'URI'                        => '1.59',
 
         # core
         'File::Basename' => '0',
