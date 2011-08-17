@@ -55,7 +55,9 @@ sub response_with_headers {
     my $response = Dancer::SharedData->response();
 
     $response->{headers} ||= HTTP::Headers->new;
-    $response->header('X-Powered-By' => "Perl Dancer ${Dancer::VERSION}");
+    my $powered_by = "Perl Dancer " . $Dancer::VERSION;
+    $response->header('X-Powered-By' => $powered_by);
+    $response->header('Server'       => $powered_by);
 
     return $response;
 }
@@ -168,7 +170,6 @@ sub get_file_response {
 
 sub get_file_response_for_path {
     my ($class, $static_file, $status, $mime) = @_;
-    $status ||= 200;
 
     if ( -f $static_file ) {
         Dancer::Factory::Hook->execute_hooks( 'before_file_render',
@@ -177,7 +178,7 @@ sub get_file_response_for_path {
         my $fh = open_file( '<', $static_file );
         binmode $fh;
         my $response = Dancer::SharedData->response() || Dancer::Response->new();
-        $response->status($status);
+        $response->status($status) if ($status);
         $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
                                              _get_mime_type($static_file)));
         $response->content($fh);

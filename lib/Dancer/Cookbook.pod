@@ -39,7 +39,9 @@ route specification, whose value is made available through C<params>
 - more on that later.
 
 Note that you don't need to use the C<strict> and C<warnings> pragma, they are
-already loaded by Dancer.
+already loaded by Dancer.  (If you don't want the C<warnings> pragma (which can
+lead to undesired warnings about use of undef values, for example), then set the
+L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
 
 
 
@@ -124,16 +126,17 @@ requests.
 
 =head2 Retrieving request parameters
 
-The C<params> method returns a hashref of request parameters; these will be
-parameters supplied on the query string, within the path itself (with named
-placeholders), and, for HTTTP POST requests, the content of the POST body.
+The L<params|Dancer/params> keyword returns a hashref of request parameters; 
+these will be parameters supplied on the query string, within the path itself 
+(with named placeholders), and, for HTTTP POST requests, the content of the 
+POST body.
 
 
 
 =head2 Named parameters in route path declarations
 
 As seen above, you can use C<:somename> in a route's path to capture part of the
-path; this will become available by calling C<params>.
+path; this will become available by calling L<params|Dancer/params>.
 
 So, for a web app where you want to display information on a company, you might
 use something like:
@@ -148,7 +151,7 @@ use something like:
 =head2 Wildcard path matching and splat
 
 You can also declare wildcards in a path, and retrieve the values they matched
-with C<splat>:
+with the L<splat|Dancer/splat> keyword:
 
     get '/*/*' => sub {
         my ($action, $id) = splat;
@@ -166,8 +169,8 @@ with C<splat>:
 
 =head2 Before filters - processed before a request
 
-A C<before> filter declares code which should be handled before a request is
-passed to the appropriate route.
+A L<before|Dancer/before> filter declares code which should be handled before 
+a request is passed to the appropriate route.
 
     before sub {
         var note => 'Hi there';
@@ -184,7 +187,7 @@ will later be available within the route handler, then amends the path of the
 request to C</foo/oversee>; this means that, whatever path was requested, it
 will be treated as though the path requested was C</foo/oversee>.
 
-
+See also the L<hook|Dancer/hook> hook keyword.
 
 =head2 Default route
 
@@ -331,6 +334,9 @@ L<Dancer::Session::YAML>.  There are other session backends you may wish to use,
 for instance L<Dancer::Session::Memcache>, but the YAML backend is a simple and
 easy to use example which stores session data in a YAML file in sessions).
 
+You can then use the L<session|Dancer/session> keyword to manipulate the
+session:
+
 =head3 Storing data in the session
 
 Storing data in the session is as easy as:
@@ -451,7 +457,8 @@ Returning plain content is all well and good for examples or trivial apps, but
 soon you'll want to use templates to maintain separation between your code and
 your content.  Dancer makes this easy.
 
-
+Your route handlers can use the L<template|Dancer/template> keyword to render
+templates.
 
 =head3 Views
 
@@ -479,11 +486,11 @@ by using the following in your config file:
 
 All views must have a '.tt' extension. This may change in the future.
 
-In order to render a view, just call the C<template> keyword at the end of the
-action by giving the view name and the HASHREF of tokens to interpolate in the
-view (note that for convenience, the request, session, params and vars are
-automatically accessible in the view, named request, session, params and vars) - 
-for example:
+In order to render a view, just call the C<template|Dancer/template> keyword at
+the end of the action by giving the view name and the HASHREF of tokens to
+interpolate in the view (note that for convenience, the request, session, params
+and vars are automatically accessible in the view, named C<request>, C<session>,
+C<params> and C<vars>) - for example:
 
     before => sub { var time => localtime() };
 
@@ -771,7 +778,8 @@ information (file and line).
 
 =head3 Logging your own messages
 
-Just call  C<debug>, C<warning> or C<error> with your message:
+Just call  L<debug|Dancer/debug>, L<warning|Dancer/warning> or 
+L<error|Dancer/error> with your message:
 
     debug "This is a debug message from my app.";
 
@@ -819,7 +827,8 @@ It's possible to let the client choose which serializer he want to use. For
 this, use the B<mutable> serializer, and an appropriate serializer will be
 chosen from the B<Content-Type> header.
 
-It's also possible to return custom error, using the C<send_error> function.
+It's also possible to return a custom error, using the
+L<send_error|Dancer/send_error> keyword..
 When you don't use a serializer, the C<send_error> function will take a string
 as first parameter (the message), and an optional HTTP code. When using a
 serializer, the message can be a string, an arrayref or a hashref:

@@ -52,6 +52,7 @@ response_content_is [ GET => '/go_to_post/' ] => 'post:foo,bar';
 my $expected_headers = [
     'Content-Length' => 5,
     'Content-Type' => 'text/html',
+    'Server'       => "Perl Dancer ${Dancer::VERSION}",
     'X-Powered-By' => "Perl Dancer ${Dancer::VERSION}",
 ];
 

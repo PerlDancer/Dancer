@@ -35,6 +35,12 @@ Dancer Authentication, Security and Role-Based Access Control Framework.
 Provides easy email-sending powered by Email::Send - simply call the C<email>
 keyword.  Email sending settings can be taken from your app's config.
 
+=item L<Dancer::Plugin::SMS>
+
+Send SMS text messages to mobile phones from your Dancer app, using any service
+supported by L<SMS::Send>.
+
+
 =item L<Dancer::Plugin::Ajax>
 
 Provides easy way to add Ajax route handlers.
@@ -74,6 +80,43 @@ Cache page responses or individual items of data with memcached for performance.
 
 Quickly determine whether the client is a mobile browser, in order to offer a
 simplified layout, or otherwise customise features.
+
+=item L<Dancer::Plugin::NYTProf>
+
+Provides dead-simple profiling of your app using L<Devel::NYTProf> - enables
+profiling for each request individually, serves up a list of profiling runs, and
+generates & sends the HTML reports produced by C<nytprofhtml>.
+
+=item L<Dancer::Plugin::Bcypt>
+
+Provides simple effective password hashing and validation using Bcrypt.
+
+=item L<Dancer::Plugin::Cache::CHI>
+
+Provides caching for generated pages and/or arbitrary data.  Uses L<CHI>, so is
+backend-agnostic - caching can be done in memory, to files, using Memcache, in a
+database, or any other method for which there is a L<CHI::Driver> module.
+
+=item L<Dancer::Plugin::Thumbnail>
+
+Easy thumbnail generation using L<GD>.
+
+=item L<Dancer::Plugin::Captcha::SecurityImage>
+
+Easy CAPTCHA image generation and validation, using L<GD>.
+
+=item L<Dancer::Plugin::Facebook>
+
+Easily work with Facebook's Graph API from your Perl Dancer app.  Uses
+L<Facebook::Graph>.
+
+=item L<Dancer::PLugin::Redis>
+
+Easy L<Redis> database connections, based upon L<Dancer::Plugin::Database>.
+
+=item L<Dancer::Plugin::XML::RSS>
+
+Easy XML RSS creation and consumption.
 
 =back
 

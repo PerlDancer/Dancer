@@ -1,5 +1,37 @@
-1.3071     26.07.2011
+{{$NEXT}}
 
+1.3079_01   17.08.2011
+
+    [ BUG FIXES ]
+    * Fix prefix behavior with load_app (alexrj)
+    * send_file() shouldn't clobber previously-set response status
+      (David Precious, reported by tylerdu - thanks!)
+    * Depend on URI 1.59 - Fixes problems when redirecting with
+      UTF-8 strings (Alberto Simões)
+    * Fix before_serializer POD fix (Yanick Champoux)
+
+    [ ENHANCEMENTS ]
+    * send_file can send data (pass a reference to a scalar), and can
+      specify a content-disposition filename. (Alberto Simões)
+    * Set 'Server' HTTP response header as well as 'X-Powered-By'.  For cases
+      where Dancer is being accessed directly, or the proxy passes on this
+      header, it's nice to see it.  (David Precious)
+
+    [ DOCUMENTATION ]
+    * Cookbook links to canonical documentation of keywords in Dancer.pm, so
+      readers encountering a new keyword can easily see the docs for it
+      (David Precious)
+    * Docs for debug/warning/error link to Dancer::Logger for details on how to
+      control where logs go (David Precious)
+    * Document import_warnings option, and mention it & link to that
+      documentation in opportune places.
+    * Document that 'get' also creates a route for 'HEAD' requests
+      (David Precious, prompted by Matt S Trout)
+    * Extend request() keyword docs with examples (David Precious)
+    * Correct port in Lighty/FCGI example in Dancer::Deployment
+      (David Precious, thanks to pwfraley in Issue 621)
+
+1.3071     26.07.2011
     ** Security release based on 1.3070 **
 
     [ SECURITY ]

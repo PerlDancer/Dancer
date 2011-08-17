@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3071';
+our $VERSION   = '1.3079_01';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -224,7 +224,7 @@ sub _load_app {
     my $app = Dancer::App->set_running_app($app_name);
 
     # Application options
-    $app->prefix($options{prefix})     if $options{prefix};
+    $app->set_app_prefix($options{prefix}) if $options{prefix};
     $app->settings($options{settings}) if $options{settings};
 
     # load the application
@@ -325,10 +325,24 @@ sub _send_file {
     }
 
     my $resp;
-    if ($options{system_path} && -f $path) {
-        $resp = Dancer::Renderer->get_file_response_for_path($path);
+    if (ref($path) eq "SCALAR") {
+        # send_data
+        $resp = Dancer::SharedData->response() || Dancer::Response->new();
+        $resp->header('Content-Type' => exists($options{content_type}) ?
+                                        $options{content_type} : Dancer::MIME->default());
+        $resp->content($$path);
     } else {
-        $resp = Dancer::Renderer->get_file_response();
+        # real send_file
+        if ($options{system_path} && -f $path) {
+            $resp = Dancer::Renderer->get_file_response_for_path($path);
+        } else {
+            $resp = Dancer::Renderer->get_file_response();
+        }
+    }
+    if (exists($options{filename})) {
+        $resp->push_header('Content-Disposition' => 
+            "attachment; filename=\"$options{filename}\""
+        );
     }
     return $resp if $resp;
 
@@ -469,6 +483,11 @@ This is useful when you want to use your Dancer application from a script.
     use Dancer ':script';
     MyApp::schema('DBSchema')->deploy();
 
+By default, the L<warnings> pragma will also be exported, meaning your
+app/script will be running under C<use warnings>.  If you do not want this, set
+the L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
+
+
 =head1 FUNCTIONS
 
 =head2 after
@@ -544,7 +563,7 @@ tokens that will be inserted into the template.
 This filter works as the C<before> and C<after> filter.
 
 Now the preferred way for this is to use C<hook>s (namely, the
-C<before_template> one). Check C<hook> documentation bellow.
+C<before_template> one). Check C<hook> documentation below.
 
 =head2 cookies
 
@@ -620,6 +639,8 @@ Alias for the C<start> keyword.
 Logs a message of debug level:
 
     debug "This is a debug message";
+    
+See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head2 dirname
 
@@ -640,6 +661,8 @@ Given a namespace, returns the current engine object
 Logs a message of error level:
 
     error "This is an error message";
+
+See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head2 false
 
@@ -733,6 +756,9 @@ Defines a route for HTTP B<GET> requests to the given path:
         return "Hello world";
     }
 
+Note that a route to match B<HEAD> requests is automatically created as well.
+
+
 =head2 halt
 
 Sets a response object with the content given.
@@ -783,11 +809,16 @@ Do the same as C<header>, but allow for multiple headers with the same name.
 
 Adds a hook at some position. For example :
 
-  hook before_serialization => sub {
+  hook before_serializer => sub {
     my $response = shift;
     $response->content->{generated_at} = localtime();
   };
 
+There can be multiple hooks assigned to a given position, and each will be
+executed in order.
+
+(For details on how to register new hooks from within plugins, see
+L<Dancer::Hook>.)
 Supported B<before> hooks (in order of execution):
 
 =over
@@ -876,7 +907,7 @@ tokens. The second is a ScalarRef representing the content of the template.
     ...
   };
 
-=item before_serialization
+=item before_serializer
 
 This hook receives as argument a L<Dancer::Response> object.
 
@@ -1065,7 +1096,7 @@ path exists.
 
 Defines a route for HTTP B<POST> requests to the given URL:
 
-    POST '/' => sub {
+    post '/' => sub {
         return "Hello world";
     }
 
@@ -1187,6 +1218,14 @@ instance, to use a custom layout:
 
 Returns a L<Dancer::Request> object representing the current request.
 
+See the L<Dancer::Request> documention for the methods you can call, for
+example:
+
+    request->referer;         # value of the HTTP referer header
+    request->remote_address;  # user's IP address
+    request->user_agent;      # User-Agent header value
+
+
 =head2 send_error
 
 Returns a HTTP error.  By default the HTTP code returned is 500:
@@ -1211,7 +1250,7 @@ the path of the file must be relative to the B<public> directory unless you use
 the C<system_path> option (see below).
 
     get '/download/:file' => sub {
-        send_file(params->{file});
+        return send_file(params->{file});
     }
 
 The content-type will be set depending on the current MIME types definition
@@ -1220,18 +1259,36 @@ The content-type will be set depending on the current MIME types definition
 If your filename does not have an extension, or you need to force a
 specific mime type, you can pass it to C<send_file> as follows:
 
-    send_file(params->{file}, content_type => 'image/png');
+    return send_file(params->{file}, content_type => 'image/png');
 
 Also, you can use your aliases or file extension names on
 C<content_type>, like this:
 
-    send_file(params->{file}, content_type => 'png');
+    return send_file(params->{file}, content_type => 'png');
 
 For files outside your B<public> folder, you can use the C<system_path>
 switch. Just bear in mind that its use needs caution as it can be
 dangerous.
 
-   send_file('/etc/passwd', system_path => 1);
+   return send_file('/etc/passwd', system_path => 1);
+
+If you have your data in a scalar variable, C<send_file> can be useful
+as well. Pass a reference to that scalar, and C<send_file> will behave
+as if there was a file with that contents:
+
+   return send_file( \$data, content_type => 'image/png' );
+
+Note that Dancer is unable to guess the content type from the data
+contents. Therefore you might need to set the C<content_type>
+properly. For this kind of usage an attribute named C<filename> can be
+useful.  It is used as the Content-Disposition header, to hint the
+brower about the filename it should use.
+
+   return send_file( \$data, content_type => 'image/png'
+                             filename     => 'onion.png' );
+
+Note that you should always use C<return send_file ...> to stop execution of
+your route handler at that point.
 
 =head2 set
 
@@ -1519,7 +1576,11 @@ chain:
 
 =head2 warning
 
-Logs a warning message through the current logger engine.
+Logs a warning message through the current logger engine:
+
+    warning "This is a warning";
+
+See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head1 AUTHOR
 

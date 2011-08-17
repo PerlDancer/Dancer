@@ -420,6 +420,11 @@ a matching template in the directory $views/layout.
 
 =head2 Logging, debugging and error handling
 
+=head3 import_warnings (boolean, default: enabled)
+
+If true, or not present, C<use warnings> will be in effect in scripts in which
+you import C<Dancer>.  Set to a false value to disable this.
+
 =head3 startup_info (boolean)
 
 If set to true, prints a banner at the server start with information such as

@@ -236,8 +236,32 @@ sub response_headers_are_deeply {
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     my $response = dancer_response(expand_req($req));
-    is_deeply($response->headers_to_array, $expected, $test_name);
+    
+    is_deeply(
+        _sort_headers( $response->headers_to_array ),
+        _sort_headers( $expected ),
+        $test_name
+    );
 }
+
+# Sort arrayref of headers (turn it into a list of arrayrefs, sort by the header
+# & value, then turn it back into an arrayref)
+sub _sort_headers {
+    my @originalheaders = @{ shift() }; # take a copy we can modify
+    my @headerpairs;
+    while (my ($header, $value) = splice @originalheaders, 0, 2) {
+        push @headerpairs, [ $header, $value ];
+    }
+
+    # We have an array of arrayrefs holding header => value pairs; sort them by
+    # header then value, and return them flattened back into an arrayref
+    return [
+        map  { @$_ }
+        sort { $a->[0] cmp $b->[0] || $a->[1] cmp $b->[1] }
+        @headerpairs
+    ];
+}
+
 
 sub response_headers_include {
     my ($req, $expected, $test_name) = @_;
