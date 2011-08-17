@@ -1,4 +1,6 @@
-${{NEXT}}
+{{$NEXT}}
+
+1.3079_01   17.08.2011
 
     [ BUG FIXES ]
     * Fix prefix behavior with load_app (alexrj)
@@ -28,7 +30,6 @@ ${{NEXT}}
     * Extend request() keyword docs with examples (David Precious)
     * Correct port in Lighty/FCGI example in Dancer::Deployment
       (David Precious, thanks to pwfraley in Issue 621)
-
 
 1.3071     26.07.2011
     ** Security release based on 1.3070 **
