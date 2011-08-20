@@ -357,11 +357,14 @@ sub _send_file {
         # handle streaming
         $resp->streamed( sub {
             my ( $status, $headers ) = @_;
+            my %callbacks = defined $options{'callbacks'} ?
+                            %{ $options{'callbacks'} }    :
+                            {};
 
             return sub {
                 my $respond = shift;
-                exists $options{'override_cb'}
-                    and return $options{'override_cb'}->( $respond, $resp );
+                exists $callbacks{'override_cb'}
+                    and return $callbacks{'override_cb'}->( $respond, $resp );
 
                 # get respond callback and set headers, get writer in return
                 my $writer = $respond->( [
@@ -372,18 +375,18 @@ sub _send_file {
                 # get content from original response
                 my $content = $resp->content;
 
-                exists $options{'around_cb'}
-                    and return $options{'around_cb'}->($content);
+                exists $callbacks{'around_cb'}
+                    and return $callbacks{'around_cb'}->($content);
 
                 if ( ref $content ) {
                     while ( my $line = <$content> ) {
-                        exists $options{'before_cb'}
-                            and $options{'before_cb'}->($line);
+                        exists $callbacks{'before_cb'}
+                            and $callbacks{'before_cb'}->($line);
 
                         $writer->write($line);
 
-                        exists $options{'after_cb'}
-                            and $options{'after_cb'}->($line);
+                        exists $callbacks{'after_cb'}
+                            and $callbacks{'after_cb'}->($line);
                     }
                 } else {
                     $writer->write($content);
