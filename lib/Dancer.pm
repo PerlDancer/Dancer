@@ -1318,32 +1318,53 @@ There are several callbacks available when using streaming:
     get '/download/:file' => sub {
         return send_file(
             params->{file},
-            before_cb => sub { my $line = shift; ... },
-            after_cb  => sub { my $line = shift; ... },
-        );
-    }
-
-You can use C<around_cb> to all get all the content and decide what to do with
-it or use C<override_cb> to control the entire streaming callback request:
-
-    get '/download/:file' => sub {
-        return send_file(
-            params->{file},
-            around_cb => sub { my $content = shift; ... } # filehandle
-        );
-    }
-
-    get '/download/:file' => sub {
-        return send_file(
-            params->{file},
-            override_cb => sub {
-                my ( $respond, $response ) = @_;
-
-                my $writer = $respond->( [ $newstatus, $newheaders ] );
-                $writer->write("some line");
+            streaming => 1,
+            callbacks => {
+                before => sub { my $line = shift; ... },
+                after  => sub { my $line = shift; ... },
             },
         );
     }
+
+You can use C<around> to all get all the content and decide what to do with
+it or use C<override> to control the entire streaming callback request:
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            streaming => 1,
+            callbacks => {
+                around => sub { my $content = shift; ... } # filehandle
+            },
+        );
+    }
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            streaming => 1,
+            callbacks => {
+                override => sub {
+                    my ( $respond, $response ) = @_;
+
+                    my $writer = $respond->( [ $newstatus, $newheaders ] );
+                    $writer->write("some line");
+                },
+            },
+        );
+    }
+
+You can also set the number of bytes that will be read at a time (default being
+42K bytes) using C<bytes>:
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            streaming => 1,
+            bytes     => 524288, # 512K
+        );
+    };
+
 
 The content-type will be set depending on the current MIME types definition
 (see C<mime> if you want to define your own).
