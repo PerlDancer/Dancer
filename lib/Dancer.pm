@@ -376,19 +376,17 @@ sub _send_file {
                 my $content = $resp->content;
 
                 exists $callbacks{'around'}
-                    and return $callbacks{'around'}->($content);
+                    and return $callbacks{'around'}->( $writer, $content );
 
                 if ( ref $content ) {
                     my $bytes = $options{'bytes'} || '43008'; # 42K (dams)
-                    my $line;
-                    while ( ( my $read = sysread $content, $line, $bytes ) != 0 ) {
-                        exists $callbacks{'before'}
-                            and $callbacks{'before'}->($line);
-
-                        $writer->write($line);
-
-                        exists $callbacks{'after'}
-                            and $callbacks{'after'}->($line);
+                    my $buf;
+                    while ( ( my $read = sysread $content, $buf, $bytes ) != 0 ) {
+                        if ( exists $callbacks{'around_content'} ) {
+                            $callbacks{'around_content'}->( $writer, $buf );
+                        } else {
+                            $writer->write($buf);
+                        }
                     }
                 } else {
                     $writer->write($content);
@@ -1313,31 +1311,47 @@ support it but normal streaming is supported on most, if not all.
         return send_file( params->{file}, streaming => 1 );
     }
 
-There are several callbacks available when using streaming:
+You can control what happens using callbacks.
+
+First, C<around_content> allows you to get the writer object and the chunk of
+content read, and then decide what to do with each chunk:
 
     get '/download/:file' => sub {
         return send_file(
             params->{file},
             streaming => 1,
             callbacks => {
-                before => sub { my $line = shift; ... },
-                after  => sub { my $line = shift; ... },
+                around_content => sub {
+                    my ( $writer, $chunk ) = @_;
+                    $writer->write("* $chunk");
+                },
             },
         );
     }
 
-You can use C<around> to all get all the content and decide what to do with
-it or use C<override> to control the entire streaming callback request:
+You can use C<around> to all get all the content (whether a filehandle if it's
+a regular file or a full string if it's a scalar ref) and decide what to do with
+it:
 
     get '/download/:file' => sub {
         return send_file(
             params->{file},
             streaming => 1,
             callbacks => {
-                around => sub { my $content = shift; ... } # filehandle
+                around => sub {
+                    my ( $writer, $content 0 = shift;
+
+                    # we know it's a text file, so we'll just stream
+                    # line by line
+                    while ( my $line = <$content> ) {
+                        $writer->write($line);
+                    }
+                },
             },
         );
     }
+
+Or you could use C<override> to control the entire streaming callback request:
 
     get '/download/:file' => sub {
         return send_file(
