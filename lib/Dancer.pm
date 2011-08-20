@@ -379,7 +379,9 @@ sub _send_file {
                     and return $callbacks{'around'}->($content);
 
                 if ( ref $content ) {
-                    while ( my $line = <$content> ) {
+                    my $bytes = $options{'bytes'} || '43008'; # 42K (dams)
+                    my $line;
+                    while ( ( my $read = sysread $content, $line, $bytes ) != 0 ) {
                         exists $callbacks{'before'}
                             and $callbacks{'before'}->($line);
 
