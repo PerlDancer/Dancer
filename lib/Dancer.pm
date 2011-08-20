@@ -363,8 +363,8 @@ sub _send_file {
 
             return sub {
                 my $respond = shift;
-                exists $callbacks{'override_cb'}
-                    and return $callbacks{'override_cb'}->( $respond, $resp );
+                exists $callbacks{'override'}
+                    and return $callbacks{'override'}->( $respond, $resp );
 
                 # get respond callback and set headers, get writer in return
                 my $writer = $respond->( [
@@ -375,18 +375,18 @@ sub _send_file {
                 # get content from original response
                 my $content = $resp->content;
 
-                exists $callbacks{'around_cb'}
-                    and return $callbacks{'around_cb'}->($content);
+                exists $callbacks{'around'}
+                    and return $callbacks{'around'}->($content);
 
                 if ( ref $content ) {
                     while ( my $line = <$content> ) {
-                        exists $callbacks{'before_cb'}
-                            and $callbacks{'before_cb'}->($line);
+                        exists $callbacks{'before'}
+                            and $callbacks{'before'}->($line);
 
                         $writer->write($line);
 
-                        exists $callbacks{'after_cb'}
-                            and $callbacks{'after_cb'}->($line);
+                        exists $callbacks{'after'}
+                            and $callbacks{'after'}->($line);
                     }
                 } else {
                     $writer->write($content);
