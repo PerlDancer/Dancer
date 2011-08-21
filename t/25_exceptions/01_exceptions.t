@@ -16,7 +16,6 @@ set error_template => "error.tt";
         die "die in route";
     };
     
-    route_exists [ GET => '/die_in_route' ];
     response_content_like( [ GET => '/die_in_route' ], qr|MESSAGE: <h2>runtime error</h2><pre class="error">die in route| );
     response_content_like( [ GET => '/die_in_route' ], qr|EXCEPTION: $| );
     response_status_is( [ GET => '/die_in_route' ], 500 => "We get a 500 status" );
@@ -25,11 +24,10 @@ set error_template => "error.tt";
 {
     # raise in route
     get '/raise_in_route' => sub {
-        raise E_GENERIC;
+        raise Internal => 'plop';
     };
-    route_exists [ GET => '/raise_in_route' ];
     response_content_like( [ GET => '/raise_in_route' ], qr|MESSAGE: <h2>runtime error</h2>| );
-    my $e = E_GENERIC;
+    my $e = "plop";
     response_content_like( [ GET => '/raise_in_route' ], qr|EXCEPTION: $e| );
     response_status_is( [ GET => '/raise_in_route' ], 500 => "We get a 500 status" );
 }
@@ -44,7 +42,6 @@ set error_template => "error.tt";
     get '/die_in_hook' => sub {
         template 'index', { foo => 'baz' };
     };
-    route_exists [ GET => '/die_in_hook' ];
     $flag = 0;
     response_content_like( [ GET => '/die_in_hook' ], qr|MESSAGE: <h2>runtime error</h2>| );
     $flag = 0;
