@@ -2,6 +2,7 @@
 
     [ BUG FIXES ]
     * Remove hard-coded version from 404.html and 500.html (Alberto Simões)
+    * Do not clean 'vars' during forward (Alberto Simões)
 
 1.3072      23.08.2011
     ** Codename: Precious David Precious // David Precious (bigpresh) **
