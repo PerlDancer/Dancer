@@ -3,6 +3,7 @@
     [ BUG FIXES ]
     * Remove hard-coded version from 404.html and 500.html (Alberto Simões)
     * Fix logging of UTF8-encoded strings (jamhed)
+    * Do not clean 'vars' during forward (Alberto Simões)
 
 1.3072      23.08.2011
     ** Codename: Precious David Precious // David Precious (bigpresh) **
