@@ -8,4 +8,6 @@ sub new { bless {}, shift }
 
 sub throw { die shift }
 
+sub rethrow { die shift }
+
 1;
