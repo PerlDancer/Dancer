@@ -47,7 +47,7 @@ sub handle_request {
     my ($self, $request) = @_;
     my $ip_addr = $request->remote_address || '-';
 
-    Dancer::SharedData->reset_all();
+    Dancer::SharedData->reset_all( reset_vars => !$request->is_forward);
 
     Dancer::Logger::core("request: "
           . $request->method . " "
