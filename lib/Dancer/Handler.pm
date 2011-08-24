@@ -82,9 +82,9 @@ sub render_request {
         || Dancer::Renderer->render_error(404);
     } continuation {
         # workflow exception (continuation)
-        my ($exception) = @_;
-        $exception->does('Dancer::Continuation::Halted')
-          or throw $exception;
+        my ($continuation) = @_;
+        $continuation->isa('Dancer::Continuation::Halted')
+          or $continuation->rethrow;
         # special case for halted workflow exception: still render the response
         Dancer::Serializer->process_response(Dancer::SharedData->response);
     } catch {

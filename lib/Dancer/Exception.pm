@@ -24,12 +24,12 @@ sub catch (&;@) {
     my @new_rest = grep { ref ne 'Try::Tiny::Catch' or $continuation_code = $$_, 0 } @rest;
     $continuation_code
       and return ( bless( \ sub {
-          ref && $_->isa('Dancer::Exception::Continuation')
+          ref && $_->isa('Dancer::Continuation')
             ? $continuation_code->(@_) : $block->(@_);
       },  'Try::Tiny::Catch') , @new_rest);
 
     return ( bless ( \ sub {
-          ref && $_->isa('Dancer::Exception::Continuation')
+          ref && $_->isa('Dancer::Continuation')
             ? die($_) : $block->(@_) ;
       }, 'Try::Tiny::Catch'), @new_rest );
 }
@@ -41,12 +41,12 @@ sub continuation (&;@) {
     my @new_rest = grep { ref ne 'Try::Tiny::Catch' or $catch_code = $$_, 0 } @rest;
     $catch_code 
       and return ( bless( \ sub {
-          ref && $_->isa('Dancer::Exception::Continuation')
+          ref && $_->isa('Dancer::Continuation')
             ? $block->(@_) : $catch_code->(@_);
       },  'Try::Tiny::Catch') , @new_rest);
 
     return ( bless ( \ sub {
-          ref && $_->isa('Dancer::Exception::Continuation')
+          ref && $_->isa('Dancer::Continuation')
             ? $block->(@_) : die($_);
       }, 'Try::Tiny::Catch'), @new_rest );
 }
