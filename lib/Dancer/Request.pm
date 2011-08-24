@@ -373,7 +373,7 @@ sub _build_params {
 
     # now parse environement params...
     $self->_parse_get_params();
-    if ($self->{is_forward}) {
+    if ($self->is_forward) {
         $self->{_body_params} ||= {};
     } else {
         $self->_parse_post_params();
