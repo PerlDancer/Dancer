@@ -60,7 +60,7 @@ sub format_message {
     my ($self, $level, $message) = @_;
     chomp $message;
 
-    if (setting('charset')) {
+	if (setting('charset') and not Encode::is_utf8($message)) {
         $message = Encode::encode(setting('charset'), $message);
     }
 
