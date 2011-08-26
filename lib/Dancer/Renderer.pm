@@ -25,7 +25,8 @@ Dancer::Factory::Hook->instance->install_hooks(
 sub render_file { get_file_response() }
 
 sub render_action {
-    my $resp = get_action_response();
+    my $class = shift;
+    my $resp = $class->get_action_response();
     return (defined $resp)
       ? response_with_headers()
       : undef;
@@ -80,6 +81,7 @@ sub html_page {
 }
 
 sub get_action_response {
+    my $class = shift;
     my $depth = shift || 1;
 
     # save the request before the filters are ran
@@ -106,14 +108,14 @@ sub get_action_response {
               . $method . ' '
               . $path;
         }
-        return get_action_response($depth + 1);
+        return $class->get_action_response($depth + 1);
     }
 
     # redirect immediately - skip route execution
     my $response = Dancer::SharedData->response();
     if (defined $response && (my $status = $response->status)) {
         if ($status == 302 || $status == 301) {
-            serialize_response_if_needed();
+            $class->serialize_response_if_needed();
             return $response;
         }
     }
@@ -121,11 +123,11 @@ sub get_action_response {
     # execute the action
     if ($handler) {
         # a response may exist, produced by a before filter
-        return serialize_response_if_needed() if defined $response && $response->exists;
+        return $class->serialize_response_if_needed() if defined $response && $response->exists;
         # else, get the route handler's response
         Dancer::App->current($handler->{app});
         $handler->run($request);
-        serialize_response_if_needed();
+        $class->serialize_response_if_needed();
         my $resp = Dancer::SharedData->response();
         Dancer::Factory::Hook->instance->execute_hooks('after', $resp);
         return $resp;
