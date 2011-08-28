@@ -47,7 +47,7 @@ sub handle_request {
     my ($self, $request) = @_;
     my $ip_addr = $request->remote_address || '-';
 
-    Dancer::SharedData->reset_all();
+    Dancer::SharedData->reset_all( reset_vars => !$request->is_forward);
 
     Dancer::Logger::core("request: "
           . $request->method . " "
@@ -168,6 +168,13 @@ sub render_response {
 
     my $status  = $response->status();
     my $headers = $response->headers_to_array();
+
+    # reverse streaming
+    if ( ref $response->streamed and ref $response->streamed eq 'CODE' ) {
+        return $response->streamed->(
+            $status, $headers
+        );
+    }
 
     return [ $status, $headers, $content ];
 }

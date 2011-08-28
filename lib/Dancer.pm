@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3072';
+our $VERSION   = '1.3079_02';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -316,9 +316,16 @@ sub _session {
 
 sub _send_file {
     my ($path, %options) = @_;
+    my $env = Dancer::SharedData->request->env;
 
     my $request = Dancer::Request->new_for_request('GET' => $path);
     Dancer::SharedData->request($request);
+
+    # if you asked for streaming but it's not supported in PSGI
+    if ( $options{'streaming'} && ! $env->{'psgi.streaming'} ) {
+        # TODO: throw a fit (AKA "exception") or a Dancer::Error (or croak)?
+        croak 'Sorry, streaming is not supported on this server.';
+    }
 
     if (exists($options{content_type})) {
         $request->content_type($options{content_type});
@@ -339,11 +346,55 @@ sub _send_file {
             $resp = Dancer::Renderer->get_file_response();
         }
     }
+
     if (exists($options{filename})) {
         $resp->push_header('Content-Disposition' => 
             "attachment; filename=\"$options{filename}\""
         );
     }
+
+    if ( $options{'streaming'} ) {
+        # handle streaming
+        $resp->streamed( sub {
+            my ( $status, $headers ) = @_;
+            my %callbacks = defined $options{'callbacks'} ?
+                            %{ $options{'callbacks'} }    :
+                            {};
+
+            return sub {
+                my $respond = shift;
+                exists $callbacks{'override'}
+                    and return $callbacks{'override'}->( $respond, $resp );
+
+                # get respond callback and set headers, get writer in return
+                my $writer = $respond->( [
+                    $status,
+                    $headers,
+                ] );
+
+                # get content from original response
+                my $content = $resp->content;
+
+                exists $callbacks{'around'}
+                    and return $callbacks{'around'}->( $writer, $content );
+
+                if ( ref $content ) {
+                    my $bytes = $options{'bytes'} || '43008'; # 42K (dams)
+                    my $buf;
+                    while ( ( my $read = sysread $content, $buf, $bytes ) != 0 ) {
+                        if ( exists $callbacks{'around_content'} ) {
+                            $callbacks{'around_content'}->( $writer, $buf );
+                        } else {
+                            $writer->write($buf);
+                        }
+                    }
+                } else {
+                    $writer->write($content);
+                }
+            };
+        } );
+    }
+
     return $resp if $resp;
 
     Dancer::Error->new(
@@ -1252,6 +1303,82 @@ the C<system_path> option (see below).
     get '/download/:file' => sub {
         return send_file(params->{file});
     }
+
+Send file supports streaming possibility using PSGI streaming. The server should
+support it but normal streaming is supported on most, if not all.
+
+    get '/download/:file' => sub {
+        return send_file( params->{file}, streaming => 1 );
+    }
+
+You can control what happens using callbacks.
+
+First, C<around_content> allows you to get the writer object and the chunk of
+content read, and then decide what to do with each chunk:
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            streaming => 1,
+            callbacks => {
+                around_content => sub {
+                    my ( $writer, $chunk ) = @_;
+                    $writer->write("* $chunk");
+                },
+            },
+        );
+    }
+
+You can use C<around> to all get all the content (whether a filehandle if it's
+a regular file or a full string if it's a scalar ref) and decide what to do with
+it:
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            streaming => 1,
+            callbacks => {
+                around => sub {
+                    my ( $writer, $content 0 = shift;
+
+                    # we know it's a text file, so we'll just stream
+                    # line by line
+                    while ( my $line = <$content> ) {
+                        $writer->write($line);
+                    }
+                },
+            },
+        );
+    }
+
+Or you could use C<override> to control the entire streaming callback request:
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            streaming => 1,
+            callbacks => {
+                override => sub {
+                    my ( $respond, $response ) = @_;
+
+                    my $writer = $respond->( [ $newstatus, $newheaders ] );
+                    $writer->write("some line");
+                },
+            },
+        );
+    }
+
+You can also set the number of bytes that will be read at a time (default being
+42K bytes) using C<bytes>:
+
+    get '/download/:file' => sub {
+        return send_file(
+            params->{file},
+            streaming => 1,
+            bytes     => 524288, # 512K
+        );
+    };
+
 
 The content-type will be set depending on the current MIME types definition
 (see C<mime> if you want to define your own).

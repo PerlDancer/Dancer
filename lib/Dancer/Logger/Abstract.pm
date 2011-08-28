@@ -61,12 +61,14 @@ sub format_message {
     chomp $message;
 
     if (setting('charset')) {
-        $message = Encode::encode(setting('charset'), $message);
+        unless (setting('charset') eq "UTF-8" && Encode::is_utf8($message)) {
+            $message = Encode::encode(setting('charset'), $message);
+        }
     }
 
     $level = 'warn' if $level eq 'warning';
     $level = sprintf('%5s', $level);
-    
+
     my $r     = Dancer::SharedData->request;
     my @stack = caller(3);
 

@@ -110,7 +110,7 @@ Easy CAPTCHA image generation and validation, using L<GD>.
 Easily work with Facebook's Graph API from your Perl Dancer app.  Uses
 L<Facebook::Graph>.
 
-=item L<Dancer::PLugin::Redis>
+=item L<Dancer::Plugin::Redis>
 
 Easy L<Redis> database connections, based upon L<Dancer::Plugin::Database>.
 

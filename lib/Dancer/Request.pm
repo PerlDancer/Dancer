@@ -28,7 +28,7 @@ __PACKAGE__->attributes(
     'content_type', 'content_length',
     'body',         'id',
     'uploads',      'headers', 'path_info',
-    'ajax',         'body_is_parsed',
+    'ajax',         'is_forward',
     @http_env_keys,
 );
 
@@ -102,7 +102,7 @@ sub init {
     $self->{method}         = undef;
     $self->{params}         = {};
     $self->{body}           = '';
-    $self->{body_is_parsed} ||= 0;
+    $self->{is_forward}     ||= 0;
     $self->{content_length} = $self->env->{CONTENT_LENGTH} || 0;
     $self->{content_type}   = $self->env->{CONTENT_TYPE} || '';
     $self->{id}             = ++$count;
@@ -159,7 +159,7 @@ sub forward {
     my $env = $request->env;
     $env->{PATH_INFO} = $to_data->{to_url};
 
-    my $new_request = $class->new(env => $env, body_is_parsed => 1);
+    my $new_request = $class->new(env => $env, is_forward => 1);
     my $new_params  = _merge_params(scalar($request->params),
                                     $to_data->{params} || {});
 
@@ -373,7 +373,7 @@ sub _build_params {
 
     # now parse environement params...
     $self->_parse_get_params();
-    if ($self->{body_is_parsed}) {
+    if ($self->is_forward) {
         $self->{_body_params} ||= {};
     } else {
         $self->_parse_post_params();
@@ -592,8 +592,8 @@ It uses the environment hash table given to build the request object:
 
     Dancer::Request->new(env => \%ENV);
 
-It also accepts the C<body_is_parsed> boolean flag, if the new request object should
-not parse request body.
+It also accepts the C<is_forward> boolean flag, if the new request
+object is the result of a forward.
 
 =head2 init()
 
