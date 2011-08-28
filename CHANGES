@@ -1,5 +1,10 @@
 {{$NEXT}}
 
+1.3079_02   28.08.2011
+
+    [ ENHACEMENTS ]
+    * Add streaming support to send_file. (Sawyer X)
+
     [ BUG FIXES ]
     * Remove hard-coded version from 404.html and 500.html (Alberto Simões)
     * Fix logging of UTF8-encoded strings (jamhed)
