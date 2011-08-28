@@ -8,6 +8,40 @@ use Dancer::Test;
 BEGIN { use_ok('Dancer::Exception', ':all'); }
 
 set views => path( 't', '25_exceptions', 'views' );
+
+{
+    # halt in route
+    my $v = 0;
+    get '/halt_in_route' => sub {
+        halt ({ error => 'plop' });
+        $v = 1;
+    };
+    response_content_like( [ GET => '/halt_in_route' ], qr|Unable to process your query| );
+    response_status_is( [ GET => '/halt_in_route' ], 500 => "We get a 500 status" );
+    is ($v, 0, 'halt broke the workflow as intended');
+}
+
+{
+    # halt in hook
+    my $flag = 0;
+    my $v = 0;
+    hook before_template_render => sub {
+        if ( 0 || ! $flag++ ) {
+            status 500;
+            halt ({ error => 'plop2' });
+            $v = 1;
+        }
+    };
+
+    get '/halt_in_hook' => sub {
+        template 'index';
+    };
+    response_content_like( [ GET => '/halt_in_hook' ], qr|Unable to process your query| );
+    is ($v, 0, 'halt broke the workflow as intended');
+    $flag = 0;
+    response_status_is( [ GET => '/halt_in_hook' ], 500 => "We get a 500 status" );
+}
+
 set error_template => "error.tt";
 
 {
