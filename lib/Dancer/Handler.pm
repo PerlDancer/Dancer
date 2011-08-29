@@ -76,20 +76,19 @@ sub handle_request {
 sub render_request {
     my $request = shift;
     my $action;
-    $action = eval {
+    $action = try {
         Dancer::Renderer->render_file
         || Dancer::Renderer->render_action
         || Dancer::Renderer->render_error(404);
-    };
-
-    my $exception = $@;
-
-    if (ref $exception && $exception->isa('Dancer::Continuation')) {
-        $exception->isa('Dancer::Continuation::Halted')
-          or $exception->rethrow();
+    } continuation {
+        # workflow exception (continuation)
+        my ($continuation) = @_;
+        $continuation->isa('Dancer::Continuation::Halted')
+          or $continuation->rethrow();
         # special case for halted workflow continuation: still render the response
         Dancer::Serializer->process_response(Dancer::SharedData->response);
-    } elsif (length $exception) {
+    } catch {
+        my ($exception) = @_;
         Dancer::Logger::error(
           'request to ' . $request->path_info . " crashed: $exception");
 
@@ -101,7 +100,7 @@ sub render_request {
           message => "$exception",
           exception => $exception,
         )->render();
-    }
+    };
     return $action;
 }
 
