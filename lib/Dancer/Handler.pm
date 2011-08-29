@@ -82,21 +82,24 @@ sub render_request {
         || Dancer::Renderer->render_error(404);
     };
 
-    my $value = is_dancer_exception(my $exception = $@);
-    if ($value && $value & E_HALTED) {
-        # special case for halted workflow exception: still render the response
+    my $exception = $@;
+
+    if (ref $exception && $exception->isa('Dancer::Continuation')) {
+        $exception->isa('Dancer::Continuation::Halted')
+          or $exception->rethrow();
+        # special case for halted workflow continuation: still render the response
         Dancer::Serializer->process_response(Dancer::SharedData->response);
-    } elsif ($exception) {
+    } elsif (length $exception) {
         Dancer::Logger::error(
           'request to ' . $request->path_info . " crashed: $exception");
 
+        # use stringification, to get exception message in case of a
+        # Dancer::Exception
         Dancer::Error->new(
           code    => 500,
           title   => "Runtime Error",
-          message => $exception,
-          $value ? ( exception => $value,
-                     exceptions => { },
-                   ) : (),
+          message => "$exception",
+          exception => $exception,
         )->render();
     }
     return $action;
