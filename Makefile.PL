@@ -47,6 +47,7 @@ WriteMakefile1(
         'HTTP::Server::Simple::PSGI' => '0.11',
         'MIME::Types'                => '0',
         'URI'                        => '1.59',
+        'Try::Tiny'                  => '0.09',
 
         # core
         'File::Basename' => '0',
