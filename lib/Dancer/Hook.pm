@@ -56,15 +56,21 @@ sub new {
 
         Dancer::Logger::core( "entering " . $hook_name . " hook" );
         eval { $code->(@_) };
-        if ( is_dancer_exception(my $exception = $@) ) {
-            # propagate the exception
-            die $exception;
-        } elsif ($exception) {
-            # exception is not a workflow halt but a genuine error
+        
+        my $exception = $@;
+
+        if (ref $exception 
+            && ( $exception->isa('Dancer::Continuation')
+                 || $exception->isa('Dancer::Exception') )
+           ) {
+            $exception->rethrow();
+        } elsif (length $exception) {
+            # exception is not a workflow halt nor a dancer exception but a genuine error
             my $err = Dancer::Error->new(
                 code    => 500,
                 title   => $hook_name . ' filter error',
-                message => "An error occured while executing the filter named $hook_name: $exception"
+                message => "An error occured while executing the filter named $hook_name: $exception",
+                exception => $exception,
             );
             # raise a new halt exception
             Dancer::halt( $err->render );
