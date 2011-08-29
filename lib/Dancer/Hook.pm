@@ -49,23 +49,19 @@ sub new {
 
 
     my $compiled_filter = sub {
+        my @arguments = @_;
         return if Dancer::SharedData->response->halted;
 
         my $app = Dancer::App->current();
         return unless $properties->should_run_this_app($app->name);
 
         Dancer::Logger::core( "entering " . $hook_name . " hook" );
-        eval { $code->(@_) };
-        
-        my $exception = $@;
 
-        if (ref $exception 
-            && ( $exception->isa('Dancer::Continuation')
-                 || $exception->isa('Dancer::Exception') )
-           ) {
-            $exception->rethrow();
-        } elsif (length $exception) {
-            # exception is not a workflow halt nor a dancer exception but a genuine error
+        
+        try { $code->(@arguments) }
+        catch {
+            my ($exception) = @_;
+            # exception is not a workflow continuation but a genuine error
             my $err = Dancer::Error->new(
                 code    => 500,
                 title   => $hook_name . ' filter error',
@@ -74,7 +70,7 @@ sub new {
             );
             # raise a new halt exception
             Dancer::halt( $err->render );
-        }
+        };
     };
 
     $self->properties($properties);
