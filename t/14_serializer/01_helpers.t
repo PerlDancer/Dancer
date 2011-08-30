@@ -120,7 +120,7 @@ SKIP: {
     like $xml, qr/<eris>23<\/eris>/, "data is correctly serialized";
 
     my $data = from_xml($xml);
-    is $data, 23, "data is correctly serialized";
+    is $data, 23, "data is correctly deserialized";
 
     $data = {
         task => {
@@ -133,7 +133,7 @@ SKIP: {
     };
 
     $xml = to_xml($data, RootName => undef, AttrIndent => 1);
-    like $xml, qr/type="files">46210660-b78f-11df-8d81-0800200c9a66<files>/, 'xml attributes are indented';
+    like $xml, qr/\n\s+\w+="\w+">46210660-b78f-11df-8d81-0800200c9a66<files>/, 'xml attributes are indented';
 
     # OO API
     setting( 'serializer' => 'XML' );
