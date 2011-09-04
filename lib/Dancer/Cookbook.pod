@@ -492,7 +492,7 @@ interpolate in the view (note that for convenience, the request, session, params
 and vars are automatically accessible in the view, named C<request>, C<session>,
 C<params> and C<vars>) - for example:
 
-    before => sub { var time => localtime() };
+    before => sub { var time => scalar(localtime) };
 
     get '/hello/:name' => sub {
         my $name = params->{name};
