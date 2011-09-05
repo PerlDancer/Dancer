@@ -77,7 +77,7 @@ Of course remember to update your rewrite rules, if you have set any:
 =head2 Running stand-alone
 
 At the simplest, your Dancer app can run standalone, operating as its own
-webserver using HTTP::Simple::PSGI.
+webserver using HTTP::Server::Simple::PSGI.
 
 Simply fire up your app:
 
