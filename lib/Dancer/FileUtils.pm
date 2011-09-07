@@ -102,8 +102,7 @@ sub normalize_path {
     }x;
 
     $path =~ s{/\./}{/}g;
-    $path =~ s{$seqregex}{}g;
-    $path =~ s{$seqregex}{};
+    while ( $path =~ s{$seqregex}{} ) {}
 
     return $path;
 }
