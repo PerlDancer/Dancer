@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More tests => 10;
 use Dancer::FileUtils 'normalize_path';
 
 my %paths = (
@@ -12,6 +12,9 @@ my %paths = (
     'one/two/three/../'    => 'one/two/',
     '/one/two/three/../'   => '/one/two/',
     'one/./two/./three/'   => 'one/two/three/',
+    'a/../b'               => 'b',
+    'a/b/../../c'          => 'c',
+    'a/b/c/../../../d'     => 'd',
 );
 
 foreach my $path ( keys %paths ) {
