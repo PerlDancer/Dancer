@@ -621,7 +621,7 @@ This is a possible webapp created with Dancer:
     };
 
     get '/hello/:name' => sub {
-        "Hello ".params->{name}"
+        "Hello ".params->{name};
     };
 
     # run the webserver
