@@ -59,7 +59,7 @@ sub serialize {
 
 sub deserialize {
     my $self = shift;
-
+    my $xml = shift;
     my %options = ();
 
     my $s;
@@ -68,7 +68,7 @@ sub deserialize {
     }
 
     %options = (%options, @_);
-    $_xs->XMLin(%options);
+    $_xs->XMLin($xml, %options);
 }
 
 sub content_type {'text/xml'}
