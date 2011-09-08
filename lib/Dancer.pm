@@ -1033,6 +1033,16 @@ This hook receives as argument a L<Dancer::Response> object.
 
 =back
 
+=head2 layout
+
+This method is deprecated. Use C<set>:
+
+    set layout => 'user';
+
+=head2 logger
+
+Deprecated. Use C<<set logger => 'console'>> to change current logger engine.
+
 =head2 load
 
 Loads one or more perl scripts in the current application's namespace. Syntactic
