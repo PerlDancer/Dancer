@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+    [ ENHANCEMENTS ]
+    * Hard deprecate lots of stuff (Alberto Simões)
+
     [ BUG FIXES ]
     * Don't clobber TT INCLUDE_PATH if the user set it specifically in the
       config file - Issue 643 (David Precious, reported by meraxes)

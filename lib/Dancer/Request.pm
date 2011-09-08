@@ -37,7 +37,7 @@ sub new {
     if (@args == 1) {
         @args = ('env' => $args[0]);
         Dancer::Deprecation->deprecated(
-                      fatal   => 0,
+                      fatal   => 1,
                       feature => 'Calling Dancer::Request->new($env)',
                       version => 1.3059,
                       reason  => 'Please use Dancer::Request->new( env => $env ) instead',
