@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 21;
+use Test::More import => ['!pass'], tests => 20;
 
 use strict;
 use warnings;
@@ -34,9 +34,6 @@ response_content_unlike $req => qr{Goodbye};
 response_headers_include [GET => '/with_headers'], [ 'Content-Type' => 'text/html' ];
 response_headers_include [GET => '/with_headers'], [ 'X-Foo-Dancer' => '42' ];
 
-eval { get_response($req) };
-like $@, qr/get_response.*has been deprecated. use dancer_response.*instead/i,
-     "DEPRECATED warning triggered by get_response()";
 my $resp = dancer_response(@$req);
 is $resp->{status}, 200, "response status from dancer_response looks good";
 
