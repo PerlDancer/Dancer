@@ -47,7 +47,8 @@ sub serialize {
     my $entity  = shift;
     my %options = (RootName => 'data');
 
-    if (my $s = setting('engines') && exists $s->{XML}) {
+    my $s;
+    if ($s = setting('engines') && exists($s->{XML})) {
         %options = (%options, %{$s->{XML}});
     }
 
@@ -60,7 +61,8 @@ sub deserialize {
 
     my %options = ();
 
-    if (my $s = setting('engines') && exists $s->{XML}) {
+    my $s;
+    if ($s = setting('engines') && exists($s->{XML})) {
         %options = (%options, %{$s->{XML}});
     }
 
