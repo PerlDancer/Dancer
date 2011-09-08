@@ -39,6 +39,10 @@ sites-available/*site*):
         CustomLog /var/log/apache2/www.example.com-access_log common
     </VirtualHost>
 
+Note that when using fast-cgi your rewrite rule should be:
+
+        RewriteRule ^(.*)$ /dispatch.fcgi$1 [QSA,L]
+
 Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's configuration. 
 But if your web server supports .htaccess files, you can drop those lines in a .htaccess file.
 
