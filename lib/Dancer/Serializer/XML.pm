@@ -48,12 +48,14 @@ sub serialize {
     my $entity  = shift;
     my %options = (RootName => 'data');
 
-    my $s;
-    if ($s = setting('engines') && exists($s->{XML})) {
+    my $s = setting('engines') || {};
+    if (exists($s->{XML})) {
         %options = (%options, %{$s->{XML}});
     }
 
     %options = (%options, @_);
+
+
     $_xs->XMLout($entity, %options);
 }
 
@@ -62,8 +64,8 @@ sub deserialize {
     my $xml = shift;
     my %options = ();
 
-    my $s;
-    if ($s = setting('engines') && exists($s->{XML})) {
+    my $s = setting('engines') || {};
+    if (exists($s->{XML})) {
         %options = (%options, %{$s->{XML}});
     }
 
