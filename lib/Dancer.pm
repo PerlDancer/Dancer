@@ -258,10 +258,11 @@ sub _init_script_dir {
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
 
-    # in bin/ or public/ we need to go one level upper to find the appdir
+    # in bin/ or public/ or t/ we need to go one level upper to find the appdir
     $LAYOUT_PRE_DANCER_1_2 = 0
       if ($script_dirs[$#script_dirs - 1] eq 'bin')
-      or ($script_dirs[$#script_dirs - 1] eq 'public');
+      or ($script_dirs[$#script_dirs - 1] eq 'public')
+      or ($script_dirs[$#script_dirs - 1] eq 't');
 
     my $appdir = $ENV{DANCER_APPDIR} || (
           $LAYOUT_PRE_DANCER_1_2
