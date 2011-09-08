@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp;
 use Dancer::ModuleLoader;
+use Dancer::Config 'setting';
 use base 'Dancer::Serializer::Abstract';
 
 # singleton for the XML::Simple object
