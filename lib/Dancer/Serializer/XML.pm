@@ -45,13 +45,27 @@ sub init {
 sub serialize {
     my $self    = shift;
     my $entity  = shift;
-    my %options = (RootName => 'data', @_);
+    my %options = (RootName => 'data');
+
+    if (my $s = setting('engines') && exists $s->{XML}) {
+        %options = (%options, %{$s->{XML}});
+    }
+
+    %options = (%options, @_);
     $_xs->XMLout($entity, %options);
 }
 
 sub deserialize {
     my $self = shift;
-    $_xs->XMLin(@_);
+
+    my %options = ();
+
+    if (my $s = setting('engines') && exists $s->{XML}) {
+        %options = (%options, %{$s->{XML}});
+    }
+
+    %options = (%options, @_);
+    $_xs->XMLin(%options);
 }
 
 sub content_type {'text/xml'}
