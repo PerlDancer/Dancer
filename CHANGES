@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+    [ ENHANCEMENTS ]
+    * Support XML::Simple configuration for serializing/deserializing
+      (Alberto Simões)
+
     [ BUG FIXES ]
     * Don't clobber TT INCLUDE_PATH if the user set it specifically in the
       config file - Issue 643 (David Precious, reported by meraxes)
