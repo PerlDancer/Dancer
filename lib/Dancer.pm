@@ -548,11 +548,13 @@ Add a hook at the B<after> position:
 
     after sub {
         my $response = shift;
-        # do something with request
+        # do something with response, e.g.:
+        $response->header('X-Beer' => 'Yes please');
     };
 
 The anonymous function which is given to C<after> will be executed after
-having executed a route.
+having executed a route, but before the response is returned (so you can modify
+the response here, if you need to)..
 
 You can define multiple after filters, using the C<after> helper as
 many times as you wish; each filter will be executed, in the order you added
@@ -1010,9 +1012,13 @@ by the layout
 
 =item after
 
-This is an alias for 'after'.
+This is an alias for C<after>.
 
-This hook receives as argument a L<Dancer::Response> object.
+This hook runs after a request has been processed, but before the response is
+sent.
+
+It receives a L<Dancer::Response> object, which it can modify
+if it needs to make changes to the response which is about to be sent.
 
   hook after => sub {
     my $response = shift;
