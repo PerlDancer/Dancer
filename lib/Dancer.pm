@@ -129,13 +129,13 @@ sub hook            { Dancer::Hook->new(@_) }
 sub layout          {
     Dancer::Deprecation->deprecated(reason => "use 'set layout => \"value\"'",
                                     version => '1.3050',
-                                    fatal => 0);
-    set(layout => shift) }
+                                    fatal => 1);
+}
 sub load            { require $_ for @_ }
 sub load_app        { goto &_load_app } # goto doesn't add a call frame. So caller() will work as expected
 sub logger          {
-    Dancer::Deprecation->deprecated(reason => "use 'set logger'",fatal => 0,version=>'1.3050');
-    set(logger => @_)
+    Dancer::Deprecation->deprecated(reason => "use 'set logger => \"value\"'",
+                                    fatal => 1,version=>'1.3050');
 }
 sub mime            { Dancer::MIME->instance() }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
@@ -1071,10 +1071,6 @@ To load multiple apps repeat load_app:
 
 The old way of loading multiple apps in one go (load_app 'one', 'two';) is
 deprecated.
-
-=head2 mime_type
-
-Deprecated. See L</mime>.
 
 =head2 mime
 
