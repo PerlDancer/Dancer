@@ -3,6 +3,7 @@
     [ ENHANCEMENTS ]
     * Support XML::Simple configuration for serializing/deserializing
       (Alberto Simões)
+    * Hard deprecate lots of stuff (Alberto Simões)
 
     [ BUG FIXES ]
     * Don't clobber TT INCLUDE_PATH if the user set it specifically in the

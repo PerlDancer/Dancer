@@ -77,9 +77,9 @@ sub _options_as_hashref {
     else {
         Dancer::Deprecation->deprecated(
             version => '1.3002',
+            fatal => 1,
             message => 'options as hash for to_json/from_json is DEPRECATED. please pass a hashref',
         );
-        return { @_ };
     }
 }
 

@@ -5,7 +5,6 @@ use warnings;
 use Carp;
 
 use Dancer::Factory::Hook;
-use Dancer::Deprecation;
 use Dancer::FileUtils 'path';
 
 use base 'Dancer::Engine';
@@ -121,17 +120,6 @@ sub _prepare_tokens_options {
       and $tokens->{session} = Dancer::Session->get;
 
     return ($tokens, $options);
-}
-
-sub _render_with_layout {
-    my ($class, $content, $tokens, $options) = @_;
-
-    Dancer::Deprecation::deprecated(
-        feature => 'render_with_layout',
-        version => '1.3000',
-        fatal   => 1,
-        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
-    );
 }
 
 sub template {
