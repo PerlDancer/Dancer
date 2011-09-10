@@ -1,4 +1,4 @@
-{{$NEXT}}
+1.3079_03   10.09.2011
 
     [ ENHANCEMENTS ]
     * Support XML::Simple configuration for serializing/deserializing
