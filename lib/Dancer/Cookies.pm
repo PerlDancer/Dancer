@@ -31,7 +31,7 @@ sub parse_cookie_from_env {
     return {} unless defined $env_str;
 
     my $cookies = {};
-    foreach my $cookie ( split( /[,;]\s/, $env_str ) ) {
+    foreach my $cookie ( split( /[,;]\s?/, $env_str ) ) {
         # here, we don't want more than the 2 first elements
         # a cookie string can contains something like:
         # cookie_name="foo=bar"

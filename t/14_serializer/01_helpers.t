@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Dancer ':tests';
 
-plan tests => 55;
+plan tests => 52;
 
 my $struct = {eris => 23};
 
@@ -43,7 +43,7 @@ SKIP: {
 }
 
 SKIP: {
-    skip 'JSON is needed to run this test', 16
+    skip 'JSON is needed to run this test', 11
       unless Dancer::ModuleLoader->load('JSON');
 
     # helpers syntax
@@ -89,18 +89,18 @@ SKIP: {
     my $res = $s->serialize($data);
     is_deeply( $data, JSON::decode_json($res), 'data is correctly serialized' );
 
-    # XXX tests for deprecation
-    my $warn;
-    local $SIG{__WARN__} = sub { $warn = $_[0] };
-    $s->_options_as_hashref( foo => 'bar' );
-    ok $warn, 'deprecation warning';
-    undef $warn;
+    # # XXX tests for deprecation
+    # my $warn;
+    # local $SIG{__WARN__} = sub { $warn = $_[0] };
+    # $s->_options_as_hashref( foo => 'bar' );
+    # ok $warn, 'deprecation warning';
+    # undef $warn;
 
-    $s->_options_as_hashref( { foo => 'bar' } );
-    ok !$warn, 'no deprecation warning';
+    # $s->_options_as_hashref( { foo => 'bar' } );
+    # ok !$warn, 'no deprecation warning';
 
-    to_json( { foo => 'bar' }, indent => 0 );
-    ok $warn, 'deprecation warning';
+    # to_json( { foo => 'bar' }, { indent => 0 } );
+    # ok $warn, 'deprecation warning';
 }
 
 SKIP: {
@@ -120,7 +120,7 @@ SKIP: {
     like $xml, qr/<eris>23<\/eris>/, "data is correctly serialized";
 
     my $data = from_xml($xml);
-    is $data, 23, "data is correctly serialized";
+    is $data, 23, "data is correctly deserialized";
 
     $data = {
         task => {
@@ -133,7 +133,7 @@ SKIP: {
     };
 
     $xml = to_xml($data, RootName => undef, AttrIndent => 1);
-    like $xml, qr/type="files">46210660-b78f-11df-8d81-0800200c9a66<files>/, 'xml attributes are indented';
+    like $xml, qr/\n\s+\w+="\w+">46210660-b78f-11df-8d81-0800200c9a66<files>/, 'xml attributes are indented';
 
     # OO API
     setting( 'serializer' => 'XML' );

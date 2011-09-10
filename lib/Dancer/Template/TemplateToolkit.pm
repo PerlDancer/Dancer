@@ -38,7 +38,7 @@ sub init {
     $tt_config->{START_TAG} = $start_tag if $start_tag ne '[%';
     $tt_config->{END_TAG}   = $stop_tag  if $stop_tag  ne '%]';
 
-    $tt_config->{INCLUDE_PATH} = setting('views');
+    $tt_config->{INCLUDE_PATH} ||= setting('views');
 
     $_engine = $class->new(%$tt_config);
 }

@@ -1,4 +1,15 @@
-{{$NEXT}}
+1.3079_03   10.09.2011
+
+    [ ENHANCEMENTS ]
+    * Support XML::Simple configuration for serializing/deserializing
+      (Alberto Simões)
+    * Hard deprecate lots of stuff (Alberto Simões)
+
+    [ BUG FIXES ]
+    * Don't clobber TT INCLUDE_PATH if the user set it specifically in the
+      config file - Issue 643 (David Precious, reported by meraxes)
+    * Don't require a space after semi-colon delimiting multiple name=value
+      cookie pairs - Issue 642 (David Precious, reported by travisbeck)
 
 1.3079_02   28.08.2011
 

@@ -21,23 +21,27 @@ sites-available/*site*):
     <VirtualHost *:80>
         ServerName www.example.com
         DocumentRoot /srv/www.example.com/public
-    	ServerAdmin you@example.com
+        ServerAdmin you@example.com
 
-   		<Directory "/srv/www.example.com/public">
+        <Directory "/srv/www.example.com/public">
            AllowOverride None
            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
            Order allow,deny
            Allow from all
            AddHandler cgi-script .cgi
-   		</Directory>
+        </Directory>
 
-   		RewriteEngine On
-   		RewriteCond %{REQUEST_FILENAME} !-f
-   		RewriteRule ^(.*)$ /dispatch.fcgi$1 [QSA,L]
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ /dispatch.cgi$1 [QSA,L]
 
         ErrorLog  /var/log/apache2/www.example.com-error.log
         CustomLog /var/log/apache2/www.example.com-access_log common
-	</VirtualHost>
+    </VirtualHost>
+
+Note that when using fast-cgi your rewrite rule should be:
+
+        RewriteRule ^(.*)$ /dispatch.fcgi$1 [QSA,L]
 
 Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's configuration. 
 But if your web server supports .htaccess files, you can drop those lines in a .htaccess file.
@@ -77,7 +81,7 @@ Of course remember to update your rewrite rules, if you have set any:
 =head2 Running stand-alone
 
 At the simplest, your Dancer app can run standalone, operating as its own
-webserver using HTTP::Simple::PSGI.
+webserver using HTTP::Server::Simple::PSGI.
 
 Simply fire up your app:
 
