@@ -86,3 +86,32 @@ sub init_request_headers {
 }
 
 1;
+__END__
+
+=pod
+
+=head1 NAME
+
+Dancer::Handler::PSGI - a PSGI handler for Dancer applications
+
+=head1 DESCRIPTION
+
+This handler allows Dancer applications to run as part of PSGI stacks. Dancer
+will automatically determine when running in a PSGI environment and enable this
+handler, such that calling C<dance> will return a valid PSGI application.
+
+You may enable Plack middleware in your configuration file under the
+C<plack_middlewares> key. See L<Dancer::Cookbook> for more information.
+
+Note that you must have L<Plack> installed for this handler to work.
+
+=head1 USAGE
+    # in bin/app.pl
+    set apphandler => 'Debug';
+
+    # then, run the app the following way
+    perl -d bin/app.pl GET '/some/path/to/test' 'with=parameters&other=42'
+
+=head1 AUTHORS
+
+Dancer contributors
