@@ -20,7 +20,6 @@ sub new {
 
     my $self = {};
     bless $self, $class;
-    return $self;
 }
 
 sub start {
@@ -51,7 +50,7 @@ sub apply_plack_middlewares_map {
 
     while ( my ( $path, $mw ) = each %$mw_map ) {
         my $builder = Plack::Builder->new();
-        map { $builder->add_middleware(@$_) } @$mw;
+        $builder->add_middleware(@$_) for @$mw;
         $urlmap->map( $path => $builder->to_app($app) );
     }
 
@@ -67,19 +66,17 @@ sub apply_plack_middlewares {
     croak "Plack::Builder is needed for middlewares support"
       unless Dancer::ModuleLoader->load('Plack::Builder');
 
-    my $builder = Plack::Builder->new();
-
     ref $middlewares eq "ARRAY"
       or croak "'plack_middlewares' setting must be an ArrayRef";
 
-    map {
-        Dancer::Logger::core "add middleware " . $_->[0];
-        $builder->add_middleware(@$_)
-    } @$middlewares;
+    my $builder = Plack::Builder->new();
 
-    $app = $builder->to_app($app);
+    for my $mw (@$middlewares) {
+        Dancer::Logger::core "add middleware " . $mw->[0];
+        $builder->add_middleware(@$mw)
+    }
 
-    return $app;
+    return $builder->to_app($app);
 }
 
 sub init_request_headers {
