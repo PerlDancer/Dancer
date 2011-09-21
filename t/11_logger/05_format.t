@@ -63,7 +63,9 @@ $str = $l->format_message('debug', 'this is debug');
 like $str, qr/\[text\/html\] this is debug/;
 
 my $warn;
-local $SIG{__WARN__} = sub { $warn = $_[0] };
-setting logger_format => '%y';
-$str = $l->format_message('debug', 'this is sparta');
+do {
+    local $SIG{__WARN__} = sub { $warn = $_[0] };
+    setting logger_format => '%y';
+    $str = $l->format_message('debug', 'this is sparta');
+};
 like $warn, qr/%y not supported/;
