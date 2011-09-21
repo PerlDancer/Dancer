@@ -417,6 +417,9 @@ use Template Toolkit, add the following to C<config.yml>:
 The name of the layout to use when rendering view. Dancer will look for
 a matching template in the directory $views/layout.
 
+Your can override the default layout using the third argument of the
+C<template> keyword. Check C<Dancer> manpage for details.
+
 
 =head2 Logging, debugging and error handling
 

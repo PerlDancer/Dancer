@@ -1582,6 +1582,12 @@ For example, to disable the layout for a specific request:
         template 'index.tt', {}, { layout => undef };
     };
 
+Or to request a specific layout, of course:
+
+    get '/user' => sub {
+        template 'user.tt', {}, { layout => 'user' };
+    };
+
 Some tokens are automatically added to your template (C<perl_version>,
 C<dancer_version>, C<settings>, C<request>, C<params>, C<vars> and, if
 you have sessions enabled, C<session>).  Check
