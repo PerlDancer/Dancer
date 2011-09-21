@@ -236,8 +236,10 @@ sub execute {
 
     if (Dancer::Config::setting('warnings')) {
         my $warning;
-        local $SIG{__WARN__} = sub { $warning = $_[0] };
-        my $content = $self->code->();
+        my $content = do {
+            local $SIG{__WARN__} = sub { $warning = $_[0] };
+            $self->code->();
+        };
         if ($warning) {
             return Dancer::Error->new(
                 code    => 500,
