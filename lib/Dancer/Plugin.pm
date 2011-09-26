@@ -5,7 +5,7 @@ use Carp;
 
 use base 'Exporter';
 use Dancer::Config 'setting';
-
+use Dancer::Hook;
 use base 'Exporter';
 use vars qw(@EXPORT);
 
@@ -20,7 +20,7 @@ sub register($&);
 
 my $_keywords = {};
 
-sub add_hook { Dancer::Route::Registry->hook(@_) }
+sub add_hook { Dancer::Hook->new(@_) }
 
 sub plugin_setting {
     my $plugin_orig_name = caller();
@@ -34,14 +34,20 @@ sub register($&) {
     my $plugin_name = caller();
 
     $keyword =~ /^[a-zA-Z_]+[a-zA-Z0-9_]*$/
-      or croak "You can't use '$keyword', it is an invalid name (it should match ^[a-zA-Z_]+[a-zA-Z0-9_]*$ )";
+      or croak "You can't use '$keyword', it is an invalid name"
+        . " (it should match ^[a-zA-Z_]+[a-zA-Z0-9_]*$ )";
 
-    if (grep { $_ eq $keyword } map { s/^(?:\$|%|&|@|\*)//; $_ } (@Dancer::EXPORT, @Dancer::EXPORT_OK)) {
+    if (
+        grep { $_ eq $keyword } 
+        map  { s/^(?:\$|%|&|@|\*)//; $_ } 
+        (@Dancer::EXPORT, @Dancer::EXPORT_OK)
+    ) {
         croak "You can't use '$keyword', this is a reserved keyword";
     }
     while (my ($plugin, $keywords) = each %$_keywords) {
         if (grep { $_->[0] eq $keyword } @$keywords) {
-            croak "You can't use $keyword, this is a keyword reserved by $plugin";
+            croak "You can't use $keyword, "
+                . "this is a keyword reserved by $plugin";
         }
     }
 
@@ -151,13 +157,24 @@ A Dancer plugin inherits from Dancer::Plugin and Exporter transparently.
 
 =item B<plugin_setting>
 
-Configuration for plugin should be structured like this in the config.yaml of the application:
+Configuration for plugin should be structured like this in the config.yml of
+the application:
 
   plugins:
     plugin_name:
       key: value
 
-If plugin_setting is called inside a plugin, the appropriate configuration will be returned. The plugin_name should be the name of the package, or, if the plugin name is under the Dancer::Plugin:: namespace, the end part of the plugin name.
+If C<plugin_setting> is called inside a plugin, the appropriate configuration 
+will be returned. The C<plugin_name> should be the name of the package, or, 
+if the plugin name is under the B<Dancer::Plugin::> namespace (which is
+recommended), the remaining part of the plugin name. 
+
+Enclose the remaining part in quotes if it contains ::, e.g.
+for B<Dancer::Plugin::Foo::Bar>, use:
+
+  plugins:
+    "Foo::Bar":
+      key: value
 
 =back
 

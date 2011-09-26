@@ -4,12 +4,16 @@ use strict;
 use warnings;
 use Carp;
 
-use Dancer::Deprecation;
+use Dancer::Factory::Hook;
 use Dancer::FileUtils 'path';
 
 use base 'Dancer::Engine';
 
-# Overloads this method to implement the rendering
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/before_template_render after_template_render before_layout_render after_layout_render/
+);
+
+# overloads this method to implement the rendering
 # args:   $self, $template, $tokens
 # return: a string of $template's content processed with $tokens
 sub render { confess "render not implemented" }
@@ -50,9 +54,11 @@ sub apply_renderer {
 
     $view = $self->view($view);
 
-    $_->($tokens) for (@{Dancer::App->current->registry->hooks->{before_template}});
+    Dancer::Factory::Hook->execute_hooks('before_template_render', $tokens);
 
     my $content = $self->render($view, $tokens);
+
+    Dancer::Factory::Hook->execute_hooks('after_template_render', \$content);
 
     # make sure to avoid ( undef ) in list context return
     defined $content
@@ -78,8 +84,13 @@ sub apply_layout {
 
     defined $layout or return $content;
 
+    Dancer::Factory::Hook->execute_hooks('before_layout_render', $tokens, \$content);
+
     my $full_content =
       $self->layout($layout, $tokens, $content);
+
+    Dancer::Factory::Hook->execute_hooks('after_layout_render', \$full_content);
+
     # make sure to avoid ( undef ) in list context return
     defined $full_content
       and return $full_content;
@@ -96,33 +107,19 @@ sub _prepare_tokens_options {
     $tokens->{perl_version}   = $];
     $tokens->{dancer_version} = $Dancer::VERSION;
     $tokens->{settings}       = Dancer::Config->settings;
-    $tokens->{request}        = Dancer::SharedData->request;
-    $tokens->{params}         = Dancer::SharedData->request->params;
+
+    # If we're processing a request, also add the request object, params and
+    # vars as tokens:
+    if (my $request = Dancer::SharedData->request) {
+        $tokens->{request}        = $request;
+        $tokens->{params}         = $request->params;
+        $tokens->{vars}           = Dancer::SharedData->vars;
+    }
 
     Dancer::App->current->setting('session')
       and $tokens->{session} = Dancer::Session->get;
 
     return ($tokens, $options);
-}
-
-sub _render_with_layout {
-    my ($class, $content, $tokens, $options) = @_;
-
-    Dancer::Deprecation::deprecated(
-        feature => 'render_with_layout',
-        version => '1.3000',
-        reason  => "use the 'engine' keyword to get the template engine, and use 'apply_layout' on the result",
-    );
-
-    my $full_content = Dancer::Template->engine->apply_layout($content, $tokens, $options);
-
-    if (! defined $full_content) {
-          return Dancer::Error->new(
-            code    => 404,
-            message => "Page not found",
-        )->render();
-    }
-    return $full_content;
 }
 
 sub template {
@@ -131,13 +128,13 @@ sub template {
 
     # it's important that $tokens is not undef, so that things added to it via
     # a before_template in apply_renderer survive to the apply_layout. GH#354
-    $tokens ||= {}; 
+    $tokens  ||= {};
     $options ||= {};
 
     $content = $view ? Dancer::Template->engine->apply_renderer($view, $tokens)
                      : delete $options->{content};
 
-    defined $content and $full_content = 
+    defined $content and $full_content =
       Dancer::Template->engine->apply_layout($content, $tokens, $options);
 
     defined $full_content
@@ -162,6 +159,43 @@ Dancer::Template::Abstract - abstract class for Dancer's template engines
 
 This class is provided as a base class for each template engine. Any template
 engine must inherit from it and provide a set of methods described below.
+
+=head1 TEMPLATE TOKENS
+
+By default Dancer injects some tokens (or variables) to templates. The
+available templates are:
+
+=over 4
+
+=item C<perl_version>
+
+The current running Perl version.
+
+=item C<dancer_version>
+
+The current running Dancer version.
+
+=item C<settings>
+
+Hash to access current application settings.
+
+=item C<request>
+
+Hash to access your current request.
+
+=item C<params>
+
+Hash to access your request parameters.
+
+=item C<vars>
+
+Hash to access your defined variables (using C<vars>).
+
+=item C<session>
+
+Hash to access your session (if you have session enabled)
+
+=back
 
 =head1 INTERFACE
 

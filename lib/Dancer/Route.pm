@@ -38,6 +38,10 @@ sub init {
         croak "cannot create Dancer::Route without a pattern";
     }
 
+    # If the route is a Regexp, store it directly
+    $self->regexp($self->pattern) 
+      if ref($self->pattern) eq 'Regexp';
+
     $self->check_options();
     $self->app(Dancer::App->current);
     $self->prefix(Dancer::App->current->prefix) if not $self->prefix;
@@ -77,10 +81,20 @@ sub match {
           . "/");
 
     my @values = $path =~ $self->{_compiled_regexp};
+
+    # the regex comments are how we know if we captured
+    # a splat or a megasplat
+    if( my @splat_or_megasplat
+            = $self->{_compiled_regexp} =~ /\(\?#((?:mega)?splat)\)/g ) {
+        for ( @values ) {
+            $_ = [ split '/' => $_ ] if ( shift @splat_or_megasplat ) =~ /megasplat/;
+        }
+    }
+
     Dancer::Logger::core("  --> got ".
-        map { defined $_ ? $_ : 'undef' } @values) 
+        map { defined $_ ? $_ : 'undef' } @values)
         if @values;
-    
+
     # if some named captures found, return captures
     # no warnings is for perl < 5.10
     if (my %captures =
@@ -96,8 +110,8 @@ sub match {
     return unless @values;
 
     # save the route pattern that matched
-    # TODO : as soon as we have proper Dancer::Internal, we should remove 
-    # that, it's just a quick hack for plugins to access the matching 
+    # TODO : as soon as we have proper Dancer::Internal, we should remove
+    # that, it's just a quick hack for plugins to access the matching
     # pattern.
     # NOTE: YOU SHOULD NOT USE THAT, OR IF YOU DO, YOU MUST KNOW
     # IT WILL MOVE VERY SOON
@@ -156,15 +170,16 @@ sub run {
     my $response = Dancer::SharedData->response;
 
     if ( $response && $response->is_forwarded ) {
-        my $new_req = 
+        my $new_req =
             Dancer::Request->forward($request, $response->{forward});
-
         my $marshalled = Dancer::Handler->handle_request($new_req);
 
         return Dancer::Response->new(
+            encoded => 1,
             status  => $marshalled->[0],
             headers => $marshalled->[1],
-            content => @{ $marshalled->[2] },
+            # if the forward failed with 404, marshalled->[2] is not an array, but a GLOB
+            content => ref($marshalled->[2]) eq "ARRAY" ? @{ $marshalled->[2] } : $marshalled->[2]
         );
     }
 
@@ -175,7 +190,8 @@ sub run {
             return $next_route->run($request);
         }
         else {
-            croak "Last matching route passed";
+            Dancer::Logger::core('Last matching route passed!');
+            return undef;
         }
     }
 
@@ -220,8 +236,10 @@ sub execute {
 
     if (Dancer::Config::setting('warnings')) {
         my $warning;
-        local $SIG{__WARN__} = sub { $warning = $_[0] };
-        my $content = $self->code->();
+        my $content = do {
+            local $SIG{__WARN__} = sub { $warning = $_[0] };
+            $self->code->();
+        };
         if ($warning) {
             return Dancer::Error->new(
                 code    => 500,
@@ -240,9 +258,9 @@ sub _init_prefix {
     my $prefix = $self->prefix;
 
     if ($self->is_regexp) {
-        my $regexp = $self->regexp || $self->pattern;
+        my $regexp = $self->regexp;
         if ($regexp !~ /^$prefix/) {
-            $self->{pattern} = qr{${prefix}${regexp}};
+            $self->regexp(qr{${prefix}${regexp}});
         }
     }
     elsif ($self->pattern eq '/') {
@@ -259,7 +277,6 @@ sub _init_prefix {
     }
     else {
         $self->{pattern} = $prefix . $self->pattern;
-        $self->{pattern} =~ s/\/$//;
     }
 
     return $prefix;
@@ -267,24 +284,20 @@ sub _init_prefix {
 
 sub equals {
     my ($self, $route) = @_;
-
-    # TODO remove this hack when r() is deprecated
-    my $r1 = $self->regexp  || $self->pattern;
-    my $r2 = $route->regexp || $route->pattern;
-    return $r1 eq $r2;
+    return $self->regexp eq $route->regexp;
 }
 
 sub is_regexp {
     my ($self) = @_;
-    return ($self->pattern && (ref($self->pattern) eq 'Regexp'))
-      || $self->regexp;
+    return defined $self->regexp;
 }
 
 sub _build_regexp {
     my ($self) = @_;
 
     if ($self->is_regexp) {
-        $self->{_compiled_regexp} = $self->regexp || $self->pattern;
+        $self->{_compiled_regexp} = $self->regexp;
+        $self->{_compiled_regexp} = qr/^$self->{_compiled_regexp}$/;
         $self->{_should_capture} = 1;
     }
     else {
@@ -308,11 +321,13 @@ sub _build_regexp_from_string {
         }
     }
 
+    # parse megasplat
+    # we use {0,} instead of '*' not to fall in the splat rule
+    # same logic for [^\n] instead of '.'
+    $capture = 1 if $pattern =~ s!\Q**\E!(?#megasplat)([^\n]+)!g;
+
     # parse wildcards
-    if ($pattern =~ /\*/) {
-        $pattern =~ s/\*/\(\[\^\/\]\+\)/g;
-        $capture = 1;
-    }
+    $capture = 1 if $pattern =~ s!\*!(?#splat)([^/]+)!g;
 
     # escape dots
     $pattern =~ s/\./\\\./g if $pattern =~ /\./;

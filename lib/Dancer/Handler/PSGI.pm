@@ -20,7 +20,6 @@ sub new {
 
     my $self = {};
     bless $self, $class;
-    return $self;
 }
 
 sub start {
@@ -51,7 +50,7 @@ sub apply_plack_middlewares_map {
 
     while ( my ( $path, $mw ) = each %$mw_map ) {
         my $builder = Plack::Builder->new();
-        map { $builder->add_middleware(@$_) } @$mw;
+        $builder->add_middleware(@$_) for @$mw;
         $urlmap->map( $path => $builder->to_app($app) );
     }
 
@@ -67,26 +66,17 @@ sub apply_plack_middlewares {
     croak "Plack::Builder is needed for middlewares support"
       unless Dancer::ModuleLoader->load('Plack::Builder');
 
+    ref $middlewares eq "ARRAY"
+      or croak "'plack_middlewares' setting must be an ArrayRef";
+
     my $builder = Plack::Builder->new();
 
-    # XXX remove this after 1.2
-    if ( ref $middlewares eq 'HASH' ) {
-        Dancer::Deprecation->deprecated(
-            fatal   => 1,
-            feature => 'Listing Plack middlewares as a hash ref',
-            reason  => 'Must be listed as an array ref',
-        );
-    }
-    else {
-        map {
-            Dancer::Logger::core "add middleware " . $_->[0];
-            $builder->add_middleware(@$_)
-        } @$middlewares;
+    for my $mw (@$middlewares) {
+        Dancer::Logger::core "add middleware " . $mw->[0];
+        $builder->add_middleware(@$mw)
     }
 
-    $app = $builder->to_app($app);
-
-    return $app;
+    return $builder->to_app($app);
 }
 
 sub init_request_headers {
@@ -96,3 +86,32 @@ sub init_request_headers {
 }
 
 1;
+__END__
+
+=pod
+
+=head1 NAME
+
+Dancer::Handler::PSGI - a PSGI handler for Dancer applications
+
+=head1 DESCRIPTION
+
+This handler allows Dancer applications to run as part of PSGI stacks. Dancer
+will automatically determine when running in a PSGI environment and enable this
+handler, such that calling C<dance> will return a valid PSGI application.
+
+You may enable Plack middleware in your configuration file under the
+C<plack_middlewares> key. See L<Dancer::Cookbook> for more information.
+
+Note that you must have L<Plack> installed for this handler to work.
+
+=head1 USAGE
+    # in bin/app.pl
+    set apphandler => 'Debug';
+
+    # then, run the app the following way
+    perl -d bin/app.pl GET '/some/path/to/test' 'with=parameters&other=42'
+
+=head1 AUTHORS
+
+Dancer contributors

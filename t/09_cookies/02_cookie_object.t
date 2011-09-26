@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Dancer::Cookie;
 
 my $c = Dancer::Cookie->new(
@@ -43,5 +43,17 @@ $c = Dancer::Cookie->new(
 is(
     $c->to_header,
     'msg=hello%3B%20world; path=/; HttpOnly',
+    "headers are uri encoded"
+);
+
+
+$c = Dancer::Cookie->new(
+    name => 'msg',
+    value => 'hello; world',
+    http_only => 0,
+);
+is(
+    $c->to_header,
+    'msg=hello%3B%20world; path=/',
     "headers are uri encoded"
 );

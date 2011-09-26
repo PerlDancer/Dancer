@@ -19,14 +19,9 @@ my @tests = (
     { path => '/500' => expected => 500 },
 );
 
-plan tests => scalar(@tests) * 2;
+plan tests => scalar(@tests);
 
 foreach my $test (@tests) {
-    my $response = dancer_response(GET => $test->{path});
-
-    ok(defined($response), "route handler found for ".$test->{path});
-    is($response->status, 
-        $test->{expected}, 
-        "status looks good for ".$test->{path}); 
+    response_status_is [ GET => $test->{path} ] => $test->{expected};
 }
 

@@ -3,25 +3,25 @@
 # takes care of rendering it.
 use strict;
 use warnings;
-use Test::More import => ['!pass'], tests => 3;
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-
-use TestUtils;
+use Test::More import => ['!pass'], tests => 4;
+use Dancer::Test;
 
 {
     package Foo;
     use Dancer;
 
-    set views => path(dirname(__FILE__), 'views');
-    set auto_page => true;
+    before_template sub {
+        my $tokens = shift;
+        $tokens->{title} = "Dancer";
+    };
+
+    set auto_page => true, views => path(dirname(__FILE__), 'views');
 
     get '/' => sub { 1 };
 }
 
-my $resp = get_response_for_request('GET' => '/hello');
-ok( defined($resp), "response found for /hello");
-is $resp->{content}, "Hello\n", "content looks good";
-Dancer::SharedData->reset_response();
-eval { get_response_for_request('GET' => '/falsepage'); };
-ok $@, 'Failed to get response for nonexistent page';
+response_status_is  [GET => '/hello'] => 200, "response found for /hello";
+response_content_is [GET => '/hello'] => "Hello\n", "content looks good";
+
+response_status_is  [GET => '/falsepage'] => 500;
+response_content_like [GET => '/error'] => qr/ERROR: Dancer\n/, "error page looks OK";

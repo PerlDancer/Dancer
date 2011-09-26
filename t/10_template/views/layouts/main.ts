@@ -1,0 +1,3 @@
+layout:<%foo%>
+content:<% content %>
+

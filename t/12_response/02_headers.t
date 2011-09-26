@@ -57,14 +57,15 @@ $res = dancer_response(GET => '/headers/content_type');
 is($res->header('Content-Type'), 'text/css', "Content-Type looks good for /headers/content_type");
 
 # /headers/multiple
-$res = dancer_response(GET => '/headers/multiple');
-is_deeply $res->headers_to_array, [
-    'Content-Type' => 'text/html',
-    Bar => 3, 
-    Foo => 1,
-    Foo => 2, 
-    Foo => 4,
-], 'multiple headers are kept';
+response_headers_include
+  [ GET => '/headers/multiple'] =>
+  [
+   'Content-Type' => 'text/html',
+   Bar => 3,
+   Foo => 1,
+   Foo => 2,
+   Foo => 4,
+  ], 'multiple headers are kept';
 
 # Dancer::Response header's API
 $res = Dancer::Response->new(

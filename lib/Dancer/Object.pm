@@ -155,6 +155,23 @@ Generates attributes for whatever object is extending Dancer::Object and saves
 them in an internal hashref so they can be later fetched using
 C<get_attributes>.
 
+For each defined attribute you can access its value using:
+
+  $self->your_attribute_name;
+
+To set a value use
+
+  $self->your_attribute_name($value);
+
+Nevertheless, you can continue to use these attributes as hash keys,
+as usual with blessed hash references:
+
+  $self->{your_attribute_name} = $value;
+
+Although this is possible we defend you should use the method
+approach, as it maintains compatibility in case C<Dancer::Object>
+structure changes in the future.
+
 =head2 attributes_defaults
 
   $self->attributes_defaults(length => 2);

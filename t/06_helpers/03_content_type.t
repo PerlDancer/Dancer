@@ -30,10 +30,8 @@ my @tests = (
     { path => '/png',  expected => 'image/png'},
 );
 
-plan tests => scalar(@tests) * 2;
+plan tests => scalar(@tests);
 
 foreach my $test (@tests) {
-    my $response = dancer_response(GET => $test->{path});
-    ok(defined($response), "route handler found for ".$test->{path});
-    is $response->header('Content-Type'), $test->{expected};
+    response_headers_include [GET => $test->{path}], ['Content-Type' => $test->{expected}];
 }

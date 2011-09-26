@@ -10,7 +10,7 @@ use Dancer::Timer;
 use Dancer::Config 'setting';
 use POSIX qw/strftime/;
 
-# This is the only method to implement if logger engines.
+# This is the only method to implement by logger engines.
 # It receives the following arguments:
 # $msg_level, $msg_content, it gets called only if the configuration allows
 # a message of the given level to be logged.
@@ -61,12 +61,14 @@ sub format_message {
     chomp $message;
 
     if (setting('charset')) {
-        $message = Encode::encode(setting('charset'), $message);
+        unless (setting('charset') eq "UTF-8" && Encode::is_utf8($message)) {
+            $message = Encode::encode(setting('charset'), $message);
+        }
     }
 
     $level = 'warn' if $level eq 'warning';
     $level = sprintf('%5s', $level);
-    
+
     my $r     = Dancer::SharedData->request;
     my @stack = caller(3);
 
@@ -90,7 +92,8 @@ sub format_message {
               ? $r->env->{'HTTP_X_REAL_IP'} || $r->env->{'REMOTE_ADDR'}
               : '-';
         },
-        t => sub { Encode::decode(setting('charset'), POSIX::strftime( "%d/%b/%Y %H:%M:%S", localtime )) },
+        t => sub { Encode::decode(setting('charset'),
+                                  POSIX::strftime( "%d/%b/%Y %H:%M:%S", localtime )) },
         T => sub { POSIX::strftime( "%Y-%m-%d %H:%M:%S", localtime  ) },
         P => sub { $$ },
         L => sub { $level },
@@ -171,11 +174,11 @@ The possible values are:
 
 =item %h
 
-host emiting the request
+host emitting the request
 
 =item %t
 
-date (formated like %d/%b/%Y %H:%M:%S)
+date (formatted like %d/%b/%Y %H:%M:%S)
 
 =item %P
 

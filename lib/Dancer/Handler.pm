@@ -13,6 +13,7 @@ use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
+use Dancer::Exception qw(:all);
 
 use Encode;
 
@@ -46,7 +47,7 @@ sub handle_request {
     my ($self, $request) = @_;
     my $ip_addr = $request->remote_address || '-';
 
-    Dancer::SharedData->reset_all();
+    Dancer::SharedData->reset_all( reset_vars => !$request->is_forward);
 
     Dancer::Logger::core("request: "
           . $request->method . " "
@@ -68,22 +69,37 @@ sub handle_request {
         Dancer::App->reload_apps;
     }
 
-    eval {
+    render_request($request);
+    return $self->render_response();
+}
+
+sub render_request {
+    my $request = shift;
+    my $action;
+    $action = eval {
         Dancer::Renderer->render_file
-          || Dancer::Renderer->render_action
-          || Dancer::Renderer->render_error(404);
+        || Dancer::Renderer->render_action
+        || Dancer::Renderer->render_error(404);
     };
-    if ($@) {
-        Dancer::Logger::core(
-            'request to ' . $request->path_info . " crashed: $@");
+
+    my $value = is_dancer_exception(my $exception = $@);
+    if ($value && $value & E_HALTED) {
+        # special case for halted workflow exception: still render the response
+        Dancer::Serializer->process_response(Dancer::SharedData->response);
+    } elsif ($exception) {
+        Dancer::Logger::error(
+          'request to ' . $request->path_info . " crashed: $exception");
 
         Dancer::Error->new(
-            code    => 500,
-            title   => "Runtime Error",
-            message => $@
+          code    => 500,
+          title   => "Runtime Error",
+          message => $exception,
+          $value ? ( exception => $value,
+                     exceptions => { },
+                   ) : (),
         )->render();
     }
-    return $self->render_response();
+    return $action;
 }
 
 sub psgi_app {
@@ -91,7 +107,7 @@ sub psgi_app {
     sub {
         my $env = shift;
         $self->init_request_headers($env);
-        my $request = Dancer::Request->new($env);
+        my $request = Dancer::Request->new(env => $env);
         $self->handle_request($request);
     };
 }
@@ -122,7 +138,7 @@ sub render_response {
         my $ctype   = $response->header('Content-Type');
 
         if ( $charset && $ctype && _is_text($ctype) ) {
-            $content = Encode::encode( $charset, $content );
+            $content = Encode::encode( $charset, $content ) unless $response->_already_encoded;
             $response->header( 'Content-Type' => "$ctype; charset=$charset" )
               if $ctype !~ /$charset/;
         }
@@ -147,22 +163,30 @@ sub render_response {
         $content = [''];
         $response->header('Content-Length' => 0);
     }
-    
+
     Dancer::Logger::core("response: " . $response->status);
 
     my $status  = $response->status();
     my $headers = $response->headers_to_array();
+
+    # reverse streaming
+    if ( ref $response->streamed and ref $response->streamed eq 'CODE' ) {
+        return $response->streamed->(
+            $status, $headers
+        );
+    }
+
     return [ $status, $headers, $content ];
 }
 
 sub _is_text {
     my ($content_type) = @_;
-    return $content_type =~ /(text|json)/;
+    return $content_type =~ /(x(?:ht)?ml|text|json|javascript)/;
 }
 
 # Fancy banner to print on startup
 sub print_banner {
-    if (setting('access_log')) {
+    if (setting('startup_info')) {
         my $env = setting('environment');
         print "== Entering the $env dance floor ...\n";
     }

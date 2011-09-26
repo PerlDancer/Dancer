@@ -1,14 +1,18 @@
-use Test::More tests => 14, import => ['!pass'];
+use Test::More import => ['!pass'];
 
 use strict;
 use warnings;
 
-use File::Temp qw/tempdir/;
 use t::lib::TestUtils;
 use Dancer;
 
-my $dir = tempdir(CLEANUP => 1, TMPDIR => 1);
-setting appdir => $dir;
+plan skip_all => "File::Temp 0.22 required"
+    unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
+
+plan tests => 16;
+
+my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
+set appdir => $dir, environment => 'test';
 
 use_ok 'Dancer::Logger::File';
 
@@ -27,16 +31,22 @@ ok($l->debug("Perl Dancer test message 2/4"), "debug works");
 ok($l->warning("Perl Dancer test message 3/4"), "warning works");
 ok($l->error("Perl Dancer test message 4/4"), "error works");
 
-#Create a new tmp directory to test log_path option
-my $dir2 = tempdir(CLEANUP => 1, TMPDIR => 1);
-setting log_path => $dir2;
+ok(-f path($dir,'logs','test.log'), "Log file exists");
 
-is(Dancer::Logger::File->logdir, $dir2, 
-    "logir is ok");
+#Create a new tmp directory to test log_path option
+my $dir2 = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
+
+set log_path => $dir2, log_file => "foo.bar";
+
+is(Dancer::Logger::File->logdir, $dir2,
+    "logdir is ok");
 
 ok($l->_log(debug => "Perl Dancer test message with log_path setting"), "_log works");
 ok($l->debug("Perl Dancer test message with log_path setting 2/4"), "debug works");
 ok($l->warning("Perl Dancer test message with log_path setting  3/4"), "warning works");
 ok($l->error("Perl Dancer test message with log_path setting 4/4"), "error works");
+
+ok(-f path($dir2,'foo.bar'), "Log file foo.bar exists");
+
 
 $l->{fh}->close;

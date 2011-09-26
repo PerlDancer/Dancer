@@ -77,9 +77,9 @@ sub _options_as_hashref {
     else {
         Dancer::Deprecation->deprecated(
             version => '1.3002',
+            fatal => 1,
             message => 'options as hash for to_json/from_json is DEPRECATED. please pass a hashref',
         );
-        return { @_ };
     }
 }
 
@@ -118,20 +118,16 @@ extra settings to the B<engines> configuration to turn these on.
             convert_blessed: '1'
 
 
-=head2 METHODS
+=head1 METHODS
 
-=over 4
-
-=item B<serialize>
+=head2 serialize
 
 Serialize a data structure to a JSON structure.
 
-=item B<deserialize>
+=head2 deserialize
 
 Deserialize a JSON structure to a data structure
 
-=item B<content_type>
+=head2 content_type
 
 Return 'application/json'
-
-=back

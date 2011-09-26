@@ -6,8 +6,11 @@ use strict;
 use warnings;
 use Dancer::ModuleLoader;
 use Dancer::Engine;
+use Dancer::Factory::Hook;
 use Dancer::Error;
 use Dancer::SharedData;
+
+Dancer::Factory::Hook->instance->install_hooks(qw/before_deserializer after_deserializer/);
 
 my $_engine;
 
@@ -68,6 +71,8 @@ sub process_response {
 sub process_request {
     my ($class, $request) = @_;
 
+    Dancer::Factory::Hook->execute_hooks('before_deserializer');
+
     return $request unless engine;
     return $request
       unless engine->support_content_type($request->content_type);
@@ -90,6 +95,8 @@ sub process_request {
       ? $request->_set_body_params({%$old_params, %$new_params})
       : $request->_set_body_params($new_params);
 
+    Dancer::Factory::Hook->execute_hooks('after_deserializer');
+
     return $request;
 }
 
@@ -111,13 +118,6 @@ serializers.
 
 =head1 USAGE
 
-=head2 Default engine
-
-The default serializer used by Dancer::Serializer is
-L<Dancer::Serializer::JSON>.
-You can choose another serializer by setting the B<serializer> configuration
-variable.
-
 =head2 Configuration
 
 The B<serializer> configuration variable tells Dancer which serializer to use
@@ -131,6 +131,30 @@ Or in the application code:
 
     # setting JSON as the default serializer
     set serializer => 'JSON';
+
+In your routes you can access parameters just like any route.
+
+When in a route you return a Perl data structure, it will be
+serialized automatically to the respective serialized engine (for
+instance, C<JSON>).
+
+For C<PUT> and C<POST> methods you can access the C<request->body> as
+a string, and you can unserialize it, if you really need. If your
+content type is recognized by the serializer, C<request->body> will be
+unserialized automatically, and it will be available as a standard
+parameter.
+
+For instance, if you call
+
+ curl -X POST -H 'Content-Type: application/json -d "{'id':'bar'}" /foo
+
+your C<foo> route can do something like:
+
+  post "/foo" => {
+     my $id = param('id'); # gets "bar"
+     #  ...
+  }
+
 
 =head1 AUTHORS
 

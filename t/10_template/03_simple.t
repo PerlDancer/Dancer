@@ -6,7 +6,7 @@ use Dancer::FileUtils 'path';
 
 use Dancer::Template::Simple;
 
-{ 
+{
     package Foo;
     use base 'Dancer::Object';
     Foo->attributes('x', 'y');
@@ -20,8 +20,8 @@ my $engine = Dancer::Template::Simple->new;
 my $template = path('t', '10_template', 'index.txt');
 
 my $result = $engine->render(
-    $template, 
-    { var1 => "xxx", 
+    $template,
+    { var1 => "xxx",
       var2 => "yyy",
       foo => 'one',
       bar => 'two',
@@ -35,11 +35,11 @@ is $result, $expected, "template got processed successfully";
 $expected = "one=1, two=2, three=3 - 77";
 $template = "one=<% one %>, two=<% two %>, three=<% three %> - <% hash.key %>";
 
-eval { $engine->render($template, { one => 1, two => 2, three => 3}) }; 
+eval { $engine->render($template, { one => 1, two => 2, three => 3}) };
 like $@, qr/is not a regular file/, "prorotype failure detected";
 
-$result = $engine->render(\$template, { 
-    one => 1, two => 2, three => 3, 
+$result = $engine->render(\$template, {
+    one => 1, two => 2, three => 3,
     hash => { key => 77 },
 });
 is $result, $expected, "processed a template given as a scalar ref";
@@ -57,7 +57,7 @@ is $result, $expected, 'object are interpolated in templates';
 $template = 'code = <% code %>, code <% hash.code %>';
 $expected = 'code = 42, code 42';
 $result   = $engine->render(\$template, {
-                code => sub { 42 }, 
+                code => sub { 42 },
                 hash => { 
                     code => sub { 42 }
                 }
@@ -71,7 +71,7 @@ $result   = $engine->render(\$template, {
                 hash => { array => [6, 7, 8] }});
 is $result, $expected, "arrayref are interpolated in templates";
 
-# if-then-else 
+# if-then-else
 $template = '<% if want %>hello<% else %>goodbye<% end %> world';
 $result   = $engine->render(\$template, {want => 1});
 is $result, 'hello world', "true boolean condition matched";

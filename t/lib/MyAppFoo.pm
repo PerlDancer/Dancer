@@ -2,8 +2,8 @@ package MyAppFoo;
 
 use Dancer ':syntax';
 
-before sub {
-    halt ('before block in foo');
+before {apps => [qw/MyAppFoo/]}, sub {
+    halt('before block in foo');
 };
 
 get '/' => sub {

@@ -5,6 +5,7 @@ my @keywords = qw(
     any
     before
     before_template
+    cookie
     cookies
     config
     content_type
@@ -14,6 +15,7 @@ my @keywords = qw(
     dirname
     error
     false
+    forward
     from_dumper
     from_json
     from_yaml
@@ -22,19 +24,21 @@ my @keywords = qw(
     halt
     header
     headers
+    hook
     layout
     load
     load_app
     logger
-    mime_type
+    mime
     options
+    param
     params
     pass
     path
     post
     prefix
+    push_header
     put
-    r
     redirect
     request
     send_file

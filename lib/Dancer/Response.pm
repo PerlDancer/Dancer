@@ -11,8 +11,9 @@ use Dancer::HTTP;
 use Dancer::MIME;
 use HTTP::Headers;
 use Dancer::SharedData;
+use Dancer::Exception qw(:all);
 
-__PACKAGE__->attributes(qw/content pass/);
+__PACKAGE__->attributes(qw/content pass streamed/);
 
 # constructor
 sub init {
@@ -23,6 +24,7 @@ sub init {
         pass    => 0,
         halted  => 0,
         forward => '',
+        encoded => 0,
     );
     $self->{headers} = HTTP::Headers->new(@{ $args{headers} || [] });
     Dancer::SharedData->response($self);
@@ -38,9 +40,15 @@ sub status {
     my $self = shift;
 
     if (scalar @_ > 0) {
-        return $self->{status} = Dancer::HTTP->status(shift);
-    }
-    else {
+        my $status = shift;
+        my $numeric_status = Dancer::HTTP->status($status);
+        if ($numeric_status) {
+            return $self->{status} = $numeric_status;
+        } else {
+            carp "Unrecognised HTTP status $status";
+            return;
+        }
+    } else {
         return $self->{status};
     }
 }
@@ -50,8 +58,8 @@ sub content_type {
 
     if (scalar @_ > 0) {
         my $mimetype = Dancer::MIME->instance();
-        $self->header('Content-Type' => $mimetype->mime_type_for(shift));
-    }else{
+        $self->header('Content-Type' => $mimetype->name_or_type(shift));
+    } else {
         return $self->header('Content-Type');
     }
 }
@@ -62,13 +70,20 @@ sub has_passed {
 }
 
 sub forward {
-    my $self = shift;
-    $self->{forward} = $_[0];
+    my ($self, $uri, $params, $opts) = @_;
+    $self->{forward} = { to_url  => $uri,
+                         params  => $params,
+                         options => $opts };
 }
 
 sub is_forwarded {
     my $self = shift;
     $self->{forward};
+}
+
+sub _already_encoded {
+    my $self = shift;
+    $self->{encoded};
 }
 
 sub halt {
@@ -79,13 +94,14 @@ sub halt {
         Dancer::SharedData->response($content);
     }
     else {
+        # This also sets the Response as the current one (SharedData)
         Dancer::Response->new(
             status => ($self->status || 200),
             content => $content,
             halted => 1,
         );
     }
-    return $content;
+    raise E_HALTED;
 }
 
 sub halted {

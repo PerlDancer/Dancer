@@ -5,20 +5,15 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-plan tests => 3;
+plan tests => 2;
 
 SKIP: {
-    skip "Need perl >= 5.10", 3 unless $] >= 5.010;
+    skip "Need perl >= 5.10", 2 unless $] >= 5.010;
 
     my $route_regex =
       "/(?<class> user | content | post )/(?<action> delete | find )/(?<id> \\d+ )";
 
-    ok( get(qr{
-    $route_regex
-  }x, sub {captures}
-        ),
-        'first route set'
-    );
+    get qr{$route_regex}x => sub {captures};
 
     for my $test (
         {   path     => '/user/delete/234',
@@ -30,8 +25,8 @@ SKIP: {
         my $path     = $test->{path};
         my $expected = $test->{expected};
         my $request  = [GET => $path];
-        response_exists $request;
-        response_content_is_deeply $request, $expected;
+        response_status_is         $request => 200;
+        response_content_is_deeply $request => $expected;
     }
 }
 

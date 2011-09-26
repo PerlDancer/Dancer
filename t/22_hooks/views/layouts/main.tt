@@ -1,0 +1,2 @@
+start <% time %>
+<% content %>stop

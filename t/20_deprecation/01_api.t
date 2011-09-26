@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 5;
 
 {
 
@@ -46,32 +46,27 @@ local $SIG{__WARN__} = sub { $warn = $_[0] };
 my $t = test::dancer::deprecated->new();
 $t->foo();
 
-ok $warn;
 like $warn, qr/calling foo is deprecated, you should use bar since version 0.1/,
   'deprecation with feature, message and version';
 
 $warn = undef;
 
 $t->bar();
-ok $warn;
 like $warn, qr/test::dancer::deprecated::bar has been deprecated/,
   'deprecation with only message';
 
 $warn = undef;
 
 $t->baz();
-ok $warn;
 like $warn, qr/test::dancer::deprecated::baz has been deprecated/,
   'deprecation with default message';
 
 $warn = undef;
 
 $t->foo_bar_baz();
-ok $warn;
 like $warn, qr/foo_bar_baz has been deprecated since version 0.1/,
   'deprecation with feature and version';
 
 eval {$t->fatal};
-ok $@;
 like $@, qr/this should die/;
 

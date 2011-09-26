@@ -7,12 +7,7 @@ use File::Path qw(mkpath rmtree);
 use Dancer::Request;
 
 @EXPORT =
-  qw(fake_request http_request write_file get_response_for_request clean_tmp_files);
-
-sub fake_request($$) {
-    my ($method, $path) = @_;
-    return Dancer::Request->new_for_request($method => $path);
-}
+  qw(http_request write_file clean_tmp_files);
 
 sub http_request {
     my ($port, $method, $path) = @_;
@@ -28,13 +23,6 @@ sub write_file {
     open CONF, '>', $file or die "cannot write file $file : $!";
     print CONF $content;
     close CONF;
-}
-
-sub get_response_for_request {
-    my ($method, $path) = @_;
-    my $request = fake_request($method => $path);
-    Dancer::SharedData->request($request);
-    Dancer::Renderer::get_action_response();
 }
 
 sub clean_tmp_files {

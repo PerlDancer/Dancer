@@ -13,6 +13,10 @@ tags:
         --exclude=.git \
         --exclude='*.swp' \
         --languages=Perl --langmap=Perl:+.t 
+
+author_test:
+	RELEASE_TESTING=1 $(MAKE) test
+
 MAKE_FRAG
 }
 
@@ -22,7 +26,7 @@ WriteMakefile1(
     LICENSE      => 'perl',
     VERSION_FROM => 'lib/Dancer.pm',
     EXE_FILES    => ['script/dancer'],
-    
+
     META_MERGE => {
         resources => {
             repository => 'http://github.com/sukria/Dancer',
@@ -32,7 +36,7 @@ WriteMakefile1(
     },
 
     BUILD_REQUIRES => {
-        'Test::More'             => '0.94',
+        'Test::More'              => '0.94',
     },
 
     PREREQ_PM => {
@@ -42,7 +46,7 @@ WriteMakefile1(
         'HTTP::Body'                 => '1.07', # needed for cleanup()
         'HTTP::Server::Simple::PSGI' => '0.11',
         'MIME::Types'                => '0',
-        'URI'                        => '0',
+        'URI'                        => '1.59',
 
         # core
         'File::Basename' => '0',

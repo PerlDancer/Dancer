@@ -17,7 +17,7 @@ my $env = {
     'REMOTE_USER'     => 'franck',
 };
 
-my $r = Dancer::Request->new($env);
+my $r = Dancer::Request->new(env => $env);
 is_deeply $r->env, $env, "environement looks good";
 
 is $r->path, $env->{PATH_INFO}, 'path looks good';

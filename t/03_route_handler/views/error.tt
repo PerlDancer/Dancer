@@ -1,0 +1,6 @@
+ERROR: <% title %>
+PERL VERSION: <% perl_version %>
+DANCER VERSION: <% dancer_version %>
+ERROR TEMPLATE: <% settings.error_template %>
+REQUEST METHOD: <% request.method %>
+PARAM VALUE: <% params.param %>

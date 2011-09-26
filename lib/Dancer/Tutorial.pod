@@ -28,7 +28,9 @@ That's the reason I wrote this tutorial.  While I was investigating some Python 
 or L<Bottle|http://bottle.paws.de/docs/dev/index.html> I enjoyed the way they explained step by step how to build an example application
 which was a little more involved that a trivial example.
 
-Using the L<Flaskr|http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/> sample application as my inspiration (OK, shamelessly plagerized) I
+Using the
+L<Flaskr|http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/> sample
+application as my inspiration (OK, shamelessly plagiarised) I
 translated that application to the Dancer framework so I could better understand how Dancer worked. (I'm learning
 it too!)
 
@@ -230,13 +232,13 @@ session handler and initialize a session manager.  To do that, we add some
 configuration directives toward the top of our dancr.pl file.  But there are
 more options than just the session engine we want to set.
 
-  set 'session' => 'Simple';
-  set 'template' => 'template_toolkit';
-  set 'logger' => 'console';
-  set 'log' => 'debug';
-  set 'show_errors' => 1;
-  set 'access_log' => 1;
-  set 'warnings' => 1;
+  set 'session'      => 'Simple';
+  set 'template'     => 'template_toolkit';
+  set 'logger'       => 'console';
+  set 'log'          => 'debug';
+  set 'show_errors'  => 1;
+  set 'startup_info' => 1;
+  set 'warnings'     => 1;
 
 Hopefully these are fairly self-explanatory. We want the Simple session engine,
 the Template Toolkit template engine, logging enabled (at the 'debug' level
@@ -366,7 +368,7 @@ I mentioned near the beginning of this tutorial that it is possible to create a
 C<layout> template. In Dancr, that layout is called C<main> and it's set up by
 putting in a directive like this:
 
-  layout 'main';
+  set layout => 'main';
 
 near the top of your web application.  What this tells Dancer's template engine
 is that it should look for a file called F<main.tt> in C<dancr/views/layouts/>
@@ -438,18 +440,17 @@ Here's the complete dancr.pl script from start to finish.
  use File::Slurp;
  use Template;
  
- set 'database' => File::Spec->catfile(File::Spec->tmpdir(), 'dancr.db');
- set 'session' => 'Simple';
- set 'template' => 'template_toolkit';
- set 'logger' => 'console';
- set 'log' => 'debug';
- set 'show_errors' => 1;
- set 'access_log' => 1;
- set 'warnings' => 1;
- set 'username' => 'admin';
- set 'password' => 'password';
- 
- layout 'main';
+ set 'database'     => File::Spec->catfile(File::Spec->tmpdir(), 'dancr.db');
+ set 'session'      => 'Simple';
+ set 'template'     => 'template_toolkit';
+ set 'logger'       => 'console';
+ set 'log'          => 'debug';
+ set 'show_errors'  => 1;
+ set 'startup_info' => 1;
+ set 'warnings'     => 1;
+ set 'username'     => 'admin';
+ set 'password'     => 'password';
+ set 'layout'       => 'main';
  
  my $flash;
  

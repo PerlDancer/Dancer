@@ -27,7 +27,7 @@ my @tests = (
       expected => sub { setting('auto_reload') == 0}},
 );
 
-plan tests => scalar(@tests) + 1;
+plan tests => scalar(@tests) + 3;
 
 foreach my $test (@tests) {
     @ARGV = @{ $test->{args}};
@@ -37,3 +37,14 @@ foreach my $test (@tests) {
 }
 
 ok(Dancer::GetOpt->print_usage());
+
+# Dancer->import process ARGV
+@ARGV = ('--port=1234');
+Dancer->import();
+is setting('port'), 1234, "->import process ARGV";
+
+# Dancer->import doesn't process ARGV when PLACK_ENV is set (GH#473)
+@ARGV = ('--port=4321');
+$ENV{PLACK_ENV} = 'development';
+Dancer->import();
+is setting('port'), 1234, "->import doesn't process ARGV";

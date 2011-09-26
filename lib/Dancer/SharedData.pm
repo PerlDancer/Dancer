@@ -42,7 +42,11 @@ sub reset_timer { $_timer = Dancer::Timer->new }
 
 # purging accessor
 sub reset_all {
-    $vars = {};
+    my ($self, %options) = @_;
+
+    if (!exists($options{reset_vars}) || $options{reset_vars}) {
+        $vars = {};
+    }
     undef $_request;
     undef $_headers;
     reset_timer();

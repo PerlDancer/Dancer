@@ -4,16 +4,18 @@ package Dancer::Test;
 
 use strict;
 use warnings;
-use Test::More import => ['!pass'];
+use Test::Builder;
+use Test::More import => [ '!pass' ];
 
 use Carp;
 use HTTP::Headers;
-use Dancer ':syntax';
+use Dancer ':syntax', ':tests';
 use Dancer::App;
 use Dancer::Deprecation;
 use Dancer::Request;
 use Dancer::SharedData;
 use Dancer::Renderer;
+use Dancer::Handler;
 use Dancer::Config;
 use Dancer::FileUtils qw(open_file);
 
@@ -37,6 +39,7 @@ use vars '@EXPORT';
   response_content_unlike
   response_is_file
   response_headers_are_deeply
+  response_headers_include
 
   dancer_response
   get_response
@@ -70,140 +73,260 @@ sub import {
 
 # Route Registry
 
+sub _req_to_response {
+    my $req = shift;
+
+    # already a response object
+    return $req if ref $req eq 'Dancer::Response';
+
+    return dancer_response( ref $req eq 'ARRAY' ? @$req : ( 'GET', $req ) );
+}
+
+sub _req_label {
+    my $req = shift;
+
+    return ref $req eq 'Dancer::Response' ? 'response object'
+         : ref $req eq 'ARRAY' ? join( ' ', @$req )
+         : "GET $req"
+         ;
+}
+
+sub expand_req {
+    my $req = shift;
+    return ref $req eq 'ARRAY' ? @$req : ( 'GET', $req );
+}
+
 sub route_exists {
     my ($req, $test_name) = @_;
+    my $tb = Test::Builder->new;
 
-    my ($method, $path) = @$req;
+    my ($method, $path) = expand_req($req);
     $test_name ||= "a route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
-    ok(Dancer::App->find_route_through_apps($req), $test_name);
+    return $tb->ok(defined(Dancer::App->find_route_through_apps($req)), $test_name);
 }
 
 sub route_doesnt_exist {
     my ($req, $test_name) = @_;
+    my $tb = Test::Builder->new;
 
-    my ($method, $path) = @$req;
+    my ($method, $path) = expand_req($req);
     $test_name ||= "no route exists for $method $path";
 
     $req = Dancer::Request->new_for_request($method => $path);
-    ok(!defined(Dancer::App->find_route_through_apps($req)), $test_name);
+    return $tb->ok(!defined(Dancer::App->find_route_through_apps($req)), $test_name);
 }
 
 # Response status
 
 sub response_exists {
-    my ($req, $test_name) = @_;
-    $test_name ||= "a response is found for @$req";
-
-    my $response = dancer_response(@$req);
-    ok(defined($response), $test_name);
+    Dancer::Deprecation->deprecated(
+       fatal   => 1,
+       feature => 'response_exists',
+       reason  => 'Use response_status_isnt and check for status 404.'
+    );
 }
 
 sub response_doesnt_exist {
-    my ($req, $test_name) = @_;
-    $test_name ||= "no response found for @$req";
-
-    my $response = dancer_response(@$req);
-    ok(!defined($response), $test_name);
+    Dancer::Deprecation->deprecated(
+       fatal   => 1,
+       feature => 'response_doesnt_exist',
+       reason  => 'Use response_status_is and check for status 404.',
+    );
 }
 
 sub response_status_is {
     my ($req, $status, $test_name) = @_;
-    $test_name ||= "response status is $status for @$req";
+    $test_name ||= "response status is $status for " . _req_label($req);
 
-    my $response = dancer_response(@$req);
-    is $response->status, $status, $test_name;
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
+    return $tb->is_eq($response->status, $status, $test_name);
 }
 
 sub response_status_isnt {
     my ($req, $status, $test_name) = @_;
-    $test_name ||= "response status is not $status for @$req";
+    $test_name ||= "response status is not $status for " . _req_label($req);
 
-    my $response = dancer_response(@$req);
-    isnt $response->{status}, $status, $test_name;
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
+    $tb->isnt_eq( $response->{status}, $status, $test_name );
 }
 
 # Response content
 
 sub response_content_is {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
+    $test_name ||= "response content looks good for " . _req_label($req);
 
-    my $response = dancer_response(@$req);
-    is $response->{content}, $matcher, $test_name;
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
+    return $tb->is_eq( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_isnt {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
+    $test_name ||= "response content looks good for " . _req_label($req);
 
-    my $response = dancer_response(@$req);
-    isnt $response->{content}, $matcher, $test_name;
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
+    return $tb->isnt_eq( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_like {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
+    $test_name ||= "response content looks good for " . _req_label($req);
 
-    my $response = dancer_response(@$req);
-    like $response->{content}, $matcher, $test_name;
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
+    return $tb->like( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_unlike {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
+    $test_name ||= "response content looks good for " , _req_label($req);
 
-    my $response = dancer_response(@$req);
-    unlike $response->{content}, $matcher, $test_name;
+    my $response = _req_to_response($req);
+    my $tb = Test::Builder->new;
+    return $tb->unlike( $response->{content}, $matcher, $test_name );
 }
 
 sub response_content_is_deeply {
     my ($req, $matcher, $test_name) = @_;
-    $test_name ||= "response content looks good for @$req";
+    $test_name ||= "response content looks good for " . _req_label($req);
 
-    my $response = dancer_response(@$req);
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    my $response = _req_to_response($req);
     is_deeply $response->{content}, $matcher, $test_name;
 }
 
 sub response_is_file {
     my ($req, $test_name) = @_;
-    $test_name ||= "a file is returned for @$req";
+    $test_name ||= "a file is returned for " . _req_label($req);
 
     my $response = _get_file_response($req);
-    ok(defined($response), $test_name);
+    my $tb = Test::Builder->new;
+    return $tb->ok(defined($response), $test_name);
 }
 
 sub response_headers_are_deeply {
     my ($req, $expected, $test_name) = @_;
-    $test_name ||= "headers are as expected for @$req";
+    $test_name ||= "headers are as expected for " . _req_label($req);
 
-    my $response = dancer_response(@$req);
-    is_deeply($response->headers_to_array, $expected, $test_name);
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    my $response = dancer_response(expand_req($req));
+    
+    is_deeply(
+        _sort_headers( $response->headers_to_array ),
+        _sort_headers( $expected ),
+        $test_name
+    );
+}
+
+# Sort arrayref of headers (turn it into a list of arrayrefs, sort by the header
+# & value, then turn it back into an arrayref)
+sub _sort_headers {
+    my @originalheaders = @{ shift() }; # take a copy we can modify
+    my @headerpairs;
+    while (my ($header, $value) = splice @originalheaders, 0, 2) {
+        push @headerpairs, [ $header, $value ];
+    }
+
+    # We have an array of arrayrefs holding header => value pairs; sort them by
+    # header then value, and return them flattened back into an arrayref
+    return [
+        map  { @$_ }
+        sort { $a->[0] cmp $b->[0] || $a->[1] cmp $b->[1] }
+        @headerpairs
+    ];
+}
+
+
+sub response_headers_include {
+    my ($req, $expected, $test_name) = @_;
+    $test_name ||= "headers include expected data for @$req";
+    my $tb = Test::Builder->new;
+
+    my $response = dancer_response(expand_req($req));
+    return $tb->ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
+}
+
+
+# make sure the given header sublist is included in the full headers array
+sub _include_in_headers {
+    my ($full_headers, $expected_subset) = @_;
+
+    # walk through all the expected header pairs, make sure 
+    # they exist with the same value in the full_headers list
+    # return false as soon as one is not.
+    for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
+        my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
+        return 0 
+          unless _check_header($full_headers, $name, $value);
+    }
+
+    # we've found all the expected pairs in the $full_headers list
+    return 1;
+}
+
+sub _check_header {
+    my ($headers, $key, $value) = @_;
+    for (my $i=0; $i<scalar(@$headers); $i+=2) {
+        my ($name, $val) = ($headers->[$i], $headers->[$i + 1]);
+        return 1 if $name eq $key && $value eq $val;
+    }
+    return 0;
 }
 
 sub dancer_response {
     my ($method, $path, $args) = @_;
     $args ||= {};
 
-    if ($method =~ /^(?:PUT|POST)$/ && $args->{body}) {
-        my $body = $args->{body};
+    if ($method =~ /^(?:PUT|POST)$/) {
 
-        # coerce hashref into an url-encoded string
-        if (ref($body) && (ref($body) eq 'HASH')) {
-            my @tokens;
-            while (my ($name, $value) = each %{$body}) {
-                $name  = _url_encode($name);
-                $value = _url_encode($value);
-                push @tokens, "${name}=${value}";
+        my ($content, $content_type);
+
+        if ( $args->{body} ) {
+            $content      = $args->{body};
+            $content_type = $args->{content_type}
+                || 'application/x-www-form-urlencoded';
+
+            # coerce hashref into an url-encoded string
+            if ( ref($content) && ( ref($content) eq 'HASH' ) ) {
+                my @tokens;
+                while ( my ( $name, $value ) = each %{$content} ) {
+                    $name  = _url_encode($name);
+                    $value = _url_encode($value);
+                    push @tokens, "${name}=${value}";
+                }
+                $content = join( '&', @tokens );
             }
-            $body = join('&', @tokens);
+        }
+        elsif ( $args->{files} ) {
+            $content_type = 'multipart/form-data; boundary=----BOUNDARY';
+            foreach my $file (@{$args->{files}}){
+                $content .= qq{------BOUNDARY
+Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename}"
+Content-Type: text/plain
+
+};
+                open my $fh, '<', $file->{filename};
+                while (<$fh>){
+                    $content .= $_;
+                }
+                $content .= "\n";
+            }
+            $content .= "------BOUNDARY";
+            $content =~ s/\r\n/\n/g;
+            $content =~ s/\n/\r\n/g;
         }
 
-        my $l = length $body;
-        open my $in, '<', \$body;
+        my $l = 0;
+        $l = length $content if defined $content;
+        open my $in, '<', \$content;
         $ENV{'CONTENT_LENGTH'} = $l;
-        $ENV{'CONTENT_TYPE'}   = 'application/x-www-form-urlencoded';
+        $ENV{'CONTENT_TYPE'}   = $content_type || "";
         $ENV{'psgi.input'}     = $in;
     }
 
@@ -228,20 +351,17 @@ sub dancer_response {
     # then store the request
     Dancer::SharedData->request($request);
 
-    my $get_action = Dancer::Renderer::get_action_response();
+    # XXX this is a hack!!
+    $request = Dancer::Serializer->process_request($request)
+      if Dancer::App->current->setting('serializer');
+
+    my $get_action = Dancer::Handler::render_request($request);
     my $response = Dancer::SharedData->response();
+
     $response->content('') if $method eq 'HEAD';
     Dancer::SharedData->reset_response();
     return $response if $get_action;
     (defined $response && $response->exists) ? return $response : return undef;
-}
-
-sub get_response {
-    Dancer::Deprecation->deprecated(
-        fatal   => 1,
-        feature => 'get_response',
-        reason  => 'Use dancer_response() instead.',
-    );
 }
 
 # private
@@ -254,7 +374,8 @@ sub _url_encode {
 
 sub _get_file_response {
     my ($req) = @_;
-    my ($method, $path, $params) = @$req;
+
+    my ($method, $path, $params) = expand_req($req);
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     Dancer::SharedData->request($request);
     return Dancer::Renderer::get_file_response();
@@ -262,7 +383,7 @@ sub _get_file_response {
 
 sub _get_handler_response {
     my ($req) = @_;
-    my ($method, $path, $params) = @$req;
+    my ($method, $path, $params) = expand_req($req);
     my $request = Dancer::Request->new_for_request($method => $path, $params);
     return Dancer::Handler->handle_request($request);
 }
@@ -302,6 +423,19 @@ Be careful, the module loading order in the example above is very important.
 Make sure to use C<Dancer::Test> B<after> importing the application package
 otherwise your appdir will be automatically set to C<lib> and your test script
 won't be able to find views, conffiles and other application content.
+
+For all test methods, the first argument can be either an
+array ref of the method and route, or a scalar containing the
+route (in which case the method is assumed to be C<GET>), or
+a L<Dancer::Response> object.
+
+    # all 3 are equivalent
+    response_status_is [ GET => '/' ], 200, 'GET / status is ok';
+
+    response_status_is '/', 200, 'GET / status is ok';
+
+    my $resp = dancer_response GET => '/';
+    response_status_is $resp => 200, 'GET / status is ok';
 
 =head1 METHODS
 
@@ -399,18 +533,22 @@ Asserts that the response headers data structure equals the one given.
 
     response_headers_are_deeply [GET => '/'], [ 'X-Powered-By' => 'Dancer 1.150' ];
 
-=head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers })
+=head2 response_headers_include([$method, $path], $expected, $test_name)
+
+Asserts that the response headers data structure includes some of the defined ones.
+
+    response_headers_include [GET => '/'], [ 'Content-Type' => 'text/plain' ];
+
+=head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers, files => [{filename => '/path/to/file', name => 'my_file'}] })
 
 Returns a Dancer::Response object for the given request.
+
 Only $method and $path are required.
+
 $params is a hashref, $body is a string and $headers can be an arrayref or
-a HTTP::Headers object.
-A good reason to use this function is for
-testing POST requests. Since POST requests may not be idempotent, it is
-necessary to capture the content and status in one shot. Calling the
-response_status_is and response_content_is functions in succession would make
-two requests, each of which could alter the state of the application and cause
-Schrodinger's cat to die.
+a HTTP::Headers object, $files is an arrayref of hashref, containing some files to upload.
+
+A good reason to use this function is for testing POST requests. Since POST requests may not be idempotent, it is necessary to capture the content and status in one shot. Calling the response_status_is and response_content_is functions in succession would make two requests, each of which could alter the state of the application and cause Schrodinger's cat to die.
 
     my $response = dancer_response POST => '/widgets';
     is $response->{status}, 202, "response for POST /widgets is 202";
@@ -422,10 +560,11 @@ Schrodinger's cat to die.
     is $response->{content}, "Widget #2 has been scheduled for creation",
         "response content looks good for second POST /widgets";
 
-=head2 get_response([$method, $path])
+It's possible to test file uploads:
 
-This method is B<DEPRECATED>.  Use dancer_response() instead.
+    post '/upload' => sub { return upload('image')->content };
 
+    $response = dancer_reponse(POST => '/upload', {files => [{name => 'image', filename => '/path/to/image.jpg}]});
 
 =head2 read_logs
 

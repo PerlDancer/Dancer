@@ -4,35 +4,38 @@ use warnings;
 use Carp;
 use base 'Dancer::Logger::Abstract';
 
-use File::Temp qw/tempdir/;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(open_file);
 use IO::File;
 
 sub logdir {
     my $altpath = setting('log_path');
-    return $altpath if($altpath);
+    return $altpath if $altpath;
+
     my $logroot = setting('appdir');
+
     if ($logroot) {
         if (!-d $logroot && not mkdir $logroot) {
             carp "log directory $logroot doesn't exist, am unable to create it";
             return;
         }
-    } else {
-        unless($logroot = tempdir(CLEANUP => 1, TMPDIR => 1)) {
-            carp "cannot create temp log directory";
-            return;
-        }
     }
-    unless (-w $logroot and -x $logroot) {
+
+    my $expected_path = $logroot                                  ?
+                        Dancer::FileUtils::path($logroot, 'logs') :
+                        Dancer::FileUtils::path('logs');
+
+    return $expected_path if (-d $expected_path && -x _ && -w _);
+
+    unless (-w $logroot and -x _) {
         my $perm = (stat $logroot)[2] & 07777;
         chmod($perm | 0700, $logroot);
-        unless (-w $logroot and -x $logroot) {
+        unless (-w $logroot and -x _) {
             carp "log directory $logroot isn't writable/executable and can't chmod it";
             return;
         }
     }
-    return Dancer::FileUtils::path_no_verify($logroot, 'logs');
+    return $expected_path;
 }
 
 sub init {
@@ -41,10 +44,12 @@ sub init {
 
     my $logdir = logdir();
     return unless ($logdir);
-    my $logfile = setting('environment');
+
+    my $logfile = setting('log_file') || setting('environment').".log";
 
     mkdir($logdir) unless(-d $logdir);
-    $logfile = File::Spec->catfile($logdir, "$logfile.log");
+    $logfile = File::Spec->catfile($logdir, $logfile);
+
     my $fh;
     unless($fh = open_file('>>', $logfile)) {
         carp "unable to create or append to $logfile";
@@ -90,8 +95,8 @@ file.
 
 =head2 logdir
 
-Returns the log directory, decided by "logs" either in "appdir" setting or in a
-temp directory. It's also possible to specify a logs directory with the log_path option.
+Returns the log directory, decided by "logs" either in "appdir" setting.
+It's also possible to specify a logs directory with the log_path option.
 
   setting log_path => $dir;
 

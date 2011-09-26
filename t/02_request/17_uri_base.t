@@ -15,7 +15,7 @@ my $env = {
     SERVER_PROTOCOL   => 'HTTP/1.1',
 };
 
-my $req = Dancer::Request->new($env);
+my $req = Dancer::Request->new(env => $env);
 is(
     $req->uri_base,
     'http://localhost:5000',
@@ -23,7 +23,7 @@ is(
 );
 
 $env->{'SCRIPT_NAME'} = '/foo/';
-$req = Dancer::Request->new($env);
+$req = Dancer::Request->new(env => $env);
 is(
     $req->uri_base,
     'http://localhost:5000/foo/',

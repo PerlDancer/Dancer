@@ -1,8 +1,420 @@
-{{$NEXT}}
+1.3079_03   10.09.2011
+
+    [ ENHANCEMENTS ]
+    * Support XML::Simple configuration for serializing/deserializing
+      (Alberto Simões)
+    * Hard deprecate lots of stuff (Alberto Simões)
+
+    [ BUG FIXES ]
+    * Don't clobber TT INCLUDE_PATH if the user set it specifically in the
+      config file - Issue 643 (David Precious, reported by meraxes)
+    * Don't require a space after semi-colon delimiting multiple name=value
+      cookie pairs - Issue 642 (David Precious, reported by travisbeck)
+
+1.3079_02   28.08.2011
+
+    [ BUG FIXES ]
+    * Remove hard-coded version from 404.html and 500.html (Alberto Simões)
+    * Fix logging of UTF8-encoded strings (jamhed)
+    * Do not clean 'vars' during forward (Alberto Simões)
+
+    [ ENHANCEMENTS ]
+    * Add streaming support to send_file. (Sawyer X)
+
+1.3072      23.08.2011
+    ** Codename: Precious David Precious // David Precious (bigpresh) **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+1.3079_01   17.08.2011
+
+    [ BUG FIXES ]
+    * Fix prefix behavior with load_app (alexrj)
+    * send_file() shouldn't clobber previously-set response status
+      (David Precious, reported by tylerdu - thanks!)
+    * Depend on URI 1.59 - Fixes problems when redirecting with
+      UTF-8 strings (Alberto Simões)
+    * Fix before_serializer POD fix (Yanick Champoux)
+
+    [ ENHANCEMENTS ]
+    * send_file can send data (pass a reference to a scalar), and can
+      specify a content-disposition filename. (Alberto Simões)
+    * Set 'Server' HTTP response header as well as 'X-Powered-By'.  For cases
+      where Dancer is being accessed directly, or the proxy passes on this
+      header, it's nice to see it.  (David Precious)
+
+    [ DOCUMENTATION ]
+    * Cookbook links to canonical documentation of keywords in Dancer.pm, so
+      readers encountering a new keyword can easily see the docs for it
+      (David Precious)
+    * Docs for debug/warning/error link to Dancer::Logger for details on how to
+      control where logs go (David Precious)
+    * Document import_warnings option, and mention it & link to that
+      documentation in opportune places.
+    * Document that 'get' also creates a route for 'HEAD' requests
+      (David Precious, prompted by Matt S Trout)
+    * Extend request() keyword docs with examples (David Precious)
+    * Correct port in Lighty/FCGI example in Dancer::Deployment
+      (David Precious, thanks to pwfraley in Issue 621)
+
+1.3071     26.07.2011
+    ** Security release based on 1.3070 **
+
+    [ SECURITY ]
+    * FIX directory traversal issue
+      Since 1.3070, it was possible to abuse the static file serving feature to
+      obtain files from a directory immediately above the directory configured to
+      serve static files from.
+      (Vladimir Lettiev and David Precious)
+
+1.3070      14.07.2011
+    ** Codename: The Exceptional Mr. Dams // Damien Krotkine (dams) **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+1.3069_02   10.07.2011
+
+    [ BUG FIXES ]
+    * Fix a bunch of cpan testers reports 
+      (Alberto Simões)
+
+1.3069_01   07.07.2011
+
+    [ BUG FIXES ]
+    * Fix a bug while parsing some cookies
+      (Franck Cuny)
+    * Documentation and tests on how to use many Dancer application
+      inside one PSGI file (PR 564)
+      (Alex Kalderimis and Franck Cuny)
+    * More flexible test for locale-aware logging (Alberto Simões)
+    * Do not re-read config files when dance starts if they were
+      already loaded.  (Alberto Simões)
+    * Fixed shell-dependent tests for Window testing. (Alberto Simões)
+    * Die properly if halt is call inside an hook.
+      (Damien Krotkine and Alberto Simões)
+    * Make template work outside of requests (Issue 592) (David Precious)
+    * Cleanup session tests folder (Issue 594) (Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * Error Hook (PR 563 - JT Smith)
+    * Exceptions system (Damien Krotkine)
+    * The no prefix can be set using 'prefix "/";' (Alberto Simões)
+    * Support for nested prefixes (Alberto Simões)
+    * Cleanup on Dancer::FileUtils (Sawyer X)
+    * Cleanup on File::Temp dependencies (Sawyer X)
+
+    [ DOCUMENTATION ]
+    * Documentation on tokens automatically added to templates.
+      (Alberto Simões)
+    * Documentation on serializer magical access to put/posted data.
+      (Alberto Simões)
+
+1.3060      15.06.2011
+    ** Codename: Pirouetting Pedro // Pedro Melo **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+1.3059_04   12.06.2011
+
+    [ BUG FIXES ]
+    * Fix a bunch of cpan testers reports 
+    (Alberto Simões)
+
+1.3059_03   11.06.2011
+
+    [ BUG FIXES ]
+    * Fix for issue #539
+      https://github.com/sukria/Dancer/issues/539
+      Don't decode twice entries in the params hash table, file 
+      uploads with UTF-8 characters in their name are now possible.
+      (Toby Corkindale, Alexis Sukrieh)
+    * Fix broken test with old version of HTTP::Parser::XS
+      (Franck Cuny)
+    * #492 - Don't run Test::TCP tests on win32
+      (Franck Cuny)
+    * Fix a bug that when forwarding a post with post data stalled the
+      code (read on no data handle).  (Alberto Simões)
+    * Tweak tests regular expression to be more flexible (Pedro Melo)
+    * Require a recent Test::TCP (1.13) to run tests. (Alberto Simões)
+    * Fix hooks implementation that failed when user messes $_ (Pedro Melo)
+    * Fix broken params('query') and params('body') during forward and
+      dancer_request test function. (Alberto Simões and Squeek)
+
+    [ ENHANCEMENTS ]
+    * Fix for issue #516
+      https://github.com/sukria/Dancer/issues/516
+      No more legacy code in Dancer::Route to handle routes created 
+      with the deprecated keyword "r". The related code is now more 
+      concise and should be slightly more efficient.
+      (Alexis Sukrieh)
+    * Merge PR #541
+      https://github.com/sukria/Dancer/pull/541
+      New "param" accessor to retrieve a parameter easily.
+      (Alberto Simões)
+    * Implement session directory testing cache for Session::YAML
+      (Damien Krotkine)
+    * Tests rework (improve speed, remove useless tests, ...)
+      (Alberto Simões and Franck Cuny)
+    * Configuration for log_dir and log_file.
+      (Alberto Simões)
+    * Pass vars to templates automatically (David Precious)
+    * Support lexical prefix (Pedro Melo)
+
+    [ DOCUMENTATION ]
+    * Improve FileUtils documentation. (mokko)
+
+1.3059_02   29.05.2011
+
+    [ BUG FIXES ]
+    * Fix for smoker failure under Perl 5.13.4
+      http://www.cpantesters.org/cpan/report/b37416b8-88df-11e0-9c74-cad5bcb8094c
+      Better use of Time::Hires in t/22_hooks/04_template.t
+      (Franck Cuny)
+
+1.3059_01   27.05.2011
+
+    [ API CHANGES ]
+    * Second level of deprecation for render_with_layout method.
+      (Alberto Simões)
+    * Second level of deprecation for mime_type method.
+      (Alberto Simões)
+
+    [ BUG FIXES ]
+    * Dancer::Test was broken for tests using data in POST (GH#534)
+      (Franck Cuny)
+    * Multiple setter implemented at 1.3039_01 was broken for App
+      specific settings.
+      (Alberto Simões)
+
+    [ ENHANCEMENTS ]
+    * Cookie accessor to manipulate cookies directly.
+      (Niko)
+
+    [ DOCUMENTATION ]
+    * Improve Serializers documentation
+      (Damien Krotkine)
+
+1.3051      27.05.2011
+    ** Security release based on 1.3050 **
+
+    [ SECURITY ]
+    * FIX CVE-2011-1589 (Mojolicious report, but Dancer was vulnerable as well).
+      Return "400 Bad Request" when requested filename seems suspicious
+      http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1589
+      (Vladimir Lettiev and Franck Cuny)
+
+1.3050      20.05.2011
+    ** Codename: The Captain Hook Adventure // Franck Cuny **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+    [ DOCUMENTATION ]
+    * Improve Dancer documentation
+      (Damien Krotkine)
+
+1.3049_01   14.05.2011
+
+    [ API CHANGES ]
+    * Deprecation of 'logger' (use set). (Alberto Simões)
+    * Deprecate 'layout' (use set). (Alberto Simões)
+    * Definitely remove plack_middlewares HashRef deprecation.
+      (Alberto Simões & Damien Krotkine)
+
+    [ BUG FIXES ]
+    * Unbreaking auto_page somewhat - the catch-all route added will
+      pass unless a suitable view exists.  This means that routes like
+      /foo are not obscured, and made up URLs will result in a proper
+      404, not 500.  A little more work required here, though. 
+      (David Precious)
+    * Anchor regular expression routes. Before regular expressions
+      were matching anywhere in the URL.
+      (Alberto Simões)
+
+    [ ENHANCEMENTS ]
+    * GH #519: remove redundant lines from CSS
+      (Alberto Simões)
+    * When scaffolding an app, show a warning if YAML not installed.
+      Prompted by Issue 496.  (David Precious)
+    * Hooks! add new positions for hooks, and possibility to create
+      your own hooks inside your application and your plugin.
+      (Franck Cuny)
+    * Don't try to read/set session vars with empty/undef keys.  It
+      doesn't make sense to do so, and can cause warnings elsewhere.
+      (David Precious)
+    * Check HTTP status code/alias passed to status() is valid;
+      previously, and invalid code would result in the response status
+      being unset
+      (David Precious, prompted on IRC by jonas)
+    * Lowercase status aliases and swap spaces for underscores before
+      trying to match
+      (David Precious, suggested on IRC by jonas)
+    * Added 'behind_proxy' setting, making Dancer honor
+      X_FORWARDED_PROTOCOL and X_FORWARDED_HOST
+      (Alberto Simões, requested by sukria and others)
+
+1.3040      01.05.2011
+    ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
+
+1.3039_01   27.04.2011
+
+    [ BUG FIXES ]
+    * Fix 404 results from forwarding.
+      (Alberto Simões)
+    * Don't remove trailing slashes from route patterns under prefix.
+      (Brian E. Lozier)
+    * Remove deprecated r() function from list of exports.
+      (Stefan Hornburg)
+    * GH #402: make session_expires honor +2h style formatting.
+      (Michael G. Schwern)
+    * GH #433: encoding issues with forward().
+      (Alberto Simões)
+    * GH #390: Renaming access_log to startup_info (+doc).
+      (Sawyer X)
+    * Rewrite scalar usage of qw() that is incompatible with 5.14.
+      (Alberto Simões)
+    * Don't parse ARGV when under PSGI (closes #473)
+      (Franck Cuny)
+
+    [ ENHANCEMENTS ]
+    * Forward can change method GH#493
+      (Alberto Simões)
+    * Introducing the "megasplat"!
+      (Yanick Champoux)
+    * More tests for versions, setings and variables.
+      (Alberto Simões)
+    * Improve Dancer::Test so failures report the correct line numbers.
+      (Michael G. Schwern)
+    * GH #466: Can now set cookies with http_only => 0 for JS integration.
+      (Alberto Simões)
+    * Session engine can be told to set cookies without HttpOnly attribute using
+      new session_is_http_only setting.
+      (Alberto Simões, requested by JT Smith)
+    * GH #296: Show versions of loaded modules in startup info.
+      (Sawyer X)
+    * Able to set more than one value at once using set().
+      (Alberto Simões)
+    * GH #253: Use Clone::clone() if available to clone data before censoring.
+      (Sawyer X)
+    * GH #246: Dancer::Test can now test for file uploads as well.
+      (Franck Cuny)
+    * Allow parameters in forward().
+      (Alberto Simões)
+
+    [ DOCUMENTATION ]
+    * Major rewrite/reorganization on Dancer::Config documentation.
+      (David Precious, pushed by Alberto Simões PR)
+    * GH #284: Document hosting multiples Dancer apps in a single PSGI file.
+      (Franck Cuny)
+    * Dancer::Session POD typos and spurious characters.
+      (Stefan Hornburg)
+
+1.3030      13.04.2011
+    ** Codename: Silence of the ambs // Alberto Simões **
+
+    [ ENHANCEMENTS ]
+    * Change the flag for sending system-wide path with send_file to
+      'system_path' (was 'absolute').
+      (Alberto Simões)
+
+1.3029_03   10.04.2011
+
+    [ BUG FIXES ]
+    * Dancer::Session::Cookie 0.14 is required for dependency test.
+    * Only test for undef serializer if we have the default (JSON) available.
+      (Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * Test before_template & auto_page.
+
+1.3029_02   08.04.2011
+
+    [ BUG FIXES ]
+    * Better way to initialize the logdir in Dancer::Logger::File.
+      Works now cleanly if the appdir is not writable but the logdir exist and
+      is writable.
+      (Alberto Simões)
+    * fix warnings in t/03_route_handler/28_plack_mount.t.
+      (Franck Cuny)
+
+    [ ENHANCEMENTS ]
+    * Support for error templates.
+      If the setting "error_template" is set, it is used when building an error
+      page instead of using the default template.
+      Added the appropirate documentation as well.
+      (Alberto Simões)
+    * Dancer::Test::dancer_response() returns a 404 response when no route
+      handler is found. This is consistent with what Dancer does internally.
+      (Alberto Simões)
+    * Dancer::Test provides a new helper for inspecting subsets of headers:
+      "response_headers_include".
+      (Alberto Simões, Alexis Sukrieh)
+    * dancer_response now handles the rendering of static pages as well.
+      (Alberto Simões)
+    * Cleanup some tests.
+      (Alberto Simões)
+
+    [ DOCUMENTATION ]
+    * POD fix.
+      (Stefan Hornburg - Racke)
+
+1.3029_01   01.04.2011
+
+    [ BUG FIXES ]
+    * Fix t/14_serializer/02_json.t to work with older JSON (relates to GH#416)
+      (Damien Krotkine)
+    * the Changelog test now supports Codenames. It suggests to add codenames
+      for table releaes as well
+      (Damien Krotkine)
+    * GH #420: Extra content generated
+      (Alberto Simões, Damien Krotkine)
+    * GH #409: If pass has no more matching routes, return 404.
+      (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * GH #396: Test that Dancer::Session::Cookie isn't broken
       (Michael G. Schwern)
+    * GH #399: Make sure session can have their name changed.
+      (Michael G. Schwern)
+    * Dancer::Test tests assumes 'GET' if their first argument is scalar.
+      (Yanick Champoux)
+    * send_file accepts optional content-type declaration, to override guessed
+      MIME type, e.g. send_file $filename, content_type => 'image/png'
+      (Alberto Simões, requested by Michael G Schwern)
+    * send_file accepts optional absolute option, to send an absolute path
+      (Alberto Simões)
+    * Have `dancer` cmd tool create MANIFEST and MANIFEST.SKIP.
+      (Alberto Simões)
+    * mime_type is deprecated; new keyword 'mime'; new config key
+      'default_mime_type';
+      (Alberto Simões and Michael G. Schwern)
+    * Recognize absolute redirects 
+      (Yanick Champoux)
+
+    [ DOCUMENTATION ]
+    * Add documentation to send_file optional argument
+      (Alberto Simões)
+    * Fix plack_middlewares example in the cookbook
+      (Michael G. Schwern)
+    * Extend the POD on plugin_setting to prevent a pitfall with plugin
+      modules more than 3 levels deep.
+      (Stefan Hornburg)
+    * GH #400: Documenting the plack_middlewares_map.
+      (Michael G. Schwern, Sawyer X)
+    * GH #422: Documenting no need for caret when you have a prefix.
+      (Sawyer X)
+
+1.3020      21.03.2011
+    ** Codename: The Schwern Cometh // Michael G. Schwern **
+
+    [ ENHANCEMENTS ]
+    * No functional changes, just releasing as stable.
 
 1.3019_02   14.03.2011
 

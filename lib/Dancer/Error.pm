@@ -10,11 +10,18 @@ use Dancer::Response;
 use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::Logger;
+use Dancer::Factory::Hook;
 use Dancer::Session;
 use Dancer::FileUtils qw(open_file);
+use Dancer::Engine;
+
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/before_error_render after_error_render before_error_init/);
 
 sub init {
     my ($self) = @_;
+
+    Dancer::Factory::Hook->instance->execute_hooks('before_error_init', $self);
 
     $self->attributes_defaults(
         title => 'Error ' . $self->code,
@@ -35,6 +42,7 @@ sub has_serializer { setting('serializer') }
 sub code           { $_[0]->{code} }
 sub title          { $_[0]->{title} }
 sub message        { $_[0]->{message} }
+sub exception      { $_[0]->{exception} }
 
 sub backtrace {
     my ($self) = @_;
@@ -108,7 +116,9 @@ sub dumper {
 
 
     # Take a copy of the data, so we can mask sensitive-looking stuff:
-    my %data     = %$obj;
+    my %data     = Dancer::ModuleLoader->load('Clone') ?
+                   %{ Clone::clone($obj) }             :
+                   %$obj;
     my $censored = _censor(\%data);
 
     #use Data::Dumper;
@@ -163,8 +173,10 @@ sub render {
     my $self = shift;
 
     my $serializer = setting('serializer');
-
-    $serializer ? $self->_render_serialized() : $self->_render_html();
+    Dancer::Factory::Hook->instance->execute_hooks('before_error_render', $self);
+    my $response = $serializer ? $self->_render_serialized() : $self->_render_html();
+    Dancer::Factory::Hook->instance->execute_hooks('after_error_render', $response);
+    $response;
 }
 
 sub _render_serialized {
@@ -172,6 +184,8 @@ sub _render_serialized {
 
     my $message =
       !ref $self->message ? {error => $self->message} : $self->message;
+    ref $message eq 'HASH' && defined $self->exception
+      and $message->{exception} = $self->exception;
 
     if (setting('show_errors')) {
         Dancer::Response->new(
@@ -180,7 +194,7 @@ sub _render_serialized {
             headers => ['Content-Type' => Dancer::Serializer->engine->content_type]
             );
     }
-    
+
     # if show_errors is disabled, we don't expose the real error message to the
     # outside world
     else {
@@ -195,14 +209,31 @@ sub _render_serialized {
 sub _render_html {
     my $self = shift;
 
-    return Dancer::Response->new(
-        status  => $self->code,
-        headers => ['Content-Type' => 'text/html'],
-        content =>
-          Dancer::Renderer->html_page($self->title, $self->message, 'error')
-    ) if setting('show_errors');
+    # I think it is irrelevant to look into show_errors. In the
+    # template the user can hide them if she desires so.
+    if (setting("error_template")) {
+        my $template_name = setting("error_template");
+        my $ops = {
+                   title => $self->title,
+                   message => $self->message,
+                   code => $self->code,
+                   defined $self->exception ? ( exception => $self->exception ) : (),
+                  };
+        my $content = Dancer::Engine->engine("template")->apply_renderer($template_name, $ops);
+        return Dancer::Response->new(
+            status => $self->code,
+            headers => ['Content-Type' => 'text/html'],
+            content => $content);
+    } else {
+        return Dancer::Response->new(
+            status  => $self->code,
+            headers => ['Content-Type' => 'text/html'],
+            content =>
+                Dancer::Renderer->html_page($self->title, $self->message, 'error')
+        ) if setting('show_errors');
 
-    return Dancer::Renderer->render_error($self->code);
+        return Dancer::Renderer->render_error($self->code);
+    }
 }
 
 sub environment {

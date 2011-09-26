@@ -16,6 +16,14 @@ sub init {
     $COOKIES = parse_cookie_from_env();
 }
 
+sub cookie {
+    my $class = shift;
+    my $name  = shift;
+    my $value = shift;
+    defined $value && set_cookie( $class, $name, $value, @_ );
+    cookies->{$name} ? cookies->{$name}->value : undef;
+}
+
 sub parse_cookie_from_env {
     my $request = Dancer::SharedData->request;
     my $env     = (defined $request) ? $request->env : {};
@@ -23,8 +31,12 @@ sub parse_cookie_from_env {
     return {} unless defined $env_str;
 
     my $cookies = {};
-    foreach my $cookie ( split( /[,;]\s/, $env_str ) ) {
-        my ( $name, $value ) = split( '=', $cookie );
+    foreach my $cookie ( split( /[,;]\s?/, $env_str ) ) {
+        # here, we don't want more than the 2 first elements
+        # a cookie string can contains something like:
+        # cookie_name="foo=bar"
+        # we want `cookie_name' as the value and `foo=bar' as the value
+        my( $name,$value ) = split(/\s*=\s*/, $cookie, 2);
         my @values;
         if ( $value ne '' ) {
             @values = map { uri_unescape($_) } split( /[&;]/, $value );
@@ -38,6 +50,7 @@ sub parse_cookie_from_env {
 
 # set_cookie name => value,
 #     expires => time() + 3600, domain => '.foo.com'
+#     http_only => 0 # defaults to 1
 sub set_cookie {
     my ( $class, $name, $value, %options ) = @_;
     my $cookie =  Dancer::Cookie->new(
@@ -75,6 +88,11 @@ Dancer::Cookies - a singleton storage for all cookies
         print "$name => $value\n";
     }
 
+
+    cookie lang => "fr-FR"; #set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";
+    cookie "lang"           #return a cookie value
+
 =head1 DESCRIPTION
 
 Dancer::Cookies keeps all the cookies defined by the application and makes them
@@ -94,6 +112,14 @@ below.
 Returns a hash reference of all cookies, all objects of L<Dancer::Cookie> type.
 
 The key is the cookie name, the value is the L<Dancer::Cookie> object.
+
+=head2 cookie
+
+C<cookie> method is useful to query or set cookies easily.
+
+    cookie lang => "fr-FR";              # set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
+    cookie "lang"                        # return a cookie value
 
 =head2 parse_cookie_from_env
 

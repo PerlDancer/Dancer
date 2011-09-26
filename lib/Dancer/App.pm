@@ -10,7 +10,7 @@ use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
 use Dancer::Logger;
 
-Dancer::App->attributes(qw(name prefix registry settings));
+Dancer::App->attributes(qw(name app_prefix prefix registry settings on_lexical_prefix));
 
 # singleton that saves any app created, we want unicity for app names
 my $_apps = {};
@@ -28,11 +28,39 @@ sub set_running_app {
     Dancer::App->current($app);
 }
 
-sub set_prefix {
+sub set_app_prefix {
     my ($self, $prefix) = @_;
+    $self->app_prefix($prefix);
+    $self->prefix($prefix);
+}
+
+sub set_prefix {
+    my ($self, $prefix, $cb) = @_;
+
+    undef $prefix if defined($prefix) and $prefix eq "/";
+
     croak "not a valid prefix: `$prefix', must start with a /"
       if defined($prefix) && $prefix !~ /^\//;
-    Dancer::App->current->prefix($prefix);
+
+    my $app_prefix = defined $self->app_prefix ? $self->app_prefix : "";
+    my $previous = Dancer::App->current->prefix;
+
+    $prefix ||= "";
+
+    if (Dancer::App->current->on_lexical_prefix) {
+        Dancer::App->current->prefix($previous.$prefix);
+    } else {
+        Dancer::App->current->prefix($app_prefix.$prefix);
+    }
+
+    if (ref($cb) eq 'CODE') {
+        Dancer::App->current->on_lexical_prefix(1);
+        eval { $cb->() };
+        my $e = $@;
+        Dancer::App->current->on_lexical_prefix(0);
+        Dancer::App->current->prefix($previous);
+        die $e if $e;
+    }
     return 1;    # prefix may have been set to undef
 }
 
@@ -74,8 +102,12 @@ sub reload_apps {
 
 sub find_route_through_apps {
     my ($class, $request) = @_;
-    for my $app (Dancer::App->applications) {
+    for my $app (Dancer::App->current, Dancer::App->applications) {
         my $route = $app->find_route($request);
+        if ($route) {
+            Dancer::App->current($route->app);
+            return $route;
+        }
         return $route if $route;
     }
     return;
@@ -159,21 +191,33 @@ sub get {
 }
 
 sub setting {
-    my ($self, $name, $value) = @_;
+    my $self = shift;
 
     if ($self->name eq 'main') {
-        return (@_ == 3)
-          ? Dancer::Config::setting($name => $value)
-          : Dancer::Config::setting($name);
+        return (@_ > 1)
+          ? Dancer::Config::setting( @_ )
+          : Dancer::Config::setting( $_[0] );
     }
 
-    return
-      (@_ == 3) ? $self->settings->{$name} =
-      Dancer::Config->normalize_setting($name => $value)
-      : (
+    if (@_ > 1) {
+        $self->_set_settings(@_)
+    } else {
+        my $name = shift;
         exists($self->settings->{$name}) ? $self->settings->{$name}
-        : Dancer::Config::setting($name)
-      );
+          : Dancer::Config::setting($name);
+    }
 }
+
+sub _set_settings {
+    my $self = shift;
+    die "Odd number of elements in set" unless @_ % 2 == 0;
+    while (@_) {
+        my $name = shift;
+        my $value = shift;
+        $self->settings->{$name} =
+          Dancer::Config->normalize_setting($name => $value);
+    }
+}
+
 
 1;

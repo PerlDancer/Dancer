@@ -6,6 +6,7 @@ use Carp;
 
 use base 'Dancer::Object';
 
+use Dancer::Config 'setting';
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Encode;
@@ -14,9 +15,9 @@ use URI;
 use URI::Escape;
 
 my @http_env_keys = (
-    'user_agent',      'host',       'accept_language', 'accept_charset',
+    'user_agent',      'accept_language', 'accept_charset',
     'accept_encoding', 'keep_alive', 'connection',      'accept',
-    'accept_type',     'referer',
+    'accept_type',     'referer',  #'host', managed manually
 );
 my $count = 0;
 
@@ -27,22 +28,57 @@ __PACKAGE__->attributes(
     'content_type', 'content_length',
     'body',         'id',
     'uploads',      'headers', 'path_info',
-    'ajax', 
+    'ajax',         'is_forward',
     @http_env_keys,
 );
+
+sub new {
+    my ($self, @args) = @_;
+    if (@args == 1) {
+        @args = ('env' => $args[0]);
+        Dancer::Deprecation->deprecated(
+                      fatal   => 1,
+                      feature => 'Calling Dancer::Request->new($env)',
+                      version => 1.3059,
+                      reason  => 'Please use Dancer::Request->new( env => $env ) instead',
+         );
+    }
+    $self->SUPER::new(@args);
+}
 
 # aliases
 sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->address }
 sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
 sub address               { $_[0]->env->{REMOTE_ADDR} }
+sub host {
+    if (@_==2) {
+        $_[0]->{host} = $_[1];
+    } else {
+        my $host;
+        $host = $_[0]->env->{X_FORWARDED_HOST} if setting('behind_proxy');
+        $host || $_[0]->{host} || $_[0]->env->{HTTP_HOST};
+    }
+}
 sub remote_host           { $_[0]->env->{REMOTE_HOST} }
 sub protocol              { $_[0]->env->{SERVER_PROTOCOL} }
 sub port                  { $_[0]->env->{SERVER_PORT} }
 sub request_uri           { $_[0]->env->{REQUEST_URI} }
 sub user                  { $_[0]->env->{REMOTE_USER} }
 sub script_name           { $_[0]->env->{SCRIPT_NAME} }
-sub scheme                { $_[0]->env->{'psgi.url_scheme'} }
+sub scheme                {
+    my $scheme;
+    if (setting('behind_proxy')) {
+        $scheme = $_[0]->env->{'X_FORWARDED_PROTOCOL'}
+               || $_[0]->env->{'HTTP_X_FORWARDED_PROTOCOL'}
+               || $_[0]->env->{'HTTP_FORWARDED_PROTO'}
+               || ""
+    }
+    return $scheme
+        || $_[0]->env->{'psgi.url_scheme'}
+        || $_[0]->env->{'PSGI.URL_SCHEME'}
+        || "";
+}
 sub secure                { $_[0]->scheme eq 'https' }
 sub uri                   { $_[0]->request_uri }
 
@@ -58,29 +94,36 @@ sub request_method { method(@_) }
 sub Vars           { params(@_) }
 sub input_handle   { $_[0]->env->{'psgi.input'} || $_[0]->env->{'PSGI.INPUT'} }
 
-sub new {
-    my ($class, $env) = @_;
+sub init {
+    my ($self) = @_;
 
-    $env ||= {};
+    $self->{env}          ||= {};
+    $self->{path}           = undef;
+    $self->{method}         = undef;
+    $self->{params}         = {};
+    $self->{body}           = '';
+    $self->{is_forward}     ||= 0;
+    $self->{content_length} = $self->env->{CONTENT_LENGTH} || 0;
+    $self->{content_type}   = $self->env->{CONTENT_TYPE} || '';
+    $self->{id}             = ++$count;
+    $self->{_chunk_size}    = 4096;
+    $self->{_read_position} = 0;
+    $self->{_body_params}   = undef;
+    $self->{_query_params}  = undef;
+    $self->{_route_params}  = {};
 
-    my $self = {
-        path           => undef,
-        method         => undef,
-        params         => {},
-        body           => '',
-        content_length => $env->{CONTENT_LENGTH} || 0,
-        content_type   => $env->{CONTENT_TYPE} || '',
-        env            => $env,
-        id             => ++$count,
-        _chunk_size    => 4096,
-        _read_position => 0,
-        _body_params   => undef,
-        _query_params  => undef,
-        _route_params  => {},
-    };
+    $self->_build_headers();
+    $self->_build_request_env();
+    $self->_build_path()      unless $self->path;
+    $self->_build_path_info() unless $self->path_info;
+    $self->_build_method()    unless $self->method;
 
-    bless $self, $class;
-    $self->_init();
+    $self->{_http_body} =
+      HTTP::Body->new($self->content_type, $self->content_length);
+    $self->{_http_body}->cleanup(1);
+    $self->_build_params();
+    $self->_build_uploads unless $self->uploads;
+    $self->{ajax} = $self->is_ajax;
 
     return $self;
 }
@@ -97,11 +140,13 @@ sub new_for_request {
     $params ||= {};
     $method = uc($method);
 
-    my $req =
-      $class->new({%ENV, PATH_INFO => $path, REQUEST_METHOD => $method});
-    $req->{params} = {%{$req->{params}}, %{$params}};
-    $req->{body} = $body if defined $body;
-    $req->{headers} = $headers if $headers;
+    my $req = $class->new(env => { %ENV,
+                                    PATH_INFO      => $path,
+                                    REQUEST_METHOD => $method});
+    $req->{params}        = {%{$req->{params}}, %{$params}};
+    $req->{_query_params} = $req->{params};
+    $req->{body}          = $body    if defined $body;
+    $req->{headers}       = $headers if $headers;
 
     return $req;
 }
@@ -109,18 +154,44 @@ sub new_for_request {
 #Create a new request which is a clone of the current one, apart
 #from the path location, which points instead to the new location
 sub forward {
-    my ($class, $request, $to) = @_;
+    my ($class, $request, $to_data) = @_;
 
     my $env = $request->env;
-    $env->{PATH_INFO} = $to;
+    $env->{PATH_INFO} = $to_data->{to_url};
 
-    my $new_request = $class->new($env);
+    my $new_request = $class->new(env => $env, is_forward => 1);
+    my $new_params  = _merge_params(scalar($request->params),
+                                    $to_data->{params} || {});
 
-    $new_request->{params}  = $request->params;
+    if (exists($to_data->{options}{method})) {
+        die unless _valid_method($to_data->{options}{method});
+        $new_request->{method} = uc $to_data->{options}{method};
+    }
+
+    $new_request->{params}  = $new_params;
+    $new_request->{_body_params}  = $request->{_body_params};
+    $new_request->{_query_params} = $request->{_query_params};
+    $new_request->{_route_params} = $request->{_route_params};
+    $new_request->{_params_are_decoded} = 1;
     $new_request->{body}    = $request->body;
     $new_request->{headers} = $request->headers;
 
     return $new_request;
+}
+
+sub _valid_method {
+    my $method = shift;
+    return $method =~ /^(?:head|post|get|put|delete)$/i;
+}
+
+sub _merge_params {
+    my ($params, $to_add) = @_;
+
+    die unless ref $to_add eq "HASH";
+    for my $key (keys %$to_add) {
+        $params->{$key} = $to_add->{$key};
+    }
+    return $params;
 }
 
 sub base {
@@ -133,13 +204,11 @@ sub base {
 sub _common_uri {
     my $self = shift;
 
-    my @env_names = qw(
-      SERVER_NAME HTTP_HOST SERVER_PORT SCRIPT_NAME psgi.url_scheme
-    );
-
-    my ($server, $host, $port, $path, $scheme) = @{$self->env}{@env_names};
-
-    $scheme ||= $self->{'env'}{'PSGI.URL_SCHEME'};    # Windows
+    my $path   = $self->env->{SCRIPT_NAME};
+    my $port   = $self->env->{SERVER_PORT};
+    my $server = $self->env->{SERVER_NAME};
+    my $host   = $self->host;
+    my $scheme = $self->scheme;
 
     my $uri = URI->new;
     $uri->scheme($scheme);
@@ -182,8 +251,8 @@ sub params {
     my @caller = caller;
 
     if (not $self->{_params_are_decoded}) {
-        $self->{params} = _decode($self->{params});
-        $self->{_body_params} = _decode($self->{_body_params});
+        $self->{params}        = _decode($self->{params});
+        $self->{_body_params}  = _decode($self->{_body_params});
         $self->{_query_params} = _decode($self->{_query_params});
         $self->{_route_params} = _decode($self->{_route_params});
         $self->{_params_are_decoded} = 1;
@@ -213,7 +282,7 @@ sub _decode {
     my ($h) = @_;
     return if not defined $h;
 
-    if (not ref($h)) {
+    if (!ref($h) && !utf8::is_utf8($h)) {
         return decode('UTF-8', $h);
     }
 
@@ -248,25 +317,6 @@ sub upload {
     return $res unless wantarray;
     return ()   unless defined $res;
     return (ref($res) eq 'ARRAY') ? @$res : $res;
-}
-
-# private
-
-sub _init {
-    my ($self) = @_;
-
-    $self->_build_headers();
-    $self->_build_request_env();
-    $self->_build_path()      unless $self->path;
-    $self->_build_path_info() unless $self->path_info;
-    $self->_build_method()    unless $self->method;
-
-    $self->{_http_body} =
-      HTTP::Body->new($self->content_type, $self->content_length);
-    $self->{_http_body}->cleanup(1);
-    $self->_build_params();
-    $self->_build_uploads unless $self->uploads;
-    $self->{ajax} = $self->is_ajax;
 }
 
 # Some Dancer's core components sometimes need to alter
@@ -316,15 +366,18 @@ sub _build_headers {
 
 sub _build_params {
     my ($self) = @_;
-    
+
     # params may have been populated by before filters
     # _before_ we get there, so we have to save it first
     my $previous = $self->{params};
 
     # now parse environement params...
     $self->_parse_get_params();
-    $self->_parse_post_params();
-
+    if ($self->is_forward) {
+        $self->{_body_params} ||= {};
+    } else {
+        $self->_parse_post_params();
+    }
 
     # and merge everything
     $self->{params} = {
@@ -530,14 +583,25 @@ use the current request object.
 
 =head1 PUBLIC INTERFACE
 
-=head2 new($env)
+=head2 new()
 
 The constructor of the class, used internally by Dancer's core to create request
-objects. It uses the environment hash table given to build the request object.
+objects.
+
+It uses the environment hash table given to build the request object:
+
+    Dancer::Request->new(env => \%ENV);
+
+It also accepts the C<is_forward> boolean flag, if the new request
+object is the result of a forward.
+
+=head2 init()
+
+Used internally to define some default values and parse parameters.
 
 =head2 new_for_request($method, $path, $params, $body, $headers)
 
-An alternate constructor convinient for test scripts which creates a request
+An alternate constructor convienient for test scripts which creates a request
 object with the arguments given.
 
 =head2 forward($request, $new_location)
@@ -546,9 +610,16 @@ Create a new request which is a clone of the current one, apart
 from the path location, which points instead to the new location.
 This is used internally to chain requests using the forward keyword.
 
+Note that the new location should be a hash reference. Only one key is
+required, the C<to_url>, that should point to the URL that forward
+will use. Optional values are the key C<params> to a hash of
+parameters to be added to the current request parameters, and the key
+C<options> that points to a hash of options about the redirect (for
+instance, C<method> pointing to a new request method).
+
 =head2 to_string()
 
-Return a string represeting the request object (eg: C<"GET /some/path">)
+Return a string representing the request object (eg: C<"GET /some/path">)
 
 =head2 method()
 
@@ -564,7 +635,8 @@ Return the IP address of the client.
 
 =head2 remote_host()
 
-Return the remote host of the client.
+Return the remote host of the client. This only works with web servers configured
+to do a reverse DNS lookup on the client's IP address.
 
 =head2 protocol()
 
@@ -596,7 +668,7 @@ Return the scheme of the request
 
 =head2 secure()
 
-Return true of false, indicating wether the connection is secure
+Return true of false, indicating whether the connection is secure
 
 =head2 is_get()
 
@@ -745,7 +817,7 @@ table provided by C<uploads()>. It looks at the calling context and returns a
 corresponding value.
 
 If you have many file uploads under the same name, and call C<upload('name')> in
-an array context, the accesor will unroll the ARRA ref for you:
+an array context, the accesor will unroll the ARRAY ref for you:
 
     my @uploads = request->upload('many_uploads'); # OK
 
@@ -779,6 +851,10 @@ Dancer::Request object through specific accessors, here are those supported:
 =item C<connection>
 
 =item C<forwarded_for_address>
+
+=item C<forwarded_protocol>
+
+=item C<forwarded_host>
 
 =item C<host>
 

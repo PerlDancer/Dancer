@@ -45,7 +45,7 @@ sub print_usage {
    --daemon             Run in background (false)
    --port=XXXX          Port number to bind to (3000)
    --confdir=PATH       Path the config dir (appdir if not specified)
-   --environment=ENV    Environement to use (development)
+   --environment=ENV    Environment to use (development)
    --restart=1|0        Should we restart the application between each request
    --help               Display usage information
 

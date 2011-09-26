@@ -8,7 +8,7 @@ This documentation describes the procedure used for integrators to review and
 merge contributions sent via pull-requests.
 
 Every core-team member should read and apply the procedures described
-here. This will allow for a better history and more consitency in our
+here. This will allow for a better history and more consistency in our
 ways of handling the (increasing number!) of pull requests.
 
 =head1 TERMS
@@ -53,7 +53,7 @@ Let's say the user I<$user> has sent a PR, he has followed the
 instructions described in L<Dancer::Development> so his work is based
 on the integration branch (C<devel>).
 
-All the procedure described here is designed to avoid unecessary
+All the procedure described here is designed to avoid unnecessary
 recursive-merge, in order to keep a clean and flat history in the
 integration branch.
 
@@ -77,7 +77,7 @@ First, we make sure we are in sync with C<origin/devel>
 
 Then, from that branch we create a I<temp> sandbox
 
-    git co -b temp
+    git checkout -b temp
 
 We pull here from I<$user>
 
@@ -90,8 +90,8 @@ commits by hand.
 
 From devel, we first create the final C<review> branch:
 
-    git co devel
-    git co -b review/$user
+    git checkout devel
+    git checkout -b review/$user
 
 Then we cherry-pick all the commits we want. To know them, we just
 have to go into I<temp> and inspect the history (with C<git log>).
@@ -111,7 +111,7 @@ commits to change something.
 
 When we're happy with the change set, we can merge into devel:
 
-    git co devel
+    git checkout devel
     git merge --no-ff review/$user
 
 Note the C<--no-ff> switch is used to make sure we'll see a nice
@@ -132,7 +132,7 @@ shiny commits we want.
 Those release are built with git-flow (with C<git-flow release>) and are then
 uploaded to CPAN.
 
-Since Dancer 1.2, we also have another parallell release cycle which is what we
+Since Dancer 1.2, we also have another parallel release cycle which is what we
 call the I<frozen> branch. It's a maintenance-only release cycle. That branch is
 created from the tag of the first release of a I<stable> version (namely a
 release series with an even minor number).

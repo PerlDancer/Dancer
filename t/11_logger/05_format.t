@@ -5,7 +5,7 @@ use Dancer::Config qw/setting/;
 use Dancer::Logger::File;
 use Dancer::Request;
 
-plan tests => 8;
+plan tests => 9;
 
 setting logger_format => '(%L) %m';
 my $l = Dancer::Logger::File->new;
@@ -30,6 +30,13 @@ setting logger_format => '%m %{%H:%M}t';
 $str = $l->format_message('debug', 'this is debug');
 like $str, qr/this is debug \[\d\d:\d\d\]/;
 
+setting charset => 'UTF-8', logger_format => '%h %t %T';
+$str = $l->format_message('debug', 'this is debug');
+like $str, qr{- \s
+              \d+/[^/]+/\d+ \s \d+:\d+:\d+ \s
+              \d+-\d+-\d+ \s \d+:\d+:\d+ }xi;
+
+
 my $env = {
     'psgi.url_scheme' => 'http',
     REQUEST_METHOD    => 'GET',
@@ -46,7 +53,7 @@ my $env = {
 my $headers = HTTP::Headers->new();
 $headers->header('Accept-Type' => 'text/html');
 
-my $request = Dancer::Request->new($env);
+my $request = Dancer::Request->new(env => $env);
 $request->{headers} = $headers;
 
 Dancer::SharedData->request($request);
@@ -56,7 +63,9 @@ $str = $l->format_message('debug', 'this is debug');
 like $str, qr/\[text\/html\] this is debug/;
 
 my $warn;
-local $SIG{__WARN__} = sub { $warn = $_[0] };
-setting logger_format => '%y';
-$str = $l->format_message('debug', 'this is sparta');
+do {
+    local $SIG{__WARN__} = sub { $warn = $_[0] };
+    setting logger_format => '%y';
+    $str = $l->format_message('debug', 'this is sparta');
+};
 like $warn, qr/%y not supported/;

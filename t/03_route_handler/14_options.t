@@ -1,30 +1,22 @@
-use strict;
-use warnings;
-
-use Test::More import => ['!pass'];
+use Test::More;
 use Dancer::Test;
-
-plan tests => 26;
-use Dancer ':syntax';
+use Dancer ':syntax', ':tests';
 use Dancer::Route;
 
+plan tests => 20;
+
 {
-    ok( get( '/', { agent => 'foo' } => sub {'agent foo'} ),
-        'route / for agent foo defined' );
-    
-    ok( get('/', { agent => 'bar' }, sub { 'agent bar'} ),
-        "route / for agent bar defined");
+    get( '/', { agent => 'foo' } => sub {'agent foo'} );
 
-    ok( get( '/', sub {'all agents'} ), 'route / set without options' );
+    get('/', { agent => 'bar' }, sub { 'agent bar'} );
 
-    ok( get( '/foo', { agent => 'foo' } => sub {'foo only'} ),
-        'route /foo for agent foo defined' );
+    get( '/', sub {'all agents'} );
 
-    ok( get('/welcome', {agent => qr{Mozilla}} => sub { "hey Mozilla!" }),
-        'route /welcome for agent mozilla defined');
+    get( '/foo', { agent => 'foo' } => sub {'foo only'} );
 
-    ok( get('/welcome' => sub { "hello" }),
-        'route /welcome without options defined');
+    get('/welcome', {agent => qr{Mozilla}} => sub { "hey Mozilla!" });
+
+    get('/welcome' => sub { "hello" });
 }
 
 eval { get '/fail', { false_option => 42 } => sub { } };
@@ -35,9 +27,9 @@ my @tests = (
     {method => 'GET', path => '/',    expected => 'agent foo', agent => 'foo'},
     {method => 'GET', path => '/',    expected => 'agent bar',  agent => 'bar'},
     {method => 'GET', path => '/',    expected => 'all agents'},
-    
+
     {method => 'GET', path => '/foo', expected => 'foo only',  agent => 'foo'},
-    
+
     {   method   => 'GET',
         path     => '/welcome',
         expected => 'hey Mozilla!',
@@ -50,9 +42,9 @@ my @tests = (
 foreach my $test (@tests) {
     $ENV{HTTP_USER_AGENT} = $test->{agent} || undef;
     my $req = [$test->{method} => $test->{path}];
-    
+
     route_exists $req;
-    response_exists $req;
+    response_status_is  $req => 200;
     response_content_is $req, $test->{expected};
 }
 

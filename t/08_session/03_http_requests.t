@@ -5,17 +5,20 @@ use warnings;
 BEGIN {
     use Dancer::ModuleLoader;
 
+    plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
+
     plan skip_all => 'Test::TCP is needed to run this test'
-        unless Dancer::ModuleLoader->load('Test::TCP');
+        unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
     plan skip_all => 'YAML is needed to run this test'
         unless Dancer::ModuleLoader->load('YAML');
+    plan skip_all => "File::Temp 0.22 required"
+        unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 }
 
 use LWP::UserAgent;
 
 use File::Spec;
-use File::Temp 'tempdir';
-my $tempdir = tempdir(CLEANUP => 1, TMPDIR => 1);
+my $tempdir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 
 use Dancer;
 use Dancer::Logger;
@@ -49,8 +52,8 @@ Test::TCP::test_tcp(
             ok($res->is_success, "set_session for client $client");
 
             $res = $ua->get("http://127.0.0.1:$port/read_session");
-            like $res->content, qr/name='$client'/, 
-            "session looks good for client $client"; 
+            like $res->content, qr/name='$client'/,
+            "session looks good for client $client";
 
         }
 
@@ -67,10 +70,10 @@ Test::TCP::test_tcp(
         setting appdir => $tempdir;
         Dancer::Logger->init('File');
         ok(setting(session => $engine), "using engine $engine");
-        setting show_errors => 1;
-        setting access_log => 0;
-        setting environment => 'production';
-        setting port => $port;
+        set( show_errors  => 1,
+             startup_info => 0,
+             environment  => 'production',
+             port         => $port );
         Dancer->dance();
     },
 );

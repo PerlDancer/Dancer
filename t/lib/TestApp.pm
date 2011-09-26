@@ -71,4 +71,8 @@ get '/unicode' => sub {
     "cyrillic shcha \x{0429}",
 };
 
+get '/forward_to_unavailable_route' => sub {
+    forward "/some_route_that_does_not_exist"
+};
+
 true;

@@ -5,33 +5,39 @@ use warnings;
 use Carp;
 use base 'Dancer::Session::Abstract';
 
+use Fcntl ':flock';
 use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path set_file_mode);
-use File::Copy;
-use File::Temp qw(tempfile);
 
 # static
+
+my %session_dir_initialized;
 
 sub init {
     my $self = shift;
     $self->SUPER::init(@_);
 
-    croak "YAML is needed and is not installed"
-      unless Dancer::ModuleLoader->load('YAML');
+    if (!keys %session_dir_initialized) {
+        croak "YAML is needed and is not installed"
+          unless Dancer::ModuleLoader->load('YAML');
+    }
 
     # default value for session_dir
     setting('session_dir' => path(setting('appdir'), 'sessions'))
       if not defined setting('session_dir');
 
-    # make sure session_dir exists
     my $session_dir = setting('session_dir');
-    if (!-d $session_dir) {
-        mkdir $session_dir
-          or croak "session_dir $session_dir cannot be created";
+    if (! exists $session_dir_initialized{$session_dir}) {
+        $session_dir_initialized{$session_dir} = 1;
+        # make sure session_dir exists
+        if (!-d $session_dir) {
+            mkdir $session_dir
+              or croak "session_dir $session_dir cannot be created";
+        }
+        Dancer::Logger::core("session_dir : $session_dir");
     }
-    Dancer::Logger::core("session_dir : $session_dir");
 }
 
 # create a new session and return the newborn object
@@ -44,12 +50,25 @@ sub create {
     return $self;
 }
 
+# deletes the dir cache
+sub reset {
+    my ($class) = @_;
+    %session_dir_initialized = ();
+}
+
 # Return the session object corresponding to the given id
 sub retrieve {
     my ($class, $id) = @_;
+    my $session_file = yaml_file($id);
 
-    return unless -f yaml_file($id);
-    return YAML::LoadFile(yaml_file($id));
+    return unless -f $session_file;
+
+    open my $fh, '+<', $session_file or die "Can't open '$session_file': $!\n";
+    flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
+    my $content = YAML::LoadFile($fh);
+    close $fh or die "Can't close '$session_file': $!\n";
+
+    return $content;
 }
 
 # instance
@@ -57,11 +76,6 @@ sub retrieve {
 sub yaml_file {
     my ($id) = @_;
     return path(setting('session_dir'), "$id.yml");
-}
-
-sub tmp_yaml_file {
-    my ($id) = @_;
-    return path(setting('session_dir'), "$id.tmp");
 }
 
 sub destroy {
@@ -73,13 +87,15 @@ sub destroy {
 }
 
 sub flush {
-    my $self = shift;
-    my ( $fh, $tmpname ) =
-      tempfile( $self->id . '.XXXXXXXX', DIR => setting('session_dir') );
+    my $self         = shift;
+    my $session_file = yaml_file( $self->id );
+
+    open my $fh, '>', $session_file or die "Can't open '$session_file': $!\n";
+    flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
     set_file_mode($fh);
     print {$fh} YAML::Dump($self);
-    close $fh;
-    move($tmpname, yaml_file($self->id));
+    close $fh or die "Can't close '$session_file': $!\n";
+
     return $self;
 }
 
@@ -116,6 +132,19 @@ files in /tmp/dancer-sessions
 
     session: "YAML"
     session_dir: "/tmp/dancer-sessions"
+
+=head1 METHODS
+
+=head2 reset
+
+to avoid checking if the sessions directory exists everytime a new session is
+created, this module maintains a cache of session directories it has already
+created. C<reset> wipes this cache out, forcing a test for existence
+of the sessions directory next time a session is created. It takes no argument.
+
+This is particulary useful if you want to remove the sessions directory on the
+system where your app is running, but you want this session engine to continue
+to work without having to restart your application.
 
 =head1 DEPENDENCY
 

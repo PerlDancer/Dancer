@@ -5,7 +5,9 @@ use warnings FATAL => 'all';
 
 use Dancer::Request;
 
-my $custom_env = { 
+my $custom_env = {
+    'SERVER_PORT'    => 3000,
+    SERVER_PROTOCOL  => 'http',
     'QUERY_STRING'   => 'foo=bar',
     'PATH_INFO'      => '/stuff',
     'REQUEST_METHOD' => 'GET',
@@ -20,12 +22,16 @@ my $custom_env = {
     'HTTP_CONNECTION' => 'keep-alive; keep-alive',
 };
 my @http_env = grep /^HTTP_/, keys (%$custom_env);
-plan tests => 3 + (2 * scalar(@http_env));
+plan tests => 6 + (2 * scalar(@http_env));
 
-my $req = Dancer::Request->new($custom_env);
+my $req = Dancer::Request->new(env => $custom_env);
 is $req->path, '/stuff', 'path is set from custom env';
 is $req->method, 'GET', 'method is set from custom env';
 is_deeply scalar($req->params), {foo => 'bar'}, 'params are set from custom env';
+
+is $req->port, 3000, 'port is ok';
+is $req->protocol, 'http', 'protocol is ok';
+ok !$req->secure, 'not https';
 
 foreach my $http (@http_env) {
     my $key = lc $http;
@@ -33,3 +39,4 @@ foreach my $http (@http_env) {
     is $req->{$key}, $custom_env->{$http}, "$http is found in request ($key)";
     is $req->$key, $custom_env->{$http}, "$key is an accessor";
 }
+

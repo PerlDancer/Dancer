@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp;
 use Dancer::ModuleLoader;
+use Dancer::Config 'setting';
 use base 'Dancer::Serializer::Abstract';
 
 # singleton for the XML::Simple object
@@ -45,13 +46,31 @@ sub init {
 sub serialize {
     my $self    = shift;
     my $entity  = shift;
-    my %options = (RootName => 'data', @_);
+    my %options = (RootName => 'data');
+
+    my $s = setting('engines') || {};
+    if (exists($s->{XMLSerializer}) && exists($s->{XMLSerializer}{serialize})) {
+        %options = (%options, %{$s->{XMLSerializer}{serialize}});
+    }
+
+    %options = (%options, @_);
+
+
     $_xs->XMLout($entity, %options);
 }
 
 sub deserialize {
     my $self = shift;
-    $_xs->XMLin(@_);
+    my $xml = shift;
+    my %options = ();
+
+    my $s = setting('engines') || {};
+    if (exists($s->{XMLSerializer}) && exists($s->{XMLSerializer}{deserialize})) {
+        %options = (%options, %{$s->{XMLSerializer}{deserialize}});
+    }
+
+    %options = (%options, @_);
+    $_xs->XMLin($xml, %options);
 }
 
 sub content_type {'text/xml'}
@@ -69,18 +88,26 @@ Dancer::Serializer::XML - serializer for handling XML data
 
 =head2 METHODS
 
-=over 4
-
-=item B<serialize>
+=head2 serialize
 
 Serialize a data structure to a XML structure.
 
-=item B<deserialize>
+=head2 deserialize
 
 Deserialize a XML structure to a data structure
 
-=item B<content_type>
+=head2 content_type
 
 Return 'text/xml'
 
-=back
+=head2 CONFIG FILE
+
+You can set XML::Simple options for serialize and deserialize in the
+config file:
+
+   engines:
+      XMLSerializer:
+        serialize:
+           AttrIndent: 1
+        deserialize:
+           ForceArray: 1

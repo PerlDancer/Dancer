@@ -29,21 +29,20 @@ is $app->setting('foo'), 42,
     setting foo => "root";
 
     get '/root_action' => sub {
-        return { 
-        onlyroot => setting('onlyroot'),
-        foo => setting('foo'),
-        onlyapp => setting('onlyapp') 
-    };
-
+        return {
+                onlyroot => setting('onlyroot'),
+                foo => setting('foo'),
+                onlyapp => setting('onlyapp') 
+               };
     };
 
     use File::Spec;
     use lib File::Spec->catdir( 't', 'lib' );
-    load_app 'TestApp', 
-        settings => { 
-            foo => 'testapp',
-            onlyapp => '43',
-        };
+    load_app 'TestApp',
+      settings => {
+                   foo => 'testapp',
+                   onlyapp => '43',
+                  };
 }
 
 
