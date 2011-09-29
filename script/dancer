@@ -20,7 +20,7 @@ my $path = '.';
 
 sub templates($);
 sub app_tree($);
-sub create_node($;$);
+sub create_node($;$$);
 
 GetOptions(
     "h|help"          => \$help,
@@ -52,7 +52,7 @@ my $DANCER_VERSION   = $Dancer::VERSION;
 
 version_check() if $do_check_dancer_version;
 safe_mkdir($DANCER_APP_DIR);
-create_node( app_tree($name), $DANCER_APP_DIR );
+create_node( app_tree($name), $DANCER_APP_DIR, $name );
 
 unless (eval "require YAML") {
     print <<NOYAML;
@@ -107,8 +107,8 @@ sub _dash_name {
     $name;
 }
 
-sub create_node($;$) {
-    my ($node, $root) = @_;
+sub create_node($;$$) {
+    my ($node, $root, $name) = @_;
     $root ||= '.';
 
     my $manifest_name = catfile($root => 'MANIFEST');
@@ -123,12 +123,12 @@ sub create_node($;$) {
     };
 
     $add_to_manifest->($manifest_name);
-    _create_node($add_to_manifest, $node, $root);
+    _create_node($add_to_manifest, $node, $root, $name);
     close $manifest;
 }
 
 sub _create_node {
-    my ($add_to_manifest, $node, $root) = @_;
+    my ($add_to_manifest, $node, $root, $name) = @_;
 
     my $templates = templates($name);
 
@@ -137,7 +137,7 @@ sub _create_node {
 
         if (ref($content) eq 'HASH') {
             safe_mkdir($path);
-            _create_node($add_to_manifest, $content, $path);
+            _create_node($add_to_manifest, $content, $path, $name);
         } elsif (ref($content) eq 'CODE') {
             # The content is a coderef, which, given the path to the file it
             # should create, will do the appropriate thing:
