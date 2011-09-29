@@ -13,7 +13,7 @@ use Dancer::Renderer;
 use LWP::UserAgent;
 use constant FILE => 1;
 
-my $TEMPLATES_DIR = "$ENV{HOME}/.dancer_templates";
+my $TEMPLATES_DIR = "$ENV{HOME}/.dancer/templates";
 
 # options
 my $help = 0;
@@ -84,7 +84,9 @@ NOYAML
 
 sub create_app_from_template {
     my ($template_name, $appdir, $appname) = @_;
-    my $template_base = catfile($TEMPLATES_DIR, $template_name);
+    my $template_base = $template_name =~ m!^/! 
+                      ? $template_name 
+                      : catfile($TEMPLATES_DIR, $template_name);
     unless (-e $template_base) {
         die "No template named $template_name found in $TEMPLATES_DIR\n";
     }
