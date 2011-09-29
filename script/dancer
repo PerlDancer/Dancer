@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Dancer::Template::Simple;
 use File::Basename 'basename', 'dirname';
+use File::Find;
 use File::Path 'mkpath';
 use File::Spec::Functions;
 use Getopt::Long;
@@ -12,11 +13,14 @@ use Dancer::Renderer;
 use LWP::UserAgent;
 use constant FILE => 1;
 
+my $TEMPLATES_DIR = "$ENV{HOME}/.dancer_templates";
+
 # options
 my $help = 0;
 my $do_check_dancer_version = 1;
 my $name = undef;
 my $path = '.';
+my $template_name;
 
 sub templates($);
 sub app_tree($);
@@ -26,6 +30,7 @@ GetOptions(
     "h|help"          => \$help,
     "a|application=s" => \$name,
     "p|path=s"        => \$path,
+    "t|template=s"    => \$template_name,
     "x|no-check"      => sub { $do_check_dancer_version = 0 },
     "v|version"       => \&version,
 ) or pod2usage( -verbose => 1 );
@@ -52,7 +57,11 @@ my $DANCER_VERSION   = $Dancer::VERSION;
 
 version_check() if $do_check_dancer_version;
 safe_mkdir($DANCER_APP_DIR);
-create_node( app_tree($name), $DANCER_APP_DIR, $name );
+if (defined $template_name) {
+    create_app_from_template( $template_name, $DANCER_APP_DIR, $name );
+} else {
+    create_node( app_tree($name), $DANCER_APP_DIR, $name );
+}
 
 unless (eval "require YAML") {
     print <<NOYAML;
@@ -72,6 +81,28 @@ NOYAML
 }
 
 # subs
+
+sub create_app_from_template {
+    my ($template_name, $appdir, $appname) = @_;
+    my $template_base = catfile($TEMPLATES_DIR, $template_name);
+    unless (-e $template_base) {
+        die "No template named $template_name found in $TEMPLATES_DIR\n";
+    }
+    find({ no_chdir => 1, wanted => sub {
+        return if $File::Find::name eq $template_base;
+        (my $path = $File::Find::name) =~ s{^$template_base/}{};
+        $path =~ s/APPNAME/$appname/g;
+        my $appfile = catfile($appdir, $path);
+        if (-d $File::Find::name) { safe_mkdir($appfile); return }
+        my $template = do { local (@ARGV,$/) = $File::Find::name; <> };
+        write_file($appfile, $template, {
+            appdir  => File::Spec->rel2abs($appdir),
+            appname => $appname,
+        });
+        # Match the mode of the template file
+        chmod +(stat($File::Find::name))[2], $appfile;
+    }}, $template_base);
+}
 
 sub validate_app_name {
     my $name = shift;
