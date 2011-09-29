@@ -241,8 +241,8 @@ sub write_file {
 sub process_template {
     my ($template, $tokens) = @_;
     my $engine = Dancer::Template::Simple->new;
-    $engine->{start_tag} = '[%';
-    $engine->{stop_tag} = '%]';
+    $engine->{start_tag} = '[[%%';
+    $engine->{stop_tag} = '%%]]';
     return $engine->render(\$template, $tokens);
 }
 
@@ -335,7 +335,7 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More' => 0,
         'YAML'       => 0,
-        'Dancer'     => [% dancer_version %],
+        'Dancer'     => [[%% dancer_version %%]],
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => '$cleanfiles-*' },
@@ -385,7 +385,7 @@ WriteMakefile(
             <h3>Your application\'s environment</h3>
 
             <ul>
-                <li>Location: <code>[% appdir %]</code></li>
+                <li>Location: <code>[[%% appdir %%]]</code></li>
                 <li>Template engine: <code><% settings.template %></code></li>
                 <li>Logger: <code><% settings.logger %></code></li>
                 <li>Environment: <code><% settings.environment %></code></li>
@@ -425,7 +425,7 @@ WriteMakefile(
                 </tr>
                 <tr>
                     <td>Appdir</td>
-                    <td><tt>[% appdir %]</tt></td>
+                    <td><tt>[[%% appdir %%]]</tt></td>
                 </tr>
                 <tr>
                     <td>Template engine</td>
