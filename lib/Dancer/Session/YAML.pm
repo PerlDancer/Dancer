@@ -10,6 +10,7 @@ use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path set_file_mode);
+use YAML::XS;
 
 # static
 
@@ -19,10 +20,10 @@ sub init {
     my $self = shift;
     $self->SUPER::init(@_);
 
-    if (!keys %session_dir_initialized) {
-        croak "YAML is needed and is not installed"
-          unless Dancer::ModuleLoader->load('YAML');
-    }
+#    if (!keys %session_dir_initialized) {
+#        croak "YAML is needed and is not installed"
+#          unless Dancer::ModuleLoader->load('YAML');
+#    }
 
     # default value for session_dir
     setting('session_dir' => path(setting('appdir'), 'sessions'))
@@ -65,7 +66,7 @@ sub retrieve {
 
     open my $fh, '+<', $session_file or die "Can't open '$session_file': $!\n";
     flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
-    my $content = YAML::LoadFile($fh);
+    my $content = YAML::XS::LoadFile($fh);
     close $fh or die "Can't close '$session_file': $!\n";
 
     return $content;
@@ -93,7 +94,9 @@ sub flush {
     open my $fh, '>', $session_file or die "Can't open '$session_file': $!\n";
     flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
     set_file_mode($fh);
-    print {$fh} YAML::Dump($self);
+	my $data = YAML::XS::Dump($self);
+	Encode::_utf8_on($data);
+    print {$fh} $data;
     close $fh or die "Can't close '$session_file': $!\n";
 
     return $self;
