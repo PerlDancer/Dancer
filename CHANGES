@@ -1,3 +1,13 @@
+1.3079_04   02.10.2011
+
+    [ ENHANCEMENTS ]
+    * PSGI handler code cleaned up (chromatic).
+    * Improved warning localizations (chromatic).
+
+    [ DOCUMENTATION ]
+    * Dancer::Plugins typos (Olof Johansson).
+    * PSGI handler documented (chromatic).
+
 1.3079_03   10.09.2011
 
     [ ENHANCEMENTS ]
