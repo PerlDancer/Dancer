@@ -1,4 +1,5 @@
 1.3079_04   02.10.2011
+
     [ ENHANCEMENTS ]
     * PSGI handler code cleaned up (chromatic).
     * Improved warning localizations (chromatic).
