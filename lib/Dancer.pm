@@ -27,6 +27,9 @@ use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::MIME;
 
+use Dancer::Continuation::Route::Forwarded;
+use Dancer::Continuation::Route::Passed;
+
 use File::Spec;
 
 use base 'Exporter';
@@ -132,7 +135,10 @@ sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub false           { 0 }
-sub forward         { Dancer::SharedData->response->forward(@_) }
+sub forward         { Dancer::SharedData->response->forward(@_);
+                      # throw a special continuation exception
+                      Dancer::Continuation::Route::Forwarded->new->throw;
+                    }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
@@ -158,7 +164,10 @@ sub mime            { Dancer::MIME->instance() }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub param           { params->{$_[0]} }
-sub pass            { Dancer::SharedData->response->pass(1) }
+sub pass            { Dancer::SharedData->response->pass(1);
+                      # throw a special continuation exception
+                      Dancer::Continuation::Route::Passed->new->throw;
+                    }
 sub patch            { Dancer::App->current->registry->universal_add('patch', @_) }
 sub path            { Dancer::FileUtils::path(@_) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }

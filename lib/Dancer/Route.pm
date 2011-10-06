@@ -10,6 +10,7 @@ use Dancer::Logger;
 use Dancer::Config 'setting';
 use Dancer::Request;
 use Dancer::Response;
+use Dancer::Exception qw(:all);
 
 Dancer::Route->attributes(
     qw(
@@ -166,7 +167,17 @@ sub validate_options {
 sub run {
     my ($self, $request) = @_;
 
-    my $content  = $self->execute();
+    my $content = try {
+        $self->execute();
+    } continuation {
+        my ($continuation) = @_;
+        # route related continuation
+        $continuation->isa('Dancer::Continuation::Route')
+          or $continuation->rethrow();
+    } catch {
+        my ($exception) = @_;
+        die $exception;
+    };
     my $response = Dancer::SharedData->response;
 
     if ( $response && $response->is_forwarded ) {
