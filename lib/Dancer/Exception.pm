@@ -106,7 +106,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Exception - class for throwing and catching exceptions and continuations
+Dancer::Exception - class for throwing and catching exceptions
 
 =head1 SYNOPSIS
 
@@ -137,8 +137,8 @@ Dancer::Exception - class for throwing and catching exceptions and continuations
 
 =head1 DESCRIPTION
 
-Dancer::Exception is based on L<Try::Tiny>. With this module (and
-Dancer::Continuation) you can try and catch exceptions, like in L<Try::Tiny>.
+Dancer::Exception is based on L<Try::Tiny>. You can try and catch exceptions,
+like in L<Try::Tiny>.
 
 Exceptions are objects, from subclasses of L<Dancer::Exception::Base>.
 
@@ -146,7 +146,7 @@ However, for internal Dancer usage, we introduce a special class of exceptions,
 called L<Dancer::Continuation>. Exceptions that are from this class are not
 caught with a C<catch> block, but only with a C<continuation>. That's a cheap
 way to implement a I<workkflow interruption>. Dancer users should dafely ignore
-this feature
+this feature.
 
 =head2 What it means for Dancer users
 
@@ -155,12 +155,6 @@ some Dancer core exceptions (C<Dancer::Exception::Base::*>), but they can also
 create new exception classes, and use them for their own usage. That way it's
 easy to use custom exceptions in a Dancer application. Have a look at
 C<register_exception>, C<raise>, and the methods in L<Dancer::Exception::Base>.
-
-=head2 What it means for Dancer developers
-
-Developers have the tool to implement the fact that calling keywords like C<halt> or
-C<forward> would immediately exit the route in which they are called, without
-the need of prefixing them with C<return>.
 
 =head1 METHODS
 
@@ -194,10 +188,10 @@ implementation.
 
 If the exception calss name starts with a C<+>, then the
 C<Dancer::Exception::Base::> won't be added. This allows to build their own
-exception class herarchy, but you should first look at C<register_exception>.
-If you wish to build your own exception class hierarchy, we recommend that all
-exceptions inherits of L<Dancer::Exception::Base>. Or at least it should
-implement its methods
+exception class herarchy, but you should first look at C<register_exception>
+before implementing your own class hierarchy. If you really wish to build your
+own exception class hierarchy, we recommend that all exceptions inherits of
+L<Dancer::Exception::Base>. Or at least it should implement its methods
 
 =head2 register_exception
 
