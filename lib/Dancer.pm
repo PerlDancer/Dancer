@@ -775,20 +775,21 @@ reached. If it was a B<GET>, it will remain a B<GET>.
 
 Broader functionality might be added in the future.
 
-It is important to note that issuing a forward by itself does not exit and
-forward immediately, forwarding is deferred until after the current route
-or filter has been processed. To exit and forward immediately, use the return
-function, e.g.
+B<WARNING> : Issuing a forward immediately exits the current route,
+and perform the forward. Thus, any code after a forward is ignored, until the
+end of the route. e.g.
 
     get '/some/path => sub {
         if ($condition) {
-            return forward '/articles/$article_id';
+            forward '/articles/$article_id';
+            # The following code is never executed
+            do_stuf();
         }
 
         more_stuff();
     };
 
-You probably always want to use C<return> with forward.
+So it's not necessary anymore to use C<return> with forward.
 
 Note that forward doesn't parse GET arguments. So, you can't use
 something like:
@@ -846,13 +847,19 @@ renders the response immediately:
 
     before sub {
         if ($some_condition) {
-            return halt("Unauthorized");
+            halt("Unauthorized");
+            # This code is not executed :
+            do_stuff();
         }
     };
 
     get '/' => sub {
         "hello there";
     };
+
+B<WARNING> : Issuing a halt immediately exits the current route, and perform
+the halt. Thus, any code after a halt is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with halt.
 
 =head2 headers
 
@@ -1147,12 +1154,16 @@ I<This method should be called from a route handler>.
 Tells Dancer to pass the processing of the request to the next
 matching route.
 
-You should always C<return> after calling C<pass>:
+B<WARNING> : Issuing a pass immediately exits the current route, and perform
+the pass. Thus, any code after a pass is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with pass.
 
     get '/some/route' => sub {
         if (...) {
             # we want to let the next matching route handler process this one
-            return pass();
+            pass(...);
+            # This code will be ignored
+            do_stuff();
         }
     };
 
@@ -1312,10 +1323,18 @@ Returns a HTTP error.  By default the HTTP code returned is 500:
         }
     }
 
-This will not cause your route handler to return immediately, so be careful that
-your route handler doesn't then override the error.  You can avoid that by
-saying C<return send_error(...)> instead.
+B<WARNING> : Issuing a send_error immediately exits the current route, and perform
+the send_error. Thus, any code after a send_error is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with send_error.
 
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            send_error(..);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
 
 =head2 send_file
 
@@ -1326,6 +1345,19 @@ the C<system_path> option (see below).
     get '/download/:file' => sub {
         return send_file(params->{file});
     }
+
+B<WARNING> : Issuing a send_file immediately exits the current route, and perform
+the send_file. Thus, any code after a send_file is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with send_file.
+
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            send_file(...);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
 
 Send file supports streaming possibility using PSGI streaming. The server should
 support it but normal streaming is supported on most, if not all.
@@ -1597,6 +1629,20 @@ Tells the route handler to build a response with the current template engine:
         ...
         template 'some_view', { token => 'value'};
     };
+
+B<WARNING> : Issuing a template immediately exits the current route, and perform
+the template. Thus, any code after a template is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with template.
+
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            template(...);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
+
 
 The first parameter should be a template available in the views directory, the
 second one (optional) is a HashRef of tokens to interpolate, and the third
