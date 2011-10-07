@@ -102,8 +102,6 @@ sub halt {
             halted => 1,
         );
     }
-    # throw a special continuation exception
-    Dancer::Continuation::Halted->new->throw;
 }
 
 sub halted {
