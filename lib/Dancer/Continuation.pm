@@ -4,7 +4,10 @@ use strict;
 use warnings;
 use Carp;
 
-sub new { bless {}, shift }
+sub new {
+    my $class = shift;
+    bless { @_ }, $class;
+}
 
 sub throw { die shift }
 

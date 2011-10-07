@@ -174,8 +174,13 @@ sub run {
         # route related continuation
         $continuation->isa('Dancer::Continuation::Route')
           or $continuation->rethrow();
+        # If the continuation carries some content, get it
+        my $content = $continuation->return_value();
+        defined $content or return; # to avoid returning undef;
+        return $content;
     } catch {
         my ($exception) = @_;
+        # all other exceptions (dancer or not) are rethrown
         die $exception;
     };
     my $response = Dancer::SharedData->response;

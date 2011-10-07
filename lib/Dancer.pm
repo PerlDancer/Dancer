@@ -27,8 +27,12 @@ use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::MIME;
 
+use Dancer::Continuation::Halted;
 use Dancer::Continuation::Route::Forwarded;
 use Dancer::Continuation::Route::Passed;
+use Dancer::Continuation::Route::ErrorSent;
+use Dancer::Continuation::Route::FileSent;
+use Dancer::Continuation::Route::Templated;
 
 use File::Spec;
 
@@ -144,7 +148,10 @@ sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
 sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
-sub halt            { Dancer::SharedData->response->halt(@_) }
+sub halt            { Dancer::SharedData->response->halt(@_);
+                      # throw a special continuation exception
+                      Dancer::Continuation::Halted->new->throw;
+                    }
 sub header          { goto &headers }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
@@ -176,8 +183,16 @@ sub put             { Dancer::App->current->registry->universal_add('put',     @
 sub redirect        { goto &_redirect }
 sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
-sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
-sub send_file       { goto &_send_file }
+sub send_error      { Dancer::Continuation::Route::ErrorSent->new(
+                          return_value => Dancer::Error->new(
+                              message => $_[0],
+                              code => $_[1] || 500)->render()
+                      )->throw }
+#sub send_file       { goto &_send_file }
+sub send_file       { Dancer::Continuation::Route::FileSent->new(
+                          return_value => _send_file(@_)
+                      )->throw
+                    }
 sub set             { goto &setting }
 sub set_cookie      { Dancer::Cookies->set_cookie(@_) }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
@@ -185,7 +200,9 @@ sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
 sub start           { goto &_start }
 sub status          { Dancer::SharedData->response->status(@_) }
-sub template        { Dancer::Template::Abstract->template(@_) }
+sub template        { Dancer::Continuation::Route::Templated->new(
+                          return_value => Dancer::Template::Abstract->template(@_)
+                      )->throw }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
 sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
