@@ -1,6 +1,8 @@
 
-    [ ENHANCEMENTS ]
+    [ BUG FIXES ]
     * Minor corrections (jamhed, felixdo)
+    * Log if a view and or a layout is not found (Alberto Simões, reported
+      by David Previous)
 
 1.3079_04   02.10.2011
 
@@ -24,8 +26,6 @@
       config file - Issue 643 (David Precious, reported by meraxes)
     * Don't require a space after semi-colon delimiting multiple name=value
       cookie pairs - Issue 642 (David Precious, reported by travisbeck)
-    * Log if a view and or a layout is not found (Alberto Simões, reported
-      by David Previous)
 
 1.3079_02   28.08.2011
 
