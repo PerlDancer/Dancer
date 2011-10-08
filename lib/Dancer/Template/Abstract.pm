@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
+use Dancer::Logger;
 use Dancer::Factory::Hook;
 use Dancer::FileUtils 'path';
 
@@ -41,9 +42,14 @@ sub layout {
     my $layout_name = $self->_template_name($layout);
     my $layout_path = path(Dancer::App->current->setting('views'), 'layouts', $layout_name);
 
-    my $full_content =
-      Dancer::Template->engine->render($layout_path,
-        {%$tokens, content => $content});
+    my $full_content;
+    if (-e $layout_path) {
+        $full_content = Dancer::Template->engine->render(
+                                     $layout_path, {%$tokens, content => $content});
+    } else {
+        $full_content = $content;
+        Dancer::Logger::error("Defined layout ($layout_name) was not found!");
+    }
     $full_content;
 }
 
@@ -126,16 +132,31 @@ sub template {
     my ($class, $view, $tokens, $options) = @_;
     my ($content, $full_content);
 
+    my $engine = Dancer::Template->engine;
+
     # it's important that $tokens is not undef, so that things added to it via
     # a before_template in apply_renderer survive to the apply_layout. GH#354
     $tokens  ||= {};
     $options ||= {};
 
-    $content = $view ? Dancer::Template->engine->apply_renderer($view, $tokens)
-                     : delete $options->{content};
+    if ($view) {
+        # check if the requested view exists
+        my $view_path = $engine->view($view);
+        if (-e $view_path) {
+            $content = $engine->apply_renderer($view, $tokens);
+        } else {
+            Dancer::Logger::error("Supplied view ($view) was not found.");
+            return Dancer::Error->new(
+                          code => 500,
+                          message => 'view not found',
+                   )->render();
+        }
+    } else {
+        $content = delete $options->{content};
+    }
 
     defined $content and $full_content =
-      Dancer::Template->engine->apply_layout($content, $tokens, $options);
+      $engine->apply_layout($content, $tokens, $options);
 
     defined $full_content
       and return $full_content;
