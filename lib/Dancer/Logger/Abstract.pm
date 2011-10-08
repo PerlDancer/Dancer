@@ -61,7 +61,7 @@ sub format_message {
     chomp $message;
 
     if (setting('charset')) {
-        unless (setting('charset') eq "UTF-8" && Encode::is_utf8($message)) {
+        unless (uc setting('charset') eq "UTF-8" && Encode::is_utf8($message)) {
             $message = Encode::encode(setting('charset'), $message);
         }
     }
