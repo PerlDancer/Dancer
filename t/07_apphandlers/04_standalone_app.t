@@ -38,12 +38,8 @@ Test::TCP::test_tcp(
         use lib File::Spec->catdir( 't', 'lib' );
         use TestApp;
         Dancer::Config->load;
-        set( environment  => 'production',
-             startup_info => 0,
-             port         => $port,
-             apphandler   => 'PSGI');
-        my $app = Dancer::Handler->psgi_app;
-        Plack::Loader->auto( port => $port)->run($app);
+        set( port         => $port,
+             startup_info => 0 );
         Dancer->dance();
     },
 );
