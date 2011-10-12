@@ -14,8 +14,13 @@ use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 use Dancer::Exception qw(:all);
+use Dancer::Factory::Hook;
 
 use Encode;
+
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/on_handler_exception/
+);
 
 # This is where we choose which application handler to return
 sub get_handler {
@@ -89,6 +94,7 @@ sub render_request {
         Dancer::Serializer->process_response(Dancer::SharedData->response);
     } catch {
         my ($exception) = @_;
+        Dancer::Factory::Hook->execute_hooks('on_handler_exception', $exception);
         Dancer::Logger::error(
           'request to ' . $request->path_info . " crashed: $exception");
 

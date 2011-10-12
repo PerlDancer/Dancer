@@ -1091,6 +1091,28 @@ This hook receives as argument a L<Dancer::Response> object.
 
 =back
 
+=item on_handler_exception
+
+This hook is called when an exception has been caught, at the handler level,
+just before creating and rendering L<Dancer::Error>. This hook receives as
+argument a L<Dancer::Exception> object.
+
+  hook on_handler_exception => sub {
+    my $exception = shift;
+  };
+
+=item on_route_exception
+
+This hook is called when an exception has been caught, at the route level, just
+before rethrowing it higher. This hook receives the exception as argument. It
+can be a Dancer::Exception, or a string, or whatever was used to C<die>.
+
+  hook on_route_exception => sub {
+    my $exception = shift;
+  };
+
+=back
+
 =head2 layout
 
 This method is deprecated. Use C<set>:
