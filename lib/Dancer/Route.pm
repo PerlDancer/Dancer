@@ -11,6 +11,7 @@ use Dancer::Config 'setting';
 use Dancer::Request;
 use Dancer::Response;
 use Dancer::Exception qw(:all);
+use Dancer::Factory::Hook;
 
 Dancer::Route->attributes(
     qw(
@@ -25,6 +26,10 @@ Dancer::Route->attributes(
       options
       match_data
       )
+);
+
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/on_route_exception/
 );
 
 # supported options and aliases
@@ -180,7 +185,7 @@ sub run {
         return $content;
     } catch {
         my ($exception) = @_;
-        # all other exceptions (dancer or not) are rethrown
+        Dancer::Factory::Hook->execute_hooks('on_route_exception', $exception);
         die $exception;
     };
     my $response = Dancer::SharedData->response;
