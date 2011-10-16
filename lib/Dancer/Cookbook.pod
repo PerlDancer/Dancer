@@ -449,6 +449,14 @@ wouldn't store your users passwords in the clear, would you?)) follows:
 
 
 
+=head3 Retrieve complete hash stored in session
+
+Get complete hash stored in session:
+
+    my $hash = session;
+
+
+
 =head1 APPEARANCE
 
 =head2 Using templates - views and layouts
