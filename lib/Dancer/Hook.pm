@@ -18,7 +18,7 @@ sub new {
     my $self = bless {}, $class;
 
     if (!scalar @args) {
-        croak "one name and a coderef are required";
+        raise core_hook => "one name and a coderef are required";
     }
 
     my $hook_name = shift @args;
@@ -42,10 +42,10 @@ sub new {
         $code       = shift @args;
     }
     else {
-        croak "something's wrong with parameters passed to Hook constructor";
+        raise core_hook => "something's wrong with parameters passed to Hook constructor";
     }
     ref $code eq 'CODE'
-      or croak "the code argument passed to hook construction was not a CodeRef. Value was : '$code'";
+      or raise core_hook => "the code argument passed to hook construction was not a CodeRef. Value was : '$code'";
 
 
     my $compiled_filter = sub {

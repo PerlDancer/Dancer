@@ -2,7 +2,7 @@ package Dancer::Handler;
 
 use strict;
 use warnings;
-use Carp 'croak';
+use Carp;
 
 use File::stat;
 use HTTP::Headers;
@@ -40,7 +40,7 @@ sub get_handler {
 
     # load the app handler
     my ($loaded, $error) = Dancer::ModuleLoader->load($handler);
-    croak "Unable to load app handler `$handler': $error" if $error;
+    raise core_handler => "Unable to load app handler `$handler': $error" if $error;
 
     # OK, everything's fine, load the handler
     Dancer::Logger::core('loading ' . $handler . ' handler');

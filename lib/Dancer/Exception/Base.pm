@@ -6,7 +6,15 @@ use Carp;
 
 use base qw(Exporter);
 
-use overload '""' => sub { $_[0]->message };
+use Dancer::Exception;
+
+use overload '""' => sub {
+    my ($self) = @_;
+    $self->message
+      . ( $Dancer::Exception::Verbose ? $self->{_longmess} : $self->{_shortmess});
+};
+
+# string comparison is done without the stack traces
 use overload 'cmp' => sub {
     my ($e, $f) = @_;
     ( ref $e && $e->isa(__PACKAGE__)
@@ -20,7 +28,10 @@ use overload 'cmp' => sub {
 
 sub new {
     my $class = shift;
-    my $self = bless {}, $class;
+    my $self = bless { _raised_arguments => [],
+                       _shortmess => '',
+                       _longmess => '',
+                     }, $class;
     $self->_raised_arguments(@_);
     return $self;
 }
@@ -31,6 +42,12 @@ sub _message_pattern { '%s' }
 sub throw {
     my $self = shift;
     $self->_raised_arguments(@_);
+    local $Carp::CarpInternal;
+    local $Carp::Internal;
+    $Carp::Internal{'Dancer'} ++;
+    $Carp::CarpInternal{'Dancer::Exception'} ++;
+    $self->{_shortmess} = Carp::shortmess;
+    $self->{_longmess} = Carp::longmess;
     die $self;
 }
 
@@ -142,3 +159,50 @@ B<Warning>, the result is a list, so you should call this method in list context
     my @list = $e->get_composition()
     # @list contains ( 'InvalidPassword' )
   };
+
+=head2 message
+
+Computes and returns the message associated to the exception. It'll apply the
+parameters that were set at throw time to the message patterns of all the class
+that composes the exception.
+
+=head1 STRINGIFICATION
+
+=head2 string overloading
+
+All Dancer exceptions properly stringify. When evaluated to a string, they
+return their message, concatenated with their stack trace (see below).
+
+=head2 cmp overloading
+
+The C<cmp> operator is also overloaded, thus all the string operations can be
+done on Dancer's exceptions, as they will all be based on the overloaded C<cmp>
+operator. Dancer exceptions wil be compared B<without> their stacktraces.
+
+=head1 STACKTRACE
+
+Similarly to L<Carp>, Dancer exceptions stringification appends a string
+stacktrace to the exception message.
+
+The stacktrace can be a short one, or a long one. Actually the implementation
+internally uses L<Carp>.
+
+To enable long stack trace (for debugging purpose), you can use the global
+variable C<Dancer::Exception::Verbose> (see below).
+
+The short and long stacktrace snippets are stored within C<$self->{_shortmess}>
+and C<$self->{_longmess}>. Don't touch them or rely on them, they are
+internals, and will change soon.
+
+=head1 GLOBAL VARIABLE
+
+=head2 $Dancer::Exception::Verbose
+
+When set to 1, exceptions will stringify with a long stack trace. This variable
+is similar to C<$Carp::Verbose>. I recommend you use it like that:
+
+  local $Dancer::Exception::Verbose;
+  $Dancer::Exception::Verbose = 1;
+
+All the L<Carp> global variables can also be used to alter the stacktrace
+generation.
