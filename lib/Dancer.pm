@@ -57,6 +57,7 @@ our @EXPORT    = qw(
   header
   headers
   hook
+  http_error
   layout
   load
   load_app
@@ -123,6 +124,7 @@ sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
 sub halt            { Dancer::SharedData->response->halt(@_) }
 sub header          { goto &headers }
+sub http_error      { status($_[0]); return $_[1] || '' }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
 sub hook            { Dancer::Hook->new(@_) }
@@ -1033,6 +1035,26 @@ This hook receives as argument a L<Dancer::Response> object.
   };
 
 =back
+
+=head2 http_error
+
+Syntax sugar that lets you set the error status and body of the response in one
+go.
+
+    post '/user/:id' => sub {
+        return http_error 400 => 'name param is required' unless param 'name';
+        ...
+    }
+
+The above is equivalent to:
+
+    post '/user/:id' => sub {
+        if (not param 'name') {
+            status 400;
+            return 'name param is required';
+        }
+        ...
+    }
 
 =head2 layout
 
