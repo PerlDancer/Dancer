@@ -26,6 +26,7 @@ use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::MIME;
+use Dancer::Exception qw(:all);
 
 use Dancer::Continuation::Halted;
 use Dancer::Continuation::Route::Forwarded;
@@ -274,7 +275,7 @@ sub _load_app {
     # load the application
     _init_script_dir($script);
     my ($res, $error) = Dancer::ModuleLoader->load($app_name);
-    $res or croak "unable to load application $app_name : $error";
+    $res or raise core => "unable to load application $app_name : $error";
 
     # restore the main application
     Dancer::App->set_running_app('main');
@@ -330,7 +331,7 @@ sub _init_script_dir {
       || Dancer::FileUtils::path($appdir, 'views'));
 
     my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path($appdir, 'lib'));
-    $res or croak "unable to set libdir : $error";
+    $res or raise core => "unable to set libdir : $error";
 }
 
 
@@ -353,7 +354,7 @@ sub _redirect {
 
 sub _session {
     engine 'session'
-      or croak "Must specify session engine in settings prior to using 'session' keyword";
+      or raise core => "Must specify session engine in settings prior to using 'session' keyword";
       @_ == 0 ? Dancer::Session->get
     : @_ == 1 ? Dancer::Session->read(@_)
     :           Dancer::Session->write(@_);
@@ -368,8 +369,8 @@ sub _send_file {
 
     # if you asked for streaming but it's not supported in PSGI
     if ( $options{'streaming'} && ! $env->{'psgi.streaming'} ) {
-        # TODO: throw a fit (AKA "exception") or a Dancer::Error (or croak)?
-        croak 'Sorry, streaming is not supported on this server.';
+        # TODO: throw a fit (AKA "exception") or a Dancer::Error?
+        raise core => 'Sorry, streaming is not supported on this server.';
     }
 
     if (exists($options{content_type})) {

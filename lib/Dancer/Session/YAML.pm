@@ -10,6 +10,7 @@ use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(path set_file_mode);
+use Dancer::Exception qw(:all);
 
 # static
 
@@ -20,7 +21,7 @@ sub init {
     $self->SUPER::init(@_);
 
     if (!keys %session_dir_initialized) {
-        croak "YAML is needed and is not installed"
+        raise core_session => "YAML is needed and is not installed"
           unless Dancer::ModuleLoader->load('YAML');
     }
 
@@ -34,7 +35,7 @@ sub init {
         # make sure session_dir exists
         if (!-d $session_dir) {
             mkdir $session_dir
-              or croak "session_dir $session_dir cannot be created";
+              or raise core_session => "session_dir $session_dir cannot be created";
         }
         Dancer::Logger::core("session_dir : $session_dir");
     }

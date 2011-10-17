@@ -73,7 +73,7 @@ my $setters = {
     },
     traces => sub {
         my ($setting, $traces) = @_;
-        $Carp::Verbose = $traces ? 1 : 0;
+        $Dancer::Exception::Verbose = $traces ? 1 : 0;
     },
 };
 $setters->{log_path} = $setters->{log_file};

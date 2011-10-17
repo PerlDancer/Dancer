@@ -41,7 +41,7 @@ sub init {
     $self->{'_compiled_regexp'} = undef;
 
     if (!$self->pattern) {
-        croak "cannot create Dancer::Route without a pattern";
+        raise core_route => "cannot create Dancer::Route without a pattern";
     }
 
     # If the route is a Regexp, store it directly
@@ -151,7 +151,7 @@ sub check_options {
     return 1 unless defined $self->options;
 
     for my $opt (keys %{$self->options}) {
-        croak "Not a valid option for route matching: `$opt'"
+        raise core_route => "Not a valid option for route matching: `$opt'"
           if not(    (grep {/^$opt$/} @{$_supported_options[0]})
                   || (grep {/^$opt$/} keys(%_options_aliases)));
     }
