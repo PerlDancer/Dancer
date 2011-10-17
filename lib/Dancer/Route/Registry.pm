@@ -5,6 +5,7 @@ use Carp;
 use Dancer::Route;
 use base 'Dancer::Object';
 use Dancer::Logger;
+use Dancer::Exception qw(:all);
 
 Dancer::Route::Registry->attributes(qw( id ));
 
@@ -98,7 +99,7 @@ sub any_add {
         $pattern = shift @rest;
     }
 
-    croak "Syntax error, methods should be provided as an ARRAY ref"
+    raise core_route => "Syntax error, methods should be provided as an ARRAY ref"
       if grep {$_ eq $pattern} @methods;
 
     $self->universal_add($_, $pattern, @rest) for @methods;

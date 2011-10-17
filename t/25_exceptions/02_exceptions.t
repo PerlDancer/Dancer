@@ -68,10 +68,15 @@ ok(1, "load ok");
 
 {
     my $registered = [ registered_exceptions ];
-    is_deeply($registered, [ qw( Base Core Core::App Core::Config
-Core::Deprecation Core::Engine Core::Factory Core::Factory::Hook
-Core::Fileutils Core::Handler Core::Handler::PSGI Core::Hook)
-        ]);
+    is_deeply($registered,
+[ qw(
+Base Core Core::App Core::Config Core::Deprecation Core::Engine Core::Factory
+Core::Factory::Hook Core::Fileutils Core::Handler Core::Handler::PSGI
+Core::Hook Core::Plugin Core::Renderer Core::Route Core::Serializer
+Core::Session Core::Template
+)
+]);
+
 }
 
 register_exception ('Test',
@@ -100,10 +105,13 @@ register_exception ('HarmlessInvalidLogin',
 {
     my $registered = [ registered_exceptions ];
     is_deeply($registered, [
-        qw(Base Core Core::App Core::Config Core::Deprecation Core::Engine
-Core::Factory Core::Factory::Hook Core::Fileutils Core::Handler
-Core::Handler::PSGI Core::Hook HarmlessInvalidLogin InvalidCredentials
-InvalidLogin InvalidPassword Test)
+        qw(
+Base Core Core::App Core::Config Core::Deprecation Core::Engine Core::Factory
+Core::Factory::Hook Core::Fileutils Core::Handler Core::Handler::PSGI
+Core::Hook Core::Plugin Core::Renderer Core::Route Core::Serializer
+Core::Session Core::Template
+HarmlessInvalidLogin InvalidCredentials InvalidLogin InvalidPassword Test
+)
     ]);
 }
 

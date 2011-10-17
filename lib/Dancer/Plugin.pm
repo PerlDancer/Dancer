@@ -6,6 +6,8 @@ use Carp;
 use base 'Exporter';
 use Dancer::Config 'setting';
 use Dancer::Hook;
+use Dancer::Exception qw(:all);
+
 use base 'Exporter';
 use vars qw(@EXPORT);
 
@@ -34,7 +36,7 @@ sub register($&) {
     my $plugin_name = caller();
 
     $keyword =~ /^[a-zA-Z_]+[a-zA-Z0-9_]*$/
-      or croak "You can't use '$keyword', it is an invalid name"
+      or raise core_plugin => "You can't use '$keyword', it is an invalid name"
         . " (it should match ^[a-zA-Z_]+[a-zA-Z0-9_]*$ )";
 
     if (
@@ -42,11 +44,11 @@ sub register($&) {
         map  { s/^(?:\$|%|&|@|\*)//; $_ } 
         (@Dancer::EXPORT, @Dancer::EXPORT_OK)
     ) {
-        croak "You can't use '$keyword', this is a reserved keyword";
+        raise core_plugin => "You can't use '$keyword', this is a reserved keyword";
     }
     while (my ($plugin, $keywords) = each %$_keywords) {
         if (grep { $_->[0] eq $keyword } @$keywords) {
-            croak "You can't use $keyword, "
+            raise core_plugin => "You can't use $keyword, "
                 . "this is a keyword reserved by $plugin";
         }
     }
