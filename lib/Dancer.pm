@@ -1065,8 +1065,6 @@ This hook receives as argument a L<Dancer::Response> object.
     my $response = shift;
   };
 
-=back
-
 =item on_handler_exception
 
 This hook is called when an exception has been caught, at the handler level,

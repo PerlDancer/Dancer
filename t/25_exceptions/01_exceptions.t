@@ -55,29 +55,33 @@ set error_template => "error.tt";
     response_status_is( [ GET => '/die_in_route' ], 500 => "We get a 500 status" );
 }
 
+register_exception ('Test',
+                    message_pattern => "test - %s",
+                   );
+
 {
     my $route_hook_executed = 0;
     my $handler_hook_executed = 0;
 
     # raise in route
     get '/raise_in_route' => sub {
-        raise Internal => 'plop';
+        raise Test => 'plop';
     };
 
     hook on_route_exception => sub {
         my ($exception) = @_;
-        $exception->isa('Dancer::Exception::Internal');
+        $exception->isa('Dancer::Exception::Test');
         $route_hook_executed++;
     };
 
     hook on_handler_exception => sub {
         my ($exception) = @_;
-        $exception->isa('Dancer::Exception::Internal');
+        $exception->isa('Dancer::Exception::Test');
         $handler_hook_executed++;
     };
 
     response_content_like( [ GET => '/raise_in_route' ], qr|MESSAGE: <h2>runtime error</h2>| );
-    my $e = "internal - plop";
+    my $e = "test - plop";
     response_content_like( [ GET => '/raise_in_route' ], qr|EXCEPTION: $e| );
     response_status_is( [ GET => '/raise_in_route' ], 500 => "We get a 500 status" );
     is($route_hook_executed, 3,"exception route hook has been called");
