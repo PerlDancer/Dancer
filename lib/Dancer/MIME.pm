@@ -5,7 +5,6 @@ use warnings;
 use base 'Dancer::Object::Singleton';
 
 use Dancer::Config;
-use Dancer::Deprecation;
 
 use Carp;
 use MIME::Types;
@@ -63,24 +62,6 @@ sub name_or_type {
 sub for_name {
     my ($self, $name) = @_;
     return $self->custom_types->{lc $name} || $self->mime_type->mimeTypeOf(lc $name) || $self->default;
-}
-
-sub add_mime_type {
-    Dancer::Deprecation->deprecated(feature => 'add_mime_type',
-                                    fatal => 1,
-                                    reason => 'use the new "add" method');
-}
-
-sub add_mime_alias {
-    Dancer::Deprecation->deprecated(feature => 'add_mime_alias',
-                                    fatal => 1,
-                                    reason => 'use the new "add_alias" method');
-}
-
-sub mime_type_for {
-    Dancer::Deprecation->deprecated(feature => 'mime_type_for',
-                                    fatal => 1,
-                                    reason => 'use the new "name_or_type" method');
 }
 
 42;
@@ -164,20 +145,6 @@ Retrieve the full hash table of added mime types.
 
 Resolves the $thing into a content $type whether it's the name of a
 MIME type like "txt" or already a mime type like "text/plain".
-
-=head1 DEPRECATED API
-
-=head2 add_mime_type
-
-Check the new C<add> method.
-
-=head2 add_mime_alias
-
-Check the new C<add> method.
-
-=head2 mime_type_for
-
-Check the new C<for_name> and C<name_or_type> methods.
 
 =head1 AUTHORS
 

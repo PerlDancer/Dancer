@@ -1,8 +1,25 @@
-{{$NEXT}}
+
+    [ BUG FIXES ]
+    * Minor corrections (jamhed, felixdo)
+    * Log if a view and or a layout is not found (Alberto Simões, reported
+      by David Previous)
+
+1.3079_04   02.10.2011
+
+    [ ENHANCEMENTS ]
+    * PSGI handler code cleaned up (chromatic).
+    * Improved warning localizations (chromatic).
+
+    [ DOCUMENTATION ]
+    * Dancer::Plugins typos (Olof Johansson).
+    * PSGI handler documented (chromatic).
+
+1.3079_03   10.09.2011
 
     [ ENHANCEMENTS ]
     * Support XML::Simple configuration for serializing/deserializing
       (Alberto Simões)
+    * Hard deprecate lots of stuff (Alberto Simões)
 
     [ BUG FIXES ]
     * Don't clobber TT INCLUDE_PATH if the user set it specifically in the

@@ -122,38 +122,18 @@ sub route_doesnt_exist {
 
 sub response_exists {
     Dancer::Deprecation->deprecated(
-       fatal   => 0,
+       fatal   => 1,
        feature => 'response_exists',
        reason  => 'Use response_status_isnt and check for status 404.'
     );
-    my ($req, $test_name) = @_;
-
-    $test_name ||= "a response is found for " . _req_label($req);
-
-    my $response = _req_to_response( $req );
-
-    # goto used so that the test reports
-    # the correct test line
-    @_ = ( $response, 404, $test_name );
-    goto &response_status_isnt;
 }
 
 sub response_doesnt_exist {
     Dancer::Deprecation->deprecated(
-       fatal   => 0,
+       fatal   => 1,
        feature => 'response_doesnt_exist',
        reason  => 'Use response_status_is and check for status 404.',
     );
-    my ($req, $test_name) = @_;
-
-    $test_name ||= "no response found for " . _req_label($req);
-
-    my $response = _req_to_response($req);
-
-    # goto used so that the test reports
-    # the correct test line
-    @_ = ( $response, 404, $test_name );
-    goto &response_status_is;
 }
 
 sub response_status_is {
@@ -384,14 +364,6 @@ Content-Type: text/plain
     (defined $response && $response->exists) ? return $response : return undef;
 }
 
-sub get_response {
-    Dancer::Deprecation->deprecated(
-        fatal   => 1,
-        feature => 'get_response',
-        reason  => 'Use dancer_response() instead.',
-    );
-}
-
 # private
 
 sub _url_encode {
@@ -593,11 +565,6 @@ It's possible to test file uploads:
     post '/upload' => sub { return upload('image')->content };
 
     $response = dancer_reponse(POST => '/upload', {files => [{name => 'image', filename => '/path/to/image.jpg}]});
-
-=head2 get_response([$method, $path])
-
-This method is B<DEPRECATED>.  Use dancer_response() instead.
-
 
 =head2 read_logs
 

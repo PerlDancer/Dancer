@@ -87,7 +87,7 @@ Provides dead-simple profiling of your app using L<Devel::NYTProf> - enables
 profiling for each request individually, serves up a list of profiling runs, and
 generates & sends the HTML reports produced by C<nytprofhtml>.
 
-=item L<Dancer::Plugin::Bcypt>
+=item L<Dancer::Plugin::Bcrypt>
 
 Provides simple effective password hashing and validation using Bcrypt.
 
