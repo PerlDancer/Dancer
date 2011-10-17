@@ -15,6 +15,12 @@ lib/Dancer/App.pm
 lib/Dancer/Config.pm
 lib/Dancer/Continuation.pm
 lib/Dancer/Continuation/Halted.pm
+lib/Dancer/Continuation/Route.pm
+lib/Dancer/Continuation/Route/ErrorSent.pm
+lib/Dancer/Continuation/Route/FileSent.pm
+lib/Dancer/Continuation/Route/Forwarded.pm
+lib/Dancer/Continuation/Route/Passed.pm
+lib/Dancer/Continuation/Route/Templated.pm
 lib/Dancer/Cookbook.pod
 lib/Dancer/Cookie.pm
 lib/Dancer/Cookies.pm
