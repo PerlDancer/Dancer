@@ -68,20 +68,27 @@ ok(1, "load ok");
 
 {
     my $registered = [ registered_exceptions ];
-    is_deeply($registered, [ qw(Base Core Fatal Internal) ]);
+    is_deeply($registered, [ qw( Base Core Core::App Core::Config
+Core::Deprecation Core::Engine Core::Factory Core::Factory::Hook
+Core::Fileutils Core::Handler Core::Handler::PSGI Core::Hook)
+        ]);
 }
+
+register_exception ('Test',
+                    message_pattern => "test - %s",
+                   );
 
 register_exception ('InvalidCredentials',
                     message_pattern => "invalid credentials : %s",
                    );
 
 register_exception ('InvalidPassword',
-                    composed_from => [qw(Fatal InvalidCredentials)],
+                    composed_from => [qw(Test InvalidCredentials)],
                     message_pattern => "wrong password",
                    );
 
 register_exception ('InvalidLogin',
-                    composed_from => [qw(Fatal InvalidCredentials)],
+                    composed_from => [qw(Test InvalidCredentials)],
                     message_pattern => "wrong login (login was %s)",
                    );
 
@@ -93,8 +100,10 @@ register_exception ('HarmlessInvalidLogin',
 {
     my $registered = [ registered_exceptions ];
     is_deeply($registered, [
-        qw(Base Core Fatal HarmlessInvalidLogin Internal InvalidCredentials InvalidLogin
-           InvalidPassword )
+        qw(Base Core Core::App Core::Config Core::Deprecation Core::Engine
+Core::Factory Core::Factory::Hook Core::Fileutils Core::Handler
+Core::Handler::PSGI Core::Hook HarmlessInvalidLogin InvalidCredentials
+InvalidLogin InvalidPassword Test)
     ]);
 }
 
@@ -113,10 +122,10 @@ register_exception ('HarmlessInvalidLogin',
         };
     };
     ok(! $@);
-    is($e, 'fatal - invalid credentials : wrong login (login was douglas)');
+    is($e, 'test - invalid credentials : wrong login (login was douglas)');
     # check stringification works in other cases
-    ok($e eq 'fatal - invalid credentials : wrong login (login was douglas)');
-    ok('fatal - invalid credentials : wrong login (login was douglas)' eq $e);
+    ok($e eq 'test - invalid credentials : wrong login (login was douglas)');
+    ok('test - invalid credentials : wrong login (login was douglas)' eq $e);
     ok($e->does('InvalidLogin'));
     is($v1, 2);
 }
