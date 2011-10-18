@@ -100,10 +100,26 @@ our @EXPORT    = qw(
 
 # Dancer's syntax
 
-sub after           { Dancer::Hook->new('after', @_) }
+sub after           {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('after', @_);
+}
+sub before          {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('before', @_);
+}
+sub before_template {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('before_template', @_);
+}
+
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Hook->new('before', @_) }
-sub before_template { Dancer::Hook->new('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookie          { Dancer::Cookies->cookie( @_ ) }
 sub cookies         { Dancer::Cookies->cookies }

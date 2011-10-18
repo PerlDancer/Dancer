@@ -2,7 +2,7 @@ package MyAppFoo;
 
 use Dancer ':syntax';
 
-before {apps => [qw/MyAppFoo/]}, sub {
+hook before {apps => [qw/MyAppFoo/]}, sub {
     halt('before block in foo');
 };
 

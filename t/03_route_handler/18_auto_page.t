@@ -10,7 +10,7 @@ use Dancer::Test;
     package Foo;
     use Dancer;
 
-    before_template sub {
+    hook before_template => sub {
         my $tokens = shift;
         $tokens->{title} = "Dancer";
     };

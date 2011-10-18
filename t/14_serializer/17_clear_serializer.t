@@ -50,7 +50,7 @@ Test::TCP::test_tcp(
 
         get '/' => sub { $data };
 
-        after sub { set serializer => undef };
+        hook after => sub { set serializer => undef };
 
         Dancer->dance();
     },

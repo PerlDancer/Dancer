@@ -1,3 +1,6 @@
+    [ API CHANGES ]
+    * Deprecation of 'before', 'before_template' and 'after' in favor of hook
+      (Alberto Simões)
 
     [ BUG FIXES ]
     * Minor corrections (jamhed, felixdo)

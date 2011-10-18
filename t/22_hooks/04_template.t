@@ -9,7 +9,7 @@ use Time::HiRes qw/gettimeofday tv_interval/;
 my ($t0, $elapsed);
 
 ok(
-    before_template sub {
+    hook before_template => sub {
         my $tokens = shift;
         $tokens->{foo} = 'bar';
         $t0 = [gettimeofday];
