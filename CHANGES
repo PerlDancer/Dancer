@@ -1,3 +1,5 @@
+1.3079_05   02.10.2011
+
     [ API CHANGES ]
     * Deprecation of 'before', 'before_template' and 'after' in favor of hook
       (Alberto Simões)
