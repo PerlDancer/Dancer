@@ -18,7 +18,7 @@ sub new {
     my $self = bless {}, $class;
 
     if (!scalar @args) {
-        croak "one name and a coderef are required";
+        raise core_hook => "one name and a coderef are required";
     }
 
     my $hook_name = shift @args;
@@ -42,33 +42,35 @@ sub new {
         $code       = shift @args;
     }
     else {
-        croak "something's wrong with parameters passed to Hook constructor";
+        raise core_hook => "something's wrong with parameters passed to Hook constructor";
     }
     ref $code eq 'CODE'
-      or croak "the code argument passed to hook construction was not a CodeRef. Value was : '$code'";
+      or raise core_hook => "the code argument passed to hook construction was not a CodeRef. Value was : '$code'";
 
 
     my $compiled_filter = sub {
+        my @arguments = @_;
         return if Dancer::SharedData->response->halted;
 
         my $app = Dancer::App->current();
         return unless $properties->should_run_this_app($app->name);
 
         Dancer::Logger::core( "entering " . $hook_name . " hook" );
-        eval { $code->(@_) };
-        if ( is_dancer_exception(my $exception = $@) ) {
-            # propagate the exception
-            die $exception;
-        } elsif ($exception) {
-            # exception is not a workflow halt but a genuine error
+
+        
+        try { $code->(@arguments) }
+        catch {
+            my ($exception) = @_;
+            # exception is not a workflow continuation but a genuine error
             my $err = Dancer::Error->new(
                 code    => 500,
                 title   => $hook_name . ' filter error',
-                message => "An error occured while executing the filter named $hook_name: $exception"
+                message => "An error occured while executing the filter named $hook_name: $exception",
+                exception => $exception,
             );
             # raise a new halt exception
             Dancer::halt( $err->render );
-        }
+        };
     };
 
     $self->properties($properties);

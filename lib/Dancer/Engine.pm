@@ -9,6 +9,7 @@ use warnings;
 use Carp;
 use Dancer::ModuleLoader;
 use base 'Dancer::Object';
+use Dancer::Exception qw(:all);
 
 # constructor arguments:
 #      name     => $name_of_the_engine
@@ -30,7 +31,7 @@ sub config {
 sub build {
     my ($class, $type, $name, $config) = @_;
 
-    croak "cannot build engine without type and name "
+    raise core_engine => "cannot build engine without type and name "
       unless $name and $type;
 
     my $class_name = $class->_engine_class($type);
@@ -43,7 +44,7 @@ sub build {
     my $engine_class =
       Dancer::ModuleLoader->class_from_setting($class_name => $name);
 
-    croak "unknown $type engine '$name', "
+    raise core_engine => "unknown $type engine '$name', "
       . "perhaps you need to install $engine_class?"
       unless Dancer::ModuleLoader->load($engine_class);
 

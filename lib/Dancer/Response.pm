@@ -12,6 +12,7 @@ use Dancer::MIME;
 use HTTP::Headers;
 use Dancer::SharedData;
 use Dancer::Exception qw(:all);
+use Dancer::Continuation::Halted;
 
 __PACKAGE__->attributes(qw/content pass streamed/);
 
@@ -101,7 +102,6 @@ sub halt {
             halted => 1,
         );
     }
-    raise E_HALTED;
 }
 
 sub halted {

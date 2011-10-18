@@ -5,6 +5,7 @@ use warnings;
 use Carp;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
+use Dancer::Exception qw(:all);
 
 use base 'Dancer::Template::Abstract';
 
@@ -14,7 +15,7 @@ sub init {
     my ($self) = @_;
 
     my $class = $self->config->{subclass} || "Template";
-    croak "$class is needed by Dancer::Template::TemplateToolkit"
+    raise core_template => "$class is needed by Dancer::Template::TemplateToolkit"
       if !$class->can("process") and !Dancer::ModuleLoader->load($class);
 
     my $charset = setting('charset') || '';
@@ -47,13 +48,13 @@ sub render {
     my ($self, $template, $tokens) = @_;
 
     if ( ! ref $template ) {
-        -f $template or croak "'$template' doesn't exist or not a regular file";
+        -f $template or raise core_template => "'$template' doesn't exist or not a regular file";
     }
 
     my $content = "";
     my $charset = setting('charset') || '';
     my @options = length($charset) ? ( binmode => ":encoding($charset)" ) : ();
-    $_engine->process($template, $tokens, \$content, @options) or croak $_engine->error;
+    $_engine->process($template, $tokens, \$content, @options) or raise core_template => $_engine->error;
     return $content;
 }
 

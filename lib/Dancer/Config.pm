@@ -10,6 +10,7 @@ use Dancer::Template;
 use Dancer::ModuleLoader;
 use Dancer::FileUtils 'path';
 use Carp;
+use Dancer::Exception qw(:all);
 
 use Encode;
 
@@ -72,7 +73,7 @@ my $setters = {
     },
     traces => sub {
         my ($setting, $traces) = @_;
-        $Carp::Verbose = $traces ? 1 : 0;
+        $Dancer::Exception::Verbose = $traces ? 1 : 0;
     },
 };
 $setters->{log_path} = $setters->{log_file};
@@ -84,7 +85,7 @@ my $normalizers = {
           or return $charset;
         my $encoding = Encode::find_encoding($charset);
         defined $encoding
-          or croak "Charset defined in configuration is wrong : couldn't identify '$charset'";
+          or raise core_config => "Charset defined in configuration is wrong : couldn't identify '$charset'";
         my $name = $encoding->name;
         # Perl makes a distinction between the usual perl utf8, and the strict
         # utf8 charset. But we don't want to make this distinction

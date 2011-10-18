@@ -9,6 +9,7 @@ use Dancer::Config;
 use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
 use Dancer::Logger;
+use Dancer::Exception qw(:all);
 
 Dancer::App->attributes(qw(name app_prefix prefix registry settings on_lexical_prefix));
 
@@ -39,7 +40,7 @@ sub set_prefix {
 
     undef $prefix if defined($prefix) and $prefix eq "/";
 
-    croak "not a valid prefix: `$prefix', must start with a /"
+    raise core_app => "not a valid prefix: `$prefix', must start with a /"
       if defined($prefix) && $prefix !~ /^\//;
 
     my $app_prefix = defined $self->app_prefix ? $self->app_prefix : "";
@@ -155,7 +156,7 @@ sub init {
     my ($self) = @_;
     $self->name('main') unless defined $self->name;
 
-    croak "an app named '" . $self->name . "' already exists"
+    raise core_app => "an app named '" . $self->name . "' already exists"
       if exists $_apps->{$self->name};
 
     # default values for properties

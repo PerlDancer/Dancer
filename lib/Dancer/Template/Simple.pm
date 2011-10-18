@@ -6,6 +6,7 @@ use Carp;
 use base 'Dancer::Template::Abstract';
 Dancer::Template::Simple->attributes('start_tag', 'stop_tag');
 use Dancer::FileUtils 'read_file_content';
+use Dancer::Exception qw(:all);
 
 sub init {
     my $self     = shift;
@@ -106,10 +107,10 @@ sub _read_content_from_template {
         $content = $$template;
     }
     else {
-        croak "'$template' is not a regular file"
+        raise core_template => "'$template' is not a regular file"
           unless -f $template;
         $content = read_file_content($template);
-        croak "unable to read content for file $template"
+        raise core_template => "unable to read content for file $template"
           if not defined $content;
     }
     return $content;
