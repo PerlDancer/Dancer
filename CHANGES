@@ -2,6 +2,9 @@
     * Deprecation of 'before', 'before_template' and 'after' in favor of hook
       (Alberto Simões)
 
+    [ ENHANCEMENTS]
+    * Add support for the HTTP 'PATCH' verb (David Precious)
+
     [ BUG FIXES ]
     * Minor corrections (jamhed, felixdo)
     * Log if a view and or a layout is not found (Alberto Simões, reported
