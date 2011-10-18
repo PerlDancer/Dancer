@@ -87,6 +87,7 @@ sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
 sub is_put                { $_[0]->{method} eq 'PUT' }
 sub is_delete             { $_[0]->{method} eq 'DELETE' }
+sub is_patch              { $_[0]->{method} eq 'PATCH' }
 sub header                { $_[0]->{headers}->header($_[1]) }
 
 # public interface compat with CGI.pm objects
@@ -677,6 +678,10 @@ Return true if the method requested by the client is 'GET'
 =head2 is_head()
 
 Return true if the method requested by the client is 'HEAD'
+
+=head2 is_patch()
+
+Return true if the method requested by the client is 'PATCH'
 
 =head2 is_post()
 

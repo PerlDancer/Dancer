@@ -1,3 +1,17 @@
+1.3079_05   02.10.2011
+
+    [ API CHANGES ]
+    * Deprecation of 'before', 'before_template' and 'after' in favor of hook
+      (Alberto Simões)
+
+    [ ENHANCEMENTS]
+    * Add support for the HTTP 'PATCH' verb (David Precious)
+
+    [ BUG FIXES ]
+    * Minor corrections (jamhed, felixdo)
+    * Log if a view and or a layout is not found (Alberto Simões, reported
+      by David Previous)
+
 1.3079_04   02.10.2011
 
     [ ENHANCEMENTS ]

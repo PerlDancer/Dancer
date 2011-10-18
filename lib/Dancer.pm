@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3079_04';
+our $VERSION   = '1.3079_05';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -67,6 +67,7 @@ our @EXPORT    = qw(
   params
   pass
   path
+  patch
   post
   prefix
   push_header
@@ -99,10 +100,26 @@ our @EXPORT    = qw(
 
 # Dancer's syntax
 
-sub after           { Dancer::Hook->new('after', @_) }
+sub after           {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('after', @_);
+}
+sub before          {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('before', @_);
+}
+sub before_template {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('before_template', @_);
+}
+
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Hook->new('before', @_) }
-sub before_template { Dancer::Hook->new('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookie          { Dancer::Cookies->cookie( @_ ) }
 sub cookies         { Dancer::Cookies->cookies }
@@ -142,6 +159,7 @@ sub options         { Dancer::App->current->registry->universal_add('options', @
 sub params          { Dancer::SharedData->request->params(@_) }
 sub param           { params->{$_[0]} }
 sub pass            { Dancer::SharedData->response->pass(1) }
+sub patch            { Dancer::App->current->registry->universal_add('patch', @_) }
 sub path            { Dancer::FileUtils::path(@_) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
@@ -488,7 +506,7 @@ your app.  You can control the exporting through the normal
 L<Exporter> mechanism.  For example:
 
     # Just export the route controllers
-    use Dancer qw(before after get post);
+    use Dancer qw(before after get post put patch);
 
     # Export everything but pass to avoid clashing with Test::More
     use Test::More;
@@ -548,11 +566,13 @@ Add a hook at the B<after> position:
 
     after sub {
         my $response = shift;
-        # do something with request
+        # do something with response, e.g.:
+        $response->header('X-Beer' => 'Yes please');
     };
 
 The anonymous function which is given to C<after> will be executed after
-having executed a route.
+having executed a route, but before the response is returned (so you can modify
+the response here, if you need to)..
 
 You can define multiple after filters, using the C<after> helper as
 many times as you wish; each filter will be executed, in the order you added
@@ -1010,9 +1030,13 @@ by the layout
 
 =item after
 
-This is an alias for 'after'.
+This is an alias for C<after>.
 
-This hook receives as argument a L<Dancer::Response> object.
+This hook runs after a request has been processed, but before the response is
+sent.
+
+It receives a L<Dancer::Response> object, which it can modify
+if it needs to make changes to the response which is about to be sent.
 
   hook after => sub {
     my $response = shift;
@@ -1129,6 +1153,25 @@ You should always C<return> after calling C<pass>:
             return pass();
         }
     };
+
+=head2 patch
+
+Defines a route for HTTP B<PATCH> requests to the given URL:
+
+    patch '/resource' => sub { ... };
+
+(C<PATCH> is a relatively new and not-yet-common HTTP verb, which is intended to
+work as a "partial-PUT", transferring just the changes; please see
+L<http://tools.ietf.org/html/rfc5789|RFC5789> for further details.)
+
+Please be aware that, if you run your app in standalone mode, C<PATCH> requests
+will not reach your app unless you have a new version of L<HTTP::Server::Simple>
+which accepts C<PATCH> as a valid verb.  The current version at time of writing,
+C<0.44>, does not.  A pull request has been submitted to add this support, which
+you can find at:
+
+L<https://github.com/bestpractical/http-server-simple/pull/1>
+
 
 =head2 path
 

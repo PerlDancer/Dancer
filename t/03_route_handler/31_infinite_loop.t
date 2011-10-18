@@ -16,7 +16,7 @@ response_status_is [GET => "/$i"] => 200,
   'before not installed yet, response status is 200 looks good for GET /0';
 response_content_is [GET => "/$i"], "whatever $i";
 
-before sub {
+hook before => sub {
     ++$i;
     request->path_info("/$i");
 };

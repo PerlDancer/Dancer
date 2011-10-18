@@ -179,7 +179,13 @@ applications focus on the verbs which closely map to the CRUD (Create,
 Retrieve, Update, Delete) operations most database driven applications need to
 implement.
 
-Dancer currently supports GET, PUT, POST, DELETE, OPTIONS which map to
+In addition, the C<PATCH> verb was defined in
+L<RFC5789|http://tools.ietf.org/html/rfc5789>, and is intended as a
+"partial PUT" - sending just the changes required to the entity in question.
+How this would be handled is down to your app, it will vary depending on the
+type of entity in question and the serialisation in use.
+
+Dancer currently supports GET, PUT/PATCH, POST, DELETE, OPTIONS which map to
 Retrieve, Update, Create, Delete respectively.  Let's take a look now at the
 C</add> route handler which handles a POST operation.
 

@@ -59,7 +59,7 @@ method 'get', so only GET requests will be honoured by that route:
     get '/hello/:name' => sub {
         # do something
 
-        return "Hello ".params->{name};
+        return "Hello ".param('name');
     };
 
 
@@ -121,13 +121,13 @@ be set in the params hashref.
 
 
     get '/hello/:name' => sub {
-        "Hey ".params->{name}.", welcome here!";
+        "Hey ".param('name').", welcome here!";
     };
 
 Tokens can be optional, for example:
 
     get '/hello/:name?' => sub {
-        "Hello there " . params->{name} || "whoever you are!";
+        "Hello there " . param('name') || "whoever you are!";
     };
 
 
@@ -621,7 +621,7 @@ This is a possible webapp created with Dancer:
     };
 
     get '/hello/:name' => sub {
-        "Hello ".params->{name};
+        "Hello ".param('name');
     };
 
     # run the webserver

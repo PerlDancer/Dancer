@@ -41,7 +41,7 @@ Test::TCP::test_tcp(
              show_errors  => 1,
              startup_info => 0 );
 
-        after sub {
+        hook after => sub {
             my $response = shift;
             $response->header('X-Foo', 2);
         };
