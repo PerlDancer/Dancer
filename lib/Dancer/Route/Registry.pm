@@ -91,7 +91,7 @@ sub register_route {
 sub any_add {
     my ($self, $pattern, @rest) = @_;
 
-    my @methods = qw(get post put delete options);
+    my @methods = qw(get post put patch delete options);
 
     if (ref($pattern) eq 'ARRAY') {
         @methods = @$pattern;
