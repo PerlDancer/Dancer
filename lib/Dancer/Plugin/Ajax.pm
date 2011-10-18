@@ -8,7 +8,7 @@ use Dancer::Plugin;
 
 register 'ajax' => \&ajax;
 
-before sub {
+hook before => sub {
     if (request->is_ajax) {
         content_type('text/xml');
     }

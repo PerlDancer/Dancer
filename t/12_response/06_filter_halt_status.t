@@ -14,7 +14,7 @@ plan skip_all => "JSON is needed to run this tests"
     set serializer => 'JSON';
     set environment => 'production';
 
-    before sub {
+    hook before => sub {
         if (params->{'troll'}) {
             status 401;
             return halt({error => "Go away you troll!"})

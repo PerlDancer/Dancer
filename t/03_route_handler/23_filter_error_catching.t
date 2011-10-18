@@ -10,7 +10,7 @@ use Dancer::Test;
 set show_errors => true;
 
 {
-    before sub {
+    hook before => sub {
         FooBar->send_error; # FAIL
     };
 

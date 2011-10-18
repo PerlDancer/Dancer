@@ -30,7 +30,7 @@ plan tests => 19;
 {
     my $i = 0;
 
-    before( sub { redirect '/somewhere' if request->path eq '/' } );
+    hook before => sub { redirect '/somewhere' if request->path eq '/' };
     get( '/', sub { $i++; 'Hello' } );
 
     route_exists [ GET => '/' ];

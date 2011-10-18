@@ -8,7 +8,7 @@ use Dancer::Test;
 plan tests => 3;
 
 ok(
-    after(
+   hook(after =>
         sub {
             my $response = shift;
             $response->content('not index!');
