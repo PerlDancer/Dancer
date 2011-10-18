@@ -279,7 +279,6 @@ t/17_apps/00_base.t
 t/17_apps/01_settings.t
 t/17_apps/02_load_app.t
 t/17_apps/03_prefix.t
-t/17_apps/04_issue_91.t
 t/17_apps/05_api.t
 t/19_dancer/01_script.t
 t/19_dancer/02_script_version_from.t
@@ -309,8 +308,6 @@ t/25_exceptions/views/layouts/main.tt
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
 t/lib/LinkBlocker.pm
-t/lib/MyApp.pm
-t/lib/MyAppFoo.pm
 t/lib/TestApp.pm
 t/lib/TestAppUnicode.pm
 t/lib/TestPlugin.pm
