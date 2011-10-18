@@ -679,7 +679,7 @@ Return true if the method requested by the client is 'GET'
 
 Return true if the method requested by the client is 'HEAD'
 
-=head1 is_patch()
+=head2 is_patch()
 
 Return true if the method requested by the client is 'PATCH'
 
