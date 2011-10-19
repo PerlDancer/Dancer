@@ -437,6 +437,8 @@ To set the environment you want to use for your application (production or devel
         ...
     </VirtualHost>
 
+B<NOTE:> Only a single Dancer application can be deployed using the C<Plack::Handler::Apache2> method. Multiple Dancer applications B<will not work properly> (The routes will be mixed-up between the applications).
+
 =head3 Running from Apache under appdir
 
 If you want to deploy multiple applications under the same VirtualHost, using
