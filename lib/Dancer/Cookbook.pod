@@ -879,7 +879,7 @@ For instance, if you want to enable L<Plack::Middleware::Debug> in your Dancer
 application, all you have to do is to set C<plack_middlewares> like that:
 
     set plack_middlewares => [
-        [ 'Debug' => [ 'panels' => qw(DBITrace Memory Timer) ]],
+        [ 'Debug' => [ 'panels' => [qw(DBITrace Memory Timer)] ] ],
     ];
 
 Of course, you can also put this configuration into your config.yml file, or
@@ -908,5 +908,3 @@ C<plack_middlewares_map>. You'll need L<Plack::App::URLMap> to do that.
 =head1 AUTHORS
 
 Dancer contributors - see AUTHORS file.
-
-
