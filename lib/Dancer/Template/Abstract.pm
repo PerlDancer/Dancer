@@ -142,7 +142,7 @@ sub template {
     if ($view) {
         # check if the requested view exists
         my $view_path = $engine->view($view);
-        if (-e $view_path) {
+        if ($engine->file_exists($view_path)) {
             $content = $engine->apply_renderer($view, $tokens);
         } else {
             Dancer::Logger::error("Supplied view ($view) was not found.");
@@ -166,6 +166,8 @@ sub template {
         message => "Page not found",
     )->render();
 }
+
+sub file_exists { return -e $_[1] }
 
 1;
 __END__
