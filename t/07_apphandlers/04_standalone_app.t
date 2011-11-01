@@ -30,6 +30,7 @@ Test::TCP::test_tcp(
         $res = $ua->post("http://127.0.0.1:$port/name", { name => "xxx" });
         like $res->content, qr/Your name: xxx/, 'name is found on a POST';
 
+        # we are already skipping under MSWin32 (check plan above)
         $res = $ua->get("http://127.0.0.1:$port/issues/499/true");
         is $res->content, "OK";
 
