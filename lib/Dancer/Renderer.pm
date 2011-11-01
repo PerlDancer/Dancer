@@ -182,6 +182,7 @@ sub get_file_response_for_path {
         my $response = Dancer::SharedData->response() || Dancer::Response->new();
         $response->status($status) if ($status);
         $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
+                                             Dancer::SharedData->request->content_type ||
                                              _get_mime_type($static_file)));
         $response->content($fh);
 
