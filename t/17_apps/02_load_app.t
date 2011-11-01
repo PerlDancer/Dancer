@@ -29,8 +29,8 @@ ok defined($forum), "app 'Forum' is defined";
 is @{ $main->registry->routes->{'get'} }, 1, 
     "one route is defined in main app";
 
-is @{ $test_app->registry->routes->{'get'} }, 13, 
-    "13 routes are defined in test app";
+is @{ $test_app->registry->routes->{'get'} }, 15, 
+    "15 routes are defined in test app";
 
 is @{ $forum->registry->routes->{'get'} }, 5, 
     "5 routes are defined in forum app";
