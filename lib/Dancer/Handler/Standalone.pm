@@ -60,4 +60,11 @@ sub print_startup_info {
 
 }
 
+# Restore expected behavior for wait(), as
+# HTTP::Server::Simple sets SIGCHLD to IGNORE.
+# (Issue #499)
+sub after_setup_listener {
+    $SIG{CHLD} = '';
+}
+
 1;
