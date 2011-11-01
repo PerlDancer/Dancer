@@ -1,4 +1,5 @@
     [ BUG FIXES ]
+    * Fix bug that made system() fail with -1 under Dancer (felixdo)
     * Support for 'content_type' option on send_file when sending a
       system wide file (Emmanuel Rodriguez)
 
