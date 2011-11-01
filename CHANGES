@@ -1,3 +1,7 @@
+    [ BUG FIXES ]
+    * Support for 'content_type' option on send_file when sending a
+      system wide file (Emmanuel Rodriguez)
+
 1.3080      25.10.2011
     ** Codename: Sawyer's Sugar Stream // Sawyer X **
 
