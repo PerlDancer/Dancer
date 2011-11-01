@@ -8,7 +8,7 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 24;
+plan tests => 21;
 
 get '/cat/:file' => sub {
     send_file(params->{file});
@@ -77,12 +77,8 @@ like($content, qr/'foo loaded'/, "content is ok");
 
 $resp = undef; # just to be sure
 $resp = dancer_response(GET => '/absolute/content_type/file.txt');
-ok(defined($resp), "route handler found for /absolute/content_type/file.txt");
 %headers = @{$resp->headers_to_array};
 is($headers{'Content-Type'}, 'text/plain', 'mime_type is ok');
-is(ref($resp->{content}), 'GLOB', "content is a File handle");
-$content = read_glob_content($resp->{content});
-like($content, qr/'foo loaded'/, "content is ok");
 
 $resp = undef; # just to be sure
 $resp = dancer_response(GET => '/scalar/file');
