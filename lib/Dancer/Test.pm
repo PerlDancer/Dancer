@@ -13,6 +13,7 @@ use Dancer ':syntax', ':tests';
 use Dancer::App;
 use Dancer::Deprecation;
 use Dancer::Request;
+use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Handler;
