@@ -311,13 +311,13 @@ Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename
 Content-Type: text/plain
 
 };
-                if ( $file->{filename} ) {
+                if ( $file->{data} ) {
+                    $content .= $file->{data};
+                } else {
                     open my $fh, '<', $file->{filename};
                     while (<$fh>) {
                         $content .= $_;
                     }
-                } elsif ( $file->{data} ) {
-                    $content .= $file->{data};
                 }
                 $content .= "\n";
             }
@@ -577,7 +577,9 @@ It's possible to test file uploads:
 In addition, you can supply the file contents as the C<data> key:
 
     my $data  = 'A test string that will pretend to be file contents.';
-    $response = dancer_reponse(POST => '/upload', {files => [{name => 'test', data => $data}]});
+    $response = dancer_reponse(POST => '/upload', {
+        files => [{name => 'test', filename => "filename.ext", data => $data}]
+    });
 
 =head2 read_logs
 
