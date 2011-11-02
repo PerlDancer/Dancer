@@ -311,9 +311,13 @@ Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename
 Content-Type: text/plain
 
 };
-                open my $fh, '<', $file->{filename};
-                while (<$fh>){
-                    $content .= $_;
+                if ( $file->{filename} ) {
+                    open my $fh, '<', $file->{filename};
+                    while (<$fh>) {
+                        $content .= $_;
+                    }
+                } elsif ( $file->{data} ) {
+                    $content .= $file->{data};
                 }
                 $content .= "\n";
             }
