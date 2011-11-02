@@ -77,6 +77,7 @@ our @EXPORT    = qw(
   request
   send_file
   send_error
+  send_client_error
   set
   setting
   set_cookie
@@ -168,6 +169,7 @@ sub redirect        { goto &_redirect }
 sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
 sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
+sub send_client_error { Dancer::Error->new(message => $_[0], code => $_[1] || 400, client_error => 1)->render() }
 sub send_file       { goto &_send_file }
 sub set             { goto &setting }
 sub set_cookie      { Dancer::Cookies->set_cookie(@_) }
@@ -1323,7 +1325,7 @@ Returns a HTTP error.  By default the HTTP code returned is 500:
 
     get '/photo/:id' => sub {
         if (...) {
-            send_error("Not allowed", 403);
+            send_error("Service Unavailable", 503);
         } else {
            # return content
         }
@@ -1333,6 +1335,22 @@ This will not cause your route handler to return immediately, so be careful that
 your route handler doesn't then override the error.  You can avoid that by
 saying C<return send_error(...)> instead.
 
+The error message will be displayed to the user only if the C<show_errors>
+setting is true. Otherwise, only a generic "server error" message will be
+displayed.
+
+=head2 send_client_error
+
+Like C<send_error>, except that the error message is always displayed to the
+user, regardless of the the state of the show_errors setting.
+
+    get '/photo/:id' => sub {
+        if (...) {
+            send_client_error("Not allowed", 403);
+        } else {
+           # return content
+        }
+    }
 
 =head2 send_file
 
