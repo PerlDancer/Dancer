@@ -9,6 +9,7 @@ use base 'Dancer::Object';
 use Dancer::Config 'setting';
 use Dancer::Request::Upload;
 use Dancer::SharedData;
+use Dancer::Exception qw(:all);
 use Encode;
 use HTTP::Body;
 use URI;
@@ -275,7 +276,7 @@ sub params {
         return $self->{_route_params};
     }
     else {
-        croak "Unknown source params \"$source\".";
+        raise core_request => "Unknown source params \"$source\".";
     }
 }
 
@@ -403,7 +404,7 @@ sub _build_path {
         $path ||= $self->_url_decode($self->request_uri);
     }
 
-    croak "Cannot resolve path" if not $path;
+    raise core_request => "Cannot resolve path" if not $path;
     $self->{path} = $path;
 }
 
@@ -515,7 +516,7 @@ sub _read {
         return $buffer;
     }
     else {
-        croak "Unknown error reading input: $!";
+        raise core_request => "Unknown error reading input: $!";
     }
 }
 

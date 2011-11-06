@@ -6,6 +6,7 @@ package Dancer::Object::Singleton;
 use strict;
 use warnings;
 use Carp;
+use Dancer::Exception qw(:all);
 
 use base qw(Dancer::Object);
 
@@ -15,12 +16,12 @@ my %instances;
 # constructor
 sub new {
     my ($class) = @_;
-    croak "you can't call 'new' on $class, as it's a singleton. Try to call 'instance'";
+    raise core => "you can't call 'new' on $class, as it's a singleton. Try to call 'instance'";
 }
 
 sub clone {
     my ($class) = @_;
-    croak "you can't call 'clone' on $class, as it's a singleton. Try to call 'instance'";
+    raise core => "you can't call 'clone' on $class, as it's a singleton. Try to call 'instance'";
 }
 
 sub instance {

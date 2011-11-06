@@ -10,6 +10,8 @@ use Dancer::Logger;
 use Dancer::Config 'setting';
 use Dancer::Request;
 use Dancer::Response;
+use Dancer::Exception qw(:all);
+use Dancer::Factory::Hook;
 
 Dancer::Route->attributes(
     qw(
@@ -26,6 +28,10 @@ Dancer::Route->attributes(
       )
 );
 
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/on_route_exception/
+);
+
 # supported options and aliases
 my @_supported_options = Dancer::Request->get_attributes();
 my %_options_aliases = (agent => 'user_agent');
@@ -35,7 +41,7 @@ sub init {
     $self->{'_compiled_regexp'} = undef;
 
     if (!$self->pattern) {
-        croak "cannot create Dancer::Route without a pattern";
+        raise core_route => "cannot create Dancer::Route without a pattern";
     }
 
     # If the route is a Regexp, store it directly
@@ -145,7 +151,7 @@ sub check_options {
     return 1 unless defined $self->options;
 
     for my $opt (keys %{$self->options}) {
-        croak "Not a valid option for route matching: `$opt'"
+        raise core_route => "Not a valid option for route matching: `$opt'"
           if not(    (grep {/^$opt$/} @{$_supported_options[0]})
                   || (grep {/^$opt$/} keys(%_options_aliases)));
     }
@@ -166,7 +172,22 @@ sub validate_options {
 sub run {
     my ($self, $request) = @_;
 
-    my $content  = $self->execute();
+    my $content = try {
+        $self->execute();
+    } continuation {
+        my ($continuation) = @_;
+        # route related continuation
+        $continuation->isa('Dancer::Continuation::Route')
+          or $continuation->rethrow();
+        # If the continuation carries some content, get it
+        my $content = $continuation->return_value();
+        defined $content or return; # to avoid returning undef;
+        return $content;
+    } catch {
+        my ($exception) = @_;
+        Dancer::Factory::Hook->execute_hooks('on_route_exception', $exception);
+        die $exception;
+    };
     my $response = Dancer::SharedData->response;
 
     if ( $response && $response->is_forwarded ) {

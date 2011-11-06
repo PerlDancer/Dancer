@@ -20,10 +20,14 @@ my @tests = (
     { path => '/dura/us',     expected => 'us worked' },
 );
 
-plan tests => 1 + 2*@tests;
+plan tests => 4 + 2*@tests;
 
 eval { prefix 'say' };
-like $@ => qr/not a valid prefix/, 'prefix must start with a /';
+my $e = $@;
+like $e => qr/not a valid prefix/, 'prefix must start with a /';
+ok $e->isa('Dancer::Exception::Base'), 'exception is a Dancer exception';
+ok $e->does('Core'), 'exception is a Core one';
+ok $e->does('Core::App'), 'exception is a Acore::App one';
 
 {
     prefix '/say' => 'prefix defined';

@@ -12,6 +12,8 @@ plan tests => 21;
 
 get '/cat/:file' => sub {
     send_file(params->{file});
+    # The next line is not executed, as 'send_error' breaks the route workflow
+    die;
 };
 
 get '/catheader/:file' => sub {

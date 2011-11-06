@@ -34,7 +34,10 @@ Test::TCP::test_tcp(
   server => sub {
       my $port = shift;
       Dancer::Config->load;
-      post '/foo' => sub { forward '/bar';  };
+      post '/foo' => sub {
+          forward '/bar';
+          fail "This line should not be executed - forward should have aborted the route execution";
+      };
       post '/bar' => sub { join(":",params) };
 
       post '/foz' => sub { forward '/baz';  };
