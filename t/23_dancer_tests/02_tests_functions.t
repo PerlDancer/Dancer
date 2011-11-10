@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More;
 
-plan tests => 28;
+plan tests => 29;
 
 use Dancer qw/ :syntax :tests /;
 use Dancer::Test;
@@ -41,6 +41,10 @@ del '/user/:id' => sub {
 
 get '/query' => sub {
     return join(":",params('query'));
+};
+
+post '/upload' => sub {
+	return upload('payload')->content;
 };
 
 my $resp = dancer_response GET => '/marco';
@@ -88,3 +92,11 @@ is_deeply $r->{content}, { user => { id => 2, name => "Franck Cuny" } },
 
 $r = dancer_response( GET => '/query', { params => {foo => 'bar'}});
 is $r->{content} => "foo:bar";
+
+my $data = "She sells sea shells by the sea shore";
+$r = dancer_response(
+	POST => '/upload', 
+	{ files => [{name => 'payload', filename =>'test.txt', data => $data }] }
+);
+is $r->{content}, $data, "file data uploaded";
+
