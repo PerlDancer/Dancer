@@ -57,7 +57,7 @@ sub host {
         $_[0]->{host} = $_[1];
     } else {
         my $host;
-        $host = $_[0]->env->{X_FORWARDED_HOST} if setting('behind_proxy');
+        $host = ($_[0]->env->{X_FORWARDED_HOST} || $_[0]->env->{HTTP_X_FORWARDED_HOST}) if setting('behind_proxy');
         $host || $_[0]->{host} || $_[0]->env->{HTTP_HOST};
     }
 }
