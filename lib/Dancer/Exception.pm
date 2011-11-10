@@ -168,14 +168,14 @@ Exceptions are objects, from subclasses of L<Dancer::Exception::Base>.
 However, for internal Dancer usage, we introduce a special class of exceptions,
 called L<Dancer::Continuation>. Exceptions that are from this class are not
 caught with a C<catch> block, but only with a C<continuation>. That's a cheap
-way to implement a I<workkflow interruption>. Dancer users should ignore this
+way to implement a I<workflow interruption>. Dancer users should ignore this
 feature.
 
 =head2 What it means for Dancer users
 
 Users can throw and catch exceptions, using C<try> and C<catch>. They can reuse
 some Dancer core exceptions (C<Dancer::Exception::Base::*>), but they can also
-create new exception classes, and use them for their own usage. That way it's
+create new exception classes, and use them for their own means. That way it's
 easy to use custom exceptions in a Dancer application. Have a look at
 C<register_exception>, C<raise>, and the methods in L<Dancer::Exception::Base>.
 
@@ -217,12 +217,12 @@ implementation.
 
 If the exception class name starts with a C<+>, then the
 C<Dancer::Exception::Base::> won't be added. This allows to build their own
-exception class herarchy, but you should first look at C<register_exception>
+exception class hierarchy, but you should first look at C<register_exception>
 before implementing your own class hierarchy. If you really wish to build your
-own exception class hierarchy, we recommend that all exceptions inherits of
+own exception class hierarchy, we recommend that all exceptions inherit of
 L<Dancer::Exception::Base>. Or at least it should implement its methods.
 
-The exception class can also be written as undercores seperated words, it'll be
+The exception class can also be written as words separated by underscores, it'll be
 camelized automatically. So C<'Exception::Foo'> and C<'exception_foo'> are
 equivalent. Be careful, C<'MyException'> can't be written C<'myexception'>, as
 it would be camelized into C<'Myexception'>.
