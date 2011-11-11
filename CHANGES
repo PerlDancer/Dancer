@@ -2,6 +2,7 @@
     * Fix bug that made system() fail with -1 under Dancer (felixdo)
     * Support for 'content_type' option on send_file when sending a
       system wide file (Emmanuel Rodriguez)
+    * Deserialize PATCH requests (Sam Kington)
 
 1.3080      25.10.2011
     ** Codename: Sawyer's Sugar Stream // Sawyer X **
