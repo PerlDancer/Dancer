@@ -1820,19 +1820,24 @@ versions:
 
 =head2 var
 
-Defines a variable shared between filters and route handlers.
+Provides an accessor for variables shared between filters and route handlers.
+Given a key/value pair, it sets a variable:
 
     before sub {
         var foo => 42;
     };
 
-Route handlers and other filters will be able to read that variable with the
-C<vars> keyword.
+Later, route handlers and other filters will be able to read that variable:
+
+    get '/path' => sub {
+        my $foo = var 'foo';
+        ...
+    };
 
 =head2 vars
 
 Returns the HashRef of all shared variables set during the filter/route
-chain:
+chain with the C<var> keyword:
 
     get '/path' => sub {
         if (vars->{foo} eq 42) {
