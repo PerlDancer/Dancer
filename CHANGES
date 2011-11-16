@@ -8,6 +8,8 @@
       system wide file (Emmanuel Rodriguez)
     * Support HTTP_X_FORWARDED_HOST in behing proxy (Ipaponov)
     * Deserialize PATCH requests (Sam Kington)
+    * Encode log messages properly if charset UTF-8 is set (David Precious,
+      thanks to Penfold for the fix & MiklerGM for reporting)
 
 1.3080      25.10.2011
     ** Codename: Sawyer's Sugar Stream // Sawyer X **
