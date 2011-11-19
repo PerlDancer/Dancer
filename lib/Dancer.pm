@@ -269,6 +269,7 @@ sub _load_app {
     my $app = Dancer::App->set_running_app($app_name);
 
     # Application options
+    $app->mount_at($options{mount_at}) if $options{mount_at};
     $app->set_app_prefix($options{prefix}) if $options{prefix};
     $app->settings($options{settings}) if $options{settings};
 
@@ -394,7 +395,7 @@ sub _send_file {
     }
 
     if (exists($options{filename})) {
-        $resp->push_header('Content-Disposition' => 
+        $resp->push_header('Content-Disposition' =>
             "attachment; filename=\"$options{filename}\""
         );
     }
@@ -650,7 +651,7 @@ Defines a before_template filter:
     before_template sub {
         my $tokens = shift;
         # do something with request, vars or params
-        
+
         # for example, adding a token to the template
         $tokens->{token_name} = "some value";
     };
@@ -738,7 +739,7 @@ Alias for the C<start> keyword.
 Logs a message of debug level:
 
     debug "This is a debug message";
-    
+
 See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head2 dirname
@@ -1138,6 +1139,10 @@ directory:
     load_app 'Webapp';
     # or with options
     load_app 'Forum', prefix => '/forum', settings => {foo => 'bar'};
+    # or to protect from route intersecting (to see example in
+    # L<Dancer::Deployment/"Running multiple apps with Plack::Builder">)
+    load_app 'Forum', prefix => '/forum', settings => {foo => 'bar'},
+        mount_at => '/mounted_dir/through/mount/command/of/plack';
 
 Note that the package loaded using load_app B<must> import Dancer with the
 C<:syntax> option.
@@ -1278,7 +1283,7 @@ This makes it possible to nest prefixes:
 
    prefix '/home' => sub {
        ## some routes
-       
+
       prefix '/private' => sub {
          ## here we are under /home/private...
 

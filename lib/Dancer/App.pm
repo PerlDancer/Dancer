@@ -11,7 +11,7 @@ use Dancer::Route::Registry;
 use Dancer::Logger;
 use Dancer::Exception qw(:all);
 
-Dancer::App->attributes(qw(name app_prefix prefix registry settings on_lexical_prefix));
+Dancer::App->attributes(qw(name app_prefix mount_at prefix registry settings on_lexical_prefix));
 
 # singleton that saves any app created, we want unicity for app names
 my $_apps = {};
@@ -104,12 +104,16 @@ sub reload_apps {
 sub find_route_through_apps {
     my ($class, $request) = @_;
     for my $app (Dancer::App->current, Dancer::App->applications) {
-        my $route = $app->find_route($request);
-        if ($route) {
-            Dancer::App->current($route->app);
-            return $route;
+        if ( ! defined ($app->mount_at) ||
+               $app->mount_at eq ( $request->script_name || '/' ) )
+        {
+            my $route = $app->find_route($request);
+            if ($route) {
+                Dancer::App->current($route->app);
+                return $route;
+            }
+            return $route if $route;
         }
-        return $route if $route;
     }
     return;
 }

@@ -43,11 +43,11 @@ Note that when using fast-cgi your rewrite rule should be:
 
         RewriteRule ^(.*)$ /dispatch.fcgi$1 [QSA,L]
 
-Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's configuration. 
+Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's configuration.
 But if your web server supports .htaccess files, you can drop those lines in a .htaccess file.
 
-To check if your server supports mod_rewrite type C<apache2 -l> to list modules. 
-To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in 
+To check if your server supports mod_rewrite type C<apache2 -l> to list modules.
+To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in
 a file called .htaccess in your application's root folder:
 
     # BEGIN dancer application htaccess
@@ -66,13 +66,13 @@ This option is a no-brainer, easy to setup, low maintenance but serves requests
 slower than all other options.
 
 You can use the same technique to deploy with FastCGI, by just changing the line:
-	
+
 	AddHandler cgi-script .cgi
 
 By:
 
 	AddHandler fastcgi-script .fcgi
-	
+
 Of course remember to update your rewrite rules, if you have set any:
 
     RewriteRule (.*) /dispatch.fcgi$1 [L]
@@ -176,7 +176,9 @@ Start by creating a simple app.psgi file:
     my $app1 = sub {
         my $env = shift;
         local $ENV{DANCER_APPDIR} = '/Users/franck/tmp/app1';
-        load_app "app1";
+        # 'mount_at' is used to guarantee that the routes of the applications do
+        # not intersect
+        load_app "app1", mount_at => "/app1";
         Dancer::App->set_running_app('app1');
         setting appdir => '/Users/franck/tmp/app1';
         Dancer::Config->load;
@@ -187,7 +189,9 @@ Start by creating a simple app.psgi file:
     my $app2 = sub {
         my $env = shift;
         local $ENV{DANCER_APPDIR} = '/Users/franck/tmp/app2';
-        load_app "app2";
+        # 'mount_at' is used to guarantee that the routes of the applications do
+        # not intersect
+        load_app "app2", mount_at => "/app2";
         Dancer::App->set_running_app('app2');
         setting appdir => '/Users/franck/tmp/app2';
         Dancer::Config->load;
@@ -272,8 +276,8 @@ under a specified dir:
     ProxyPass /mywebapp/ http://localhost:3000/
     ProxyPassReverse /mywebapp/ http://localhost:3000/
 
-It is important for you to note that the Apache2 modules mod_proxy and mod_proxy_http 
-must be enabled. 
+It is important for you to note that the Apache2 modules mod_proxy and mod_proxy_http
+must be enabled.
 
     a2enmod proxy
     a2enmod proxy_http
@@ -518,4 +522,3 @@ This example configuration uses a socket:
 Launch your application:
 
     plackup -s FCGI --listen /tmp/fcgi.sock bin/app.pl
-
