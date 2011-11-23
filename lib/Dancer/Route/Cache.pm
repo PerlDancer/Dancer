@@ -72,35 +72,39 @@ sub parse_size {
 }
 
 sub route_from_path {
-    my ($self, $method, $path) = @_;
+    my ($self, $method, $path, $app_name) = @_;
 
     $method && $path
       or raise core_route => "Missing method or path";
 
-    return $self->{'cache'}{$method}{$path} || undef;
+    $app_name = 'main' unless defined $app_name;
+
+    return $self->{'cache'}{$app_name}{$method}{$path} || undef;
 }
 
 sub store_path {
-    my ($self, $method, $path, $route) = @_;
+    my ($self, $method, $path, $route, $app_name) = @_;
 
     $method && $path && $route
       or raise core_route => "Missing method, path or route";
 
-    $self->{'cache'}{$method}{$path} = $route;
+    $app_name = 'main' unless defined $app_name;
 
-    push @{$self->{'cache_array'}}, [$method, $path];
+    $self->{'cache'}{$app_name}{$method}{$path} = $route;
+
+    push @{$self->{'cache_array'}}, [$method, $path, $app_name];
 
     if (my $limit = $self->size_limit) {
         while ($self->route_cache_size() > $limit) {
-            my ($method, $path) = @{shift @{$self->{'cache_array'}}};
-            delete $self->{'cache'}{$method}{$path};
+            my ($method, $path, $app_name) = @{shift @{$self->{'cache_array'}}};
+            delete $self->{'cache'}{$app_name}{$method}{$path};
         }
     }
 
     if (my $limit = $self->path_limit) {
         while ($self->route_cache_paths() > $limit) {
-            my ($method, $path) = @{shift @{$self->{'cache_array'}}};
-            delete $self->{'cache'}{$method}{$path};
+            my ($method, $path, $app_name) = @{shift @{$self->{'cache_array'}}};
+            delete $self->{'cache'}{$app_name}{$method}{$path};
         }
     }
 }
@@ -112,14 +116,19 @@ sub route_cache_size {
 
     use bytes;
 
-    foreach my $method (keys %cache) {
-        $size += length $method;
+    foreach my $app_name (keys %cache) {
+        $size += length $app_name;
 
-        foreach my $path (keys %{$cache{$method}}) {
-            $size += length $path;
-            $size += length $cache{$method}{$path};
+        foreach my $method (keys %{$cache{$app_name}}) {
+            $size += length $method;
+
+            foreach my $path (keys %{$cache{$app_name}{$method}}) {
+                $size += length $path;
+                $size += length $cache{$app_name}{$method}{$path};
+            }
         }
     }
+
 
     no bytes;
 
@@ -130,7 +139,7 @@ sub route_cache_paths {
     my $self = shift;
     my %cache = $self->{'cache'} ? %{$self->{'cache'}} : ();
 
-    return scalar map { keys %{$cache{$_}} } keys %cache;
+    return scalar map { keys %{$_} } map { values %{$cache{$_}} } keys %cache;
 }
 
 1;
@@ -210,6 +219,9 @@ size limit.
 =head2 route_cache_paths
 
 Returns all the paths in the cache. This is used to enforce the path limit.
+Please be carefull if you use L<Plack::Builder/mount> and some applications -
+routes are linked with applications and same path may be in some applications
+but with different handlers!
 
 =head1 ATTRIBUTES
 
@@ -244,4 +256,3 @@ under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
 See http://dev.perl.org/licenses/ for more information.
-
