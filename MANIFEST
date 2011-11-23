@@ -310,6 +310,7 @@ t/22_hooks/views/layouts/main.tt
 t/23_dancer_tests/01_basic.t
 t/23_dancer_tests/02_tests_functions.t
 t/24_deployment/01_multi_webapp.t
+t/24_deployment/02_multi_webapp.t
 t/25_exceptions/01_exceptions.t
 t/25_exceptions/02_exceptions.t
 t/25_exceptions/views/error.tt

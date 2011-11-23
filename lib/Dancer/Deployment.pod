@@ -43,11 +43,11 @@ Note that when using fast-cgi your rewrite rule should be:
 
         RewriteRule ^(.*)$ /dispatch.fcgi$1 [QSA,L]
 
-Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's configuration. 
+Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's configuration.
 But if your web server supports .htaccess files, you can drop those lines in a .htaccess file.
 
-To check if your server supports mod_rewrite type C<apache2 -l> to list modules. 
-To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in 
+To check if your server supports mod_rewrite type C<apache2 -l> to list modules.
+To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in
 a file called .htaccess in your application's root folder:
 
     # BEGIN dancer application htaccess
@@ -66,13 +66,13 @@ This option is a no-brainer, easy to setup, low maintenance but serves requests
 slower than all other options.
 
 You can use the same technique to deploy with FastCGI, by just changing the line:
-	
+
 	AddHandler cgi-script .cgi
 
 By:
 
 	AddHandler fastcgi-script .fcgi
-	
+
 Of course remember to update your rewrite rules, if you have set any:
 
     RewriteRule (.*) /dispatch.fcgi$1 [L]
@@ -163,15 +163,20 @@ C<Content-Encoding> set to C<gzip> or C<deflate>
 
 =head3 Running multiple apps with Plack::Builder
 
-You can use Plack::Builder to mount multiple Dancer applications on
-a L<PSGI> webserver like L<Starman>.
+You can use Plack::Builder to mount multiple Dancer applications on a L<PSGI>
+webserver like L<Starman>. Please use the C<routes_per_app> option (should be 1
+or true) in your config for preventing collisions of routes between Dancer
+applications.
 
 Start by creating a simple app.psgi file:
 
     use Dancer ':syntax';
     use Plack::Builder;
 
-    setting apphandler => 'PSGI';
+    setting apphandler      => 'PSGI';
+
+    # Now routes of $app1 will not conflict with routes of $app2
+    setting routes_per_app  => true;
 
     my $app1 = sub {
         my $env = shift;
@@ -272,8 +277,8 @@ under a specified dir:
     ProxyPass /mywebapp/ http://localhost:3000/
     ProxyPassReverse /mywebapp/ http://localhost:3000/
 
-It is important for you to note that the Apache2 modules mod_proxy and mod_proxy_http 
-must be enabled. 
+It is important for you to note that the Apache2 modules mod_proxy and mod_proxy_http
+must be enabled.
 
     a2enmod proxy
     a2enmod proxy_http
@@ -437,6 +442,13 @@ To set the environment you want to use for your application (production or devel
         ...
     </VirtualHost>
 
+If you use multiple Dancer apps under Apache please setup in your config.yml a
+following option:
+
+    routes_per_app: 1
+
+This will prevent collisions of routes between Dancer applications.
+
 =head3 Running from Apache under appdir
 
 If you want to deploy multiple applications under the same VirtualHost, using
@@ -518,4 +530,3 @@ This example configuration uses a socket:
 Launch your application:
 
     plackup -s FCGI --listen /tmp/fcgi.sock bin/app.pl
-

@@ -103,7 +103,10 @@ sub reload_apps {
 
 sub find_route_through_apps {
     my ($class, $request) = @_;
-    for my $app (Dancer::App->current, Dancer::App->applications) {
+    for my $app (
+      Dancer::App->current,
+      ( Dancer::Config::setting('routes_per_app') ? () : Dancer::App->applications ) )
+    {
         my $route = $app->find_route($request);
         if ($route) {
             Dancer::App->current($route->app);
