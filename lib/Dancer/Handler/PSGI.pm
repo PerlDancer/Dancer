@@ -11,11 +11,12 @@ use Dancer::Config;
 use Dancer::ModuleLoader;
 use Dancer::SharedData;
 use Dancer::Logger;
+use Dancer::Exception qw(:all);
 
 sub new {
     my $class = shift;
 
-    croak "Plack::Request is needed by the PSGI handler"
+    raise core_handler_PSGI => "Plack::Request is needed by the PSGI handler"
       unless Dancer::ModuleLoader->load('Plack::Request');
 
     my $self = {};
@@ -42,7 +43,7 @@ sub apply_plack_middlewares_map {
     my $mw_map = Dancer::Config::setting('plack_middlewares_map');
 
     foreach my $req (qw(Plack::App::URLMap Plack::Builder)) {
-        croak "$req is needed to use apply_plack_middlewares_map"
+        raise core_handler_PSGI => "$req is needed to use apply_plack_middlewares_map"
           unless Dancer::ModuleLoader->load($req);
     }
 
@@ -63,11 +64,11 @@ sub apply_plack_middlewares {
 
     my $middlewares = Dancer::Config::setting('plack_middlewares');
 
-    croak "Plack::Builder is needed for middlewares support"
+    raise core_handler_PSGI => "Plack::Builder is needed for middlewares support"
       unless Dancer::ModuleLoader->load('Plack::Builder');
 
     ref $middlewares eq "ARRAY"
-      or croak "'plack_middlewares' setting must be an ArrayRef";
+      or raise core_handler_PSGI => "'plack_middlewares' setting must be an ArrayRef";
 
     my $builder = Plack::Builder->new();
 

@@ -13,6 +13,7 @@ use Dancer ':syntax', ':tests';
 use Dancer::App;
 use Dancer::Deprecation;
 use Dancer::Request;
+use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Dancer::Renderer;
 use Dancer::Handler;
@@ -311,9 +312,13 @@ Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename
 Content-Type: text/plain
 
 };
-                open my $fh, '<', $file->{filename};
-                while (<$fh>){
-                    $content .= $_;
+                if ( $file->{data} ) {
+                    $content .= $file->{data};
+                } else {
+                    open my $fh, '<', $file->{filename};
+                    while (<$fh>) {
+                        $content .= $_;
+                    }
                 }
                 $content .= "\n";
             }
@@ -548,7 +553,11 @@ Only $method and $path are required.
 $params is a hashref, $body is a string and $headers can be an arrayref or
 a HTTP::Headers object, $files is an arrayref of hashref, containing some files to upload.
 
-A good reason to use this function is for testing POST requests. Since POST requests may not be idempotent, it is necessary to capture the content and status in one shot. Calling the response_status_is and response_content_is functions in succession would make two requests, each of which could alter the state of the application and cause Schrodinger's cat to die.
+A good reason to use this function is for testing POST requests. Since POST
+requests may not be idempotent, it is necessary to capture the content and
+status in one shot. Calling the response_status_is and response_content_is
+functions in succession would make two requests, each of which could alter the
+state of the application and cause Schrodinger's cat to die.
 
     my $response = dancer_response POST => '/widgets';
     is $response->{status}, 202, "response for POST /widgets is 202";
@@ -564,7 +573,14 @@ It's possible to test file uploads:
 
     post '/upload' => sub { return upload('image')->content };
 
-    $response = dancer_reponse(POST => '/upload', {files => [{name => 'image', filename => '/path/to/image.jpg}]});
+    $response = dancer_reponse(POST => '/upload', {files => [{name => 'image', filename => '/path/to/image.jpg'}]});
+
+In addition, you can supply the file contents as the C<data> key:
+
+    my $data  = 'A test string that will pretend to be file contents.';
+    $response = dancer_reponse(POST => '/upload', {
+        files => [{name => 'test', filename => "filename.ext", data => $data}]
+    });
 
 =head2 read_logs
 

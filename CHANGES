@@ -1,3 +1,22 @@
+1.3089_01   26.11.2011
+
+    [ BUG FIXES ]
+    * Fix bug that made system() fail with -1 under Dancer (felixdo).
+    * Support for 'content_type' option on send_file when sending a
+      system wide file (Emmanuel Rodriguez).
+    * Support HTTP_X_FORWARDED_HOST in behing proxy (Ipaponov).
+    * Deserialize PATCH requests (Sam Kington).
+    * Encode log messages properly if charset UTF-8 is set (David Precious,
+      thanks to Penfold for the fix & MiklerGM for reporting).
+
+    [ ENHANCEMENTS ]
+    * Continuations-style exception system! (Damien Krotkine).
+    * The ability for dancer_response to send file contents for file uploads
+      as a scalar, instead of reading from file on disk (Squeeks).
+
+    [ DOCUMENTATION ]
+    * Clean up "plack_middlewares" example in docs (Richard Simões).
+
 1.3080      25.10.2011
     ** Codename: Sawyer's Sugar Stream // Sawyer X **
 

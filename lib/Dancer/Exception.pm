@@ -4,207 +4,273 @@ use strict;
 use warnings;
 use Carp;
 
+our $Verbose = 0;
+
+use Dancer::Exception::Base;
+
 use base qw(Exporter);
 
-my @exceptions = qw(E_HALTED E_GENERIC);
-our @EXPORT_OK = (@exceptions, qw(raise list_exceptions is_dancer_exception register_custom_exception));
-our %value_to_custom_name;
-our %custom_name_to_value;
-our %EXPORT_TAGS = ( exceptions => [ @exceptions],
-                     internal_exceptions => [ @exceptions],
-                     custom_exceptions => [],
-                     utils => => [ qw(raise list_exceptions is_dancer_exception register_custom_exception) ],
-                     all => \@EXPORT_OK,
-                   );
+our @EXPORT_OK = (qw(try catch continuation register_exception registered_exceptions raise));
+our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
+use Try::Tiny ();
+
+sub try (&;@) {
+    goto &Try::Tiny::try;
+}
+
+sub catch (&;@) {
+	my ( $block, @rest ) = @_;
+
+    my $continuation_code;
+    my @new_rest = grep { ref ne 'Try::Tiny::Catch' or $continuation_code = $$_, 0 } @rest;
+    $continuation_code
+      and return ( bless( \ sub {
+          ref && $_->isa('Dancer::Continuation')
+            ? $continuation_code->(@_) : $block->(@_);
+      },  'Try::Tiny::Catch') , @new_rest);
+
+    return ( bless ( \ sub {
+          ref && $_->isa('Dancer::Continuation')
+            ? die($_) : $block->(@_) ;
+      }, 'Try::Tiny::Catch'), @new_rest );
+}
+
+sub continuation (&;@) {
+	my ( $block, @rest ) = @_;
+
+    my $catch_code;
+    my @new_rest = grep { ref ne 'Try::Tiny::Catch' or $catch_code = $$_, 0 } @rest;
+    $catch_code 
+      and return ( bless( \ sub {
+          ref && $_->isa('Dancer::Continuation')
+            ? $block->(@_) : $catch_code->(@_);
+      },  'Try::Tiny::Catch') , @new_rest);
+
+    return ( bless ( \ sub {
+          ref && $_->isa('Dancer::Continuation')
+            ? $block->(@_) : die($_);
+      }, 'Try::Tiny::Catch'), @new_rest );
+}
+
+sub raise ($;@) {
+    my $exception_name = shift;
+    my $exception;
+    if ($exception_name =~ s/^\+//) {
+        $exception = $exception_name->new(@_);
+    } else {
+        _camelize($exception_name);
+        $exception = "Dancer::Exception::$exception_name"->new(@_);
+    }
+    $exception->throw();
+}
+
+sub _camelize {
+    # using aliasing for ease of use
+    $_[0] =~ s/^(.)/uc($1)/e;
+    $_[0] =~ s/_(.)/'::' . uc($1)/eg;    
+}
+
+sub register_exception {
+    my ($exception_name, %params) = @_;
+    my $exception_class = 'Dancer::Exception::' . $exception_name;
+    my $path = $exception_class; $path =~ s|::|/|g; $path .= '.pm';
+
+    if (exists $INC{$path}) {
+        local $Carp::CarpLevel = $Carp::CarpLevel++;
+        'Dancer::Exception::Base::Internal'
+            ->new("register_exception failed: $exception_name is already defined")
+            ->throw;
+    }
+
+    my $message_pattern = $params{message_pattern};
+    my $composed_from = $params{composed_from};
+    my @composition = map { 'Dancer::Exception::' . $_ } @$composed_from;
+
+    $INC{$path} = __FILE__;
+    eval "\@${exception_class}::ISA=qw(Dancer::Exception::Base " . join (' ', @composition) . ');';
+
+    if (defined $message_pattern) {
+        no strict 'refs';
+        *{"${exception_class}::_message_pattern"} = sub { $message_pattern };
+    }
+
+}
+
+sub registered_exceptions {
+    sort map { s|/|::|g; s/\.pm$//; $_ } grep { s|^Dancer/Exception/||; } keys %INC;
+}
+
+register_exception(@$_) foreach (
+    [ 'Core',                message_pattern => 'core - %s' ],
+    [ 'Core::App',           message_pattern => 'app - %s',         composed_from => [ qw(Core) ] ],
+    [ 'Core::Config',        message_pattern => 'config - %s',      composed_from => [ qw(Core) ] ],
+    [ 'Core::Deprecation',   message_pattern => 'deprecation - %s', composed_from => [ qw(Core) ] ],
+    [ 'Core::Engine',        message_pattern => 'engine - %s',      composed_from => [ qw(Core) ] ],
+    [ 'Core::Factory',       message_pattern => 'factory - %s',     composed_from => [ qw(Core) ] ],
+    [ 'Core::Factory::Hook', message_pattern => 'hook - %s',        composed_from => [ qw(Core::Factory) ] ],
+    [ 'Core::Hook',          message_pattern => 'hook - %s',        composed_from => [ qw(Core) ] ],
+    [ 'Core::Fileutils',     message_pattern => 'file utils - %s',  composed_from => [ qw(Core) ] ],
+    [ 'Core::Handler',       message_pattern => 'handler - %s',     composed_from => [ qw(Core) ] ],
+    [ 'Core::Handler::PSGI', message_pattern => 'handler - %s',     composed_from => [ qw(Core::Handler) ] ],
+    [ 'Core::Plugin',        message_pattern => 'plugin - %s',      composed_from => [ qw(Core) ] ],
+    [ 'Core::Renderer',      message_pattern => 'renderer - %s',    composed_from => [ qw(Core) ] ],
+    [ 'Core::Route',         message_pattern => 'route - %s',       composed_from => [ qw(Core) ] ],
+    [ 'Core::Serializer',    message_pattern => 'serializer - %s',  composed_from => [ qw(Core) ] ],
+    [ 'Core::Template',      message_pattern => 'template - %s',    composed_from => [ qw(Core) ] ],
+    [ 'Core::Session',       message_pattern => 'session - %s',     composed_from => [ qw(Core) ] ],
+);
+
+1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Dancer::Exception - class for throwing and catching exceptions
 
 =head1 SYNOPSIS
 
-  use Dancer::Exception qw(:all);
+    use Dancer::Exception qw(:all);
 
-  # raise an exception
-  raise E_HALTED;
+    register_exception('DataProblem',
+                        message_pattern => "test message : %s"
+                      );
 
-  # get a list of possible exceptions
-  my @exception_names = list_exceptions;
-
-  # catch an exception
-  eval { ... };
-  if ( my $value = is_dancer_exception(my $exception = $@) ) {
-    if ($value == ( E_HALTED | E_FOO ) ) {
-        # it's a halt or foo exception...
+    sub do_stuff {
+      raise DataProblem => "we've lost data!";
     }
-  } elsif ($exception) {
-    # do something with $exception (don't use $@ as it may have been reset)
-  }
+
+    try {
+      do_stuff()
+    } catch {
+      # an exception was thrown
+      my ($exception) = @_;
+      if ($exception->does('DataProblem')) {
+        # handle the data problem
+        my $message = $exception->message();
+      } else {
+        $exception->rethrow
+      }
+    };
+
+
 
 =head1 DESCRIPTION
 
-This is a lighweight exceptions module. Yes, it's not Object Oriented, that's
-on purpose, to keep it light and fast. Thus, you can use ref() instead of
-->isa(), and exceptions have no method to call on. Simply dereference them to
-get their value
+Dancer::Exception is based on L<Try::Tiny>. You can try and catch exceptions,
+like in L<Try::Tiny>.
 
-An exception is a blessed reference on an integer. This integer is always a
-power of two, so that you can test its value using the C<|> operator. A Dancer
-exception is always blessed as C<'Dancer::Exception'>.
+Exceptions are objects, from subclasses of L<Dancer::Exception::Base>.
 
-=head1 EXPORTS
+However, for internal Dancer usage, we introduce a special class of exceptions,
+called L<Dancer::Continuation>. Exceptions that are from this class are not
+caught with a C<catch> block, but only with a C<continuation>. That's a cheap
+way to implement a I<workflow interruption>. Dancer users should ignore this
+feature.
 
-to be able to use this module, you should use it with these options :
+=head2 What it means for Dancer users
 
-  # loads specific exceptions only. See list_exceptions for a list
-  use Dancer::Exception qw(E_HALTED E_PLOP);
+Users can throw and catch exceptions, using C<try> and C<catch>. They can reuse
+some Dancer core exceptions (C<Dancer::Exception::Base::*>), but they can also
+create new exception classes, and use them for their own means. That way it's
+easy to use custom exceptions in a Dancer application. Have a look at
+C<register_exception>, C<raise>, and the methods in L<Dancer::Exception::Base>.
 
-  # loads the utility functions
-  use Dancer::Exception qw(raise list_exceptions is_dancer_exception register_custom_exception);
+=head1 METHODS
 
-  # this does the same thing as above
-  use Dancer::Exception qw(:utils);
+=head2 try
 
-  # loads all exception names, but not the utils
-  use Dancer::Exception qw(:exceptions);
+Same as in L<Try::Tiny>
 
-  # loads only the internal exception names
-  use Dancer::Exception qw(:internal_exceptions);
+=head2 catch
 
-  # loads only the custom exception names
-  use Dancer::Exception qw(:custom_exceptions);
+Same as in L<Try::Tiny>. The exception can be retrieved as the first parameter:
 
-  # loads everything
-  use Dancer::Exception qw(:all);
+    try { ... } catch { my ($exception) = @_; };
 
-=head1 FUNCTIONS
+=head2 continuation
+
+To be used by Dancer developers only, in Dancer core code.
 
 =head2 raise
 
-  raise E_HALTED;
+  # raise Dancer::Exception::Base::Custom
+  raise Custom => "user $username is unknown";
 
-Used to raise an exception. Takes in argument an integer (must be a power of
-2). You should give it an existing Dancer exception.
+  # raise Dancer::Exception::Base::Custom::Frontend
+  raise 'Custom::Frontend' => "user $username is unknown";
 
-=cut
+  # same, raise Dancer::Exception::Base::Custom::Frontend
+  raise custom_frontend => "user $username is unknown";
 
-# yes we use __CLASS__, it's not OO and inheritance proof, but if you'd pay
-# attention, you'd have noticed that this module is *not* a class :)
-sub raise { die bless \ do { my $e = $_[0] }, __PACKAGE__ }
+  # raise My::Own::ExceptionSystem::Invalid::Login
+  raise '+My::Own::ExceptionSystem::Invalid::Login' => "user $username is unknown";
 
-=head2 list_exceptions
+raise provides an easy way to throw an exception. First parameter is the name
+of the exception class, without the C<Dancer::Exception::Base::> prefix. other
+parameters are stored as I<raising arguments> in the exception. Usually the
+parameters is an exception message, but it's left to the exception class
+implementation.
 
-  my @exception_names = list_exceptions;
-  my @exception_names = list_exceptions(type => 'internal');
-  my @exception_names = list_exceptions(type => 'custom');
+If the exception class name starts with a C<+>, then the
+C<Dancer::Exception::Base::> won't be added. This allows to build their own
+exception class hierarchy, but you should first look at C<register_exception>
+before implementing your own class hierarchy. If you really wish to build your
+own exception class hierarchy, we recommend that all exceptions inherit of
+L<Dancer::Exception::Base>. Or at least it should implement its methods.
 
-Returns a list of strings, the names of available exceptions.
+The exception class can also be written as words separated by underscores, it'll be
+camelized automatically. So C<'Exception::Foo'> and C<'exception_foo'> are
+equivalent. Be careful, C<'MyException'> can't be written C<'myexception'>, as
+it would be camelized into C<'Myexception'>.
 
-Parameters are an optional list of key values. Accepted keys are for now only
-C<type>, to restrict the list of exceptions on the type of the Dancer
-exception. C<type> can be 'internal' or 'custom'.
+=head2 register_exception
 
-=cut
+This method allows to register custom exceptions, usable by Dancer users in
+their route code (actually pretty much everywhere).
 
-sub list_exceptions {
-    my %params = @_;
-    ( $params{type} || '' ) eq 'internal'
-      and return @exceptions;
-    ( $params{type} || '' ) eq 'custom'
-      and return keys %custom_name_to_value;
-    return @exceptions, keys %custom_name_to_value;
-}
+  # simple exception
+  register_exception ('InvalidCredentials',
+                      message_pattern => "invalid credentials : %s",
+                     );
 
-=head2 is_dancer_internal_exception
+This registers a new custom exception. To use it, do:
 
-  # test if it's a Dancer exception
-  my $value = is_dancer_exception($@);
-  # test if it's a Dancer internal exception
-  my $value = is_dancer_exception($@, type => 'internal');
-  # test if it's a Dancer custom exception
-  my $value = is_dancer_exception($@, type => 'custom');
+  raise InvalidCredentials => "user Herbert not found";
 
-This function tests if an exception is a Dancer exception, and if yes get its
-value. If not, it returns void
+The exception message can be retrieved with the C<$exception->message> method, and we'll be
+C<"invalid credentials : user Herbert not found"> (see methods in L<Dancer::Exception::Base>)
 
-First parameter is the exception to test. Other parameters are an optional list
-of key values. Accepted keys are for now only C<type>, to restrict the test on
-the type of the Dancer exception. C<type> can be 'internal' or 'custom'.
+  # complex exception
+  register_exception ('InvalidLogin',
+                      composed_from => [qw(Fatal InvalidCredentials)],
+                      message_pattern => "wrong login or password",
+                   );
 
-Returns the exception value (which is always true), or void (empty list) if the
-exception was not a dancer exception (of the right type if specified).
+In this example, the C<InvalidLogin> is built as a composition of the C<Fatal>
+and C<InvalidCredentials> exceptions. See the C<does> method in
+L<Dancer::Exception::Base>.
 
-=cut
+=head2 registered_exceptions
 
-sub is_dancer_exception {
-    my ($exception, %params) = @_;
-    ref $exception eq __PACKAGE__
-      or return 0;
-    my $value = $$exception;
-    @_ > 1
-      or return $value;
-    $params{type} eq 'internal' && $value < 2**16
-      and return $value;
-    $params{type} eq 'custom' && $value >= 2**16
-      and return $value;
-    return 0;
-}
+  my @exception_classes = registered_exceptions;
 
-=head2 register_custom_exception
+Returns the list of exception class names. It will list core exceptions C<and>
+custom exceptions (except the one you've registered with a leading C<+>, see
+C<register_exception>). The list is sorted.
 
-  register_custom_exception('E_FROBNICATOR');
-  # now I can use this exception for raising
-  raise E_FROBNICATOR;
+=head1 GLOBAL VARIABLE
 
+=head2 $Dancer::Exception::Verbose
 
-=cut
+When set to 1, exceptions will stringify with a long stack trace. This variable
+is similar to C<$Carp::Verbose>. I recommend you use it like that:
 
-sub register_custom_exception {
-    my ($exception_name, %params) = @_;
-    exists $value_to_custom_name{$exception_name}
-      and croak "can't register '$exception_name' custom exception, it already exists";
-    keys %value_to_custom_name < 16
-      or croak "can't register '$exception_name' custom exception, all 16 custom slots are registered";
-    my $value = 2**16;
-    while($value_to_custom_name{$value}) { $value*=2; }
-    $value_to_custom_name{$value} = $exception_name;
-    $custom_name_to_value{$exception_name} = $value;
+  local $Dancer::Exception::Verbose;
+  $Dancer::Exception::Verbose = 1;
 
-    my $pkg = __PACKAGE__;
-    no strict 'refs';
-    *{"$pkg\::$exception_name"} = sub { $value };
-
-    push @EXPORT_OK, $exception_name;
-    push @{$EXPORT_TAGS{custom_exceptions}}, $exception_name;
-    $params{no_import}
-      or $pkg->export_to_level(1, $pkg, $exception_name);
-
-    return;
-}
-
-
-=head1 INTERNAL EXCEPTIONS
-
-=head2 E_GENERIC
-
-A generic purpose exception. Not used by internal code, so this exception can
-be used by user code safely, without having to register a custom user exception.
-
-=cut
-
-sub E_GENERIC () { 1 }
-
-=head2 E_HALTED
-
-Internal exception, generated when C<halt()> is called (see in L<Dancer> POD).
-
-=cut
-
-sub E_HALTED () { 2 }
-
-=head1 CUSTOM EXCEPTIONS
-
-In addition to internal (and the generic one) exception, users have the ability
-to register more Dancer exceptions for their need. To do that, see
-C<register_custom_exception>.
-
-=cut
-
-1;
+All the L<Carp> global variables can also be used to alter the stacktrace
+generation.

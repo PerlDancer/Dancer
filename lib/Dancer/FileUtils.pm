@@ -8,6 +8,8 @@ use File::Spec;
 use Carp;
 use Cwd 'realpath';
 
+use Dancer::Exception qw(:all);
+
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
@@ -65,7 +67,7 @@ sub open_file {
     my ( $mode, $filename ) = @_;
 
     open my $fh, $mode, $filename
-      or croak "$! while opening '$filename' using mode '$mode'";
+      or raise core_fileutils => "$! while opening '$filename' using mode '$mode'";
 
     return set_file_mode($fh);
 }

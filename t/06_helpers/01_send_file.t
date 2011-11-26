@@ -8,10 +8,12 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 20;
+plan tests => 21;
 
 get '/cat/:file' => sub {
     send_file(params->{file});
+    # The next line is not executed, as 'send_error' breaks the route workflow
+    die;
 };
 
 get '/catheader/:file' => sub {
@@ -30,6 +32,10 @@ get '/as_png/:file' => sub {
 
 get '/absolute/:file' => sub {
     send_file(path(dirname(__FILE__), "routes.pl"), system_path => 1);
+};
+
+get '/absolute/content_type/:file' => sub {
+    send_file(path(dirname(__FILE__), "routes.pl"), system_path => 1, content_type => 'text/plain');
 };
 
 get '/custom_status' => sub {
@@ -71,6 +77,10 @@ is(ref($resp->{content}), 'GLOB', "content is a File handle");
 $content = read_glob_content($resp->{content});
 like($content, qr/'foo loaded'/, "content is ok");
 
+$resp = undef; # just to be sure
+$resp = dancer_response(GET => '/absolute/content_type/file.txt');
+%headers = @{$resp->headers_to_array};
+is($headers{'Content-Type'}, 'text/plain', 'mime_type is ok');
 
 $resp = undef; # just to be sure
 $resp = dancer_response(GET => '/scalar/file');

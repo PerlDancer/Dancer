@@ -17,6 +17,7 @@ use Dancer::FileUtils qw(path path_or_empty dirname read_file_content open_file)
 use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
+use Dancer::Exception qw(:all);
 
 Dancer::Factory::Hook->instance->install_hooks(
     qw/before after before_serializer after_serializer before_file_render after_file_render/
@@ -103,7 +104,7 @@ sub get_action_response {
         || ($method ne Dancer::SharedData->request->method))
     {
         if ($depth > $MAX_RECURSIVE_LOOP) {
-            croak "infinite loop detected, "
+            raise core_renderer => "infinite loop detected, "
               . "check your route/filters for "
               . $method . ' '
               . $path;
@@ -182,6 +183,7 @@ sub get_file_response_for_path {
         my $response = Dancer::SharedData->response() || Dancer::Response->new();
         $response->status($status) if ($status);
         $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
+                                             Dancer::SharedData->request->content_type ||
                                              _get_mime_type($static_file)));
         $response->content($fh);
 

@@ -13,6 +13,14 @@ examples/dancr/views/show_entries.tt
 lib/Dancer.pm
 lib/Dancer/App.pm
 lib/Dancer/Config.pm
+lib/Dancer/Continuation.pm
+lib/Dancer/Continuation/Halted.pm
+lib/Dancer/Continuation/Route.pm
+lib/Dancer/Continuation/Route/ErrorSent.pm
+lib/Dancer/Continuation/Route/FileSent.pm
+lib/Dancer/Continuation/Route/Forwarded.pm
+lib/Dancer/Continuation/Route/Passed.pm
+lib/Dancer/Continuation/Route/Templated.pm
 lib/Dancer/Cookbook.pod
 lib/Dancer/Cookie.pm
 lib/Dancer/Cookies.pm
@@ -23,6 +31,7 @@ lib/Dancer/Development/Integration.pod
 lib/Dancer/Engine.pm
 lib/Dancer/Error.pm
 lib/Dancer/Exception.pm
+lib/Dancer/Exception/Base.pm
 lib/Dancer/Factory/Hook.pm
 lib/Dancer/FileUtils.pm
 lib/Dancer/GetOpt.pm
@@ -302,6 +311,7 @@ t/23_dancer_tests/01_basic.t
 t/23_dancer_tests/02_tests_functions.t
 t/24_deployment/01_multi_webapp.t
 t/25_exceptions/01_exceptions.t
+t/25_exceptions/02_exceptions.t
 t/25_exceptions/views/error.tt
 t/25_exceptions/views/index.tt
 t/25_exceptions/views/layouts/main.tt

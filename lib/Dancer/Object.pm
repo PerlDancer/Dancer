@@ -6,6 +6,7 @@ package Dancer::Object;
 use strict;
 use warnings;
 use Carp;
+use Dancer::Exception qw(:all);
 
 # constructor
 sub new {
@@ -18,7 +19,7 @@ sub new {
 
 sub clone {
     my ($self) = @_;
-    croak "The 'Clone' module is needed"
+    raise core => "The 'Clone' module is needed"
         unless Dancer::ModuleLoader->load('Clone');
     return Clone::clone($self);
 }

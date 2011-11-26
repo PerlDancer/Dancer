@@ -60,10 +60,8 @@ sub format_message {
     my ($self, $level, $message) = @_;
     chomp $message;
 
-    if (setting('charset')) {
-        unless (uc setting('charset') eq "UTF-8" && Encode::is_utf8($message)) {
-            $message = Encode::encode(setting('charset'), $message);
-        }
+    if (my $charset = setting('charset')) {
+        $message = Encode::encode($charset, $message);
     }
 
     $level = 'warn' if $level eq 'warning';
@@ -92,7 +90,7 @@ sub format_message {
               ? $r->env->{'HTTP_X_REAL_IP'} || $r->env->{'REMOTE_ADDR'}
               : '-';
         },
-        t => sub { Encode::decode(setting('charset'),
+        t => sub { Encode::decode(setting('charset') || 'utf8',
                                   POSIX::strftime( "%d/%b/%Y %H:%M:%S", localtime )) },
         T => sub { POSIX::strftime( "%Y-%m-%d %H:%M:%S", localtime  ) },
         P => sub { $$ },

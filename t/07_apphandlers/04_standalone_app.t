@@ -11,7 +11,7 @@ plan skip_all => "Test::TCP is needed for this test"
 
 use LWP::UserAgent;
 
-plan tests => 4;
+plan tests => 6;
 
 Test::TCP::test_tcp(
     client => sub {
@@ -29,6 +29,13 @@ Test::TCP::test_tcp(
 
         $res = $ua->post("http://127.0.0.1:$port/name", { name => "xxx" });
         like $res->content, qr/Your name: xxx/, 'name is found on a POST';
+
+        # we are already skipping under MSWin32 (check plan above)
+        $res = $ua->get("http://127.0.0.1:$port/issues/499/true");
+        is $res->content, "OK";
+
+        $res = $ua->get("http://127.0.0.1:$port/issues/499/false");
+        is $res->content, "OK";
     },
     server => sub {
         my $port = shift;
