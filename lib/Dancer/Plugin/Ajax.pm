@@ -6,6 +6,8 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::Plugin;
 
+our $VERSION = '1.00';
+
 register 'ajax' => \&ajax;
 
 hook before => sub {
