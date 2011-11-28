@@ -54,7 +54,7 @@ sub print_startup_info {
         $module =~ s{/}{::}g;  # change / to ::
         $module =~ s{\.pm$}{}; # remove .pm at the end
 
-        my $version = $module->VERSION;
+        my $version = $module->VERSION || '';
         print ">> $module ($version)\n";
     }
 
