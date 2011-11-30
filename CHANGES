@@ -151,7 +151,7 @@
     * Do not re-read config files when dance starts if they were
       already loaded.  (Alberto Simões)
     * Fixed shell-dependent tests for Window testing. (Alberto Simões)
-    * Die properly if halt is call inside an hook.
+    * Die properly if halt is called inside an hook.
       (Damien Krotkine and Alberto Simões)
     * Make template work outside of requests (Issue 592) (David Precious)
     * Cleanup session tests folder (Issue 594) (Sawyer X)
@@ -1314,7 +1314,7 @@ Dancer 1.1800
 Dancer 1.178_02
 	[ Alexis Sukrieh ]
 	* Errors are caught in before filters
-	* halt can be given a Dancer::Response object rahter than plain text content
+	* halt can be given a Dancer::Response object rather than plain text content
 
 Dancer 1.178_01
 
