@@ -67,10 +67,12 @@ sub deserialize {
 sub _options_as_hashref {
     my $self = shift;
 
-    return if scalar @_ == 0;
+    return { utf8 => 1 } if scalar @_ == 0;
 
     if ( scalar @_ == 1 ) {
-        return shift;
+	my $options = shift;
+	$options->{utf8} = 1 unless exists $options->{utf8};
+        return $options;
     }
     elsif ( scalar @_ % 2 ) {
         carp "options for to_json/from_json must be key value pairs (as a hashref)";
