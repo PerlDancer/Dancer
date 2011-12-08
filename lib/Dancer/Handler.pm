@@ -2,7 +2,7 @@ package Dancer::Handler;
 
 use strict;
 use warnings;
-use Carp 'croak';
+use Carp;
 
 use File::stat;
 use HTTP::Headers;
@@ -14,8 +14,13 @@ use Dancer::Renderer;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 use Dancer::Exception qw(:all);
+use Dancer::Factory::Hook;
 
 use Encode;
+
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/on_handler_exception/
+);
 
 # This is where we choose which application handler to return
 sub get_handler {
@@ -35,7 +40,7 @@ sub get_handler {
 
     # load the app handler
     my ($loaded, $error) = Dancer::ModuleLoader->load($handler);
-    croak "Unable to load app handler `$handler': $error" if $error;
+    raise core_handler => "Unable to load app handler `$handler': $error" if $error;
 
     # OK, everything's fine, load the handler
     Dancer::Logger::core('loading ' . $handler . ' handler');
@@ -76,29 +81,32 @@ sub handle_request {
 sub render_request {
     my $request = shift;
     my $action;
-    $action = eval {
+    $action = try {
         Dancer::Renderer->render_file
         || Dancer::Renderer->render_action
         || Dancer::Renderer->render_error(404);
-    };
-
-    my $value = is_dancer_exception(my $exception = $@);
-    if ($value && $value & E_HALTED) {
-        # special case for halted workflow exception: still render the response
+    } continuation {
+        # workflow exception (continuation)
+        my ($continuation) = @_;
+        $continuation->isa('Dancer::Continuation::Halted')
+          or $continuation->rethrow();
+        # special case for halted workflow continuation: still render the response
         Dancer::Serializer->process_response(Dancer::SharedData->response);
-    } elsif ($exception) {
+    } catch {
+        my ($exception) = @_;
+        Dancer::Factory::Hook->execute_hooks('on_handler_exception', $exception);
         Dancer::Logger::error(
           'request to ' . $request->path_info . " crashed: $exception");
 
+        # use stringification, to get exception message in case of a
+        # Dancer::Exception
         Dancer::Error->new(
           code    => 500,
           title   => "Runtime Error",
-          message => $exception,
-          $value ? ( exception => $value,
-                     exceptions => { },
-                   ) : (),
+          message => "$exception",
+          exception => $exception,
         )->render();
-    }
+    };
     return $action;
 }
 

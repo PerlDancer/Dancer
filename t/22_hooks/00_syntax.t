@@ -4,18 +4,13 @@ use Test::More import => ['!pass'];
 
 use Dancer ':syntax';
 
-plan tests => 5;
+plan tests => 4;
 
-ok( before( sub { 'block before' } ), 'add a before filter' );
-ok( after( sub  { 'block after' } ),  'add an after filter' );
+ok( hook(before => sub { 'block before' } ), 'add a before filter' );
+ok( hook(after => sub  { 'block after' } ),  'add an after filter' );
 
-ok( before_template( sub { 'block before_template' } ),
+ok( hook(before_template=> sub { 'block before_template' } ),
     'add a before_template filter' );
-
-ok(
-    hook( 'before', sub { 'block before' } ),
-    'add a before filter using the hook keyword'
-);
 
 eval {
     hook( 'before', 'This is not a CodeRef' ),

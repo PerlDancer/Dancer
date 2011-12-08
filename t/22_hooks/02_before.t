@@ -10,7 +10,7 @@ plan tests => 15;
 my $i = 0;
 
 ok(
-    before(
+   hook (before =>
         sub {
             content_type('text/xhtml');
         }
@@ -18,7 +18,7 @@ ok(
 );
 
 ok(
-    before(
+   hook(before=>
         sub {
             if ( request->path_info eq '/redirect_from' ) {
                 redirect('/redirect_to');

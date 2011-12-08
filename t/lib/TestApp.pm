@@ -75,4 +75,12 @@ get '/forward_to_unavailable_route' => sub {
     forward "/some_route_that_does_not_exist"
 };
 
+get '/issues/499/true' => sub {
+    "OK" if system('true') == 0  
+};
+
+get '/issues/499/false' => sub {
+    "OK" if system('false') != 0  
+};
+
 true;

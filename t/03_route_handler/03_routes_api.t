@@ -29,7 +29,9 @@ is $response->{content} => 42, "response looks good";
 
 my $r2 = Dancer::Route->new(method => 'get',
     pattern => '/pass/:var',
-    code => sub { pass && "this is r2" },
+    code => sub { pass;
+                  # The next line is not executed, as 'pass' breaks the route workflow
+                  die },
     prev => $r);
 
 my $r3 = Dancer::Route->new(method => 'get',

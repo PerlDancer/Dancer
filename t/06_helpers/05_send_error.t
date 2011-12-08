@@ -7,6 +7,8 @@ set show_errors => 1;
 
 get '/error' => sub {
     send_error "FAIL";
+    # The next line is not executed, as 'send_error' breaks the route workflow
+    die;
 };
 
 response_status_is [GET => '/error'] => 500,

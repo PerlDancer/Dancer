@@ -5,7 +5,7 @@ use Test::More tests => 3, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
-before_template sub {
+hook before_template => sub {
     status 500;
     halt({error => "This is some error"});
 };

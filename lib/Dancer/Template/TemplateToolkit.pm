@@ -5,6 +5,7 @@ use warnings;
 use Carp;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
+use Dancer::Exception qw(:all);
 
 use base 'Dancer::Template::Abstract';
 
@@ -14,7 +15,7 @@ sub init {
     my ($self) = @_;
 
     my $class = $self->config->{subclass} || "Template";
-    croak "$class is needed by Dancer::Template::TemplateToolkit"
+    raise core_template => "$class is needed by Dancer::Template::TemplateToolkit"
       if !$class->can("process") and !Dancer::ModuleLoader->load($class);
 
     my $charset = setting('charset') || '';
@@ -47,13 +48,13 @@ sub render {
     my ($self, $template, $tokens) = @_;
 
     if ( ! ref $template ) {
-        -f $template or croak "'$template' doesn't exist or not a regular file";
+        -f $template or raise core_template => "'$template' doesn't exist or not a regular file";
     }
 
     my $content = "";
     my $charset = setting('charset') || '';
     my @options = length($charset) ? ( binmode => ":encoding($charset)" ) : ();
-    $_engine->process($template, $tokens, \$content, @options) or croak $_engine->error;
+    $_engine->process($template, $tokens, \$content, @options) or raise core_template => $_engine->error;
     return $content;
 }
 
@@ -81,7 +82,7 @@ In order to use this engine, use the template setting:
 This can be done in your config.yml file or directly in your app code with the
 B<set> keyword.
 
-Note that by default,  Dancer configures the Template::Toolkit engine to use 
+Note that by default,  Dancer configures the Template::Toolkit engine to use
 <% %> brackets instead of its default [% %] brackets.  This can be changed
 within your config file - for example:
 
@@ -90,6 +91,14 @@ within your config file - for example:
         template_toolkit:
             start_tag: '[%'
             stop_tag: '%]'
+
+You can also add any options you would normally add to the Template module's
+initialization. You could, for instance, enable saving the compiled templates:
+
+    engines:
+        template_toolkit:
+            COMPILE_DIR: 'caches/templates'
+            COMPILE_EXT: '.ttc'
 
 By default, L<Template> is used, but you can configure Dancer to use a
 subclass with the C<subclass> option.

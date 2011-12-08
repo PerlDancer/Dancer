@@ -328,6 +328,14 @@ The message of the error page.
 
 This is only an attribute getter, you'll have to set it at C<new>.
 
+=head2 exception
+
+The exception that caused the error. If the error was not caused by an
+exception, returns undef. Exceptions are usually objects that inherits of
+Dancer::Exception.
+
+This is only an attribute getter, you'll have to set it at C<new>.
+
 =head1 METHODS/SUBROUTINES
 
 =head2 new
@@ -349,6 +357,10 @@ The code that caused the error.
 =head3 message
 
 The message that will appear to the user.
+
+=head3 exception
+
+The exception that will be useable by the rendering.
 
 =head2 backtrace
 

@@ -137,7 +137,7 @@ When the session engine is enabled, a I<before> filter takes care to initialize
 the appropriate session engine (according to the setting C<session>).
 
 Then, the filter looks for a cookie named C<dancer.session> (or whatever you've
-set the C<ssesion_name> setting to, if you've used it) in order to
+set the C<session_name> setting to, if you've used it) in order to
 I<retrieve> the current session object. If not found, a new session object is
 I<created> and its id written to the cookie.
 

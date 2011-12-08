@@ -11,7 +11,7 @@ plan tests => 5;
 
 my $pass = 0;
 
-before sub {
+hook before => sub {
     redirect '/'
       unless request->path eq '/'
           || request->path eq '';

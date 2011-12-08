@@ -9,6 +9,7 @@ use base 'Dancer::Object';
 use Dancer::Config 'setting';
 use Dancer::Request::Upload;
 use Dancer::SharedData;
+use Dancer::Exception qw(:all);
 use Encode;
 use HTTP::Body;
 use URI;
@@ -56,7 +57,7 @@ sub host {
         $_[0]->{host} = $_[1];
     } else {
         my $host;
-        $host = $_[0]->env->{X_FORWARDED_HOST} if setting('behind_proxy');
+        $host = ($_[0]->env->{X_FORWARDED_HOST} || $_[0]->env->{HTTP_X_FORWARDED_HOST}) if setting('behind_proxy');
         $host || $_[0]->{host} || $_[0]->env->{HTTP_HOST};
     }
 }
@@ -87,6 +88,7 @@ sub is_post               { $_[0]->{method} eq 'POST' }
 sub is_get                { $_[0]->{method} eq 'GET' }
 sub is_put                { $_[0]->{method} eq 'PUT' }
 sub is_delete             { $_[0]->{method} eq 'DELETE' }
+sub is_patch              { $_[0]->{method} eq 'PATCH' }
 sub header                { $_[0]->{headers}->header($_[1]) }
 
 # public interface compat with CGI.pm objects
@@ -274,7 +276,7 @@ sub params {
         return $self->{_route_params};
     }
     else {
-        croak "Unknown source params \"$source\".";
+        raise core_request => "Unknown source params \"$source\".";
     }
 }
 
@@ -402,7 +404,7 @@ sub _build_path {
         $path ||= $self->_url_decode($self->request_uri);
     }
 
-    croak "Cannot resolve path" if not $path;
+    raise core_request => "Cannot resolve path" if not $path;
     $self->{path} = $path;
 }
 
@@ -514,7 +516,7 @@ sub _read {
         return $buffer;
     }
     else {
-        croak "Unknown error reading input: $!";
+        raise core_request => "Unknown error reading input: $!";
     }
 }
 
@@ -677,6 +679,10 @@ Return true if the method requested by the client is 'GET'
 =head2 is_head()
 
 Return true if the method requested by the client is 'HEAD'
+
+=head2 is_patch()
+
+Return true if the method requested by the client is 'PATCH'
 
 =head2 is_post()
 

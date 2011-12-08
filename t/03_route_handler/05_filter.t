@@ -10,8 +10,8 @@ plan tests => 19;
 {
     my $i = 0;
 
-    before sub { content_type('text/xhtml'); };
-    before sub {
+    hook before => sub { content_type('text/xhtml'); };
+    hook before => sub {
         if ( request->path_info eq '/redirect_from' ) {
             redirect('/redirect_to');
         }
@@ -53,7 +53,7 @@ plan tests => 19;
 
 # filters and params
 {
-    before sub {
+    hook before => sub {
         return if request->path !~ /foo/;
         ok( defined( params->{'format'} ),
             "param format is defined in before filter" );
@@ -70,13 +70,13 @@ plan tests => 19;
 
 # filter and halt
 {
-    before sub {
+    hook before => sub {
         unless (params->{'requested'}) {
             return halt("stopped");
         }
     };
 
-    before sub {
+    hook before => sub {
         unless (params->{'requested'}) {
             halt("another halt");
         }

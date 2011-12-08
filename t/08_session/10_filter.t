@@ -5,7 +5,7 @@ use Test::More import => ['!pass'], tests => 2;
 use Dancer ':syntax';
 use Dancer::Test;
 
-before sub {
+hook before => sub {
     my $data = session;
     #warn "on a $data";
     #redirect '/nonexistent'

@@ -4,7 +4,7 @@ use Dancer::Plugin;
 
 register block_links_from => sub {
     my ($host) = @_;
-    before sub {
+    hook before => sub {
         if (request->referer && request->referer =~ /http:\/\/$host/) {
             status 403;
         }

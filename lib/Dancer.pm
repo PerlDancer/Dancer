@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3079_03';
+our $VERSION   = '1.3089_01';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -26,6 +26,14 @@ use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
 use Dancer::MIME;
+use Dancer::Exception qw(:all);
+
+use Dancer::Continuation::Halted;
+use Dancer::Continuation::Route::Forwarded;
+use Dancer::Continuation::Route::Passed;
+use Dancer::Continuation::Route::ErrorSent;
+use Dancer::Continuation::Route::FileSent;
+use Dancer::Continuation::Route::Templated;
 
 use File::Spec;
 
@@ -67,6 +75,7 @@ our @EXPORT    = qw(
   params
   pass
   path
+  patch
   post
   prefix
   push_header
@@ -99,10 +108,26 @@ our @EXPORT    = qw(
 
 # Dancer's syntax
 
-sub after           { Dancer::Hook->new('after', @_) }
+sub after           {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('after', @_);
+}
+sub before          {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('before', @_);
+}
+sub before_template {
+    Dancer::Deprecation->deprecated(reason => "use hooks!",
+                                    version => '1.3080',
+                                    fatal => 0);
+    Dancer::Hook->new('before_template', @_);
+}
+
 sub any             { Dancer::App->current->registry->any_add(@_) }
-sub before          { Dancer::Hook->new('before', @_) }
-sub before_template { Dancer::Hook->new('before_template', @_) }
 sub captures        { Dancer::SharedData->request->params->{captures} }
 sub cookie          { Dancer::Cookies->cookie( @_ ) }
 sub cookies         { Dancer::Cookies->cookies }
@@ -115,13 +140,19 @@ sub dirname         { Dancer::FileUtils::dirname(@_) }
 sub engine          { Dancer::Engine->engine(@_) }
 sub error           { goto &Dancer::Logger::error }
 sub false           { 0 }
-sub forward         { Dancer::SharedData->response->forward(@_) }
+sub forward         { Dancer::SharedData->response->forward(@_);
+                      # throw a special continuation exception
+                      Dancer::Continuation::Route::Forwarded->new->throw;
+                    }
 sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
 sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
-sub halt            { Dancer::SharedData->response->halt(@_) }
+sub halt            { Dancer::SharedData->response->halt(@_);
+                      # throw a special continuation exception
+                      Dancer::Continuation::Halted->new->throw;
+                    }
 sub header          { goto &headers }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
@@ -141,7 +172,11 @@ sub mime            { Dancer::MIME->instance() }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
 sub param           { params->{$_[0]} }
-sub pass            { Dancer::SharedData->response->pass(1) }
+sub pass            { Dancer::SharedData->response->pass(1);
+                      # throw a special continuation exception
+                      Dancer::Continuation::Route::Passed->new->throw;
+                    }
+sub patch            { Dancer::App->current->registry->universal_add('patch', @_) }
 sub path            { Dancer::FileUtils::path(@_) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
 sub prefix          { Dancer::App->current->set_prefix(@_) }
@@ -149,8 +184,16 @@ sub put             { Dancer::App->current->registry->universal_add('put',     @
 sub redirect        { goto &_redirect }
 sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }
 sub request         { Dancer::SharedData->request }
-sub send_error      { Dancer::Error->new(message => $_[0], code => $_[1] || 500)->render() }
-sub send_file       { goto &_send_file }
+sub send_error      { Dancer::Continuation::Route::ErrorSent->new(
+                          return_value => Dancer::Error->new(
+                              message => $_[0],
+                              code => $_[1] || 500)->render()
+                      )->throw }
+#sub send_file       { goto &_send_file }
+sub send_file       { Dancer::Continuation::Route::FileSent->new(
+                          return_value => _send_file(@_)
+                      )->throw
+                    }
 sub set             { goto &setting }
 sub set_cookie      { Dancer::Cookies->set_cookie(@_) }
 sub setting         { Dancer::App->applications ? Dancer::App->current->setting(@_) : Dancer::Config::setting(@_) }
@@ -158,7 +201,9 @@ sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
 sub start           { goto &_start }
 sub status          { Dancer::SharedData->response->status(@_) }
-sub template        { Dancer::Template::Abstract->template(@_) }
+sub template        { Dancer::Continuation::Route::Templated->new(
+                          return_value => Dancer::Template::Abstract->template(@_)
+                      )->throw }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
 sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
@@ -230,7 +275,7 @@ sub _load_app {
     # load the application
     _init_script_dir($script);
     my ($res, $error) = Dancer::ModuleLoader->load($app_name);
-    $res or croak "unable to load application $app_name : $error";
+    $res or raise core => "unable to load application $app_name : $error";
 
     # restore the main application
     Dancer::App->set_running_app('main');
@@ -286,7 +331,7 @@ sub _init_script_dir {
       || Dancer::FileUtils::path($appdir, 'views'));
 
     my ($res, $error) = Dancer::ModuleLoader->use_lib(Dancer::FileUtils::path($appdir, 'lib'));
-    $res or croak "unable to set libdir : $error";
+    $res or raise core => "unable to set libdir : $error";
 }
 
 
@@ -309,7 +354,7 @@ sub _redirect {
 
 sub _session {
     engine 'session'
-      or croak "Must specify session engine in settings prior to using 'session' keyword";
+      or raise core => "Must specify session engine in settings prior to using 'session' keyword";
       @_ == 0 ? Dancer::Session->get
     : @_ == 1 ? Dancer::Session->read(@_)
     :           Dancer::Session->write(@_);
@@ -324,8 +369,8 @@ sub _send_file {
 
     # if you asked for streaming but it's not supported in PSGI
     if ( $options{'streaming'} && ! $env->{'psgi.streaming'} ) {
-        # TODO: throw a fit (AKA "exception") or a Dancer::Error (or croak)?
-        croak 'Sorry, streaming is not supported on this server.';
+        # TODO: throw a fit (AKA "exception") or a Dancer::Error?
+        raise core => 'Sorry, streaming is not supported on this server.';
     }
 
     if (exists($options{content_type})) {
@@ -488,7 +533,7 @@ your app.  You can control the exporting through the normal
 L<Exporter> mechanism.  For example:
 
     # Just export the route controllers
-    use Dancer qw(before after get post);
+    use Dancer qw(before after get post put patch);
 
     # Export everything but pass to avoid clashing with Test::More
     use Test::More;
@@ -548,11 +593,13 @@ Add a hook at the B<after> position:
 
     after sub {
         my $response = shift;
-        # do something with request
+        # do something with response, e.g.:
+        $response->header('X-Beer' => 'Yes please');
     };
 
 The anonymous function which is given to C<after> will be executed after
-having executed a route.
+having executed a route, but before the response is returned (so you can modify
+the response here, if you need to)..
 
 You can define multiple after filters, using the C<after> helper as
 many times as you wish; each filter will be executed, in the order you added
@@ -749,20 +796,21 @@ reached. If it was a B<GET>, it will remain a B<GET>.
 
 Broader functionality might be added in the future.
 
-It is important to note that issuing a forward by itself does not exit and
-forward immediately, forwarding is deferred until after the current route
-or filter has been processed. To exit and forward immediately, use the return
-function, e.g.
+B<WARNING> : Issuing a forward immediately exits the current route,
+and perform the forward. Thus, any code after a forward is ignored, until the
+end of the route. e.g.
 
     get '/some/path => sub {
         if ($condition) {
-            return forward '/articles/$article_id';
+            forward '/articles/$article_id';
+            # The following code is never executed
+            do_stuf();
         }
 
         more_stuff();
     };
 
-You probably always want to use C<return> with forward.
+So it's not necessary anymore to use C<return> with forward.
 
 Note that forward doesn't parse GET arguments. So, you can't use
 something like:
@@ -820,13 +868,19 @@ renders the response immediately:
 
     before sub {
         if ($some_condition) {
-            return halt("Unauthorized");
+            halt("Unauthorized");
+            # This code is not executed :
+            do_stuff();
         }
     };
 
     get '/' => sub {
         "hello there";
     };
+
+B<WARNING> : Issuing a halt immediately exits the current route, and perform
+the halt. Thus, any code after a halt is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with halt.
 
 =head2 headers
 
@@ -1010,9 +1064,13 @@ by the layout
 
 =item after
 
-This is an alias for 'after'.
+This is an alias for C<after>.
 
-This hook receives as argument a L<Dancer::Response> object.
+This hook runs after a request has been processed, but before the response is
+sent.
+
+It receives a L<Dancer::Response> object, which it can modify
+if it needs to make changes to the response which is about to be sent.
 
   hook after => sub {
     my $response = shift;
@@ -1030,6 +1088,26 @@ This hook receives as argument a L<Dancer::Response> object.
 
   hook after_error_render => sub {
     my $response = shift;
+  };
+
+=item on_handler_exception
+
+This hook is called when an exception has been caught, at the handler level,
+just before creating and rendering L<Dancer::Error>. This hook receives as
+argument a L<Dancer::Exception> object.
+
+  hook on_handler_exception => sub {
+    my $exception = shift;
+  };
+
+=item on_route_exception
+
+This hook is called when an exception has been caught, at the route level, just
+before rethrowing it higher. This hook receives the exception as argument. It
+can be a Dancer::Exception, or a string, or whatever was used to C<die>.
+
+  hook on_route_exception => sub {
+    my $exception = shift;
   };
 
 =back
@@ -1121,14 +1199,37 @@ I<This method should be called from a route handler>.
 Tells Dancer to pass the processing of the request to the next
 matching route.
 
-You should always C<return> after calling C<pass>:
+B<WARNING> : Issuing a pass immediately exits the current route, and perform
+the pass. Thus, any code after a pass is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with pass.
 
     get '/some/route' => sub {
         if (...) {
             # we want to let the next matching route handler process this one
-            return pass();
+            pass(...);
+            # This code will be ignored
+            do_stuff();
         }
     };
+
+=head2 patch
+
+Defines a route for HTTP B<PATCH> requests to the given URL:
+
+    patch '/resource' => sub { ... };
+
+(C<PATCH> is a relatively new and not-yet-common HTTP verb, which is intended to
+work as a "partial-PUT", transferring just the changes; please see
+L<http://tools.ietf.org/html/rfc5789|RFC5789> for further details.)
+
+Please be aware that, if you run your app in standalone mode, C<PATCH> requests
+will not reach your app unless you have a new version of L<HTTP::Server::Simple>
+which accepts C<PATCH> as a valid verb.  The current version at time of writing,
+C<0.44>, does not.  A pull request has been submitted to add this support, which
+you can find at:
+
+L<https://github.com/bestpractical/http-server-simple/pull/1>
+
 
 =head2 path
 
@@ -1286,10 +1387,18 @@ Returns a HTTP error.  By default the HTTP code returned is 500:
         }
     }
 
-This will not cause your route handler to return immediately, so be careful that
-your route handler doesn't then override the error.  You can avoid that by
-saying C<return send_error(...)> instead.
+B<WARNING> : Issuing a send_error immediately exits the current route, and perform
+the send_error. Thus, any code after a send_error is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with send_error.
 
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            send_error(..);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
 
 =head2 send_file
 
@@ -1300,6 +1409,19 @@ the C<system_path> option (see below).
     get '/download/:file' => sub {
         return send_file(params->{file});
     }
+
+B<WARNING> : Issuing a send_file immediately exits the current route, and perform
+the send_file. Thus, any code after a send_file is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with send_file.
+
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            send_file(...);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
 
 Send file supports streaming possibility using PSGI streaming. The server should
 support it but normal streaming is supported on most, if not all.
@@ -1572,6 +1694,20 @@ Tells the route handler to build a response with the current template engine:
         template 'some_view', { token => 'value'};
     };
 
+B<WARNING> : Issuing a template immediately exits the current route, and perform
+the template. Thus, any code after a template is ignored, until the end of the route.
+So it's not necessary anymore to use C<return> with template.
+
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            template(...);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
+
+
 The first parameter should be a template available in the views directory, the
 second one (optional) is a HashRef of tokens to interpolate, and the third
 (again optional) is a HashRef of options.
@@ -1684,19 +1820,24 @@ versions:
 
 =head2 var
 
-Defines a variable shared between filters and route handlers.
+Provides an accessor for variables shared between filters and route handlers.
+Given a key/value pair, it sets a variable:
 
     before sub {
         var foo => 42;
     };
 
-Route handlers and other filters will be able to read that variable with the
-C<vars> keyword.
+Later, route handlers and other filters will be able to read that variable:
+
+    get '/path' => sub {
+        my $foo = var 'foo';
+        ...
+    };
 
 =head2 vars
 
 Returns the HashRef of all shared variables set during the filter/route
-chain:
+chain with the C<var> keyword:
 
     get '/path' => sub {
         if (vars->{foo} eq 42) {
