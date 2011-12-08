@@ -23,6 +23,7 @@ sub default_tmpl_ext { "tt" }
 
 sub _template_name {
     my ( $self, $view ) = @_;
+    return $view if ref($view);
     my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
     $view .= ".$def_tmpl_ext" if $view !~ /\.\Q$def_tmpl_ext\E$/;
     return $view;
@@ -33,7 +34,7 @@ sub view {
 
     $view = $self->_template_name($view);
 
-    return path(Dancer::App->current->setting('views'), $view);
+    return ref($view) ? $view : path(Dancer::App->current->setting('views'), $view);
 }
 
 sub layout {
