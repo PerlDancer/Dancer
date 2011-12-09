@@ -1120,7 +1120,7 @@ This method is deprecated. Use C<set>:
 
 =head2 logger
 
-Deprecated. Use C<<set logger => 'console'>> to change current logger engine.
+Deprecated. Use C<<set logger =E<gt> 'console'>> to change current logger engine.
 
 =head2 load
 
