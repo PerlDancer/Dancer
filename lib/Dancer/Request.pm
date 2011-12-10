@@ -138,14 +138,18 @@ sub to_string {
 # helper for building a request object by hand
 # with the given method, path, params, body and headers.
 sub new_for_request {
-    my ($class, $method, $path, $params, $body, $headers) = @_;
+    my ($class, $method, $uri, $params, $body, $headers) = @_;
     $params ||= {};
     $method = uc($method);
 
+    my ( $path, $query_string ) = ( $uri =~ /([^?]*)(?:\?(.*))?/s ); #from HTTP::Server::Simple
+
     my $req = $class->new(env => { %ENV,
                                     PATH_INFO      => $path,
+                                    QUERY_STRING   => $query_string || $ENV{QUERY_STRING} || '',
                                     REQUEST_METHOD => $method});
     $req->{params}        = {%{$req->{params}}, %{$params}};
+    $req->_build_params();
     $req->{_query_params} = $req->{params};
     $req->{body}          = $body    if defined $body;
     $req->{headers}       = $headers if $headers;
