@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More;
 
-plan tests => 29;
+plan tests => 30;
 
 use Dancer qw/ :syntax :tests /;
 use Dancer::Test;
@@ -91,7 +91,10 @@ is_deeply $r->{content}, { user => { id => 2, name => "Franck Cuny" } },
   "id is correctly increased";
 
 $r = dancer_response( GET => '/query', { params => {foo => 'bar'}});
-is $r->{content} => "foo:bar";
+is $r->{content}, "foo:bar", 'passed fake query params';
+
+$r = dancer_response( GET => '/query?foo=bar' );
+is $r->{content}, "foo:bar", 'passed params in query';
 
 my $data = "She sells sea shells by the sea shore";
 $r = dancer_response(
