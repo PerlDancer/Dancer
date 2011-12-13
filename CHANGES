@@ -1,3 +1,17 @@
+{{$NEXT}}
+
+1.3090      13.12.2011
+    ** Codename: Hornburg of Hannover // Stefan Hornburg (racke) **
+
+    [ BUG FIXES ]
+    * GH #685: Set VERSION for Dancer::Plugin::Ajax.
+      (Sawyer X, Naveed Massjouni)
+
+    [ DOCUMENTATION ]
+    * GH #694: Typo fix. (Yanick Champoux)
+    * GH #698: Document further TT init options. (Dennis Lichtenthaeler)
+    * GH #709: Update POD documentation regarding hook. (Stefan Hornburg)
+
 1.3089_01   26.11.2011
 
     [ BUG FIXES ]
