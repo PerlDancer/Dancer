@@ -230,6 +230,7 @@ sub load_default_settings {
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
     $SETTINGS->{traces}       ||= $ENV{DANCER_TRACES}       || 0;
+    $SETTINGS->{server_emit}  ||= $ENV{DANCER_SERVER_EMIT}  || 1;
     $SETTINGS->{logger}       ||= $ENV{DANCER_LOGGER}       || 'file';
     $SETTINGS->{environment} ||=
          $ENV{DANCER_ENVIRONMENT}
@@ -444,6 +445,11 @@ If set to true, tells Dancer to consider all warnings as blocking errors.
 
 If set to true, Dancer will display full stack traces when a warning or a die
 occurs. (Internally sets Carp::Verbose). Default to false.
+
+=head3 server_emit (boolean)
+
+If set to true, Dancer will add an "X-Powered-By" header and also append
+the Dancer version to the "Server" header. Default to true.
 
 =head3 log_path (string)
 
