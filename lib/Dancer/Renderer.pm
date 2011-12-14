@@ -56,7 +56,7 @@ sub render_error {
 sub response_with_headers {
     my $response = Dancer::SharedData->response();
 
-    if (Dancer::Config::setting('server_emit')) {
+    if (Dancer::Config::setting('server_tokens')) {
         $response->{headers} ||= HTTP::Headers->new;
         my $powered_by = "Perl Dancer " . $Dancer::VERSION;
         $response->header('X-Powered-By' => $powered_by);
