@@ -33,7 +33,7 @@ sites-available/*site*):
 
         RewriteEngine On
         RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^(.*)$ /dispatch.cgi$1 [QSA,L]
+        RewriteRule ^(.*)$ /dispatch.cgi/$1 [QSA,L]
 
         ErrorLog  /var/log/apache2/www.example.com-error.log
         CustomLog /var/log/apache2/www.example.com-access_log common
