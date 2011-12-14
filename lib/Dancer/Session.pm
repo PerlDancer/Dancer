@@ -28,8 +28,12 @@ sub get_current_session {
 
     if (not defined $session) {
         $session = $class->create();
-        engine->write_session_id($session->id);
     }
+
+    # Generate a session cookie; we want to do this regardless of whether the
+    # session is new or existing, so that the cookie expiry is updated.
+    engine->write_session_id($session->id);
+
     return $session;
 }
 
