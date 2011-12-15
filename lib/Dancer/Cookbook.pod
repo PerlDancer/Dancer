@@ -694,7 +694,7 @@ Use Dancer instead. Without any ado, magic or too big jumps, you can use the
 values from config.yml and some additional default values:
 
 	# bin/script1.pl
-	use Dancer ':syntax';
+	use Dancer ':script';
 	print "template:".config->{template}."\n"; #simple
 	print "log:".config->{log}."\n"; #undef
 
@@ -709,7 +709,7 @@ deducts where the config.yml file is (typically $webapp/config.yml).
 	# bin/script2.pl
 	use FindBin;
 	use Cwd qw/realpath/;
-	use Dancer ':syntax';
+	use Dancer ':script';
 
 	#tell the Dancer where the app lives
 	my $appdir=realpath( "$FindBin::Bin/..");
@@ -734,7 +734,7 @@ e.g.:
 If you want to load an environment other than the default, try this:
 
 	# bin/script2.pl
-	use Dancer ':syntax';
+	use Dancer ':script';
 
 	#tell the Dancer where the app lives
 	Dancer::Config::setting('appdir','/path/to/app/dir');
