@@ -216,7 +216,7 @@ parameters is an exception message, but it's left to the exception class
 implementation.
 
 If the exception class name starts with a C<+>, then the
-C<Dancer::Exception::Base::> won't be added. This allows to build their own
+C<Dancer::Exception::Base::> won't be added. This allows one to build their own
 exception class hierarchy, but you should first look at C<register_exception>
 before implementing your own class hierarchy. If you really wish to build your
 own exception class hierarchy, we recommend that all exceptions inherit of
@@ -229,7 +229,7 @@ it would be camelized into C<'Myexception'>.
 
 =head2 register_exception
 
-This method allows to register custom exceptions, usable by Dancer users in
+This method allows one to register custom exceptions, usable by Dancer users in
 their route code (actually pretty much everywhere).
 
   # simple exception
