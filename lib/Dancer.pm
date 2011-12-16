@@ -201,9 +201,7 @@ sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
 sub start           { goto &_start }
 sub status          { Dancer::SharedData->response->status(@_) }
-sub template        { Dancer::Continuation::Route::Templated->new(
-                          return_value => Dancer::Template::Abstract->template(@_)
-                      )->throw }
+sub template        { Dancer::Template::Abstract->template(@_) }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
 sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
