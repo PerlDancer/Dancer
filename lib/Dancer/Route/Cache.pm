@@ -161,7 +161,7 @@ the requested path to a route.
 A major drawback is that L<Dancer> has to go over the matching on every request,
 which (especially on CGI-based applications) can be very time consuming.
 
-The caching mechanism allows to cache some requests to specific routes (but
+The caching mechanism allows one to cache some requests to specific routes (but
 B<NOT> specific results) and run those routes on a specific path. This allows us
 to speed up L<Dancer> quite a lot.
 
@@ -215,7 +215,7 @@ Returns all the paths in the cache. This is used to enforce the path limit.
 
 =head2 size_limit($limit)
 
-Allows to set a size limit of the cache.
+Allows one to set a size limit of the cache.
 
 Returns the limit (post-set).
 
