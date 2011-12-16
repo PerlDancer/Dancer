@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3, import => ['!pass'];
+use Test::More tests => 7, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
 
@@ -34,6 +34,6 @@ get '/error' => sub {
 };
 
 route_exists [ GET => '/error' ];
-response_status_is( [ GET => '/' ], 500 => "We get a 500 status" );
+response_status_is( [ GET => '/error' ], 500 => "We get a 500 status" );
 
-is ($var, 42);
+is ($var, 42, "The after hook were called even afger a send error");
