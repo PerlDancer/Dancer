@@ -1,5 +1,25 @@
 {{$NEXT}}
 
+1.3091      17.12.2011
+
+    [ BUG FIXES ]
+    * Reverting template() behavior by popular demand. (Damien Krotkine)
+    * GH #714: Run post-request hooks when custom continuations were created.
+      (Damien Krotkine)
+    * Always call write_session_id() to update expires. (David Precious)
+
+    [ ENHANCEMENTS ]
+    * GH #711, #652: Add server_tokens variable to allow removal of headers.
+      (John Wittkoski)
+
+    [ DOCUMENTATION ]
+    * GH #680: Document problems with multiple apps in Dancer using
+      Plack::Handler::Apache2 and recommend a workaround.
+      (Asaf Gordon, Pedro Melo)
+    * RT #73258: Spelling glitches. (Damyan Ivanov)
+    * Use ":script" instead of ":syntax" in Cookbook. (John Barrett)
+    * Typos in Deployment doc. (David Precious)
+
 1.3090      13.12.2011
     ** Codename: Hornburg of Hannover // Stefan Hornburg (racke) **
 

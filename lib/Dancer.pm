@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3090';
+our $VERSION   = '1.3091';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -201,9 +201,7 @@ sub session         { goto &_session }
 sub splat           { @{ Dancer::SharedData->request->params->{splat} || [] } }
 sub start           { goto &_start }
 sub status          { Dancer::SharedData->response->status(@_) }
-sub template        { Dancer::Continuation::Route::Templated->new(
-                          return_value => Dancer::Template::Abstract->template(@_)
-                      )->throw }
+sub template        { Dancer::Template::Abstract->template(@_) }
 sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
 sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
@@ -1687,26 +1685,46 @@ L<Dancer::HTTP/"HTTP CODES">.
 
 =head2 template
 
-Tells the route handler to build a response with the current template engine:
+Returns the response of processing the given template with the given parameters
+(and optional settings), wrapping it in the default or specified layout too, if
+layouts are in use.
+
+An example of a  route handler which returns the result of using template to 
+build a response with the current template engine:
 
     get '/' => sub {
         ...
-        template 'some_view', { token => 'value'};
+        return template 'some_view', { token => 'value'};
     };
 
-B<WARNING> : Issuing a template immediately exits the current route, and perform
-the template. Thus, any code after a template is ignored, until the end of the route.
-So it's not necessary anymore to use C<return> with template.
+Note that C<template> simply returns the content, so when you use it in a route
+handler, if execution of the the route handler should stop at that point, make
+sure you use 'return' to ensure your route handler returns the content.
 
-    get '/some/route' => sub {
+Since template just returns the result of rendering the template, you can also
+use it to perform other templating tasks, e.g. generating emails:
+
+    post '/some/route' => sub {
         if (...) {
-            # we want to let the next matching route handler process this one
-            template(...);
-            # This code will be ignored
-            do_stuff();
+            email {
+                to      => 'someone@example.com',
+                from    => 'foo@example.com',
+                subject => 'Hello there',
+                msg     => template('emails/foo', { name => params->{name} }),
+            };
+
+            return template 'message_sent';
+        } else {
+            return template 'error';
         }
     };
 
+Compatibility notice: C<template> was changed in version 1.3090 to immediately
+interrupt execution of a route handler and return the content, as it's typically
+used at the end of a route handler to return content.  However, this caused
+issues for some people who were using C<template> to generate emails etc, rather
+than accessing the template engine directly, so this change has been reverted
+in 1.3091.
 
 The first parameter should be a template available in the views directory, the
 second one (optional) is a HashRef of tokens to interpolate, and the third
@@ -1715,13 +1733,13 @@ second one (optional) is a HashRef of tokens to interpolate, and the third
 For example, to disable the layout for a specific request:
 
     get '/' => sub {
-        template 'index.tt', {}, { layout => undef };
+        template 'index', {}, { layout => undef };
     };
 
 Or to request a specific layout, of course:
 
     get '/user' => sub {
-        template 'user.tt', {}, { layout => 'user' };
+        template 'user', {}, { layout => 'user' };
     };
 
 Some tokens are automatically added to your template (C<perl_version>,

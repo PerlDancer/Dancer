@@ -14,6 +14,7 @@ use Dancer::Factory::Hook;
 use Dancer::Session;
 use Dancer::FileUtils qw(open_file);
 use Dancer::Engine;
+use Dancer::Exception qw(:all);
 
 Dancer::Factory::Hook->instance->install_hooks(
     qw/before_error_render after_error_render before_error_init/);
@@ -174,7 +175,16 @@ sub render {
 
     my $serializer = setting('serializer');
     Dancer::Factory::Hook->instance->execute_hooks('before_error_render', $self);
-    my $response = $serializer ? $self->_render_serialized() : $self->_render_html();
+    my $response;
+    try {
+        $response = $serializer ? $self->_render_serialized() : $self->_render_html();
+    } continuation {
+        my ($continuation) = @_;
+        # If we have a Route continuation, run the after hook, then
+        # propagate the continuation
+        Dancer::Factory::Hook->instance->execute_hooks('after_error_render', $response);
+        $continuation->rethrow();
+    };
     Dancer::Factory::Hook->instance->execute_hooks('after_error_render', $response);
     $response;
 }

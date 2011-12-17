@@ -33,7 +33,7 @@ sites-available/*site*):
 
         RewriteEngine On
         RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^(.*)$ /dispatch.cgi$1 [QSA,L]
+        RewriteRule ^(.*)$ /dispatch.cgi/$1 [QSA,L]
 
         ErrorLog  /var/log/apache2/www.example.com-error.log
         CustomLog /var/log/apache2/www.example.com-access_log common
@@ -429,13 +429,24 @@ following:
         CustomLog /websites/myapp.example.com/logs/access_log common
     </VirtualHost>
 
-To set the environment you want to use for your application (production or development), you can set it this way:
+To set the environment you want to use for your application (production or
+development), you can set it this way:
 
     <VirtualHost>
         ...
         SetEnv DANCER_ENVIRONMENT "production"
         ...
     </VirtualHost>
+
+B<NOTE:> Only a single Dancer application can be deployed using the
+C<Plack::Handler::Apache2> method. Multiple Dancer applications
+B<will not work properly> (The routes will be mixed-up between the
+applications).
+
+It's recommended to start each app with C<plackup> using your
+favorite server (Starman, for example) and then put a web server (Apache,
+Nginx, Perlbal, etc.) as a frontend server for both apps using reverse proxy
+(HTTP based, no fastcgi).
 
 =head3 Running from Apache under appdir
 
