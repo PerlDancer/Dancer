@@ -7,6 +7,7 @@ use Carp;
 use Dancer::Logger;
 use Dancer::Factory::Hook;
 use Dancer::FileUtils 'path';
+use Dancer::Exception qw(:all);
 
 use base 'Dancer::Engine';
 
@@ -62,7 +63,16 @@ sub apply_renderer {
 
     Dancer::Factory::Hook->execute_hooks('before_template_render', $tokens);
 
-    my $content = $self->render($view, $tokens);
+    my $content;
+    try {
+        $content = $self->render($view, $tokens);
+    } continuation {
+        my ($continuation) = @_;
+        # If we have a Route continuation, run the after hook, then
+        # propagate the continuation
+        Dancer::Factory::Hook->execute_hooks('after_template_render', \$content);
+        $continuation->rethrow();
+    };
 
     Dancer::Factory::Hook->execute_hooks('after_template_render', \$content);
 
@@ -92,8 +102,17 @@ sub apply_layout {
 
     Dancer::Factory::Hook->execute_hooks('before_layout_render', $tokens, \$content);
 
-    my $full_content =
-      $self->layout($layout, $tokens, $content);
+    my $full_content;
+
+    try {
+        $full_content = $self->layout($layout, $tokens, $content);
+    } continuation {
+        my ($continuation) = @_;
+        # If we have a Route continuation, run the after hook, then
+        # propagate the continuation
+        Dancer::Factory::Hook->execute_hooks('after_layout_render', \$full_content);
+        $continuation->rethrow();
+    };
 
     Dancer::Factory::Hook->execute_hooks('after_layout_render', \$full_content);
 

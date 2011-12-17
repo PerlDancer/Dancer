@@ -127,8 +127,17 @@ sub get_action_response {
         return $class->serialize_response_if_needed() if defined $response && $response->exists;
         # else, get the route handler's response
         Dancer::App->current($handler->{app});
-        $handler->run($request);
-        $class->serialize_response_if_needed();
+        try {
+            $handler->run($request);
+            $class->serialize_response_if_needed();
+        } continuation {
+            my ($continuation) = @_;
+            # If we have a Route continuation, run the after hook, then
+            # propagate the continuation
+            my $resp = Dancer::SharedData->response();
+            Dancer::Factory::Hook->instance->execute_hooks('after', $resp);
+            $continuation->rethrow();
+        };
         my $resp = Dancer::SharedData->response();
         Dancer::Factory::Hook->instance->execute_hooks('after', $resp);
         return $resp;
@@ -143,7 +152,15 @@ sub serialize_response_if_needed {
 
     if (Dancer::App->current->setting('serializer') && $response->content()){
         Dancer::Factory::Hook->execute_hooks('before_serializer', $response);
-        Dancer::Serializer->process_response($response);
+        try {
+            Dancer::Serializer->process_response($response);
+        } continuation {
+            my ($continuation) = @_;
+            # If we have a Route continuation, run the after hook, then
+            # propagate the continuation
+            Dancer::Factory::Hook->execute_hooks('after_serializer', $response);
+            $continuation->rethrow();
+        };
         Dancer::Factory::Hook->execute_hooks('after_serializer', $response);
     }
     return $response;
