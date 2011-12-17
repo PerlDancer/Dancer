@@ -443,6 +443,11 @@ C<Plack::Handler::Apache2> method. Multiple Dancer applications
 B<will not work properly> (The routes will be mixed-up between the
 applications).
 
+It's recommended to start each app with C<plackup> using your
+favorite server (Starman, for example) and then put a web server (Apache,
+Nginx, Perlbal, etc.) as a frontend server for both apps using reverse proxy
+(HTTP based, no fastcgi).
+
 =head3 Running from Apache under appdir
 
 If you want to deploy multiple applications under the same VirtualHost, using
