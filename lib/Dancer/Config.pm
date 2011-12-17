@@ -451,6 +451,8 @@ occurs. (Internally sets Carp::Verbose). Default to false.
 If set to true, Dancer will add an "X-Powered-By" header and also append
 the Dancer version to the "Server" header. Default to true.
 
+You can also use the environment variable C<DANCER_SERVER_TOKENS>.
+
 =head3 log_path (string)
 
 Folder where the ``file C<logger>'' saves logfiles.
