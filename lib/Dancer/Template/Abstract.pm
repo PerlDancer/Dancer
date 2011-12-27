@@ -292,11 +292,18 @@ configuration. For example, for the default (C<Simple>) engine:
 The default behavior of this method is to return the path of the given view,
 appending the default template extension (either the value of the C<extension>
 setting in the configuration, or the value returned by C<default_tmpl_ext>) if
-it is not present in the view name given.
+it is not present in the view name given and no layout template with that exact
+name existed.  (In other words, given a layout name C<main>, if C<main> exists
+in the layouts dir, it will be used; if not, C<main.tmpl> (where C<tmpl> is the
+value of the C<extension> setting, or the value returned by C<default_tmpl_ext>)
+will be looked for.)
 
 =item B<layout($layout, $tokens, $content)>
 
-The default behavior of this method is to merge a content with a layout.
+The default behavior of this method is to merge a content with a layout.  The
+layout file is looked for with similar logic as per C<view> - an exact match
+first, then attempting to append the default template extension, if the view
+name given did not already end with it.
 
 =item B<render($self, $template, $tokens)>
 
