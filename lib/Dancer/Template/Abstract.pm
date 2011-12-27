@@ -63,7 +63,7 @@ sub layout {
                                      $layout_path, {%$tokens, content => $content});
     } else {
         $full_content = $content;
-        Dancer::Logger::error("Defined layout ($layout_name) was not found!");
+        Dancer::Logger::error("Defined layout ($layout) was not found!");
     }
     $full_content;
 }
