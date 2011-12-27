@@ -22,19 +22,29 @@ sub render { confess "render not implemented" }
 
 sub default_tmpl_ext { "tt" }
 
+# Work out the template names to look for; this will be the view name passed
+# as-is, and also the view name with the default template extension appended, if
+# it did not already end in that.
 sub _template_name {
     my ( $self, $view ) = @_;
+    my @views = ( $view );
     my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
-    $view .= ".$def_tmpl_ext" if $view !~ /\.\Q$def_tmpl_ext\E$/;
-    return $view;
+    push @views, $view .= ".$def_tmpl_ext" if $view !~ /\.\Q$def_tmpl_ext\E$/;
+    return @views;
 }
 
 sub view {
     my ($self, $view) = @_;
 
-    $view = $self->_template_name($view);
+    my $views_dir = Dancer::App->current->setting('views');
 
-    return path(Dancer::App->current->setting('views'), $view);
+    for my $template ($self->_template_name($view)) {
+        my $view_path = path($views_dir, $template);
+        return $view_path if -e $view_path;
+    }
+
+    # No matching view path was found
+    return;
 }
 
 sub layout {
