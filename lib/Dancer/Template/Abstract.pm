@@ -164,7 +164,9 @@ sub template {
         if (-e $view_path) {
             $content = $engine->apply_renderer($view, $tokens);
         } else {
-            Dancer::Logger::error("Supplied view ($view) was not found.");
+            Dancer::Logger::error(
+                "Supplied view ($view) not found - $view_path does not exist"
+            );
             return Dancer::Error->new(
                           code => 500,
                           message => 'view not found',
