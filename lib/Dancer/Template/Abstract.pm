@@ -50,7 +50,6 @@ sub view {
 sub layout {
     my ($self, $layout, $tokens, $content) = @_;
 
-    my $layout_name = $self->_template_name($layout);
     my $layouts_dir = path(Dancer::App->current->setting('views'), 'layouts');
     my $layout_path;
     for my $layout_name ($self->_template_name($layout)) {
