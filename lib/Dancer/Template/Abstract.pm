@@ -53,7 +53,7 @@ sub layout {
     my $layouts_dir = path(Dancer::App->current->setting('views'), 'layouts');
     my $layout_path;
     for my $layout_name ($self->_template_name($layout)) {
-        $layout_path = path($layout_path, $layout_name);
+        $layout_path = path($layouts_dir, $layout_name);
         last if -e $layout_path;
     }
 
