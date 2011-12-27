@@ -274,7 +274,10 @@ configuration. For example, for the default (C<Simple>) engine:
 
 =item B<view($view)>
 
-The default behavior of this method is to return the path of the given view.
+The default behavior of this method is to return the path of the given view,
+appending the default template extension (either the value of the C<extension>
+setting in the configuration, or the value returned by C<default_tmpl_ext>) if
+it is not present in the view name given.
 
 =item B<layout($layout, $tokens, $content)>
 
