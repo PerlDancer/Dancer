@@ -1,11 +1,15 @@
-use Test::More tests => 9, import => ['!pass'];
+use Test::More tests => 12, import => ['!pass'];
 use strict;
 use warnings;
 
 use Dancer;
 use Dancer::Test;
 
+is prefix, '', 'prefix returns empty string initially';
+
 prefix '/foo';
+
+is prefix, '/foo', 'prefix returns the currently set prefix';
 
 get '/' => sub {
     '/foo and /foo/'
@@ -16,6 +20,8 @@ get '/bar' => sub {
 };
 
 prefix undef;
+
+is prefix, '', 'prefix returns empty string after prefix is unset';
 
 get '/baz' => sub {
     "/baz"
