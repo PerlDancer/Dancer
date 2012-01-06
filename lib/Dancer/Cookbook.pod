@@ -128,7 +128,7 @@ requests.
 
 The L<params|Dancer/params> keyword returns a hashref of request parameters; 
 these will be parameters supplied on the query string, within the path itself 
-(with named placeholders), and, for HTTTP POST requests, the content of the 
+(with named placeholders), and, for HTTP POST requests, the content of the 
 POST body.
 
 
