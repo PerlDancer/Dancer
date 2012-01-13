@@ -31,5 +31,14 @@ is(
     'Original data was not overwritten',
 );
 
+my %recursive;
+$recursive{foo}{bar}{baz} = 1;
+$recursive{foo}{bar}{oops} = $recursive{foo};
+
+$censored = Dancer::Error::_censor( \%recursive );
+
+pass "recursive censored hash";
+
+
 1;
 
