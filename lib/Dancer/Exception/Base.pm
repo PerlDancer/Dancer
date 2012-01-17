@@ -82,7 +82,7 @@ sub get_composition {
                           @{"${class}::ISA"};
         
     };
-    map { s/^Dancer::Exception:://; $_ } $_recurse_isa->($class);
+    grep { s/^Dancer::Exception::// } $_recurse_isa->($class);
 }
 
 my $indent = 0;
