@@ -85,10 +85,6 @@ sub get_composition {
     grep { s/^Dancer::Exception::// } $_recurse_isa->($class);
 }
 
-my $indent = 0;
-sub _recurse_isa {
-}
-
 sub _raised_arguments {
     my $self = shift;
     @_ and $self->{_raised_arguments} = [ @_ ];
