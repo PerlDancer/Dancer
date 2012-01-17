@@ -57,14 +57,6 @@ sub message {
     my ($self) = @_;
     my $message_pattern = $self->_message_pattern;
     my $message = sprintf($message_pattern, @{$self->_raised_arguments});
-    my @composition = (reverse $self->get_composition);
-    shift @composition;
-    foreach my $component (@composition) {
-        my $class = "Dancer::Exception::$component";
-        no strict 'refs';
-        my $pattern = $class->_message_pattern;
-        $message = sprintf($pattern, $message);
-    }
     return $message;
 }
 
@@ -77,8 +69,24 @@ sub does {
 sub get_composition {
     my ($self) = @_;
     my $class = ref($self);
-    my @isa = do { no strict 'refs'; @{"${class}::ISA"}, $class };
-    return grep { s|^Dancer::Exception::|| } @isa;
+
+    my ($_recurse_isa, %seen);
+    $_recurse_isa = sub {
+        my ($class) = @_;
+        $seen{$class}++
+          and return;
+
+        no strict 'refs';
+        return $class, map { $_recurse_isa->($_) }
+                      grep { /^Dancer::Exception::/ }
+                          @{"${class}::ISA"};
+        
+    };
+    map { s/^Dancer::Exception:://; $_ } $_recurse_isa->($class);
+}
+
+my $indent = 0;
+sub _recurse_isa {
 }
 
 sub _raised_arguments {
@@ -150,21 +158,23 @@ multiple types at once. C<does> performs a logical OR between them:
 
 =head2 get_composition
 
-Returns the type or the composed types of an exception.
+Returns the composed types of an exception. As every exception inherits of
+Dancer::Exception::Base, the returned list contains at least 'Base', and the
+exception class name.
+
 B<Warning>, the result is a list, so you should call this method in list context.
 
   try { raise InvalidPassword => 'foo'; }
   catch {
     my ($e) = @_;
     my @list = $e->get_composition()
-    # @list contains ( 'InvalidPassword' )
+    # @list contains ( 'InvalidPassword', 'Base', ... )
   };
 
 =head2 message
 
 Computes and returns the message associated to the exception. It'll apply the
-parameters that were set at throw time to the message patterns of all the class
-that composes the exception.
+parameters that were set at throw time to the message pattern of the exception.
 
 =head1 STRINGIFICATION
 
