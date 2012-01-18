@@ -204,6 +204,52 @@ and now use L<Starman>
 
     plackup -a app.psgi -s Starman
 
+=head3 Hosting on DotCloud
+
+The simplest way to achieve this is to push your main application directory
+to dotcloud with your C<bin/app.pl> file coped to (or symlinked from) C<app.psgi>.
+
+Beware that the dotcloud service enforces one Environment only, named C<deployment>.
+So instead of having C<environments/development.yml> or C<environments/production.yml>
+you I<must> have a file named C<environments/deployment.yml>.
+
+Also make sure that your C<Makefile.PL> (or other dependency mechanism) includes
+both Dancer and L<Plack::Request>.
+
+The default in-memory session handler won't work, and instead you should switch to
+something persistent. Edit C<config.yml> to change C<session: 'Simple'> to (for example)
+C<session: 'YAML'>.
+
+If you use the L<Template::Toolkit> and its C<INCLUDE> or C<PROCESS> directives, make
+sure to add the search path of your view files to the config. This is probably
+going to be something like C<INCLUDE_PATH: '/home/dotcloud/current/views'> in
+C<config.yml>.
+
+An alternative implementation is to use a variation of the above Plack::Builder
+template:
+
+ use Plack::Builder;
+ use Dancer ':syntax';
+ use Dancer::Handler;
+ use lib 'lib';
+ 
+ my $app1 = sub {
+     setting appdir => '/home/dotcloud/current';
+     load_app "My::App";
+     Dancer::App->set_running_app("My::App");
+     my $env = shift;
+     Dancer::Handler->init_request_headers($env);
+     my $req = Dancer::Request->new(env => $env);
+     Dancer->dance($req);
+ };
+ 
+ builder {
+     mount "/app1" => $app1;
+ };
+
+This also supports hosting multiple apps, but you probably also need to specify
+the specific Environment configuration to use in your application.
+
 =head3 Creating a service
 
 You can turn your app into proper service running in background using one of the following examples:
