@@ -250,6 +250,11 @@ template:
 This also supports hosting multiple apps, but you probably also need to specify
 the specific Environment configuration to use in your application.
 
+When mounting under a path on dotcloud, as in the above example, always create
+links using the C<uri_for()> method for Dancer routes, and a C<uri_base> variable
+for static content as shown in L<Dancer::Cookbook>. This means whatever base path
+your app is mounted under, links and form submissions will continue to work.
+
 =head3 Creating a service
 
 You can turn your app into proper service running in background using one of the following examples:
