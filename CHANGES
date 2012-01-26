@@ -3,6 +3,8 @@
     [ BUG FIXES ]
     * Don't call isa() on unblessed refs in Dancer::Exception (Sam Kington)
     * Assume UTF-8 by default when serialising JSON (Sam Kington)
+    * If a cookie is set multiple times, last value wins (Issue 725)
+      (David Precious)
 
 1.3091      17.12.2011
 
