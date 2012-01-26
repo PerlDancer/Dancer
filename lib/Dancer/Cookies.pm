@@ -63,8 +63,7 @@ sub set_cookie {
 
 sub set_cookie_object {
     my ($class, $name, $cookie) = @_;
-    Dancer::SharedData->response->push_header(
-        'Set-Cookie' => $cookie->to_header);
+    Dancer::SharedData->response->add_cookie($name, $cookie);
     Dancer::Cookies->cookies->{$name} = $cookie;
 }
 
