@@ -136,7 +136,14 @@ sub dumper {
 
 # Given a hashref, censor anything that looks sensitive.  Returns number of
 # items which were "censored".
+our $CENSOR_LEVEL = 0;
+
 sub _censor {
+    local $Dancer::Error::CENSOR_LEVEL = 1 + $Dancer::Error::CENSOR_LEVEL;
+
+    warn "data exceeding 100 levels, truncating\n"
+        and return shift if $Dancer::Error::CENSOR_LEVEL > 100;
+
     my $hash = shift;
     if (!$hash || ref $hash ne 'HASH') {
         carp "_censor given incorrect input: $hash";
