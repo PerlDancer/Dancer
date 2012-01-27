@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Dancer::Template::Simple;
 use File::Basename 'basename', 'dirname';
+use File::Find;
 use File::Path 'mkpath';
 use File::Spec::Functions;
 use Getopt::Long;
@@ -12,20 +13,24 @@ use Dancer::Renderer;
 use LWP::UserAgent;
 use constant FILE => 1;
 
+my $TEMPLATES_DIR = "$ENV{HOME}/.dancer/templates";
+
 # options
 my $help = 0;
 my $do_check_dancer_version = 1;
 my $name = undef;
 my $path = '.';
+my $template_name;
 
 sub templates($);
 sub app_tree($);
-sub create_node($;$);
+sub create_node($;$$);
 
 GetOptions(
     "h|help"          => \$help,
     "a|application=s" => \$name,
     "p|path=s"        => \$path,
+    "t|template=s"    => \$template_name,
     "x|no-check"      => sub { $do_check_dancer_version = 0 },
     "v|version"       => \&version,
 ) or pod2usage( -verbose => 1 );
@@ -52,7 +57,11 @@ my $DANCER_VERSION   = $Dancer::VERSION;
 
 version_check() if $do_check_dancer_version;
 safe_mkdir($DANCER_APP_DIR);
-create_node( app_tree($name), $DANCER_APP_DIR );
+if (defined $template_name) {
+    create_app_from_template( $template_name, $DANCER_APP_DIR, $name );
+} else {
+    create_node( app_tree($name), $DANCER_APP_DIR, $name );
+}
 
 unless (eval "require YAML") {
     print <<NOYAML;
@@ -72,6 +81,30 @@ NOYAML
 }
 
 # subs
+
+sub create_app_from_template {
+    my ($template_name, $appdir, $appname) = @_;
+    my $template_base = $template_name =~ m!^/! 
+                      ? $template_name 
+                      : catfile($TEMPLATES_DIR, $template_name);
+    unless (-e $template_base) {
+        die "No template named $template_name found in $TEMPLATES_DIR\n";
+    }
+    find({ no_chdir => 1, wanted => sub {
+        return if $File::Find::name eq $template_base;
+        (my $path = $File::Find::name) =~ s{^$template_base/}{};
+        $path =~ s/APPNAME/$appname/g;
+        my $appfile = catfile($appdir, $path);
+        if (-d $File::Find::name) { safe_mkdir($appfile); return }
+        my $template = do { local (@ARGV,$/) = $File::Find::name; <> };
+        write_file($appfile, $template, {
+            appdir  => File::Spec->rel2abs($appdir),
+            appname => $appname,
+        });
+        # Match the mode of the template file
+        chmod +(stat($File::Find::name))[2], $appfile;
+    }}, $template_base);
+}
 
 sub validate_app_name {
     my $name = shift;
@@ -107,8 +140,8 @@ sub _dash_name {
     $name;
 }
 
-sub create_node($;$) {
-    my ($node, $root) = @_;
+sub create_node($;$$) {
+    my ($node, $root, $name) = @_;
     $root ||= '.';
 
     my $manifest_name = catfile($root => 'MANIFEST');
@@ -123,12 +156,12 @@ sub create_node($;$) {
     };
 
     $add_to_manifest->($manifest_name);
-    _create_node($add_to_manifest, $node, $root);
+    _create_node($add_to_manifest, $node, $root, $name);
     close $manifest;
 }
 
 sub _create_node {
-    my ($add_to_manifest, $node, $root) = @_;
+    my ($add_to_manifest, $node, $root, $name) = @_;
 
     my $templates = templates($name);
 
@@ -137,7 +170,7 @@ sub _create_node {
 
         if (ref($content) eq 'HASH') {
             safe_mkdir($path);
-            _create_node($add_to_manifest, $content, $path);
+            _create_node($add_to_manifest, $content, $path, $name);
         } elsif (ref($content) eq 'CODE') {
             # The content is a coderef, which, given the path to the file it
             # should create, will do the appropriate thing:
@@ -241,8 +274,8 @@ sub write_file {
 sub process_template {
     my ($template, $tokens) = @_;
     my $engine = Dancer::Template::Simple->new;
-    $engine->{start_tag} = '[%';
-    $engine->{stop_tag} = '%]';
+    $engine->{start_tag} = '[[%%';
+    $engine->{stop_tag} = '%%]]';
     return $engine->render(\$template, $tokens);
 }
 
@@ -335,7 +368,7 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More' => 0,
         'YAML'       => 0,
-        'Dancer'     => [% dancer_version %],
+        'Dancer'     => [[%% dancer_version %%]],
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => '$cleanfiles-*' },
@@ -385,7 +418,7 @@ WriteMakefile(
             <h3>Your application\'s environment</h3>
 
             <ul>
-                <li>Location: <code>[% appdir %]</code></li>
+                <li>Location: <code>[[%% appdir %%]]</code></li>
                 <li>Template engine: <code><% settings.template %></code></li>
                 <li>Logger: <code><% settings.logger %></code></li>
                 <li>Environment: <code><% settings.environment %></code></li>
@@ -425,7 +458,7 @@ WriteMakefile(
                 </tr>
                 <tr>
                     <td>Appdir</td>
-                    <td><tt>[% appdir %]</tt></td>
+                    <td><tt>[[%% appdir %%]]</tt></td>
                 </tr>
                 <tr>
                     <td>Template engine</td>
@@ -894,7 +927,7 @@ EOH
 # all the settings in this file will be loaded at Dancer's startup.
 
 # Your application's name
-appname: \"$name\"
+appname: \"$appname\"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
