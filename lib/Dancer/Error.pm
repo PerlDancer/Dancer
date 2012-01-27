@@ -137,7 +137,17 @@ sub dumper {
 # Given a hashref, censor anything that looks sensitive.  Returns number of
 # items which were "censored".
 sub _censor {
-    my $hash = shift;
+    my ( $hash, $recursecount ) = @_;
+    $recursecount ||= 0;
+
+    # we're checking recursion ourselves, no need to warn
+    no warnings 'recursion';
+
+    if ( $recursecount++ > 100 ) {
+        warn "Data exceeding 100 levels, truncating\n";
+        return $hash;
+    }
+
     if (!$hash || ref $hash ne 'HASH') {
         carp "_censor given incorrect input: $hash";
         return;
@@ -146,7 +156,7 @@ sub _censor {
     my $censored = 0;
     for my $key (keys %$hash) {
         if (ref $hash->{$key} eq 'HASH') {
-            $censored += _censor($hash->{$key});
+            $censored += _censor( $hash->{$key}, $recursecount );
         }
         elsif ($key =~ /(pass|card?num|pan|secret)/i) {
             $hash->{$key} = "Hidden (looks potentially sensitive)";
