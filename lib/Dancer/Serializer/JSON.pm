@@ -42,12 +42,8 @@ sub serialize {
     my $config = setting('engines') || {};
     $config = $config->{JSON} || {};
 
-    if ( $config->{allow_blessed} && !defined $options->{allow_blessed} ) {
-        $options->{allow_blessed} = $config->{allow_blessed};
-    }
-    if ( $config->{convert_blessed} ) {
-        $options->{convert_blessed} = $config->{convert_blessed};
-    }
+    # straight pass through of config options to JSON
+    map { $options->{$_} = $config->{$_} } keys %$config;
 
     if (setting('environment') eq 'development' and not defined $options->{pretty}) {
         $options->{pretty} = 1;
@@ -110,14 +106,17 @@ This can be done in your config.yml file or directly in your app code with the
 B<set> keyword. This serializer will also be used when the serializer is set
 to B<mutable> and the correct Accept headers are supplied.
 
-The L<JSON> module has 2 configuration variables that can be useful when working
-with ORM's like L<DBIx::Class>: B<allow_blessed> and B<convert_blessed>.
-Please consult the L<JSON> documentation for more information. You can add
-extra settings to the B<engines> configuration to turn these on.
+The L<JSON> module will pass configuration variables straight through.
+Some of these can be useful when debugging/developing your app: B<pretty> and B<canonical>,
+and others useful with ORM's like L<DBIx::Class>: B<allow_blessed> and B<convert_blessed>.
+Please consult the L<JSON> documentation for more information and a full list of
+configuration settings. You can add extra settings to the B<engines> configuration to
+turn these on. For example:
 
     engines:
         JSON:
             allow_blessed: '1'
+            canonical: '1'
             convert_blessed: '1'
 
 
