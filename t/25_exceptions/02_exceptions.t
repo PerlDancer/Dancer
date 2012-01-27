@@ -130,10 +130,10 @@ HarmlessInvalidLogin InvalidCredentials InvalidLogin InvalidPassword Test
         };
     };
     ok(! $@);
-    is($e, 'test - invalid credentials : wrong login (login was douglas)');
-    # check stringification works in other cases
-    ok($e eq 'test - invalid credentials : wrong login (login was douglas)');
-    ok('test - invalid credentials : wrong login (login was douglas)' eq $e);
+    like(
+        $e,
+        qr/^test - invalid credentials : wrong login \(login was douglas\)/,
+    );
     ok($e->does('InvalidLogin'));
     is($v1, 2);
 }
