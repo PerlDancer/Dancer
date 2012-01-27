@@ -107,16 +107,16 @@ B<set> keyword. This serializer will also be used when the serializer is set
 to B<mutable> and the correct Accept headers are supplied.
 
 The L<JSON> module will pass configuration variables straight through.
-Some of these can be useful when debugging/developing your app: B<pretty> and B<canonical>,
-and others useful with ORM's like L<DBIx::Class>: B<allow_blessed> and B<convert_blessed>.
-Please consult the L<JSON> documentation for more information and a full list of
-configuration settings. You can add extra settings to the B<engines> configuration to
-turn these on. For example:
+Some of these can be useful when debugging/developing your app: B<pretty> and
+B<canonical>, and others useful with ORMs like L<DBIx::Class>: B<allow_blessed>
+and B<convert_blessed>.  Please consult the L<JSON> documentation for more
+information and a full list of configuration settings. You can add extra
+settings to the B<engines> configuration to turn these on. For example:
 
     engines:
         JSON:
-            allow_blessed: '1'
-            canonical: '1'
+            allow_blessed:   '1'
+            canonical:       '1'
             convert_blessed: '1'
 
 
