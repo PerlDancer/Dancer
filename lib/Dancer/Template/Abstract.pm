@@ -22,26 +22,40 @@ sub render { confess "render not implemented" }
 
 sub default_tmpl_ext { "tt" }
 
+# Work out the template names to look for; this will be the view name passed
+# as-is, and also the view name with the default template extension appended, if
+# it did not already end in that.
 sub _template_name {
     my ( $self, $view ) = @_;
+    my @views = ( $view );
     my $def_tmpl_ext = $self->config->{extension} || $self->default_tmpl_ext();
-    $view .= ".$def_tmpl_ext" if $view !~ /\.\Q$def_tmpl_ext\E$/;
-    return $view;
+    push @views, $view .= ".$def_tmpl_ext" if $view !~ /\.\Q$def_tmpl_ext\E$/;
+    return @views;
 }
 
 sub view {
     my ($self, $view) = @_;
 
-    $view = $self->_template_name($view);
+    my $views_dir = Dancer::App->current->setting('views');
 
-    return path(Dancer::App->current->setting('views'), $view);
+    for my $template ($self->_template_name($view)) {
+        my $view_path = path($views_dir, $template);
+        return $view_path if -e $view_path;
+    }
+
+    # No matching view path was found
+    return;
 }
 
 sub layout {
     my ($self, $layout, $tokens, $content) = @_;
 
-    my $layout_name = $self->_template_name($layout);
-    my $layout_path = path(Dancer::App->current->setting('views'), 'layouts', $layout_name);
+    my $layouts_dir = path(Dancer::App->current->setting('views'), 'layouts');
+    my $layout_path;
+    for my $layout_name ($self->_template_name($layout)) {
+        $layout_path = path($layouts_dir, $layout_name);
+        last if -e $layout_path;
+    }
 
     my $full_content;
     if (-e $layout_path) {
@@ -49,7 +63,7 @@ sub layout {
                                      $layout_path, {%$tokens, content => $content});
     } else {
         $full_content = $content;
-        Dancer::Logger::error("Defined layout ($layout_name) was not found!");
+        Dancer::Logger::error("Defined layout ($layout) was not found!");
     }
     $full_content;
 }
@@ -277,11 +291,18 @@ configuration. For example, for the default (C<Simple>) engine:
 The default behavior of this method is to return the path of the given view,
 appending the default template extension (either the value of the C<extension>
 setting in the configuration, or the value returned by C<default_tmpl_ext>) if
-it is not present in the view name given.
+it is not present in the view name given and no layout template with that exact
+name existed.  (In other words, given a layout name C<main>, if C<main> exists
+in the layouts dir, it will be used; if not, C<main.tmpl> (where C<tmpl> is the
+value of the C<extension> setting, or the value returned by C<default_tmpl_ext>)
+will be looked for.)
 
 =item B<layout($layout, $tokens, $content)>
 
-The default behavior of this method is to merge a content with a layout.
+The default behavior of this method is to merge a content with a layout.  The
+layout file is looked for with similar logic as per C<view> - an exact match
+first, then attempting to append the default template extension, if the view
+name given did not already end with it.
 
 =item B<render($self, $template, $tokens)>
 
