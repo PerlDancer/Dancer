@@ -35,6 +35,11 @@ sub set_app_prefix {
     $self->prefix($prefix);
 }
 
+sub get_prefix {
+    # return the current prefix (if undefined, return an empty string)
+    return Dancer::App->current->prefix || '';
+}
+
 sub set_prefix {
     my ($self, $prefix, $cb) = @_;
 
