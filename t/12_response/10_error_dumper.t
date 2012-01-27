@@ -8,7 +8,7 @@ use Dancer::ModuleLoader;
 plan skip_all => 'Clone is required for this test'
     unless Dancer::ModuleLoader->load('Clone');
 
-plan tests => 3;
+plan tests => 4;
 
 my $error_obj = Dancer::Error->new(
     code => '404',
