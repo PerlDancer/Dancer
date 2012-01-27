@@ -225,8 +225,10 @@ The default in-memory session handler won't work, and instead you should switch
 to something persistent. Edit C<config.yml> to change C<session: 'Simple'> to
 (for example) C<session: 'YAML'>.
 
+=head4 In case you have issues with Template::Toolkit on Dotcloud
+
 If you use the L<Template::Toolkit> and its C<INCLUDE> or C<PROCESS> directives,
-make sure to add the search path of your view files to the config. This is
+you might need to add the search path of your view files to the config. This is
 probably going to be something like
 C<INCLUDE_PATH: '/home/dotcloud/current/views'> in C<config.yml>.
 
