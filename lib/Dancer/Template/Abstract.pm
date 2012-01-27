@@ -175,7 +175,7 @@ sub template {
     if ($view) {
         # check if the requested view exists
         my $view_path = $engine->view($view);
-        if (-e $view_path) {
+        if ($engine->view_exists($view_path)) {
             $content = $engine->apply_renderer($view, $tokens);
         } else {
             Dancer::Logger::error(
@@ -201,6 +201,8 @@ sub template {
         message => "Page not found",
     )->render();
 }
+
+sub view_exists { return -e $_[1] }
 
 1;
 __END__
@@ -296,6 +298,17 @@ name existed.  (In other words, given a layout name C<main>, if C<main> exists
 in the layouts dir, it will be used; if not, C<main.tmpl> (where C<tmpl> is the
 value of the C<extension> setting, or the value returned by C<default_tmpl_ext>)
 will be looked for.)
+
+=item B<view_exists($view_path)>
+
+By default, Dancer::Template::Abstract checks to see if it can find the
+view file calling C<view_exists($path_to_file)>. If not, it will
+generate a nice error message for the user.
+
+If you are using extending Dancer::Template::Abstract to use a template
+system with multiple document roots (like L<Text::XSlate> or
+L<Template>), you can override this method to always return true, and
+therefore skip this check.
 
 =item B<layout($layout, $tokens, $content)>
 
