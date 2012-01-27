@@ -8,7 +8,7 @@ use Dancer::ModuleLoader;
 plan skip_all => 'Clone is required for this test'
     unless Dancer::ModuleLoader->load('Clone');
 
-plan tests => 3;
+plan tests => 4;
 
 my $error_obj = Dancer::Error->new(
     code => '404',
@@ -30,6 +30,14 @@ is(
     'secret',
     'Original data was not overwritten',
 );
+
+my %recursive;
+$recursive{foo}{bar}{baz}  = 1;
+$recursive{foo}{bar}{oops} = $recursive{foo};
+
+$censored = Dancer::Error::_censor( \%recursive );
+
+pass "recursive censored hash";
 
 1;
 

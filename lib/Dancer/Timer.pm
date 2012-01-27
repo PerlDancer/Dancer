@@ -42,7 +42,7 @@ Dancer::Timer - a timer for Dancer
     print "[$time]: Doing something\n";
 
     # (time passes)
-    $time = $timer->tick
+    $time = $timer->tick;
     print "[$time]: Doing something else\n";
 
     # (time passes)

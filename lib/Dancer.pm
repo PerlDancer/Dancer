@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3091';
+our $VERSION   = '1.3092';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -179,7 +179,8 @@ sub pass            { Dancer::SharedData->response->pass(1);
 sub patch            { Dancer::App->current->registry->universal_add('patch', @_) }
 sub path            { Dancer::FileUtils::path(@_) }
 sub post            { Dancer::App->current->registry->universal_add('post', @_) }
-sub prefix          { Dancer::App->current->set_prefix(@_) }
+sub prefix          { @_ == 0 ? Dancer::App->current->get_prefix :
+                          Dancer::App->current->set_prefix(@_) }
 sub put             { Dancer::App->current->registry->universal_add('put',     @_) }
 sub redirect        { goto &_redirect }
 sub render_with_layout { Dancer::Template::Abstract->_render_with_layout(@_) }

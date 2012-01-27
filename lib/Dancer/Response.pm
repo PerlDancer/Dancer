@@ -143,6 +143,9 @@ sub headers {
 sub headers_to_array {
     my $self = shift;
 
+    # Time to finalise cookie headers, now
+    $self->build_cookie_headers;
+
     my $headers = [
         map {
             my $k = $_;
@@ -157,7 +160,33 @@ sub headers_to_array {
     return $headers;
 }
 
+# Given a cookie name and object, add it to the cookies we're going to send.
+# Stores them in a hashref within the response object until the response is
+# being built, so that, if the same cookie is set multiple times, only the last
+# value given to it will appear in a Set-Cookie header.
+sub add_cookie {
+    my ($self, $name, $cookie) = @_;
+    if ($self->{_built_cookies}) {
+        die "Too late to set another cookie, headers already built";
+    }
+    $self->{_cookies}{$name} = $cookie;
+}
+
+
+# When the response is about to be rendered, that's when we build up the
+# Set-Cookie headers
+sub build_cookie_headers {
+    my $self = shift;
+    for my $name (keys %{ $self->{_cookies} }) {
+        my $header = $self->{_cookies}{$name}->to_header;
+        $self->push_header(
+            'Set-Cookie' => $header,
+        );
+    }
+    $self->{_built_cookies}++;
+}
 1;
+
 
 =head1 NAME
 

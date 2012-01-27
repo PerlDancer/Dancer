@@ -43,11 +43,12 @@ Note that when using fast-cgi your rewrite rule should be:
 
         RewriteRule ^(.*)$ /dispatch.fcgi$1 [QSA,L]
 
-Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's configuration. 
-But if your web server supports .htaccess files, you can drop those lines in a .htaccess file.
+Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's
+configuration.  But if your web server supports .htaccess files, you can drop
+those lines in a .htaccess file.
 
-To check if your server supports mod_rewrite type C<apache2 -l> to list modules. 
-To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in 
+To check if your server supports mod_rewrite type C<apache2 -l> to list modules.
+To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in
 a file called .htaccess in your application's root folder:
 
     # BEGIN dancer application htaccess
@@ -65,14 +66,15 @@ embedded web server.
 This option is a no-brainer, easy to setup, low maintenance but serves requests
 slower than all other options.
 
-You can use the same technique to deploy with FastCGI, by just changing the line:
-	
+You can use the same technique to deploy with FastCGI, by just changing the
+line:
+
 	AddHandler cgi-script .cgi
 
 By:
 
 	AddHandler fastcgi-script .fcgi
-	
+
 Of course remember to update your rewrite rules, if you have set any:
 
     RewriteRule (.*) /dispatch.fcgi$1 [L]
@@ -102,7 +104,8 @@ A number of Perl web servers supporting PSGI are available on cpan:
 
 =item Starman
 
-C<Starman> is a high performance web server, with support for preforking, signals, ...
+C<Starman> is a high performance web server, with support for preforking,
+signals and more.
 
 =item Twiggy
 
@@ -204,13 +207,72 @@ and now use L<Starman>
 
     plackup -a app.psgi -s Starman
 
+=head3 Hosting on DotCloud
+
+The simplest way to achieve this is to push your main application directory
+to dotcloud with your C<bin/app.pl> file copied to (or symlinked from)
+C<app.psgi>.
+
+Beware that the dotcloud service enforces one environment only, named
+C<deployment>. So instead of having C<environments/development.yml> or
+C<environments/production.yml> you I<must> have a file named
+C<environments/deployment.yml>.
+
+Also make sure that your C<Makefile.PL> (or other dependency mechanism) includes
+both Dancer and L<Plack::Request>.
+
+The default in-memory session handler won't work, and instead you should switch
+to something persistent. Edit C<config.yml> to change C<session: 'Simple'> to
+(for example) C<session: 'YAML'>.
+
+=head4 In case you have issues with Template::Toolkit on Dotcloud
+
+If you use the L<Template::Toolkit> and its C<INCLUDE> or C<PROCESS> directives,
+you might need to add the search path of your view files to the config. This is
+probably going to be something like
+C<INCLUDE_PATH: '/home/dotcloud/current/views'> in C<config.yml>.
+
+An alternative implementation is to use a variation of the above Plack::Builder
+template:
+
+ use Plack::Builder;
+ use Dancer ':syntax';
+ use Dancer::Handler;
+ use lib 'lib';
+
+ my $app1 = sub {
+     setting appdir => '/home/dotcloud/current';
+     load_app "My::App";
+     Dancer::App->set_running_app("My::App");
+     my $env = shift;
+     Dancer::Handler->init_request_headers($env);
+     my $req = Dancer::Request->new(env => $env);
+     Dancer->dance($req);
+ };
+
+ builder {
+     mount "/app1" => $app1;
+ };
+
+This also supports hosting multiple apps, but you probably also need to specify
+the specific Environment configuration to use in your application.
+
+When mounting under a path on dotcloud, as in the above example, always create
+links using the C<uri_for()> method for Dancer routes, and a C<uri_base>
+variable for static content as shown in L<Dancer::Cookbook>. This means
+whatever base path your app is mounted under, links and form submissions will
+continue to work.
+
 =head3 Creating a service
 
-You can turn your app into proper service running in background using one of the following examples:
+You can turn your app into proper service running in background using one of
+the following examples:
 
 =head4 Using Ubic
 
-L<Ubic> is an extensible perlish service manager. You can use it to start and stop any services, automatically start them on reboots or daemon failures, and implement custom status checks.
+L<Ubic> is an extensible perlish service manager. You can use it to start and
+stop any services, automatically start them on reboots or daemon failures, and
+implement custom status checks.
 
 A basic PSGI service description (usually in /etc/ubic/service/application):
 
@@ -235,7 +297,8 @@ Run C<ubic start application> to start the service.
 
 =head4 Using daemontools
 
-daemontools is a collection of tools for managing UNIX services. You can use it to easily start/restart/stop services.
+daemontools is a collection of tools for managing UNIX services. You can use it
+to easily start/restart/stop services.
 
 A basic script to start an application: (in /service/application/run)
 
@@ -272,13 +335,14 @@ under a specified dir:
     ProxyPass /mywebapp/ http://localhost:3000/
     ProxyPassReverse /mywebapp/ http://localhost:3000/
 
-It is important for you to note that the Apache2 modules mod_proxy and mod_proxy_http 
-must be enabled. 
+It is important for you to note that the Apache2 modules mod_proxy and
+mod_proxy_http must be enabled.
 
     a2enmod proxy
     a2enmod proxy_http
 
-It is also important to set permissions for proxying for security purposes, below is an example.
+It is also important to set permissions for proxying for security purposes,
+below is an example.
 
     <Proxy *>
       Order allow,deny
@@ -287,8 +351,8 @@ It is also important to set permissions for proxying for security purposes, belo
 
 =head4 Using perlbal
 
-C<perlbal> is a single-threaded event-based server written in Perl supporting HTTP load
-balancing, web serving, and a mix of the two, available from
+C<Perlbal> is a single-threaded event-based server written in Perl supporting
+HTTP load balancing, web serving, and a mix of the two, available from
 L<http://www.danga.com/perlbal/>
 
 It processes hundreds of millions of requests a day just for LiveJournal, Vox
@@ -356,7 +420,8 @@ You can use Lighttp's mod_proxy:
         )
     }
 
-This configuration will proxy all request to the B</application> path to the path B</> on localhost:3000.
+This configuration will proxy all request to the B</application> path to the
+path B</> on localhost:3000.
 
 =head4 Using Nginx
 

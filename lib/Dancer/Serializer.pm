@@ -74,8 +74,14 @@ sub process_request {
     Dancer::Factory::Hook->execute_hooks('before_deserializer');
 
     return $request unless engine;
-    return $request
-      unless engine->support_content_type($request->content_type);
+
+    # Content-Type may contain additional parameters
+    # (http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7)
+    # which should be safe to ignore at this level.
+    # So accept either e.g. text/xml or text/xml; charset=utf-8
+    my $content_type = $request->content_type;
+    $content_type =~ s/ \s* ; .+ $ //x;
+    return $request unless engine->support_content_type($content_type);
 
     return $request
       unless $request->is_put || $request->is_post || $request->is_patch;
@@ -84,7 +90,9 @@ sub process_request {
 
     # try to deserialize
     my $new_params;
-    eval { $new_params = engine->deserialize($request->body) };
+    eval {
+        $new_params = engine->deserialize($request->body)
+    };
     if ($@) {
         Dancer::Logger::core "Unable to deserialize request body with "
           . engine()

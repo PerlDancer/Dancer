@@ -1,5 +1,28 @@
 {{$NEXT}}
 
+1.3092      27.01.2012
+
+    [ BUG FIXES ]
+    * Don't call isa() on unblessed refs in Dancer::Exception. (Sam Kington)
+    * Assume UTF-8 by default when serialising JSON. (Sam Kington)
+    * GH #725: If a cookie is set multiple times, last value wins.
+      (David Precious)
+    * More intuitive, backwards compatible appending of default template 
+      extension. (GH #716, David Precious)
+    * Prevent recursion in censoring. (Yanick Champoux, Damien dams Krotkine)
+    * GH #734: More tests flexibility (Sawyer X, reported by @birdy-)
+
+    [ ENHANCEMENTS ]
+    * Return the current set prefix using prefix(). (Michal Wojciechowski)
+    * More intuitive appending of default template extension. Makes for cleaner
+      more DWIM code. (David Precious, reported by Nick Knutov)
+    * Allow any options to JSON serializer. (Lee Johnson)
+    * Support complex views with multiple document roots. (Pedro Melo)
+
+    [ DOCUMENTATION ]
+    * Document how to work with Dotcloud. (Oliver Gorwits)
+    * Clean ups and fix ups. (David Precious, Sawyer X, Michal Wojciechowski)
+
 1.3091      17.12.2011
 
     [ BUG FIXES ]
