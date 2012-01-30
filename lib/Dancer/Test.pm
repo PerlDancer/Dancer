@@ -573,7 +573,7 @@ It's possible to test file uploads:
 
     post '/upload' => sub { return upload('image')->content };
 
-    $response = dancer_reponse(POST => '/upload', {files => [{name => 'image', filename => '/path/to/image.jpg'}]});
+    $response = dancer_response(POST => '/upload', {files => [{name => 'image', filename => '/path/to/image.jpg'}]});
 
 In addition, you can supply the file contents as the C<data> key:
 
