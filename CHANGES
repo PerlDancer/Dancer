@@ -1,5 +1,14 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * GH-738: Define exception type ::Core::Request, to avoid things blowing 
+      up when Dancer::Request raises exceptions of that type
+      (David Precious, thanks to damog for reporting)
+
+    [ DOCUMENTATION ]
+    * Fix examples for multi-app deployment under Plack::Builder in deployment
+    * docs (c0bra)
+
 1.3092      27.01.2012
 
     [ BUG FIXES ]
