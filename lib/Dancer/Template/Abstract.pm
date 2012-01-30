@@ -174,7 +174,7 @@ sub template {
 
     if ($view) {
         # check if the requested view exists
-        my $view_path = $engine->view($view);
+        my $view_path = $engine->view($view) || '';
         if ($engine->view_exists($view_path)) {
             $content = $engine->apply_renderer($view, $tokens);
         } else {
