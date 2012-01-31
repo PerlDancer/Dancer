@@ -81,7 +81,7 @@ for my $rebuild_config ( 0,1 ) {
     if ($rebuild_config) {
         $engine->{config}{INCLUDE_PATH} = [
             path('.'),
-            path('t', '10_template', 'inc'),
+            path('t', '10_template', 'include'),
             path('t', '10_template'),
         ];
     }
