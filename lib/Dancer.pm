@@ -780,7 +780,7 @@ It effectively lets you chain routes together in a clean manner.
         # you'll have to implement this next sub yourself :)
         change_the_main_database_to_demo();
 
-        forward '/articles/$article_id';
+        forward "/articles/$article_id";
     };
 
 In the above example, the users that reach I</demo/articles/30> will actually
