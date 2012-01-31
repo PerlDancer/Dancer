@@ -801,7 +801,7 @@ end of the route. e.g.
 
     get '/some/path => sub {
         if ($condition) {
-            forward '/articles/$article_id';
+            forward "/articles/$article_id";
             # The following code is never executed
             do_stuf();
         }
