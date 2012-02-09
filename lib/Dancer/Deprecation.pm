@@ -66,7 +66,7 @@ List of possible parameters:
 
 =back
 
-You can call the method with no arguments, and a default message using informations from C<caller> will be build for you.
+You can call the method with no arguments, and a default message using information from C<caller> will be built for you.
 
 =head1 LICENSE
 

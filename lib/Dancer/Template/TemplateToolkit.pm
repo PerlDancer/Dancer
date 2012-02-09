@@ -82,7 +82,7 @@ In order to use this engine, use the template setting:
 This can be done in your config.yml file or directly in your app code with the
 B<set> keyword.
 
-Note that by default,  Dancer configures the Template::Toolkit engine to use 
+Note that by default,  Dancer configures the Template::Toolkit engine to use
 <% %> brackets instead of its default [% %] brackets.  This can be changed
 within your config file - for example:
 
@@ -91,6 +91,14 @@ within your config file - for example:
         template_toolkit:
             start_tag: '[%'
             stop_tag: '%]'
+
+You can also add any options you would normally add to the Template module's
+initialization. You could, for instance, enable saving the compiled templates:
+
+    engines:
+        template_toolkit:
+            COMPILE_DIR: 'caches/templates'
+            COMPILE_EXT: '.ttc'
 
 By default, L<Template> is used, but you can configure Dancer to use a
 subclass with the C<subclass> option.

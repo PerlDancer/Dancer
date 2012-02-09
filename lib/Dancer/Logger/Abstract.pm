@@ -60,10 +60,8 @@ sub format_message {
     my ($self, $level, $message) = @_;
     chomp $message;
 
-    if (setting('charset')) {
-        unless (uc setting('charset') eq "UTF-8" && Encode::is_utf8($message)) {
-            $message = Encode::encode(setting('charset'), $message);
-        }
+    if (my $charset = setting('charset')) {
+        $message = Encode::encode($charset, $message);
     }
 
     $level = 'warn' if $level eq 'warning';

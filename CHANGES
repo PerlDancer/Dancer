@@ -1,7 +1,87 @@
+{{$NEXT}}
+
     [ BUG FIXES ]
-    * Fix bug that made system() fail with -1 under Dancer (felixdo)
+    * GH-738: Define exception type ::Core::Request, to avoid things blowing 
+      up when Dancer::Request raises exceptions of that type
+      (David Precious, thanks to damog for reporting)
+
+    [ DOCUMENTATION ]
+    * Fix examples for multi-app deployment under Plack::Builder in deployment
+    * docs (c0bra)
+
+1.3092      27.01.2012
+
+    [ BUG FIXES ]
+    * Don't call isa() on unblessed refs in Dancer::Exception. (Sam Kington)
+    * Assume UTF-8 by default when serialising JSON. (Sam Kington)
+    * GH #725: If a cookie is set multiple times, last value wins.
+      (David Precious)
+    * More intuitive, backwards compatible appending of default template 
+      extension. (GH #716, David Precious)
+    * Prevent recursion in censoring. (Yanick Champoux, Damien dams Krotkine)
+    * GH #734: More tests flexibility (Sawyer X, reported by @birdy-)
+
+    [ ENHANCEMENTS ]
+    * Return the current set prefix using prefix(). (Michal Wojciechowski)
+    * More intuitive appending of default template extension. Makes for cleaner
+      more DWIM code. (David Precious, reported by Nick Knutov)
+    * Allow any options to JSON serializer. (Lee Johnson)
+    * Support complex views with multiple document roots. (Pedro Melo)
+
+    [ DOCUMENTATION ]
+    * Document how to work with Dotcloud. (Oliver Gorwits)
+    * Clean ups and fix ups. (David Precious, Sawyer X, Michal Wojciechowski)
+
+1.3091      17.12.2011
+
+    [ BUG FIXES ]
+    * Reverting template() behavior by popular demand. (Damien Krotkine)
+    * GH #714: Run post-request hooks when custom continuations were created.
+      (Damien Krotkine)
+    * Always call write_session_id() to update expires. (David Precious)
+
+    [ ENHANCEMENTS ]
+    * GH #711, #652: Add server_tokens variable to allow removal of headers.
+      (John Wittkoski)
+
+    [ DOCUMENTATION ]
+    * GH #680: Document problems with multiple apps in Dancer using
+      Plack::Handler::Apache2 and recommend a workaround.
+      (Asaf Gordon, Pedro Melo)
+    * RT #73258: Spelling glitches. (Damyan Ivanov)
+    * Use ":script" instead of ":syntax" in Cookbook. (John Barrett)
+    * Typos in Deployment doc. (David Precious)
+
+1.3090      13.12.2011
+    ** Codename: Hornburg of Hannover // Stefan Hornburg (racke) **
+
+    [ BUG FIXES ]
+    * GH #685: Set VERSION for Dancer::Plugin::Ajax.
+      (Sawyer X, Naveed Massjouni)
+
+    [ DOCUMENTATION ]
+    * GH #694: Typo fix. (Yanick Champoux)
+    * GH #698: Document further TT init options. (Dennis Lichtenthaeler)
+    * GH #709: Update POD documentation regarding hook. (Stefan Hornburg)
+
+1.3089_01   26.11.2011
+
+    [ BUG FIXES ]
+    * Fix bug that made system() fail with -1 under Dancer (felixdo).
     * Support for 'content_type' option on send_file when sending a
-      system wide file (Emmanuel Rodriguez)
+      system wide file (Emmanuel Rodriguez).
+    * Support HTTP_X_FORWARDED_HOST in behing proxy (Ipaponov).
+    * Deserialize PATCH requests (Sam Kington).
+    * Encode log messages properly if charset UTF-8 is set (David Precious,
+      thanks to Penfold for the fix & MiklerGM for reporting).
+
+    [ ENHANCEMENTS ]
+    * Continuations-style exception system! (Damien Krotkine).
+    * The ability for dancer_response to send file contents for file uploads
+      as a scalar, instead of reading from file on disk (Squeeks).
+
+    [ DOCUMENTATION ]
+    * Clean up "plack_middlewares" example in docs (Richard Simões).
 
 1.3080      25.10.2011
     ** Codename: Sawyer's Sugar Stream // Sawyer X **

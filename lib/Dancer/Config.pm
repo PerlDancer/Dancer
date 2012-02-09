@@ -220,18 +220,19 @@ sub load_settings_from_yaml {
 }
 
 sub load_default_settings {
-    $SETTINGS->{server}       ||= $ENV{DANCER_SERVER}       || '0.0.0.0';
-    $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
-    $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
-    $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
-    $SETTINGS->{startup_info} ||= $ENV{DANCER_STARTUP_INFO} || 1;
-    $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
-    $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
-    $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
-    $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
-    $SETTINGS->{traces}       ||= $ENV{DANCER_TRACES}       || 0;
-    $SETTINGS->{logger}       ||= $ENV{DANCER_LOGGER}       || 'file';
-    $SETTINGS->{environment} ||=
+    $SETTINGS->{server}        ||= $ENV{DANCER_SERVER}        || '0.0.0.0';
+    $SETTINGS->{port}          ||= $ENV{DANCER_PORT}          || '3000';
+    $SETTINGS->{content_type}  ||= $ENV{DANCER_CONTENT_TYPE}  || 'text/html';
+    $SETTINGS->{charset}       ||= $ENV{DANCER_CHARSET}       || '';
+    $SETTINGS->{startup_info}  ||= $ENV{DANCER_STARTUP_INFO}  || 1;
+    $SETTINGS->{daemon}        ||= $ENV{DANCER_DAEMON}        || 0;
+    $SETTINGS->{apphandler}    ||= $ENV{DANCER_APPHANDLER}    || 'Standalone';
+    $SETTINGS->{warnings}      ||= $ENV{DANCER_WARNINGS}      || 0;
+    $SETTINGS->{auto_reload}   ||= $ENV{DANCER_AUTO_RELOAD}   || 0;
+    $SETTINGS->{traces}        ||= $ENV{DANCER_TRACES}        || 0;
+    $SETTINGS->{server_tokens} ||= $ENV{DANCER_SERVER_TOKENS} || 1;
+    $SETTINGS->{logger}        ||= $ENV{DANCER_LOGGER}        || 'file';
+    $SETTINGS->{environment}   ||=
          $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
       || 'development';
@@ -444,6 +445,13 @@ If set to true, tells Dancer to consider all warnings as blocking errors.
 
 If set to true, Dancer will display full stack traces when a warning or a die
 occurs. (Internally sets Carp::Verbose). Default to false.
+
+=head3 server_tokens (boolean)
+
+If set to true, Dancer will add an "X-Powered-By" header and also append
+the Dancer version to the "Server" header. Default to true.
+
+You can also use the environment variable C<DANCER_SERVER_TOKENS>.
 
 =head3 log_path (string)
 

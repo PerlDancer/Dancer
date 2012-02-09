@@ -128,7 +128,7 @@ requests.
 
 The L<params|Dancer/params> keyword returns a hashref of request parameters; 
 these will be parameters supplied on the query string, within the path itself 
-(with named placeholders), and, for HTTTP POST requests, the content of the 
+(with named placeholders), and, for HTTP POST requests, the content of the 
 POST body.
 
 
@@ -167,12 +167,12 @@ with the L<splat|Dancer/splat> keyword:
 
 
 
-=head2 Before filters - processed before a request
+=head2 Before hooks - processed before a request
 
-A L<before|Dancer/before> filter declares code which should be handled before 
+A before L<hook|Dancer/hook> declares code which should be handled before 
 a request is passed to the appropriate route.
 
-    before sub {
+    hook 'before' => sub {
         var note => 'Hi there';
         request->path('/foo/oversee')
     };
@@ -182,12 +182,10 @@ a request is passed to the appropriate route.
         vars->{note}; # 'Hi there'
     };
 
-The above declares a before filter which uses C<var> to set a variable which
+The above declares a before hook which uses C<var> to set a variable which
 will later be available within the route handler, then amends the path of the
 request to C</foo/oversee>; this means that, whatever path was requested, it
 will be treated as though the path requested was C</foo/oversee>.
-
-See also the L<hook|Dancer/hook> hook keyword.
 
 =head2 Default route
 
@@ -385,10 +383,9 @@ When you're done with your session, you can destroy it:
 A common requirement is to check the user is logged in, and, if not, require
 them to log in before continuing.
 
-This can easily be handled with a before filter to check their session:
+This can easily be handled with a before L<hook|Dancer/hook> to check their session:
 
-    before sub {
-
+    hook 'before' => sub {
         if (! session('user') && request->path_info !~ m{^/login}) {
             var requested_path => request->path_info;
             request->path_info('/login');
@@ -500,7 +497,7 @@ interpolate in the view (note that for convenience, the request, session, params
 and vars are automatically accessible in the view, named C<request>, C<session>,
 C<params> and C<vars>) - for example:
 
-    before => sub { var time => scalar(localtime) };
+    hook 'before' => sub { var time => scalar(localtime) };
 
     get '/hello/:name' => sub {
         my $name = params->{name};
@@ -697,7 +694,7 @@ Use Dancer instead. Without any ado, magic or too big jumps, you can use the
 values from config.yml and some additional default values:
 
 	# bin/script1.pl
-	use Dancer ':syntax';
+	use Dancer ':script';
 	print "template:".config->{template}."\n"; #simple
 	print "log:".config->{log}."\n"; #undef
 
@@ -712,7 +709,7 @@ deducts where the config.yml file is (typically $webapp/config.yml).
 	# bin/script2.pl
 	use FindBin;
 	use Cwd qw/realpath/;
-	use Dancer ':syntax';
+	use Dancer ':script';
 
 	#tell the Dancer where the app lives
 	my $appdir=realpath( "$FindBin::Bin/..");
@@ -737,7 +734,7 @@ e.g.:
 If you want to load an environment other than the default, try this:
 
 	# bin/script2.pl
-	use Dancer ':syntax';
+	use Dancer ':script';
 
 	#tell the Dancer where the app lives
 	Dancer::Config::setting('appdir','/path/to/app/dir');

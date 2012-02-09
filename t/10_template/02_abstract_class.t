@@ -14,5 +14,5 @@ is $a->default_tmpl_ext, "tt";
 
 $a = Dancer::Template::Abstract->new;
 $a->config->{extension} = 'foo';
-my $view = $a->_template_name('bar');
-is $view, "bar.foo";
+my @views = $a->_template_name('bar');
+is_deeply \@views, ["bar", "bar.foo" ];

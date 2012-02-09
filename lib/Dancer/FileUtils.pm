@@ -220,7 +220,7 @@ Provides comfortable path resolving, internally using L<File::Spec>.
 Returns either the content of a file (whose filename is the input), I<undef>
 if the file could not be opened.
 
-In array context it returns each line (as defined by $/) as a seperate element;
+In array context it returns each line (as defined by $/) as a separate element;
 in scalar context returns the entire contents of the file.
 
 =head2 read_glob_content
