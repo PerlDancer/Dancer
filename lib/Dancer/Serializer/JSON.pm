@@ -67,28 +67,21 @@ sub deserialize {
 sub _options_as_hashref {
     my $self = shift;
 
-    # When reading in JSON, tell JSON.pm that we've got utf8 so it decodes
-    # it properly.
-    # Dancer assumes it needs to encode all output, though, so passing the
-    # utf8 flag when generating JSON is a bad idea.
-    # So set the utf8 flag accordingly.
-    my $utf8_default = (caller(1))[3] =~ /deserialize/ ? 1 : 0;
-        
-    return { utf8 => $utf8_default } if scalar @_ == 0;
+    return { utf8 => 1 } if scalar @_ == 0;
 
-    if (scalar @_ == 1) {
-        my $options = shift;
-        $options->{utf8} = $utf8_default unless exists $options->{utf8};
+    if ( scalar @_ == 1 ) {
+	my $options = shift;
+	$options->{utf8} = 1 unless exists $options->{utf8};
         return $options;
-    } elsif (scalar @_ % 2) {
-        carp
-            "options for to_json/from_json must be key value pairs (as a hashref)";
-    } else {
+    }
+    elsif ( scalar @_ % 2 ) {
+        carp "options for to_json/from_json must be key value pairs (as a hashref)";
+    }
+    else {
         Dancer::Deprecation->deprecated(
             version => '1.3002',
-            fatal   => 1,
-            message =>
-                'options as hash for to_json/from_json is DEPRECATED. please pass a hashref',
+            fatal => 1,
+            message => 'options as hash for to_json/from_json is DEPRECATED. please pass a hashref',
         );
     }
 }
