@@ -36,7 +36,7 @@ sub serialize {
     my $self   = shift;
     my $entity = shift;
 
-    my $options = $self->_options_as_hashref(@_) || {};
+    my $options = $self->_serialize_options_as_hashref(@_) || {};
 
     # Why doesn't $self->config have this?
     my $config = setting('engines') || {};
@@ -56,19 +56,32 @@ sub deserialize {
     my $self   = shift;
     my $entity = shift;
 
-    my $options = $self->_options_as_hashref(@_);
+    my $options = $self->_deserialize_options_as_hashref(@_);
     JSON::from_json( $entity, $options );
+}
+
+# Standard JSON behaviour is fine when serializing; we'll end up
+# encoding as UTF8 later on.
+sub _serialize_options_as_hashref {
+    return shift->_options_as_hashref(@_);
+}
+
+# JSON should be UTF8 by default, so explicitly decode it as such
+# on its way in.
+sub _deserialize_options_as_hashref {
+    my $self = shift;
+    my $options = $self->_options_as_hashref(@_) || {};
+    $options->{utf8} = 1 if !exists $options->{utf8};
+    return $options;
 }
 
 sub _options_as_hashref {
     my $self = shift;
 
-    return { utf8 => 1 } if scalar @_ == 0;
+    return if scalar @_ == 0;
 
     if ( scalar @_ == 1 ) {
-	my $options = shift;
-	$options->{utf8} = 1 unless exists $options->{utf8};
-        return $options;
+        return shift;
     }
     elsif ( scalar @_ % 2 ) {
         carp "options for to_json/from_json must be key value pairs (as a hashref)";
