@@ -532,7 +532,7 @@ your app.  You can control the exporting through the normal
 L<Exporter> mechanism.  For example:
 
     # Just export the route controllers
-    use Dancer qw(before after get post put patch);
+    use Dancer qw(get post put patch del);
 
     # Export everything but pass to avoid clashing with Test::More
     use Test::More;
