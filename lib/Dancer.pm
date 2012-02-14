@@ -583,6 +583,17 @@ By default, the L<warnings> pragma will also be exported, meaning your
 app/script will be running under C<use warnings>.  If you do not want this, set
 the L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
 
+=head2 !keyword
+
+If you want to simply prevent Dancer from exporting specific keywords (perhaps
+you plan to implement them yourself in a different way, or you don't plan to use
+them and they clash with another module you're loading), you can simply exclude
+them:
+
+    use Dancer qw(!session);
+
+The above would import all keywords as normal, with the exception of C<session>.
+
 
 =head1 FUNCTIONS
 
