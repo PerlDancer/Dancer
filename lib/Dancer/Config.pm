@@ -54,23 +54,6 @@ my $setters = {
         my ($setting, $value) = @_;
         $^W = $value ? 1 : 0;
     },
-    auto_page => sub {
-        my ($setting, $auto_page) = @_;
-        if ($auto_page) {
-            require Dancer::App;
-            Dancer::App->current->registry->universal_add(
-                'get', '/:page',
-                sub {
-                    my $params = Dancer::SharedData->request->params;
-                    if  (-f Dancer::engine('template')->view($params->{page})) {
-                        return Dancer::template($params->{'page'});
-                    } else {
-                        return Dancer::pass();
-                    }
-                }
-            );
-        }
-    },
     traces => sub {
         my ($setting, $traces) = @_;
         $Dancer::Exception::Verbose = $traces ? 1 : 0;
