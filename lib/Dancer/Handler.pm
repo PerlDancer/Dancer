@@ -96,7 +96,11 @@ sub render_request {
         my ($exception) = @_;
         Dancer::Factory::Hook->execute_hooks('on_handler_exception', $exception);
         Dancer::Logger::error(
-          'request to ' . $request->path_info . " crashed: $exception");
+            sprintf(
+                'request to %s %s crashed: %s',
+                $request->method, $request->path_info, $exception
+            )
+        );
 
         # use stringification, to get exception message in case of a
         # Dancer::Exception
