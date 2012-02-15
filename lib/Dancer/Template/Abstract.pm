@@ -40,7 +40,7 @@ sub view {
 
     for my $template ($self->_template_name($view)) {
         my $view_path = path($views_dir, $template);
-        return $view_path if -e $view_path;
+        return $view_path if -f $view_path;
     }
 
     # No matching view path was found
