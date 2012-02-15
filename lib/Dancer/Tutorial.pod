@@ -413,7 +413,7 @@ can also see where the content from the specific route handlers is inserted
 
 But what about all those other C<*_url> template parameters?
 
-=head2 Using C<before_template>
+=head2 Using C<before_template_render>
 
 Dancer has various L<hooks|http://en.wikipedia.org/wiki/Hooking> which provide
 additional flexibility and power.  The hooks available are documented in the
