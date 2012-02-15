@@ -84,6 +84,7 @@ sub render_request {
     $action = try {
         Dancer::Renderer->render_file
         || Dancer::Renderer->render_action
+        || Dancer::Renderer->render_autopage
         || Dancer::Renderer->render_error(404);
     } continuation {
         # workflow exception (continuation)

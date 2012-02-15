@@ -149,6 +149,30 @@ sub get_action_response {
     }
 }
 
+sub render_autopage {
+    return unless Dancer::setting('auto_page');
+
+    my $request = Dancer::SharedData->request;
+    my $path = $request->path_info;
+
+    # See if we find a matching view for this request, if so, render it
+    my $viewpath = $path;
+    $viewpath =~ s{^/}{};
+    my $view = Dancer::engine('template')->view($viewpath) || '';
+
+    if ($view && -f $view) {
+        # A view exists for the path requested, go ahead and render it:
+        my $response = Dancer::Response->new;
+        $response->status(200);
+        $response->content(
+            Dancer::template($viewpath)
+        );
+        return $response;
+    }
+
+    return;
+}
+
 sub serialize_response_if_needed {
     my $response = Dancer::SharedData->response();
 
