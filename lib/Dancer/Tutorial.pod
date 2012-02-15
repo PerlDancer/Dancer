@@ -318,7 +318,7 @@ C<template> directive and display the F<login.tt> template.
 This is even simpler than our F<show_entries.tt> template - but wait - there's
 a C<login_url> template parameter and we're only passing in the C<err>
 parameter. Where's the missing parameter?  It's being generated and sent to the
-template in a C<before_template> hook - we'll come back to that in a
+template in a C<before_template_render> hook - we'll come back to that in a
 moment or two.
 
 So the user fills out the F<login.tt> template and submits it back to the
@@ -347,7 +347,7 @@ the user she is logged out and route her back to the root URL once again.
 
 We still have a missing puzzle piece or two.  First, how can we use Dancer to
 serve our CSS stylesheet? Second, where are flash messages displayed? Third,
-what about the C<before_template> hook?
+what about the C<before_template_render> hook?
 
 =head2 Serving static files
 
@@ -418,7 +418,7 @@ But what about all those other C<*_url> template parameters?
 Dancer has various L<hooks|http://en.wikipedia.org/wiki/Hooking> which provide
 additional flexibility and power.  The hooks available are documented in the
 documentation for the L<hook keyword|Dancer/hook>; the one we're interested in
-here is C<before_template> which provides a way to manipulate the template 
+here is C<before_template_render> which provides a way to manipulate the template 
 parameters before they're passed to the engine for processing.
 
 Using this hook, we can generate and set the URIs for the C</login> and 
@@ -429,7 +429,7 @@ This cuts down on code-duplication and makes your app easier to maintain over
 time since you only need to update the values in this one place instead of
 everywhere you render a template.
 
-  hook before_template => sub {
+  hook 'before_template_render' => sub {
      my $tokens = shift;
 	
      $tokens->{'css_url'} = request->base . 'css/style.css';
