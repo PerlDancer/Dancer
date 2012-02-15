@@ -601,7 +601,7 @@ Simply enable auto_page in your config:
 Then, if you request C</foo/bar>, Dancer will look in the views dir for
 C</foo/bar.tt>.
 
-Dancer will honor your C<before_template> code, and all default
+Dancer will honor your C<before_template_render> code, and all default
 variables. They will be accessible and interpolated on automatic
 served pages.
 
