@@ -98,7 +98,7 @@ sub get_action_response {
     my $app = ($handler && $handler->app) ? $handler->app : Dancer::App->current();
 
     # run the before filters, before "running" the route handler
-    Dancer::Factory::Hook->instance->execute_hooks('before');
+    Dancer::Factory::Hook->instance->execute_hooks('before', $handler);
 
     # recurse if something has changed
     my $MAX_RECURSIVE_LOOP = 10;
