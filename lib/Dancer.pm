@@ -638,7 +638,8 @@ Defines a before filter:
     };
 
 The anonymous function given to C<before> will be executed before executing a
-route handler to handle the request.
+route handler to handle the request.  It will receive a reference to the route
+handler about to be executed as its parameter.
 
 If the function modifies the request's C<path_info> or C<method>, a new
 search for a matching route is performed and the filter is re-executed.
