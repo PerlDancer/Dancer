@@ -149,6 +149,45 @@ sub get_action_response {
     }
 }
 
+sub render_autopage {
+    return unless Dancer::setting('auto_page');
+
+    my $request = Dancer::SharedData->request;
+    my $path = $request->path_info;
+
+    # See if we find a matching view for this request, if so, render it
+    my $viewpath = $path;
+    $viewpath =~ s{^/}{};
+    my $view = Dancer::engine('template')->view($viewpath) || '';
+
+    if ($view && -f $view) {
+        # A view exists for the path requested, go ahead and render it:
+        return _autopage_response($viewpath);
+    }
+
+    # Try appending "index" and looking again
+    $view = Dancer::engine('template')->view(
+        Dancer::FileUtils::path($viewpath, 'index')
+    )|| '';
+    Dancer::error("Looking for $viewpath/index - got $view");
+    if ($view && -f $view) {
+        return _autopage_response(
+            Dancer::FileUtils::path($viewpath, 'index')
+        );
+    }
+
+    return;
+}
+sub _autopage_response {
+    my $viewpath = shift;
+    my $response = Dancer::Response->new;
+    $response->status(200);
+    $response->content(
+        Dancer::template($viewpath)
+    );
+    return $response;
+}
+
 sub serialize_response_if_needed {
     my $response = Dancer::SharedData->response();
 
