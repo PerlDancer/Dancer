@@ -23,5 +23,5 @@ use Dancer::Test;
 response_status_is  [GET => '/hello'] => 200, "response found for /hello";
 response_content_is [GET => '/hello'] => "Hello\n", "content looks good";
 
-response_status_is  [GET => '/falsepage'] => 500;
+response_status_is  [GET => '/falsepage'] => 404;
 response_content_like [GET => '/error'] => qr/ERROR: Dancer\n/, "error page looks OK";
