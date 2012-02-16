@@ -202,7 +202,7 @@ sub template {
     )->render();
 }
 
-sub view_exists { return defined $_[1] &&  -e $_[1] }
+sub view_exists { return defined $_[1] &&  -f $_[1] }
 
 1;
 __END__
