@@ -30,7 +30,6 @@ sub get_handler {
     if ($ENV{'PLACK_ENV'}) {
         Dancer::Logger::core("PLACK_ENV is set (".$ENV{'PLACK_ENV'}.") forcing PSGI handler");
         setting('apphandler'  => 'PSGI');
-        setting('environment' => $ENV{'PLACK_ENV'});
     }
 
     # if Plack is detected or set by conf, use the PSGI handler
