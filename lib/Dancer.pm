@@ -751,9 +751,9 @@ database by merely going to I</demo/...>.
 
 You'll notice that in the example we didn't indicate whether it was B<GET> or
 B<POST>. That is because C<forward> chains the same type of route the user
-reached. If it was a B<GET>, it will remain a B<GET>.
+reached. If it was a B<GET>, it will remain a B<GET> (but if you do need to
+change the method, you can do so; read on below for details.)
 
-Broader functionality might be added in the future.
 
 B<WARNING> : Issuing a forward immediately exits the current route,
 and perform the forward. Thus, any code after a forward is ignored, until the
