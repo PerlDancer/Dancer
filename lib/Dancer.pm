@@ -734,13 +734,12 @@ application.
 
 It effectively lets you chain routes together in a clean manner.
 
-    get qr{ /demo/articles/(.+) }x => sub {
-        my ($article_id) = splat;
+    get '/demo/articles/:article_id' => sub {
 
         # you'll have to implement this next sub yourself :)
         change_the_main_database_to_demo();
 
-        forward "/articles/$article_id";
+        forward "/articles/" . params->{article_id};
     };
 
 In the above example, the users that reach I</demo/articles/30> will actually
@@ -759,11 +758,11 @@ B<WARNING> : Issuing a forward immediately exits the current route,
 and perform the forward. Thus, any code after a forward is ignored, until the
 end of the route. e.g.
 
-    get '/some/path => sub {
+    get '/foo/:article_id' => sub {
         if ($condition) {
-            forward "/articles/$article_id";
+            forward "/articles/" . params->{article_id};
             # The following code is never executed
-            do_stuf();
+            do_stuff();
         }
 
         more_stuff();
