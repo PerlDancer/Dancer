@@ -72,8 +72,8 @@ ok(1, "load ok");
 [ qw(
 Base Core Core::App Core::Config Core::Deprecation Core::Engine Core::Factory
 Core::Factory::Hook Core::Fileutils Core::Handler Core::Handler::PSGI
-Core::Hook Core::Plugin Core::Renderer Core::Route Core::Serializer
-Core::Session Core::Template
+Core::Hook Core::Plugin Core::Renderer Core::Request Core::Route
+Core::Serializer Core::Session Core::Template
 )
 ]);
 
@@ -108,8 +108,8 @@ register_exception ('HarmlessInvalidLogin',
         qw(
 Base Core Core::App Core::Config Core::Deprecation Core::Engine Core::Factory
 Core::Factory::Hook Core::Fileutils Core::Handler Core::Handler::PSGI
-Core::Hook Core::Plugin Core::Renderer Core::Route Core::Serializer
-Core::Session Core::Template
+Core::Hook Core::Plugin Core::Renderer Core::Request Core::Route
+Core::Serializer Core::Session Core::Template
 HarmlessInvalidLogin InvalidCredentials InvalidLogin InvalidPassword Test
 )
     ]);

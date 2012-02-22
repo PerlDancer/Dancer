@@ -532,7 +532,7 @@ your app.  You can control the exporting through the normal
 L<Exporter> mechanism.  For example:
 
     # Just export the route controllers
-    use Dancer qw(before after get post put patch);
+    use Dancer qw(get post put patch del);
 
     # Export everything but pass to avoid clashing with Test::More
     use Test::More;
@@ -583,26 +583,23 @@ By default, the L<warnings> pragma will also be exported, meaning your
 app/script will be running under C<use warnings>.  If you do not want this, set
 the L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
 
+=head2 !keyword
+
+If you want to simply prevent Dancer from exporting specific keywords (perhaps
+you plan to implement them yourself in a different way, or you don't plan to use
+them and they clash with another module you're loading), you can simply exclude
+them:
+
+    use Dancer qw(!session);
+
+The above would import all keywords as normal, with the exception of C<session>.
+
 
 =head1 FUNCTIONS
 
 =head2 after
 
-Add a hook at the B<after> position:
-
-    after sub {
-        my $response = shift;
-        # do something with response, e.g.:
-        $response->header('X-Beer' => 'Yes please');
-    };
-
-The anonymous function which is given to C<after> will be executed after
-having executed a route, but before the response is returned (so you can modify
-the response here, if you need to)..
-
-You can define multiple after filters, using the C<after> helper as
-many times as you wish; each filter will be executed, in the order you added
-them.
+Deprecated - see the C<after> L<hook|Dancer/hook>.
 
 =head2 any
 
@@ -620,48 +617,11 @@ Or even, a route handler that would match any HTTP methods:
 
 =head2 before
 
-Defines a before filter:
-
-    before sub {
-        # do something with request, vars or params
-    };
-
-The anonymous function given to C<before> will be executed before executing a
-route handler to handle the request.
-
-If the function modifies the request's C<path_info> or C<method>, a new
-search for a matching route is performed and the filter is re-executed.
-Considering that this can lead to an infinite loop, this mechanism
-is stopped after 10 times with an exception.
-
-The before filter can set a response with a redirection code (either
-301 or 302): in this case the matched route (if any) will be ignored and the
-redirection will be performed immediately.
-
-You can define multiple before filters, using the C<before> helper as
-many times as you wish; each filter will be executed in the order you added
-them.
+Deprecated - see the C<before> L<hook|Dancer/hook>.
 
 =head2 before_template
 
-Defines a before_template filter:
-
-    before_template sub {
-        my $tokens = shift;
-        # do something with request, vars or params
-        
-        # for example, adding a token to the template
-        $tokens->{token_name} = "some value";
-    };
-
-The anonymous function which is given to C<before_template> will be executed
-before sending data and tokens to the template. Receives a HashRef of the
-tokens that will be inserted into the template.
-
-This filter works as the C<before> and C<after> filter.
-
-Now the preferred way for this is to use C<hook>s (namely, the
-C<before_template> one). Check C<hook> documentation below.
+Deprecated - see the C<before_template> L<hook|Dancer/hook>.
 
 =head2 cookies
 
@@ -780,7 +740,7 @@ It effectively lets you chain routes together in a clean manner.
         # you'll have to implement this next sub yourself :)
         change_the_main_database_to_demo();
 
-        forward '/articles/$article_id';
+        forward "/articles/$article_id";
     };
 
 In the above example, the users that reach I</demo/articles/30> will actually
@@ -801,7 +761,7 @@ end of the route. e.g.
 
     get '/some/path => sub {
         if ($condition) {
-            forward '/articles/$article_id';
+            forward "/articles/$article_id";
             # The following code is never executed
             do_stuf();
         }
