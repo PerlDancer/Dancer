@@ -1,5 +1,6 @@
 #!/usr/bin/env perl
 use Modern::Perl;
+use Git::Repository;
 
 my ($action, $name) = @ARGV;
 
@@ -12,6 +13,8 @@ if (not $name) {
     say "name needed";
     exit;
 }
+
+my $r = Git::Repository->new();
 
 given ($action) {
 
@@ -35,8 +38,8 @@ given ($action) {
             exit 1;
         }
 
-        if (system("git checkout -b $name devel") != 0) {
-            say "ERROR: unable to branch from devel";
+        if (! eval { $r->run( checkout => '-b', $name, 'devel' ); 1; } ){
+            say "ERROR: unable to branch from devel: $@";
             exit 2;
         }
 
