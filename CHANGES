@@ -151,6 +151,7 @@
     * Depend on URI 1.59 - Fixes problems when redirecting with
       UTF-8 strings (Alberto Simões)
     * Fix before_serializer POD fix (Yanick Champoux)
+    * Remove hard-coded version from 404.html and 500.html (Alberto Simões)
 
     [ ENHANCEMENTS ]
     * send_file can send data (pass a reference to a scalar), and can
