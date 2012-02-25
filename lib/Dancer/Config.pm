@@ -155,7 +155,7 @@ sub load {
     init_confdir();
 
     # look for the conffile
-    return 1 unless -f conffile;
+    return 1 if not -f conffile;
 
     # load YAML
     confess "Configuration file found but YAML is not installed"
