@@ -12,6 +12,7 @@
     * Remove uninitialized warnings. (Sawyer X, David Precious)
 
     [ ENHANCEMENTS ]
+    * Winning release race to Catalyst (nice try rafl++!)
     * Add exception type ::Core::Request. (David Precious)
     * JSON decode from UTF8. (Sam Kington)
     * Provide the method when a route crashes to help debug. (Sam Kington)
