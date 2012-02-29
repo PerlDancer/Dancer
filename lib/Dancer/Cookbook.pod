@@ -553,10 +553,10 @@ hashref as the third param to the template keyword:
     template 'index.tt', {}, { layout => undef };
 
 If your application is not mounted under root (B</>), you can use a
-before_template instead of hardcoding the path to your application for your
-css, images and javascript:
+before_template_render hook instead of hardcoding the path to your
+application for your css, images and javascript:
 
-    before_template sub {
+    hook 'before_template_render' => sub {
         my $tokens = shift;
         $tokens->{uri_base} = request->base->path;
     };

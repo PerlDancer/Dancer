@@ -116,6 +116,7 @@ register_exception(@$_) foreach (
     [ 'Core::Handler::PSGI', message_pattern => 'handler - %s',     composed_from => [ qw(Core::Handler) ] ],
     [ 'Core::Plugin',        message_pattern => 'plugin - %s',      composed_from => [ qw(Core) ] ],
     [ 'Core::Renderer',      message_pattern => 'renderer - %s',    composed_from => [ qw(Core) ] ],
+    [ 'Core::Request',       message_pattern => 'request - %s',     composed_from => [ qw(Core) ] ],
     [ 'Core::Route',         message_pattern => 'route - %s',       composed_from => [ qw(Core) ] ],
     [ 'Core::Serializer',    message_pattern => 'serializer - %s',  composed_from => [ qw(Core) ] ],
     [ 'Core::Template',      message_pattern => 'template - %s',    composed_from => [ qw(Core) ] ],

@@ -174,6 +174,8 @@ t/03_route_handler/public/404.html
 t/03_route_handler/public/utf8file.txt
 t/03_route_handler/views/error.tt
 t/03_route_handler/views/hello.tt
+t/03_route_handler/views/foo/index.tt
+t/03_route_handler/views/foo/bar.tt
 t/04_static_file/001_base.t
 t/04_static_file/003_mime_types_reinit.t
 t/04_static_file/01_mime_types.t
@@ -282,6 +284,7 @@ t/15_plugins/04_apps_and_plugins.t
 t/15_plugins/05_keywords.t
 t/15_plugins/05_plugins_and_OO.t
 t/15_plugins/06_hook.t
+t/15_plugins/07_ajax_plack_builder.t
 t/16_timer/00_base.t
 t/17_apps/000_create_fake_env.t
 t/17_apps/00_base.t

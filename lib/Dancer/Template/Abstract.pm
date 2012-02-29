@@ -40,7 +40,7 @@ sub view {
 
     for my $template ($self->_template_name($view)) {
         my $view_path = path($views_dir, $template);
-        return $view_path if -e $view_path;
+        return $view_path if -f $view_path;
     }
 
     # No matching view path was found
@@ -174,7 +174,7 @@ sub template {
 
     if ($view) {
         # check if the requested view exists
-        my $view_path = $engine->view($view);
+        my $view_path = $engine->view($view) || '';
         if ($engine->view_exists($view_path)) {
             $content = $engine->apply_renderer($view, $tokens);
         } else {
@@ -202,7 +202,7 @@ sub template {
     )->render();
 }
 
-sub view_exists { return -e $_[1] }
+sub view_exists { return defined $_[1] &&  -f $_[1] }
 
 1;
 __END__

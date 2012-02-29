@@ -318,7 +318,7 @@ C<template> directive and display the F<login.tt> template.
 This is even simpler than our F<show_entries.tt> template - but wait - there's
 a C<login_url> template parameter and we're only passing in the C<err>
 parameter. Where's the missing parameter?  It's being generated and sent to the
-template in a C<before_template> directive - we'll come back to that in a
+template in a C<before_template_render> hook - we'll come back to that in a
 moment or two.
 
 So the user fills out the F<login.tt> template and submits it back to the
@@ -347,7 +347,7 @@ the user she is logged out and route her back to the root URL once again.
 
 We still have a missing puzzle piece or two.  First, how can we use Dancer to
 serve our CSS stylesheet? Second, where are flash messages displayed? Third,
-what about the C<before_template> directive?
+what about the C<before_template_render> hook?
 
 =head2 Serving static files
 
@@ -413,18 +413,23 @@ can also see where the content from the specific route handlers is inserted
 
 But what about all those other C<*_url> template parameters?
 
-=head2 Using C<before_template>
+=head2 Using C<before_template_render>
 
-Dancer has a way to manipulate the template parameters before they're passed to
-the engine for processing. It's C<before_template>.  Using this directive, you
-can generate and set the URIs for the C</login> and C</logout> route handlers
-and the URI for the stylesheet. This is handy for situations like this where
-there are values which are re-used consistently across all (or most) templates.
+Dancer has various L<hooks|http://en.wikipedia.org/wiki/Hooking> which provide
+additional flexibility and power.  The hooks available are documented in the
+documentation for the L<hook keyword|Dancer/hook>; the one we're interested in
+here is C<before_template_render> which provides a way to manipulate the template 
+parameters before they're passed to the engine for processing.
+
+Using this hook, we can generate and set the URIs for the C</login> and 
+C</logout> route handlers and the URI for the stylesheet. This is handy for 
+situations like this where there are values which are re-used consistently 
+across all (or most) templates.
 This cuts down on code-duplication and makes your app easier to maintain over
 time since you only need to update the values in this one place instead of
 everywhere you render a template.
 
-  before_template sub {
+  hook 'before_template_render' => sub {
      my $tokens = shift;
 	
      $tokens->{'css_url'} = request->base . 'css/style.css';
@@ -438,122 +443,16 @@ template parameters have the appropriate values before being rendered.
 
 =head1 Putting it all together
 
-Here's the complete dancr.pl script from start to finish.
+The complete tutorial code is available on GitHub:
 
- use Dancer;
- use DBI;
- use File::Spec;
- use File::Slurp;
- use Template;
- 
- set 'database'     => File::Spec->catfile(File::Spec->tmpdir(), 'dancr.db');
- set 'session'      => 'Simple';
- set 'template'     => 'template_toolkit';
- set 'logger'       => 'console';
- set 'log'          => 'debug';
- set 'show_errors'  => 1;
- set 'startup_info' => 1;
- set 'warnings'     => 1;
- set 'username'     => 'admin';
- set 'password'     => 'password';
- set 'layout'       => 'main';
- 
- my $flash;
- 
- sub set_flash {
- 	my $message = shift;
- 
- 	$flash = $message;
- }
- 
- sub get_flash {
- 
- 	my $msg = $flash;
- 	$flash = "";
- 
- 	return $msg;
- }
- 
- sub connect_db {
- 	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
- 		die $DBI::errstr;
- 
- 	return $dbh;
- }
- 
- sub init_db {
- 	my $db = connect_db();
- 	my $schema = read_file('./schema.sql');
- 	$db->do($schema) or die $db->errstr;
- }
- 
- before_template sub {
- 	my $tokens = shift;
- 	
- 	$tokens->{'css_url'} = request->base . 'css/style.css';
- 	$tokens->{'login_url'} = uri_for('/login');
- 	$tokens->{'logout_url'} = uri_for('/logout');
- };
- 
- get '/' => sub {
- 	my $db = connect_db();
- 	my $sql = 'select id, title, text from entries order by id desc';
- 	my $sth = $db->prepare($sql) or die $db->errstr;
- 	$sth->execute or die $sth->errstr;
- 	template 'show_entries.tt', { 
- 		'msg' => get_flash(),
- 		'add_entry_url' => uri_for('/add'),
- 		'entries' => $sth->fetchall_hashref('id'),
- 	};
- };
- 
- post '/add' => sub {
- 	if ( not session('logged_in') ) {
- 		send_error("Not logged in", 401);
- 	}
- 
- 	my $db = connect_db();
- 	my $sql = 'insert into entries (title, text) values (?, ?)';
- 	my $sth = $db->prepare($sql) or die $db->errstr;
- 	$sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
- 
- 	set_flash('New entry posted!');
- 	redirect '/';
- };
- 
- any ['get', 'post'] => '/login' => sub {
- 	my $err;
- 
- 	if ( request->method() eq "POST" ) {
- 		# process form input
- 		if ( params->{'username'} ne setting('username') ) {
- 			$err = "Invalid username";
- 		}
- 		elsif ( params->{'password'} ne setting('password') ) {
- 			$err = "Invalid password";
- 		}
- 		else {
- 			session 'logged_in' => true;
- 			set_flash('You are logged in.');
- 			return redirect '/';
- 		}
-	}
+L<https://github.com/PerlDancer/dancer-tutorial>
 
-	# display login form
-	template 'login.tt', { 
-		'err' => $err,
-	};
+Assuming you have Git installed, you can clone the code:
 
- };
+    git clone git://github.com/PerlDancer/dancer-tutorial.git
 
- get '/logout' => sub {
-	session->destroy;
-	set_flash('You are logged out.');
-	redirect '/';
- };
+... then run C<dancer.pl>.
 
- init_db();
- start;
 
 =head1 Advanced route moves
 

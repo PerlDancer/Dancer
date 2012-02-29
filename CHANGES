@@ -1,5 +1,31 @@
 {{$NEXT}}
 
+1.3093      29.02.2012
+
+    [ BUG FIXES ]
+    * GH #738: Define exception type ::Core::Request, to avoid things blowing 
+      up when Dancer::Request raises exceptions of that type
+      (David Precious, thanks to damog for reporting)
+    * GH #671: Fix Dancer::Plugin::Ajax with Plack::Builders.
+      (Activeg, Sawyer X)
+    * Auto-page feature cleanup and fixup. (David Precious)
+    * Remove uninitialized warnings. (Sawyer X, David Precious)
+
+    [ ENHANCEMENTS ]
+    * Winning release race to Catalyst (nice try rafl++!)
+    * Add exception type ::Core::Request. (David Precious)
+    * JSON decode from UTF8. (Sam Kington)
+    * Provide the method when a route crashes to help debug. (Sam Kington)
+    * More helpful log messages. (David Precious)
+
+    [ DOCUMENTATION ]
+    * Fix examples for multi-app deployment under Plack::Builder in deployment.
+    * Deployment docs. (c0bra)
+    * Update tutorial. (David Precious)
+    * Clean up EXPORTS. (David Precious)
+    * Keyword documentation fixups. (Kirk Kimmel)
+    * Clarify forward docs with better examples. (David Precious)
+
 1.3092      27.01.2012
 
     [ BUG FIXES ]

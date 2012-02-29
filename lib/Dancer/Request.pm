@@ -305,6 +305,14 @@ sub _decode {
 sub is_ajax {
     my $self = shift;
 
+    # when using Plack::Builder headers are not set
+    # so we're checking if it's actually there with PSGI plain headers
+    if ( defined $self->{x_requested_with} ) {
+        if ( $self->{x_requested_with} eq "XMLHttpRequest" ) {
+            return 1;
+        }
+    }
+
     return 0 unless defined $self->headers;
     return 0 unless defined $self->header('X-Requested-With');
     return 0 if $self->header('X-Requested-With') ne 'XMLHttpRequest';

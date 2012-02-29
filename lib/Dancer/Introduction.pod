@@ -230,15 +230,15 @@ B<show_errors> setting.
 Note that you can also choose to consider all warnings in your route handlers
 as errors when the setting B<warnings> is set to 1.
 
-=head1 FILTERS
+=head1 HOOKS
 
-=head2 Before filters
+=head2 Before hooks
 
-Before filters are evaluated before each request within the context of the
+Before hooks are evaluated before each request within the context of the
 request and can modify the request and response. It's possible to define
 variables which will be accessible in the action blocks with the keyword 'var'.
 
-    before sub {
+    hook 'before' => sub {
         var note => 'Hi there';
         request->path_info('/foo/oversee')
     };
@@ -252,7 +252,7 @@ variables which will be accessible in the action blocks with the keyword 'var'.
 For another example, this can be used along with session support to easily
 give non-logged-in users a login page:
 
-    before sub {
+    hook 'before' => sub {
         if (!session('user') && request->path_info !~ m{^/login}) {
             # Pass the original path requested along to the handler:
             var requested_path => request->path_info;
@@ -265,32 +265,32 @@ The request keyword returns the current Dancer::Request object representing the
 incoming request. See the documentation of the L<Dancer::Request> module for
 details.
 
-=head2 After filters 
+=head2 After hooks 
 
-C<after> filters are evaluated after the response has been built by a route
+C<after> hooks are evaluated after the response has been built by a route
 handler, and can alter the response itself, just before it's sent to the
 client.
 
-The filter is given the response object as its first argument:
+The hook is given the response object as its first argument:
 
-    after sub {
+    hook 'after' => sub {
         my $response = shift;
-        $response->{content} = 'after filter got here!';
+        $response->{content} = 'after hook got here!';
     };
 
 
-=head2 Before template filters
+=head2 Before template hook
 
-C<before_template> hooks are called whenever a template is going to be
+C<before_template_render> hooks are called whenever a template is going to be
 processed, they are passed the tokens hash which they can alter.
 
-    before_template sub {
+    hook 'before_template_render' => sub {
         my $tokens = shift;
         $tokens->{foo} = 'bar';
-    }
+    };
 
 The tokens hash will then be passed to the template with all the modifications
-performed by the filter. This is a good way to setup some global vars you like
+performed by the hook. This is a good way to setup some global vars you like
 to have in all your templates, like the name of the user logged in or a
 section name.
 
