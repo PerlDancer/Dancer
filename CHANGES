@@ -1,5 +1,12 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * GH #752: Exceptions raised in hooks were not propagated back to the route
+      code, but instead canceleld and replaced by a Dancer halt exception. That
+      was wrong. Now it is fixed, exceptions raised in hooks can be properly
+      caught in route code.
+      (Damien Krotkine)
+
 1.3093      29.02.2012
 
     [ BUG FIXES ]
