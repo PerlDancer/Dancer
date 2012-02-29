@@ -81,10 +81,11 @@ sub match {
     my $path   = $request->path_info;
     my %params;
 
-    Dancer::Logger::core("trying to match `$path' "
-          . "against /"
-          . $self->{_compiled_regexp}
-          . "/");
+    Dancer::Logger::core(
+        sprintf "Trying to match '%s %s' against /%s/ (generated from '%s')",
+            $request->method, $path, $self->{_compiled_regexp}, $self->pattern
+    );
+
 
     my @values = $path =~ $self->{_compiled_regexp};
 

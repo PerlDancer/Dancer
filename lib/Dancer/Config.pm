@@ -54,23 +54,6 @@ my $setters = {
         my ($setting, $value) = @_;
         $^W = $value ? 1 : 0;
     },
-    auto_page => sub {
-        my ($setting, $auto_page) = @_;
-        if ($auto_page) {
-            require Dancer::App;
-            Dancer::App->current->registry->universal_add(
-                'get', '/:page',
-                sub {
-                    my $params = Dancer::SharedData->request->params;
-                    if  (-f Dancer::engine('template')->view($params->{page})) {
-                        return Dancer::template($params->{'page'});
-                    } else {
-                        return Dancer::pass();
-                    }
-                }
-            );
-        }
-    },
     traces => sub {
         my ($setting, $traces) = @_;
         $Dancer::Exception::Verbose = $traces ? 1 : 0;
@@ -601,7 +584,7 @@ Simply enable auto_page in your config:
 Then, if you request C</foo/bar>, Dancer will look in the views dir for
 C</foo/bar.tt>.
 
-Dancer will honor your C<before_template> code, and all default
+Dancer will honor your C<before_template_render> code, and all default
 variables. They will be accessible and interpolated on automatic
 served pages.
 
