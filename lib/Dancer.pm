@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3092';
+our $VERSION   = '1.3093';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -734,13 +734,12 @@ application.
 
 It effectively lets you chain routes together in a clean manner.
 
-    get qr{ /demo/articles/(.+) }x => sub {
-        my ($article_id) = splat;
+    get '/demo/articles/:article_id' => sub {
 
         # you'll have to implement this next sub yourself :)
         change_the_main_database_to_demo();
 
-        forward "/articles/$article_id";
+        forward "/articles/" . params->{article_id};
     };
 
 In the above example, the users that reach I</demo/articles/30> will actually
@@ -751,19 +750,19 @@ database by merely going to I</demo/...>.
 
 You'll notice that in the example we didn't indicate whether it was B<GET> or
 B<POST>. That is because C<forward> chains the same type of route the user
-reached. If it was a B<GET>, it will remain a B<GET>.
+reached. If it was a B<GET>, it will remain a B<GET> (but if you do need to
+change the method, you can do so; read on below for details.)
 
-Broader functionality might be added in the future.
 
 B<WARNING> : Issuing a forward immediately exits the current route,
 and perform the forward. Thus, any code after a forward is ignored, until the
 end of the route. e.g.
 
-    get '/some/path => sub {
+    get '/foo/:article_id' => sub {
         if ($condition) {
-            forward "/articles/$article_id";
+            forward "/articles/" . params->{article_id};
             # The following code is never executed
-            do_stuf();
+            do_stuff();
         }
 
         more_stuff();
