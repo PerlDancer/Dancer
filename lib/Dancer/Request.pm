@@ -745,6 +745,8 @@ If called in list context, returns a list of key => value pairs, so you could us
 
     my %allparams = params;
 
+If the incoming form data contains multiple values for the same key, they will
+be returned as an arrayref.
 
 =head3 Fetching only params from a given source
 
