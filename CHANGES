@@ -1,6 +1,8 @@
 {{$NEXT}}
 
     [ BUG FIXES ]
+    * GH #729: Fix dancer exception composition, and message pattern application
+      (Damien Krotkine)
     * GH #752: Exceptions raised in hooks were not propagated back to the route
       code, but instead canceleld and replaced by a Dancer halt exception. That
       was wrong. Now it is fixed, exceptions raised in hooks can be properly

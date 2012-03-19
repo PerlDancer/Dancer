@@ -104,23 +104,23 @@ sub registered_exceptions {
 
 register_exception(@$_) foreach (
     [ 'Core',                message_pattern => 'core - %s' ],
-    [ 'Core::App',           message_pattern => 'app - %s',         composed_from => [ qw(Core) ] ],
-    [ 'Core::Config',        message_pattern => 'config - %s',      composed_from => [ qw(Core) ] ],
-    [ 'Core::Deprecation',   message_pattern => 'deprecation - %s', composed_from => [ qw(Core) ] ],
-    [ 'Core::Engine',        message_pattern => 'engine - %s',      composed_from => [ qw(Core) ] ],
-    [ 'Core::Factory',       message_pattern => 'factory - %s',     composed_from => [ qw(Core) ] ],
-    [ 'Core::Factory::Hook', message_pattern => 'hook - %s',        composed_from => [ qw(Core::Factory) ] ],
-    [ 'Core::Hook',          message_pattern => 'hook - %s',        composed_from => [ qw(Core) ] ],
-    [ 'Core::Fileutils',     message_pattern => 'file utils - %s',  composed_from => [ qw(Core) ] ],
-    [ 'Core::Handler',       message_pattern => 'handler - %s',     composed_from => [ qw(Core) ] ],
-    [ 'Core::Handler::PSGI', message_pattern => 'handler - %s',     composed_from => [ qw(Core::Handler) ] ],
-    [ 'Core::Plugin',        message_pattern => 'plugin - %s',      composed_from => [ qw(Core) ] ],
-    [ 'Core::Renderer',      message_pattern => 'renderer - %s',    composed_from => [ qw(Core) ] ],
-    [ 'Core::Request',       message_pattern => 'request - %s',     composed_from => [ qw(Core) ] ],
-    [ 'Core::Route',         message_pattern => 'route - %s',       composed_from => [ qw(Core) ] ],
-    [ 'Core::Serializer',    message_pattern => 'serializer - %s',  composed_from => [ qw(Core) ] ],
-    [ 'Core::Template',      message_pattern => 'template - %s',    composed_from => [ qw(Core) ] ],
-    [ 'Core::Session',       message_pattern => 'session - %s',     composed_from => [ qw(Core) ] ],
+    [ 'Core::App',           message_pattern => 'core - app - %s',         composed_from => [ qw(Core) ] ],
+    [ 'Core::Config',        message_pattern => 'core - config - %s',      composed_from => [ qw(Core) ] ],
+    [ 'Core::Deprecation',   message_pattern => 'core - deprecation - %s', composed_from => [ qw(Core) ] ],
+    [ 'Core::Engine',        message_pattern => 'core - engine - %s',      composed_from => [ qw(Core) ] ],
+    [ 'Core::Factory',       message_pattern => 'core - factory - %s',     composed_from => [ qw(Core) ] ],
+    [ 'Core::Factory::Hook', message_pattern => 'core - hook - %s',        composed_from => [ qw(Core::Factory) ] ],
+    [ 'Core::Hook',          message_pattern => 'core - hook - %s',        composed_from => [ qw(Core) ] ],
+    [ 'Core::Fileutils',     message_pattern => 'core - file utils - %s',  composed_from => [ qw(Core) ] ],
+    [ 'Core::Handler',       message_pattern => 'core - handler - %s',     composed_from => [ qw(Core) ] ],
+    [ 'Core::Handler::PSGI', message_pattern => 'core - handler - %s',     composed_from => [ qw(Core::Handler) ] ],
+    [ 'Core::Plugin',        message_pattern => 'core - plugin - %s',      composed_from => [ qw(Core) ] ],
+    [ 'Core::Renderer',      message_pattern => 'core - renderer - %s',    composed_from => [ qw(Core) ] ],
+    [ 'Core::Request',       message_pattern => 'core - request - %s',     composed_from => [ qw(Core) ] ],
+    [ 'Core::Route',         message_pattern => 'core - route - %s',       composed_from => [ qw(Core) ] ],
+    [ 'Core::Serializer',    message_pattern => 'core - serializer - %s',  composed_from => [ qw(Core) ] ],
+    [ 'Core::Template',      message_pattern => 'core - template - %s',    composed_from => [ qw(Core) ] ],
+    [ 'Core::Session',       message_pattern => 'core - session - %s',     composed_from => [ qw(Core) ] ],
 );
 
 1;
@@ -212,17 +212,17 @@ To be used by Dancer developers only, in Dancer core code.
   raise '+My::Own::ExceptionSystem::Invalid::Login' => "user $username is unknown";
 
 raise provides an easy way to throw an exception. First parameter is the name
-of the exception class, without the C<Dancer::Exception::Base::> prefix. other
+of the exception class, without the C<Dancer::Exception::> prefix. other
 parameters are stored as I<raising arguments> in the exception. Usually the
 parameters is an exception message, but it's left to the exception class
 implementation.
 
 If the exception class name starts with a C<+>, then the
-C<Dancer::Exception::Base::> won't be added. This allows one to build their own
+C<Dancer::Exception::> won't be added. This allows one to build their own
 exception class hierarchy, but you should first look at C<register_exception>
 before implementing your own class hierarchy. If you really wish to build your
 own exception class hierarchy, we recommend that all exceptions inherit of
-L<Dancer::Exception::Base>. Or at least it should implement its methods.
+L<Dancer::Exception::>. Or at least it should implement its methods.
 
 The exception class can also be written as words separated by underscores, it'll be
 camelized automatically. So C<'Exception::Foo'> and C<'exception_foo'> are
