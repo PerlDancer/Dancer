@@ -30,7 +30,7 @@ get '/headers/multiple' => sub {
     headers 'foo' => 1, 'foo' => 2, 'bar' => 3, 'foo' => 4;
 };
 
-plan tests => 10;
+plan tests => 11;
 
 # /header
 my $res = dancer_response(GET => '/header');
@@ -66,6 +66,17 @@ response_headers_include
    Foo => 2,
    Foo => 4,
   ], 'multiple headers are kept';
+
+my $response = dancer_response(GET => '/headers/multiple');
+response_headers_include
+  $response =>
+  [
+   'Content-Type' => 'text/html',
+   Bar => 3,
+   Foo => 1,
+   Foo => 2,
+   Foo => 4,
+  ], '... even if we pass a response object to response_headers_include()';
 
 # Dancer::Response header's API
 $res = Dancer::Response->new(
