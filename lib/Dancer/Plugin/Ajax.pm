@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Dancer ':syntax';
+use Dancer::Exception ':all';
 use Dancer::Plugin;
 
 our $VERSION = '1.00';
@@ -31,7 +32,13 @@ sub ajax {
         # disable layout
         my $layout = setting('layout');
         setting('layout' => undef);
-        my $response = $code->();
+        my $response = try {
+            $code->();
+        } catch {
+            my $e = $_;
+            setting('layout' => $layout);
+            die $e;
+        };
         setting('layout' => $layout);
         return $response;
     };
