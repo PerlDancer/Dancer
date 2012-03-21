@@ -125,6 +125,7 @@ t/01_config/04_config_file.t
 t/01_config/05_serializers.t
 t/01_config/06_config_api.t
 t/01_config/06_stack_trace.t
+t/01_config/07_strict_config.t
 t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
 t/02_request/000_create_fake_env.t
