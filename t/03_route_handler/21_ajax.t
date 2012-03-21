@@ -10,7 +10,7 @@ plan skip_all => 'Test::TCP is needed to run this test'
 
 use LWP::UserAgent;
 
-plan tests => 32;
+plan tests => 43;
 
 ok(Dancer::App->current->registry->is_empty,
     "registry is empty");
@@ -30,6 +30,9 @@ Test::TCP::test_tcp(
             { path => 'foo', ajax => 0, success => 1, content => 'not ajax' },
             { path => 'bar', ajax => 1, success => 1, content => 'ajax' },
             { path => 'bar', ajax => 0, success => 1, content => 'not ajax' },
+            { path => 'layout', ajax => 0, success => 1, content => 'wibble' },
+            { path => 'die', ajax => 1, success => 0 },
+            { path => 'layout', ajax => 0, success => 1, content => 'wibble' },
         );
 
         foreach my $query (@queries) {
@@ -65,7 +68,7 @@ Test::TCP::test_tcp(
         use Dancer;
         use Dancer::Plugin::Ajax;
 
-        set startup_info => 0, port => $port;
+        set startup_info => 0, port => $port, layout => 'wibble';
 
         ajax '/req' => sub {
             return 1;
@@ -85,6 +88,12 @@ Test::TCP::test_tcp(
         get '/ajax.json' => sub {
             content_type('application/json');
             return '{"foo":"bar"}';
+        };
+        ajax '/die' => sub {
+            die;
+        };
+        get '/layout' => sub {
+            return setting 'layout';
         };
         start();
     },
