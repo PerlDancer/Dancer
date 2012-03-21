@@ -459,7 +459,7 @@ sub _parse_get_params {
 
     my $source = $self->env->{QUERY_STRING} || '';
     foreach my $token (split /[&;]/, $source) {
-        my ($key, $val) = split(/=/, $token);
+        my ($key, $val) = split(/=/, $token, 2);
         next unless defined $key;
         $val = (defined $val) ? $val : '';
         $key = $self->_url_decode($key);
