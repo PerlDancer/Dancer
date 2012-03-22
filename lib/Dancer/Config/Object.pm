@@ -38,8 +38,6 @@ sub _add_methods {
     my $target = ref $object;
 
     foreach my $key ( keys %$object ) {
-        # match a (more or less) valid identifier
-        next unless $key =~ qr/^[[:alpha:]_][[:word:]]*$/;
         my $value = $object->{$key};
         if ( 'HASH' eq ref $value ) {
             $value = hashref_to_object($value);
@@ -49,6 +47,9 @@ sub _add_methods {
                 $_ = 'HASH' eq ref($_) ? hashref_to_object($_) : $_;
             }
         }
+
+        # match a (more or less) valid identifier
+        next unless $key =~ qr/^[[:alpha:]_][[:word:]]*$/;
         my $method = "${target}::$key";
         no strict 'refs';
         *$method = sub {$value};
@@ -116,10 +117,33 @@ listing available methods:
 If the hash key cannot be converted into a proper method name, you can still
 access it via a hash reference:
 
- my $some_value = config->{99_bottles};
+ my $some_value = config->{'99_bottles'};
 
-Hash keys pointing to hash references will in turn have those "objectified",
-but arrays will still be returned as array references.
+And call methods on it, if possible:
+
+ my $sadness = config->{'99_more_bottles'}->last_bottle;
+
+Hash keys pointing to hash references will in turn have those "objectified".
+Arrays will still be returned as array references. However, hashrefs inside of
+the array refs may still have their keys allowed as methods:
+
+ my $some_value = config->some_list->[1]->host;
+
+=head1 METHOD NAME DEFINITION
+
+We use the following regular expression to determine if a hash key qualifies
+as a method:
+
+ /^[[:alpha:]_][[:word:]]*$/;
+
+Note that this means C<naïve> (note the dots over the i) can be a method name,
+but unless you C<use utf8;> to declare that your source code is UTF-8, you may
+have disappointing results calling C<< config->naïve >>. Further, depending on
+your version of Perl and the software to read your config file ... well, you
+get the idea. We recommend sticking with ASCII identifiers if you wish your
+code to be portable.
+
+Patches/suggestions welcome.
 
 =head1 AUTHOR
 
