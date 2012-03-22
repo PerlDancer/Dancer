@@ -1,6 +1,7 @@
 {{$NEXT}}
 
     [ BUG FIXES ]
+    * GH #762: fix param parsing lacking limit on split (leejo)
     * GH #758: Fix Dancer::Test: make sure the request is properly converted to
       a response. (Ovid)
     * GH #729: Fix dancer exception composition, and message pattern application
