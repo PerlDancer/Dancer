@@ -17,7 +17,8 @@ use Dancer::Request;
                                    'hash=2',
                                    'hash=4',
                                    'int1=1',
-                                   'int2=0'));
+                                   'int2=0',
+                                   'url=http://foo.com/?bar=biz'));
 
         my $expected_params = {
                                'name' => 'Alexis Sukrieh',
@@ -26,6 +27,7 @@ use Dancer::Request;
                                'hash' => [2, 4],
                                int1 => 1,
                                int2 => 0,
+                               url => 'http://foo.com/?bar=biz',
                               };
 
         my $req = Dancer::Request->new(env => \%ENV);
