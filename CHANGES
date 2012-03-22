@@ -12,6 +12,10 @@
       caught in route code.
       (Damien Krotkine)
 
+    [ DOCUMENTATION ]
+    * Explain in POD that if there are multiple fields with the same name,
+      params('fieldname') returns an arrayref of them (alexrj).
+
 1.3093      29.02.2012
 
     [ BUG FIXES ]
