@@ -6,7 +6,7 @@ plan skip_all => "YAML needed to run this tests"
     unless Dancer::ModuleLoader->load('YAML');
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
-plan tests => 11;
+plan tests => 12;
 
 use Dancer ':syntax';
 use File::Spec;
@@ -42,6 +42,7 @@ strict_config: 1
 END
 write_file($conffile => $conf);
 ok(Dancer::Config->load, 'Config load works with a conffile');
+ok(Dancer::Config->load, '... and it should be safe to call more than once');
 
 can_ok config, 'port';
 is config->port, '4500', 'basic methods should work with strict configs';

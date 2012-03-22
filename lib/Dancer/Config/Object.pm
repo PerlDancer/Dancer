@@ -6,6 +6,7 @@ use warnings;
 use base 'Exporter';
 use Carp 'croak';
 use Dancer::Exception qw(:all);
+use Scalar::Util 'blessed';
 
 register_exception('BadConfigMethod',
     message_pattern =>
@@ -21,9 +22,17 @@ our @EXPORT_OK = qw(hashref_to_object);
         my $class = __PACKAGE__;
         my $target = "${class}::__ANON__$index";
         $index++;
-        unless ('HASH' eq ref $hashref) {
-            # should never happen
-            raise 'Core::Config' => "Argument to $class must be a hashref";
+        if ('HASH' ne ref $hashref) {
+            if ( blessed $hashref ) {
+                # we have already converted this to an object. This can happen
+                # in cases where Dancer::Config->load is called more than
+                # once.
+                return $hashref;
+            }
+            else {
+                # should never happen
+                raise 'Core::Config' => "Argument to $class must be a hashref";
+            }
         }
         my $object = bless $hashref => $target;
         _add_methods($object);
