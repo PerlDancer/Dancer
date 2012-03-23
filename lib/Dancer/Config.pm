@@ -5,6 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
+use Dancer::Config::Object 'hashref_to_object';
 use Dancer::Deprecation;
 use Dancer::Template;
 use Dancer::ModuleLoader;
@@ -174,6 +175,9 @@ sub load {
 
     foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
         $setters->{$key}->($key, $SETTINGS->{$key});
+    }
+    if ( $SETTINGS->{strict_config} ) {
+        $SETTINGS = hashref_to_object($SETTINGS);
     }
 
     return 1;
@@ -407,6 +411,11 @@ C<template> keyword. Check C<Dancer> manpage for details.
 
 
 =head2 Logging, debugging and error handling
+
+=head2 strict_config (boolean, default: false)
+
+If true, C<config> will return an object instead of a hash reference. See
+L<Dancer::Config::Object> for more information.
 
 =head3 import_warnings (boolean, default: enabled)
 
