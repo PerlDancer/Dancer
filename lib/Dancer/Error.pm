@@ -124,12 +124,14 @@ sub dumper {
 
     #use Data::Dumper;
     my $dd = Data::Dumper->new([\%data]);
-    $dd->Terse(1)->Quotekeys(0)->Indent(1);
+    $dd->Terse(1)->Quotekeys(0)->Indent(1)->Sortkeys(1);
     my $content = $dd->Dump();
     $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =&gt;}g;
     if ($censored) {
         $content
-          .= "\n\nNote: Values of $censored sensitive-looking keys hidden\n";
+            .= "\n\nNote: Values of $censored sensitive-looking key"
+            . ($censored == 1 ? '' : 's')
+            . " hidden\n";
     }
     return $content;
 }
