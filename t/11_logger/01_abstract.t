@@ -1,11 +1,11 @@
-use Test::More tests => 19, import => ['!pass'];
+use Test::More tests => 28, import => ['!pass'];
 use strict;
 use warnings;
 
 use Dancer;
 use Dancer::Logger::Abstract;
 
-my @log_levels = qw(core debug warning error);
+my @log_levels = qw(core debug warning error info);
 my $l          = Dancer::Logger::Abstract->new;
 isa_ok $l, 'Dancer::Logger::Abstract';
 can_ok $l, (qw(_log _should), @log_levels);
