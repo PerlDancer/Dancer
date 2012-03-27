@@ -1,6 +1,7 @@
 {{$NEXT}}
 
     [ BUG FIXES ]
+    * GH #748 & GH 647: Don't force override environment from PLACK_ENV (jwittkoski)
     * GH #762: fix param parsing lacking limit on split (leejo)
     * GH #758: Fix Dancer::Test: make sure the request is properly converted to
       a response. (Ovid)
