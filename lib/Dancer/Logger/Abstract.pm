@@ -26,6 +26,7 @@ my $levels = {
     warn    => 2,
     warning => 2,
     error   => 3,
+    info    => 4,
 };
 
 my $log_formats = {
@@ -134,6 +135,7 @@ sub core    { $_[0]->_should('core')    and $_[0]->_log('core',    $_[1]) }
 sub debug   { $_[0]->_should('debug')   and $_[0]->_log('debug',   $_[1]) }
 sub warning { $_[0]->_should('warning') and $_[0]->_log('warning', $_[1]) }
 sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
+sub info    { $_[0]->_should('info')    and $_[0]->_log('info',    $_[1]) }
 
 1;
 
@@ -251,6 +253,10 @@ Logs messages as warning.
 =head2 error
 
 Logs messages as error.
+
+=head2 info
+
+Logs messages as info.
 
 =head2 _log
 
