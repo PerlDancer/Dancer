@@ -25,6 +25,7 @@ sub _serialize {
                         ->Terse(1)
                         ->Purity(1)
                         ->Indent(0)
+                        ->Sortkeys(1)
                         ->Dump()    :
             $_
     } @vars;
