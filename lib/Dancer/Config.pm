@@ -491,9 +491,11 @@ B<core>, B<debug>, B<warning> or B<error>.
 
 =item B<debug> : all messages are logged
 
-=item B<warning> : only warning and error messages are logged
+=item B<warning> : only warning, error and info messages are logged
 
-=item B<error> : only error messages are logged
+=item B<error> : only error and info messages are logged
+
+=item B<info> : only info messages are logged
 
 =back
 
