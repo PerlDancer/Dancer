@@ -266,7 +266,7 @@ application to die.
 =head2 _should
 
 Checks a certain level number against a certain level type (core, debug,
-warning, error).
+warning, error, info).
 
 =head1 AUTHOR
 
