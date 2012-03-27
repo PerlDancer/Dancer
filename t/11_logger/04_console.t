@@ -10,7 +10,7 @@ use Dancer;
 plan skip_all => "Test::Output is needed for this test"
     unless Dancer::ModuleLoader->load('Test::Output');
 
-plan tests => 7;
+plan tests => 8;
 
 use_ok 'Dancer::Logger::Console';
 my $l = Dancer::Logger::Console->new;
@@ -30,3 +30,7 @@ Test::Output::stderr_like( sub { $l->warning("warning message") },
 Test::Output::stderr_like( sub { $l->error("error message") }, 
     qr/\[\d+\] error @.+> error message in/,
     "error output is sent to STDERR");
+
+Test::Output::stderr_like( sub { $l->info("info message") }, 
+    qr/\[\d+\]  info @.+> info message in/,
+    "info output is sent to STDERR");
