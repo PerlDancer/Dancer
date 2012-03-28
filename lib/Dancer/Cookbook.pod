@@ -772,10 +772,10 @@ Then you can choose which kind of messages you want to actually log:
 
     log: 'core'      # will log all messages, including messages from
                      # Dancer itself
-    log: 'debug'     # will log debug, warning, error and info messages
-    log: 'warning'   # will log warning, error and info messages
-    log: 'error'     # will log error and info messages
-    log: 'info'      # will log only info messages
+    log: 'debug'     # will log debug, info, warning and error messages
+    log: 'info'      # will log info, warning and error messages
+    log: 'warning'   # will log warning and error messages
+    log: 'error'     # will log error messages
 
 If you're using the C<file> logging engine, a directory C<appdir/logs> will be
 created and will host one logfile per environment. The log message contains the

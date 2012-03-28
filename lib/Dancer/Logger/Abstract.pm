@@ -133,9 +133,9 @@ sub format_message {
 
 sub core    { $_[0]->_should('core')    and $_[0]->_log('core',    $_[1]) }
 sub debug   { $_[0]->_should('debug')   and $_[0]->_log('debug',   $_[1]) }
+sub info    { $_[0]->_should('info')    and $_[0]->_log('info',    $_[1]) }
 sub warning { $_[0]->_should('warning') and $_[0]->_log('warning', $_[1]) }
 sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
-sub info    { $_[0]->_should('info')    and $_[0]->_log('info',    $_[1]) }
 
 1;
 
@@ -265,8 +265,8 @@ application to die.
 
 =head2 _should
 
-Checks a certain level number against a certain level type (core, debug,
-warning, error, info).
+Checks a certain level number against a certain level type (core, debug, info
+warning, error).
 
 =head1 AUTHOR
 
