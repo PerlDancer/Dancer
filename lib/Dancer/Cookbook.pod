@@ -770,11 +770,12 @@ To enable logging to a file, add the following to your config.yml:
 
 Then you can choose which kind of messages you want to actually log:
 
-    log: 'core'      # will log debug, warning and errors, and messages from
+    log: 'core'      # will log all messages, including messages from
                      # Dancer itself
-    log: 'debug'     # will log debug, warning and errors
-    log: 'warning'   # will log warning and errors
-    log: 'error'     # will log only errors
+    log: 'debug'     # will log debug, info, warning and error messages
+    log: 'info'      # will log info, warning and error messages
+    log: 'warning'   # will log warning and error messages
+    log: 'error'     # will log error messages
 
 If you're using the C<file> logging engine, a directory C<appdir/logs> will be
 created and will host one logfile per environment. The log message contains the
@@ -783,12 +784,10 @@ information (file and line).
 
 =head3 Logging your own messages
 
-Just call  L<debug|Dancer/debug>, L<warning|Dancer/warning> or 
-L<error|Dancer/error> with your message:
+Just call  L<debug|Dancer/debug>, L<warning|Dancer/warning>,
+L<error|Dancer/error> or L<info|Dancer/info> with your message:
 
     debug "This is a debug message from my app.";
-
-
 
 =head1 RESTING
 
