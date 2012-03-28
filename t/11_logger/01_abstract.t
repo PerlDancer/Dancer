@@ -5,7 +5,7 @@ use warnings;
 use Dancer;
 use Dancer::Logger::Abstract;
 
-my @log_levels = qw(core debug warning error info);
+my @log_levels = qw(core debug info warning error);
 my $l          = Dancer::Logger::Abstract->new;
 isa_ok $l, 'Dancer::Logger::Abstract';
 can_ok $l, (qw(_log _should), @log_levels);
