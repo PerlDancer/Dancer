@@ -50,7 +50,7 @@ sub new {
 # aliases
 sub agent                 { $_[0]->user_agent }
 sub remote_address        { $_[0]->address }
-sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
+sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} || $_[0]->env->{'HTTP_X_FORWARDED_FOR'} }
 sub address               { $_[0]->env->{REMOTE_ADDR} }
 sub host {
     if (@_==2) {
