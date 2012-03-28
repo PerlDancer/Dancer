@@ -23,10 +23,10 @@ my $levels = {
 
     # levels > 0 are for end-users only
     debug   => 1,
-    warn    => 2,
-    warning => 2,
-    error   => 3,
-    info    => 4,
+    info    => 2,
+    warn    => 3,
+    warning => 3,
+    error   => 4,
 };
 
 my $log_formats = {
