@@ -144,7 +144,11 @@ sub conffile { path(setting('confdir') || setting('appdir'), 'config.yml') }
 
 sub environment_file {
     my $env = setting('environment');
-    return path(setting('appdir'), 'environments', "$env.yml");
+    # XXX for compatibility reason, we duplicate the code from `init_envdir` here
+    # we don't know how if some application don't already do some weird stuff like
+    # the test in `t/15_plugins/02_config.t`.
+    my $envdir = setting('envdir') || path(setting('appdir'), 'environments');
+    return path($envdir, "$env.yml");
 }
 
 sub init_confdir {
@@ -152,8 +156,14 @@ sub init_confdir {
     setting confdir => $ENV{DANCER_CONFDIR} || setting('appdir');
 }
 
+sub init_envdir {
+    return setting('envdir') if setting('envdir');
+    setting envdir => $ENV{DANCER_ENVDIR} || path(setting('appdir'), 'environments');
+}
+
 sub load {
     init_confdir();
+    init_envdir();
 
     # look for the conffile
     return 1 unless -f conffile;
@@ -597,6 +607,16 @@ Dancer will honor your C<before_template_render> code, and all default
 variables. They will be accessible and interpolated on automatic
 served pages.
 
+=head2 DANCER_CONFDIR and DANCER_ENVDIR
+
+It's possible to set the configuration directory and environment directory using this two
+environment variables. Setting `DANCER_CONFDIR` will have the same effect as doing
+
+    set confdir => '/path/to/confdir'
+
+and setting `DANCER_ENVDIR` will be similar to:
+
+    set envdir => '/path/to/environments'
 
 =head1 AUTHOR
 
