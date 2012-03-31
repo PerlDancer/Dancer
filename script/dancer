@@ -933,9 +933,9 @@ template: \"simple\"
 # file:    log message to a file in log/
 logger: \"console\"
 
-# the log level for this environement
+# the log level for this environment
 # core is the lowest, it shows Dancer's core log messages as well as yours
-# (debug, warning and error)
+# (debug, info, warning and error)
 log: \"core\"
 
 # should Dancer consider warnings as critical errors?

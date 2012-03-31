@@ -33,6 +33,7 @@ sub _serialize {
 
 sub core    { defined($logger) and $logger->core(    _serialize(@_) ) }
 sub debug   { defined($logger) and $logger->debug(   _serialize(@_) ) }
+sub info    { defined($logger) and $logger->info(    _serialize(@_) ) }
 sub warning { defined($logger) and $logger->warning( _serialize(@_) ) }
 sub error   { defined($logger) and $logger->error(   _serialize(@_) ) }
 

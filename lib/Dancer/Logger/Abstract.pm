@@ -23,9 +23,10 @@ my $levels = {
 
     # levels > 0 are for end-users only
     debug   => 1,
-    warn    => 2,
-    warning => 2,
-    error   => 3,
+    info    => 2,
+    warn    => 3,
+    warning => 3,
+    error   => 4,
 };
 
 my $log_formats = {
@@ -132,6 +133,7 @@ sub format_message {
 
 sub core    { $_[0]->_should('core')    and $_[0]->_log('core',    $_[1]) }
 sub debug   { $_[0]->_should('debug')   and $_[0]->_log('debug',   $_[1]) }
+sub info    { $_[0]->_should('info')    and $_[0]->_log('info',    $_[1]) }
 sub warning { $_[0]->_should('warning') and $_[0]->_log('warning', $_[1]) }
 sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
 
@@ -252,6 +254,10 @@ Logs messages as warning.
 
 Logs messages as error.
 
+=head2 info
+
+Logs messages as info.
+
 =head2 _log
 
 A method to override. If your logger does not provide this, it will cause the
@@ -259,7 +265,7 @@ application to die.
 
 =head2 _should
 
-Checks a certain level number against a certain level type (core, debug,
+Checks a certain level number against a certain level type (core, debug, info
 warning, error).
 
 =head1 AUTHOR
