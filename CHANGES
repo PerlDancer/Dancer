@@ -1,5 +1,40 @@
 {{$NEXT}}
 
+1.3094      31.03.2012
+
+    [ BUG FIXES ]
+    * GH #763: Fix exceptions in ajax routes clobbering layout (ilmari)
+    * GH #748 & GH 647: Don't force override environment from PLACK_ENV (jwittkoski)
+    * GH #762: fix param parsing lacking limit on split (leejo)
+    * GH #758: Fix Dancer::Test: make sure the request is properly converted to
+      a response. (Ovid)
+    * GH #729: Fix dancer exception composition, and message pattern application
+      (Damien Krotkine)
+    * GH #752: Exceptions raised in hooks were not propagated back to the route
+      code, but instead canceleld and replaced by a Dancer halt exception. That
+      was wrong. Now it is fixed, exceptions raised in hooks can be properly
+      caught in route code.
+      (Damien Krotkine)
+    * Be more flexible in single vs. mutliple values in key hiding.
+      (Sam Kington)
+    * Use isa() for checking relationships instead of ref() in Dancer::Test.
+      (Ovid)
+
+    [ ENHANCEMENTS ]
+    * Added 'strict_config' option to have the config return an object instead
+      of a hashref. (Ovid)
+    * GH #708: Added support for query strings in dancer_request (Jacob Rideout)
+    * It's possible for the user to set the environments directory using a new
+      environment variable (DANCER_ENVDIR) or using `set envdir => $path`
+    * Sort hash keys when serializing references in log messages (Ovid).
+
+    [ DOCUMENTATION ]
+    * Explain in POD that if there are multiple fields with the same name,
+      params('fieldname') returns an arrayref of them (alexrj).
+    * GH #750: Fix in Dancer::Deployment: appdir needs to be set before calling
+      load_app (Paul Johnson)
+    * Update 'before' hook document (David Cantrell).
+
 1.3093      29.02.2012
 
     [ BUG FIXES ]

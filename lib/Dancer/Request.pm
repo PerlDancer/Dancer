@@ -138,14 +138,18 @@ sub to_string {
 # helper for building a request object by hand
 # with the given method, path, params, body and headers.
 sub new_for_request {
-    my ($class, $method, $path, $params, $body, $headers) = @_;
+    my ($class, $method, $uri, $params, $body, $headers) = @_;
     $params ||= {};
     $method = uc($method);
 
+    my ( $path, $query_string ) = ( $uri =~ /([^?]*)(?:\?(.*))?/s ); #from HTTP::Server::Simple
+
     my $req = $class->new(env => { %ENV,
                                     PATH_INFO      => $path,
+                                    QUERY_STRING   => $query_string || $ENV{QUERY_STRING} || '',
                                     REQUEST_METHOD => $method});
     $req->{params}        = {%{$req->{params}}, %{$params}};
+    $req->_build_params();
     $req->{_query_params} = $req->{params};
     $req->{body}          = $body    if defined $body;
     $req->{headers}       = $headers if $headers;
@@ -459,7 +463,7 @@ sub _parse_get_params {
 
     my $source = $self->env->{QUERY_STRING} || '';
     foreach my $token (split /[&;]/, $source) {
-        my ($key, $val) = split(/=/, $token);
+        my ($key, $val) = split(/=/, $token, 2);
         next unless defined $key;
         $val = (defined $val) ? $val : '';
         $key = $self->_url_decode($key);
@@ -745,6 +749,8 @@ If called in list context, returns a list of key => value pairs, so you could us
 
     my %allparams = params;
 
+If the incoming form data contains multiple values for the same key, they will
+be returned as an arrayref.
 
 =head3 Fetching only params from a given source
 

@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3093';
+our $VERSION   = '1.3094';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -925,17 +925,17 @@ This hook receives as argument a L<Dancer::Error> object.
 
 =item before
 
-This is an alias to C<before>.
+This hook receives one argument, a reference to the subroutine that
+implements the route that is being intercepted by this hook.
 
-This hook receives no arguments.
-
-  before sub {
+  hook before => sub {
+    my $route_handler = shift;
     ...
   };
 
-is equivalent to
+it is equivalent to the deprecated
 
-  hook before => sub {
+  before sub {
     ...
   };
 

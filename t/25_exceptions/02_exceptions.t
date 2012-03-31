@@ -130,12 +130,25 @@ HarmlessInvalidLogin InvalidCredentials InvalidLogin InvalidPassword Test
         };
     };
     ok(! $@);
-    like(
-        $e,
-        qr/^test - invalid credentials : wrong login \(login was douglas\)/,
-    );
+    is($e, 'wrong login (login was douglas)');
+    # check stringification works in other cases
+    ok($e eq 'wrong login (login was douglas)');
+    ok('wrong login (login was douglas)' eq $e);
     ok($e->does('InvalidLogin'));
+    ok($e->does('Test'));
+    ok($e->does('Base'));
     is($v1, 2);
+}
+
+{
+
+    eval {
+        raise HarmlessInvalidLogin => 'plop'
+    };
+    my $exception = $@;
+
+    is_deeply([ sort { $a cmp $b } $exception->get_composition],
+              [ qw(Base HarmlessInvalidLogin InvalidCredentials InvalidLogin Test) ]);
 }
 
 done_testing;

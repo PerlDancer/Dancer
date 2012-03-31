@@ -1,4 +1,4 @@
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 use strict;
 use warnings FATAL => 'all';
@@ -28,3 +28,6 @@ $req = Dancer::Request->new_for_request('GET', '/stuff', {user => 'sukria'});
 is_deeply scalar($req->params), {foo => 'bar', number => 42, user => 'sukria'}, 
     'params are updated';
 
+$req = Dancer::Request->new_for_request('GET', '/stuff?foo=baz&number=24');
+is_deeply scalar($req->params), {foo => 'baz', number => 24},
+    'query string replace';

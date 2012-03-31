@@ -13,6 +13,7 @@ examples/dancr/views/show_entries.tt
 lib/Dancer.pm
 lib/Dancer/App.pm
 lib/Dancer/Config.pm
+lib/Dancer/Config/Object.pm
 lib/Dancer/Continuation.pm
 lib/Dancer/Continuation/Halted.pm
 lib/Dancer/Continuation/Route.pm
@@ -125,6 +126,8 @@ t/01_config/04_config_file.t
 t/01_config/05_serializers.t
 t/01_config/06_config_api.t
 t/01_config/06_stack_trace.t
+t/01_config/07_strict_config.t
+t/01_config/08_environments.t
 t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
 t/02_request/000_create_fake_env.t
@@ -173,9 +176,9 @@ t/03_route_handler/99_bugs.t
 t/03_route_handler/public/404.html
 t/03_route_handler/public/utf8file.txt
 t/03_route_handler/views/error.tt
-t/03_route_handler/views/hello.tt
-t/03_route_handler/views/foo/index.tt
 t/03_route_handler/views/foo/bar.tt
+t/03_route_handler/views/foo/index.tt
+t/03_route_handler/views/hello.tt
 t/04_static_file/001_base.t
 t/04_static_file/003_mime_types_reinit.t
 t/04_static_file/01_mime_types.t
@@ -315,6 +318,7 @@ t/23_dancer_tests/02_tests_functions.t
 t/24_deployment/01_multi_webapp.t
 t/25_exceptions/01_exceptions.t
 t/25_exceptions/02_exceptions.t
+t/25_exceptions/03_exceptions.t
 t/25_exceptions/views/error.tt
 t/25_exceptions/views/index.tt
 t/25_exceptions/views/layouts/main.tt

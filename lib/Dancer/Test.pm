@@ -9,6 +9,8 @@ use Test::More import => [ '!pass' ];
 
 use Carp;
 use HTTP::Headers;
+use Scalar::Util 'blessed';
+
 use Dancer ':syntax', ':tests';
 use Dancer::App;
 use Dancer::Deprecation;
@@ -74,11 +76,16 @@ sub import {
 
 # Route Registry
 
+sub _isa {
+    my ( $reference, $classname ) = @_;
+    return blessed $reference && $reference->isa($classname);
+}
+
 sub _req_to_response {
     my $req = shift;
 
     # already a response object
-    return $req if ref $req eq 'Dancer::Response';
+    return $req if _isa($req, 'Dancer::Response');
 
     return dancer_response( ref $req eq 'ARRAY' ? @$req : ( 'GET', $req ) );
 }
@@ -86,10 +93,9 @@ sub _req_to_response {
 sub _req_label {
     my $req = shift;
 
-    return ref $req eq 'Dancer::Response' ? 'response object'
-         : ref $req eq 'ARRAY' ? join( ' ', @$req )
-         : "GET $req"
-         ;
+    return _isa($req, 'Dancer::Response') ? 'response object'
+         : ref $req eq 'ARRAY'            ? join( ' ', @$req )
+         :                                  "GET $req";
 }
 
 sub expand_req {
@@ -216,7 +222,7 @@ sub response_headers_are_deeply {
     $test_name ||= "headers are as expected for " . _req_label($req);
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
     
     is_deeply(
         _sort_headers( $response->headers_to_array ),
@@ -249,7 +255,7 @@ sub response_headers_include {
     $test_name ||= "headers include expected data for @$req";
     my $tb = Test::Builder->new;
 
-    my $response = dancer_response(expand_req($req));
+    my $response = _req_to_response($req);
     return $tb->ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 

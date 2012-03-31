@@ -21,7 +21,7 @@ my $censored = $error_obj->dumper;
 
 like(
     $censored,
-    qr/\QNote: Values of 1 sensitive-looking keys hidden\E/,
+    qr/\QNote: Values of 1 sensitive-looking key hidden\E/,
     'Data was censored in the output',
 );
 
