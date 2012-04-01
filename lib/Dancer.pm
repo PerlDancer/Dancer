@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3094';
+our $VERSION   = '1.3095';
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
@@ -52,6 +52,7 @@ our @EXPORT    = qw(
   debug
   del
   dirname
+  info
   error
   engine
   false
@@ -154,6 +155,7 @@ sub halt            { Dancer::SharedData->response->halt(@_);
                       Dancer::Continuation::Halted->new->throw;
                     }
 sub header          { goto &headers }
+sub info            { goto &Dancer::Logger::info }
 sub push_header     { Dancer::SharedData->response->push_header(@_); }
 sub headers         { Dancer::SharedData->response->headers(@_); }
 sub hook            { Dancer::Hook->new(@_) }
@@ -1069,6 +1071,14 @@ can be a Dancer::Exception, or a string, or whatever was used to C<die>.
   };
 
 =back
+
+=head2 info
+
+Logs a message of info level:
+
+    info "This is a info message";
+
+See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head2 layout
 

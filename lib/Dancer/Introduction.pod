@@ -398,18 +398,19 @@ start the logger engine in your config.yml
 
 Then you can choose which kind of messages you want to actually log:
 
-    log: 'debug'     # will log debug, warning and errors
-    log: 'warning'   # will log warning and errors
-    log: 'error'     # will log only errors
+    log: 'debug'     # will log debug, warning, error and info messages
+    log: 'info'      # will log info, warning and error messages
+    log: 'warning'   # will log warning and error messages
+    log: 'error'     # will log error messages
 
 A directory appdir/logs will be created and will host one logfile per
 environment. The log message contains the time it was written, the PID of the
 current process, the message and the caller information (file and line).
 
-To log messages, use the debug, warning and error methods, for instance:
+To log messages, use the debug, info, warning and error functions. For
+instance:
 
     debug "This is a debug message";
-
 
 =head1 USING TEMPLATES
 

@@ -1,6 +1,10 @@
 use strict;
 use warnings;
 use Test::More import => ['!pass'];
+use Dancer::ModuleLoader;
+
+Dancer::ModuleLoader->load('YAML')
+    or plan skip_all => 'YAML is needed to run this test';
 
 plan tests => 5;
 

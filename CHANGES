@@ -1,5 +1,15 @@
 {{$NEXT}}
 
+1.3095      01.04.2012
+
+    [ BUG FIXES ]
+    * Small fix to skip tests when YAML is not available.
+      (Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * Added 'info' log level for messages that should always go to the logs
+      but aren't really debug, warning or error messages (Ovid)
+
 1.3094      31.03.2012
 
     [ BUG FIXES ]
