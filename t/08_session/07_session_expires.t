@@ -30,6 +30,8 @@ my %tests = (
     "+36h"      => 'Tue, 12-Apr-2011 12:58:26 GMT',
 );
 
+my $session_dir = path( Dancer::Config::settings->{appdir}, "sessions_$$" );
+set session_dir => $session_dir;
 for my $session_expires (keys %tests) {
     my $cookie_expires = $tests{$session_expires};
 
@@ -69,5 +71,4 @@ for my $session_expires (keys %tests) {
 }
 
 # clean up after ourselves
-rmtree( path( Dancer::Config::settings->{'appdir'}, 'sessions' ) );
-
+rmtree($session_dir);
