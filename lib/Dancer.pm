@@ -696,6 +696,12 @@ have to change the C<content_type> setting instead.
 
 Alias for the C<start> keyword.
 
+=head2 dancer_version
+
+Returns the version of Dancer. If you need the major version, do something like:
+
+  int(dancer_version);
+
 =head2 debug
 
 Logs a message of debug level:
