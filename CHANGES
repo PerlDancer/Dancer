@@ -2,6 +2,7 @@
 
     [ ENHANCEMENTS ]
     * Add UTC timestamp options for logger_format (Alex C - perlpong).
+    * Tests can now run in parallel (Richard Simões).
 
 1.3095      01.04.2012
 

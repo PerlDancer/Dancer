@@ -18,13 +18,16 @@ use LWP::UserAgent;
 use File::Path 'rmtree';
 use Dancer::Config;
 
+my $session_dir = path( Dancer::Config::settings->{appdir}, "sessions_$$" );
+set session_dir => $session_dir;
+
 for my $setting ("default", "on", "off") {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
             my $ua   = LWP::UserAgent->new;
             my $req =
-              HTTP::Request->new(GET => "http://127.0.0.1:$port/set_session/test");
+              HTTP::Request->new(GET => "http://127.0.0.1:$port/set_session/test_13");
             my $res = $ua->request($req);
             ok $res->is_success, 'req is success';
             my $cookie = $res->header('Set-Cookie');
@@ -62,5 +65,5 @@ for my $setting ("default", "on", "off") {
 }
 
 # clean up after ourselves
-rmtree( path( Dancer::Config::settings->{'appdir'}, 'sessions' ) );
+rmtree($session_dir);
 
