@@ -49,6 +49,7 @@ our @EXPORT    = qw(
   config
   content_type
   dance
+  dancer_version
   debug
   del
   dirname
@@ -135,6 +136,7 @@ sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::SharedData->response->content_type(@_) }
 sub dance           { goto &start }
+sub dancer_version  { Dancer->VERSION }
 sub debug           { goto &Dancer::Logger::debug }
 sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
 sub dirname         { Dancer::FileUtils::dirname(@_) }
@@ -693,6 +695,12 @@ have to change the C<content_type> setting instead.
 =head2 dance
 
 Alias for the C<start> keyword.
+
+=head2 dancer_version
+
+Returns the version of Dancer. If you need the major version, do something like:
+
+  int(dancer_version);
 
 =head2 debug
 
