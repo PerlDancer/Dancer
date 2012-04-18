@@ -9,6 +9,7 @@ use Dancer::ModuleLoader;
 use Dancer::Template::Simple;
 use Dancer::Renderer;
 use File::Basename 'basename';
+use File::Find;
 use File::Path 'mkpath';
 use File::Spec::Functions qw/catdir catfile/;
 use Getopt::Long;
@@ -18,9 +19,13 @@ use constant FILE => 1;
 set logger        => 'console';
 set logger_format => '%L> %m';
 
+my $TEMPLATES_DIR =  $ENV{DANCER_APPLICATION_TEMPLATES} 
+                  || "$ENV{HOME}/.dancer/templates";
+
 Dancer::Script->attributes(
     qw(appname root_path check_version dancer_app_dir dancer_script
-      dancer_version do_check_dancer_version do_overwrite_all lib_file lib_path)
+      dancer_version do_check_dancer_version do_overwrite_all lib_file lib_path
+      dancer_app_template)
 );
 
 #  Here goes the code to use File::ShareDir 
@@ -40,13 +45,14 @@ sub init {
         $self->appname($args{appname});
         $self->root_path($args{path});
         $self->check_version($args{check_version});
-
+        $self->dancer_app_template($args{template});
     }
     else {
-        my ($appname, $path, $check_version) = $self->_parse_opts;
+        my ($appname, $path, $check_version, $template) = $self->_parse_opts;
         $self->appname($appname);
         $self->root_path($path);
         $self->check_version($check_version);
+        $self->dancer_app_template($template);
     }
 
     $self->do_overwrite_all(0);
@@ -67,12 +73,13 @@ sub _parse_opts {
     my $do_check_dancer_version = 1;
     my $name                    = undef;
     my $path                    = '.';
-
+    my $template                = undef;
 
     GetOptions(
         "h|help"          => \$help,
         "a|application=s" => \$name,
         "p|path=s"        => \$path,
+        "t|template=s"    => \$template,
         "x|no-check"      => sub { $do_check_dancer_version = 0 },
         "v|version"       => \&version,
     ) or pod2usage(-verbose => 1);
@@ -103,7 +110,7 @@ following commands:
 NOYAML
     }
 
-    return ($name, $path, $do_check_dancer_version);
+    return ($name, $path, $do_check_dancer_version, $template);
 }
 
 sub run {
@@ -111,9 +118,42 @@ sub run {
     $self->_version_check if $self->do_check_dancer_version;
     $self->_safe_mkdir($self->dancer_app_dir);
 
-    # TODO private method for _create_node
-    $self->create_node($self->_app_tree, $self->dancer_app_dir);
+    if (defined $self->dancer_app_template) {
+        $self->create_app_from_template;
+    } else {
+        # TODO private method for _create_node
+        $self->create_node($self->_app_tree, $self->dancer_app_dir);
+    }
 }
+
+sub create_app_from_template {
+    my $self = shift;
+
+    my $appdir          = $self->dancer_app_dir;
+    my $template_name   = $self->dancer_app_template;
+    my $appname         = $self->appname;
+    my $template_base = $template_name =~ m!^/! 
+                      ? $template_name 
+                      : catfile($TEMPLATES_DIR, $template_name);
+    unless (-e $template_base) {
+        die "No template named $template_name found in $TEMPLATES_DIR\n";
+    }
+    find({ no_chdir => 1, wanted => sub {
+        return if $File::Find::name eq $template_base;
+        (my $path = $File::Find::name) =~ s{^$template_base/}{};
+        $path =~ s/APPNAME/$appname/g;
+        my $appfile = catfile($appdir, $path);
+        if (-d $File::Find::name) { $self->_safe_mkdir($appfile); return }
+        my $template = do { local (@ARGV,$/) = $File::Find::name; <> };
+        $self->_write_file($appfile, $template, {
+            appdir  => File::Spec->rel2abs($appdir),
+            appname => $appname,
+        });
+        # Match the mode of the template file
+        chmod +(stat($File::Find::name))[2], $appfile;
+    }}, $template_base);
+}
+
 
 sub run_scaffold {
     my $class  = shift;
@@ -337,8 +377,8 @@ sub _process_template {
     my $template = shift;
     my $tokens   = shift;
     my $engine   = Dancer::Template::Simple->new;
-    $engine->{start_tag} = '[%';
-    $engine->{stop_tag}  = '%]';
+    $engine->{start_tag} = '[[%%';
+    $engine->{stop_tag}  = '%%]]';
     return $engine->render(\$template, $tokens);
 }
 
@@ -442,7 +482,7 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More' => 0,
         'YAML'       => 0,
-        'Dancer'     => [% dancer_version %],
+        'Dancer'     => [[%% dancer_version %%]],
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => '$cleanfiles-*' },
@@ -491,7 +531,7 @@ WriteMakefile(
             <h3>Your application\'s environment</h3>
 
             <ul>
-                <li>Location: <code>[% appdir %]</code></li>
+                <li>Location: <code>[[%% appdir %%]]</code></li>
                 <li>Template engine: <code><% settings.template %></code></li>
                 <li>Logger: <code><% settings.logger %></code></li>
                 <li>Environment: <code><% settings.environment %></code></li>
@@ -531,7 +571,7 @@ WriteMakefile(
                 </tr>
                 <tr>
                     <td>Appdir</td>
-                    <td><tt>[% appdir %]</tt></td>
+                    <td><tt>[[%% appdir %%]]</tt></td>
                 </tr>
                 <tr>
                     <td>Template engine</td>

@@ -24,6 +24,7 @@ dancer [options] -a <appname>
     -a, --application     : the name of your application
     -p, --path            : the path where to create your application
                               (current directory if not specified)
+    -t, --template        : specify an application template
     -x, --no-check        : don't check for the latest version of Dancer
                               (checking version implies internet connection)
     -v, --version         : print the version of dancer being used
@@ -74,11 +75,55 @@ The application is ready to serve:
     >> Listening on 127.0.0.1:3000
     == Entering the development dance floor ...
 
+=head1 Application Templates
+
+Dancer applications may be created from an existing directory structure
+by passing an argument to -t (--template).
+
+If the first character of the string passed to C<-t> is a slash (C</>),
+then it is taken to be an absolute path to a directory structure that
+contains a Dancer application which you would like to base your new
+application upon. If the first character is I<not> a slash, Dancer looks
+for a directory of the same name in C<~/.dancer/templates> and will copy
+that directory structure into your new application directory.
+
+In either case there are a few substitutions that are performed on files
+within the template directory. Within each filename the string C<APPNAME>
+is replaced with the actual name of the Dancer application. For
+instance, if you were creating an app called C<MyApp> and there was a
+file named C<fred_APPNAME_jones.pm> within your template directory, the
+resultant application would obtain a file named C<fred_MyApp_jones.pm>.
+
+Also, within files, instances of C<[[%% appname %%]]> are replaced with
+the actual name of the application, and instances of C<[[%% appdir %%]]>
+are replaced with the actual directory where the application is created.
+The markers around these substitution strings (C<[[%%> and C<%%]]>) are
+intentionally fat and ugly so as to not conflict with the markers that
+may be used within views or other C<.tt> files within the directory.
+
+Examples:
+
+    # creates app based on ~/.dancer/templates/foo
+    $ dancer -t foo -a myfooapp     
+
+    # create app based on an existing app
+    $ dancer -t /home/user/apps/simple_login -a other_login
+
+B<Note>, in the second example, dancer will not rename
+C<lib/simple_login.pm> when it creates the new application.
+
+Where dancer looks for application templates (C<~/.dancer/templates>)
+may be overridden by setting the C<DANCER_APPLICATION_TEMPLATES>
+environment variable.
+
 =head1 AUTHOR
 
 This script has been written by Sebastien Deseille
 <sebastien.deseille@gmail.com> and Alexis Sukrieh
 <sukria@cpan.org>.
+
+Application templates added by Jonathan Scott Duff 
+<duff@pobox.com>
 
 =head1 SOURCE CODE
 
