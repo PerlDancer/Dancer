@@ -15,10 +15,10 @@ mock 'Dancer::Config'
 
 mock 'Dancer::ModuleLoader'
     => method 'load'
-    => should sub { 0 };
+    => should sub { 0, "Fish error. Goldfish in YAML." };
 
 eval { Dancer::Config->load };
-like $@, qr/Configuration file found but YAML is not installed/,
+like $@, qr/Configuration file found but could not load YAML: Fish error. Goldfish in YAML./,
     "Dancer::Config cannot load without YAML";
 
 mock 'YAML'
