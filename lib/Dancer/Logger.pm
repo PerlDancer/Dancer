@@ -6,6 +6,7 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Dancer::Engine;
+use Dancer::Config 'setting';
 
 # singleton used for logging messages
 my $logger;
@@ -18,14 +19,15 @@ sub init {
 
 sub _serialize {
     my @vars = @_;
+    my $config = setting('engines')->{'logger'} || {};
 
     return join q{}, map {
         ref $_                      ?
-            Data::Dumper->new([$_])
+            Data::Dumper->new($_)
                         ->Terse(1)
-                        ->Purity(1)
-                        ->Indent(0)
-                        ->Sortkeys(1)
+                        ->Purity(exists($config->{Purity}) || 1)
+                        ->Indent(exists($config->{Indent}) || 0)
+                        ->Sortkeys(exists($config->{Sortkeys}) || 1)
                         ->Dump()    :
             $_
     } @vars;
@@ -88,6 +90,14 @@ The loggers allow auto-serializing of all inputs:
 
 Will provide you with an output in a single log message of the string and the
 reference dump.
+Dump output can be changed in 'engines' section in config file, look on L<Data::Dumper>.
+Now only 'Purity', 'Indent', 'Sortkeys' is supported.
+
+    engines:
+       logger:
+          Purity: '0'
+          Indent: '2'
+          Sortkeys: '0'
 
 =head1 AUTHORS
 
