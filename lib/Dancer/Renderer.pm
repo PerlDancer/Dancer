@@ -18,6 +18,7 @@ use Dancer::SharedData;
 use Dancer::Logger;
 use Dancer::MIME;
 use Dancer::Exception qw(:all);
+use Dancer::Session;
 
 Dancer::Factory::Hook->instance->install_hooks(
     qw/before after before_serializer after_serializer before_file_render after_file_render/
@@ -28,6 +29,16 @@ sub render_file { get_file_response() }
 sub render_action {
     my $class = shift;
     my $resp = $class->get_action_response();
+
+    # Check if session was used at all 
+    if (defined(&Dancer::Session::get_session_handle))	{
+        # If session used, flushing at now
+        my $session = &Dancer::Session::get();
+        $session->flush() if ($session);
+        # Frees session handle
+        &Dancer::Session::set_session_handle(undef);
+    }
+
     return (defined $resp)
       ? response_with_headers()
       : undef;

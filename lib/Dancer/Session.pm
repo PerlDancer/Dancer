@@ -5,6 +5,12 @@ use warnings;
 
 use Dancer::Cookies;
 use Dancer::Engine;
+use Carp 'croak';
+
+# This handle used open session for next use
+my $_session_handle = undef;
+sub get_session_handle {$_session_handle};
+sub set_session_handle {$_session_handle=$_[0];}
 
 # Singleton representing the session engine class to use
 my $ENGINE = undef;
@@ -18,15 +24,24 @@ sub init {
     #$ENGINE->init(); already done
 }
 
-# retrieve or create a session for the client
-sub get_current_session {
+
+# retrieve a session for the client
+sub retrieve_current_session {
+    # Return handle of readed session if was used
+    return get_session_handle if (defined(get_session_handle));
+
     my $sid     = engine->read_session_id;
-    my $session = undef;
     my $class   = ref(engine);
 
-    $session = $class->retrieve($sid) if $sid;
+    set_session_handle($class->retrieve($sid)) if $sid;
+    return get_session_handle;
+}
 
+# retrieve or create a session for the client
+sub get_current_session {
+    my $session = retrieve_current_session();
     if (not defined $session) {
+        my $class = ref(engine);
         $session = $class->create();
     }
 
@@ -49,11 +64,11 @@ sub read {
 sub write {
     my ($class, $key, $value) = @_;
     return unless $key;
-    my $session = get_current_session();
-    $session->{$key} = $value;
+    croak "Can't store to session key with name 'id'" if ($key eq 'id');
 
-    # TODO : should be moved as an "after" filter
-    $session->flush;
+    my $session = get_current_session();
+    return delete($session->{$key}) if (!defined($value));
+    $session->{$key} = $value;
     return $value;
 }
 
@@ -106,6 +121,10 @@ Storing a value into the session:
 Retrieving that value later:
 
     my $foo = session 'foo';
+
+Deleting key from the session:
+
+    session foo => undef;
 
 You can either look for an existing item in the session storage or modify one.
 Here is a simple example of two route handlers that implement basic C</login> 
