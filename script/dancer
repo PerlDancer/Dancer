@@ -949,7 +949,7 @@ show_errors: 1
 # Module::Refresh is needed 
 # 
 # Be aware it's unstable and may cause a memory leak.
-# DO NOT EVER USE THAT FEATURE IN PRODUCTION 
+# DO NOT EVER USE THIS FEATURE IN PRODUCTION 
 # OR TINY KITTENS SHALL DIE WITH LOTS OF SUFFERING
 auto_reload: 0
 ",
