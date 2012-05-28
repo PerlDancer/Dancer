@@ -57,6 +57,10 @@ SKIP: {
     set serializer => 'Mutable';
     my $s = Dancer::Serializer->engine;
 
+    # Ensure the temp directory is resolved before we destroy the environment
+    # (since it needs the environment to do so, and caches after the first time)
+    File::Spec->tmpdir;
+    
     %ENV = (
         'REQUEST_METHOD'    => 'GET',
         'HTTP_CONTENT_TYPE' => 'application/json',
