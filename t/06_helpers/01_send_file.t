@@ -109,7 +109,7 @@ $content =~ s/\r//g;
 is_deeply( [split(/\n/, $content)], [1,2,3], 'send_file worked as expected');
 
 SKIP: {
-    skip "Need IO::Scalar", 3
+    skip "Need IO::Scalar", 2
         unless Dancer::ModuleLoader->load('IO::Scalar');
 
     $resp = undef; # just to be sure
