@@ -4,6 +4,8 @@
     * Add UTC timestamp options for logger_format (Alex C - perlpong).
     * Tests can now run in parallel (Richard Simões).
     * dancer_version keyword added (Damien "dams" Krotkine).
+    * send_file will do the right thing if given an IO::Scalar object
+      (David Precious, prompted by Ilya Chesnokov)
 
 1.3095      01.04.2012
 
