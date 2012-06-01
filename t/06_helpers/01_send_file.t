@@ -8,7 +8,7 @@ use Dancer::Test;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 21;
+plan tests => 23;
 
 get '/cat/:file' => sub {
     send_file(params->{file});
@@ -41,6 +41,10 @@ get '/absolute/content_type/:file' => sub {
 get '/custom_status' => sub {
     status 'not_found';
     send_file('file.txt');
+};
+
+get '/ioscalar' => sub {
+    send_file(IO::Scalar->new(\"IO::Scalar content"), filename => 'ioscalar');
 };
 
 my $resp = dancer_response(GET => '/cat/file.txt');
@@ -104,4 +108,13 @@ $content = read_glob_content($resp->{content});
 $content =~ s/\r//g;
 is_deeply( [split(/\n/, $content)], [1,2,3], 'send_file worked as expected');
 
+SKIP: {
+    skip "Need IO::Scalar", 2
+        unless Dancer::ModuleLoader->load('IO::Scalar');
+
+    $resp = undef; # just to be sure
+    $resp = dancer_response(GET => '/ioscalar');
+    ok(defined($resp), "/ioscalar gave us a response");
+    is($resp->{content}, "IO::Scalar content", "Got correct content from IO::Scalar");
+}
 
