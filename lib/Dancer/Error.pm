@@ -147,7 +147,7 @@ sub _censor {
         if (ref $hash->{$key} eq 'HASH') {
             $censored += _censor($hash->{$key});
         }
-        elsif ($key =~ /(pass|card?num|pan|secret)/i) {
+        elsif ($key =~ /(pass|card?num|pan|secret|token)/i) {
             $hash->{$key} = "Hidden (looks potentially sensitive)";
             $censored++;
         }
@@ -418,4 +418,3 @@ under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
 See http://dev.perl.org/licenses/ for more information.
-
