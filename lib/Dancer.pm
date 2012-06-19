@@ -6,6 +6,7 @@ use Carp;
 use Cwd 'realpath';
 
 our $VERSION   = '1.3095';
+$VERSION = eval $VERSION;
 our $AUTHORITY = 'SUKRIA';
 
 use Dancer::App;
