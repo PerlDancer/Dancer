@@ -408,7 +408,7 @@ sub _send_file {
             my ( $status, $headers ) = @_;
             my %callbacks = defined $options{'callbacks'} ?
                             %{ $options{'callbacks'} }    :
-                            {};
+                            ();
 
             return sub {
                 my $respond = shift;
