@@ -25,7 +25,7 @@ WriteMakefile1(
     ABSTRACT     => "A minimal-effort oriented web application framework",
     LICENSE      => 'perl',
     VERSION_FROM => 'lib/Dancer.pm',
-    EXE_FILES    => ['script/dancer'],
+    EXE_FILES    => ['script/dancer', 'script/wallflower'],
 
     META_MERGE => {
         resources => {
