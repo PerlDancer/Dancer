@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+1.3095_01
+
     [ ENHANCEMENTS ]
     * Add UTC timestamp options for logger_format (Alex C - perlpong).
     * Tests can now run in parallel (Richard Simões).
@@ -22,9 +24,6 @@
     * Silly typo fixing (Paul Fenwick)
     * Typo in Dancer::Test file upload example (Jonathan "Duke" Leto)
     * UTF-8 fixes in POD (ambs)
-
-
-
 
 1.3095      01.04.2012
 
