@@ -111,6 +111,7 @@ t/00_base/12_utf8_charset.t
 t/00_base/13_dancer_singleton.t
 t/00_base/14_changelog.t
 t/00_base/15_dependent_modules.t
+t/00_base/16_version.t
 t/00_base/config.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
@@ -227,6 +228,7 @@ t/08_session/10_filter.t
 t/08_session/11_session_secure.t
 t/08_session/12_session_name.t
 t/08_session/13_session_httponly.t
+t/08_session/14_session_domain.t
 t/09_cookies/000_create_fake_env.t
 t/09_cookies/01_use.t
 t/09_cookies/02_cookie_object.t
