@@ -49,7 +49,7 @@ sub continuation (&;@) {
       },  'Try::Tiny::Catch') , @new_rest);
 
     return ( bless ( \ sub {
-          ref && $_->isa('Dancer::Continuation')
+          ref && blessed($_) && $_->isa('Dancer::Continuation')
             ? $block->(@_) : die($_);
       }, 'Try::Tiny::Catch'), @new_rest );
 }

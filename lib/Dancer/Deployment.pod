@@ -270,20 +270,13 @@ the following examples:
 
 =head4 Using Ubic
 
-L<Ubic> is an extensible perlish service manager. You can use it to start and
+L<Ubic> is a polymorphic service manager. You can use it to start and
 stop any services, automatically start them on reboots or daemon failures, and
 implement custom status checks.
 
 A basic PSGI service description (usually in /etc/ubic/service/application):
 
     use parent qw(Ubic::Service::Plack);
-
-    # if your application is not installed in @INC path:
-    sub start {
-        my $self = shift;
-        $ENV{PERL5LIB} = '/path/to/your/application/lib';
-        $self->SUPER::start(@_);
-    }
 
     __PACKAGE__->new(
         server => 'Starman',

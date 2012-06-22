@@ -94,6 +94,9 @@ sub format_message {
         t => sub { Encode::decode(setting('charset') || 'utf8',
                                   POSIX::strftime( "%d/%b/%Y %H:%M:%S", localtime )) },
         T => sub { POSIX::strftime( "%Y-%m-%d %H:%M:%S", localtime  ) },
+        u => sub { Encode::decode(setting('charset') || 'utf8',
+                                  POSIX::strftime( "%d/%b/%Y %H:%M:%S", gmtime )) },
+        U => sub { POSIX::strftime( "%Y-%m-%d %H:%M:%S", gmtime  ) },
         P => sub { $$ },
         L => sub { $level },
         D => sub {
@@ -178,7 +181,19 @@ host emitting the request
 
 =item %t
 
-date (formatted like %d/%b/%Y %H:%M:%S)
+date (local timezone, formatted like %d/%b/%Y %H:%M:%S)
+
+=item %T
+
+date (local timezone, formatted like %Y-%m-%d %H:%M:%S)
+
+=item %u
+
+date (UTC timezone, formatted like %d/%b/%Y %H:%M:%S)
+
+=item %U
+
+date (UTC timezone, formatted like %Y-%m-%d %H:%M:%S)
 
 =item %P
 

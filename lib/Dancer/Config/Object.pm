@@ -95,6 +95,8 @@ __END__
 
 =pod
 
+=encoding utf-8
+
 =head1 NAME
 
 Dancer::Config::Object - Access the config via methods instead of hashrefs

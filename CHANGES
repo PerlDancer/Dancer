@@ -1,5 +1,30 @@
 {{$NEXT}}
 
+1.3095_01   22.06.2012
+
+    [ BUG FIXES ]
+    * Don't assume returned references are blessed when considering
+      continuations (Neil Hooey, GH-778)
+    * Malformed/missing cookies caused warnings 
+      (James Aitken/LoonyPandora, GH-782 and GH-783)
+    * Avoid potential crash in t/14_serializer/06_api.t if tmp dir is replaced
+      when %ENV gets cleared (Adam Kennedy)
+    * Properly initialize %callbacks to default empty hashref  in _send_file if 
+      not provided (Greg Mullen)
+
+    [ ENHANCEMENTS ]
+    * Add UTC timestamp options for logger_format (Alex C - perlpong).
+    * Tests can now run in parallel (Richard Simões).
+    * dancer_version keyword added (Damien "dams" Krotkine).
+    * New session_domain paramter allows you to set the domain of the default
+      session cookie (William Wolf)
+
+    [ DOCUMENTATION ]
+    * Update Ubic service example (Vyacheslav Matyukhin)
+    * Silly typo fixing (Paul Fenwick)
+    * Typo in Dancer::Test file upload example (Jonathan "Duke" Leto)
+    * UTF-8 fixes in POD (ambs)
+
 1.3095      01.04.2012
 
     [ BUG FIXES ]
