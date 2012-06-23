@@ -559,8 +559,8 @@ When writing a webservice, data serialization/deserialization is a common issue
 to deal with. Dancer can automatically handle that for you, via a serializer.
 
 When setting up a serializer, a new behaviour is authorized for any route
-handler you define: any non-scalar response will be rendered as a serialized
-string, via the current serializer.
+handler you define: any response that is a reference will be rendered as a
+serialized string, via the current serializer.
 
 Here is an example of a route handler that will return a HashRef
 
@@ -574,7 +574,7 @@ Here is an example of a route handler that will return a HashRef
         }
     };
 
-As soon as the content is not a scalar - and a serializer is set, which is not
+As soon as the content is a reference - and a serializer is set, which is not
 the case by default - Dancer renders the response via the current
 serializer.
 
