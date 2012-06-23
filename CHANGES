@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+    [ ENHANCEMENTS ]
+    * If YAML does not load, Dancer::Config now reports why (Ovid)
+
 1.3095_01   22.06.2012
 
     [ BUG FIXES ]
