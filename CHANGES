@@ -37,6 +37,7 @@
     [ ENHANCEMENTS ]
     * Added 'info' log level for messages that should always go to the logs
       but aren't really debug, warning or error messages (Ovid)
+    * If YAML does not load, Dancer::Config now reports why (Ovid)
 
 1.3094      31.03.2012
 
