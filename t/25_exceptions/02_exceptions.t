@@ -130,7 +130,7 @@ HarmlessInvalidLogin InvalidCredentials InvalidLogin InvalidPassword Test
         };
     };
     ok(! $@);
-    is($e, 'wrong login (login was douglas)');
+    is($e->message, 'wrong login (login was douglas)');
     # check stringification works in other cases
     ok($e eq 'wrong login (login was douglas)');
     ok('wrong login (login was douglas)' eq $e);
