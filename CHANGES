@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+    [ BUG FIXES ]
+    * fix exception tests in some cases (GH #734) (Damien Krotkine & katkad )
+
     [ ENHANCEMENTS ]
     * If YAML does not load, Dancer::Config now reports why (Ovid)
 
