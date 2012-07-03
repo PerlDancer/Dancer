@@ -1155,7 +1155,7 @@ commonly-used methods are summarized below:
 
 I<This method should be called from a route handler>.
 It's an alias for the L<Dancer::Request params accessor|Dancer::Request/"params">. It returns
-an hash reference to all defined parameters. Check C<param> bellow to access quickly to a single
+an hash reference to all defined parameters. Check C<param> below to access quickly to a single
 parameter value.
 
 =head2 param
