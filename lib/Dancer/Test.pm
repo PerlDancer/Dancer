@@ -584,7 +584,7 @@ It's possible to test file uploads:
 In addition, you can supply the file contents as the C<data> key:
 
     my $data  = 'A test string that will pretend to be file contents.';
-    $response = dancer_reponse(POST => '/upload', {
+    $response = dancer_response(POST => '/upload', {
         files => [{name => 'test', filename => "filename.ext", data => $data}]
     });
 

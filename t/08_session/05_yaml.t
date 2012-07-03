@@ -19,9 +19,10 @@ BEGIN {
     use_ok 'Dancer::Session::YAML'
 }
 
-
 my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
+my $session_dir = path($dir, "sessions_$$");
+set session_dir => $session_dir;
 
 my $session = Dancer::Session::YAML->create();
 isa_ok $session, 'Dancer::Session::YAML';
@@ -50,7 +51,6 @@ $s->destroy;
 $session = Dancer::Session::YAML->retrieve($id);
 is $session, undef, 'session is destroyed';
 
-my $session_dir = "$dir/sessions";
 ok( -d $session_dir, "session dir was created");
 rmtree($session_dir);
 eval { $session = Dancer::Session::YAML->create() };

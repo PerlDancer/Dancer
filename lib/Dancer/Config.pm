@@ -169,8 +169,10 @@ sub load {
     return 1 unless -f conffile;
 
     # load YAML
-    confess "Configuration file found but YAML is not installed"
-      unless Dancer::ModuleLoader->load('YAML');
+    my ( $result, $error ) = Dancer::ModuleLoader->load('YAML');
+    if ( not $result ) {
+        confess "Configuration file found but could not load YAML: $error";
+    }
 
     if (!$_LOADED{conffile()}) {
         load_settings_from_yaml(conffile);

@@ -91,6 +91,7 @@ sub write_session_id {
     my %cookie = (
         name   => $name,
         value  => $id,
+        domain => setting('session_domain'),
         secure => setting('session_secure'),
         http_only => defined(setting("session_is_http_only")) ?
                      setting("session_is_http_only") : 1,
@@ -165,6 +166,13 @@ These settings control how a session acts.
 The default session name is "dancer_session". This can be set in your config file:
 
     setting session_name: "mydancer_session"
+
+=head3 session_domain
+
+    Allows you to set the domain property on the cookie, which will
+    override the default.  This is useful for setting the session cookie's
+    domain to something like '.domain.com' so that the same cookie will
+    be applicable and usable across subdomains of a base domain.
 
 =head3 session_secure
 
