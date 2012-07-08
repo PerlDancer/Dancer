@@ -6,6 +6,7 @@ use Carp;
 use base 'Exporter';
 use Dancer::Config 'setting';
 use Dancer::Hook;
+use Dancer::Factory::Hook;
 use Dancer::Exception qw(:all);
 
 use base 'Exporter';
@@ -16,6 +17,8 @@ use vars qw(@EXPORT);
   register
   register_plugin
   plugin_setting
+  register_hook
+  execute_hooks
 );
 
 sub register($&);
@@ -29,6 +32,14 @@ sub plugin_setting {
     (my $plugin_name = $plugin_orig_name) =~ s/Dancer::Plugin:://;
 
     return setting('plugins')->{$plugin_name} ||= {};
+}
+
+sub register_hook {
+    Dancer::Factory::Hook->instance->install_hooks(@_);
+}
+
+sub execute_hooks {
+    Dancer::Factory::Hook->instance->execute_hooks(@_);
 }
 
 sub register($&) {
@@ -156,6 +167,22 @@ the symbols define with C<register> as exported symbols (via the L<Exporter>
 module).
 
 A Dancer plugin inherits from Dancer::Plugin and Exporter transparently.
+
+=item B<register_hook>
+
+Allows a plugin to delcare a list of supported hooks. Any hook declared like so
+can be executed by the plugin with C<execute_hooks>.
+
+    register_hook 'foo'; 
+    register_hook 'foo', 'bar', 'baz'; 
+
+=item B<execute_hooks>
+
+Allows a plugin to execute the hooks attached at the given position
+
+    execute_hooks 'some_hook';
+
+The hook must have been registered by the plugin first, with C<register_hook>.
 
 =item B<plugin_setting>
 
