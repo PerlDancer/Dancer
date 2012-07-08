@@ -326,6 +326,7 @@ t/25_exceptions/views/index.tt
 t/25_exceptions/views/layouts/main.tt
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
+t/lib/Hookee.pm
 t/lib/LinkBlocker.pm
 t/lib/TestApp.pm
 t/lib/TestAppUnicode.pm

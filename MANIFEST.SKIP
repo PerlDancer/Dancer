@@ -14,3 +14,4 @@ Makefile$
 ^.*\.swp$
 lib/Dancer/Plugin/WebSocket.pm
 ^.*~$
+MYMETA\..*

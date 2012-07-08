@@ -1,9 +1,11 @@
 {{$NEXT}}
 
+1.3097      08.07.2012
+
     [ ENHANCEMENTS ]
-    * New keywords 'register_hook' and 'execute_hooks' exported by Dancer::Plugin
-      for providing a consistent way with Dancer 2 on how to declare and run hooks 
-      from within a plugin (Alexis Sukrieh, idea from David Precious).
+    * New keywords 'register_hook' and 'execute_hooks' exported by
+      Dancer::Plugin to provide a consistent way with Dancer 2 to declare and
+      run hooks from within a plugin (Alexis Sukrieh, idea from David Precious).
 
 1.3096      06.07.2012
     ** Codename: Chop Hooey // Neil Hooey **
