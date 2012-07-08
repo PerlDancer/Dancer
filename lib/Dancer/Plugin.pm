@@ -6,6 +6,7 @@ use Carp;
 use base 'Exporter';
 use Dancer::Config 'setting';
 use Dancer::Hook;
+use Dancer::Factory::Hook;
 use Dancer::Exception qw(:all);
 
 use base 'Exporter';
@@ -16,6 +17,8 @@ use vars qw(@EXPORT);
   register
   register_plugin
   plugin_setting
+  register_hook
+  execute_hooks
 );
 
 sub register($&);
@@ -29,6 +32,14 @@ sub plugin_setting {
     (my $plugin_name = $plugin_orig_name) =~ s/Dancer::Plugin:://;
 
     return setting('plugins')->{$plugin_name} ||= {};
+}
+
+sub register_hook {
+    Dancer::Factory::Hook->instance->install_hooks(@_);
+}
+
+sub execute_hooks {
+    Dancer::Factory::Hook->instance->execute_hooks(@_);
 }
 
 sub register($&) {
