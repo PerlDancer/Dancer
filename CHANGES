@@ -35,7 +35,7 @@
     * Avoid potential crash in t/14_serializer/06_api.t if tmp dir is replaced
       when %ENV gets cleared (Adam Kennedy)
     * Properly initialize %callbacks to default empty hashref  in _send_file if 
-      not provided (Greg Mullen)
+      not provided (Gary Mullen)
 
     [ ENHANCEMENTS ]
     * Add UTC timestamp options for logger_format (Alex C - perlpong).
