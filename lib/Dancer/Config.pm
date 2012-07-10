@@ -28,17 +28,21 @@ sub settings {$SETTINGS}
 my $setters = {
     logger => sub {
         my ($setting, $value) = @_;
+        require Dancer::Logger;
         Dancer::Logger->init($value, settings());
     },
     log_file => sub {
+        require Dancer::Logger;
         Dancer::Logger->init(setting("logger"), setting());
     },
     session => sub {
         my ($setting, $value) = @_;
+        require Dancer::Session;
         Dancer::Session->init($value, settings());
     },
     template => sub {
         my ($setting, $value) = @_;
+        require Dancer::Template;
         Dancer::Template->init($value, settings());
     },
     route_cache => sub {
