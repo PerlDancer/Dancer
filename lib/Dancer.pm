@@ -482,7 +482,7 @@ Dancer - lightweight yet powerful web application framework
     use Dancer;
 
     get '/hello/:name' => sub {
-        return "Why, hello there " . param('name');
+        return "Why, hello there " . params('name');
     };
 
     dance;
