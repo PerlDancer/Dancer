@@ -16,6 +16,7 @@ use vars qw(@EXPORT);
   register
   register_plugin
   plugin_setting
+  plugin_args
 );
 
 sub register($&);
@@ -23,6 +24,8 @@ sub register($&);
 my $_keywords = {};
 
 sub add_hook { Dancer::Hook->new(@_) }
+
+sub plugin_args { (undef, @_) }
 
 sub plugin_setting {
     my $plugin_orig_name = caller();
@@ -177,6 +180,21 @@ for B<Dancer::Plugin::Foo::Bar>, use:
   plugins:
     "Foo::Bar":
       key: value
+
+
+=item B<plugin_args>
+
+To easy migration and interoperability between Dancer 1 and Dancer 2
+you can use this method to obtain the arguments or parameters passed
+to a plugin-defined keyword. Although not relevant for Dancer 1 only,
+or Dancer 2 only, plugins, it is useful for universal plugins.
+
+  register foo => sub {
+     my ($self, @args) = plugin_args(@_);
+     ...
+  }
+
+Note that Dancer 1 will return undef as the object reference.
 
 =back
 
