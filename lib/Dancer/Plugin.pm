@@ -19,6 +19,7 @@ use vars qw(@EXPORT);
   plugin_setting
   register_hook
   execute_hooks
+  execute_hook
   plugin_args
 );
 
@@ -42,6 +43,10 @@ sub register_hook {
 }
 
 sub execute_hooks {
+    Dancer::Factory::Hook->instance->execute_hooks(@_);
+}
+
+sub execute_hook {
     Dancer::Factory::Hook->instance->execute_hooks(@_);
 }
 
