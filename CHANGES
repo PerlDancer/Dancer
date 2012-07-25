@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+    * New keyword 'plugin_args' exported by Dancer::Plugin to provide
+      a consistent way with Dancer 2 to obtain arguments from a plugin
+      keyword. (Alberto Simões).
+
 1.3097      08.07.2012
 
     [ ENHANCEMENTS ]
