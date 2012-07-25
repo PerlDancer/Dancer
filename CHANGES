@@ -1,9 +1,14 @@
 {{$NEXT}}
 
+    This is a Dancer 2 plugins migration release. Hopefully, starting
+    with this release, plugins can support Dancer 1 and Dancer 2
+    without much effort.
+
     [ ENHANCEMENTS ]
     * Add UTC timestamp options for logger_format (Alex C - perlpong).
     * Tests can now run in parallel (Richard Simões).
     * dancer_version keyword added (Damien "dams" Krotkine).
+    * plugin_args keyword added (Alberto Simões).
 
 1.3095      01.04.2012
 
