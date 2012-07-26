@@ -43,6 +43,9 @@ sub register_hook {
 }
 
 sub execute_hooks {
+    Dancer::Deprecation->deprecated(reason => "use 'execute_hook'",
+                                    version => '1.3098',
+                                    fatal => 0);
     Dancer::Factory::Hook->instance->execute_hooks(@_);
 }
 
