@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More;
+use Test::More import => ['!pass'];
 
 use Dancer qw(:syntax);
 

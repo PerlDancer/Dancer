@@ -1,5 +1,17 @@
 {{$NEXT}}
 
+1.3098      28.07.2012
+
+    [ ENHANCEMENTS ]
+    * New keyword 'plugin_args' exported by Dancer::Plugin to provide
+      a consistent way with Dancer 2 to obtain arguments from a plugin
+      keyword. (Alberto Simões).
+    * Add 'execute_hook' and deprecate 'execute_hooks' for homogeneity
+      with Dancer 2.
+
+    [ DOCUMENTATION ]
+    * Fix escaping on some docs (Stefan Hornburg @racke).
+
 1.3097      08.07.2012
 
     [ ENHANCEMENTS ]
@@ -35,7 +47,7 @@
     * Avoid potential crash in t/14_serializer/06_api.t if tmp dir is replaced
       when %ENV gets cleared (Adam Kennedy)
     * Properly initialize %callbacks to default empty hashref  in _send_file if 
-      not provided (Greg Mullen)
+      not provided (Gary Mullen)
 
     [ ENHANCEMENTS ]
     * Add UTC timestamp options for logger_format (Alex C - perlpong).

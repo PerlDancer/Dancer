@@ -243,7 +243,7 @@ This registers a new custom exception. To use it, do:
 
   raise InvalidCredentials => "user Herbert not found";
 
-The exception message can be retrieved with the C<$exception->message> method, and we'll be
+The exception message can be retrieved with the C<$exception-E<gt>message> method, and we'll be
 C<"invalid credentials : user Herbert not found"> (see methods in L<Dancer::Exception::Base>)
 
   # complex exception
