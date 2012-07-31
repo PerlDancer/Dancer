@@ -29,11 +29,11 @@ use vars qw(@EXPORT);
   log_error
 );
 
-sub log_core(&)    { Dancer::Logger::core->($_[0]->())    }
-sub log_debug(&)   { Dancer::Logger::debug->($_[0]->())   }
-sub log_info(&)    { Dancer::Logger::info->($_[0]->())    }
-sub log_warning(&) { Dancer::Logger::warning->($_[0]->()) }
-sub log_error(&)   { Dancer::Logger::error->($_[0]->())   }
+sub log_core(&@)    { Dancer::Logger::core->(   shift->(@_)); @_ }
+sub log_debug(&@)   { Dancer::Logger::debug->(  shift->(@_)); @_ }
+sub log_info(&@)    { Dancer::Logger::info->(   shift->(@_)); @_ }
+sub log_warning(&@) { Dancer::Logger::warning->(shift->(@_)); @_ }
+sub log_error(&@)   { Dancer::Logger::error->(  shift->(@_)); @_ }
 
 sub register($&);
 
