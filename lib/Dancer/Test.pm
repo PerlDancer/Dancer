@@ -413,7 +413,7 @@ __END__
 
 Dancer::Test - Test helpers to test a Dancer application
 
-=head1 SYNOPSYS
+=head1 SYNOPSIS
 
     use strict;
     use warnings;
