@@ -8,6 +8,8 @@ use Cwd 'realpath';
 our $VERSION   = '1.3098';
 our $AUTHORITY = 'SUKRIA';
 
+$VERSION = eval $VERSION;
+
 use Dancer::App;
 use Dancer::Config;
 use Dancer::Cookies;
