@@ -8,6 +8,8 @@
       keyword. (Alberto Simões).
     * Add 'execute_hook' and deprecate 'execute_hooks' for homogeneity
       with Dancer 2.
+    * send_file will do the right thing if given an IO::Scalar object
+      (David Precious, prompted by Ilya Chesnokov).
 
     [ DOCUMENTATION ]
     * Fix escaping on some docs (Stefan Hornburg @racke).
