@@ -169,10 +169,10 @@ The default session name is "dancer_session". This can be set in your config fil
 
 =head3 session_domain
 
-    Allows you to set the domain property on the cookie, which will
-    override the default.  This is useful for setting the session cookie's
-    domain to something like '.domain.com' so that the same cookie will
-    be applicable and usable across subdomains of a base domain.
+Allows you to set the domain property on the cookie, which will
+override the default.  This is useful for setting the session cookie's
+domain to something like C<.domain.com> so that the same cookie will
+be applicable and usable across subdomains of a base domain.
 
 =head3 session_secure
 
