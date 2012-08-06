@@ -592,6 +592,13 @@ This setting defaults to 1 and instructs the session cookie to be
 created with the C<HttpOnly> option active, meaning that JavaScript
 will not be able to access to its value.
 
+=head3 session_domain
+
+Allows you to set the domain property on the cookie, which will
+override the default.  This is useful for setting the session cookie's
+domain to something like C<.domain.com> so that the same cookie will
+be applicable and usable across subdomains of a base domain.
+
 
 =head2 auto_page (boolean)
 
