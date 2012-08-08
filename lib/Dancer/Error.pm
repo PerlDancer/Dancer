@@ -320,7 +320,7 @@ Dancer::Error - class for representing fatal errors
         message => "No such file: `$path'"
     );
 
-    Dancer::Response->set($error->render);
+    $error->render;
 
 =head1 DESCRIPTION
 
