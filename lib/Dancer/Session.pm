@@ -49,6 +49,7 @@ sub read {
 sub write {
     my ($class, $key, $value) = @_;
     return unless $key;
+    die "Can't store to session key with name 'id'" if ($key eq 'id');
     my $session = get_current_session();
     $session->{$key} = $value;
 
