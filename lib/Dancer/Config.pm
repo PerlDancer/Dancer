@@ -162,7 +162,11 @@ sub init_confdir {
 
 sub init_envdir {
     return setting('envdir') if setting('envdir');
-    setting envdir => $ENV{DANCER_ENVDIR} || path(setting('appdir'), 'environments');
+    my $appdirpath = defined setting('appdir')                 ?
+                     path( setting('appdir'), 'environments' ) :
+                     path('environments');
+
+    setting envdir => $ENV{DANCER_ENVDIR} || $appdirpath;
 }
 
 sub load {
