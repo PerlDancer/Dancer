@@ -109,7 +109,7 @@ $cache->{'cache_array'} = [];
     cmp_ok( $cache->route_cache_paths, '==', 10, 'Path limit to 10' );
 
     # because we use a FIFO method, we know which ones they are
-    my @expected_paths = map { [ 'get', "/$_" ] } 'q' .. 'z';
+    my @expected_paths = map { [ 'get', "/$_", 'main' ] } 'q' .. 'z';
 
     is_deeply(
         $cache->{'cache_array'},
@@ -153,7 +153,7 @@ SKIP: {
 
     # because we use a FIFO method, we know which ones they are
     shift @paths;
-    my @expected_paths = map { [ 'get', $_ ] } @paths;
+    my @expected_paths = map { [ 'get', $_, 'main' ] } @paths;
 
     is_deeply(
         $cache->{'cache_array'},
