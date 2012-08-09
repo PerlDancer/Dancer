@@ -219,11 +219,15 @@ sub get_file_response {
 
     my $app = Dancer::App->current;
     # TODO: this should be later removed with a check whether the file exists
-    # and then returning a 404, path_or_empty should be removed
-    my $static_file = path_or_empty( $app->setting('public'), $path_info );
+    # and then returning a 404
+    my $public = defined $app->setting('public') ?
+                 $app->setting('public')         :
+                 '';
+
+    my $static_file = path( $public, $path_info );
 
     return if ( !$static_file
-        || index( $static_file, path( $app->setting('public') ) ) != 0 );
+        || index( $static_file, ( path($public) || '' ) ) != 0 );
 
     return Dancer::Renderer->get_file_response_for_path( $static_file, undef,
         $request->content_type );
