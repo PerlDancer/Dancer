@@ -43,6 +43,7 @@ use vars '@EXPORT';
   response_is_file
   response_headers_are_deeply
   response_headers_include
+  response_redirect_location_is
 
   dancer_response
   get_response
@@ -259,6 +260,15 @@ sub response_headers_include {
     return $tb->ok(_include_in_headers($response->headers_to_array, $expected), $test_name);
 }
 
+sub response_redirect_location_is {
+    my ($req, $expected, $test_name) = @_;
+    $test_name ||= "redirect location looks good for @$req";
+    my $tb = Test::Builder->new;
+
+    my $response = _req_to_response($req);
+    return  $tb->is_eq($response->header('location'), $expected, $test_name);
+}
+
 
 # make sure the given header sublist is included in the full headers array
 sub _include_in_headers {
@@ -413,7 +423,7 @@ __END__
 
 Dancer::Test - Test helpers to test a Dancer application
 
-=head1 SYNOPSYS
+=head1 SYNOPSIS
 
     use strict;
     use warnings;
@@ -549,6 +559,13 @@ Asserts that the response headers data structure equals the one given.
 Asserts that the response headers data structure includes some of the defined ones.
 
     response_headers_include [GET => '/'], [ 'Content-Type' => 'text/plain' ];
+
+=head2 response_redirect_location_is([$method, $path], $expected, $test_name)
+
+Asserts that the location header send with a 302 redirect equals to the C<$expected>
+location.
+
+    response_redirect_location_is [GET => '/'], 'http://localhost/index.html';
 
 =head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers, files => [{filename => '/path/to/file', name => 'my_file'}] })
 

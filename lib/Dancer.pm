@@ -5,8 +5,10 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3098';
+our $VERSION   = '1.3099';
 our $AUTHORITY = 'SUKRIA';
+
+$VERSION = eval $VERSION;
 
 use Dancer::App;
 use Dancer::Config;
@@ -36,6 +38,7 @@ use Dancer::Continuation::Route::FileSent;
 use Dancer::Continuation::Route::Templated;
 
 use File::Spec;
+use Scalar::Util;
 
 use base 'Exporter';
 
@@ -378,6 +381,11 @@ sub _send_file {
 
     if (exists($options{content_type})) {
         $request->content_type($options{content_type});
+    }
+
+    # If we're given an IO::Scalar object, DTRT (take the scalar ref from it)
+    if (Scalar::Util::blessed($path) && $path->isa('IO::Scalar')) {
+        $path = $path->sref;
     }
 
     my $resp;

@@ -3,6 +3,7 @@ package Dancer::Template::Abstract;
 use strict;
 use warnings;
 use Carp;
+use Storable 'dclone';
 
 use Dancer::Logger;
 use Dancer::Factory::Hook;
@@ -145,18 +146,18 @@ sub _prepare_tokens_options {
     $tokens ||= {};
     $tokens->{perl_version}   = $];
     $tokens->{dancer_version} = $Dancer::VERSION;
-    $tokens->{settings}       = Dancer::Config->settings;
+    $tokens->{settings}       = dclone(Dancer::Config->settings);
 
     # If we're processing a request, also add the request object, params and
     # vars as tokens:
     if (my $request = Dancer::SharedData->request) {
         $tokens->{request}        = $request;
-        $tokens->{params}         = $request->params;
-        $tokens->{vars}           = Dancer::SharedData->vars;
+        $tokens->{params}         = dclone($request->params);
+        $tokens->{vars}           = dclone(Dancer::SharedData->vars);
     }
 
     Dancer::App->current->setting('session')
-      and $tokens->{session} = Dancer::Session->get;
+      and $tokens->{session} = dclone(Dancer::Session->get);
 
     return ($tokens, $options);
 }

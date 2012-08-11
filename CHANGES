@@ -1,5 +1,30 @@
 {{$NEXT}}
 
+1.3099      11.08.2012
+
+    [ BUG FIXES ]
+    * GH #683: Fix uninitialized warnings. (Sawyer X)
+    * GH #700: Take into account the app name in route caching. (Perlover)
+    * GH #775: Clone variables for templates.
+      (Reported by Wanradt Koell, fixed by David Precious, Sawyer X)
+    * GH #776: get should be default to get/head even it's inside any.
+      (Fayland Lam)
+    * GH #788: Make sure ID key in sessions are clobbered. (kocoureasy)
+    * Fix uninitialized variables in config file path. (Sawyer X)
+    * GH #809: Require all necessarily modules in Dancer::Config.
+      (John Wittkoski)
+
+    [ ENHANCEMENTS ]
+    * GH #799: New test function: response_redirect_location_is. (Martin Schut)
+    * send_file now accepts an IO::Scalar. (David Precious)
+    * Clean up $VERSION. (Damien Krotkine)
+
+    [ DOCUMENTATION ]
+    * GH #784: Synopsis fix in Dancer::Error. (Alex C)
+    * Document session_domain in Dancer::Config. (David Precious)
+    * Pod fixes in abstract session. (David Precious)
+    * Synopsis fix in Dancer::Test. (Stefan Hornburg <Racke>)
+
 1.3098      28.07.2012
 
     [ ENHANCEMENTS ]
@@ -8,6 +33,8 @@
       keyword. (Alberto Simões).
     * Add 'execute_hook' and deprecate 'execute_hooks' for homogeneity
       with Dancer 2.
+    * send_file will do the right thing if given an IO::Scalar object
+      (David Precious, prompted by Ilya Chesnokov).
 
     [ DOCUMENTATION ]
     * Fix escaping on some docs (Stefan Hornburg @racke).
