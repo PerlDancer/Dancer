@@ -1,6 +1,7 @@
 {{$NEXT}}
 
 1.3099      11.08.2012
+
     [ BUG FIXES ]
     * GH #683: Fix uninitialized warnings. (Sawyer X)
     * GH #700: Take into account the app name in route caching. (Perlover)
