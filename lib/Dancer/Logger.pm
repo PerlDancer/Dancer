@@ -27,7 +27,7 @@ sub _serialize {
                           ->Indent(0)
                           ->Sortkeys(1)
                           ->Dump()
-            : (defined($_) ? $_ : '')
+            : (defined($_) ? $_ : 'undef')
     } @vars;
 }
 
