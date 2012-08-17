@@ -31,19 +31,19 @@ for easy access).
 To create a new Dancer application, use the helper script "dancer" provided
 with this distribution:
 
-    $ dancer -a mywebapp
-    + mywebapp 
-    + mywebapp/config.yml
-    + mywebapp/views
-    + mywebapp/views/layouts
+    $ dancer -a MyWeb::App
+    + MyWeb-App/bin
+    + MyWeb-App/bin/app.pl
+    + MyWeb-App/config.yml
+    + MyWeb-App/environments
     [..]
 
-You then have a new Dancer application in 'mywebapp', which is already a
+You then have a new Dancer application in 'MyWeb::App', which is already a
 functioning "Hello World" application, ready for you to work upon.
 
 Here is an example of a webapp built with Dancer:
 
-    # webapp.pl
+    # MyWeb-App/bin/app.pl
     #!/usr/bin/perl
 
     use Dancer;
@@ -64,7 +64,7 @@ Here is an example of a webapp built with Dancer:
 
 When running this script, a webserver is running and ready to serve:    
 
-    $ perl ./webapp.pl
+    $ perl ./bin/app.pl
     >> Listening on 0.0.0.0:3000
     == Entering the development dance floor ...
 
@@ -105,7 +105,7 @@ This is a work in progress.
 Dancer supports PSGI/Plack, to run a Dancer app with PSGI/Plack just bootstrap
 your application with the helper script `dancer' like the following:
 
-	$ dancer -a MyWebApp
+	$ dancer -a MyWeb::App
 
 You'll find a file in there called `app.psgi', use this file to configure your
 PSGI environment, as explained in the revelant documentation of your PSGI
