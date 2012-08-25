@@ -1483,40 +1483,43 @@ the framework for a new Dancer application.
 
 Here is an application created with dancer:
 
-    $ dancer -a mywebapp
-    + mywebapp
-    + mywebapp/bin
-    + mywebapp/bin/app.pl
-    + mywebapp/config.yml
-    + mywebapp/environments
-    + mywebapp/environments/development.yml
-    + mywebapp/environments/production.yml
-    + mywebapp/views
-    + mywebapp/views/index.tt
-    + mywebapp/views/layouts
-    + mywebapp/views/layouts/main.tt
-    + mywebapp/lib
-    + mywebapp/lib/mywebapp.pm
-    + mywebapp/public
-    + mywebapp/public/css
-    + mywebapp/public/css/style.css
-    + mywebapp/public/css/error.css
-    + mywebapp/public/images
-    + mywebapp/public/500.html
-    + mywebapp/public/404.html
-    + mywebapp/public/dispatch.fcgi
-    + mywebapp/public/dispatch.cgi
-    + mywebapp/public/javascripts
-    + mywebapp/public/javascripts/jquery.js
-    + mywebapp/Makefile.PL
-    + mywebapp/t
-    + mywebapp/t/002_index_route.t
-    + mywebapp/t/001_base.t
+    $ dancer -a MyWeb::App
+    + MyWeb-App
+	+ MyWeb-App/bin
+	+ MyWeb-App/bin/app.pl
+	+ MyWeb-App/config.yml
+	+ MyWeb-App/environments
+	+ MyWeb-App/environments/development.yml
+	+ MyWeb-App/environments/production.yml
+	+ MyWeb-App/views
+	+ MyWeb-App/views/index.tt
+	+ MyWeb-App/views/layouts
+	+ MyWeb-App/views/layouts/main.tt
+	+ MyWeb-App/MANIFEST.SKIP
+	+ MyWeb-App/lib
+	+ MyWeb-App/lib/MyWeb
+	+ MyWeb-App/lib/MyWeb/App.pm
+	+ MyWeb-App/public
+	+ MyWeb-App/public/css
+	+ MyWeb-App/public/css/style.css
+	+ MyWeb-App/public/css/error.css
+	+ MyWeb-App/public/images
+	+ MyWeb-App/public/500.html
+	+ MyWeb-App/public/404.html
+	+ MyWeb-App/public/dispatch.fcgi
+	+ MyWeb-App/public/dispatch.cgi
+	+ MyWeb-App/public/javascripts
+	+ MyWeb-App/public/javascripts/jquery.js
+	+ MyWeb-App/t
+	+ MyWeb-App/t/002_index_route.t
+	+ MyWeb-App/t/001_base.t
+	+ MyWeb-App/Makefile.PL
+
 
 The application is ready to serve:
 
-    $ cd mywebapp
-    $ ./mywebapp.pl
+    $ cd MyWeb-App
+    $ ./bin/app.pl
     >> Listening on 127.0.0.1:3000
     == Entering the development dance floor ...
 

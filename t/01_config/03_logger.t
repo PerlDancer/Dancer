@@ -14,7 +14,7 @@ my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 
 eval { set logger => 'foobar' };
-like($@, qr/unknown logger/, 'invalid logger detected');
+like($@, qr/unable to load logger/, 'invalid logger detected');
 
 ok(set(logger => 'file'), 'file-based logger correctly set');
 

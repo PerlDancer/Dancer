@@ -353,17 +353,25 @@ Content-Type: text/plain
 
     my ($params, $body, $headers) = @$args{qw(params body headers)};
 
-    if ($headers and (my @headers = @$headers)) {
+    my $headers_obj;
+    if ($headers  && _isa($headers, 'HTTP::Headers')){
+        $headers_obj = $headers;
+        if ($headers->header('Content_Type')) {
+            $ENV{'CONTENT_TYPE'} = $headers->remove_header('Content_Type');
+        }
+    }
+    elsif ($headers and (my @headers = @$headers)) {
         while (my $h = shift @headers) {
             if ($h =~ /content-type/i) {
                 $ENV{'CONTENT_TYPE'} = shift @headers;
             }
         }
+        $headers_obj = HTTP::Headers->new(@$headers);
     }
 
     my $request = Dancer::Request->new_for_request(
         $method => $path,
-        $params, $body, HTTP::Headers->new(@$headers)
+        $params, $body, $headers_obj
     );
 
     # first, reset the current state

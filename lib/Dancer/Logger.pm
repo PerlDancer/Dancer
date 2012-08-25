@@ -20,14 +20,14 @@ sub _serialize {
     my @vars = @_;
 
     return join q{}, map {
-        ref $_                      ?
-            Data::Dumper->new([$_])
-                        ->Terse(1)
-                        ->Purity(1)
-                        ->Indent(0)
-                        ->Sortkeys(1)
-                        ->Dump()    :
-            $_
+        ref $_ 
+            ? Data::Dumper->new([$_])
+                          ->Terse(1)
+                          ->Purity(1)
+                          ->Indent(0)
+                          ->Sortkeys(1)
+                          ->Dump()
+            : (defined($_) ? $_ : 'undef')
     } @vars;
 }
 

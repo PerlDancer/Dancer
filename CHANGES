@@ -1,5 +1,18 @@
 {{$NEXT}}
 
+1.3100      25.08.2012
+
+    [ BUG FIXES ]
+    * GH #816: Improve wording when failed to load engine. (Sawyer X)
+    * GH #817: Fix CODE reference uncloned using Clone::clone.
+      (David Previous, Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * GH #755: HTTP::Headers accepted by dancer_response. (Roberto Patriarca)
+
+    [ DOCUMENTATION ]
+    * GH #818: Use "MyWeb::App" instead of "mywebapp" in examples. (pdl)
+
 1.3099      11.08.2012
 
     [ BUG FIXES ]
