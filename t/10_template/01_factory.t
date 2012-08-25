@@ -15,7 +15,7 @@ use_ok 'Dancer::Template';
 ok(Dancer::Template->init, "template init with undef setting");
 
 eval { setting template => 'FOOOBAR' };
-like $@, qr/unknown template engine/, "cannot load unknown template engine";
+like $@, qr/unable to load template engine/, "cannot load unknown template engine";
 
 setting template => 'simple';
 ok(Dancer::Template->init, "template init with 'simple' setting");

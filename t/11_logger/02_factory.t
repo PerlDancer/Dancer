@@ -20,7 +20,7 @@ my $engine = Dancer::Logger->logger;
 ok !defined($engine), "engine not defined";
 
 eval { Dancer::Logger->init('foo') };
-like $@, qr/unknown logger engine 'foo'/,
+like $@, qr/unable to load logger engine 'foo'/,
     'unknown logger engine detected';
 
 ok(Dancer::Logger->init('file'), 'logger file initialized');
