@@ -181,7 +181,7 @@ A Dancer plugin inherits from Dancer::Plugin and Exporter transparently.
 
 =item B<register_hook>
 
-Allows a plugin to delcare a list of supported hooks. Any hook declared like so
+Allows a plugin to declare a list of supported hooks. Any hook declared like so
 can be executed by the plugin with C<execute_hooks>.
 
     register_hook 'foo'; 
