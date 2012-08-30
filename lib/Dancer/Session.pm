@@ -124,7 +124,7 @@ and C</home> actions using the session engine.
         # /login
         if (not session('user_id')) {
             redirect '/login';
-        a
+        }
     };
 
 Of course, you probably don't want to have to duplicate the code to check
