@@ -3,12 +3,12 @@ package Dancer::Template::Abstract;
 use strict;
 use warnings;
 use Carp;
-use Clone;
 
 use Dancer::Logger;
 use Dancer::Factory::Hook;
 use Dancer::FileUtils 'path';
 use Dancer::Exception qw(:all);
+use Dancer::ModuleLoader 'load';
 
 use base 'Dancer::Engine';
 
@@ -71,7 +71,7 @@ sub layout {
 
 sub apply_renderer {
     my ($self, $view, $tokens) = @_;
-
+	
     ($tokens, undef) = _prepare_tokens_options($tokens);
 
     $view = $self->view($view);
@@ -99,7 +99,7 @@ sub apply_renderer {
 
 sub apply_layout {
     my ($self, $content, $tokens, $options) = @_;
-
+	
     ($tokens, $options) = _prepare_tokens_options($tokens, $options);
 
     # If 'layout' was given in the options hashref, use it if it's a true value,
@@ -141,23 +141,36 @@ sub _prepare_tokens_options {
     my ($tokens, $options) = @_;
 
     $options ||= {};
-
+	
+	#create variable clone function depending on the setting. this can then be used without
+	#having to check the setting each time we copy
+	my $clonefunc;
+	if (Dancer::App->current->setting('ClonewithClone')) {
+		die "Clone is needed by Dancer::Template::Abstract with Clone with Clone enabled" 
+												unless Dancer::ModuleLoader->load('Clone');
+		$clonefunc = \&Clone::clone;
+	} else {
+		Dancer::ModuleLoader->load('Storable');
+		$clonefunc = \&Storable::dclone;
+	}
+	
     # these are the default tokens provided for template processing
     $tokens ||= {};
     $tokens->{perl_version}   = $];
     $tokens->{dancer_version} = $Dancer::VERSION;
-    $tokens->{settings}       = Clone::clone(Dancer::Config->settings);
+    $tokens->{settings}       = $clonefunc->(Dancer::Config->settings);
 
     # If we're processing a request, also add the request object, params and
     # vars as tokens:
     if (my $request = Dancer::SharedData->request) {
         $tokens->{request}        = $request;
-        $tokens->{params}         = Clone::clone($request->params);
-        $tokens->{vars}           = Clone::clone(Dancer::SharedData->vars);
+		#oring so perl is forced to do a clone
+        $tokens->{params}         = $clonefunc->($request->params || \{});
+        $tokens->{vars}           = $clonefunc->(Dancer::SharedData->vars);
     }
 
     Dancer::App->current->setting('session')
-      and $tokens->{session} = Clone::clone(Dancer::Session->get);
+      and $tokens->{session} = $clonefunc->(Dancer::Session->get);
 
     return ($tokens, $options);
 }
