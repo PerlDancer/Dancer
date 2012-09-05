@@ -1,5 +1,11 @@
 {{$NEXT}}
 
+    [ ENHANCEMENTS ]
+    * The version of wallflower shipped with Dancer has been removed.
+      It was well out of date.  BooK is now maintaining it as a more general
+      solution under the name App::Wallflower. (BooK)
+
+
 1.3100      25.08.2012
 
     [ BUG FIXES ]
