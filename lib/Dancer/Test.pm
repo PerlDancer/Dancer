@@ -366,8 +366,8 @@ Content-Type: text/plain
                 $ENV{'CONTENT_TYPE'} = shift @headers;
             }
         }
-        $headers_obj = HTTP::Headers->new(@$headers);
     }
+    $headers_obj ||= HTTP::Headers->new(@$headers);
 
     my $request = Dancer::Request->new_for_request(
         $method => $path,
