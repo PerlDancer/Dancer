@@ -789,6 +789,171 @@ L<error|Dancer/error> or L<info|Dancer/info> with your message:
 
     debug "This is a debug message from my app.";
 
+=head1 HANDLING LOGIN
+
+=head2 Advanced login with OpenID
+
+Some prerequisites:
+First, you have to add some storage to you application that maps OpenID identities
+to local user-ids. This is commonly done with a database table, two fields are minumum.
+Here, as a plus, we keep a local nickname:
+
+	create table if not exists `users` (
+		`id` integer primary key AUTOINCREMENT,
+		`openid_identity` varchar(128) null
+		`nickname` varchar(32) null);
+		);
+
+Second, you have to setup two special runmodes, one that collects user input (the OpenID
+URL) and logs the user in, in case we've seen this OpenID before, and one that handles
+local registration in case we haven't seen this OpenID before.
+
+Below is a working outline for such routes. In case you use these snippets, please take
+some time to review the code and send your improvements to the Dancer project. This is
+beta quality code!
+
+	any ['get', 'post'] => '/login/openid' => sub {
+		my $err;
+
+		if( param('seen_before') ){
+			debug("/login/openid: returning user: ".Dumper( scalar(params()) ));
+			my $csr = Net::OpenID::Consumer->new(
+				ua		=> LWPx::ParanoidAgent->new,
+			#	cache		=> Cache::File->new( cache_root => '/tmp/cache/is/optional' ),
+				args		=> scalar( params() ),
+				consumer_secret	=> Digest::SHA1::sha1_hex(setting('secret').'salt-could-be-better'),
+				required_root	=> request->base,
+				assoc_options	=> [ max_encrypt => 1 ],
+			);
+
+			if($csr->is_server_response){
+				if($csr->setup_needed){
+					# (OpenID 2) retry request in checkid_setup mode
+					# (OpenID 1) redirect/link/popup user to $csr->user_setup_url
+					$err = 'Error "setup_needed".'; # this case is "todo"
+				}elsif($csr->user_cancel){
+					$err = 'User hit cancel';
+				}elsif(my $verified_identity = $csr->verified_identity){
+					my $verified_url = $verified_identity->url;
+					debug('/login/openid: successfully verified user display:'.$verified_identity->display .', identity:'.$verified_identity->{identity});
+
+					## check if nickname exists
+					my $users = database->prepare("SELECT id,nickname,password FROM users WHERE openid_identity = ?; ") or error database->errstr;
+					$users->execute( $verified_identity->{identity} );
+					my $user = $users->fetchrow_hashref;	# with SQLite, rows is only available after fetchrow
+
+					if( $users->rows ){
+						session 'user' => {
+							id		=> $user->{id},
+							nickname	=> $user->{nickname},
+							openid		=> $verified_identity->{identity},
+						};
+						return redirect "/users/$user->{id}";
+					}else{			
+						my $openid = {
+							verified	=> 1,
+							identity	=> $verified_identity->{identity},
+							display		=> $verified_identity->display,
+						};
+
+						forward("/openid_registration", { openid => $openid } );
+					}
+				}else{
+					$err = 'Error validating supplied identity: '. $csr->err;
+				}
+			}else{
+			      $err = 'Your OpenId provider didn\'t return an OpenID message';
+			}
+		}elsif ( request->method() eq "POST") {
+			if( param('openid_url') ){
+				my $csr = Net::OpenID::Consumer->new(
+					ua		=> LWPx::ParanoidAgent->new,
+				#	cache		=> Cache::File->new( cache_root => '/tmp/cache/is/optional' ),
+					consumer_secret	=> Digest::SHA1::sha1_hex(setting('secret').'salt-could-be-better'),
+					required_root	=> request->base,
+					assoc_options	=> [ max_encrypt => 1 ],
+				);
+
+				debug("/login/openid: issuing OpenID claimed_identity request");
+				my $claimed_identity = $csr->claimed_identity( param('openid_url') );
+				if($claimed_identity) {
+					debug("/login/openid: OpenID claimed_identity request OK");
+					my $check_url = $claimed_identity->check_url(
+						return_to	=> request->uri_base .'/login/openid?seen_before=1',
+						trust_root	=> request->base,
+						delayed_return	=> 1,
+					);
+					debug("/login/openid: user redirected to OpenID provider...");
+					return redirect $check_url;
+				}else{
+					$err = "This OpenID seems invalid! ". $csr->err;
+				}
+			}else{
+				$err = 'Error: no OpenID URL';
+			}
+		}
+
+		# display login form
+		template 'login-openid', {
+			err		=> $err,
+			session_user	=> ( session('user') ),
+		};
+	};
+
+And the local-registration route:
+
+	any ['get', 'post'] => '/registration/openid' => sub {
+		if( param('openid') && param('openid')->{verified} ){
+			session 'openid' => param('openid');	## sadly, we couldn't set session earlier, as it doesn't persist over forward()
+		}elsif( session('openid') && session('openid')->{verified} ){
+			# ok
+		}else{
+			return 'Forbidden';
+		}
+	
+		my @err;
+	
+		if ( request->method() eq "POST" ) {
+			## check if nickname exists
+			my $users = database->prepare("SELECT nickname FROM users WHERE nickname = ?; ") or error database->errstr;
+			$users->execute( param('nickname') );
+			$users->fetchrow_hashref;	# with SQLite, rows is only available after fetchrow
+	
+			if( $users->rows ){
+				push(@err,'Username '. param('nickname') .' is taken. Sorry.');
+			}
+	
+			## if all checks succeed, insert new user and redirect
+			if(!@err){
+				debug('Adding OpenID user:'.Dumper(session('openid')));
+				my $so = session('openid');
+				my $users = database->prepare("INSERT INTO users (openid_identity,nickname) VALUES (?,?) ; ") or error database->errstr;
+				$users->execute( $so->{identity}, param('nickname') );
+				my $user_id = database->sqlite_last_insert_rowid();
+	
+				## log user in
+				session 'user' => {
+					id		=> $user_id,
+					nickname	=> param('nickname'),
+				};
+	
+				return redirect '/users/'.$user_id;
+			}
+		}
+	
+		# display registration form
+		template 'registtration-openid' => {
+			'err' => join("<br>",@err),
+			nickname=> param('openid')->{nickname} ? param('openid')->{nickname} : param('openid')->{display},
+		};
+	};
+
+As a note, we are not using the Net::OpenID::Consumer recommended way of handling the
+returning user the "callback" way here.
+
+Again: This is beta quality code! Help us improve this section or to roll it into
+a working example application.
+
 =head1 RESTING
 
 =head2 Writing a REST application
