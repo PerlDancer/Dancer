@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More;
 
-plan tests => 30;
+plan tests => 35;
 
 use Dancer qw/ :syntax :tests /;
 use Dancer::Test;
@@ -45,6 +45,10 @@ get '/query' => sub {
 
 post '/upload' => sub {
 	return upload('payload')->content;
+};
+
+any '/headers' => sub {
+    return request->headers;
 };
 
 my $resp = dancer_response GET => '/marco';
@@ -103,3 +107,13 @@ $r = dancer_response(
 );
 is $r->{content}, $data, "file data uploaded";
 
+$r = dancer_response(GET => '/headers');
+isa_ok $r->content, 'HTTP::Headers', 'The request headers';
+
+$r = dancer_response(POST => '/headers', { headers => [ 'Content_Type' => "text/plain" ] });
+isa_ok $r->content, 'HTTP::Headers', 'The request headers';
+is $r->content->header('Content-Type'), "text/plain", "Content-Type preserved";
+
+$r = dancer_response(POST => '/headers', { headers => HTTP::Headers->new('Content-Type' => "text/plain" ) });
+isa_ok $r->{content}, 'HTTP::Headers', 'The request headers';
+is $r->content->header('Content-Type'), "text/plain", "Content-Type preserved";
