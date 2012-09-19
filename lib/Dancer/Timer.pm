@@ -2,7 +2,7 @@ package Dancer::Timer;
 
 use strict;
 use warnings;
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 use Time::HiRes 'gettimeofday', 'tv_interval';
 
 use Dancer::ModuleLoader;

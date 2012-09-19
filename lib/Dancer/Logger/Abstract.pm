@@ -3,7 +3,7 @@ package Dancer::Logger::Abstract;
 use strict;
 use warnings;
 use Carp;
-use base 'Dancer::Engine';
+use parent 'Dancer::Engine';
 
 use Dancer::SharedData;
 use Dancer::Timer;

@@ -8,7 +8,7 @@ use Dancer::Template::Simple;
 
 {
     package Foo;
-    use base 'Dancer::Object';
+    use parent 'Dancer::Object';
     Foo->attributes('x', 'y');
 
     sub method { "yeah" }

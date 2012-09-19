@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use HTTP::Server::Simple::PSGI;
-use base 'Dancer::Handler', 'HTTP::Server::Simple::PSGI';
+use parent qw(Dancer::Handler HTTP::Server::Simple::PSGI);
 
 use Dancer::HTTP;
 use Dancer::GetOpt;

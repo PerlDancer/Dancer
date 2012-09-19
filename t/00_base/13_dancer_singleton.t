@@ -9,7 +9,7 @@ my $test_counter = 0;
 
 {
     package MySingleton;
-    use base qw(Dancer::Object::Singleton);
+    use parent 'Dancer::Object::Singleton';
 
     __PACKAGE__->attributes( qw/foo/ );
 

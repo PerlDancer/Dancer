@@ -276,7 +276,7 @@ implement custom status checks.
 
 A basic PSGI service description (usually in /etc/ubic/service/application):
 
-    use parent qw(Ubic::Service::Plack);
+    use parent 'Ubic::Service::Plack';
 
     __PACKAGE__->new(
         server => 'Starman',

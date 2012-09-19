@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 
 use Dancer::Response;
 use Dancer::Renderer;

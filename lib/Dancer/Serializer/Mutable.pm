@@ -3,7 +3,7 @@ package Dancer::Serializer::Mutable;
 use strict;
 use warnings;
 
-use base 'Dancer::Serializer::Abstract';
+use parent 'Dancer::Serializer::Abstract';
 use Dancer::SharedData;
 
 my $serializer = {

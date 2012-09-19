@@ -7,7 +7,7 @@ use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 use Dancer::Exception qw(:all);
 
-use base 'Dancer::Template::Abstract';
+use parent 'Dancer::Template::Abstract';
 
 my $_engine;
 

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
-use base qw(Dancer::Continuation);
+use parent 'Dancer::Continuation';
 
 # A Dancer::Continuation::Route is a continuation exception, that is caught as
 # route execution level (see Dancer::Route::run). It may store a return_value, that

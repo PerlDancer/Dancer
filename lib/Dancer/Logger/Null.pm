@@ -1,7 +1,7 @@
 package Dancer::Logger::Null;
 use strict;
 use warnings;
-use base 'Dancer::Logger::Abstract';
+use parent 'Dancer::Logger::Abstract';
 
 sub _log {1}
 

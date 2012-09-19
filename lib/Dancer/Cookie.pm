@@ -4,7 +4,7 @@ use warnings;
 
 use URI::Escape;
 
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 __PACKAGE__->attributes( qw/name expires domain path secure http_only/ );
 
 sub init {

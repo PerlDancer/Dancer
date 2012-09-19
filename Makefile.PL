@@ -55,6 +55,7 @@ WriteMakefile1(
         'File::Spec'     => '0',
         'Encode'         => '0',
         'Time::HiRes'    => '0', # in core since 5.7
+	'parent'         => '0.223', # dual, in core since 5.10.1
     },
 
     test      => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},

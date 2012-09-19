@@ -3,7 +3,7 @@ package Dancer::Handler::PSGI;
 use strict;
 use warnings;
 use Carp;
-use base 'Dancer::Handler';
+use parent 'Dancer::Handler';
 
 use Dancer::Deprecation;
 use Dancer::GetOpt;

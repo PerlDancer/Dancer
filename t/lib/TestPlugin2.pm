@@ -6,7 +6,7 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::Plugin;
 
-use base qw(Data::Dumper);
+use parent 'Data::Dumper';
 
 register some_other_plugin_keyword => sub {
     42;

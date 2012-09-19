@@ -5,7 +5,7 @@ use Test::More tests => 5;
 {
 
     package test::dancer::deprecated;
-    use base 'Dancer::Object';
+    use parent 'Dancer::Object';
     use Dancer::Deprecation;
 
     sub foo {

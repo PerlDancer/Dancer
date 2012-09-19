@@ -30,7 +30,7 @@ and read logs.
 
 =cut
 
-use base "Dancer::Logger::Abstract";
+use parent 'Dancer::Logger::Abstract';
 
 use Dancer::Logger::Capture::Trap;
 my $Trap = Dancer::Logger::Capture::Trap->new;

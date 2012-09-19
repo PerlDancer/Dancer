@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Dancer::ModuleLoader;
 use Dancer::Exception qw(:all);
-use base 'Dancer::Serializer::Abstract';
+use parent 'Dancer::Serializer::Abstract';
 
 # helpers
 

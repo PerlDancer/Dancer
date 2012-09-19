@@ -2,7 +2,7 @@ package Dancer::Config;
 
 use strict;
 use warnings;
-use base 'Exporter';
+use parent 'Exporter';
 use vars '@EXPORT_OK';
 
 use Dancer::Config::Object 'hashref_to_object';

@@ -2,7 +2,7 @@ package Dancer::MIME;
 
 use strict;
 use warnings;
-use base 'Dancer::Object::Singleton';
+use parent 'Dancer::Object::Singleton';
 
 use Dancer::Config;
 
