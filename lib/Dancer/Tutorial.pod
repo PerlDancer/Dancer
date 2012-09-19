@@ -29,8 +29,8 @@ or L<Bottle|http://bottle.paws.de/docs/dev/index.html> I enjoyed the way they ex
 which was a little more involved that a trivial example.
 
 Using the
-L<Flaskr|http://github.com/mitsuhiko/flask/tree/master/examples/flaskr/> sample
-application as my inspiration (OK, shamelessly plagiarised) I
+L<Flaskr|https://github.com/mitsuhiko/flask/tree/master/examples/flaskr/>
+sample application as my inspiration (OK, shamelessly plagiarised) I
 translated that application to the Dancer framework so I could better understand how Dancer worked. (I'm learning
 it too!)
 
@@ -481,7 +481,7 @@ http://perldancer.org
 
 =item *
 
-http://github.com/sukria/Dancer
+https://github.com/sukria/Dancer
 
 =item * 
 

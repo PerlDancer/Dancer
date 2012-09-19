@@ -123,7 +123,7 @@ This module has been written by Alexis Sukrieh <sukria@cpan.org>
 =head1 SOURCE CODE
 
 The source code for this module is hosted on GitHub
-L<http://github.com/sukria/Dancer>
+L<https://github.com/sukria/Dancer>
 
 =head1 LICENSE
 

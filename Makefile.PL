@@ -29,8 +29,8 @@ WriteMakefile1(
 
     META_MERGE => {
         resources => {
-            repository => 'http://github.com/sukria/Dancer',
-            bugtracker => 'http://github.com/sukria/Dancer/issues',
+            repository => 'https://github.com/sukria/Dancer',
+            bugtracker => 'https://github.com/sukria/Dancer/issues',
             homepage   => 'http://perldancer.org/',
         },
     },
