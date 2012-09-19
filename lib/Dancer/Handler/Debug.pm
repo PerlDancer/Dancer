@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use HTTP::Headers;
-use HTTP::Server::Simple::PSGI;
 use parent qw(Dancer::Object Dancer::Handler HTTP::Server::Simple::PSGI);
 
 use Dancer::Config 'setting';
