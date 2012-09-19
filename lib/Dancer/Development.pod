@@ -100,12 +100,12 @@ A good way to help the project is to find a failing build log on the CPAN
 testers: L<http://www.cpantesters.org/distro/D/Dancer.html>
 
 If you find a failing test report, feel free to report it as a GitHub issue:
-L<http://github.com/sukria/Dancer/issues>.
+L<https://github.com/sukria/Dancer/issues>.
 
 =head2 Reporting Bugs
 
 We prefer to have all our bug reports on GitHub, in the issues section:
-L<http://github.com/sukria/Dancer/issues>. It's possible though to report bugs
+L<https://github.com/sukria/Dancer/issues>. It's possible though to report bugs
 on RT as well: L<https://rt.cpan.org/Dist/Display.html?Queue=Dancer>
 
 Please make sure the bug you're reporting does not yet exist. In doubt please
@@ -130,7 +130,7 @@ Here is the workflow for submitting a patch:
 
 =item *
 
-Fork the repository L<http://github.com/sukria/Dancer> (click "Fork")
+Fork the repository L<https://github.com/sukria/Dancer> (click "Fork")
 
 =item *
 
@@ -258,7 +258,7 @@ from users and contributors.
 =head2 Repositories
 
 The official repository is hosted on GitHub at the following location:
-L<http://github.com/sukria/Dancer>.
+L<https://github.com/sukria/Dancer>.
 
 Official developers have write access to this repository, contributors are
 invited to fork it if they want to submit patches, as explained in the
