@@ -152,7 +152,7 @@ sub new_for_request {
     $req->_build_params();
     $req->{_query_params} = $req->{params};
     $req->{body}          = $body    if defined $body;
-    $req->{headers}       = $headers if $headers;
+    $req->{headers}       = $headers || HTTP::Headers->new;
 
     return $req;
 }
