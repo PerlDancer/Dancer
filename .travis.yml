@@ -1,0 +1,14 @@
+language: perl
+
+perl:
+    - "5.16"
+    - "5.14"
+    - "5.12"
+    - "5.10"
+
+install:
+    - cpanm HTTP::Server::Simple::PSGI Template XML::Simple --quiet --notest
+
+script:
+    - perl Makefile.PL
+    - make test
