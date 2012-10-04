@@ -100,7 +100,7 @@ Disable the layout
 
 =item *
 
-The action built is a POST request.
+The action built matches POST / GET requests.
 
 =back
 
