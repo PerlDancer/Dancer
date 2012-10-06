@@ -13,7 +13,7 @@ register 'ajax' => \&ajax;
 
 hook before => sub {
     if (request->is_ajax) {
-        content_type('text/xml');
+        content_type( plugin_setting->{content_type} || 'text/xml' );
     }
 };
 
@@ -90,19 +90,31 @@ The route handler code will be compiled to behave like the following:
 
 =over 4
 
-=item * 
+=item *
 
 Pass if the request header X-Requested-With doesnt equal XMLHttpRequest
 
-=item * 
+=item *
 
 Disable the layout
 
 =item *
 
-The action built is a POST request.
+The action built matches POST / GET requests.
 
 =back
+
+=head1 CONFIGURATION
+
+By default the plugin will use a content-type of 'text/xml' but this can be overrided
+with plugin setting 'content_type'.
+
+Here is example to use JSON:
+
+  plugins:
+    'Ajax':
+      content_type: 'application/json'
+
 
 =head1 AUTHOR
 

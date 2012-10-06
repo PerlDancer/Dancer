@@ -1,5 +1,28 @@
 {{$NEXT}}
 
+1.3110      06.10.2012
+
+    [ BUG FIXES ]
+    * GH #817, #823, #825: Removing Clone from core. Pure-perl environments
+      supported again (Sawyer X).
+    * GH #755, #819, #827, #828: HTTP::Headers accepted by dancer_response
+      (Roberto Patriarca, Dagfinn Ilmari Mannsåker, draxil, perlpong).
+
+    [ ENHANCEMENTS ]
+    * GH #826: The version of wallflower shipped with Dancer has been removed.
+      It was well out of date.  BooK is now maintaining it as a more general
+      solution under the name App::Wallflower. (BooK)
+    * GH #834: Provide empty Headers object if not defined (Yanick Champoux).
+    * GH #840, #841: Dancer::Plugin::Ajax now has content_type (Lee Carmichael).
+
+    [ DOCUMENTATION ]
+    * GH #821: Pointing to new homepage (alfie).
+    * GH #822: Typos in documentation (Stefan Hornburg - racke).
+    * GH #824: Fix in Dancer/Session.pm (pdl).
+    * GH #830: Fix Github links to https:// (Olivier Mengué).
+    * GH #838: Error in Dancer::Plugin::Ajax Documentation (Lee Carmichael).
+    * GH #839: Typo (goblin).
+
 1.3100      25.08.2012
 
     [ BUG FIXES ]

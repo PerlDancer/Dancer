@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3100';
+our $VERSION   = '1.3110';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
@@ -1442,7 +1442,7 @@ it:
             streaming => 1,
             callbacks => {
                 around => sub {
-                    my ( $writer, $content 0 = shift;
+                    my ( $writer, $content ) = @_;
 
                     # we know it's a text file, so we'll just stream
                     # line by line
@@ -1865,8 +1865,9 @@ see the AUTHORS file that comes with this distribution for details.
 =head1 SOURCE CODE
 
 The source code for this module is hosted on GitHub
-L<http://github.com/sukria/Dancer>.  Feel free to fork the repository and submit
-pull requests!  (See L<Dancer::Development> for details on how to contribute).
+L<https://github.com/sukria/Dancer>.  Feel free to fork the repository and
+submit pull requests!  (See L<Dancer::Development> for details on how to
+contribute).
 
 Also, why not L<watch the repo|https://github.com/sukria/Dancer/toggle_watch> to
 keep up to date with the latest upcoming changes?

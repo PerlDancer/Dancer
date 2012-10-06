@@ -92,7 +92,6 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 README
 script/dancer
-script/wallflower
 t/00_base/000_create_fake_env.t
 t/00_base/001_load.t
 t/00_base/002_strict_and_warnings.t

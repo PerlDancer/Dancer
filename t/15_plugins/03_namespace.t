@@ -1,5 +1,5 @@
 # issue #72
-# http://github.com/sukria/Dancer/issues#issue/72
+# https://github.com/sukria/Dancer/issues#issue/72
 
 use Test::More tests => 2, import => ['!pass'];
 
