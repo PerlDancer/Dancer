@@ -3,7 +3,7 @@ package Dancer::Session::YAML;
 use strict;
 use warnings;
 use Carp;
-use base 'Dancer::Session::Abstract';
+use parent 'Dancer::Session::Abstract';
 
 use Fcntl ':flock';
 use Dancer::Logger;

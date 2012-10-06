@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
-use base 'Dancer::Object::Singleton';
+use parent 'Dancer::Object::Singleton';
 use Dancer::Exception qw(:all);
 
 __PACKAGE__->attributes(qw/ hooks registered_hooks/);

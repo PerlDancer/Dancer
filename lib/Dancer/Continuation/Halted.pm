@@ -4,6 +4,6 @@ use strict;
 use warnings;
 use Carp;
 
-use base qw(Dancer::Continuation);
+use parent 'Dancer::Continuation';
 
 1;

@@ -8,7 +8,7 @@ use warnings;
 use Carp;
 use Dancer::Exception qw(:all);
 
-use base qw(Dancer::Object);
+use parent 'Dancer::Object';
 
 # pool of instances (only one per package name)
 my %instances;
@@ -72,7 +72,7 @@ Dancer::Object::Singleton - Singleton base class for Dancer
 
     use strict;
     use warnings;
-    use base 'Dancer::Object::Singleton';
+    use parent 'Dancer::Object::Singleton';
 
     __PACKAGE__->attributes( qw/name value this that/ );
 

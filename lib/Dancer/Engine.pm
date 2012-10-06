@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use Carp;
 use Dancer::ModuleLoader;
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 use Dancer::Exception qw(:all);
 
 # constructor arguments:

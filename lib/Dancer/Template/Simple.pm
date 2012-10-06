@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Carp;
 
-use base 'Dancer::Template::Abstract';
+use parent 'Dancer::Template::Abstract';
 Dancer::Template::Simple->attributes('start_tag', 'stop_tag');
 use Dancer::FileUtils 'read_file_content';
 use Dancer::Exception qw(:all);

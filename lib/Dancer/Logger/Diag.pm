@@ -1,7 +1,7 @@
 package Dancer::Logger::Diag;
 use strict;
 use warnings;
-use base 'Dancer::Logger::Abstract';
+use parent 'Dancer::Logger::Abstract';
 
 sub init {
     my $self = shift;

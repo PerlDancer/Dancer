@@ -4,6 +4,6 @@ use strict;
 use warnings;
 use Carp;
 
-use base qw(Dancer::Continuation::Route);
+use parent 'Dancer::Continuation::Route';
 
 1;

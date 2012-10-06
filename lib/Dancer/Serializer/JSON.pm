@@ -7,7 +7,7 @@ use Dancer::ModuleLoader;
 use Dancer::Deprecation;
 use Dancer::Config 'setting';
 use Dancer::Exception qw(:all);
-use base 'Dancer::Serializer::Abstract';
+use parent 'Dancer::Serializer::Abstract';
 
 
 # helpers

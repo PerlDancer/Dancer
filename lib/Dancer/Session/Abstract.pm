@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Carp;
 
-use base 'Dancer::Engine';
+use parent 'Dancer::Engine';
 
 use Dancer::Config 'setting';
 use Dancer::Cookies;

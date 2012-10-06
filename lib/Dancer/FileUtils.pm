@@ -10,7 +10,7 @@ use Cwd 'realpath';
 
 use Dancer::Exception qw(:all);
 
-use base 'Exporter';
+use parent 'Exporter';
 use vars '@EXPORT_OK';
 
 @EXPORT_OK = qw(

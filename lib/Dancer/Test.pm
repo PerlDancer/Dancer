@@ -22,7 +22,7 @@ use Dancer::Handler;
 use Dancer::Config;
 use Dancer::FileUtils qw(open_file);
 
-use base 'Exporter';
+use parent 'Exporter';
 use vars '@EXPORT';
 
 @EXPORT = qw(

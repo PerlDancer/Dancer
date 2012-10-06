@@ -9,7 +9,7 @@ use Dancer::Factory::Hook;
 use Dancer::FileUtils 'path';
 use Dancer::Exception qw(:all);
 
-use base 'Dancer::Engine';
+use parent 'Dancer::Engine';
 
 Dancer::Factory::Hook->instance->install_hooks(
     qw/before_template_render after_template_render before_layout_render after_layout_render/

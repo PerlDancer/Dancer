@@ -110,7 +110,7 @@ Dancer::Object - Objects base class for Dancer
 
     use strict;
     use warnings;
-    use base 'Dancer::Object';
+    use parent 'Dancer::Object';
 
     __PACKAGE__->attributes( qw/name value this that/ );
 

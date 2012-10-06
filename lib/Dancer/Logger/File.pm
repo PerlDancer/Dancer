@@ -2,7 +2,7 @@ package Dancer::Logger::File;
 use strict;
 use warnings;
 use Carp;
-use base 'Dancer::Logger::Abstract';
+use parent 'Dancer::Logger::Abstract';
 
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(open_file);

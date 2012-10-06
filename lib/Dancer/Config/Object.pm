@@ -3,7 +3,7 @@ package Dancer::Config::Object;
 use strict;
 use warnings;
 
-use base 'Exporter';
+use parent 'Exporter';
 use Carp 'croak';
 use Dancer::Exception qw(:all);
 use Scalar::Util 'blessed';

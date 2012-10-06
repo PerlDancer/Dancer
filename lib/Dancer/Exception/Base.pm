@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
-use base qw(Exporter);
+use parent 'Exporter';
 
 use Dancer::Exception;
 

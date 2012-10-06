@@ -1,6 +1,6 @@
 package TestUtils;
 
-use base 'Exporter';
+use parent 'Exporter';
 use vars '@EXPORT';
 
 use File::Path qw(mkpath rmtree);

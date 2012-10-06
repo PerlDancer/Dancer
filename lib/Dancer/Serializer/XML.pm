@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
-use base 'Dancer::Serializer::Abstract';
+use parent 'Dancer::Serializer::Abstract';
 
 # singleton for the XML::Simple object
 my $_xs;

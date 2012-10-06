@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Carp;
 use Dancer::Route;
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 use Dancer::Logger;
 use Dancer::Exception qw(:all);
 

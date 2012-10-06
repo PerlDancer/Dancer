@@ -3,7 +3,7 @@ package Dancer::Hook::Properties;
 use strict;
 use warnings;
 
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 
 Dancer::Hook::Properties->attributes(qw/apps/);
 

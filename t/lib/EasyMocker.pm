@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use vars qw(@EXPORT);
-use base 'Exporter';
+use parent 'Exporter';
 
 @EXPORT = qw(mock should method);
 

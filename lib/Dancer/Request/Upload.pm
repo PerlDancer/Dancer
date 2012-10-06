@@ -5,7 +5,7 @@ use Carp;
 
 use strict;
 use warnings;
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 use Dancer::FileUtils qw(open_file);
 use Dancer::Exception qw(:all);
 

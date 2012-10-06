@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 
 use Scalar::Util qw/blessed/;
 use Dancer::HTTP;

@@ -40,7 +40,7 @@ use Dancer::Continuation::Route::Templated;
 use File::Spec;
 use Scalar::Util;
 
-use base 'Exporter';
+use parent 'Exporter';
 
 our @EXPORT    = qw(
   after

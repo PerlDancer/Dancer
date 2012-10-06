@@ -2,7 +2,7 @@ package Dancer::Session::Simple;
 
 use strict;
 use warnings;
-use base 'Dancer::Session::Abstract';
+use parent 'Dancer::Session::Abstract';
 
 my %sessions;
 

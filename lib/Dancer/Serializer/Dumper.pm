@@ -3,7 +3,7 @@ package Dancer::Serializer::Dumper;
 use strict;
 use warnings;
 use Carp;
-use base 'Dancer::Serializer::Abstract';
+use parent 'Dancer::Serializer::Abstract';
 use Data::Dumper;
 use Dancer::Exception qw(:all);
 

@@ -1,6 +1,6 @@
 package Dancer::Logger::Capture::Trap;
 
-use base 'Dancer::Object';
+use parent 'Dancer::Object';
 
 
 =head1 NAME

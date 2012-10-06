@@ -3,13 +3,13 @@ use strict;
 use warnings;
 use Carp;
 
-use base 'Exporter';
+use parent 'Exporter';
 use Dancer::Config 'setting';
 use Dancer::Hook;
 use Dancer::Factory::Hook;
 use Dancer::Exception qw(:all);
 
-use base 'Exporter';
+use parent 'Exporter';
 use vars qw(@EXPORT);
 
 @EXPORT = qw(
