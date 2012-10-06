@@ -1442,7 +1442,7 @@ it:
             streaming => 1,
             callbacks => {
                 around => sub {
-                    my ( $writer, $content 0 = shift;
+                    my ( $writer, $content ) = @_;
 
                     # we know it's a text file, so we'll just stream
                     # line by line
