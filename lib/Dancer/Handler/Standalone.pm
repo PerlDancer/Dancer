@@ -53,9 +53,12 @@ sub print_startup_info {
     foreach my $module ( grep { $_ =~ m{^Dancer/Plugin/} } keys %INC ) {
         $module =~ s{/}{::}g;  # change / to ::
         $module =~ s{\.pm$}{}; # remove .pm at the end
-
         my $version = $module->VERSION;
-        print ">> $module ($version)\n";
+        if (defined $version) {
+            print ">> $module ($version)\n";
+        } else {
+            print ">> $module (no version number defined)\n";
+        }
     }
 
 }
