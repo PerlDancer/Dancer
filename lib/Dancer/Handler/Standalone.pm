@@ -54,11 +54,9 @@ sub print_startup_info {
         $module =~ s{/}{::}g;  # change / to ::
         $module =~ s{\.pm$}{}; # remove .pm at the end
         my $version = $module->VERSION;
-        if (defined $version) {
-            print ">> $module ($version)\n";
-        } else {
-            print ">> $module (no version number defined)\n";
-        }
+
+        defined $version or $version = 'no version number defined';
+        print ">> $module ($version)\n";
     }
 
 }
