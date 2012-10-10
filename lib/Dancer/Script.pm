@@ -554,6 +554,7 @@ WriteMakefile(
         $(\'#about-content\').slideToggle(\'fast\', function() {
             // ok
         });
+        return( false );
     });
     </script>
 
