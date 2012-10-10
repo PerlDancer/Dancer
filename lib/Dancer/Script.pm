@@ -188,7 +188,7 @@ sub _set_lib_path {
         $self->lib_file($self->appname);
         $self->lib_path("");
     }
-    my @lib_path = split('::', $self->appname);
+    my @lib_path = split /::/, $self->appname;
     my ($lib_file, $lib_path) = (pop @lib_path) . ".pm";
     $lib_path = join('/', @lib_path);
     $self->lib_file($lib_file);
