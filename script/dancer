@@ -37,40 +37,41 @@ the framework for a new Dancer application.
 
 Here is an application created with dancer:
 
-    $ dancer -a mywebapp
-    + mywebapp
-    + mywebapp/bin
-    + mywebapp/bin/app.pl
-    + mywebapp/config.yml
-    + mywebapp/environments
-    + mywebapp/environments/development.yml
-    + mywebapp/environments/production.yml
-    + mywebapp/views
-    + mywebapp/views/index.tt
-    + mywebapp/views/layouts
-    + mywebapp/views/layouts/main.tt
-    + mywebapp/lib
-    + mywebapp/lib/mywebapp.pm
-    + mywebapp/public
-    + mywebapp/public/css
-    + mywebapp/public/css/style.css
-    + mywebapp/public/css/error.css
-    + mywebapp/public/images
-    + mywebapp/public/500.html
-    + mywebapp/public/404.html
-    + mywebapp/public/dispatch.fcgi
-    + mywebapp/public/dispatch.cgi
-    + mywebapp/public/javascripts
-    + mywebapp/public/javascripts/jquery.js
-    + mywebapp/Makefile.PL
-    + mywebapp/t
-    + mywebapp/t/002_index_route.t
-    + mywebapp/t/001_base.t
+    $ dancer -a My::WebApp
+    + My-WebApp
+    + My-WebApp/bin
+    + My-WebApp/bin/app.pl
+    + My-WebApp/config.yml
+    + My-WebApp/environments
+    + My-WebApp/environments/development.yml
+    + My-WebApp/environments/production.yml
+    + My-WebApp/views
+    + My-WebApp/views/index.tt
+    + My-WebApp/views/layouts
+    + My-WebApp/views/layouts/main.tt
+    + My-WebApp/lib
+    + My-WebApp/lib/My
+    + My-WebApp/lib/My/WebApp.pm
+    + My-WebApp/public
+    + My-WebApp/public/css
+    + My-WebApp/public/css/style.css
+    + My-WebApp/public/css/error.css
+    + My-WebApp/public/images
+    + My-WebApp/public/500.html
+    + My-WebApp/public/404.html
+    + My-WebApp/public/dispatch.fcgi
+    + My-WebApp/public/dispatch.cgi
+    + My-WebApp/public/javascripts
+    + My-WebApp/public/javascripts/jquery.js
+    + My-WebApp/Makefile.PL
+    + My-WebApp/t
+    + My-WebApp/t/002_index_route.t
+    + My-WebApp/t/001_base.t
 
 The application is ready to serve:
 
-    $ cd mywebapp
-    $ ./mywebapp.pl
+    $ cd My-WebApp
+    $ ./bin/app.pl
     >> Listening on 127.0.0.1:3000
     == Entering the development dance floor ...
 
