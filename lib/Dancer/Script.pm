@@ -170,7 +170,7 @@ sub _validate_app_name {
 
         # TODO use error() instead of STDERR
         error("Error: Invalid application name.\n");
-        error(  "Application names must not contain colons,"
+        error(  "Application names must not contain single colons,"
               . " dots, hyphens or start with a number.\n");
         exit;
     }
