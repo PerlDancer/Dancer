@@ -469,7 +469,7 @@ WriteMakefile(
 
               <li><a href="http://perldancer.org/">PerlDancer</a></li>
               <li><a href="http://twitter.com/PerlDancer/">Official Twitter</a></li>
-              <li><a href="http://github.com/sukria/Dancer/">GitHub Community</a></li>
+              <li><a href="https://github.com/sukria/Dancer/">GitHub Community</a></li>
             </ul>
           </li>
           
