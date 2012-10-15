@@ -18,9 +18,6 @@ plan skip_all => "Test::TCP is required"
 plan skip_all => "Plack is required"
   unless Dancer::ModuleLoader->load('Plack::Loader');
 
-plan skip_all => "HTTP::Parser::XS is required"
-  unless Dancer::ModuleLoader->load('HTTP::Parser::XS' => "0.10");
-
 plan tests => 8;
 
 use Dancer ':syntax';
