@@ -185,6 +185,7 @@ sub _autopage_response {
     $response->content(
         Dancer::template($viewpath)
     );
+    $response->header( 'Content-Type' => 'text/html' );
     return $response;
 }
 
