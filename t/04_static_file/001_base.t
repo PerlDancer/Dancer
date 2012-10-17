@@ -7,6 +7,7 @@ BEGIN { $ENV{PERL_ONLY} = 1; }
 
 use Test::More import => ['!pass'];
 use Dancer::Test;
+use HTTP::Date qw( time2str );
 
 
 plan skip_all => "Skip test with Test::TCP in win32"
@@ -18,15 +19,13 @@ plan skip_all => "Test::TCP is required"
 plan skip_all => "Plack is required"
   unless Dancer::ModuleLoader->load('Plack::Loader');
 
-plan skip_all => "HTTP::Parser::XS is required"
-  unless Dancer::ModuleLoader->load('HTTP::Parser::XS' => "0.10");
-
-plan tests => 8;
+plan tests => 10;
 
 use Dancer ':syntax';
 
 set public => path( dirname(__FILE__), 'static' );
 my $public = setting('public');
+my $date = time2str( (stat "$public/hello.txt")[9] );
 
 my $req = [ GET => '/hello.txt' ];
 response_is_file $req;
@@ -34,7 +33,7 @@ response_is_file $req;
 my $resp = Dancer::Test::_get_file_response($req);
 is_deeply(
     $resp->headers_to_array,
-    [ 'Content-Type' => 'text/plain' ],
+    [ 'Content-Type' => 'text/plain', 'Last-Modified' => $date ],
     "response header looks good for @$req"
 );
 is( ref( $resp->{content} ), 'GLOB', "response content looks good for @$req" );
@@ -57,6 +56,27 @@ Test::TCP::test_tcp(
         my $res = $ua->request($req);
         ok !$res->is_success;
         is $res->code, 400;
+    },
+    server => sub {
+        my $port = shift;
+        setting apphandler => 'PSGI';
+        Dancer::Config->load;
+        my $app = Dancer::Handler->psgi_app;
+        Plack::Loader->auto( port => $port )->run($app);
+        Dancer->dance();
+    }
+);
+
+Test::TCP::test_tcp(
+    client => sub {
+        my $port = shift;
+        my $req =
+          HTTP::Request->new(
+            GET => "http://127.0.0.1:$port/hello.txt", [ 'If-Modified-Since' => $date ] );
+        my $ua  = LWP::UserAgent->new();
+        my $res = $ua->request($req);
+        ok !$res->is_success;
+        is $res->code, 304;
     },
     server => sub {
         my $port = shift;
