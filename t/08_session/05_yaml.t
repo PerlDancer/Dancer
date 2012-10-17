@@ -57,7 +57,7 @@ eval { $session = Dancer::Session::YAML->create() };
 my $error = $@;
 like(
     $@,
-    qr{Can't open '.*\.*yml':.*},
+    qr{Error in tempfile\(\) using .* Parent directory .* does not exist at.*},
     'session dir was not recreated',
 );
 
