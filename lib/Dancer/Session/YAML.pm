@@ -8,9 +8,8 @@ use base 'Dancer::Session::Abstract';
 use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path set_file_mode atomic_write);
+use Dancer::FileUtils qw(path atomic_write);
 use Dancer::Exception qw(:all);
-
 
 # static
 
