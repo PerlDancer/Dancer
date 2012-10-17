@@ -8,12 +8,8 @@ use base 'Dancer::Session::Abstract';
 use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path set_file_mode);
+use Dancer::FileUtils qw(path atomic_write);
 use Dancer::Exception qw(:all);
-
-use File::Temp qw(tempfile);
-use File::Copy;
-
 
 # static
 
@@ -93,11 +89,7 @@ sub flush {
     my $self         = shift;
     my $session_file = yaml_file( $self->id );
 
-    my ($fh, $filename) = tempfile( "tmpXXXXXXXXX", DIR => setting('session_dir') );
-    set_file_mode($fh);
-    print $fh YAML::Dump($self);
-    close $fh or die "Can't close '$session_file': $!\n";
-    move($filename, $session_file);
+    atomic_write( setting('session_dir'), yaml_file($self->id), YAML::Dump($self) );
 
     return $self;
 }
