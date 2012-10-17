@@ -626,6 +626,9 @@ Dancer will honor your C<before_template_render> code, and all default
 variables. They will be accessible and interpolated on automatic
 served pages.
 
+The pages served this way will have C<Content-Type> set to C<text/html>,
+so don't use the feature for anything else.
+
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
 It's possible to set the configuration directory and environment directory using this two
