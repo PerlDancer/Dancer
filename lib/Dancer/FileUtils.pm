@@ -6,7 +6,6 @@ use warnings;
 use File::Basename ();
 use File::Spec;
 use File::Temp qw(tempfile);
-use File::Copy;
 
 use Carp;
 use Cwd 'realpath';
@@ -153,7 +152,7 @@ sub atomic_write {
     set_file_mode($fh);
     print $fh $data;
     close $fh or die "Can't close '$file': $!\n";
-    move($filename, $file) or die "Can't move '$filename' to '$file'";
+    rename($filename, $file) or die "Can't move '$filename' to '$file'";
 }
 
 1;
