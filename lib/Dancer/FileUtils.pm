@@ -5,6 +5,9 @@ use warnings;
 
 use File::Basename ();
 use File::Spec;
+use File::Temp qw(tempfile);
+use File::Copy;
+
 use Carp;
 use Cwd 'realpath';
 
@@ -16,6 +19,7 @@ use vars '@EXPORT_OK';
 @EXPORT_OK = qw(
     dirname open_file path read_file_content read_glob_content
     path_or_empty set_file_mode normalize_path
+    atomic_write
 );
 
 # path should not verify paths
@@ -141,6 +145,15 @@ sub _trim_UNC {
     }
 
     return @args;
+}
+
+sub atomic_write {
+    my ($path, $file, $data) = @_;
+    my ($fh, $filename) = tempfile("tmpXXXXXXXXX", DIR => $path);
+    set_file_mode($fh);
+    print $fh $data;
+    close $fh or die "Can't close '$file': $!\n";
+    move($filename, $file) or die "Can't move '$filename' to '$file'";
 }
 
 1;
