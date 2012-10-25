@@ -40,13 +40,13 @@ use vars '@EXPORT';
   response_content_is_deeply
   response_content_like
   response_content_unlike
+
   response_is_file
   response_headers_are_deeply
   response_headers_include
   response_redirect_location_is
 
   dancer_response
-  get_response
 
   read_logs
 );
