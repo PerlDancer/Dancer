@@ -49,9 +49,17 @@ sub new {
 
 # aliases
 sub agent                 { $_[0]->user_agent }
-sub remote_address        { $_[0]->address }
-sub forwarded_for_address { $_[0]->env->{'X_FORWARDED_FOR'} }
-sub address               { $_[0]->env->{REMOTE_ADDR} }
+sub remote_address        { $_[0]->{address} || $_[0]->env->{REMOTE_ADDR} }
+sub forwarded_for_address { $_[0]->env->{X_FORWARDED_FOR} || $_[0]->env->{HTTP_X_FORWARDED_FOR} || $_[0]->env->{X_REAL_IP} || $_[0]->env->{HTTP_X_REAL_IP} }
+sub address {
+    if (@_==2) {
+        $_[0]->{address} = $_[1];
+    } else {
+        my $address;
+        $address = ($_[0]->env->{X_FORWARDED_FOR} || $_[0]->env->{HTTP_X_FORWARDED_FOR} || $_[0]->env->{X_REAL_IP} || $_[0]->env->{HTTP_X_REAL_IP}) if setting('behind_proxy');
+        $address || $_[0]->{address} || $_[0]->env->{REMOTE_ADDR};
+    }
+}
 sub host {
     if (@_==2) {
         $_[0]->{host} = $_[1];
