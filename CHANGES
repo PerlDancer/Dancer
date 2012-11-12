@@ -1,4 +1,7 @@
 {{$NEXT}}
+    [ BUG FIXES ]
+    * GH #858: Check for definedness, not truth, when testing if we read
+      into the buffer when parsing a request body (florolf)
 
 1.3110      06.10.2012
 
