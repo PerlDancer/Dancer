@@ -495,7 +495,8 @@ sub _read_to_end {
     return unless $self->_has_something_to_read();
 
     if ($content_length > 0) {
-        while (my $buffer = $self->_read()) {
+        my $buffer;
+        while (defined ($buffer = $self->_read())) {
             $self->{body} .= $buffer;
             $self->{_http_body}->add($buffer);
         }
