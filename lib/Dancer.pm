@@ -943,8 +943,8 @@ This hook receives as argument a L<Dancer::Error> object.
 
 =item before
 
-This hook receives one argument, a reference to the subroutine that
-implements the route that is being intercepted by this hook.
+This hook receives one argument, the route being executed (a L<Dancer::Route>
+object).
 
   hook before => sub {
     my $route_handler = shift;
