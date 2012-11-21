@@ -432,7 +432,7 @@ C<template> keyword. Check C<Dancer> manpage for details.
 
 =head2 Logging, debugging and error handling
 
-=head2 strict_config (boolean, default: false)
+=head3 strict_config (boolean, default: false)
 
 If true, C<config> will return an object instead of a hash reference. See
 L<Dancer::Config::Object> for more information.
