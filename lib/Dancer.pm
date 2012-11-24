@@ -842,7 +842,7 @@ Sets a response object with the content given.
 When used as a return value from a filter, this breaks the execution flow and
 renders the response immediately:
 
-    before sub {
+    hook before sub {
         if ($some_condition) {
             halt("Unauthorized");
             # This code is not executed :
@@ -1827,7 +1827,7 @@ versions:
 Provides an accessor for variables shared between filters and route handlers.
 Given a key/value pair, it sets a variable:
 
-    before sub {
+    hook before sub {
         var foo => 42;
     };
 
