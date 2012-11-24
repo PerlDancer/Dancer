@@ -723,7 +723,7 @@ Sets a response object with the content given.
 When used as a return value from a filter, this breaks the execution flow and
 renders the response immediately:
 
-    before sub {
+    hook before sub {
         if ($some_condition) {
             return halt("Unauthorized");
         }
@@ -1409,7 +1409,7 @@ versions:
 
 Defines a variable shared between filters and route handlers.
 
-    before sub {
+    hook before sub {
         var foo => 42;
     };
 
