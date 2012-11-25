@@ -155,11 +155,11 @@ Runs a "C<use ModuleYouNeed qw(param1 param2 ...)>".
 
     use Dancer::ModuleLoader;
     ...
-    Dancer::ModuleLoader->load('Something', qw(param1 param2) )
-        or die "Couldn't load Something\n";
+    Dancer::ModuleLoader->load_with_params('Something', qw(param1 param2) )
+        or die "Couldn't load Something with param1 and param2\n";
 
-    my ($res, $error) = Dancer::ModuleLoader->load('Something', @params);
-    $res or die "Couldn't load Something : '$error'\n";
+    my ($res, $error) = Dancer::ModuleLoader->load_with_params('Something', @params);
+    $res or die "Couldn't load Something with @params: '$error'\n";
 
 Takes in arguments the module name, and optionally parameters to pass to the import internal method.
 
@@ -212,6 +212,10 @@ Example:
     );
 
     # class == 'Dancer::Template::Tiny
+
+=head1 SEE ALSO
+
+L<Module::Load>, L<Module::New::Loader>
 
 =head1 AUTHOR
 
