@@ -471,7 +471,7 @@ following:
         ServerAlias myapp.example.com
         DocumentRoot /websites/myapp.example.com
 
-        <Directory /home/myapp/myapp>
+        <Directory /websites/myapp.example.com>
             AllowOverride None
             Order allow,deny
             Allow from all
