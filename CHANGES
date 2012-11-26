@@ -1,7 +1,27 @@
 {{$NEXT}}
+
     [ BUG FIXES ]
     * GH #858: Check for definedness, not truth, when testing if we read
-      into the buffer when parsing a request body (florolf)
+      into the buffer when parsing a request body (florolf).
+    * GH #845: Fix uninitialized warning when loading modules (Fabrice Gabolde).
+    * GH #851, GH #853: Atomic YAML session writing (Roman Galeev).
+    * GH #852: Saner UTF logging (Roman Galeev).
+    * GH #849, GH #850: Serve autopages with text/html content type.
+      (Philippe Bruhat - BooK)
+    * GH #848: Handle If-Modified-Since header in the request for static files.
+      (Philippe Bruhat - BooK)
+    * GH #848: Send a Last-Modified header for static files.
+      (Philippe Bruhat - BooK)
+    * GH #856: Don't export non-existing subroutine (mokko).
+
+    [ DOCUMENTATION ]
+    * GH #847: Fix typo (John Wittkoski).
+    * GH #865: Correct 'before' hook documentation (David Precious, Maurice).
+    * GH #860, GH #844, GH #760: Misleading plack middleware documentation.
+      (Paul Fenwick)
+    * GH #862: Fix heading level for strict_config entry in Dancer::Config.
+      (Stefan Hornburg - Racke)
+    * GH #863: Correct example apache config (John Wittkoski).
 
 1.3110      06.10.2012
 
