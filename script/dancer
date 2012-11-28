@@ -914,7 +914,6 @@ template: \"simple\"
 # template: \"template_toolkit\"
 # engines:
 #   template_toolkit:
-#     encoding:  'utf8'
 #     start_tag: '[%'
 #     end_tag:   '%]'
 
