@@ -629,6 +629,12 @@ served pages.
 The pages served this way will have C<Content-Type> set to C<text/html>,
 so don't use the feature for anything else.
 
+=head2 route_cache (boolean)
+
+Enables route caching (for quicker route resolution on larger apps - not caching
+of responses).  See L<Dancer::Route::Cache> for details.
+
+
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
 It's possible to set the configuration directory and environment directory using this two
