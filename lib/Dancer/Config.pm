@@ -629,10 +629,20 @@ served pages.
 The pages served this way will have C<Content-Type> set to C<text/html>,
 so don't use the feature for anything else.
 
-=head2 route_cache (boolean)
+=head2 Route caching
+
+=head3 route_cache (boolean)
 
 Enables route caching (for quicker route resolution on larger apps - not caching
 of responses).  See L<Dancer::Route::Cache> for details.
+
+=head3 route_cache_size_limit (bytes)
+
+Maximum size of route cache (e.g. 1024, 2M) - see L<Dancer::Route::Cache>
+
+=head3 route_cache_path_limit (number)
+
+Maximum number of routes to cache - see L<Dancer::Route::Cache>
 
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
