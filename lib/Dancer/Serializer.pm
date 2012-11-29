@@ -100,6 +100,10 @@ sub process_request {
         return $request;
     }
 
+    if(!ref $new_params or ref $new_params ne 'HASH'){
+        return $request;
+    }
+
     (keys %$old_params)
       ? $request->_set_body_params({%$old_params, %$new_params})
       : $request->_set_body_params($new_params);
