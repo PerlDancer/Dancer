@@ -299,6 +299,7 @@ sub _check_header {
 sub dancer_response {
     my ($method, $path, $args) = @_;
     $args ||= {};
+    my $extra_env = {};
 
     if ($method =~ /^(?:PUT|POST)$/) {
 
@@ -346,9 +347,9 @@ Content-Type: text/plain
         my $l = 0;
         $l = length $content if defined $content;
         open my $in, '<', \$content;
-        $ENV{'CONTENT_LENGTH'} = $l;
-        $ENV{'CONTENT_TYPE'}   = $content_type || "";
-        $ENV{'psgi.input'}     = $in;
+        $extra_env->{'CONTENT_LENGTH'} = $l;
+        $extra_env->{'CONTENT_TYPE'}   = $content_type || "";
+        $extra_env->{'psgi.input'}     = $in;
     }
 
     my ($params, $body, $headers) = @$args{qw(params body headers)};
@@ -357,12 +358,12 @@ Content-Type: text/plain
         unless _isa($headers, "HTTP::Headers");
 
     if ($headers->header('Content-Type')) {
-        $ENV{'CONTENT_TYPE'} = $headers->header('Content-Type');
+        $extra_env->{'CONTENT_TYPE'} = $headers->header('Content-Type');
     }
 
     my $request = Dancer::Request->new_for_request(
         $method => $path,
-        $params, $body, $headers
+        $params, $body, $headers, $extra_env
     );
 
     # first, reset the current state
