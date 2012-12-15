@@ -68,7 +68,7 @@ SKIP: {
     # with options
     $data = { foo => { bar => { baz => [qw/23 42/] } } };
     $json = to_json( $data, { pretty => 1 } );
-    like $json, qr/"foo" : {/, "data is pretty!";
+    like $json, qr/"foo" : \{/, "data is pretty!";
     my $data2 = from_json($json);
     is_deeply( $data2, $data, "data is correctly deserialized" );
 
