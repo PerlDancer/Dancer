@@ -102,8 +102,8 @@ if ( (my ($pre, $version, $post)) = ($line =~ /^(\s*)(\S.*\S)(\s*)$/)) {
     my $lpost = length $post;
     $lpre and _fail("line starts with $lpre blank caracters, but it should not");
     $lpost and _fail("line ends with $lpre blank caracters, but it should not");
-    like($version, qr/^{{\$NEXT}}$|^\d\.\d{4}(_\d{2}   |      )\d{2}.\d{2}.\d{4}$/, "changelog line $line_nb: check version failed");
-    $version =~ qr/^({{\$NEXT}})$|^\d\.\d{4}(_\d{2}   |      )\d{2}.\d{2}.\d{4}$/;
+    like($version, qr/^\{\{\$NEXT\}\}$|^\d\.\d{4}(_\d{2}   |      )\d{2}.\d{2}.\d{4}$/, "changelog line $line_nb: check version failed");
+    $version =~ qr/^(\{\{\$NEXT\}\})$|^\d\.\d{4}(_\d{2}   |      )\d{2}.\d{2}.\d{4}$/;
 #    print STDERR " ------->  [$1] [$2]\n";
     $current_version_is_dev = defined $1 || $2 =~ /^_\d{2}/;
 
