@@ -206,8 +206,6 @@ sub _render_serialized {
 
     my $message =
       !ref $self->message ? {error => $self->message} : $self->message;
-    ref $message eq 'HASH' && defined $self->exception
-      and $message->{exception} = $self->exception;
 
     if (setting('show_errors')) {
         Dancer::Response->new(
