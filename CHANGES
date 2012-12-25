@@ -1,6 +1,9 @@
 {{$NEXT}}
 
     [ BUG FIXES ]
+    * GH #877: fix Dancer Error when so that 'exception' object is not passed
+      to serializers, because XML/JSON serializers don't understand objects
+      (rikbrown).
     * GH #858: Check for definedness, not truth, when testing if we read
       into the buffer when parsing a request body (florolf).
     * GH #845: Fix uninitialized warning when loading modules (Fabrice Gabolde).
