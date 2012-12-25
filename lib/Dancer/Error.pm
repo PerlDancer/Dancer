@@ -3,6 +3,7 @@ package Dancer::Error;
 use strict;
 use warnings;
 use Carp;
+use Scalar::Util qw(blessed);
 
 use base 'Dancer::Object';
 
@@ -206,6 +207,15 @@ sub _render_serialized {
 
     my $message =
       !ref $self->message ? {error => $self->message} : $self->message;
+
+    if (ref $message eq 'HASH' && defined $self->exception) {
+        if (blessed($self->exception)) {
+            $message->{exception} = ref($self->exception);
+            $message->{exception} =~ s/^Dancer::Exception:://;
+        } else {
+            $message->{exception} = $self->exception;
+        }
+    }
 
     if (setting('show_errors')) {
         Dancer::Response->new(
