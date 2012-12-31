@@ -52,6 +52,7 @@ our @EXPORT    = qw(
   config
   content_type
   dance
+  dancer_api_version
   dancer_version
   debug
   del
@@ -139,6 +140,7 @@ sub cookies         { Dancer::Cookies->cookies }
 sub config          { Dancer::Config::settings() }
 sub content_type    { Dancer::SharedData->response->content_type(@_) }
 sub dance           { goto &start }
+sub dancer_api_version  { 1 }
 sub dancer_version  { Dancer->VERSION }
 sub debug           { goto &Dancer::Logger::debug }
 sub del             { Dancer::App->current->registry->universal_add('delete',  @_) }
@@ -704,11 +706,16 @@ have to change the C<content_type> setting instead.
 
 Alias for the C<start> keyword.
 
+=head2 dancer_api_version
+
+    my $version = dancer_api_version;
+
+Returns the Dancer API version used by the application.
+
 =head2 dancer_version
 
-Returns the version of Dancer. If you need the major version, do something like:
-
-  int(dancer_version);
+Returns the version of Dancer. If you need to know if the application is using
+the Dancer 1 or Dancer 2 API, use C<dancer_api_version>.
 
 =head2 debug
 
