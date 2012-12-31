@@ -5,6 +5,8 @@ use Test::More import => ['!pass'];
 
 use Dancer qw(:syntax);
 
+plan tests => 2;
+
 is (int(dancer_version), 1, "dancer major version");
 
-done_testing;
+is dancer_api_version() => 1, 'dancer api version';
