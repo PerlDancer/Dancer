@@ -333,7 +333,7 @@ provided with perlbal, but you'll probably want something like:
     SET persist_client  = on
     SET persist_backend = on
     SET verify_backend  = on
-    ENABLE balancer
+    ENABLE my_webapp
 
 
 
