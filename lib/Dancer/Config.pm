@@ -55,7 +55,13 @@ my $setters = {
         require Dancer::Serializer;
         Dancer::Serializer->init($value);
     },
+    # This should be deprecated, and is kept
+    # for backwards compatiblity.
     import_warnings => sub {
+        my ($setting, $value) = @_;
+        $^W = $value ? 1 : 0;
+    },
+    global_warnings => sub {
         my ($setting, $value) = @_;
         $^W = $value ? 1 : 0;
     },
@@ -246,7 +252,6 @@ sub load_default_settings {
 
     setting $_ => {} for keys %MERGEABLE;
     setting template        => 'simple';
-    setting import_warnings => 1;
 }
 
 load_default_settings();
@@ -437,10 +442,10 @@ C<template> keyword. Check C<Dancer> manpage for details.
 If true, C<config> will return an object instead of a hash reference. See
 L<Dancer::Config::Object> for more information.
 
-=head3 import_warnings (boolean, default: enabled)
+=head3 global_warnings (boolean, default: false)
 
-If true, or not present, C<use warnings> will be in effect in scripts in which
-you import C<Dancer>.  Set to a false value to disable this.
+If true, C<use warnings> will be in effect for all modules and scripts loaded
+by your Dancer application.  Set to a true value to enable this.
 
 =head3 startup_info (boolean)
 
