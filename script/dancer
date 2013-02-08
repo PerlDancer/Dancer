@@ -328,7 +328,7 @@ WriteMakefile(
     AUTHOR              => q{YOUR NAME <youremail\@example.com>},
     VERSION_FROM        => 'lib/$appfile.pm',
     ABSTRACT            => 'YOUR APPLICATION ABSTRACT',
-    (\$ExtUtils::MakeMaker::VERSION >= 6.3002
+    (\$ExtUtils::MakeMaker::VERSION >= 6.3001
       ? ('LICENSE'=> 'perl')
       : ()),
     PL_FILES            => {},
