@@ -55,10 +55,14 @@ my $setters = {
         require Dancer::Serializer;
         Dancer::Serializer->init($value);
     },
-    # This should be deprecated, and is kept
-    # for backwards compatiblity.
+    # This setting has been deprecated in favor of global_warnings.
     import_warnings => sub {
         my ($setting, $value) = @_;
+
+         Dancer::Deprecation->deprecated(
+             message => "import_warnings has been deprecated, please use global_warnings instead."
+         );
+
         $^W = $value ? 1 : 0;
     },
     global_warnings => sub {
