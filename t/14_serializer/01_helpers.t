@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Dancer ':tests';
 
-plan tests => 52;
+plan tests => 53;
 
 my $struct = {eris => 23};
 
