@@ -1053,7 +1053,7 @@ if it needs to make changes to the response which is about to be sent.
     my $response = shift;
   };
 
-This is equivalent to
+This is equivalent to the deprecated
 
   after sub {
     my $response = shift;
