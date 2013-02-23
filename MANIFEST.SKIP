@@ -16,3 +16,4 @@ lib/Dancer/Plugin/WebSocket.pm
 ^.*~$
 MYMETA\..*
 ^.travis.yml$
+contrib/update_authors.pl
