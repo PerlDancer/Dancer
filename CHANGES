@@ -25,6 +25,8 @@
     * GH #862: Fix heading level for strict_config entry in Dancer::Config.
       (Stefan Hornburg - Racke)
     * GH #863: Correct example apache config (John Wittkoski).
+    * GH #880: Add deprecation mention for 'after' (pdl and Yanick Champoux).
+
 
 1.3110      06.10.2012
 
