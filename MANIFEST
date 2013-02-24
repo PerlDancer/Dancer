@@ -1,7 +1,3 @@
-.current_cover_stats
-.gitignore
-.perlcriticrc
-.perltidyrc
 AUTHORS
 CHANGES
 examples/dancr/dancr.pl
@@ -89,7 +85,6 @@ lib/Dancer/Tutorial.pod
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
-MANIFEST.SKIP
 README
 script/dancer
 t/00_base/000_create_fake_env.t
@@ -111,6 +106,7 @@ t/00_base/13_dancer_singleton.t
 t/00_base/14_changelog.t
 t/00_base/15_dependent_modules.t
 t/00_base/16_version.t
+t/00_base/17_globalwarnings_config_on.t
 t/00_base/config.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm

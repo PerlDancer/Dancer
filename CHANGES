@@ -16,6 +16,14 @@
     * GH #848: Send a Last-Modified header for static files.
       (Philippe Bruhat - BooK)
     * GH #856: Don't export non-existing subroutine (mokko).
+    * GH #874: Reduce dependence on %ENV for internal code (Kent Fredric).
+    * GH #875: Don't expect specific order in cookies (Yanick Champoux).
+    * Remove 'exception' object from message being passed to serializers. 
+        (Rik Brown)
+    * Added .travis.yml to MANIFEST.SKIP so t/manifest.t passes (Kaitlyn Parkhurst).
+    * GH #887, GH #890: keyword 'global_warnings' added to replace 'import_warnings'
+        (Kaitlyn Parkhurst).
+    * GH #892: add 'private_key' to the list of potentially sensitive keys (Tom Heady).
 
     [ DOCUMENTATION ]
     * GH #847: Fix typo (John Wittkoski).
@@ -25,6 +33,14 @@
     * GH #862: Fix heading level for strict_config entry in Dancer::Config.
       (Stefan Hornburg - Racke)
     * GH #863: Correct example apache config (John Wittkoski).
+    * GH #867: correct doc for ModuleLoader::load_with_params (mokko).
+    * Document route_cache option (David Precious).
+    * Docs for route_cache_size_limit & route_cache_path_limit (David Precious).
+    * Remove meaningless 'encoding' to TT config (David Precious).
+    * Remove docs for mounting multiple apps (Naveed Massjouni).
+    * Update doc URLs (David Precious).
+    * Fix inconsistency in Perlbal deployment example (Slaven Rezić, Racke).
+    * GH #894: Replace spurious character in Dancer::Session's POD (Racke).
     * GH #880: Add deprecation mention for 'after' (pdl and Yanick Champoux).
 
 
