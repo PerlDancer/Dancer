@@ -20,7 +20,7 @@ See also Sukria's blog: http://www.sukria.net/fr/archives/tag/dancer/
 
 See also the project on Github for the latest changes:
 
-http://github.com/sukria/Dancer
+http://github.com/PerlDancer/Dancer
 
 To keep even more up to date and talk to the developers, join us in #dancer on
 irc.perl.org (if you don't have an IRC client, use http://www.perldancer.org/irc
@@ -122,7 +122,7 @@ For more details about the project, checkout the official website:
 http://perldancer.org/ or checkout the documentation at
 http://search.cpan.org/dist/Dancer/
 
-See also the Github project page: http://github.com/sukria/Dancer for the latest
+See also the Github project page: http://github.com/PerlDancer/Dancer for the latest
 changes.
 
 
@@ -131,7 +131,7 @@ changes.
 Bug reports are appreciated and will receive prompt attention - the preferred
 method is to raise them using Github's basic issue tracking system:
 
-http://github.com/sukria/Dancer/issues
+http://github.com/PerlDancer/Dancer/issues
 
 
 

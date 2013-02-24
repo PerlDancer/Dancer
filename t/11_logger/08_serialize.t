@@ -20,7 +20,7 @@ Test::Output::stderr_like(
 
 Test::Output::stderr_like(
     sub { Dancer::Logger::warning( { this => 'that' } ) }, 
-    qr/\[\d+\]  warn @.+> {'this' => 'that'} in/,
+    qr/\[\d+\]  warn @.+> \{'this' => 'that'\} in/,
     'Hashref correctly serialized',
 );
 
@@ -32,6 +32,6 @@ Test::Output::stderr_like(
 
 Test::Output::stderr_like(
     sub { Dancer::Logger::warning( { b => 1, a => 2, e => 3, d => 4, c => 5}) }, 
-    qr/\[\d+\]  warn @.+> {'a' => 2,'b' => 1,'c' => 5,'d' => 4,'e' => 3}/,
+    qr/\[\d+\]  warn @.+> \{'a' => 2,'b' => 1,'c' => 5,'d' => 4,'e' => 3\}/,
     'Hash keys are sorted okay',
 );

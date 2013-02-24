@@ -221,7 +221,7 @@ engine must inherit from it and provide a set of methods described below.
 =head1 TEMPLATE TOKENS
 
 By default Dancer injects some tokens (or variables) to templates. The
-available templates are:
+available tokens are:
 
 =over 4
 

@@ -26,7 +26,11 @@ use Test::More tests => 10, import => ['!pass'];
 
     # check that we can disable it
     {
-        setting import_warnings => 0;
+        # setting import_warnings => 0;
+        #        
+        # Since we're importing warnings in Dancer.pm as documented,
+        # no warnings; should be used instead of import_warnings;
+        no warnings;
 
         my $warn;
         local $SIG{__WARN__} = sub { $warn = $_[0] };

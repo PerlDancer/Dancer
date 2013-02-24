@@ -481,7 +481,7 @@ http://perldancer.org
 
 =item *
 
-https://github.com/sukria/Dancer
+https://github.com/PerlDancer/Dancer
 
 =item * 
 

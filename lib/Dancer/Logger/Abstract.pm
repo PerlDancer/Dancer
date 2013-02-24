@@ -61,8 +61,8 @@ sub format_message {
     my ($self, $level, $message) = @_;
     chomp $message;
 
-    if (my $charset = setting('charset')) {
-        $message = Encode::encode($charset, $message);
+    if (!Encode::is_utf8($message) && setting('charset')) {
+        $message = Encode::encode(setting('charset'), $message);
     }
 
     $level = 'warn' if $level eq 'warning';
@@ -124,12 +124,12 @@ sub format_message {
 
     my $fmt = $self->_log_format();
 
-    $fmt =~ s{
+    $fmt =~ s^
         (?:
             \%\{(.+?)\}([a-z])|
             \%([a-zA-Z])
         )
-    }{ $1 ? $block_handler->($1, $2) : $char_mapping->($3) }egx;
+    ^ $1 ? $block_handler->($1, $2) : $char_mapping->($3) ^egx;
 
     return $fmt."\n";
 }

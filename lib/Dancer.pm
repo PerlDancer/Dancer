@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3110';
+our $VERSION   = '1.3111';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
@@ -228,6 +228,7 @@ sub import {
     my ($package, $script) = caller;
 
     strict->import;
+    warnings->import;
     utf8->import;
 
     my @final_args;
@@ -842,7 +843,7 @@ Sets a response object with the content given.
 When used as a return value from a filter, this breaks the execution flow and
 renders the response immediately:
 
-    before sub {
+    hook before sub {
         if ($some_condition) {
             halt("Unauthorized");
             # This code is not executed :
@@ -943,8 +944,8 @@ This hook receives as argument a L<Dancer::Error> object.
 
 =item before
 
-This hook receives one argument, a reference to the subroutine that
-implements the route that is being intercepted by this hook.
+This hook receives one argument, the route being executed (a L<Dancer::Route>
+object).
 
   hook before => sub {
     my $route_handler = shift;
@@ -1052,7 +1053,7 @@ if it needs to make changes to the response which is about to be sent.
     my $response = shift;
   };
 
-This is equivalent to
+This is equivalent to the deprecated
 
   after sub {
     my $response = shift;
@@ -1827,7 +1828,7 @@ versions:
 Provides an accessor for variables shared between filters and route handlers.
 Given a key/value pair, it sets a variable:
 
-    before sub {
+    hook before sub {
         var foo => 42;
     };
 
@@ -1865,12 +1866,12 @@ see the AUTHORS file that comes with this distribution for details.
 =head1 SOURCE CODE
 
 The source code for this module is hosted on GitHub
-L<https://github.com/sukria/Dancer>.  Feel free to fork the repository and
+L<https://github.com/PerlDancer/Dancer>.  Feel free to fork the repository and
 submit pull requests!  (See L<Dancer::Development> for details on how to
 contribute).
 
-Also, why not L<watch the repo|https://github.com/sukria/Dancer/toggle_watch> to
-keep up to date with the latest upcoming changes?
+Also, why not L<watch the repo|https://github.com/PerlDancer/Dancer/toggle_watch>
+to keep up to date with the latest upcoming changes?
 
 
 =head1 GETTING HELP / CONTRIBUTING
@@ -1883,7 +1884,7 @@ client at L<http://www.perldancer.org/irc> for you.
 
 There is also a Dancer users mailing list available - subscribe at:
 
-L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
+L<http://lists.preshweb.co.uk/mailman/listinfo/dancer-users>
 
 If you'd like to contribute to the Dancer project, please see
 L<http://www.perldancer.org/contribute> for all the ways you can help!

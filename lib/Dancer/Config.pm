@@ -55,7 +55,17 @@ my $setters = {
         require Dancer::Serializer;
         Dancer::Serializer->init($value);
     },
+    # This setting has been deprecated in favor of global_warnings.
     import_warnings => sub {
+        my ($setting, $value) = @_;
+
+         Dancer::Deprecation->deprecated(
+             message => "import_warnings has been deprecated, please use global_warnings instead."
+         );
+
+        $^W = $value ? 1 : 0;
+    },
+    global_warnings => sub {
         my ($setting, $value) = @_;
         $^W = $value ? 1 : 0;
     },
@@ -246,7 +256,6 @@ sub load_default_settings {
 
     setting $_ => {} for keys %MERGEABLE;
     setting template        => 'simple';
-    setting import_warnings => 1;
 }
 
 load_default_settings();
@@ -432,15 +441,15 @@ C<template> keyword. Check C<Dancer> manpage for details.
 
 =head2 Logging, debugging and error handling
 
-=head2 strict_config (boolean, default: false)
+=head3 strict_config (boolean, default: false)
 
 If true, C<config> will return an object instead of a hash reference. See
 L<Dancer::Config::Object> for more information.
 
-=head3 import_warnings (boolean, default: enabled)
+=head3 global_warnings (boolean, default: false)
 
-If true, or not present, C<use warnings> will be in effect in scripts in which
-you import C<Dancer>.  Set to a false value to disable this.
+If true, C<use warnings> will be in effect for all modules and scripts loaded
+by your Dancer application.  Set to a true value to enable this.
 
 =head3 startup_info (boolean)
 
@@ -625,6 +634,25 @@ C</foo/bar.tt>.
 Dancer will honor your C<before_template_render> code, and all default
 variables. They will be accessible and interpolated on automatic
 served pages.
+
+The pages served this way will have C<Content-Type> set to C<text/html>,
+so don't use the feature for anything else.
+
+=head2 Route caching
+
+=head3 route_cache (boolean)
+
+Enables route caching (for quicker route resolution on larger apps - not caching
+of responses).  See L<Dancer::Route::Cache> for details.
+
+=head3 route_cache_size_limit (bytes)
+
+Maximum size of route cache (e.g. 1024, 2M) - see L<Dancer::Route::Cache>
+
+=head3 route_cache_path_limit (number)
+
+Maximum number of routes to cache - see L<Dancer::Route::Cache>
+
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
