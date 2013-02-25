@@ -324,24 +324,24 @@ sub dancer_response {
         elsif ( $args->{files} ) {
             $content_type = 'multipart/form-data; boundary=----BOUNDARY';
             foreach my $file (@{$args->{files}}){
-                $content .= qq{------BOUNDARY
-Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename}"
-Content-Type: text/plain
-
-};
+                $file->{content_type} ||= 'text/plain';
+                $content .= qq/------BOUNDARY\r\n/;
+                $content .= qq/Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename}"\r\n/;
+                $content .= qq/Content-Type: $file->{content_type}\r\n\r\n/;
                 if ( $file->{data} ) {
                     $content .= $file->{data};
                 } else {
                     open my $fh, '<', $file->{filename};
+                    if ( -B $file->{filename} ) {
+                        binmode $fh;
+                    }
                     while (<$fh>) {
                         $content .= $_;
                     }
                 }
-                $content .= "\n";
+                $content .= "\r\n";
             }
             $content .= "------BOUNDARY";
-            $content =~ s/\r\n/\n/g;
-            $content =~ s/\n/\r\n/g;
         }
 
         my $l = 0;
