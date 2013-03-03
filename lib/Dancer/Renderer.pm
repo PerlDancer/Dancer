@@ -247,7 +247,7 @@ sub get_file_response_for_path {
         # handle If-Modified-Since
         my $last_modified = (stat $static_file)[9];
         my $since = str2time(Dancer::SharedData->request->env->{HTTP_IF_MODIFIED_SINCE});
-        if( length $since && $since >= $last_modified ) {
+        if( defined $since && $since >= $last_modified ) {
             $response->status( 304 );
             $response->content( '' );
             return $response;
