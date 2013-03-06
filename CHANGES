@@ -5,6 +5,8 @@
         (Andrei).
 
     [ DOCUMENTATION ]
+    * GH #899: mention that response_exist and response_doesnt_exist are
+        deprecated (Fabrice Gabolde).
 
 1.3111      24.02.2013
 
