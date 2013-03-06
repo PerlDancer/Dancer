@@ -6,10 +6,13 @@ use Carp;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 use Dancer::Exception qw(:all);
+use Test::Deep::NoTest;
 
 use base 'Dancer::Template::Abstract';
 
 my $_engine;
+my $_tt_config;
+my %_extra_config;
 
 sub init {
     my ($self) = @_;
@@ -21,11 +24,13 @@ sub init {
     my $charset = setting('charset') || '';
     my @encoding = length($charset) ? ( ENCODING => $charset ) : ();
 
-    my $tt_config = {
+    %_extra_config = %{$self->config};
+
+    $_tt_config = {
         ANYCASE  => 1,
         ABSOLUTE => 1,
         @encoding,
-        %{$self->config},
+        %_extra_config,
     };
 
     my $start_tag = $self->config->{start_tag} || '<%';
@@ -36,16 +41,24 @@ sub init {
 
     # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
     # so I only change them if their value is different
-    $tt_config->{START_TAG} = $start_tag if $start_tag ne '[%';
-    $tt_config->{END_TAG}   = $stop_tag  if $stop_tag  ne '%]';
+    $_tt_config->{START_TAG} = $start_tag if $start_tag ne '[%';
+    $_tt_config->{END_TAG}   = $stop_tag  if $stop_tag  ne '%]';
 
-    $tt_config->{INCLUDE_PATH} ||= setting('views');
+    $_tt_config->{INCLUDE_PATH} ||= setting('views');
 
-    $_engine = $class->new(%$tt_config);
+    $_engine = $class->new(%$_tt_config);
 }
 
 sub render {
     my ($self, $template, $tokens) = @_;
+
+    if (
+        ref $self
+        && ! eq_deeply( \%_extra_config,$self->config )
+    ) {
+        # config has changed, reinitialise TT object
+        $self->init;
+    }
 
     if ( ! ref $template ) {
         -f $template or raise core_template => "'$template' doesn't exist or not a regular file";
