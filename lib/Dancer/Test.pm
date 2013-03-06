@@ -477,6 +477,8 @@ in Dancer's registry.
 
 =head2 response_exists([$method, $path], $test_name)
 
+Deprecated - Use response_status_isnt and check for status 404.
+
 Asserts that a response is found for the given request (note that even though
 a route for that path might not exist, a response can be found during request
 processing, because of filters).
@@ -485,6 +487,8 @@ processing, because of filters).
         "response found for unknown path";
 
 =head2 response_doesnt_exist([$method, $path], $test_name)
+
+Deprecated - Use response_status_is and check for status 404.
 
 Asserts that no response is found when processing the given request.
 
