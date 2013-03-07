@@ -1,6 +1,8 @@
 {{$NEXT}}
 
     [ BUG FIXES ]
+    * GH #702: fix request->header call throwing exceptions inside routes 
+        of Dancer->dance($request)  (Perlover).
     * GH #893, GH #636: handle binary files for uploads in Dancer::Test
         (Andrei).
 
