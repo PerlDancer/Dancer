@@ -24,7 +24,7 @@ sub to_json {
 
 # class definition
 
-sub loaded { Dancer::ModuleLoader->load('JSON') }
+sub loaded { Dancer::ModuleLoader->load_with_params('JSON', '-support_by_pp') }
 
 sub init {
     my ($self) = @_;
@@ -38,12 +38,14 @@ sub serialize {
 
     my $options = $self->_serialize_options_as_hashref(@_) || {};
 
-    # Why doesn't $self->config have this?
     my $config = setting('engines') || {};
     $config = $config->{JSON} || {};
 
     # straight pass through of config options to JSON
     map { $options->{$_} = $config->{$_} } keys %$config;
+
+    # pull in config from serializer init as well (and possibly overide settings from the conf file)
+    map { $options->{$_} = $self->config->{$_} } keys %{$self->config};
 
     if (setting('environment') eq 'development' and not defined $options->{pretty}) {
         $options->{pretty} = 1;
