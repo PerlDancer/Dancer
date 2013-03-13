@@ -1,4 +1,7 @@
 {{$NEXT}}
+    [ ENHANCEMENTS ]
+    * GH #895: JSON serializer now uses JSON's "-support_by_pp"
+        (Jonathan Schatz).
 
     [ BUG FIXES ]
     * GH #891: silenced warnings from non-numeric versions in Makefile.PL
