@@ -174,7 +174,7 @@ a request is passed to the appropriate route.
 
     hook 'before' => sub {
         var note => 'Hi there';
-        request->path('/foo/oversee')
+        request->path_info('/foo/oversee')
     };
 
     get '/foo/*' => sub {
