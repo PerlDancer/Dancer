@@ -32,6 +32,8 @@ foreach my $test (@tests) {
     );
 
     subtest "cookie header" => sub {
+        plan tests => 2;
+
         ok $c->to_header =~ /^complex=([^;]+);/, "cookie name";
 
         my %cookie_values = split '&', $1;
