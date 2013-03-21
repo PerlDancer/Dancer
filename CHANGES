@@ -14,6 +14,8 @@
     [ DOCUMENTATION ]
     * GH #899: mention that response_exist and response_doesnt_exist are
         deprecated (Fabrice Gabolde).
+    * GH #902, #903: change example to use path_info() instead of path()
+        (Anton Ukolov, Lee Carmichael).
 
 1.3111      24.02.2013
 
