@@ -1,4 +1,5 @@
-{{$NEXT}}
+1.3111_01 30.03.2013
+
     [ ENHANCEMENTS ]
     * GH #895: JSON serializer now uses JSON's "-support_by_pp"
         (Jonathan Schatz).
