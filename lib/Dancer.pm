@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3111';
+our $VERSION   = '1.3111_01';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
@@ -468,6 +468,10 @@ sub _start {
 
     # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
     if ($request) {
+        Dancer::Handler->init_request_headers( $request->env );
+        # TODO _build_headers should either not be private, or we should call
+        # init
+        $request->_build_headers;
         return Dancer::Handler->handle_request($request);
     }
 

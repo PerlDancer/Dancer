@@ -1,4 +1,25 @@
-{{$NEXT}}
+1.3111_01 30.03.2013
+
+    [ ENHANCEMENTS ]
+    * GH #895: JSON serializer now uses JSON's "-support_by_pp"
+        (Jonathan Schatz).
+
+    [ BUG FIXES ]
+    * GH #891: silenced warnings from non-numeric versions in Makefile.PL
+        (Olof Johansson).
+    * GH #702: fix request->header call throwing exceptions inside routes 
+        of Dancer->dance($request)  (Perlover).
+    * GH #893, GH #636: handle binary files for uploads in Dancer::Test
+        (Andrei).
+    * GH #903: add plan for subtest (bug report by wfaulk).
+
+    [ DOCUMENTATION ]
+    * GH #899: mention that response_exist and response_doesnt_exist are
+        deprecated (Fabrice Gabolde).
+    * GH #902, #903: change example to use path_info() instead of path()
+        (Anton Ukolov, Lee Carmichael).
+
+1.3111      24.02.2013
 
     [ BUG FIXES ]
     * GH #877: fix Dancer Error when so that 'exception' object is not passed

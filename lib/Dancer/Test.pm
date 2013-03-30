@@ -224,7 +224,7 @@ sub response_headers_are_deeply {
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     my $response = _req_to_response($req);
-    
+
     is_deeply(
         _sort_headers( $response->headers_to_array ),
         _sort_headers( $expected ),
@@ -274,12 +274,12 @@ sub response_redirect_location_is {
 sub _include_in_headers {
     my ($full_headers, $expected_subset) = @_;
 
-    # walk through all the expected header pairs, make sure 
+    # walk through all the expected header pairs, make sure
     # they exist with the same value in the full_headers list
     # return false as soon as one is not.
     for (my $i=0; $i<scalar(@$expected_subset); $i+=2) {
         my ($name, $value) = ($expected_subset->[$i], $expected_subset->[$i + 1]);
-        return 0 
+        return 0
           unless _check_header($full_headers, $name, $value);
     }
 
@@ -324,24 +324,24 @@ sub dancer_response {
         elsif ( $args->{files} ) {
             $content_type = 'multipart/form-data; boundary=----BOUNDARY';
             foreach my $file (@{$args->{files}}){
-                $content .= qq{------BOUNDARY
-Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename}"
-Content-Type: text/plain
-
-};
+                $file->{content_type} ||= 'text/plain';
+                $content .= qq/------BOUNDARY\r\n/;
+                $content .= qq/Content-Disposition: form-data; name="$file->{name}"; filename="$file->{filename}"\r\n/;
+                $content .= qq/Content-Type: $file->{content_type}\r\n\r\n/;
                 if ( $file->{data} ) {
                     $content .= $file->{data};
                 } else {
                     open my $fh, '<', $file->{filename};
+                    if ( -B $file->{filename} ) {
+                        binmode $fh;
+                    }
                     while (<$fh>) {
                         $content .= $_;
                     }
                 }
-                $content .= "\n";
+                $content .= "\r\n";
             }
             $content .= "------BOUNDARY";
-            $content =~ s/\r\n/\n/g;
-            $content =~ s/\n/\r\n/g;
         }
 
         my $l = 0;
@@ -469,7 +469,7 @@ registry.
 
 =head2 route_doesnt_exist([$method, $path], $test_name)
 
-Asserts that the given request does not match any route handler 
+Asserts that the given request does not match any route handler
 in Dancer's registry.
 
     route_doesnt_exist [GET => '/bogus_path'], "GET /bogus_path is not handled";
@@ -477,7 +477,9 @@ in Dancer's registry.
 
 =head2 response_exists([$method, $path], $test_name)
 
-Asserts that a response is found for the given request (note that even though 
+Deprecated - Use response_status_isnt and check for status 404.
+
+Asserts that a response is found for the given request (note that even though
 a route for that path might not exist, a response can be found during request
 processing, because of filters).
 
@@ -485,6 +487,8 @@ processing, because of filters).
         "response found for unknown path";
 
 =head2 response_doesnt_exist([$method, $path], $test_name)
+
+Deprecated - Use response_status_is and check for status 404.
 
 Asserts that no response is found when processing the given request.
 
@@ -509,27 +513,27 @@ one given.
 
 Asserts that the response content is equal to the C<$expected> string.
 
-    response_content_is [GET => '/'], "Hello, World", 
+    response_content_is [GET => '/'], "Hello, World",
         "got expected response content for GET /";
 
 =head2 response_content_isnt([$method, $path], $not_expected, $test_name)
 
 Asserts that the response content is not equal to the C<$not_expected> string.
 
-    response_content_isnt [GET => '/'], "Hello, World", 
+    response_content_isnt [GET => '/'], "Hello, World",
         "got expected response content for GET /";
 
 =head2 response_content_is_deeply([$method, $path], $expected_struct, $test_name)
 
-Similar to response_content_is(), except that if response content and 
-$expected_struct are references, it does a deep comparison walking each data 
-structure to see if they are equivalent.  
+Similar to response_content_is(), except that if response content and
+$expected_struct are references, it does a deep comparison walking each data
+structure to see if they are equivalent.
 
 If the two structures are different, it will display the place where they start
 differing.
 
-    response_content_is_deeply [GET => '/complex_struct'], 
-        { foo => 42, bar => 24}, 
+    response_content_is_deeply [GET => '/complex_struct'],
+        { foo => 42, bar => 24},
         "got expected response structure for GET /complex_struct";
 
 =head2 response_content_like([$method, $path], $regexp, $test_name)
@@ -537,7 +541,7 @@ differing.
 Asserts that the response content for the given request matches the regexp
 given.
 
-    response_content_like [GET => '/'], qr/Hello, World/, 
+    response_content_like [GET => '/'], qr/Hello, World/,
         "response content looks good for GET /";
 
 =head2 response_content_unlike([$method, $path], $regexp, $test_name)
@@ -545,7 +549,7 @@ given.
 Asserts that the response content for the given request does not match the regexp
 given.
 
-    response_content_unlike [GET => '/'], qr/Page not found/, 
+    response_content_unlike [GET => '/'], qr/Page not found/,
         "response content looks good for GET /";
 
 =head2 response_headers_are_deeply([$method, $path], $expected, $test_name)
