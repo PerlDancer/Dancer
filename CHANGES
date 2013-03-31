@@ -1,3 +1,10 @@
+
+{{$NEXT}}
+    [ BUG FIXES ]
+    * RT #84198: silencing wide-character in-memory file handle error
+        (Tom Wyant).
+
+
 1.3111_01 30.03.2013
 
     [ ENHANCEMENTS ]
