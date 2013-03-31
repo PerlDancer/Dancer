@@ -16,9 +16,20 @@ sub test_path {
 }
 
 my $filename = "some_\x{1A9}_file.txt";
+my $filename_as_bytes = $filename;
+if ( $] >= 5.017009 ) {
+    # The following song-and-dance is because Perl has, in 5.17.9,
+    # started flagging wide characters in in-memory files as errors, to
+    # wit:
+    # Strings with code points over 0xFF may not be mapped into
+    # in-memory file handles
+    open my $out, '>:encoding(utf8)', \$filename_as_bytes;
+    print { $out } "some_\x{1A9}_file.txt";
+    close $out;
+}
 
 my $content = qq{------BOUNDARY
-Content-Disposition: form-data; name="test_upload_file"; filename="$filename"
+Content-Disposition: form-data; name="test_upload_file"; filename="$filename_as_bytes"
 Content-Type: text/plain
 
 SHOGUN
