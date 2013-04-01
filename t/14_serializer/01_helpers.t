@@ -43,7 +43,7 @@ SKIP: {
 }
 
 SKIP: {
-    skip 'JSON is needed to run this test', 13
+    skip 'JSON is needed to run this test', 14
       unless Dancer::ModuleLoader->load_with_params('JSON', '-support_by_pp');
 
     # helpers syntax
