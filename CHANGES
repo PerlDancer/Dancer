@@ -1,3 +1,12 @@
+
+1.3111_02 01.04.2013
+
+    [ BUG FIXES ]
+    * RT #84198: silencing wide-character in-memory file handle error
+        (Tom Wyant).
+    * wrong number of tests to skip in t/14_serializer/01_helpers.t.
+
+
 1.3111_01 30.03.2013
 
     [ ENHANCEMENTS ]
