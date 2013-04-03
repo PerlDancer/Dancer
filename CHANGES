@@ -1,3 +1,8 @@
+[[NEXT]]
+    [ BUG FIXES ]
+    * GH #900: backport the security patch for Dancer::ModuleLoader
+        from Dancer2 (mokko).
+    
 
 1.3111_02 01.04.2013
 
