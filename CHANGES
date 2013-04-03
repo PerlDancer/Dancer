@@ -1,4 +1,8 @@
 [[NEXT]]
+    [ ENHANCEMENTS ]
+    * GH #897 dancer script diagnostic more explicit if target directory   
+        does not exist or is not writable (reported by Andrew Grangaard).
+
     [ BUG FIXES ]
     * GH #900: backport the security patch for Dancer::ModuleLoader
         from Dancer2 (mokko).
