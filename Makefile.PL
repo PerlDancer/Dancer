@@ -48,6 +48,7 @@ WriteMakefile1(
         'MIME::Types'                => '0',
         'URI'                        => '1.59',
         'Try::Tiny'                  => '0.09',
+        'Module::Runtime'            => '0',
 
         # core
         'File::Basename' => '0',
