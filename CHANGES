@@ -5,6 +5,7 @@ Revision history for Dancer
     [ ENHANCEMENTS ]
     * GH #897 dancer script diagnostic more explicit if target directory   
         does not exist or is not writable (reported by Andrew Grangaard).
+    * GH #907: skip tests of deprecated features (mokko).
 
     [ BUG FIXES ]
     * GH #900: backport the security patch for Dancer::ModuleLoader
