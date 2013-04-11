@@ -35,7 +35,8 @@ my $PERL_INTERPRETER = -r '/usr/bin/env' ? '#!/usr/bin/env perl' : "#!$^X";
 
 pod2usage( -verbose => 1 ) if $help;
 pod2usage( -verbose => 1 ) if not defined $name;
-pod2usage( -verbose => 1 ) unless -d $path && -w $path;
+pod2usage( -verbose => 1, -msg => "directory '$path' does not exist" )  unless -d $path;
+pod2usage( -verbose => 1, -msg => "directory '$path' is not writable" ) unless -w $path;
 sub version {require Dancer; print 'Dancer ' . $Dancer::VERSION . "\n"; exit 0;}
 
 validate_app_name($name);
