@@ -405,55 +405,59 @@ sub _send_file {
         }
     }
 
-    if (exists($options{filename})) {
-        $resp->push_header('Content-Disposition' => 
-            "attachment; filename=\"$options{filename}\""
-        );
-    }
+    if ($resp) {
 
-    if ( $options{'streaming'} ) {
-        # handle streaming
-        $resp->streamed( sub {
-            my ( $status, $headers ) = @_;
-            my %callbacks = defined $options{'callbacks'} ?
-                            %{ $options{'callbacks'} }    :
-                            ();
+        if (exists($options{filename})) {
+            $resp->push_header('Content-Disposition' => 
+                "attachment; filename=\"$options{filename}\""
+            );
+        }
 
-            return sub {
-                my $respond = shift;
-                exists $callbacks{'override'}
-                    and return $callbacks{'override'}->( $respond, $resp );
+        if ( $options{'streaming'} ) {
+            # handle streaming
+            $resp->streamed( sub {
+                my ( $status, $headers ) = @_;
+                my %callbacks = defined $options{'callbacks'} ?
+                                %{ $options{'callbacks'} }    :
+                                ();
 
-                # get respond callback and set headers, get writer in return
-                my $writer = $respond->( [
-                    $status,
-                    $headers,
-                ] );
+                return sub {
+                    my $respond = shift;
+                    exists $callbacks{'override'}
+                        and return $callbacks{'override'}->( $respond, $resp );
 
-                # get content from original response
-                my $content = $resp->content;
+                    # get respond callback and set headers, get writer in return
+                    my $writer = $respond->( [
+                        $status,
+                        $headers,
+                    ] );
 
-                exists $callbacks{'around'}
-                    and return $callbacks{'around'}->( $writer, $content );
+                    # get content from original response
+                    my $content = $resp->content;
 
-                if ( ref $content ) {
-                    my $bytes = $options{'bytes'} || '43008'; # 42K (dams)
-                    my $buf;
-                    while ( ( my $read = sysread $content, $buf, $bytes ) != 0 ) {
-                        if ( exists $callbacks{'around_content'} ) {
-                            $callbacks{'around_content'}->( $writer, $buf );
-                        } else {
-                            $writer->write($buf);
+                    exists $callbacks{'around'}
+                        and return $callbacks{'around'}->( $writer, $content );
+
+                    if ( ref $content ) {
+                        my $bytes = $options{'bytes'} || '43008'; # 42K (dams)
+                        my $buf;
+                        while ( ( my $read = sysread $content, $buf, $bytes ) != 0 ) {
+                            if ( exists $callbacks{'around_content'} ) {
+                                $callbacks{'around_content'}->( $writer, $buf );
+                            } else {
+                                $writer->write($buf);
+                            }
                         }
+                    } else {
+                        $writer->write($content);
                     }
-                } else {
-                    $writer->write($content);
-                }
-            };
-        } );
-    }
+                };
+            } );
+        }
 
-    return $resp if $resp;
+        return $resp;
+
+    }
 
     Dancer::Error->new(
         code    => 404,
