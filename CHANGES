@@ -1,5 +1,11 @@
 Revision history for Dancer
 
+{{$NEXT}}
+
+    [ ENHANCEMENTS ]
+    * GH #914: add link to melezhik's psgi chef cookbook.
+ 
+
 1.3112 10.04.2013
 
     [ ENHANCEMENTS ]
