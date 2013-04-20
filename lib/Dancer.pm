@@ -906,7 +906,8 @@ Adds a hook at some position. For example :
   };
 
 There can be multiple hooks assigned to a given position, and each will be
-executed in order.
+executed in order. Please note that B<always all hooks> are called, even if they
+are defined in a different package loaded with C<load_app>.
 
 (For details on how to register new hooks from within plugins, see
 L<Dancer::Hook>.)
