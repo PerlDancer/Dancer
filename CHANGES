@@ -11,6 +11,10 @@ Revision history for Dancer
     * GH #900: backport the security patch for Dancer::ModuleLoader
         from Dancer2 (mokko).
 
+    [ DOCUMENTATION ]
+    * GH #915: add warning about behaviour of hooks with multiple packages
+     loaded by load_app (racke).
+
 1.3111_02 01.04.2013
 
     [ BUG FIXES ]
