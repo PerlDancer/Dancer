@@ -41,6 +41,11 @@ sub reset {
     return;
 }
 
+# optional. setting this will mean the session will not
+# flush automatically when you call the Dancer::Session->write method
+# so you need to ensure you flush the session in your code somewhere
+sub fast { return 0 }
+
 # This is the default constructor for the session object, the only mandatory
 # attribute is 'id'. The whole object should be serialized by the session
 # engine.
@@ -127,8 +132,8 @@ needed to manipulate a session, whatever its storing engine is.
 
 =item B<id>
 
-The session id will be written to a cookie, by default named C<dancer.session>, 
-it is assumed that a client must accept cookies to be able to use a 
+The session id will be written to a cookie, by default named C<dancer.session>,
+it is assumed that a client must accept cookies to be able to use a
 session-aware Dancer webapp. (The cookie name can be change using the
 C<session_name> config setting.)
 
@@ -220,6 +225,17 @@ Returns a string with the name of cookie used for storing the session ID.
 
 You should probably not override this; the user can control the cookie name
 using the C<session_name> setting.
+
+=item B<fast> (optional)
+
+If set to a true value Dancer::Session->write will not flush automatically.
+You will therefore need to call session->flush somewhere in your code, e.g.
+
+    hook after => {
+        session->flush;
+    };
+
+Defaults to 0 so it will flush (save) the session each time you set a variable.
 
 =back
 
