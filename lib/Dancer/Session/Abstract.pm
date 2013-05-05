@@ -41,10 +41,10 @@ sub reset {
     return;
 }
 
-# optional. setting this will mean the session will not
-# flush automatically when you call the Dancer::Session->write method
-# so you need to ensure you flush the session in your code somewhere
-sub fast { return 0 }
+# Optional. Set to true and the session will flush in an after hook, and only
+# retrieve from the backend once. Set to false and you hit the back end for
+# every get or set that you do. Defaults to false (slow).
+sub fast { setting('session_fast') }
 
 # This is the default constructor for the session object, the only mandatory
 # attribute is 'id'. The whole object should be serialized by the session
@@ -198,6 +198,14 @@ This setting defaults to 1 and instructs the session cookie to be
 created with the C<HttpOnly> option active, meaning that JavaScript
 will not be able to access to its value.
 
+=head3 session_fast
+
+Set to true and your session will load from the backend at the start
+of a request and flush the session only once at the end of the response.
+
+Default is not true so every get and set call will result in a call to
+whatever backend you are using.
+
 =head2 Abstract Methods
 
 =over 4
@@ -228,14 +236,7 @@ using the C<session_name> setting.
 
 =item B<fast> (optional)
 
-If set to a true value Dancer::Session->write will not flush automatically.
-You will therefore need to call session->flush somewhere in your code, e.g.
-
-    hook after => {
-        session->flush;
-    };
-
-Defaults to 0 so it will flush (save) the session each time you set a variable.
+Accessor for the session_fast setting
 
 =back
 

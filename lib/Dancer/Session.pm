@@ -6,6 +6,11 @@ use warnings;
 use Carp;
 use Dancer::Cookies;
 use Dancer::Engine;
+use Dancer::Hook;
+use Dancer::Factory::Hook;
+
+our $hook;
+our $flushed = 0;
 
 # Singleton representing the session engine class to use
 my $ENGINE = undef;
@@ -29,6 +34,15 @@ sub get_current_session {
 
     if (not defined $session) {
         $session = $class->create();
+    }
+
+    # if it's a fast session then we flush at the end
+    if ( $session->fast &! $hook ) {
+        $hook = Dancer::Hook->new('after' => sub {
+                    get_current_session()->flush unless $flushed;
+                    $flushed = 1
+                });
+        Dancer::Factory::Hook->register_hook( $hook );
     }
 
     # Generate a session cookie; we want to do this regardless of whether the
@@ -56,8 +70,6 @@ sub write {
     my $session = get_current_session();
     $session->{$key} = $value;
 
-    # if you set session tofast then you need to flush the session
-    # at some point in your code e.g. hook after => sub { session->flush };
     $session->flush unless $session->fast;
     return $value;
 }
