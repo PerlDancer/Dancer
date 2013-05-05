@@ -29,8 +29,8 @@ WriteMakefile1(
 
     META_MERGE => {
         resources => {
-            repository => 'http://github.com/sukria/Dancer',
-            bugtracker => 'http://github.com/sukria/Dancer/issues',
+            repository => 'https://github.com/PerlDancer/Dancer',
+            bugtracker => 'https://github.com/PerlDancer/Dancer/issues',
             homepage   => 'http://perldancer.org/',
         },
     },
@@ -48,7 +48,7 @@ WriteMakefile1(
         'MIME::Types'                => '0',
         'URI'                        => '1.59',
         'Try::Tiny'                  => '0.09',
-        'Clone'                      => '0',
+        'Module::Runtime'            => '0',
 
         # core
         'File::Basename' => '0',

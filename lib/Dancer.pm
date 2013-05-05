@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3099';
+our $VERSION   = '1.3112';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
@@ -228,6 +228,7 @@ sub import {
     my ($package, $script) = caller;
 
     strict->import;
+    warnings->import;
     utf8->import;
 
     my @final_args;
@@ -404,55 +405,59 @@ sub _send_file {
         }
     }
 
-    if (exists($options{filename})) {
-        $resp->push_header('Content-Disposition' => 
-            "attachment; filename=\"$options{filename}\""
-        );
-    }
+    if ($resp) {
 
-    if ( $options{'streaming'} ) {
-        # handle streaming
-        $resp->streamed( sub {
-            my ( $status, $headers ) = @_;
-            my %callbacks = defined $options{'callbacks'} ?
-                            %{ $options{'callbacks'} }    :
-                            ();
+        if (exists($options{filename})) {
+            $resp->push_header('Content-Disposition' => 
+                "attachment; filename=\"$options{filename}\""
+            );
+        }
 
-            return sub {
-                my $respond = shift;
-                exists $callbacks{'override'}
-                    and return $callbacks{'override'}->( $respond, $resp );
+        if ( $options{'streaming'} ) {
+            # handle streaming
+            $resp->streamed( sub {
+                my ( $status, $headers ) = @_;
+                my %callbacks = defined $options{'callbacks'} ?
+                                %{ $options{'callbacks'} }    :
+                                ();
 
-                # get respond callback and set headers, get writer in return
-                my $writer = $respond->( [
-                    $status,
-                    $headers,
-                ] );
+                return sub {
+                    my $respond = shift;
+                    exists $callbacks{'override'}
+                        and return $callbacks{'override'}->( $respond, $resp );
 
-                # get content from original response
-                my $content = $resp->content;
+                    # get respond callback and set headers, get writer in return
+                    my $writer = $respond->( [
+                        $status,
+                        $headers,
+                    ] );
 
-                exists $callbacks{'around'}
-                    and return $callbacks{'around'}->( $writer, $content );
+                    # get content from original response
+                    my $content = $resp->content;
 
-                if ( ref $content ) {
-                    my $bytes = $options{'bytes'} || '43008'; # 42K (dams)
-                    my $buf;
-                    while ( ( my $read = sysread $content, $buf, $bytes ) != 0 ) {
-                        if ( exists $callbacks{'around_content'} ) {
-                            $callbacks{'around_content'}->( $writer, $buf );
-                        } else {
-                            $writer->write($buf);
+                    exists $callbacks{'around'}
+                        and return $callbacks{'around'}->( $writer, $content );
+
+                    if ( ref $content ) {
+                        my $bytes = $options{'bytes'} || '43008'; # 42K (dams)
+                        my $buf;
+                        while ( ( my $read = sysread $content, $buf, $bytes ) != 0 ) {
+                            if ( exists $callbacks{'around_content'} ) {
+                                $callbacks{'around_content'}->( $writer, $buf );
+                            } else {
+                                $writer->write($buf);
+                            }
                         }
+                    } else {
+                        $writer->write($content);
                     }
-                } else {
-                    $writer->write($content);
-                }
-            };
-        } );
-    }
+                };
+            } );
+        }
 
-    return $resp if $resp;
+        return $resp;
+
+    }
 
     Dancer::Error->new(
         code    => 404,
@@ -467,6 +472,10 @@ sub _start {
 
     # Backward compatibility for app.psgi that has sub { Dancer->dance($req) }
     if ($request) {
+        Dancer::Handler->init_request_headers( $request->env );
+        # TODO _build_headers should either not be private, or we should call
+        # init
+        $request->_build_headers;
         return Dancer::Handler->handle_request($request);
     }
 
@@ -842,7 +851,7 @@ Sets a response object with the content given.
 When used as a return value from a filter, this breaks the execution flow and
 renders the response immediately:
 
-    before sub {
+    hook before sub {
         if ($some_condition) {
             halt("Unauthorized");
             # This code is not executed :
@@ -897,7 +906,8 @@ Adds a hook at some position. For example :
   };
 
 There can be multiple hooks assigned to a given position, and each will be
-executed in order.
+executed in order. Note that B<all> hooks are always called, even if they
+are defined in a different package loaded via C<load_app>.
 
 (For details on how to register new hooks from within plugins, see
 L<Dancer::Hook>.)
@@ -943,8 +953,8 @@ This hook receives as argument a L<Dancer::Error> object.
 
 =item before
 
-This hook receives one argument, a reference to the subroutine that
-implements the route that is being intercepted by this hook.
+This hook receives one argument, the route being executed (a L<Dancer::Route>
+object).
 
   hook before => sub {
     my $route_handler = shift;
@@ -1052,7 +1062,7 @@ if it needs to make changes to the response which is about to be sent.
     my $response = shift;
   };
 
-This is equivalent to
+This is equivalent to the deprecated
 
   after sub {
     my $response = shift;
@@ -1442,7 +1452,7 @@ it:
             streaming => 1,
             callbacks => {
                 around => sub {
-                    my ( $writer, $content 0 = shift;
+                    my ( $writer, $content ) = @_;
 
                     # we know it's a text file, so we'll just stream
                     # line by line
@@ -1827,7 +1837,7 @@ versions:
 Provides an accessor for variables shared between filters and route handlers.
 Given a key/value pair, it sets a variable:
 
-    before sub {
+    hook before sub {
         var foo => 42;
     };
 
@@ -1865,11 +1875,12 @@ see the AUTHORS file that comes with this distribution for details.
 =head1 SOURCE CODE
 
 The source code for this module is hosted on GitHub
-L<http://github.com/sukria/Dancer>.  Feel free to fork the repository and submit
-pull requests!  (See L<Dancer::Development> for details on how to contribute).
+L<https://github.com/PerlDancer/Dancer>.  Feel free to fork the repository and
+submit pull requests!  (See L<Dancer::Development> for details on how to
+contribute).
 
-Also, why not L<watch the repo|https://github.com/sukria/Dancer/toggle_watch> to
-keep up to date with the latest upcoming changes?
+Also, why not L<watch the repo|https://github.com/PerlDancer/Dancer/toggle_watch>
+to keep up to date with the latest upcoming changes?
 
 
 =head1 GETTING HELP / CONTRIBUTING
@@ -1882,7 +1893,7 @@ client at L<http://www.perldancer.org/irc> for you.
 
 There is also a Dancer users mailing list available - subscribe at:
 
-L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
+L<http://lists.preshweb.co.uk/mailman/listinfo/dancer-users>
 
 If you'd like to contribute to the Dancer project, please see
 L<http://www.perldancer.org/contribute> for all the ways you can help!

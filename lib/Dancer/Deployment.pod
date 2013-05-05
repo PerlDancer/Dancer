@@ -164,49 +164,6 @@ before and after enabling this middleware. Among other things, you should
 notice that the response is gzip or deflate encoded, and contains a header
 C<Content-Encoding> set to C<gzip> or C<deflate>
 
-=head3 Running multiple apps with Plack::Builder
-
-You can use Plack::Builder to mount multiple Dancer applications on
-a L<PSGI> webserver like L<Starman>.
-
-Start by creating a simple app.psgi file:
-
-    use Dancer ':syntax';
-    use Plack::Builder;
-
-    setting apphandler => 'PSGI';
-
-    my $app1 = sub {
-        my $env = shift;
-        local $ENV{DANCER_APPDIR} = '/Users/franck/tmp/app1';
-        setting appdir => '/Users/franck/tmp/app1';
-        load_app "app1";
-        Dancer::App->set_running_app('app1');
-        Dancer::Config->load;
-        my $request = Dancer::Request->new( env => $env );
-        Dancer->dance($request);
-    };
-
-    my $app2 = sub {
-        my $env = shift;
-        local $ENV{DANCER_APPDIR} = '/Users/franck/tmp/app2';
-        setting appdir => '/Users/franck/tmp/app2';
-        load_app "app2";
-        Dancer::App->set_running_app('app2');
-        Dancer::Config->load;
-        my $request = Dancer::Request->new( env => $env );
-        Dancer->dance($request);
-    };
-
-    builder {
-        mount "/app1" => builder {$app1};
-        mount "/app2" => builder {$app2};
-    };
-
-and now use L<Starman>
-
-    plackup -a app.psgi -s Starman
-
 =head3 Hosting on DotCloud
 
 The simplest way to achieve this is to push your main application directory
@@ -376,7 +333,7 @@ provided with perlbal, but you'll probably want something like:
     SET persist_client  = on
     SET persist_backend = on
     SET verify_backend  = on
-    ENABLE balancer
+    ENABLE my_webapp
 
 
 
@@ -456,6 +413,13 @@ You will need plackup to start a worker listening on a socket :
 A good way to start this is to use C<daemontools> and place this line with
 all environments variables in the "run" file.
 
+=head3 Plackup Chef Cookbook
+
+A psgi chef cookbook supporting Dancer (as well as I<Catalyst>)
+written by Alexey Melezhik is available
+at L<http://community.opscode.com/cookbooks/psgi>.
+
+
 =head2 Running from Apache
 
 You can run your Dancer app from Apache using the following examples:
@@ -471,7 +435,7 @@ following:
         ServerAlias myapp.example.com
         DocumentRoot /websites/myapp.example.com
 
-        <Directory /home/myapp/myapp>
+        <Directory /websites/myapp.example.com>
             AllowOverride None
             Order allow,deny
             Allow from all

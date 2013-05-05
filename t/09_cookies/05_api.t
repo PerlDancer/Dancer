@@ -23,13 +23,24 @@ foreach my $test (@tests) {
        "HttpOnly is correctly set";
 }
 
-ok my $c = Dancer::Cookie->new(
-    name  => 'complex',
-    value => { token => 'foo', token_secret => 'bar' },
-);
+{
+    my $values = { token => 'foo', token_secret => 'bar' };
 
-my $text = $c->to_header;
-like $text, qr/complex=token&foo&token_secret&bar/;
+    ok my $c = Dancer::Cookie->new(
+        name  => 'complex',
+        value => $values,
+    );
+
+    subtest "cookie header" => sub {
+        plan tests => 2;
+
+        ok $c->to_header =~ /^complex=([^;]+);/, "cookie name";
+
+        my %cookie_values = split '&', $1;
+
+        is_deeply \%cookie_values => $values, "cookie values";
+    };
+}
 
 my $env = {
     REQUEST_METHOD => 'GET',

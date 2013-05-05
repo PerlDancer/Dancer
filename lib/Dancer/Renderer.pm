@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp;
 use HTTP::Headers;
+use HTTP::Date qw( str2time time2str );
 use Dancer::Route;
 use Dancer::HTTP;
 use Dancer::Cookie;
@@ -185,6 +186,7 @@ sub _autopage_response {
     $response->content(
         Dancer::template($viewpath)
     );
+    $response->header( 'Content-Type' => 'text/html' );
     return $response;
 }
 
@@ -240,10 +242,21 @@ sub get_file_response_for_path {
         Dancer::Factory::Hook->execute_hooks( 'before_file_render',
             $static_file );
 
+        my $response = Dancer::SharedData->response() || Dancer::Response->new();
+
+        # handle If-Modified-Since
+        my $last_modified = (stat $static_file)[9];
+        my $since = str2time(Dancer::SharedData->request->env->{HTTP_IF_MODIFIED_SINCE});
+        if( defined $since && $since >= $last_modified ) {
+            $response->status( 304 );
+            $response->content( '' );
+            return $response;
+        }
+
         my $fh = open_file( '<', $static_file );
         binmode $fh;
-        my $response = Dancer::SharedData->response() || Dancer::Response->new();
         $response->status($status) if ($status);
+        $response->header( 'Last-Modified' => time2str( $last_modified ) );
         $response->header('Content-Type' => (($mime && _get_full_mime_type($mime)) ||
                                              Dancer::SharedData->request->content_type ||
                                              _get_mime_type($static_file)));

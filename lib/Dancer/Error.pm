@@ -3,6 +3,7 @@ package Dancer::Error;
 use strict;
 use warnings;
 use Carp;
+use Scalar::Util qw(blessed);
 
 use base 'Dancer::Object';
 
@@ -160,7 +161,7 @@ sub _censor {
         if (ref $hash->{$key} eq 'HASH') {
             $censored += _censor( $hash->{$key}, $recursecount );
         }
-        elsif ($key =~ /(pass|card?num|pan|secret)/i) {
+        elsif ($key =~ /(pass|card?num|pan|secret|private_key)/i) {
             $hash->{$key} = "Hidden (looks potentially sensitive)";
             $censored++;
         }
@@ -206,8 +207,15 @@ sub _render_serialized {
 
     my $message =
       !ref $self->message ? {error => $self->message} : $self->message;
-    ref $message eq 'HASH' && defined $self->exception
-      and $message->{exception} = $self->exception;
+
+    if (ref $message eq 'HASH' && defined $self->exception) {
+        if (blessed($self->exception)) {
+            $message->{exception} = ref($self->exception);
+            $message->{exception} =~ s/^Dancer::Exception:://;
+        } else {
+            $message->{exception} = $self->exception;
+        }
+    }
 
     if (setting('show_errors')) {
         Dancer::Response->new(

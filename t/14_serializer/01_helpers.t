@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Dancer ':tests';
 
-plan tests => 52;
+plan tests => 53;
 
 my $struct = {eris => 23};
 
@@ -11,7 +11,7 @@ my $struct = {eris => 23};
     # test an unknown serializer
     eval { setting serializer => 'FooBar'; };
     like $@,
-      qr/unknown serializer engine 'FooBar', perhaps you need to install Dancer::Serializer::FooBar/,
+      qr/unable to load serializer engine 'FooBar', perhaps you need to install Dancer::Serializer::FooBar/,
       "Foobar is not a valid serializer";
 }
 
@@ -43,8 +43,8 @@ SKIP: {
 }
 
 SKIP: {
-    skip 'JSON is needed to run this test', 13
-      unless Dancer::ModuleLoader->load('JSON');
+    skip 'JSON is needed to run this test', 14
+      unless Dancer::ModuleLoader->load_with_params('JSON', '-support_by_pp');
 
     # helpers syntax
     ok my $test         = to_json($struct), 'to json';
@@ -68,7 +68,7 @@ SKIP: {
     # with options
     $data = { foo => { bar => { baz => [qw/23 42/] } } };
     $json = to_json( $data, { pretty => 1 } );
-    like $json, qr/"foo" : {/, "data is pretty!";
+    like $json, qr/"foo" : \{/, "data is pretty!";
     my $data2 = from_json($json);
     is_deeply( $data2, $data, "data is correctly deserialized" );
 
@@ -79,15 +79,18 @@ SKIP: {
                 allow_blessed   => 1,
                 convert_blessed => 1,
                 pretty          => 0,
+                escape_slash    => 1
             }
         }
     };
 
     ok $s = Dancer::Serializer->init( 'JSON', $config ),
       'JSON serializer with custom config';
-    $data = { foo => 'bar' };
+    $data = { foo => '/bar' };
     my $res = $s->serialize($data);
     is_deeply( $data, JSON::decode_json($res), 'data is correctly serialized' );
+
+    ok($res =~m|\\/|, 'JSON serializer obeys config options to init');
 
     # # XXX tests for deprecation
     # my $warn;

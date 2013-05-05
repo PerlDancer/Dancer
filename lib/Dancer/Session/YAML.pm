@@ -5,11 +5,10 @@ use warnings;
 use Carp;
 use base 'Dancer::Session::Abstract';
 
-use Fcntl ':flock';
 use Dancer::Logger;
 use Dancer::ModuleLoader;
 use Dancer::Config 'setting';
-use Dancer::FileUtils qw(path set_file_mode);
+use Dancer::FileUtils qw(path atomic_write);
 use Dancer::Exception qw(:all);
 
 # static
@@ -65,7 +64,6 @@ sub retrieve {
     return unless -f $session_file;
 
     open my $fh, '+<', $session_file or die "Can't open '$session_file': $!\n";
-    flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
     my $content = YAML::LoadFile($fh);
     close $fh or die "Can't close '$session_file': $!\n";
 
@@ -91,11 +89,7 @@ sub flush {
     my $self         = shift;
     my $session_file = yaml_file( $self->id );
 
-    open my $fh, '>', $session_file or die "Can't open '$session_file': $!\n";
-    flock $fh, LOCK_EX or die "Can't lock file '$session_file': $!\n";
-    set_file_mode($fh);
-    print {$fh} YAML::Dump($self);
-    close $fh or die "Can't close '$session_file': $!\n";
+    atomic_write( setting('session_dir'), yaml_file($self->id), YAML::Dump($self) );
 
     return $self;
 }

@@ -1,4 +1,136 @@
+Revision history for Dancer
+
 {{$NEXT}}
+    [ ENHANCEMENTS ]
+
+    * GH #914: add link to melezhik's psgi chef cookbook.
+    * GH #869: leave body parameters alone if deserialization failed
+        (brianphillips).
+
+    [ DOCUMENTATION ]
+    * GH #915: add warning about behaviour of hooks with multiple packages
+     loaded by load_app (racke).
+1.3112 10.04.2013
+
+    [ ENHANCEMENTS ]
+    * GH #897 dancer script diagnostic more explicit if target directory   
+        does not exist or is not writable (reported by Andrew Grangaard).
+    * GH #907: skip tests of deprecated features (mokko).
+
+    [ BUG FIXES ]
+    * GH #900: backport the security patch for Dancer::ModuleLoader
+        from Dancer2 (mokko).
+
+1.3111_02 01.04.2013
+
+    [ BUG FIXES ]
+    * RT #84198: silencing wide-character in-memory file handle error
+        (Tom Wyant).
+    * wrong number of tests to skip in t/14_serializer/01_helpers.t.
+
+
+1.3111_01 30.03.2013
+
+    [ ENHANCEMENTS ]
+    * GH #895: JSON serializer now uses JSON's "-support_by_pp"
+        (Jonathan Schatz).
+
+    [ BUG FIXES ]
+    * GH #891: silenced warnings from non-numeric versions in Makefile.PL
+        (Olof Johansson).
+    * GH #702: fix request->header call throwing exceptions inside routes 
+        of Dancer->dance($request)  (Perlover).
+    * GH #893, GH #636: handle binary files for uploads in Dancer::Test
+        (Andrei).
+    * GH #903: add plan for subtest (bug report by wfaulk).
+
+    [ DOCUMENTATION ]
+    * GH #899: mention that response_exist and response_doesnt_exist are
+        deprecated (Fabrice Gabolde).
+    * GH #902, #903: change example to use path_info() instead of path()
+        (Anton Ukolov, Lee Carmichael).
+
+1.3111      24.02.2013
+
+    [ BUG FIXES ]
+    * GH #877: fix Dancer Error when so that 'exception' object is not passed
+      to serializers, because XML/JSON serializers don't understand objects
+      (rikbrown).
+    * GH #858: Check for definedness, not truth, when testing if we read
+      into the buffer when parsing a request body (florolf).
+    * GH #845: Fix uninitialized warning when loading modules (Fabrice Gabolde).
+    * GH #851, GH #853: Atomic YAML session writing (Roman Galeev).
+    * GH #852: Saner UTF logging (Roman Galeev).
+    * GH #849, GH #850: Serve autopages with text/html content type.
+      (Philippe Bruhat - BooK)
+    * GH #848: Handle If-Modified-Since header in the request for static files.
+      (Philippe Bruhat - BooK)
+    * GH #848: Send a Last-Modified header for static files.
+      (Philippe Bruhat - BooK)
+    * GH #856: Don't export non-existing subroutine (mokko).
+    * GH #874: Reduce dependence on %ENV for internal code (Kent Fredric).
+    * GH #875: Don't expect specific order in cookies (Yanick Champoux).
+    * Remove 'exception' object from message being passed to serializers. 
+        (Rik Brown)
+    * Added .travis.yml to MANIFEST.SKIP so t/manifest.t passes (Kaitlyn Parkhurst).
+    * GH #887, GH #890: keyword 'global_warnings' added to replace 'import_warnings'
+        (Kaitlyn Parkhurst).
+    * GH #892: add 'private_key' to the list of potentially sensitive keys (Tom Heady).
+
+    [ DOCUMENTATION ]
+    * GH #847: Fix typo (John Wittkoski).
+    * GH #865: Correct 'before' hook documentation (David Precious, Maurice).
+    * GH #860, GH #844, GH #760: Misleading plack middleware documentation.
+      (Paul Fenwick)
+    * GH #862: Fix heading level for strict_config entry in Dancer::Config.
+      (Stefan Hornburg - Racke)
+    * GH #863: Correct example apache config (John Wittkoski).
+    * GH #867: correct doc for ModuleLoader::load_with_params (mokko).
+    * Document route_cache option (David Precious).
+    * Docs for route_cache_size_limit & route_cache_path_limit (David Precious).
+    * Remove meaningless 'encoding' to TT config (David Precious).
+    * Remove docs for mounting multiple apps (Naveed Massjouni).
+    * Update doc URLs (David Precious).
+    * Fix inconsistency in Perlbal deployment example (Slaven Rezić, Racke).
+    * GH #894: Replace spurious character in Dancer::Session's POD (Racke).
+    * GH #880: Add deprecation mention for 'after' (pdl and Yanick Champoux).
+
+
+1.3110      06.10.2012
+
+    [ BUG FIXES ]
+    * GH #817, #823, #825: Removing Clone from core. Pure-perl environments
+      supported again (Sawyer X).
+    * GH #755, #819, #827, #828: HTTP::Headers accepted by dancer_response
+      (Roberto Patriarca, Dagfinn Ilmari Mannsåker, draxil, perlpong).
+
+    [ ENHANCEMENTS ]
+    * GH #826: The version of wallflower shipped with Dancer has been removed.
+      It was well out of date.  BooK is now maintaining it as a more general
+      solution under the name App::Wallflower. (BooK)
+    * GH #834: Provide empty Headers object if not defined (Yanick Champoux).
+    * GH #840, #841: Dancer::Plugin::Ajax now has content_type (Lee Carmichael).
+
+    [ DOCUMENTATION ]
+    * GH #821: Pointing to new homepage (alfie).
+    * GH #822: Typos in documentation (Stefan Hornburg - racke).
+    * GH #824: Fix in Dancer/Session.pm (pdl).
+    * GH #830: Fix Github links to https:// (Olivier Mengué).
+    * GH #838: Error in Dancer::Plugin::Ajax Documentation (Lee Carmichael).
+    * GH #839: Typo (goblin).
+
+1.3100      25.08.2012
+
+    [ BUG FIXES ]
+    * GH #816: Improve wording when failed to load engine. (Sawyer X)
+    * GH #817: Fix CODE reference uncloned using Clone::clone.
+      (David Previous, Sawyer X)
+
+    [ ENHANCEMENTS ]
+    * GH #755: HTTP::Headers accepted by dancer_response. (Roberto Patriarca)
+
+    [ DOCUMENTATION ]
+    * GH #818: Use "MyWeb::App" instead of "mywebapp" in examples. (pdl)
 
 1.3099      11.08.2012
 

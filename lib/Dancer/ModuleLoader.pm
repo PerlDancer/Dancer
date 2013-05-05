@@ -4,45 +4,35 @@ package Dancer::ModuleLoader;
 
 use strict;
 use warnings;
+use Module::Runtime qw/ use_module /;
 
 sub load {
     my ($class, $module, $version) = @_;
-    # 0 is a valid version, so testing trueness of $version is not enough
-    if (defined $version && length $version) {
-        my ($res, $error) = $class->load_with_params($module);
-        $res or return wantarray ? (0, $error) : 0;
-        local $@;
-        eval { $module->VERSION($version) };
-        $error = $@;
-        $error and return wantarray ? (0, $error) : 0;
-        return 1;
-    }
-    # normal 'use', can be done via require + import
-    my ($res, $error) = $class->load_with_params($module);
-    return wantarray ? ($res, $error) : $res;
+
+    my ($res, $error) = $class->require($module, $version);
+    $res or return wantarray ? (0, $error) : 0;
 }
 
 sub require {
-    my ($class, $module) = @_;
-    local $@;
-    my $module_filename = $module;
-    $module_filename =~ s!::|'!/!g;
-    $module_filename .= '.pm';
-    eval { require $module_filename };
-    my $error = $@;
-    $error and return wantarray ? (0, $error) : 0;
-    return 1;
+    my ($class, $module, $version) = @_;
+    print "version $version\n" if $version;
+    eval { defined $version ? use_module( $module, $version ) 
+                            : use_module( $module ) } 
+        or return wantarray ? (0, $@) : 0;
+    return 1; #success
 }
 
 sub load_with_params {
     my ($class, $module, @args) = @_;
     my ($res, $error) = $class->require($module);
     $res or return wantarray ? (0, $error) : 0;
+
     # From perlfunc : If no "import" method can be found then the call is
     # skipped, even if there is an AUTOLOAD method.
     if ($module->can('import')) {
+
         # bump Exporter Level to import symbols in the caller
-        local $Exporter::ExportLevel = ( $Exporter::ExportLevel || 0 ) + 1;
+        local $Exporter::ExportLevel = ($Exporter::ExportLevel || 0) + 1;
         local $@;
         eval { $module->import(@args) };
         my $error = $@;
@@ -108,7 +98,7 @@ please simply "C<use ModuleYouNeed>" in your code and don't use this module.
 
 =head2 load
 
-Runs a "C<use ModuleYouNeed>".
+Runs something like "C<use ModuleYouNeed>" at runtime.
 
     use Dancer::ModuleLoader;
     ...
@@ -155,11 +145,11 @@ Runs a "C<use ModuleYouNeed qw(param1 param2 ...)>".
 
     use Dancer::ModuleLoader;
     ...
-    Dancer::ModuleLoader->load('Something', qw(param1 param2) )
-        or die "Couldn't load Something\n";
+    Dancer::ModuleLoader->load_with_params('Something', qw(param1 param2) )
+        or die "Couldn't load Something with param1 and param2\n";
 
-    my ($res, $error) = Dancer::ModuleLoader->load('Something', @params);
-    $res or die "Couldn't load Something : '$error'\n";
+    my ($res, $error) = Dancer::ModuleLoader->load_with_params('Something', @params);
+    $res or die "Couldn't load Something with @params: '$error'\n";
 
 Takes in arguments the module name, and optionally parameters to pass to the import internal method.
 
@@ -212,6 +202,10 @@ Example:
     );
 
     # class == 'Dancer::Template::Tiny
+
+=head1 SEE ALSO
+
+L<Module::Load>, L<Module::New::Loader>
 
 =head1 AUTHOR
 
