@@ -10,6 +10,9 @@ Revision history for Dancer
     [ DOCUMENTATION ]
     * GH #915: add warning about behaviour of hooks with multiple packages
      loaded by load_app (racke).
+    * GH #918: Fix headers syntax in Dancer::Response perldoc
+      (Vyacheslav Matyukhin).
+
 1.3112 10.04.2013
 
     [ ENHANCEMENTS ]
