@@ -1086,6 +1086,16 @@ argument a L<Dancer::Exception> object.
     my $exception = shift;
   };
 
+=item on_reset_state
+
+This hook is called when global state is reset to process a new request.
+It receives a boolean value that indicates whether the reset was called
+as part of a forwarded request.
+
+  hook on_reset_state => sub {
+    my $is_forward = shift;
+  };
+
 =item on_route_exception
 
 This hook is called when an exception has been caught, at the route level, just
