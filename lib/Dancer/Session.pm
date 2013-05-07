@@ -6,6 +6,11 @@ use warnings;
 use Carp;
 use Dancer::Cookies;
 use Dancer::Engine;
+use Dancer::Hook;
+use Dancer::Factory::Hook;
+
+our $hook;
+our $flushed = 0;
 
 # Singleton representing the session engine class to use
 my $ENGINE = undef;
@@ -29,6 +34,15 @@ sub get_current_session {
 
     if (not defined $session) {
         $session = $class->create();
+    }
+
+    # if it's a fast session then we flush at the end
+    if ( $session->fast &! $hook ) {
+        $hook = Dancer::Hook->new('after' => sub {
+                    get_current_session()->flush unless $flushed;
+                    $flushed = 1
+                });
+        Dancer::Factory::Hook->register_hook( $hook );
     }
 
     # Generate a session cookie; we want to do this regardless of whether the
@@ -56,12 +70,12 @@ sub write {
     my $session = get_current_session();
     $session->{$key} = $value;
 
-    # TODO : should be moved as an "after" filter
-    $session->flush;
+    $session->flush unless $session->fast;
     return $value;
 }
 
 1;
+
 __END__
 
 =pod
@@ -112,8 +126,8 @@ Retrieving that value later:
     my $foo = session 'foo';
 
 You can either look for an existing item in the session storage or modify one.
-Here is a simple example of two route handlers that implement basic C</login> 
-and C</home> actions using the session engine. 
+Here is a simple example of two route handlers that implement basic C</login>
+and C</home> actions using the session engine.
 
     post '/login' => sub {
         # look for params and authenticate the user
@@ -155,8 +169,8 @@ but maybe not the best for production needs.
 
 =item L<Dancer::Session::Simple>
 
-A very simple session backend, holding all session data in memory.  This means 
-that sessions are volatile, and no longer exist when the process exits.  This 
+A very simple session backend, holding all session data in memory.  This means
+that sessions are volatile, and no longer exist when the process exits.  This
 module is likely to be most useful for testing purposes, and of little use for
 production.
 
@@ -179,7 +193,7 @@ inside encrypted cookies (this engine doesn't use a server-side storage).
 
 =item L<Dancer::Session::Storable>
 
-This backend stores sessions on disc using Storable, which offers solid 
+This backend stores sessions on disc using Storable, which offers solid
 performance and reliable serialisation of various data structures.
 
 =item L<Dancer::Session::MongoDB>
@@ -194,6 +208,10 @@ A backend to store sessions using L<KiokuDB>
 
 Let Plack::Middleware::Session handle sessions; may be useful to share sessions
 between a Dancer app and other Plack-based apps.
+
+=item L<Dancer::Session::ElasticSearch>
+
+A backend to store sessions using L<ElasticSearch>
 
 =back
 

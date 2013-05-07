@@ -20,12 +20,12 @@ sub install_hooks {
     my ( $self, @hooks_name ) = @_;
 
     if ( !scalar @hooks_name ) {
-        raise core_factory_hook => "at least one name is required";
+        raise core_factory_hook => "At least one name is required";
     }
 
     foreach my $hook_name (@hooks_name) {
         if ( $self->hook_is_registered($hook_name) ) {
-            raise core_factory_hook => "$hook_name is already regsitered, please use another name";
+            raise core_factory_hook => "$hook_name is already registered: Please use another name";
         }
         $self->_add_hook( $hook_name );
     }
@@ -57,7 +57,7 @@ sub execute_hooks {
     raise core_factory_hook => "Can't ask for hooks without a position" unless $hook_name;
 
     if (!$self->hook_is_registered($hook_name)){
-        raise core_factory_hook => "The hook '$hook_name' doesn't exists";
+        raise core_factory_hook => "The hook '$hook_name' doesn't exist";
     }
 
    foreach my $h (@{$self->get_hooks_for($hook_name)}) {
