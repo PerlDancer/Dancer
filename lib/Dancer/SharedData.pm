@@ -4,6 +4,11 @@ use strict;
 use warnings;
 use Dancer::Timer;
 use Dancer::Response;
+use Dancer::Factory::Hook;
+
+Dancer::Factory::Hook->instance->install_hooks(
+    qw/on_reset_state/
+);
 
 # shared variables
 my $vars = {};
@@ -43,8 +48,11 @@ sub reset_timer { $_timer = Dancer::Timer->new }
 # purging accessor
 sub reset_all {
     my ($self, %options) = @_;
+    my $is_forward = exists($options{reset_vars}) && ! $options{reset_vars};
 
-    if (!exists($options{reset_vars}) || $options{reset_vars}) {
+    Dancer::Factory::Hook->execute_hooks('on_reset_state', $is_forward);
+
+    if (!$is_forward) {
         $vars = {};
     }
     undef $_request;
