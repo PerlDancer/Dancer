@@ -35,7 +35,7 @@ Feel free to spread the word in whatever way you consider fit and drop us a
 line on the Dancer user mailing list noted below.
 
 Also, if you're using and enjoying Dancer,
-L<http://cpanratings.perl.org/dist/Dancer|rating us on cpanratings.perl.org>,
+L<rating us on cpanratings.perl.org|http://cpanratings.perl.org/dist/Dancer>,
 explaining what you like about Dancer is another very valuable contribution that
 helps other new users find us!
 
