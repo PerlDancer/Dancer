@@ -855,6 +855,21 @@ in @uploads, being the ARRAY ref:
 That is why this accessor should be used instead of a manual access to
 C<uploads>.
 
+=head1 Values
+
+Given a request to http://perldancer.org:5000/request-methods?a=1 these are
+the values returned by the various request->  method calls:
+
+  base         http://perldancer.org:5000/
+  uri_base     http://perldancer.org:5000
+  uri          /request-methods?a=1
+  request_uri  /request-methods?a=1
+  path         /request-methods
+  method       GET
+  port         5000
+  protocol     HTTP/1.1
+  scheme       http
+
 =head1 HTTP environment variables
 
 All HTTP environment variables that are in %ENV will be provided in the
