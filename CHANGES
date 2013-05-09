@@ -1,10 +1,21 @@
 Revision history for Dancer
 
-{{$NEXT}}
+1.3113 08.05.2013
 
     [ ENHANCEMENTS ]
+    * GH #869: leave body parameters alone if deserialization failed
+        (brianphillips).
     * GH #914: add link to melezhik's psgi chef cookbook.
- 
+    * GH #923: implement lazy session flushing. (David Golden)
+
+    [ BUG FIXES ]
+    * GH #920: fix pod for Dancer::Development. (ppisar)
+
+    [ DOCUMENTATION ]
+    * GH #915: add warning about behaviour of hooks with multiple packages
+     loaded by load_app (racke).
+    * GH #918: Fix headers syntax in Dancer::Response perldoc
+      (Vyacheslav Matyukhin).
 
 1.3112 10.04.2013
 

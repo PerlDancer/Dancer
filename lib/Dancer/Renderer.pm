@@ -120,6 +120,7 @@ sub get_action_response {
     if (defined $response && (my $status = $response->status)) {
         if ($status == 302 || $status == 301) {
             $class->serialize_response_if_needed();
+            Dancer::Factory::Hook->instance->execute_hooks('after', $response);
             return $response;
         }
     }

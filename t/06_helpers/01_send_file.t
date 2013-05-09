@@ -5,10 +5,11 @@ use TestUtils;
 use Dancer ':syntax';
 use Dancer::FileUtils 'read_glob_content';
 use Dancer::Test;
+use File::Temp;
 
 set public => path(dirname(__FILE__), 'public');
 
-plan tests => 23;
+plan tests => 25;
 
 get '/cat/:file' => sub {
     send_file(params->{file});
@@ -44,7 +45,16 @@ get '/custom_status' => sub {
 };
 
 get '/ioscalar' => sub {
-    send_file(IO::Scalar->new(\"IO::Scalar content"), filename => 'ioscalar');
+    send_file(IO::Scalar->new(\ "IO::Scalar content"), filename => 'ioscalar');
+};
+
+my ($temp_fh, $temp_filename) = File::Temp::tempfile('dancer-tests-XXXX',
+                                                     TMPDIR => 1, UNLINK => 1);
+$temp_fh->print("hello world\n");
+$temp_fh->close;
+
+get '/404_with_filename' => sub {
+    send_file($temp_filename, filename => 'foo.bar');
 };
 
 my $resp = dancer_response(GET => '/cat/file.txt');
@@ -118,3 +128,8 @@ SKIP: {
     is($resp->{content}, "IO::Scalar content", "Got correct content from IO::Scalar");
 }
 
+# This snippet fixes #912
+$resp = undef;
+$resp = dancer_response(GET => '/404_with_filename');
+ok(defined($resp), "route handler found for /404_with_filename");
+is($resp->{status}, 404, "Status 404 for /404_with_filename");

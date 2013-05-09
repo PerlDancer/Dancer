@@ -218,7 +218,7 @@ Dancer::Response - Response object for Dancer
     Dancer::Response->new(
         status  => 200,
         content => 'my content',
-        headers => HTTP::Headers->new(...),
+        headers => ['X-Foo' => 'foo-value', 'X-Bar' => 'bar-value'],
     );
 
 create and return a new L<Dancer::Response> object
@@ -322,8 +322,8 @@ get or set the value of a header
 
 =head2 headers
 
-    $response->headers(HTTP::Headers->new(...));
-    Dancer::SharedData->response->headers(HTTP::Headers->new(...));
+    $response->headers('X-Foo' => 'fff', 'X-Bar' => 'bbb');
+    Dancer::SharedData->response->headers('X-Foo' => 'fff', 'X-Bar' => 'bbb');
 
 return the list of headers for the current response
 

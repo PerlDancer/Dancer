@@ -41,6 +41,10 @@ sub reset {
     return;
 }
 
+# if subclass overrides to true, flush will not be called after write
+# and subclass or application must call flush (perhaps in an after hook)
+sub is_lazy { 0 };
+
 # This is the default constructor for the session object, the only mandatory
 # attribute is 'id'. The whole object should be serialized by the session
 # engine.
@@ -145,7 +149,8 @@ I<created> and its id written to the cookie.
 Whenever a session call is made within a route handler, the singleton
 representing the current session object is modified.
 
-After terminating the request, a I<flush> is made to the session object.
+A I<flush> is made to the session object after every modification unless
+the session engine overrides the C<is_lazy> method to return true.
 
 =back
 
@@ -241,6 +246,12 @@ Reads the C<dancer.session> cookie.
 =item B<write_session_id>
 
 Write the current session id to the C<dancer.session> cookie.
+
+=item B<is_lazy>
+
+Default is false.  If true, session data will not be flushed after every
+modification and the session engine (or application) will need to ensure
+that a flush is called before the end of the request.
 
 =back
 

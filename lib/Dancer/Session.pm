@@ -57,7 +57,7 @@ sub write {
     $session->{$key} = $value;
 
     # TODO : should be moved as an "after" filter
-    $session->flush;
+    $session->flush unless $session->is_lazy;
     return $value;
 }
 
