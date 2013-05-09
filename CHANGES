@@ -1,6 +1,6 @@
 Revision history for Dancer
 
-{{$NEXT}}
+1.3113 08.05.2013
 
     [ ENHANCEMENTS ]
     * GH #869: leave body parameters alone if deserialization failed
