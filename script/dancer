@@ -76,12 +76,16 @@ NOYAML
 
 sub validate_app_name {
     my $name = shift;
-    if ($name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
-        print STDERR "Error: Invalid application name.\n";
-        print STDERR "Application names must not contain single colons,"
-            ." dots, hyphens or start with a number.\n";
-        exit;
-    }
+
+    return unless $name =~ /[^\w:]/ 
+               or $name =~ /^\d/ 
+               or $name =~ /\b:\b|:{3,}/;
+
+    die <<"END_DIE" 
+Error: Invalid application name '$name'
+Application names must not contain single colons, dots, hyphens or start with a number.
+END_DIE
+
 }
 
 sub get_application_path {

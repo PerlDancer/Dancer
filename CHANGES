@@ -1,6 +1,10 @@
 Revision history for Dancer
 
 {{$NEXT}}
+    [ ENHANCEMENTS ]
+    * GH #919: 'dancer' script exits with code 255 if application 
+        name is invalid. (ppisar)
+
     [ DOCUMENTATION ]
     * GH #922: Add example of request parameters. (Gabor Szabo)
 
