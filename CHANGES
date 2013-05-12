@@ -1,6 +1,10 @@
 Revision history for Dancer
 
 {{$NEXT}}
+    [ DOCUMENTATION ]
+    * GH #922: Add example of request parameters. (Gabor Szabo)
+
+1.3113 08.05.2013
 
     [ ENHANCEMENTS ]
     * GH #869: leave body parameters alone if deserialization failed
