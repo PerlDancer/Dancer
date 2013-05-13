@@ -6,6 +6,9 @@ Revision history for Dancer
         name is invalid. (ppisar)
     * GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
 
+    [ BUG FIXES ]
+    * GH #724: app.pl obeys --confdir. (Yanick Champoux)
+
     [ DOCUMENTATION ]
     * GH #922: Add example of request parameters. (Gabor Szabo)
     * Add scheme line for ngnix config in D::Deployment.

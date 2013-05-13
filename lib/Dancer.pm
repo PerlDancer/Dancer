@@ -329,7 +329,7 @@ sub _init_script_dir {
     Dancer::Logger::core("initializing appdir to: `$appdir'");
 
     Dancer::setting(confdir => $ENV{DANCER_CONFDIR}
-      || $appdir);
+      || $appdir) unless Dancer::setting('confdir');
 
     Dancer::setting(public => $ENV{DANCER_PUBLIC}
       || Dancer::FileUtils::path($appdir, 'public'));
