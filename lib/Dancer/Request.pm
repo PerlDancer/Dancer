@@ -72,6 +72,7 @@ sub scheme                {
     if (setting('behind_proxy')) {
         $scheme = $_[0]->env->{'X_FORWARDED_PROTOCOL'}
                || $_[0]->env->{'HTTP_X_FORWARDED_PROTOCOL'}
+               || $_[0]->env->{'HTTP_X_FORWARDED_PROTO'}
                || $_[0]->env->{'HTTP_FORWARDED_PROTO'}
                || ""
     }
