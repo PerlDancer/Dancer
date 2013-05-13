@@ -4,6 +4,7 @@ Revision history for Dancer
     [ ENHANCEMENTS ]
     * GH #919: 'dancer' script exits with code 255 if application 
         name is invalid. (ppisar)
+    * GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
 
     [ DOCUMENTATION ]
     * GH #922: Add example of request parameters. (Gabor Szabo)
