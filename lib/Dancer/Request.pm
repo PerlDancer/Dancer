@@ -67,6 +67,7 @@ sub port                  { $_[0]->env->{SERVER_PORT} }
 sub request_uri           { $_[0]->env->{REQUEST_URI} }
 sub user                  { $_[0]->env->{REMOTE_USER} }
 sub script_name           { $_[0]->env->{SCRIPT_NAME} }
+sub request_base          { $_[0]->env->{REQUEST_BASE} || $_[0]->env->{HTTP_REQUEST_BASE} }
 sub scheme                {
     my $scheme;
     if (setting('behind_proxy')) {
@@ -913,6 +914,8 @@ Dancer::Request object through specific accessors, here are those supported:
 =item C<referer>
 
 =item C<remote_address>
+
+=item C<request_base>
 
 =item C<user_agent>
 

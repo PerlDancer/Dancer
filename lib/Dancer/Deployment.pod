@@ -283,11 +283,14 @@ Or, if you want your webapp to share an existing VirtualHost, you could have it
 under a specified dir:
 
     ProxyPass /mywebapp/ http://localhost:3000/
-    ProxyPassReverse /mywebapp/ http://localhost:3000/
+    <Location /mywebapp/>
+        RequestHeader set Request-Base /mywebapp
+    </Location>
 
-It is important for you to note that the Apache2 modules mod_proxy and
-mod_proxy_http must be enabled.
+It is important for you to note that the Apache2 modules mod_headers,
+mod_proxy and mod_proxy_http must be enabled.
 
+    a2enmod headers
     a2enmod proxy
     a2enmod proxy_http
 
@@ -334,8 +337,6 @@ provided with perlbal, but you'll probably want something like:
     SET persist_backend = on
     SET verify_backend  = on
     ENABLE my_webapp
-
-
 
 
 =head4 Using balance

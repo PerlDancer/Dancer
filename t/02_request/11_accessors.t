@@ -1,4 +1,4 @@
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 use strict;
 use warnings;
@@ -15,6 +15,7 @@ my $env = {
     'HTTP_USER_AGENT' => 'Mozy',
     'HTTP_HOST'       => 'foo.bar.com',
     'REMOTE_USER'     => 'franck',
+    'REQUEST_BASE'    => '/app-root',
 };
 
 my $r = Dancer::Request->new(env => $env);
@@ -33,3 +34,4 @@ is $r->forwarded_for_address, '192.168.0.3', 'forwarded address looks good';
 is $r->user, 'franck',  'remote user looks good';
 is $r->request_uri, '/', 'request_uri looks good';
 is $r->uri, $r->request_uri, '->uri is an alis on ->request_uri';
+is $r->request_base, '/app-root', 'request_base looks good';
