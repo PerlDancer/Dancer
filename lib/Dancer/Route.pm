@@ -259,14 +259,11 @@ sub execute {
     if (Dancer::Config::setting('warnings')) {
         my $warning;
         my $content = do {
-            local $SIG{__WARN__} = sub { $warning = $_[0] };
+            local $SIG{__WARN__} = sub { $warning ||= $_[0] };
             $self->code->();
         };
         if ($warning) {
-            return Dancer::Error->new(
-                code    => 500,
-                message => "Warning caught during route execution: $warning",
-            )->render;
+            die "Warning caught during route execution: $warning";
         }
         return $content;
     }

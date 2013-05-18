@@ -5,6 +5,8 @@ Revision history for Dancer
     * GH #919: 'dancer' script exits with code 255 if application 
         name is invalid. (ppisar)
     * GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
+    * GH #926: make messages from fatal warnings show up in the logs. 
+        (Max Maischein)
 
     [ BUG FIXES ]
     * GH #724: app.pl obeys --confdir. (Yanick Champoux)

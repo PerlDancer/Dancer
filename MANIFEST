@@ -316,6 +316,7 @@ t/24_deployment/01_multi_webapp.t
 t/25_exceptions/01_exceptions.t
 t/25_exceptions/02_exceptions.t
 t/25_exceptions/03_exceptions.t
+t/25_exceptions/04_exceptions_warn.t
 t/25_exceptions/views/error.tt
 t/25_exceptions/views/index.tt
 t/25_exceptions/views/layouts/main.tt
