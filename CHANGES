@@ -1,5 +1,6 @@
 Revision history for Dancer
 
+<<<<<<< HEAD
 {{$NEXT}}
     [ ENHANCEMENTS ]
     * GH #919: 'dancer' script exits with code 255 if application 
@@ -15,6 +16,8 @@ Revision history for Dancer
     * GH #922: Add example of request parameters. (Gabor Szabo)
     * Add scheme line for ngnix config in D::Deployment.
 
+=======
+>>>>>>> 3741683210b4727c876b61ba1bf7217e2d850272
 1.3113 08.05.2013
 
     [ ENHANCEMENTS ]
@@ -33,7 +36,6 @@ Revision history for Dancer
      loaded by load_app (racke).
     * GH #918: Fix headers syntax in Dancer::Response perldoc
       (Vyacheslav Matyukhin).
-
 
 1.3112 10.04.2013
 
