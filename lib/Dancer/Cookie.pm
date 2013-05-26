@@ -29,7 +29,10 @@ sub to_header {
     my $value       = join('&', map {uri_escape($_)} $self->value);
     my $no_httponly = defined( $self->http_only ) && $self->http_only == 0;
 
-    my @headers = $self->name . '=' . $value;
+    my $name = $self->name;
+    $name =~ s/[=,; \t\r\n\013\014]//mg;
+
+    my @headers = $name . '=' . $value;
     push @headers, "path=" . $self->path        if $self->path;
     push @headers, "expires=" . $self->expires  if $self->expires;
     push @headers, "domain=" . $self->domain    if $self->domain;
