@@ -366,17 +366,18 @@ sub _build_request_env {
    # Don't refactor that, it's called whenever a request object is needed, that
    # means at least once per request. If refactored in a loop, this will cost 4
    # times more than the following static map.
-    $self->{user_agent}       = $self->env->{HTTP_USER_AGENT};
-    $self->{host}             = $self->env->{HTTP_HOST};
-    $self->{accept_language}  = $self->env->{HTTP_ACCEPT_LANGUAGE};
-    $self->{accept_charset}   = $self->env->{HTTP_ACCEPT_CHARSET};
-    $self->{accept_encoding}  = $self->env->{HTTP_ACCEPT_ENCODING};
-    $self->{keep_alive}       = $self->env->{HTTP_KEEP_ALIVE};
-    $self->{connection}       = $self->env->{HTTP_CONNECTION};
-    $self->{accept}           = $self->env->{HTTP_ACCEPT};
-    $self->{accept_type}      = $self->env->{HTTP_ACCEPT_TYPE};
-    $self->{referer}          = $self->env->{HTTP_REFERER};
-    $self->{x_requested_with} = $self->env->{HTTP_X_REQUESTED_WITH};
+    my $env = $self->env;
+    $self->{user_agent}       = $env->{HTTP_USER_AGENT};
+    $self->{host}             = $env->{HTTP_HOST};
+    $self->{accept_language}  = $env->{HTTP_ACCEPT_LANGUAGE};
+    $self->{accept_charset}   = $env->{HTTP_ACCEPT_CHARSET};
+    $self->{accept_encoding}  = $env->{HTTP_ACCEPT_ENCODING};
+    $self->{keep_alive}       = $env->{HTTP_KEEP_ALIVE};
+    $self->{connection}       = $env->{HTTP_CONNECTION};
+    $self->{accept}           = $env->{HTTP_ACCEPT};
+    $self->{accept_type}      = $env->{HTTP_ACCEPT_TYPE};
+    $self->{referer}          = $env->{HTTP_REFERER};
+    $self->{x_requested_with} = $env->{HTTP_X_REQUESTED_WITH};
 }
 
 sub _build_headers {
