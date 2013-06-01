@@ -5,6 +5,8 @@ Revision history for Dancer
     * GH #919: 'dancer' script exits with code 255 if application 
         name is invalid. (ppisar)
     * GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
+    * GH #924: non-'/' apps behind proxies now possible using 'request-base'
+        header. (Mikolaj Kucharski)
 
     [ BUG FIXES ]
     * GH #724: app.pl obeys --confdir. (Yanick Champoux)
