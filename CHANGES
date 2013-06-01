@@ -8,6 +8,7 @@ Revision history for Dancer
     * GH #926: make messages from fatal warnings show up in the logs. 
         (Max Maischein)
     * GH #930: speed improvement. (ichesnokov)
+    * GH #859: strip illegal characters from cookie name. (Colin Keith)
 
     [ BUG FIXES ]
     * GH #724: app.pl obeys --confdir. (Yanick Champoux)
