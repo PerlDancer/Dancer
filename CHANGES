@@ -9,6 +9,8 @@ Revision history for Dancer
         (Max Maischein)
     * GH #930: speed improvement. (ichesnokov)
     * GH #859: strip illegal characters from cookie name. (Colin Keith)
+    * GH #924: non-'/' apps behind proxies now possible using 'request-base'
+        header. (Mikolaj Kucharski)
 
     [ BUG FIXES ]
     * GH #724: app.pl obeys --confdir. (Yanick Champoux)
