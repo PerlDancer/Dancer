@@ -7,9 +7,12 @@ Revision history for Dancer
     * GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
     * GH #926: make messages from fatal warnings show up in the logs. 
         (Max Maischein)
+    * GH #930: speed improvement. (ichesnokov)
 
     [ BUG FIXES ]
     * GH #724: app.pl obeys --confdir. (Yanick Champoux)
+    * GH #927: logging format using 'h' now play nicely if no header present.
+        (ironcamel)
 
     [ DOCUMENTATION ]
     * GH #922: Add example of request parameters. (Gabor Szabo)
