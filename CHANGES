@@ -1,6 +1,7 @@
 Revision history for Dancer
 
-{{$NEXT}}
+1.3114 02.06.2013
+
     [ ENHANCEMENTS ]
     * GH #919: 'dancer' script exits with code 255 if application 
         name is invalid. (ppisar)
