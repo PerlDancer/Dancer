@@ -2,7 +2,7 @@ use Test::More;
 use Dancer ':tests', ':syntax';
 use Dancer::Test;
 
-plan tests => 15;
+plan tests => 16;
 
 # basic redirect
 {
@@ -88,4 +88,8 @@ plan tests => 15;
     $ENV{X_FORWARDED_PROTOCOL} = "ftp";  # stupid, but why not?
     response_headers_include [GET => '/bounce'] => [Location => 'ftp://nice.host.name/'],
       "Test X_FORWARDED_PROTOCOL";
+
+    $ENV{HTTP_REQUEST_BASE} = "/application-root";
+    response_headers_include [GET => '/bounce'] => [Location => 'ftp://nice.host.name/application-root/'],
+      "Test HTTP_REQUEST_BASE";
 }

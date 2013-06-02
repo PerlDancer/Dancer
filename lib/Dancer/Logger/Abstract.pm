@@ -77,6 +77,7 @@ sub format_message {
             return "[" . strftime( $block, localtime ) . "]";
         }
         elsif ( $type eq 'h' ) {
+            return '-' unless defined $r;
             return scalar $r->header($block) || '-';
         }
         else {

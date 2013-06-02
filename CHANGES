@@ -1,10 +1,34 @@
 Revision history for Dancer
 
+1.3114 02.06.2013
+
+    [ ENHANCEMENTS ]
+    * GH #919: 'dancer' script exits with code 255 if application 
+        name is invalid. (ppisar)
+    * GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
+    * GH #926: make messages from fatal warnings show up in the logs. 
+        (Max Maischein)
+    * GH #930: speed improvement. (ichesnokov)
+    * GH #859: strip illegal characters from cookie name. (Colin Keith)
+    * GH #924: non-'/' apps behind proxies now possible using 'request-base'
+        header. (Mikolaj Kucharski)
+
+    [ BUG FIXES ]
+    * GH #724: app.pl obeys --confdir. (Yanick Champoux)
+    * GH #927: logging format using 'h' now play nicely if no header present.
+        (ironcamel)
+
+    [ DOCUMENTATION ]
+    * GH #922: Add example of request parameters. (Gabor Szabo)
+    * Add scheme line for ngnix config in D::Deployment.
+
 1.3113 08.05.2013
 
     [ ENHANCEMENTS ]
     * GH #869: leave body parameters alone if deserialization failed
         (brianphillips).
+    * GH #912: send_file was returning 500 instead of 404 for non-existent
+        files. (Fabrice Gabolde)
     * GH #914: add link to melezhik's psgi chef cookbook.
     * GH #923: implement lazy session flushing. (David Golden)
 

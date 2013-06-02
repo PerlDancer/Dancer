@@ -67,11 +67,13 @@ sub port                  { $_[0]->env->{SERVER_PORT} }
 sub request_uri           { $_[0]->env->{REQUEST_URI} }
 sub user                  { $_[0]->env->{REMOTE_USER} }
 sub script_name           { $_[0]->env->{SCRIPT_NAME} }
+sub request_base          { $_[0]->env->{REQUEST_BASE} || $_[0]->env->{HTTP_REQUEST_BASE} }
 sub scheme                {
     my $scheme;
     if (setting('behind_proxy')) {
         $scheme = $_[0]->env->{'X_FORWARDED_PROTOCOL'}
                || $_[0]->env->{'HTTP_X_FORWARDED_PROTOCOL'}
+               || $_[0]->env->{'HTTP_X_FORWARDED_PROTO'}
                || $_[0]->env->{'HTTP_FORWARDED_PROTO'}
                || ""
     }
@@ -215,7 +217,7 @@ sub base {
 sub _common_uri {
     my $self = shift;
 
-    my $path   = $self->env->{SCRIPT_NAME};
+    my $path   = $self->env->{SCRIPT_NAME} || '';
     my $port   = $self->env->{SERVER_PORT};
     my $server = $self->env->{SERVER_NAME};
     my $host   = $self->host;
@@ -224,7 +226,13 @@ sub _common_uri {
     my $uri = URI->new;
     $uri->scheme($scheme);
     $uri->authority($host || "$server:$port");
-    $uri->path($path      || '/');
+    if (setting('behind_proxy')) {
+        my $request_base = $self->env->{REQUEST_BASE} || $self->env->{HTTP_REQUEST_BASE} || '';
+        $uri->path($request_base . $path || '/');
+    }
+    else {
+        $uri->path($path || '/');
+    }
 
     return $uri;
 }
@@ -365,17 +373,18 @@ sub _build_request_env {
    # Don't refactor that, it's called whenever a request object is needed, that
    # means at least once per request. If refactored in a loop, this will cost 4
    # times more than the following static map.
-    $self->{user_agent}       = $self->env->{HTTP_USER_AGENT};
-    $self->{host}             = $self->env->{HTTP_HOST};
-    $self->{accept_language}  = $self->env->{HTTP_ACCEPT_LANGUAGE};
-    $self->{accept_charset}   = $self->env->{HTTP_ACCEPT_CHARSET};
-    $self->{accept_encoding}  = $self->env->{HTTP_ACCEPT_ENCODING};
-    $self->{keep_alive}       = $self->env->{HTTP_KEEP_ALIVE};
-    $self->{connection}       = $self->env->{HTTP_CONNECTION};
-    $self->{accept}           = $self->env->{HTTP_ACCEPT};
-    $self->{accept_type}      = $self->env->{HTTP_ACCEPT_TYPE};
-    $self->{referer}          = $self->env->{HTTP_REFERER};
-    $self->{x_requested_with} = $self->env->{HTTP_X_REQUESTED_WITH};
+    my $env = $self->env;
+    $self->{user_agent}       = $env->{HTTP_USER_AGENT};
+    $self->{host}             = $env->{HTTP_HOST};
+    $self->{accept_language}  = $env->{HTTP_ACCEPT_LANGUAGE};
+    $self->{accept_charset}   = $env->{HTTP_ACCEPT_CHARSET};
+    $self->{accept_encoding}  = $env->{HTTP_ACCEPT_ENCODING};
+    $self->{keep_alive}       = $env->{HTTP_KEEP_ALIVE};
+    $self->{connection}       = $env->{HTTP_CONNECTION};
+    $self->{accept}           = $env->{HTTP_ACCEPT};
+    $self->{accept_type}      = $env->{HTTP_ACCEPT_TYPE};
+    $self->{referer}          = $env->{HTTP_REFERER};
+    $self->{x_requested_with} = $env->{HTTP_X_REQUESTED_WITH};
 }
 
 sub _build_headers {
@@ -855,6 +864,21 @@ in @uploads, being the ARRAY ref:
 That is why this accessor should be used instead of a manual access to
 C<uploads>.
 
+=head1 Values
+
+Given a request to http://perldancer.org:5000/request-methods?a=1 these are
+the values returned by the various request->  method calls:
+
+  base         http://perldancer.org:5000/
+  uri_base     http://perldancer.org:5000
+  uri          /request-methods?a=1
+  request_uri  /request-methods?a=1
+  path         /request-methods
+  method       GET
+  port         5000
+  protocol     HTTP/1.1
+  scheme       http
+
 =head1 HTTP environment variables
 
 All HTTP environment variables that are in %ENV will be provided in the
@@ -891,6 +915,8 @@ Dancer::Request object through specific accessors, here are those supported:
 =item C<referer>
 
 =item C<remote_address>
+
+=item C<request_base>
 
 =item C<user_agent>
 

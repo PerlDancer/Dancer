@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3113';
+our $VERSION   = '1.3114';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
@@ -329,7 +329,7 @@ sub _init_script_dir {
     Dancer::Logger::core("initializing appdir to: `$appdir'");
 
     Dancer::setting(confdir => $ENV{DANCER_CONFDIR}
-      || $appdir);
+      || $appdir) unless Dancer::setting('confdir');
 
     Dancer::setting(public => $ENV{DANCER_PUBLIC}
       || Dancer::FileUtils::path($appdir, 'public'));
