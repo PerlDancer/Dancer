@@ -1,5 +1,11 @@
 Revision history for Dancer
 
+{{NEXT}}
+
+    [ BUG FIXES ]
+    * GH #605: pass'ed megasplat with no further routes cause 404, not 500.
+        (vlyon)
+
 1.3114 02.06.2013
 
     [ ENHANCEMENTS ]

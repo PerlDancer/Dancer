@@ -207,14 +207,14 @@ sub run {
 
     if ($response && $response->has_passed) {
         $response->pass(0);
-        if ($self->next) {
-            my $next_route = $self->find_next_matching_route($request);
-            return $next_route->run($request);
+
+        # find the next matching route and run it
+        while ($self = $self->next) {
+            return $self->run($request) if $self->match($request);
         }
-        else {
-            Dancer::Logger::core('Last matching route passed!');
-            return undef;
-        }
+
+        Dancer::Logger::core('Last matching route passed!');
+        return Dancer::Renderer->render_error(404);
     }
 
     # coerce undef content to empty string to
@@ -242,15 +242,6 @@ sub run {
         headers      => $headers,
         content      => $content,
     );
-}
-
-sub find_next_matching_route {
-    my ($self, $request) = @_;
-    my $next = $self->next;
-    return unless $next;
-
-    return $next if $next->match($request);
-    return $next->find_next_matching_route($request);
 }
 
 sub execute {
