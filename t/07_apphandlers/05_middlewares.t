@@ -11,7 +11,7 @@ use lib File::Spec->catdir( 't', 'lib' );
 
 plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-  unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
+  unless Dancer::ModuleLoader->load("Test::TCP" => "1.30");
 plan skip_all => "Plack is needed to run this test"
   unless Dancer::ModuleLoader->load('Plack::Request');
 

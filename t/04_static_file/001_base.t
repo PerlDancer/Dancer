@@ -14,7 +14,7 @@ plan skip_all => "Skip test with Test::TCP in win32"
   if $^O eq 'MSWin32';
     
 plan skip_all => "Test::TCP is required"
-  unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
+  unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 
 plan skip_all => "Plack is required"
   unless Dancer::ModuleLoader->load('Plack::Loader');
