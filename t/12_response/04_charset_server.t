@@ -10,7 +10,7 @@ my $min_hh = 5.827;
 
 plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
-    unless Dancer::ModuleLoader->load("Test::TCP" => "1.13");
+    unless Dancer::ModuleLoader->load("Test::TCP" => "1.30");
 
 plan skip_all => "HTTP::Headers $min_hh required (use of content_type_charset)"
     unless Dancer::ModuleLoader->load( 'HTTP::Headers', $min_hh );
