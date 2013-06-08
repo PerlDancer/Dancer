@@ -6,6 +6,9 @@ Revision history for Dancer
     * GH #605: pass'ed megasplat with no further routes cause 404, not 500.
         (vlyon)
 
+    [ DOCUMENTATION ]
+    * GH #934: Added example of HAProxy deployment. (Anton Gerasimov)
+
 1.3114 02.06.2013
 
     [ ENHANCEMENTS ]
