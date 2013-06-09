@@ -6,7 +6,7 @@ use Dancer::Test;
 
 plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
-    unless Dancer::ModuleLoader->load('Test::TCP' => "1.13");
+    unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 
 use LWP::UserAgent;
 

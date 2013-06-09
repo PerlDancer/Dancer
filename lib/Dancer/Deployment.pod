@@ -418,6 +418,94 @@ You will need plackup to start a worker listening on a socket :
 A good way to start this is to use C<daemontools> and place this line with
 all environments variables in the "run" file.
 
+=head4 Using HAProxy
+
+C<HAProxy> is a reliable high-performance TCP/HTTP load balancer written in C available from
+L<http://haproxy.1wt.eu/>.
+
+Suppose we want to run an application at C<app.example.com:80> and would to use two
+backends listen on hosts C<app-be1.example.com:3000> and C<app-be2.example.com:3000>.
+
+Here is HAProxy configuration file (haproxy.conf):
+
+    global
+        nbproc  1
+        maxconn 4096
+        user    nobody
+        group   nobody
+        # haproxy logs will be collected by syslog
+        # syslog: unix socket path or tcp pair (ipaddress:port)
+        log     /var/run/log local0
+        daemon
+        # enable compression (haproxy v1.5-dev13 and above required)
+        tune.comp.maxlevel  5
+
+    defaults
+        log     global
+        option  httpclose
+        option  httplog
+        option  dontlognull
+        option  forwardfor
+        option  abortonclose
+        mode    http
+        balance roundrobin
+        retries 3
+        timeout connect         5s
+        timeout server          30s
+        timeout client          30s
+        timeout http-keep-alive 200m
+        # enable compression (haproxy v1.5-dev13 and above required)
+        compression algo gzip
+        compression type text/html application/javascript text/css application/x-javascript text/javascript
+
+    # application frontend (available at http://app.example.com)
+    frontend app.example.com
+        bind                  :80
+        # modify request headers
+        reqadd                X-Forwarded-Proto:\ http
+        reqadd                X-Forwarded-Port:\ 80
+        # modify response headers
+        rspdel                ^Server:.*
+        rspdel                ^X-Powered-By:.*
+        rspadd                Server:\ Dethklok\ (Unix/0.2.3)
+        rate-limit sessions   1024
+        acl is-haproxy-stats  path_beg /stats
+        # uncomment if you'd like to get haproxy usage statistics
+        # use_backend haproxy   if is-haproxy-stats
+        default_backend       dynamic
+
+    # haproxy statistics (available at http://app.example.com/stats)
+    backend haproxy
+        stats uri             /stats
+        stats refresh         180s
+        stats realm           app.example.com\ haproxy\ statistics
+        # change credentials
+        stats auth            admin1:password1
+        stats auth            admin2:password2
+        stats hide-version
+        stats show-legends
+
+    # application backends
+    backend dynamic
+        # change path_info to check and value of the Host header sent to application server
+        option httpchk HEAD / HTTP/1.1\r\nHost:\ app.example.com
+        server app1 app-be1.example.com:3000 check inter 30s
+        server app2 app-be2.example.com:3000 check inter 30s
+
+We will need to start the workers on each backend of our application. This can be done by starman utility:
+
+    # on app-be1.example.com
+    $ starman --workers=2 --listen :3000 /path/to/app.pl
+    # on app-be2.example.com
+    $ starman --workers=2 --listen :3000 /path/to/app.pl
+
+Then start the haproxy itself:
+
+    # check the configuration..
+    $ sudo haproxy -c -f haproxy.conf
+    # now really start it..
+    $ sudo haproxy -f haproxy.conf
+
 =head3 Plackup Chef Cookbook
 
 A psgi chef cookbook supporting Dancer (as well as I<Catalyst>)

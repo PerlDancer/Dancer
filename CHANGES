@@ -1,5 +1,18 @@
 Revision history for Dancer
 
+1.3115 09.06.2013 
+
+    [ BUG FIXES ]
+    * GH #605: pass'ed megasplat with no further routes cause 404, not 500.
+        (vlyon)
+
+    [ DOCUMENTATION ]
+    * GH #934: Added example of HAProxy deployment. (Anton Gerasimov)
+
+    [ MISC ]
+    * Tests now require Test::TCP v1.30+ (previous version had too short a
+        timeout and tests were failing). (Yanick Champoux)
+
 1.3114 02.06.2013
 
     [ ENHANCEMENTS ]
