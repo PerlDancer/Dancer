@@ -1,7 +1,7 @@
 use Test::More;
 use Dancer::Request;
 
-plan tests => 10;
+plan tests => 11;
 
 my $env = {
     'psgi.url_scheme' => 'http',
@@ -38,4 +38,17 @@ is $req->path_info, '/bar/baz';
     is $req->base, 'http://0:5000/foo';
     local $env->{HTTP_HOST} = 'oddhostname:5000';
     is $req->base, 'http://oddhostname:5000/foo';
+}
+
+subtest '$dont_escape' => sub {
+    plan tests => 2;
+
+    my $url = '/bar?a=1&b=2';
+
+    is $req->uri_for($url) => 'http://localhost:5000/foo/bar%3Fa=1&b=2', 
+        'escaped';
+
+    is $req->uri_for( '/bar?a=1&b=2', {}, 1) 
+        => 'http://localhost:5000/foo/bar?a=1&b=2', 
+        'unescaped';
 }
