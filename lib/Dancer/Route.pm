@@ -91,6 +91,8 @@ sub match {
 
     # the regex comments are how we know if we captured
     # a splat or a megasplat
+    $DB::single = 1;
+    
     if( my @splat_or_megasplat
             = $self->{_compiled_regexp} =~ /\(\?#((?:mega)?splat)\)/g ) {
         for ( @values ) {
@@ -171,10 +173,10 @@ sub validate_options {
 }
 
 sub run {
-    my ($self, $request) = @_;
+    my ($route, $request) = @_;
 
     my $content = try {
-        $self->execute();
+        $route->execute();
     } continuation {
         my ($continuation) = @_;
         # route related continuation
@@ -209,8 +211,8 @@ sub run {
         $response->pass(0);
 
         # find the next matching route and run it
-        while ($self = $self->next) {
-            return $self->run($request) if $self->match($request);
+        while ($route = $route->next) {
+            return $route->run($request) if $route->match($request);
         }
 
         Dancer::Logger::core('Last matching route passed!');
