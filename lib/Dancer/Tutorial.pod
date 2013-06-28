@@ -47,8 +47,13 @@ These all can be installed using your CPAN client, as in:
 
 =head1 The database
 
-We're not going to spend a lot of time on the database, as it's not really the point of this particular
-tutorial.
+We're not going to spend a lot of time on the database, as it's not really the point of this particular tutorial.
+
+Create the database using:
+	
+  sqlite3 database
+  
+Then paste in this code to create the table:
 
   create table if not exists entries (
     id integer primary key autoincrement,
@@ -56,8 +61,11 @@ tutorial.
     text string not null
   );
 
-Here we have a single table with three columns: id, title, and text.  The 'id' field is the primary key and will
-automatically get an ID assigned by the database engine when a row is inserted. 
+Use C<.exit> to when finished.
+
+The above creates a single table with three columns: id, title, and text.  The 'id' field is the primary key and will
+automatically get an ID assigned by the database engine when a row is inserted.
+
 
 We want our application to initialize the database automatically for us when we start it, so open your favorite
 L<text editor|http://www.vim.org> and create a file called 'dancr.pl'.  We're going to put the following subroutines
@@ -222,6 +230,20 @@ the user and redirect her back to the root URL.
 It's worth mentioning that the "flash message" is not part of Dancer, but a
 part of this specific application.
 
+Here is the code in case you need it:
+  
+  my flash;
+  
+  sub set_flash {
+    $flash = shift;
+  }
+  
+  sub get_flash {
+    my $msg = $flash;
+    $flash = "";
+    return $msg;
+  }
+
 =head1 Logins and sessions
 
 Dancer comes with a simple in-memory session manager out of the box.  It
@@ -245,6 +267,7 @@ more options than just the session engine we want to set.
   set 'show_errors'  => 1;
   set 'startup_info' => 1;
   set 'warnings'     => 1;
+  set 'database'     => database;
 
 Hopefully these are fairly self-explanatory. We want the Simple session engine,
 the Template Toolkit template engine, logging enabled (at the 'debug' level
