@@ -231,17 +231,17 @@ It's worth mentioning that the "flash message" is not part of Dancer, but a
 part of this specific application.
 
 Here is the code in case you need it:
-  
-  my flash;
+
+  use Dancer::Plugin::FlashMessage;
   
   sub set_flash {
-    $flash = shift;
+    my $message = shift;
+    flash warning => $message;
   }
   
   sub get_flash {
-    my $msg = $flash;
-    $flash = "";
-    return $msg;
+    my $message = flash 'warning';
+    return $message;
   }
 
 =head1 Logins and sessions
