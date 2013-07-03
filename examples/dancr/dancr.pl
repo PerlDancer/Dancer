@@ -3,6 +3,7 @@ use DBI;
 use File::Spec;
 use File::Slurp;
 use Template;
+use Dancer::Plugin::FlashMessage;
 
 set 'database'     => File::Spec->tmpdir() . '/dancr.db';
 set 'session'      => 'Simple';
@@ -16,18 +17,14 @@ set 'username'     => 'admin';
 set 'password'     => 'password';
 set 'layout'       => 'main';
 
-my $flash;
-
 sub set_flash {
 	my $message = shift;
 
-	$flash = $message;
+	flash warning => $message;
 }
 
 sub get_flash {
-
-	my $msg = $flash;
-	$flash = "";
+	my $msg = flash 'warning';
 
 	return $msg;
 }
