@@ -17,18 +17,6 @@ set 'username'     => 'admin';
 set 'password'     => 'password';
 set 'layout'       => 'main';
 
-sub set_flash {
-	my $message = shift;
-
-	flash warning => $message;
-}
-
-sub get_flash {
-	my $msg = flash 'warning';
-
-	return $msg;
-}
-
 sub connect_db {
 	my $dbh = DBI->connect("dbi:SQLite:dbname=".setting('database')) or
 		die $DBI::errstr;
@@ -56,7 +44,7 @@ get '/' => sub {
 	my $sth = $db->prepare($sql) or die $db->errstr;
 	$sth->execute or die $sth->errstr;
 	template 'show_entries.tt', {
-		'msg' => get_flash(),
+		'msg' => flash( 'message' ),
 		'add_entry_url' => uri_for('/add'),
 		'entries' => $sth->fetchall_hashref('id'),
 	};
@@ -72,7 +60,7 @@ post '/add' => sub {
 	my $sth = $db->prepare($sql) or die $db->errstr;
 	$sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
 
-	set_flash('New entry posted!');
+	flash message => 'New entry posted!';
 	redirect '/';
 };
 
@@ -89,7 +77,7 @@ any ['get', 'post'] => '/login' => sub {
 		}
 		else {
 			session 'logged_in' => true;
-			set_flash('You are logged in.');
+			flash message => 'You are logged in.';
 			return redirect '/';
 		}
 	}
@@ -103,7 +91,7 @@ any ['get', 'post'] => '/login' => sub {
 
 get '/logout' => sub {
 	session->destroy;
-	set_flash('You are logged out.');
+	flash message => 'You are logged out.';
 	redirect '/';
 };
 
