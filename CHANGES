@@ -1,6 +1,6 @@
 Revision history for Dancer
 
-{{NEXT}}
+1.3116 03.07.2013
 
     [ ENHANCEMENTS ]
     * GH #767: forwarded_for_address() now looks for HTTP_X_FORWARDED_FOR if
