@@ -7,6 +7,7 @@ use base 'Dancer::Logger::Abstract';
 use Dancer::Config 'setting';
 use Dancer::FileUtils qw(open_file);
 use IO::File;
+use Fcntl qw(:flock SEEK_END);
 
 sub logdir {
     my $altpath = setting('log_path');
@@ -66,8 +67,15 @@ sub _log {
 
     return unless(ref $fh && $fh->opened);
 
+    flock($fh, LOCK_EX)
+        or carp "locking logfile $self->{logfile} failed";
+    seek($fh, 0, SEEK_END)
+        or carp "seeking to logfile $self->{logfile} end failed";
     $fh->print($self->format_message($level => $message))
         or carp "writing to logfile $self->{logfile} failed";
+    flock($fh, LOCK_UN)
+        or carp "unlocking logfile $self->{logfile} failed";
+
 }
 
 1;

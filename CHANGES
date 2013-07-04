@@ -1,5 +1,13 @@
 Revision history for Dancer
 
+{{NEXT}}
+
+    [ ENHANCEMENTS ]
+    * GH #767: forwarded_for_address() now looks for HTTP_X_FORWARDED_FOR if
+        X_FORWARDED_FOR is not there. (Jakob Voss)
+    * GH #936: Add file locking to file logger. (David Golden)
+    * GH #937: Add details to tutorial. (Craig Treptow)
+
 1.3115 09.06.2013 
 
     [ BUG FIXES ]

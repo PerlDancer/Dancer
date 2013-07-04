@@ -87,6 +87,7 @@ This handler will process ony one query, based on the first argument given on
 the command line ($ARGV[0]).
 
 =head1 USAGE
+
     # in bin/app.pl
     set apphandler => 'Debug';
 

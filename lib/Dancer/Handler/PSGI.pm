@@ -107,6 +107,7 @@ C<plack_middlewares> key. See L<Dancer::Cookbook> for more information.
 Note that you must have L<Plack> installed for this handler to work.
 
 =head1 USAGE
+    
     # in bin/app.pl
     set apphandler => 'Debug';
 

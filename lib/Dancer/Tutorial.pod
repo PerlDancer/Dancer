@@ -50,14 +50,20 @@ These all can be installed using your CPAN client, as in:
 We're not going to spend a lot of time on the database, as it's not really the point of this particular
 tutorial.
 
-  create table if not exists entries (
-    id integer primary key autoincrement,
-    title string not null,
-    text string not null
-  );
+Create the database by running the follow from the shell:
 
-Here we have a single table with three columns: id, title, and text.  The 'id' field is the primary key and will
-automatically get an ID assigned by the database engine when a row is inserted. 
+    $ cat - | sqlite3 database 
+    create table if not exists entries (
+        id integer primary key autoincrement,
+        title string not null,
+        text string not null
+    );
+    ^D
+	
+The above creates a single table with three columns: I<id>, I<title>, and
+I<text>.  The 'I<id>' field is the primary key and will
+automatically get an ID assigned by the database engine when a row is inserted.
+
 
 We want our application to initialize the database automatically for us when we start it, so open your favorite
 L<text editor|http://www.vim.org> and create a file called 'dancr.pl'.  We're going to put the following subroutines
@@ -199,7 +205,10 @@ C</add> route handler which handles a POST operation.
      my $sth = $db->prepare($sql) or die $db->errstr;
      $sth->execute(params->{'title'}, params->{'text'}) or die $sth->errstr;
 
-     set_flash('New entry posted!');
+     # note: 'flash' keyword imported by Dancer::Plugin::FlashMessage, 
+     # not part of Dancer core
+     flash message => 'New entry posted!';
+
      redirect '/';
   };
 
@@ -218,9 +227,6 @@ method to pull in the parameters in the current HTTP request. (You can see the
 'title' and 'text' form parameters in the F<show_entries.tt> template above.)
 Those values are inserted into the database, then we set a flash message for
 the user and redirect her back to the root URL.
-
-It's worth mentioning that the "flash message" is not part of Dancer, but a
-part of this specific application.
 
 =head1 Logins and sessions
 
@@ -245,6 +251,7 @@ more options than just the session engine we want to set.
   set 'show_errors'  => 1;
   set 'startup_info' => 1;
   set 'warnings'     => 1;
+  set 'database'     => database;
 
 Hopefully these are fairly self-explanatory. We want the Simple session engine,
 the Template Toolkit template engine, logging enabled (at the 'debug' level
