@@ -151,15 +151,15 @@ When in a route you return a Perl data structure, it will be
 serialized automatically to the respective serialized engine (for
 instance, C<JSON>).
 
-For C<PUT> and C<POST> methods you can access the C<request->body> as
-a string, and you can unserialize it, if you really need. If your
-content type is recognized by the serializer, C<request->body> will be
+For C<PUT> and C<POST> methods you can access the C<< request->body >> as
+a string, and you can unserialize it, if you really need to. If your
+content type is recognized by the serializer, C<< request->body >> will be
 unserialized automatically, and it will be available as a standard
 parameter.
 
 For instance, if you call
 
- curl -X POST -H 'Content-Type: application/json -d "{'id':'bar'}" /foo
+ curl -X POST -H 'Content-Type: application/json' -d '{"id":"bar"}' /foo
 
 your C<foo> route can do something like:
 
