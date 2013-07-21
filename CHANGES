@@ -1,6 +1,9 @@
 Revision history for Dancer
 
 {{$NEXT}}
+    [ BUG FIXES ]
+    * GH #794: Upload data was not kept for forwarded requests. 
+        (reported by William Wolf)
 
     [ DOCUMENTATION ]
     * GH #938: fix doc typos in Dancer::Serializer. (Fabrice Gabolde)
