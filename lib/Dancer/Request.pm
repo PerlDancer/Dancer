@@ -189,6 +189,8 @@ sub forward {
     $new_request->{body}    = $request->body;
     $new_request->{headers} = $request->headers;
 
+    $new_request->{uploads} = $request->uploads;
+
     return $new_request;
 }
 
