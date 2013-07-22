@@ -45,16 +45,18 @@ sub build {
       Dancer::ModuleLoader->class_from_setting($class_name => $name);
 
     my( $loaded, $error ) = Dancer::ModuleLoader->load($engine_class);
+    $error = '' unless length $error;
 
     unless( $loaded ) {
-        my $tip;
+        my $tip = '';
         if( $error =~ /Can't locate (\S+)\.pm in \@INC/ ) {
             my $module = $1;
             $module =~ s#/#::#g;
             $tip = " (perhaps you need to install $module?)";
         }
 
-        raise core_engine => "unable to load $type engine '$name'$tip: $error";
+        $error = ": $error" if length $error;
+        raise core_engine => "unable to load $type engine '$name'$tip$error";
     }
 
     # creating the engine
