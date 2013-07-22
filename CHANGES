@@ -1,6 +1,10 @@
 Revision history for Dancer
 
 {{$NEXT}}
+    [ ENHANCEMENTS ]
+    * GH #836: Provide more information when an engine fails to load.
+        (Yanick Champoux, reported by Daniel Perrett)
+
     [ BUG FIXES ]
     * GH #794: Upload data was not kept for forwarded requests. 
         (reported by William Wolf)

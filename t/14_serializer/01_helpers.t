@@ -11,7 +11,7 @@ my $struct = {eris => 23};
     # test an unknown serializer
     eval { setting serializer => 'FooBar'; };
     like $@,
-      qr/unable to load serializer engine 'FooBar', perhaps you need to install Dancer::Serializer::FooBar/,
+      qr/unable to load serializer engine 'FooBar'/,
       "Foobar is not a valid serializer";
 }
 
