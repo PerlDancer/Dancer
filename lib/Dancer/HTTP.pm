@@ -5,7 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
-my $HTTP_CODES = {
+my %HTTP_CODES = (
 
     # informational
     # 100 => 'Continue', # only on HTTP 1.1
@@ -60,26 +60,27 @@ my $HTTP_CODES = {
     503 => 'Service Unavailable',
     504 => 'Gateway Timeout',
     505 => 'HTTP Version Not Supported',
-};
+);
 
-# aliases
-for my $code (keys %$HTTP_CODES) {
-    my $alias = lc join '_', split /\W/, $HTTP_CODES->{$code};
-    my $status_line = $code . ' ' . $HTTP_CODES->{$code};
-    $HTTP_CODES->{$code}  = $status_line;
-    $HTTP_CODES->{$alias} = $code;
-}
+my %STATUS_TO_CODE = map { my $s = $_; $s =~ s/\W/_/g; lc $s } 
+                         'error' => 500,        # our alias to 500
+                         reverse %HTTP_CODES;
 
-# own aliases
-$HTTP_CODES->{error} = $HTTP_CODES->{internal_server_error};
 
 # always return a numeric status code
 # if alias, return the corresponding code
 sub status {
-    my ($class, $name) = @_;
+    my (undef, $name) = @_;
+
     return $name if $name =~ /^\d+$/;
-    $name =~ s/\s/_/;
-    return $HTTP_CODES->{lc $name};
+
+    $name =~ s/\W/_/g;
+    return $STATUS_TO_CODE{lc $name};
+}
+
+sub codes {
+    my %copy = %HTTP_CODES;
+    return \%copy;
 }
 
 1;
@@ -95,26 +96,143 @@ Dancer::HTTP - helper for rendering HTTP status codes for Dancer
 
 Helper for rendering HTTP status codes for Dancer
 
+=head1 METHODS
+
+=head2 status( $status )
+
+Returns the numerical status of C<$status>.
+
+    # all three are equivalent, and will return '405'
+
+    $x = Dancer::HTTP->status( 405 );
+    $x = Dancer::HTTP->status( 'Method Not Allowed' );
+    $x = Dancer::HTTP->status( 'method_not_allowed' );
+
+=head2 codes
+
+Returns a hashref of all HTTP status known to C<Dancer>. The
+keys are the numerical statuses and the values their string equivalents.
+
+    print Dancer::HTTP->codes->{404}; # prints 'File Not Found'
+
+
 =head1 HTTP CODES 
 
 The following codes/aliases are understood by any status() call made
-from a Dancer script.
+from a Dancer script. The aliases can be used as-is (e.g., I<Moved
+Permanently>), or as lower-case string with all non-alphanumerical 
+characters changed to underscores (e.g., I<moved_permanently>).
 
-=head2 200
 
-returns 200 OK, alias : 'ok'
+    get '/user/:user' => sub {
+        my $user = find_user( param('user') );
 
-=head2 403
+        unless ( $user ) {
+            status 404;
 
-returns 403 Forbidden, alias 'forbidden'
+            # or could be
+            status 'not_found';
 
-=head2 404
+            # or even
+            status 'Not Found';
+        }
 
-returns 404 Not Found, alias : 'not_found'
+        ...
+    };
 
-=head2 500
+=head2 Processed Codes
 
-returns 500 Internal Server Error, alias: 'error'
+=over
+
+=item 200 - OK
+
+=item 201 - Created
+
+=item 202 - Accepted
+
+=item 204 - No Content
+
+=item 205 - Reset Content
+
+=item 206 - Partial Content
+
+=back
+
+=head2 Redirections
+
+=over
+
+=item 301 - Moved Permanently
+
+=item 302 - Found
+
+=item 304 - Not Modified
+
+=item 306 - Switch Proxy
+
+=back
+
+=head2 Problem with request
+
+=over
+
+=item 400 - Bad Request
+
+=item 401 - Unauthorized
+
+=item 402 - Payment Required
+
+=item 403 - Forbidden
+
+=item 404 - Not Found
+
+=item 405 - Method Not Allowed
+
+=item 406 - Not Acceptable
+
+=item 407 - Proxy Authentication Required
+
+=item 408 - Request Timeout
+
+=item 409 - Conflict
+
+=item 410 - Gone
+
+=item 411 - Length Required
+
+=item 412 - Precondition Failed
+
+=item 413 - Request Entity Too Large
+
+=item 414 - Request-URI Too Long
+
+=item 415 - Unsupported Media Type
+
+=item 416 - Requested Range Not Satisfiable
+
+=item 417 - Expectation Failed
+
+=back
+
+=head2 Problem with server
+
+=over
+
+=item 500 - Internal Server Error
+
+Also aliases as 'error'.
+
+=item 501 - Not Implemented
+
+=item 502 - Bad Gateway
+
+=item 503 - Service Unavailable
+
+=item 504 - Gateway Timeout
+
+=item 505 - HTTP Version Not Supported
+
+=back
 
 =head1 AUTHOR
 
