@@ -780,7 +780,8 @@ B<POST>. That is because C<forward> chains the same type of route the user
 reached. If it was a B<GET>, it will remain a B<GET> (but if you do need to
 change the method, you can do so; read on below for details.)
 
-B<WARNING> : using forward will B<not> preserve session data.
+B<WARNING> : using forward will B<not> preserve session data set on
+the forwarding rule.
 
 B<WARNING> : Issuing a forward immediately exits the current route,
 and perform the forward. Thus, any code after a forward is ignored, until the
