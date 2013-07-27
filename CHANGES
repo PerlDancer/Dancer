@@ -10,6 +10,8 @@ Revision history for Dancer
         (reported by William Wolf)
     * GH #898: calling halt() doesn't discard set headers anymore. 
         (Yanick Champoux, reported by Nicolas Franck)
+    * GH #842: embedded 'prefix' now properly localized. 
+        (Yanick Champoux, reported by Jashank Jeremy)
 
     [ DOCUMENTATION ]
     * GH #938: fix doc typos in Dancer::Serializer. (Fabrice Gabolde)
