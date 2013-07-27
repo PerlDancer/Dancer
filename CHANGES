@@ -9,6 +9,9 @@ Revision history for Dancer
     * GH #938: fix doc typos in Dancer::Serializer. (Fabrice Gabolde)
     * GH #712: add all status codes known to Dancer to Dancer::HTTP. 
         (Yanick Champoux, reported by Brian J Miller)
+    * Add warning that 'forward' doesn't preserver the session. (Alberto Simões)
+    * GH #941: minor correction to code snippets in documentation. 
+        (Grzegorz Rożniecki)
 
 1.3116 03.07.2013
 
