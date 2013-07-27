@@ -45,7 +45,7 @@ sub build {
       Dancer::ModuleLoader->class_from_setting($class_name => $name);
 
     my( $loaded, $error ) = Dancer::ModuleLoader->load($engine_class);
-    $error = '' unless length $error;
+    $error = '' unless defined $error;
 
     unless( $loaded ) {
         my $tip = '';
