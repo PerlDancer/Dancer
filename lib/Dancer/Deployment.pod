@@ -115,6 +115,12 @@ C<Twiggy> is an C<AnyEvent> web server, it's light and fast.
 
 C<Corona> is a C<Coro> based web server.
 
+B<WARNING>: C<Dancer>'s use of global variables and C<Coro>'s threaded behaviors
+can cause some unexpected behaviors. See L<this GitHub
+issue|https://github.com/PerlDancer/Dancer/issues/929> for more details.
+Unless you have really, really strongly compelling reasons to use Corona, 
+consider using C<Twiggy> or C<Starman> instead.
+
 =back
 
 To start your application, just run plackup (see L<Plack> and specific servers

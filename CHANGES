@@ -16,6 +16,8 @@ Revision history for Dancer
     * Add warning that 'forward' doesn't preserver the session. (Alberto Simões)
     * GH #941: minor correction to code snippets in documentation. 
         (Grzegorz Rożniecki)
+    * GH #929: add warning on the use of Corona as underlying web server. 
+        (issue reported by berekuk)
 
 1.3116 03.07.2013
 
