@@ -179,7 +179,7 @@ From here, any route handler is defined to /home/*
 You can unset the prefix value
 
     prefix '/'; # or: prefix undef;
-    get '/page1' => sub {}; will match /page1
+    get '/page1' => sub {}; # will match '/page1'
 
 Alternatively, to prevent you from ever forgetting to undef the prefix,
 you can use lexical prefix like this:
@@ -188,7 +188,7 @@ you can use lexical prefix like this:
       get '/page1' => sub {}; # will match '/home/page1'
     }; ## prefix reset to previous value on exit
     
-    get '/page1' => sub {}; will match /page1
+    get '/page1' => sub {}; # will match '/page1'
 
 =head1 ACTION SKIPPING
 
