@@ -22,6 +22,8 @@ Revision history for Dancer
         (Grzegorz Rożniecki)
     * GH #929: add warning on the use of Corona as underlying web server. 
         (issue reported by berekuk)
+    * GH #943: remove mention to 'Dancer::Plugin::Validation', 
+        clean 'dancer -a' sample output. (Grzegorz Rożniecki)
 
 1.3116 03.07.2013
 
