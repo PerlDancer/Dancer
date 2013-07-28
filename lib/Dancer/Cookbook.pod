@@ -54,6 +54,8 @@ command:
 
     $ dancer -a mywebapp
     + mywebapp
+    + mywebapp/bin
+    + mywebapp/bin/app.pl
     + mywebapp/config.yml
     + mywebapp/environments
     + mywebapp/environments/development.yml
@@ -62,7 +64,7 @@ command:
     + mywebapp/views/index.tt
     + mywebapp/views/layouts
     + mywebapp/views/layouts/main.tt
-    + mywebapp/mywebapp.pl
+    + mywebapp/MANIFEST.SKIP
     + mywebapp/lib
     + mywebapp/lib/mywebapp.pm
     + mywebapp/public
@@ -70,14 +72,16 @@ command:
     + mywebapp/public/css/style.css
     + mywebapp/public/css/error.css
     + mywebapp/public/images
+    + mywebapp/public/500.html
     + mywebapp/public/404.html
     + mywebapp/public/dispatch.fcgi
     + mywebapp/public/dispatch.cgi
-    + mywebapp/public/500.html
-    + mywebapp/Makefile.PL
+    + mywebapp/public/javascripts
+    + mywebapp/public/javascripts/jquery.js
     + mywebapp/t
     + mywebapp/t/002_index_route.t
     + mywebapp/t/001_base.t
+    + mywebapp/Makefile.PL
 
 As you can see, it creates a directory named after the name of the app, along
 with a configuration file, a views directory (where your templates and layouts
