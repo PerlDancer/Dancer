@@ -10,7 +10,7 @@ sub load {
     my ($class, $module, $version) = @_;
 
     my ($res, $error) = $class->require($module, $version);
-    $res or return wantarray ? (0, $error) : 0;
+    return wantarray ? ($res, $error) : $res;
 }
 
 sub require {

@@ -40,6 +40,15 @@ sub get_prefix {
     return Dancer::App->current->prefix || '';
 }
 
+sub incr_lexical_prefix {
+    no warnings;  # for undefined
+    $_[0]->on_lexical_prefix( $_[0]->on_lexical_prefix + 1 );
+}
+
+sub dec_lexical_prefix {
+    $_[0]->on_lexical_prefix( $_[0]->on_lexical_prefix - 1 );
+}
+
 sub set_prefix {
     my ($self, $prefix, $cb) = @_;
 
@@ -60,10 +69,10 @@ sub set_prefix {
     }
 
     if (ref($cb) eq 'CODE') {
-        Dancer::App->current->on_lexical_prefix(1);
+        Dancer::App->current->incr_lexical_prefix;
         eval { $cb->() };
         my $e = $@;
-        Dancer::App->current->on_lexical_prefix(0);
+        Dancer::App->current->dec_lexical_prefix;
         Dancer::App->current->prefix($previous);
         die $e if $e;
     }

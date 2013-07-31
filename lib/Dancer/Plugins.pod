@@ -54,10 +54,6 @@ Makes writing RESTful web services easy.
 Automatically provides site maps (as a HTML page, or as an XML sitemap ready for
 Google) based on the routes your app defines.
 
-=item L<Dancer::Plugin::Validation>
-
-Easy data validation powered by L<Oogly>.
-
 =item L<Dancer::Plugin::Params::Normalization>
 
 Provides different ways of normalizing parameter names

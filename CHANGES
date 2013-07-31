@@ -1,6 +1,32 @@
 Revision history for Dancer
 
-{{NEXT}}
+1.3117 31.07.2013
+
+    [ ENHANCEMENTS ]
+    * GH #836: Provide more information when an engine fails to load.
+        (Yanick Champoux, reported by Daniel Perrett)
+
+    [ BUG FIXES ]
+    * GH #794: Upload data was not kept for forwarded requests. 
+        (reported by William Wolf)
+    * GH #898: calling halt() doesn't discard set headers anymore. 
+        (Yanick Champoux, reported by Nicolas Franck)
+    * GH #842: embedded 'prefix' now properly localized. 
+        (Yanick Champoux, reported by Jashank Jeremy)
+
+    [ DOCUMENTATION ]
+    * GH #938: fix doc typos in Dancer::Serializer. (Fabrice Gabolde)
+    * GH #712: add all status codes known to Dancer to Dancer::HTTP. 
+        (Yanick Champoux, reported by Brian J Miller)
+    * Add warning that 'forward' doesn't preserver the session. (Alberto Simões)
+    * GH #941: minor correction to code snippets in documentation. 
+        (Grzegorz Rożniecki)
+    * GH #929: add warning on the use of Corona as underlying web server. 
+        (issue reported by berekuk)
+    * GH #943: remove mention to 'Dancer::Plugin::Validation', 
+        clean 'dancer -a' sample output. (Grzegorz Rożniecki)
+
+1.3116 03.07.2013
 
     [ ENHANCEMENTS ]
     * GH #767: forwarded_for_address() now looks for HTTP_X_FORWARDED_FOR if

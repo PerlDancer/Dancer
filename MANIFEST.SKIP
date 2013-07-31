@@ -23,3 +23,5 @@ contrib/update_authors.pl
 .perltidyrc
 Dancer-.*.tar.gz
 MANIFEST.SKIP
+performance
+TODO
