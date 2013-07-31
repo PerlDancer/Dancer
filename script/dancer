@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+#PODNAME: dancer
+
 use strict;
 use warnings;
 use Dancer::Template::Simple;

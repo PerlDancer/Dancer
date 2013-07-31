@@ -1,3 +1,5 @@
+# PODNAME: Dancer/Deployment.pod
+
 =head1 NAME
 
 Dancer::Deployment - common ways to put your Dancer app into use

@@ -1,6 +1,5 @@
-=head1 NAME
-
-Dancer::Introduction - A gentle introduction to Dancer
+package Dancer::Introduction
+# ABSTRACT: A gentle introduction to Dancer
 
 =head1 DESCRIPTION
 
