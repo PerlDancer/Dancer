@@ -197,7 +197,7 @@ sub forward {
         # make sure that COOKIE is populated
         $new_request->{env}{COOKIE} ||= $new_request->{env}{HTTP_COOKIE};
 
-        no warnings;
+        no warnings;  # COOKIE can be undef
         unless ( $new_request->{env}{COOKIE} =~ /$name\s*=/ ) {
             $new_request->{env}{COOKIE} = join ';', 
                 grep { $_ } 
