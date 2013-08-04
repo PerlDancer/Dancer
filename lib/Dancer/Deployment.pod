@@ -7,20 +7,23 @@ Dancer::Deployment - common ways to put your Dancer app into use
 Dancer has been designed to be flexible, and this flexibility extends to your
 choices when deploying your Dancer app.
 
-
-=head2 Running as a cgi-script (or fast-cgi)
+=head2 Running as a cgi-script (or fast-cgi) under Apache
 
 In providing ultimate flexibility in terms of deployment, your Dancer app can
 be run as a simple cgi-script out-of-the-box. No additional web-server
 configuration needed.  Your web server should recognize .cgi files and be able
-to serve Perl scripts.  The Perl module Plack::Runner is required.
+to serve Perl scripts.  The Perl module L<Plack::Runner> is required.
 
 Start by adding the following to your apache configuration (httpd.conf or
 sites-available/*site*):
 
     <VirtualHost *:80>
         ServerName www.example.com
+
+        # /srv/www.example.com is the root of your
+        # dancer application
         DocumentRoot /srv/www.example.com/public
+
         ServerAdmin you@example.com
 
         <Directory "/srv/www.example.com/public">
@@ -31,32 +34,11 @@ sites-available/*site*):
            AddHandler cgi-script .cgi
         </Directory>
 
-        RewriteEngine On
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^(.*)$ /dispatch.cgi/$1 [QSA,L]
+        ScriptAlias / /srv/www.example.com/public/dispatch.cgi
 
         ErrorLog  /var/log/apache2/www.example.com-error.log
         CustomLog /var/log/apache2/www.example.com-access_log common
     </VirtualHost>
-
-Note that when using fast-cgi your rewrite rule should be:
-
-        RewriteRule ^(.*)$ /dispatch.fcgi$1 [QSA,L]
-
-Here, the mod_rewrite magic for Pretty-URLs is directly put in Apache's
-configuration.  But if your web server supports .htaccess files, you can drop
-those lines in a .htaccess file.
-
-To check if your server supports mod_rewrite type C<apache2 -l> to list modules.
-To enable mod_rewrite (Debian), run C<a2enmod rewrite>. Place following code in
-a file called .htaccess in your application's root folder:
-
-    # BEGIN dancer application htaccess
-    RewriteEngine On
-    RewriteCond %{SCRIPT_FILENAME} !-d
-    RewriteCond %{SCRIPT_FILENAME} !-f
-    RewriteRule (.*) /dispatch.cgi$1 [L]
-    # END dancer application htaccess
 
 Now you can access your dancer application URLs as if you were using the
 embedded web server.
@@ -67,18 +49,21 @@ This option is a no-brainer, easy to setup, low maintenance but serves requests
 slower than all other options.
 
 You can use the same technique to deploy with FastCGI, by just changing the
-line:
+lines:
 
 	AddHandler cgi-script .cgi
+    
+    ...
+    
+    ScriptAlias / /srv/www.example.com/public/dispatch.cgi
 
 By:
 
 	AddHandler fastcgi-script .fcgi
 
-Of course remember to update your rewrite rules, if you have set any:
+    ...
 
-    RewriteRule (.*) /dispatch.fcgi$1 [L]
-
+    ScriptAlias / /srv/www.example.com/public/dispatch.fcgi
 
 =head2 Running stand-alone
 

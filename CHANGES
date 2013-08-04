@@ -1,5 +1,11 @@
 Revision history for Dancer
 
+{{$NEXT}}
+
+    [ DOCUMENTATION ]
+    * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
+        (bug report by Scott Penrose)
+
 1.3117 31.07.2013
 
     [ ENHANCEMENTS ]
