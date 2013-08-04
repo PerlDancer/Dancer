@@ -202,6 +202,10 @@ sub load {
         load_settings_from_yaml($env);
         $_LOADED{$env}++;
     }
+    elsif (setting('require_environment')) {
+        # failed to load the env file, and the main config said we needed it.
+        confess "Could not load environment file '$env', and require_environment is set";
+    }
 
     foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
         $setters->{$key}->($key, $SETTINGS->{$key});
@@ -466,6 +470,13 @@ If set to true, tells Dancer to consider all warnings as blocking errors.
 
 If set to true, Dancer will display full stack traces when a warning or a die
 occurs. (Internally sets Carp::Verbose). Default to false.
+
+=head3 require_environment (boolean)
+
+If set to true, Dancer will fail during startup if your environment file is
+missing or can't be read. This is especially useful in production when you
+have things like memcached settings that need to be set per-environment.
+Default to false.
 
 =head3 server_tokens (boolean)
 

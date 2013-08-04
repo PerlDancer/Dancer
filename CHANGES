@@ -2,6 +2,9 @@ Revision history for Dancer
 
 {{$NEXT}}
 
+    [ ENHANCEMENTS ]
+    * GH #946: new 'require_environment' setting. (Jesse van Herk)
+
     [ DOCUMENTATION ]
     * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
         (bug report by Scott Penrose)

@@ -6,7 +6,7 @@ use Dancer::ModuleLoader;
 Dancer::ModuleLoader->load('YAML')
     or plan skip_all => 'YAML is needed to run this test';
 
-plan tests => 5;
+plan tests => 7;
 
 use File::Spec;
 use Dancer ':syntax';
@@ -47,4 +47,13 @@ ok -f $path;
 
 ok(Dancer::Config->load, 'load prod environment');
 is(setting('log'), 'warning', 'log setting looks good');
+
+# see what happens when envfile is required but not present
+setting('require_environment' => 1);
+setting('environment' => 'missing');
+# expect it to fail with a confess()
+eval { Dancer::Config->load };
+ok($@, 'dies if environment required but missing');
+like($@, qr/missing\.yml/, '... error message includes environment file name');
+
 File::Temp::cleanup();
