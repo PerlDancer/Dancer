@@ -9,6 +9,10 @@ Revision history for Dancer
     * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
         (bug report by Scott Penrose)
 
+    [ MISC ]
+    * GH #949: fixes a few errors in the serializer testsuite. 
+        (Franck Cuny)
+
 1.3117 31.07.2013
 
     [ ENHANCEMENTS ]
