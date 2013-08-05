@@ -5,6 +5,10 @@ Revision history for Dancer
     [ ENHANCEMENTS ]
     * GH #946: new 'require_environment' setting. (Jesse van Herk)
 
+    [ BUG FIXES ]
+    *GH #655: clarify logger error message. (Yanick Champoux, 
+        reported by Gabor Szabo)
+
     [ DOCUMENTATION ]
     * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
         (bug report by Scott Penrose)
