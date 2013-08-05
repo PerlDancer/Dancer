@@ -16,9 +16,12 @@ set 'serializer' => 'JSON', 'show_errors' => 1;
 get  '/'          => sub { { foo => 'bar' } };
 post '/'          => sub { params };
 put  '/'          => sub { param("id") };
-get  '/json'      => sub { to_json( { foo => 'bar' } ) };
 get  '/error'     => sub { send_error( { foo => 42 }, 401 ) };
 get  '/error_bis' => sub { send_error( 42, 402 ) };
+get  '/json'      => sub {
+    content_type('application/json');
+    to_json( { foo => 'bar' } )
+};
 
 response_content_is [ PUT => '/',
                       {
@@ -28,8 +31,8 @@ response_content_is [ PUT => '/',
                     ] => 'foo';
 
 
-for ( '/', '/json' ) {
-    my $res = dancer_response( GET => '/' );
+for my $route ( '/', '/json' ) {
+    my $res = dancer_response( GET => $route );
     is $res->header('Content-Type'), 'application/json';
     like $res->content, qr/"foo" : "bar"/;
 }
