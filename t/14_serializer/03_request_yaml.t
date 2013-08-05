@@ -12,14 +12,17 @@ SKIP: {
 
     set serializer => 'YAML', show_errors => 1;
 
-    get '/'      => sub { { foo => 'bar' } };
-    post '/'     => sub { request->params };
-    get '/yaml'  => sub { to_yaml( { foo => 'bar' } ) };
-    get '/error' => sub { send_error( { foo => 42 }, 401 ) };
+    get '/'          => sub { { foo => 'bar' } };
+    post '/'         => sub { request->params };
+    get '/error'     => sub { send_error( { foo => 42 }, 401 ) };
     get '/error_bis' => sub { send_error( 42, 402 ) };
+    get '/yaml'  => sub {
+        content_type('text/x-yaml');
+        to_yaml( { foo => 'bar' } );
+    };
 
-    for ( '/', '/yaml' ) {
-        my $res = dancer_response( GET => '/' );
+    for my $route ( '/', '/yaml' ) {
+        my $res = dancer_response( GET => $route );
         is $res->header('Content-Type'), 'text/x-yaml';
         like $res->content, qr/foo: bar/;
     }

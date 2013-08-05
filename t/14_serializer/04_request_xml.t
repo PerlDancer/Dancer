@@ -18,12 +18,15 @@ SKIP: {
 
     get '/'          => sub { { foo => 'bar' } };
     post '/'         => sub { request->params };
-    get '/xml'       => sub { to_xml( { foo => 'bar' } ) };
     get '/error'     => sub { send_error( { foo => 42 }, 401 ) };
     get '/error_bis' => sub { send_error( 42, 402 ) };
+    get '/xml'       => sub {
+        content_type('text/xml');
+        to_xml( { foo => 'bar' } )
+    };
 
-    for ( '/', '/xml' ) {
-        my $res = dancer_response( GET => '/' );
+    for my $route ( '/', '/xml' ) {
+        my $res = dancer_response( GET => $route );
         is $res->header('Content-Type'), 'text/xml';
         like $res->content, qr/<data foo="bar" \/>/;
     }
