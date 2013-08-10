@@ -34,10 +34,18 @@ sub init {
       || $self->config->{end_tag}
       || '%>';
 
-    # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
-    # so I only change them if their value is different
-    $tt_config->{START_TAG} = $start_tag if $start_tag ne '[%';
-    $tt_config->{END_TAG}   = $stop_tag  if $stop_tag  ne '%]';
+    # TT expects quotemeta()'ed values here to be used as-is within
+    # its regexp-based tokenizer. To support existing Dancer users who
+    # prefer the default TT tags and who've already figured this out,
+    # let's skip this if the tags are already ok.
+    # Just FYI: TT hardcodes '\[%' and '%\]' as default.
+    #
+    $tt_config->{START_TAG} = $start_tag eq '\[%' || $start_tag eq '\[\%'
+        ? $start_tag
+        : quotemeta($start_tag);
+    $tt_config->{END_TAG} = $stop_tag eq '%\]' || $stop_tag eq '\%\]'
+        ? $stop_tag
+        : quotemeta($stop_tag);
 
     $tt_config->{INCLUDE_PATH} ||= setting('views');
 
