@@ -8,6 +8,8 @@ Revision history for Dancer
     [ BUG FIXES ]
     *GH #655: clarify logger error message. (Yanick Champoux, 
         reported by Gabor Szabo)
+    * GH #951: fix quoting of TemplateToolkit start_tag/stop_tag.
+        (Rick Myers)
 
     [ DOCUMENTATION ]
     * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
