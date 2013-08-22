@@ -10,6 +10,8 @@ Revision history for Dancer
         reported by Gabor Szabo)
     * GH #951: fix quoting of TemplateToolkit start_tag/stop_tag.
         (Rick Myers)
+    * GH #940: carry over the session when we forward(). 
+        (Yanick Champoux, reported by sciurius)
 
     [ DOCUMENTATION ]
     * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
