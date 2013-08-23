@@ -19,15 +19,10 @@ my $serializer = {
 my $loaded_serializer = {};
 my $_content_type;
 
-sub template_or_serialize (@) {
+sub template_or_serialize {
     my( $template, $data ) = @_;
 
-    my $serializer = Dancer::Serializer->engine;
-
-
-    my( $content_type ) = @{ $serializer->_find_content_type(
-        Dancer::SharedData->request
-    ) };
+    my( $content_type ) = @{ _find_content_type(Dancer::SharedData->request) };
 
     # TODO the accept value coming from the browser can 
     # be quite complex (e.g., 
@@ -42,7 +37,7 @@ sub template_or_serialize (@) {
 }
 
 sub _find_content_type {
-    my ($self, $request) = @_;
+    my $request = shift;
 
     my $params;
 
@@ -105,7 +100,7 @@ sub support_content_type {
 sub _load_serializer {
     my ($self, $request) = @_;
 
-    my $content_types = $self->_find_content_type($request);
+    my $content_types = _find_content_type($request);
     foreach my $ct (@$content_types) {
         if (exists $serializer->{$ct}) {
             my $module = "Dancer::Serializer::" . $serializer->{$ct};
