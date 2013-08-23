@@ -4,6 +4,8 @@ Revision history for Dancer
 
     [ ENHANCEMENTS ]
     * GH #946: new 'require_environment' setting. (Jesse van Herk)
+    * GH #952: don't set defaults for Template subclasses for 
+        Dancer::Template::TemplateToolkit. (Rick Myers)
 
     [ BUG FIXES ]
     *GH #655: clarify logger error message. (Yanick Champoux, 
