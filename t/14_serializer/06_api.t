@@ -71,7 +71,7 @@ SKIP: {
 
     my $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
-    my $ct = $s->_find_content_type($req);
+    my $ct = Dancer::Serializer::Mutable::_find_content_type($req);
     is_deeply $ct, [ 'text/xml', 'text/x-yaml', 'application/json' ];
 
     %ENV = (
@@ -80,7 +80,7 @@ SKIP: {
     );
     $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
-    $ct = $s->_find_content_type($req);
+    $ct = Dancer::Serializer::Mutable::_find_content_type($req);
     is_deeply $ct, ['application/json'];
 
     %ENV = (
@@ -91,7 +91,7 @@ SKIP: {
     );
     $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
-    $ct = $s->_find_content_type($req);
+    $ct = Dancer::Serializer::Mutable::_find_content_type($req);
     is_deeply $ct, [ 'application/json', 'text/xml' ];
 }
 
