@@ -361,6 +361,17 @@ sub dancer_response {
         $extra_env->{'CONTENT_TYPE'} = $headers->header('Content-Type');
     }
 
+    # fake the REQUEST_URI
+    # TODO deal with the params
+    unless( $extra_env->{REQUEST_URI} ) {
+        $extra_env->{REQUEST_URI} = $path;
+        if ( $method eq 'GET' and $params ) {
+            $extra_env->{REQUEST_URI} .=
+                '?' . join '&', map { join '=', $_, $params->{$_} } 
+                                    sort keys %$params;
+        }
+    }
+
     my $request = Dancer::Request->new_for_request(
         $method => $path,
         $params, $body, $headers, $extra_env
