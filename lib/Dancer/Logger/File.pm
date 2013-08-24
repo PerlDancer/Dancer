@@ -55,7 +55,12 @@ sub init {
         carp "unable to create or append to $logfile";
         return;
     }
-    $fh->autoflush;
+
+    # looks like older perls don't auto-convert to IO::File
+    # and can't autoflush
+    # see https://github.com/PerlDancer/Dancer/issues/954
+    eval { $fh->autoflush };
+
     $self->{logfile} = $logfile;
     $self->{fh} = $fh;
 }
