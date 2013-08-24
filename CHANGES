@@ -14,6 +14,8 @@ Revision history for Dancer
         (Rick Myers)
     * GH #940: carry over the session when we forward(). 
         (Yanick Champoux, reported by sciurius)
+    * GH #954: don't die on autoflush for older perls. 
+        (Yanick Champoux, reported by metateck and David Golden)
 
     [ DOCUMENTATION ]
     * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
