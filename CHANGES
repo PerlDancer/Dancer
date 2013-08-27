@@ -18,6 +18,8 @@ Revision history for Dancer
         (Yanick Champoux, reported by sciurius)
     * GH #954: don't die on autoflush for older perls. 
         (Yanick Champoux, reported by metateck and David Golden)
+    * GH #950: Dancer::Test functions now populate REQUEST_URI.
+        (Yanick Champoux, reported by Sören Kornetzki)
 
     [ DOCUMENTATION ]
     * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
