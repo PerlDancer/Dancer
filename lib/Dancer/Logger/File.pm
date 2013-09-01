@@ -10,29 +10,28 @@ use IO::File;
 use Fcntl qw(:flock SEEK_END);
 
 sub logdir {
-    my $altpath = setting('log_path');
-    return $altpath if $altpath;
+    if ( my $altpath = setting('log_path') ) {
+        return $altpath;
+    }
 
     my $logroot = setting('appdir');
 
-    if ($logroot) {
-        if (!-d $logroot && not mkdir $logroot) {
-            carp "log directory $logroot doesn't exist, am unable to create it";
-            return;
-        }
+    if ( $logroot and ! -d $logroot and ! mkdir $logroot ) {
+        carp "app directory '$logroot' doesn't exist, am unable to create it";
+        return;
     }
 
     my $expected_path = $logroot                                  ?
                         Dancer::FileUtils::path($logroot, 'logs') :
                         Dancer::FileUtils::path('logs');
 
-    return $expected_path if (-d $expected_path && -x _ && -w _);
+    return $expected_path if -d $expected_path && -x _ && -w _;
 
     unless (-w $logroot and -x _) {
         my $perm = (stat $logroot)[2] & 07777;
         chmod($perm | 0700, $logroot);
         unless (-w $logroot and -x _) {
-            carp "log directory $logroot isn't writable/executable and can't chmod it";
+            carp "app directory '$logroot' isn't writable/executable and can't chmod it";
             return;
         }
     }
@@ -56,7 +55,12 @@ sub init {
         carp "unable to create or append to $logfile";
         return;
     }
-    $fh->autoflush;
+
+    # looks like older perls don't auto-convert to IO::File
+    # and can't autoflush
+    # see https://github.com/PerlDancer/Dancer/issues/954
+    eval { $fh->autoflush };
+
     $self->{logfile} = $logfile;
     $self->{fh} = $fh;
 }

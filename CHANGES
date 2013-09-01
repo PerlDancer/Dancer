@@ -1,5 +1,34 @@
 Revision history for Dancer
 
+1.3118 01.09.2013
+
+    [ ENHANCEMENTS ]
+    * GH #946: new 'require_environment' setting. (Jesse van Herk)
+    * GH #952: don't set defaults for Template subclasses for 
+        Dancer::Template::TemplateToolkit. (Rick Myers)
+    * GH #945: add function 'template_or_serialize' to
+        Dancer::Serializer::Mutable. (Yanick Champoux)
+
+    [ BUG FIXES ]
+    * GH #655: clarify logger error message. (Yanick Champoux, 
+        reported by Gabor Szabo)
+    * GH #951: fix quoting of TemplateToolkit start_tag/stop_tag.
+        (Rick Myers)
+    * GH #940: carry over the session when we forward(). 
+        (Yanick Champoux, reported by sciurius)
+    * GH #954: don't die on autoflush for older perls. 
+        (Yanick Champoux, reported by metateck and David Golden)
+    * GH #950: Dancer::Test functions now populate REQUEST_URI.
+        (Yanick Champoux, reported by Sören Kornetzki)
+
+    [ DOCUMENTATION ]
+    * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
+        (bug report by Scott Penrose)
+
+    [ MISC ]
+    * GH #949: fixes a few errors in the serializer testsuite. 
+        (Franck Cuny)
+
 1.3117 31.07.2013
 
     [ ENHANCEMENTS ]

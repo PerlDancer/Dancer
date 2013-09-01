@@ -25,3 +25,4 @@ Dancer-.*.tar.gz
 MANIFEST.SKIP
 performance
 TODO
+^Dancer-.*

@@ -9,6 +9,7 @@ use base 'Dancer::Object';
 use Dancer::Config 'setting';
 use Dancer::Request::Upload;
 use Dancer::SharedData;
+use Dancer::Session;
 use Dancer::Exception qw(:all);
 use Encode;
 use HTTP::Body;
@@ -188,6 +189,22 @@ sub forward {
     $new_request->{_params_are_decoded} = 1;
     $new_request->{body}    = $request->body;
     $new_request->{headers} = $request->headers;
+
+    if( my $session = Dancer::Session->engine 
+                      && Dancer::Session->get_current_session ) {
+        my $name = $session->session_name;
+
+        # make sure that COOKIE is populated
+        $new_request->{env}{COOKIE} ||= $new_request->{env}{HTTP_COOKIE};
+
+        no warnings;  # COOKIE can be undef
+        unless ( $new_request->{env}{COOKIE} =~ /$name\s*=/ ) {
+            $new_request->{env}{COOKIE} = join ';', 
+                grep { $_ } 
+                $new_request->{env}{COOKIE}, 
+                join '=', $name, Dancer::Session->get_current_session->id;
+        }
+    }
 
     $new_request->{uploads} = $request->uploads;
 

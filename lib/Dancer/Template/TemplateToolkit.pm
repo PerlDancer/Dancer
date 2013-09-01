@@ -21,25 +21,52 @@ sub init {
     my $charset = setting('charset') || '';
     my @encoding = length($charset) ? ( ENCODING => $charset ) : ();
 
+    my $is_subclass = $class ne 'Template';
+
+    my @anycase  = $is_subclass ? () : ( ANYCASE  => 1 );
+    my @absolute = $is_subclass ? () : ( ABSOLUTE => 1 );
+
+    my @inc_path = $is_subclass ? ()
+        : ( INCLUDE_PATH => $self->config->{INCLUDE_PATH} || setting('views') );
+
+    my $start_tag = $is_subclass
+        ? $self->config->{start_tag}
+        : $self->config->{start_tag} || '<%';
+
+    my $stop_tag = $is_subclass
+        ? $self->config->{stop_tag} || $self->config->{end_tag}
+        : $self->config->{stop_tag} || $self->config->{end_tag} || '%>';
+
+    # TT expects quotemeta()'ed values here to be used as-is within
+    # its regexp-based tokenizer. To support existing Dancer users who
+    # prefer the default TT tags and who've already figured this out,
+    # let's skip this if the tags are already ok.
+    # Just FYI: TT hardcodes '\[%' and '%\]' as default.
+    #
+    my @start = ();
+    if (defined $start_tag) {
+        @start = ( START_TAG => $start_tag eq '\[%' || $start_tag eq '\[\%'
+            ? $start_tag
+            : quotemeta($start_tag)
+        );
+    }
+    my @stop = ();
+    if (defined $stop_tag) {
+        @stop = ( END_TAG => $stop_tag eq '%\]' || $stop_tag eq '\%\]'
+            ? $stop_tag
+            : quotemeta($stop_tag)
+        );
+    }
+
     my $tt_config = {
-        ANYCASE  => 1,
-        ABSOLUTE => 1,
+        @anycase,
+        @absolute,
         @encoding,
+        @inc_path,
+        @start,
+        @stop,
         %{$self->config},
     };
-
-    my $start_tag = $self->config->{start_tag} || '<%';
-    my $stop_tag =
-         $self->config->{stop_tag}
-      || $self->config->{end_tag}
-      || '%>';
-
-    # FIXME looks like if I set START/END tags to TT's defaults, it goes crazy
-    # so I only change them if their value is different
-    $tt_config->{START_TAG} = $start_tag if $start_tag ne '[%';
-    $tt_config->{END_TAG}   = $stop_tag  if $stop_tag  ne '%]';
-
-    $tt_config->{INCLUDE_PATH} ||= setting('views');
 
     $_engine = $class->new(%$tt_config);
 }
@@ -100,13 +127,22 @@ initialization. You could, for instance, enable saving the compiled templates:
             COMPILE_DIR: 'caches/templates'
             COMPILE_EXT: '.ttc'
 
+Note though that unless you change them, Dancer sets both of the Template
+options C<ANYCASE> and C<ABSOLUTE> on, as well as pointing C<INCLUDE_PATH>
+to your B<views> directory and setting C<ENCODING> to your B<charset>
+setting.
+
+=head1 SUBCLASSING
+
 By default, L<Template> is used, but you can configure Dancer to use a
-subclass with the C<subclass> option.
+subclass of Template with the C<subclass> option.
 
     engines:
         template_toolkit:
             subclass: My::Template
 
+When used like this, Dancer skips the defaults mentioned above.  Only those
+included in your config file are sent to the subclass.
 
 =head1 WRAPPER, META variables, SETs
 

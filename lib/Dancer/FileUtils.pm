@@ -3,6 +3,8 @@ package Dancer::FileUtils;
 use strict;
 use warnings;
 
+use IO::File;
+
 use File::Basename ();
 use File::Spec;
 use File::Temp qw(tempfile);
