@@ -1,6 +1,6 @@
 Revision history for Dancer
 
-{{$NEXT}}
+1.3118 01.09.2013
 
     [ ENHANCEMENTS ]
     * GH #946: new 'require_environment' setting. (Jesse van Herk)
@@ -10,7 +10,7 @@ Revision history for Dancer
         Dancer::Serializer::Mutable. (Yanick Champoux)
 
     [ BUG FIXES ]
-    *GH #655: clarify logger error message. (Yanick Champoux, 
+    * GH #655: clarify logger error message. (Yanick Champoux, 
         reported by Gabor Szabo)
     * GH #951: fix quoting of TemplateToolkit start_tag/stop_tag.
         (Rick Myers)
