@@ -6,6 +6,7 @@ use Dancer ':syntax';
 use Dancer::FileUtils 'read_glob_content';
 use Dancer::Test;
 use File::Temp;
+use MIME::Types;
 
 set public => path(dirname(__FILE__), 'public');
 
@@ -86,7 +87,12 @@ $resp = undef; # just to be sure
 $resp = dancer_response(GET => '/absolute/file.txt');
 ok(defined($resp), "route handler found for /absolute/file.txt");
 %headers = @{$resp->headers_to_array};
-is($headers{'Content-Type'}, 'application/x-perl', 'mime_type is ok');
+
+# With hash randomization, .pl can be either text/perl or
+# application/perl. This is determined by MIME::Types.
+my $perl_mime = MIME::Types->new->mimeTypeOf('pl');
+is($headers{'Content-Type'}, $perl_mime, 'mime_type is ok');
+
 is(ref($resp->{content}), 'GLOB', "content is a File handle");
 $content = read_glob_content($resp->{content});
 like($content, qr/'foo loaded'/, "content is ok");

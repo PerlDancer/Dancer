@@ -1,5 +1,11 @@
 Revision history for Dancer
 
+{{$NEXT}}
+
+    [ BUG FIXES ]
+    * GH #959: hash randomization could cause .pl MIME to vary and test
+        to fail. (Olof Johansson)
+
 1.3118 01.09.2013
 
     [ ENHANCEMENTS ]
