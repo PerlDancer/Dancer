@@ -3,6 +3,8 @@ use strict;
 use warnings;
 use base 'Dancer::Logger::Abstract';
 
+binmode(STDERR, ':utf8');
+
 sub _log {
     my ($self, $level, $message) = @_;
     print STDERR $self->format_message($level => $message);
