@@ -591,6 +591,8 @@ Only $method and $path are required.
 $params is a hashref, $body is a string and $headers can be an arrayref or
 a HTTP::Headers object, $files is an arrayref of hashref, containing some files to upload.
 
+$params always populates the query string, even for POST requests.
+
 A good reason to use this function is for testing POST requests. Since POST
 requests may not be idempotent, it is necessary to capture the content and
 status in one shot. Calling the response_status_is and response_content_is
