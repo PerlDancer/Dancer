@@ -5,6 +5,8 @@ Revision history for Dancer
     [ BUG FIXES ]
     * GH #959: hash randomization could cause .pl MIME to vary and test
         to fail. (Olof Johansson)
+    * GH #961: fix bug in require_environment's logic. (GH#961, reported by
+        sapphirecat)
 
 1.3118 01.09.2013
 

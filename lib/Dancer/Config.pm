@@ -198,13 +198,17 @@ sub load {
     }
 
     my $env = environment_file;
-    if (-f $env && !$_LOADED{$env}) {
-        load_settings_from_yaml($env);
-        $_LOADED{$env}++;
-    }
-    elsif (setting('require_environment')) {
-        # failed to load the env file, and the main config said we needed it.
-        confess "Could not load environment file '$env', and require_environment is set";
+
+    # don't load the same env twice
+    unless( $_LOADED{$env} ) {
+        if (-f $env ) {
+            load_settings_from_yaml($env);
+            $_LOADED{$env}++;
+        }
+        elsif (setting('require_environment')) {
+            # failed to load the env file, and the main config said we needed it.
+            confess "Could not load environment file '$env', and require_environment is set";
+        }
     }
 
     foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
