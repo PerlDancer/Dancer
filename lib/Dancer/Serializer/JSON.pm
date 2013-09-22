@@ -65,7 +65,10 @@ sub deserialize {
 # Standard JSON behaviour is fine when serializing; we'll end up
 # encoding as UTF8 later on.
 sub _serialize_options_as_hashref {
-    return shift->_options_as_hashref(@_);
+    my $self = shift;
+    my $options = $self->_options_as_hashref(@_) || {};
+    $options->{utf8} = 1 if !exists $options->{utf8};
+    return $options;
 }
 
 # JSON should be UTF8 by default, so explicitly decode it as such
