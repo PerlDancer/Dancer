@@ -62,21 +62,19 @@ sub deserialize {
     JSON::from_json( $entity, $options );
 }
 
-# Standard JSON behaviour is fine when serializing; we'll end up
-# encoding as UTF8 later on.
 sub _serialize_options_as_hashref {
     my $self = shift;
     my $options = $self->_options_as_hashref(@_) || {};
-    $options->{utf8} = 1 if !exists $options->{utf8};
+    # by default, behave like encode_json
+    $options->{utf8} = 1 unless exists $options->{utf8};
     return $options;
 }
 
-# JSON should be UTF8 by default, so explicitly decode it as such
-# on its way in.
 sub _deserialize_options_as_hashref {
     my $self = shift;
     my $options = $self->_options_as_hashref(@_) || {};
-    $options->{utf8} = 1 if !exists $options->{utf8};
+    # by default, behave like decode_json
+    $options->{utf8} = 1 unless exists $options->{utf8};
     return $options;
 }
 
@@ -124,7 +122,7 @@ This can be done in your config.yml file or directly in your app code with the
 B<set> keyword. This serializer will also be used when the serializer is set
 to B<mutable> and the correct Accept headers are supplied.
 
-The L<JSON> module will pass configuration variables straight through.
+The L<JSON> module will pass configuration variables straight through. 
 Some of these can be useful when debugging/developing your app: B<pretty> and
 B<canonical>, and others useful with ORMs like L<DBIx::Class>: B<allow_blessed>
 and B<convert_blessed>.  Please consult the L<JSON> documentation for more
@@ -142,11 +140,19 @@ settings to the B<engines> configuration to turn these on. For example:
 
 =head2 serialize
 
-Serialize a data structure to a JSON structure.
+Serialize a data structure to a JSON structure. 
+
+If no explicit I<utf8>
+option is passed, it'll default to C<true>, making the serialization
+behave like I<encode_json>.
 
 =head2 deserialize
 
-Deserialize a JSON structure to a data structure
+Deserialize a JSON structure to a data structure.
+
+If no explicit I<utf8>
+option is passed, it'll default to C<true>, making the deserialization
+behave like I<decode_json>.
 
 =head2 content_type
 
