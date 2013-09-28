@@ -178,7 +178,7 @@ sub logger          {
 sub mime            { Dancer::MIME->instance() }
 sub options         { Dancer::App->current->registry->universal_add('options', @_) }
 sub params          { Dancer::SharedData->request->params(@_) }
-sub param           { params->{$_[0]} }
+sub param           { scalar(@_) > 1 && warning("param() only takes one argument"); params->{$_[0]} }
 sub pass            { Dancer::SharedData->response->pass(1);
                       # throw a special continuation exception
                       Dancer::Continuation::Route::Passed->new->throw;

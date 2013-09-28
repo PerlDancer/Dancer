@@ -588,8 +588,11 @@ Returns a Dancer::Response object for the given request.
 
 Only $method and $path are required.
 
-$params is a hashref, $body is a string and $headers can be an arrayref or
+$params is a hashref, $body can be a string or a hashref and $headers can be an arrayref or
 a HTTP::Headers object, $files is an arrayref of hashref, containing some files to upload.
+
+$params always populates the query string, even for POST requests.  $body
+always populates the request body.
 
 A good reason to use this function is for testing POST requests. Since POST
 requests may not be idempotent, it is necessary to capture the content and
