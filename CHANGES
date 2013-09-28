@@ -1,6 +1,9 @@
 Revision history for Dancer
 
 {{$NEXT}}
+    [ ENHANCEMENTS ]
+    * GH #965: Serializer also serialize content for DELETE.
+        (reported by Achim Adam)
 
     [ BUG FIXES ]
     * GH #959: hash randomization could cause .pl MIME to vary and test
