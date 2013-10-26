@@ -1,5 +1,20 @@
 Revision history for Dancer
 
+1.3119 26.10.2013
+
+    [ ENHANCEMENTS ]
+    * GH #965: Serializer also serialize content for DELETE.
+        (reported by Achim Adam)
+
+    [ BUG FIXES ]
+    * GH #959: hash randomization could cause .pl MIME to vary and test
+        to fail. (Olof Johansson)
+    * GH #961: fix bug in require_environment's logic. (reported by
+        sapphirecat)
+
+    [ DOCUMENTATION ]
+    * GH #962: Improvements of the Dancer::Test docs. (Tom Hukins)
+
 1.3118 01.09.2013
 
     [ ENHANCEMENTS ]

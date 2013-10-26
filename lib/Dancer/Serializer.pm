@@ -84,7 +84,10 @@ sub process_request {
     return $request unless engine->support_content_type($content_type);
 
     return $request
-      unless $request->is_put || $request->is_post || $request->is_patch;
+      unless $request->is_put 
+          or $request->is_post 
+          or $request->is_patch 
+          or $request->is_delete;
 
     my $old_params = $request->params('body');
 
