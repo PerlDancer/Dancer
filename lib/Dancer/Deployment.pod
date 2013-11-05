@@ -57,7 +57,7 @@ lines:
     
     ScriptAlias / /srv/www.example.com/public/dispatch.cgi
 
-By:
+To:
 
 	AddHandler fastcgi-script .fcgi
 
