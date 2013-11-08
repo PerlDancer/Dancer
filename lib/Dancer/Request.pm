@@ -855,6 +855,11 @@ Return true if the value of the header C<X-Requested-With> is XMLHttpRequest.
 
 Return the current environment (C<%ENV>), as a hashref.
 
+Note that this is more than a shorthand: While %ENV might be automagically available
+when Dancer is deployed under CGI, the hash is mostly empty, for example, when your
+app is running via L<Plack::Handler::FCGI>. I<env()> always returns the %ENV hash as
+expected.
+
 =head2 uploads()
 
 Returns a reference to a hash containing uploads. Values can be either a
