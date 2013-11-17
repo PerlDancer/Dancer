@@ -88,7 +88,7 @@ Dancer::Object::Singleton - Singleton base class for Dancer
 
 =head1 DESCRIPTION
 
-Dancer::Object::Singleton is meantto be used instead of Dancer::Object, if you
+Dancer::Object::Singleton is meant to be used instead of Dancer::Object, if you
 want your object to be a singleton, that is, a class that has only one instance
 in the application.
 
