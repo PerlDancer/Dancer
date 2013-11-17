@@ -61,7 +61,7 @@ sub session_name {
 }
 
 
-# Methods below this this line should not be overloaded.
+# Methods below this line should not be overloaded.
 
 # we try to make the best random number
 # with native Perl 5 code.
