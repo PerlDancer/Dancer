@@ -462,7 +462,7 @@ by your Dancer application.  Set to a true value to enable this.
 =head3 startup_info (boolean)
 
 If set to true, prints a banner at the server start with information such as
-versions and the environment (or "dancerfloor").
+versions and the environment (or "dancefloor").
 
 Conforms to the environment variable DANCER_STARTUP_INFO.
 
