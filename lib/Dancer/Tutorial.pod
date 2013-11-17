@@ -189,7 +189,7 @@ In addition, the C<PATCH> verb was defined in
 L<RFC5789|http://tools.ietf.org/html/rfc5789>, and is intended as a
 "partial PUT" - sending just the changes required to the entity in question.
 How this would be handled is down to your app, it will vary depending on the
-type of entity in question and the serialisation in use.
+type of entity in question and the serialization in use.
 
 Dancer currently supports GET, PUT/PATCH, POST, DELETE, OPTIONS which map to
 Retrieve, Update, Create, Delete respectively.  Let's take a look now at the
@@ -474,7 +474,7 @@ I hope this effort has been helpful and interesting enough to get you exploring
 Dancer on your own. The framework is still under heavy development but it's
 definitely mature enough to use in a production project.  Additionally, there
 are now a lot of great Dancer plugins which extend and enhance the capabilities
-of the the platform.
+of the platform.
 
 Happy dancing!
 

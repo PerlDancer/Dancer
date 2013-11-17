@@ -106,7 +106,7 @@ The action built matches POST / GET requests.
 
 =head1 CONFIGURATION
 
-By default the plugin will use a content-type of 'text/xml' but this can be overrided
+By default the plugin will use a content-type of 'text/xml' but this can be overwritten
 with plugin setting 'content_type'.
 
 Here is example to use JSON:

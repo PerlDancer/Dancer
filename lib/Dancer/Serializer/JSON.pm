@@ -44,7 +44,7 @@ sub serialize {
     # straight pass through of config options to JSON
     map { $options->{$_} = $config->{$_} } keys %$config;
 
-    # pull in config from serializer init as well (and possibly overide settings from the conf file)
+    # pull in config from serializer init as well (and possibly override settings from the conf file)
     map { $options->{$_} = $self->config->{$_} } keys %{$self->config};
 
     if (setting('environment') eq 'development' and not defined $options->{pretty}) {
