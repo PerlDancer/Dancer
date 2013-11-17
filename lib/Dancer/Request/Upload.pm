@@ -78,7 +78,7 @@ Dancer::Request::Upload - class representing file uploads requests
 =head1 DESCRIPTION
 
 This class implements a representation of file uploads for Dancer.
-These objects are accesible within route handlers via the request->uploads 
+These objects are accessible within route handlers via the request->uploads 
 keyword. See L<Dancer::Request> for details.
 
 =head1 METHODS
@@ -137,7 +137,7 @@ The Content-Type of this upload.
 
 =head1 AUTHORS
 
-This module as been writen by Alexis Sukrieh, heavily based on
+This module as been written by Alexis Sukrieh, heavily based on
 L<Plack::Request::Upload>. Kudos to Plack authors.
 
 =head1 SEE ALSO
