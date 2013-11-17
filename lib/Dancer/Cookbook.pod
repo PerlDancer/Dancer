@@ -565,7 +565,7 @@ application for your css, images and javascript:
         $tokens->{uri_base} = request->base->path;
     };
 
-THen in your layout, modify your css inclusion as follows:
+Then in your layout, modify your css inclusion as follows:
 
     <link rel="stylesheet" href="<% uri_base %>/css/style.css" />
 
@@ -633,7 +633,7 @@ variables.
 =head2 Configuration and environments
 
 Configuring a Dancer application can be done in many ways. The easiest one (and
-maybe the the dirtiest) is to put all your settings statements at the top of
+maybe the dirtiest) is to put all your settings statements at the top of
 your script, before calling the dance() method.
 
 Other ways are possible, you can define all your settings in the file
