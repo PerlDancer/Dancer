@@ -418,7 +418,7 @@ sub _build_params {
     # _before_ we get there, so we have to save it first
     my $previous = $self->{params};
 
-    # now parse environement params...
+    # now parse environment params...
     $self->_parse_get_params();
     if ($self->is_forward) {
         $self->{_body_params} ||= {};
@@ -649,7 +649,7 @@ Used internally to define some default values and parse parameters.
 
 =head2 new_for_request($method, $path, $params, $body, $headers)
 
-An alternate constructor convienient for test scripts which creates a request
+An alternate constructor convenient for test scripts which creates a request
 object with the arguments given.
 
 =head2 forward($request, $new_location)
@@ -871,7 +871,7 @@ table provided by C<uploads()>. It looks at the calling context and returns a
 corresponding value.
 
 If you have many file uploads under the same name, and call C<upload('name')> in
-an array context, the accesor will unroll the ARRAY ref for you:
+an array context, the accessor will unroll the ARRAY ref for you:
 
     my @uploads = request->upload('many_uploads'); # OK
 
