@@ -87,7 +87,8 @@ sub register_plugin {
     {
         no strict 'refs';
         # tried to use unshift, but it yields an undef warning on $plugin (perl v5.12.1)
-        @{"${plugin}::ISA"} = ('Exporter', 'Dancer::Plugin', @{"${plugin}::ISA"});
+        @{"${plugin}::ISA"} = ('Dancer::Plugin', @{"${plugin}::ISA"});
+        # this works because Dancer::Plugin already ISA Exporter
         push @{"${plugin}::EXPORT"}, @symbols;
     }
     return 1;
