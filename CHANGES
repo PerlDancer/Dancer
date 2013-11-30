@@ -1,6 +1,9 @@
 Revision history for Dancer
 
 {$NEXT}
+    [ ENHANCEMENTS ] 
+    * GH #974: Make plugins play nicely with mro 'c3'. (Fabrice Gabolde)
+
     [ DOCUMENTATION ]
     * GH #972: Correction of a truckload of typos. (David Steinbrunner)
 
