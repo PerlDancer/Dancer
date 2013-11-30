@@ -83,7 +83,7 @@ When developing a Dancer application, it can be useful to trace precisely what
 happen when a query is processed. This handler is here to provide the developer
 with a way to easily run the dancer application with the Perl debugger.
 
-This handler will process ony one query, based on the first argument given on
+This handler will process only one query, based on the first argument given on
 the command line ($ARGV[0]).
 
 =head1 USAGE

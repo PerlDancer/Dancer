@@ -137,7 +137,7 @@ sub init_request_headers {
     Dancer::SharedData->headers($psgi_headers);
 }
 
-# render a PSGI-formated response from a response built by
+# render a PSGI-formatted response from a response built by
 # handle_request()
 sub render_response {
     my $self     = shift;
@@ -170,7 +170,7 @@ sub render_response {
       if ( defined Dancer::SharedData->request
         && Dancer::SharedData->request->is_head() );
 
-    # drop content AND content_length if reponse is 1xx or (2|3)04
+    # drop content AND content_length if response is 1xx or (2|3)04
     if ($response->status =~ (/^[23]04$/ )) {
         $content = [''];
         $response->header('Content-Length' => 0);

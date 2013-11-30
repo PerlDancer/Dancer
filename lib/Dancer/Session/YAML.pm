@@ -132,12 +132,12 @@ files in /tmp/dancer-sessions
 
 =head2 reset
 
-to avoid checking if the sessions directory exists everytime a new session is
+To avoid checking if the sessions directory exists every time a new session is
 created, this module maintains a cache of session directories it has already
 created. C<reset> wipes this cache out, forcing a test for existence
 of the sessions directory next time a session is created. It takes no argument.
 
-This is particulary useful if you want to remove the sessions directory on the
+This is particularly useful if you want to remove the sessions directory on the
 system where your app is running, but you want this session engine to continue
 to work without having to restart your application.
 

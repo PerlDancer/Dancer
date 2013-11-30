@@ -219,7 +219,7 @@ size limit.
 =head2 route_cache_paths
 
 Returns all the paths in the cache. This is used to enforce the path limit.
-Please be carefull if you use L<Plack::Builder/mount> and some applications -
+Please be careful if you use L<Plack::Builder/mount> and some applications -
 routes are linked with applications and same path may be in some applications
 but with different handlers!
 

@@ -399,7 +399,7 @@ Create a backtrace of the code where the error is caused.
 This method tries to find out where the error appeared according to the actual
 error message (using the C<message> attribute) and tries to parse it (supporting
 the regular/default Perl warning or error pattern and the L<Devel::SimpleTrace>
-output) and then returns an error-higlighted C<message>.
+output) and then returns an error-highlighted C<message>.
 
 =head2 tabulate
 
@@ -421,7 +421,7 @@ C<get_caller>), the settings and environment (using C<dumper>) and more.
 
 =head2 get_caller
 
-Creates a strack trace of callers.
+Creates a stack trace of callers.
 
 =head2 _censor
 
