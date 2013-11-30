@@ -1,5 +1,9 @@
 Revision history for Dancer
 
+{$NEXT}
+    [ DOCUMENTATION ]
+    * GH #972: Correction of a truckload of typos. (David Steinbrunner)
+
 1.3119 26.10.2013
 
     [ ENHANCEMENTS ]
