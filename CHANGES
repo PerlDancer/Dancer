@@ -6,6 +6,8 @@ Revision history for Dancer
 
     [ DOCUMENTATION ]
     * GH #972: Correction of a truckload of typos. (David Steinbrunner)
+    * GH #971: Stress that the request's 'env()' method is prefered over
+        accessing '%ENV' directly. (isync)
 
 1.3119 26.10.2013
 
