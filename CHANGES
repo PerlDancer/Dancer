@@ -8,6 +8,8 @@ Revision history for Dancer
     * GH #972: Correction of a truckload of typos. (David Steinbrunner)
     * GH #971: Stress that the request's 'env()' method is prefered over
         accessing '%ENV' directly. (isync)
+    * GH #968: Fix 'ScriptAlias' example in Deployment docs. (reported
+        by tednolan)
 
 1.3119 26.10.2013
 
