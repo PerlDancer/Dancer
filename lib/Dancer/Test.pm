@@ -305,7 +305,11 @@ sub dancer_response {
 
         my ($content, $content_type);
 
-        if ( $args->{body} ) {
+        if ( $args->{body} and $args->{files} ) {
+            # XXX: When fixing this, update this method's POD
+            croak 'dancer_response() does not support both body and files';
+        }
+        elsif ( $args->{body} ) {
             $content      = $args->{body};
             $content_type = $args->{content_type}
                 || 'application/x-www-form-urlencoded';
@@ -593,6 +597,9 @@ a HTTP::Headers object, $files is an arrayref of hashref, containing some files 
 
 $params always populates the query string, even for POST requests.  $body
 always populates the request body.
+
+Currently, Dancer::Test cannot cope with both I<< body >> and I<< files >>
+passed in the same call.
 
 A good reason to use this function is for testing POST requests. Since POST
 requests may not be idempotent, it is necessary to capture the content and
