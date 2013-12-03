@@ -35,7 +35,7 @@ template engines.
 
 =head2 Default engine
 
-The default engine used by Dancer::Template is Dancer::Template::Simple.
+The default engine used by Dancer::Template is L<< Dancer::Template::Simple >>.
 If you want to change the engine used, you have to edit the B<template>
 configuration variable.
 

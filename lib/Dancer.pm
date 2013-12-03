@@ -819,7 +819,7 @@ only used to change the method of your request. Use with caution.
 
 =head2 from_dumper ($structure)
 
-Deserializes a Data::Dumper structure.
+Deserializes a L<< Data::Dumper >> structure.
 
 =head2 from_json ($structure, %options)
 
@@ -1759,7 +1759,7 @@ L<Dancer::Template::Abstract> for further details.
 
 =head2 to_dumper ($structure)
 
-Serializes a structure with Data::Dumper.
+Serializes a structure with L<< Data::Dumper >>.
 
 =head2 to_json ($structure, %options)
 
