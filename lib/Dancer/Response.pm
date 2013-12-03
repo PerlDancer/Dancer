@@ -217,7 +217,7 @@ Dancer::Response - Response object for Dancer
         headers => ['X-Foo' => 'foo-value', 'X-Bar' => 'bar-value'],
     );
 
-create and return a new L<Dancer::Response> object
+create and return a new Dancer::Response object
 
 =head2 current
 
@@ -328,6 +328,6 @@ return the list of headers for the current response
     my $headers_psgi = $response->headers_to_array();
     my $headers_psgi = Dancer::SharedData->response->headers_to_array();
 
-this method is called before returning a PSGI response. It transforms the list of headers to an array reference.
+this method is called before returning a L<< PSGI >> response. It transforms the list of headers to an array reference.
 
 
