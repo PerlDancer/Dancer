@@ -614,7 +614,7 @@ Dancer::Request - interface for accessing incoming requests
 =head1 DESCRIPTION
 
 This class implements a common interface for accessing incoming requests in
-a Dancer application.
+a L<< Dancer >> application.
 
 In a route handler, the current request object can be accessed by the C<request>
 method, like in the following example:
