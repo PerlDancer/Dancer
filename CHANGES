@@ -10,6 +10,8 @@ Revision history for Dancer
         accessing '%ENV' directly. (isync)
     * GH #968: Fix 'ScriptAlias' example in Deployment docs. (reported
         by tednolan)
+    * GH #976: Document and trap limitation in Dancer::Test. (Tom Hukins)
+    * GH #976: Improve references to related modules. (Tom Hukins)
 
 1.3119 26.10.2013
 
