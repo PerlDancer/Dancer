@@ -121,9 +121,12 @@ sub dumper {
     my $data     = Dancer::ModuleLoader->load('Clone') ?
                    Clone::clone($obj)
                    : eval Data::Dumper->new([$obj])->Purity(1)->Terse(1)->Deepcopy(1)->Dump;
-    my $censored = _censor($data);
+
+    $data = {%$data} if blessed($data); 
+	my $censored = _censor($data);
 
     #use Data::Dumper;
+
     my $dd = Data::Dumper->new([$data]);
     $dd->Terse(1)->Quotekeys(0)->Indent(1)->Sortkeys(1);
     my $content = $dd->Dump();
