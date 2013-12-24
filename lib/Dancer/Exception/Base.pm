@@ -183,7 +183,7 @@ return their message, concatenated with their stack trace (see below).
 
 The C<cmp> operator is also overloaded, thus all the string operations can be
 done on Dancer's exceptions, as they will all be based on the overloaded C<cmp>
-operator. Dancer exceptions wil be compared B<without> their stacktraces.
+operator. Dancer exceptions will be compared B<without> their stacktraces.
 
 =head1 STACKTRACE
 

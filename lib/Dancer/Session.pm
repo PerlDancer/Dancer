@@ -180,7 +180,7 @@ inside encrypted cookies (this engine doesn't use a server-side storage).
 =item L<Dancer::Session::Storable>
 
 This backend stores sessions on disc using Storable, which offers solid 
-performance and reliable serialisation of various data structures.
+performance and reliable serialization of various data structures.
 
 =item L<Dancer::Session::MongoDB>
 

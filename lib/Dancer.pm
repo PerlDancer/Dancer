@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3119';
+our $VERSION   = '1.3120';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
@@ -819,7 +819,7 @@ only used to change the method of your request. Use with caution.
 
 =head2 from_dumper ($structure)
 
-Deserializes a Data::Dumper structure.
+Deserializes a L<< Data::Dumper >> structure.
 
 =head2 from_json ($structure, %options)
 
@@ -1375,7 +1375,7 @@ instance, to use a custom layout:
 
 Returns a L<Dancer::Request> object representing the current request.
 
-See the L<Dancer::Request> documention for the methods you can call, for
+See the L<Dancer::Request> documentation for the methods you can call, for
 example:
 
     request->referer;         # value of the HTTP referer header
@@ -1536,7 +1536,7 @@ Note that Dancer is unable to guess the content type from the data
 contents. Therefore you might need to set the C<content_type>
 properly. For this kind of usage an attribute named C<filename> can be
 useful.  It is used as the Content-Disposition header, to hint the
-brower about the filename it should use.
+browser about the filename it should use.
 
    return send_file( \$data, content_type => 'image/png'
                              filename     => 'onion.png' );
@@ -1708,7 +1708,7 @@ build a response with the current template engine:
     };
 
 Note that C<template> simply returns the content, so when you use it in a route
-handler, if execution of the the route handler should stop at that point, make
+handler, if execution of the route handler should stop at that point, make
 sure you use 'return' to ensure your route handler returns the content.
 
 Since template just returns the result of rendering the template, you can also
@@ -1759,7 +1759,7 @@ L<Dancer::Template::Abstract> for further details.
 
 =head2 to_dumper ($structure)
 
-Serializes a structure with Data::Dumper.
+Serializes a structure with L<< Data::Dumper >>.
 
 =head2 to_json ($structure, %options)
 

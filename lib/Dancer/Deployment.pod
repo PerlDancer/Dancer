@@ -34,7 +34,7 @@ sites-available/*site*):
            AddHandler cgi-script .cgi
         </Directory>
 
-        ScriptAlias / /srv/www.example.com/public/dispatch.cgi
+        ScriptAlias / /srv/www.example.com/public/dispatch.cgi/
 
         ErrorLog  /var/log/apache2/www.example.com-error.log
         CustomLog /var/log/apache2/www.example.com-access_log common
@@ -57,7 +57,7 @@ lines:
     
     ScriptAlias / /srv/www.example.com/public/dispatch.cgi
 
-By:
+To:
 
 	AddHandler fastcgi-script .fcgi
 

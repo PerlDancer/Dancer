@@ -1,5 +1,19 @@
 Revision history for Dancer
 
+1.3120 24.12.2013
+
+    [ ENHANCEMENTS ] 
+    * GH #974: Make plugins play nicely with mro 'c3'. (Fabrice Gabolde)
+
+    [ DOCUMENTATION ]
+    * GH #972: Correction of a truckload of typos. (David Steinbrunner)
+    * GH #971: Stress that the request's 'env()' method is prefered over
+        accessing '%ENV' directly. (isync)
+    * GH #968: Fix 'ScriptAlias' example in Deployment docs. (reported
+        by tednolan)
+    * GH #976: Document and trap limitation in Dancer::Test. (Tom Hukins)
+    * GH #976: Improve references to related modules. (Tom Hukins)
+
 1.3119 26.10.2013
 
     [ ENHANCEMENTS ]
@@ -14,6 +28,7 @@ Revision history for Dancer
 
     [ DOCUMENTATION ]
     * GH #962: Improvements of the Dancer::Test docs. (Tom Hukins)
+    * GH #970: Small documentation edit. (Matthew Horsfall)
 
 1.3118 01.09.2013
 
