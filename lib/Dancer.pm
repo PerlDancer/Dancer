@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3119';
+our $VERSION   = '1.3120';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
