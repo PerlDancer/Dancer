@@ -30,7 +30,7 @@ which was a little more involved that a trivial example.
 
 Using the
 L<Flaskr|https://github.com/mitsuhiko/flask/tree/master/examples/flaskr/>
-sample application as my inspiration (OK, shamelessly plagiarised) I
+sample application as my inspiration (OK, shamelessly plagiarized) I
 translated that application to the Dancer framework so I could better understand how Dancer worked. (I'm learning
 it too!)
 
