@@ -85,7 +85,7 @@ my $normalizers = {
         defined $encoding
           or raise core_config => "Charset defined in configuration is wrong : couldn't identify '$charset'";
         my $name = $encoding->name;
-        # Perl makes a distinction between the usual perl utf8, and the strict
+        # Perl makes a distinction between the usual Perl utf8, and the strict
         # utf8 charset. But we don't want to make this distinction
         $name eq 'utf-8-strict'
           and $name = 'utf-8';
