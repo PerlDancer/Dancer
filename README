@@ -5,8 +5,8 @@
 === ABOUT ===
 
 This project is inspired by  Ruby's Sinatra framework: a framework for building
-web applications with minimal effort, allowing a simple webapp to be created with
-very few lines of code, but allowing the flexibility to scale to much more
+web applications with minimal effort, allowing a simple webapp to be created
+with very few lines of code, but allowing the flexibility to scale to much more
 complex applications.  Dancer supports plugins to add various extra
 functionality you may want, whilst keeping the core streamlined.
 
@@ -122,8 +122,8 @@ For more details about the project, checkout the official website:
 http://perldancer.org/ or checkout the documentation at
 http://search.cpan.org/dist/Dancer/
 
-See also the Github project page: http://github.com/PerlDancer/Dancer for the latest
-changes.
+See also the Github project page: http://github.com/PerlDancer/Dancer for the
+latest changes.
 
 
 === REPORTING BUGS ===
