@@ -8,7 +8,7 @@
 * headers (a sane Dancer::Header class for all headers, for D::H::PSGI, * D::H::Standalone, D::Request, D::Response);
 * rework the concept of D::Engines so we can have multiple D::Serializers loaded at once
 * possibility to define a serializer for a route, a list of routes, in a route (locally), ...
-* <dams> : nothing should be more global than to a Dancer app. Dancer should not become a bloated MVC, but to be pragmmatic :
+* <dams> : nothing should be more global than to a Dancer app. Dancer should not become a bloated MVC, but to be pragmatic :
   * a Dancer app should have at most only one template engine attached to it
   * a Dancer app should have at most only one session engine attached to it
   * a Dancer app should be able to have multiple serializer attached to it
