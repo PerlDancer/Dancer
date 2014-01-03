@@ -116,7 +116,7 @@ When we're happy with the change set, we can merge into devel:
 
 Note the C<--no-ff> switch is used to make sure we'll see a nice
 commit named C<< Merge branch 'review/$user' into devel >>. This is on
-purpose and mimic the behaviour of git-flow.
+purpose and mimic the behavior of git-flow.
 
 Your local C<devel> branch is now merged, and can be pushed to the
 remote.
