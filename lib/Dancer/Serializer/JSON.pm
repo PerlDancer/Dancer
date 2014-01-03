@@ -62,7 +62,7 @@ sub deserialize {
     JSON::from_json( $entity, $options );
 }
 
-# Standard JSON behaviour is fine when serializing; we'll end up
+# Standard JSON behavior is fine when serializing; we'll end up
 # encoding as UTF8 later on.
 sub _serialize_options_as_hashref {
     return shift->_options_as_hashref(@_);
