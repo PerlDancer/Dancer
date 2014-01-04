@@ -966,7 +966,7 @@ auto_reload: 0
 'production.yml' =>
 '# configuration file for production environment
 
-# only log warning and error messsages
+# only log warning and error messages
 log: "warning"
 
 # log message to a file in logs/
