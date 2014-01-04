@@ -71,9 +71,24 @@ sub type {
 
 =pod
 
-=head1 NAME 
+=head1 NAME
 
 Dancer::Request::Upload - class representing file uploads requests
+
+=head1 SYNOPSIS
+
+    # somewhere in your view:
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="filename">
+      <input type="submit">
+    </form>
+   
+    # and then in your application handler:
+    post '/upload' => sub {
+      my $file = request->upload('filename');
+      $file->copy_to($upload_dir);  # or whatever you need
+    };
+
 
 =head1 DESCRIPTION
 
