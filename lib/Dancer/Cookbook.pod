@@ -656,7 +656,7 @@ That way, the appropriate environment config file will be loaded according to
 the running environment (if none is specified, it will be 'development').
 
 Note that you can change the running environment using the C<--environment>
-commandline switch.
+command line switch.
 
 Typically, you'll want to set the following values in a development config file:
 

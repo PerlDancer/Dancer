@@ -32,7 +32,7 @@ my $_attrs_per_class = {};
 sub get_attributes {
     my ($class, $visited_parents) = @_;
     # $visited_parents keeps track of parent classes we already handled, to
-    # avoid infinite recursion (in case of dependancies loop). It's not stored as class singleton, otherwise
+    # avoid infinite recursion (in case of dependencies loop). It's not stored as class singleton, otherwise
     # get_attributes wouldn't be re-entrant.
     $visited_parents ||= {};
     my @attributes = @{$_attrs_per_class->{$class} || [] };
