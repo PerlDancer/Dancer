@@ -75,7 +75,7 @@ Cache page responses or individual items of data with memcached for performance.
 =item L<Dancer::Plugin::MobileDevice>
 
 Quickly determine whether the client is a mobile browser, in order to offer a
-simplified layout, or otherwise customise features.
+simplified layout, or otherwise customize features.
 
 =item L<Dancer::Plugin::NYTProf>
 

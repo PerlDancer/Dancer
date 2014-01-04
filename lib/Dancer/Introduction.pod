@@ -54,7 +54,7 @@ Routes are defined for a given HTTP method. For each method
 supported, a keyword is exported by the module.
 
 The following is an example of a route definition. The route is defined for the
-method 'get', so only GET requests will be honoured by that route:
+method 'get', so only GET requests will be honored by that route:
 
     get '/hello/:name' => sub {
         # do something
@@ -558,7 +558,7 @@ See L<Dancer::Config> for complete details about supported settings.
 When writing a webservice, data serialization/deserialization is a common issue
 to deal with. Dancer can automatically handle that for you, via a serializer.
 
-When setting up a serializer, a new behaviour is authorized for any route
+When setting up a serializer, a new behavior is authorized for any route
 handler you define: any response that is a reference will be rendered as a
 serialized string, via the current serializer.
 

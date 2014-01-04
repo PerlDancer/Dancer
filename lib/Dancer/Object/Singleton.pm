@@ -1,7 +1,8 @@
 package Dancer::Object::Singleton;
 
 # This class is a root class for singleton objects in Dancer.
-# It provides basic OO singleton tools for Perl5 without being... MooseX::Singleton ;-)
+# It provides basic OO singleton tools for Perl5 without being...
+# MooseX::Singleton ;-)
 
 use strict;
 use warnings;

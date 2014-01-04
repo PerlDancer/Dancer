@@ -139,7 +139,7 @@ sub headers {
 sub headers_to_array {
     my $self = shift;
 
-    # Time to finalise cookie headers, now
+    # Time to finalize cookie headers, now
     $self->build_cookie_headers;
 
     my $headers = [

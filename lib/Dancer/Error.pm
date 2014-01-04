@@ -53,7 +53,7 @@ sub backtrace {
     my $message =
       qq|<pre class="error">| . _html_encode($self->{message}) . "</pre>";
 
-    # the default perl warning/error pattern
+    # the default Perl warning/error pattern
     my ($file, $line) = ($message =~ /at (\S+) line (\d+)/);
 
     # the Devel::SimpleTrace pattern

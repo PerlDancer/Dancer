@@ -66,7 +66,7 @@ ideally by submitting a patch with your fix (see "Patch Submission").
 
 =head2 Contribute to CPAN Testers
 
-If you have access to perl on rare operating systems, please
+If you have access to Perl on rare operating systems, please
 consider contributing tests. See
 L<http://wiki.cpantesters.org/wiki/TestDuringInstall> for more information.
 
