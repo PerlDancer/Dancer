@@ -4,6 +4,7 @@ NEXT
 
     [ DOCUMENTATION ]
     * GH #983: Correction of various typos. (Akash Ayare)
+    * GH #981: Add synopsis to Dancer::Request::Upload. (smashz)
 
 1.3120 24.12.2013
 
