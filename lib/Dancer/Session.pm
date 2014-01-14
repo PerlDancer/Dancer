@@ -21,6 +21,8 @@ sub init {
 
 # retrieve or create a session for the client
 sub get_current_session {
+    shift;
+    my %p       = @_;
     my $sid     = engine->read_session_id;
     my $session = undef;
     my $class   = ref(engine);
@@ -33,12 +35,13 @@ sub get_current_session {
 
     # Generate a session cookie; we want to do this regardless of whether the
     # session is new or existing, so that the cookie expiry is updated.
-    engine->write_session_id($session->id);
+    engine->write_session_id($session->id)
+        unless $p{no_update};
 
     return $session;
 }
 
-sub get { get_current_session() }
+sub get { get_current_session(@_) }
 
 sub read {
     my ($class, $key) = @_;
@@ -112,8 +115,8 @@ Retrieving that value later:
     my $foo = session 'foo';
 
 You can either look for an existing item in the session storage or modify one.
-Here is a simple example of two route handlers that implement basic C</login> 
-and C</home> actions using the session engine. 
+Here is a simple example of two route handlers that implement basic C</login>
+and C</home> actions using the session engine.
 
     post '/login' => sub {
         # look for params and authenticate the user
@@ -155,8 +158,8 @@ but maybe not the best for production needs.
 
 =item L<Dancer::Session::Simple>
 
-A very simple session backend, holding all session data in memory.  This means 
-that sessions are volatile, and no longer exist when the process exits.  This 
+A very simple session backend, holding all session data in memory.  This means
+that sessions are volatile, and no longer exist when the process exits.  This
 module is likely to be most useful for testing purposes, and of little use for
 production.
 
@@ -179,7 +182,7 @@ inside encrypted cookies (this engine doesn't use a server-side storage).
 
 =item L<Dancer::Session::Storable>
 
-This backend stores sessions on disc using Storable, which offers solid 
+This backend stores sessions on disc using Storable, which offers solid
 performance and reliable serialization of various data structures.
 
 =item L<Dancer::Session::MongoDB>
