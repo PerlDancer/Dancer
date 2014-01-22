@@ -31,5 +31,9 @@ get '/form' => sub {
     })."\x{E9} - string1: ".params->{'string1'}
 };
 
+get '/unicode-json' => sub {
+    { test => "\x{100}" };
+};
+
 
 1;
