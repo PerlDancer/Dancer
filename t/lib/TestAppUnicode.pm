@@ -31,7 +31,11 @@ get '/form' => sub {
     })."\x{E9} - string1: ".params->{'string1'}
 };
 
-get '/unicode-json' => sub {
+get '/unicode-content-length' => sub {
+    "\x{100}0123456789";
+};
+
+get '/unicode-content-length-json' => sub {
     { test => "\x{100}" };
 };
 
