@@ -20,7 +20,7 @@ plan skip_all => "HTTP::Request::Common is needed for this test"
 
 use LWP::UserAgent;
 
-plan tests => 6;
+plan tests => 10;
 
 Test::TCP::test_tcp(
     client => sub {
