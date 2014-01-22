@@ -60,7 +60,41 @@ Test::TCP::test_tcp(
         my $port = shift;
         my $ua = LWP::UserAgent->new;
 
-        my $req = HTTP::Request::Common::GET("http://127.0.0.1:$port/unicode-json");
+        my $req = HTTP::Request::Common::GET(
+            "http://127.0.0.1:$port/unicode-content-length");
+        my $res = $ua->request($req);
+
+        is $res->content_type, 'text/html';
+        # UTF-8 seems to be Dancer's default encoding
+        my $v = "\x{100}0123456789";
+        utf8::encode($v);
+        is $res->content, $v;
+    },
+    server => sub {
+        my $port = shift;
+
+        use lib "t/lib";
+        use TestAppUnicode;
+        Dancer::Config->load;
+
+        set(
+            # no charset
+            environment  => 'production',
+            port         => $port,
+            startup_info => 0,
+        );
+        Dancer->dance;
+    },
+);
+
+
+Test::TCP::test_tcp(
+    client => sub {
+        my $port = shift;
+        my $ua = LWP::UserAgent->new;
+
+        my $req = HTTP::Request::Common::GET(
+            "http://127.0.0.1:$port/unicode-content-length-json");
         my $res = $ua->request($req);
 
         is $res->content_type, 'application/json';
@@ -83,6 +117,3 @@ Test::TCP::test_tcp(
         Dancer->dance;
     },
 );
-
-
-
