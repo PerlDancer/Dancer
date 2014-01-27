@@ -34,8 +34,8 @@ SKIP: {
     my $res = dancer_response(
         POST => '/',
         {
-            params  => { foo            => 1 },
-            headers => [ 'Content-Type' => 'text/xml' ]
+            headers => [ 'Content-Type' => 'text/xml' ],
+            body    => to_xml({ foo => 1 }),
         }
     );
     is_deeply(

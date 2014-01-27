@@ -14,13 +14,13 @@ BEGIN {
 set 'serializer' => 'JSON', 'show_errors' => 1;
 
 get  '/'          => sub { { foo => 'bar' } };
-post '/'          => sub { params };
+post '/'          => sub { scalar params };
 put  '/'          => sub { param("id") };
 get  '/error'     => sub { send_error( { foo => 42 }, 401 ) };
 get  '/error_bis' => sub { send_error( 42, 402 ) };
 get  '/json'      => sub {
     content_type('application/json');
-    to_json( { foo => 'bar' } )
+    +{ foo => 'bar' };
 };
 
 response_content_is [ PUT => '/',
@@ -41,8 +41,8 @@ my $res = dancer_response
   (
    POST => '/',
    {
-    params  => { foo            => 1 },
-    headers => [ 'Content-Type' => 'application/json' ]
+    headers => [ 'Content-Type' => 'application/json' ],
+    body    => to_json({ foo => 1 }),
    }
   );
 
