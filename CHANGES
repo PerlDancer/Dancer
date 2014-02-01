@@ -1,6 +1,10 @@
 Revision history for Dancer
 
 NEXT
+    [ ENHANCEMENTS ]
+    * GH #994: change heuristic so that 
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        is not recognized as text. (Skeeve)
 
     [ DOCUMENTATION ]
     * GH #983: Correction of various typos. (Akash Ayare)
