@@ -9,6 +9,8 @@ NEXT
     [ DOCUMENTATION ]
     * GH #983: Correction of various typos. (Akash Ayare)
     * GH #981: Add synopsis to Dancer::Request::Upload. (smashz)
+    * GH #985: Change mentions of 'PerlHandler' to 'PerlResponseHandler'. 
+        (Xaerxess)
 
 1.3120 24.12.2013
 
