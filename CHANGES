@@ -5,6 +5,8 @@ NEXT
     * GH #994: change heuristic so that 
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         is not recognized as text. (Skeeve)
+    * GH #987: get_current_session() now accepts option 'no_update'.
+        (Lee Carmichael)
 
     [ DOCUMENTATION ]
     * GH #983: Correction of various typos. (Akash Ayare)
