@@ -24,7 +24,7 @@ should be.
 
 =item L<Dancer::Plugin::DBIC>
 
-Provides easy acces to DBIx::Class database virtualization.
+Provides easy access to DBIx::Class database virtualization.
 
 =item L<Dancer::Plugin::Auth::RBAC>
 

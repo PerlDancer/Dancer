@@ -1,5 +1,20 @@
 Revision history for Dancer
 
+1.3121 2.02.2014
+
+    [ ENHANCEMENTS ]
+    * GH #994: change heuristic so that
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        is not recognized as text. (Skeeve)
+    * GH #987: get_current_session() now accepts option 'no_update'.
+        (Lee Carmichael)
+
+    [ DOCUMENTATION ]
+    * GH #983: Correction of various typos. (Akash Ayare)
+    * GH #981: Add synopsis to Dancer::Request::Upload. (smashz)
+    * GH #985: Change mentions of 'PerlHandler' to 'PerlResponseHandler'
+        (Xaerxess)
+
 1.3120 24.12.2013
 
     [ ENHANCEMENTS ] 
