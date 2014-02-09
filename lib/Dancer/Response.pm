@@ -256,7 +256,7 @@ set or get the content of the current response object
     $response->status(201);
     Dancer::SharedData->response->status(201);
 
-set or get the status of the current response object
+Set or get the status of the current response object.  The default status is 200.
 
 =head2 content_type
 
@@ -268,14 +268,14 @@ set or get the status of the current response object
     $response->content_type('application/json');
     Dancer::SharedData->response->content_type('application/json');
 
-set or get the status of the current response object
+Set or get the status of the current response object.
 
 =head2 pass
 
     $response->pass;
     Dancer::SharedData->response->pass;
 
-set the pass value to one for this response
+Set the pass value to one for this response.
 
 =head2 has_passed
 
@@ -287,12 +287,14 @@ set the pass value to one for this response
         ...
     }
 
-test if the pass value is set to true
+Test if the pass value is set to true.
 
-=head2 halt
+=head2 halt($content)
 
     Dancer::SharedData->response->halt();
     $response->halt;
+
+Stops the processing of the current request.  See L<Dancer/halt>.
 
 =head2 halted
 
@@ -304,6 +306,8 @@ test if the pass value is set to true
         ...
     }
 
+This flag will be true if the current response has been halted.
+
 =head2 header
 
     # set the header
@@ -314,20 +318,20 @@ test if the pass value is set to true
     my $header = $response->header('X-Foo');
     my $header = Dancer::SharedData->response->header('X-Foo');
 
-get or set the value of a header
+Get or set the value of a header.
 
 =head2 headers
 
     $response->headers('X-Foo' => 'fff', 'X-Bar' => 'bbb');
     Dancer::SharedData->response->headers('X-Foo' => 'fff', 'X-Bar' => 'bbb');
 
-return the list of headers for the current response
+Return the list of headers for the current response.
 
 =head2 headers_to_array
 
     my $headers_psgi = $response->headers_to_array();
     my $headers_psgi = Dancer::SharedData->response->headers_to_array();
 
-this method is called before returning a L<< PSGI >> response. It transforms the list of headers to an array reference.
+This method is called before returning a L<< PSGI >> response. It transforms the list of headers to an array reference.
 
 
