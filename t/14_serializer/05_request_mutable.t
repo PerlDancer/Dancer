@@ -11,7 +11,7 @@ BEGIN {
       unless Dancer::ModuleLoader->load('JSON');
 }
 
-plan tests => 8;
+plan tests => 10;
 
 setting serializer => 'mutable';
 
@@ -36,7 +36,7 @@ my $res = dancer_response(
         params  => { foo => 42 },
         headers => [
             'Content-Type' => 'text/x-yaml',
-            'Accept-Type'  => 'application/json'
+            'Accept-Type'  => 'text/x-yaml'
         ]
     }
 );
@@ -59,6 +59,26 @@ $res = dancer_response(
         content_type => 'text/x-yaml; charset=utf-8',
         headers => [
             'Content-Type' => 'text/x-yaml; charset=utf-8',
+        ]
+    }
+);
+is_deeply( from_yaml( $res->content ), $data );
+is $res->header('Content-Type'), 'text/x-yaml; charset=utf-8';
+
+# We were incorrectly using 'Content-Type' also for responses although
+# the user told us in 'Accept' to use a different format.
+$res = dancer_response(
+    POST => '/echo',
+    {
+        body => to_json($data), # make sure to stringify
+        # Specifying this content_type is redundant but dancer_response
+        # has a bug in that it does not take the Content-Type of the
+        # headers before falling back to
+        # application/x-www-form-urlencoded :(
+        content_type => 'application/json; charset=utf-8',
+        headers => [
+            'Content-Type' => 'application/json; charset=utf-8',
+            'Accept'       => 'text/x-yaml; charset=utf-8',
         ]
     }
 );
