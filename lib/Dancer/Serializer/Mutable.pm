@@ -102,6 +102,9 @@ sub _load_serializer {
 
     my $content_types = _find_content_type($request);
     foreach my $ct (@$content_types) {
+        # 'content_type' => 'text/xml; charset=utf-8'
+        my $oct = $ct;
+        $ct = (split ';', $ct)[0];
         if (exists $serializer->{$ct}) {
             my $module = "Dancer::Serializer::" . $serializer->{$ct};
             if (!exists $loaded_serializer->{$module}) {
@@ -110,7 +113,7 @@ sub _load_serializer {
                     $loaded_serializer->{$module} = $serializer_object;
                 }
             }
-            $_content_type = $ct;
+            $_content_type = $oct;
             return $loaded_serializer->{$module};
         }
     }
