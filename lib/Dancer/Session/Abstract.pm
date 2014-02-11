@@ -7,7 +7,11 @@ use base 'Dancer::Engine';
 
 use Dancer::Config 'setting';
 use Dancer::Cookies;
+use Digest::SHA;
 use File::Spec;
+use Memoize;
+use Time::HiRes;
+use Sys::Hostname;
 
 __PACKAGE__->attributes('id');
 
@@ -63,23 +67,27 @@ sub session_name {
 
 # Methods below this line should not be overloaded.
 
-# we try to make the best random number
-# with native Perl 5 code.
-# to rebuild a session id, an attacker should know:
+# To rebuild a session id, an attacker should know:
 # - the running PID of the server
-# - the current timestamp of the time it was built
+# - the current hi-res timestamp of the time it was built
 # - the path of the installation directory
-# - guess the correct number between 0 and 1000000000
-# - should be able to reproduce that 3 times
+# - the real hostname of the server
+# - 3 random fractional numbers less than 1
+#
+# Using the hostname helps avoid session ID collisions when multiple servers
+# are accessing the same shared storage
 sub build_id {
-    my $session_id = "";
-    foreach my $seed (rand(1000), rand(1000), rand(1000)) {
-        my $c = 0;
-        $c += ord($_) for (split //, File::Spec->rel2abs(File::Spec->curdir));
-        my $current = int($seed * 1000000000) + time + $$ + $c;
-        $session_id .= $current;
-    }
-    return $session_id;
+    my $sha = Digest::SHA->new('sha256');
+
+    $sha->add(rand);
+    $sha->add( Time::HiRes::time() );
+    $sha->add($$);
+    $sha->add(rand);
+    $sha->add( _get_path_ordinal_value() );
+    $sha->add(hostname);
+    $sha->add(rand);
+
+    return $sha->hexdigest;
 }
 
 sub read_session_id {
@@ -109,6 +117,14 @@ sub write_session_id {
 
     my $c = Dancer::Cookie->new(%cookie);
     Dancer::Cookies->set_cookie_object($name => $c);
+}
+
+memoize('_get_path_ordinal_value');
+
+sub _get_path_ordinal_value {
+    my $c = 0;
+    $c += ord($_) for ( split //, File::Spec->rel2abs( File::Spec->curdir ) );
+    return $c;
 }
 
 1;
