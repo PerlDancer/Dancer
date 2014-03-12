@@ -165,7 +165,7 @@ sub _censor {
         if (ref $hash->{$key} eq 'HASH') {
             $censored += _censor( $hash->{$key}, $recursecount );
         }
-        elsif ($key =~ /(pass|card?num|pan|secret|private_key)/i) {
+        elsif ($key =~ /(pass|card?num|pan|cvv|cvv2|ccv|secret|private_key)/i) {
             $hash->{$key} = "Hidden (looks potentially sensitive)";
             $censored++;
         }
