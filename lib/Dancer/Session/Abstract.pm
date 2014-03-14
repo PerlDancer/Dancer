@@ -60,6 +60,20 @@ sub session_name {
     setting('session_name') || 'dancer.session';
 }
 
+# May be overriden if session key value pairs aren't stored in the
+# session object's hash
+sub get_value {
+    my ( $self, $key ) = @_;
+    return $self->{$key};
+}
+
+# May be overriden if session key value pairs aren't stored in the
+# session object's hash
+sub set_value {
+    my ( $self, $key, $value ) = @_;
+    $self->{$key} = $value;
+}
+
 
 # Methods below this line should not be overloaded.
 
