@@ -145,7 +145,10 @@ sub render_response {
 
     my $content = $response->content;
 
-    unless ( ref($content) eq 'GLOB' ) {
+    if ( ref($content) eq 'CODE' ) {
+        return $content;
+    }
+    elsif ( ref($content) ne 'GLOB' ) {
         my $charset = setting('charset');
         my $ctype   = $response->header('Content-Type');
 
