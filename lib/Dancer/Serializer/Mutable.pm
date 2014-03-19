@@ -22,7 +22,7 @@ my $_content_type;
 sub template_or_serialize {
     my( $template, $data ) = @_;
 
-    my( $content_type ) = @{ _find_content_type(Dancer::SharedData->request) };
+    my( $content_type ) = @{ _response_content_types(Dancer::SharedData->request) };
 
     # TODO the accept value coming from the browser can 
     # be quite complex (e.g., 
@@ -36,7 +36,7 @@ sub template_or_serialize {
     return $data;
 }
 
-sub _find_content_type {
+sub _request_content_types {
     my $request = shift;
 
     my $params;
@@ -45,28 +45,42 @@ sub _find_content_type {
         $params = $request->params;
     }
 
-    # first content type, second accept and final default
     # we push in @content_types by order of desirability
     # I.e.: we want $content_types[0] more than $content_types[1]
     my @content_types;
 
     my $method = $request->method;
 
-    if ($method =~ /^(?:POST|PUT|GET)$/) {
+    if ($method =~ /^(?:POST|PUT|GET|DELETE)$/) {
         push @content_types, $request->{content_type} 
             if $request->{content_type};
 
         push @content_types, $params->{content_type} 
             if $params && $params->{content_type};
     }
-    
-    push @content_types, $request->{accept} 
+    push @content_types, 'application/json';
+
+    # remove duplicates
+    my %seen;
+    return [ grep { not $seen{$_}++ } @content_types ];
+}
+
+sub _response_content_types {
+    my $request = shift;
+    my @content_types;
+
+    push @content_types, $request->{accept}
         if $request->{accept};
-    
-    push @content_types, $request->{accept_type} 
+
+    push @content_types, $request->{accept_type}
         if $request->{'accept_type'};
 
-    push @content_types, 'application/json';
+    # Both above could be '*/*' which means it is our choice.
+
+    # Default to the same format as in the request:
+    for (@{_request_content_types($request)}) {
+        push @content_types, $_;
+    }
 
     # remove duplicates
     my %seen;
@@ -76,14 +90,16 @@ sub _find_content_type {
 sub serialize {
     my ($self, $entity) = @_;
     my $request    = Dancer::SharedData->request;
-    my $serializer = $self->_load_serializer($request);
+    my $content_types = _response_content_types($request);
+    my $serializer = $self->_load_serializer($request, $content_types);
     return $serializer->serialize($entity);
 }
 
 sub deserialize {
     my ($self, $content) = @_;
     my $request    = Dancer::SharedData->request;
-    my $serializer = $self->_load_serializer($request);
+    my $content_types = _request_content_types($request);
+    my $serializer = $self->_load_serializer($request, $content_types);
     return $serializer->deserialize($content);
 }
 
@@ -98,10 +114,12 @@ sub support_content_type {
 }
 
 sub _load_serializer {
-    my ($self, $request) = @_;
+    my ($self, $request, $content_types) = @_;
 
-    my $content_types = _find_content_type($request);
     foreach my $ct (@$content_types) {
+        # 'content_type' => 'text/xml; charset=utf-8'
+        my $oct = $ct;
+        $ct = (split ';', $ct)[0];
         if (exists $serializer->{$ct}) {
             my $module = "Dancer::Serializer::" . $serializer->{$ct};
             if (!exists $loaded_serializer->{$module}) {
@@ -110,7 +128,7 @@ sub _load_serializer {
                     $loaded_serializer->{$module} = $serializer_object;
                 }
             }
-            $_content_type = $ct;
+            $_content_type = $oct;
             return $loaded_serializer->{$module};
         }
     }
