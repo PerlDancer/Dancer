@@ -5,6 +5,10 @@ NEXT
    [ DOCUMENTATION ]
    * GH #995: Documentation improvements. (Colin Kuskie)
 
+   [ MISC ]
+   * Unused function 'path_no_verify' removed. (GH#998, 
+        reported by mjemmeson)
+
 1.3121 2.02.2014
 
     [ ENHANCEMENTS ]
