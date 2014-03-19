@@ -5,6 +5,13 @@ NEXT
    [ DOCUMENTATION ]
    * GH #995: Documentation improvements. (Colin Kuskie)
 
+   [ BUG FIXES ]
+   * Serializer::Mutable now consider 'Accept' before 'Content-Type'.
+    (GH#996, Bernhard Reutner-Fischer)
+   * Serializer::Mutable now correctly deals with content-types
+        with charsets. (GH#996, Bernhard Reutner-Fischer)
+
+
    [ MISC ]
    * Unused function 'path_no_verify' removed. (GH#998, 
         reported by mjemmeson)
