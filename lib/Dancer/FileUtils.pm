@@ -40,22 +40,6 @@ sub path_or_empty {
     return -e $path ? $path : '';
 }
 
-sub path_no_verify {
-    my @nodes = File::Spec->splitpath(d_catdir(@_)); # 0=vol,1=dirs,2=file
-    my $path = '';
-
-    # [0->?] path(must exist),[last] file(maybe exists)
-    if($nodes[1]) {
-        $path = realpath(File::Spec->catpath(@nodes[0 .. 1],'')) . '/';
-    } else {
-        $path = Cwd::cwd . '/';
-    }
-
-    $path .= $nodes[2];
-
-    return $path;
-}
-
 sub dirname { File::Basename::dirname(@_) }
 
 sub set_file_mode {
