@@ -154,8 +154,10 @@ sub render_response {
             $response->header( 'Content-Type' => "$ctype; charset=$charset" )
               if $ctype !~ /$charset/;
         }
-        $response->header( 'Content-Length' => length($content) )
-          if !defined $response->header('Content-Length');
+        if (!defined $response->header('Content-Length')) {
+            use bytes; # turn off character semantics
+            $response->header( 'Content-Length' => length($content) );
+        }
         $content = [$content];
     }
     else {

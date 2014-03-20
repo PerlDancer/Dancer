@@ -20,7 +20,7 @@ plan skip_all => "HTTP::Request::Common is needed for this test"
 
 use LWP::UserAgent;
 
-plan tests => 6;
+plan tests => 10;
 
 Test::TCP::test_tcp(
     client => sub {
@@ -52,5 +52,68 @@ Test::TCP::test_tcp(
              port         => $port,
              startup_info => 0 );
         Dancer->dance();
+    },
+);
+
+Test::TCP::test_tcp(
+    client => sub {
+        my $port = shift;
+        my $ua = LWP::UserAgent->new;
+
+        my $req = HTTP::Request::Common::GET(
+            "http://127.0.0.1:$port/unicode-content-length");
+        my $res = $ua->request($req);
+
+        is $res->content_type, 'text/html';
+        # UTF-8 seems to be Dancer's default encoding
+        my $v = "\x{100}0123456789";
+        utf8::encode($v);
+        is $res->content, $v;
+    },
+    server => sub {
+        my $port = shift;
+
+        use lib "t/lib";
+        use TestAppUnicode;
+        Dancer::Config->load;
+
+        set(
+            # no charset
+            environment  => 'production',
+            port         => $port,
+            startup_info => 0,
+        );
+        Dancer->dance;
+    },
+);
+
+
+Test::TCP::test_tcp(
+    client => sub {
+        my $port = shift;
+        my $ua = LWP::UserAgent->new;
+
+        my $req = HTTP::Request::Common::GET(
+            "http://127.0.0.1:$port/unicode-content-length-json");
+        my $res = $ua->request($req);
+
+        is $res->content_type, 'application/json';
+        is_deeply(from_json($res->content), { test => "\x{100}" });
+    },
+    server => sub {
+        my $port = shift;
+
+        use lib "t/lib";
+        use TestAppUnicode;
+        Dancer::Config->load;
+
+        set(
+            # no charset
+            environment  => 'production',
+            port         => $port,
+            startup_info => 0,
+            serializer   => 'JSON',
+        );
+        Dancer->dance;
     },
 );
