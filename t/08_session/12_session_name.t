@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More tests => 8;
 use Dancer ':syntax', ':tests';
 
 set session => "simple";
@@ -26,16 +26,27 @@ note "changing session name"; {
     is session("foo"), "bar",                     "original value restored";
 }
 
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use Dancer::Session::TestOverrideName;
 
-#
-# make sure that session code overrides session_name via object
-# instead of configuration
-#
 {
+    package Dancer::Session::TestOverrideName;
+
+    use base 'Dancer::Session::Abstract';
+
+    sub session_name { "dr_seuss"; }
+}
+
+subtest 'session name overridable' => sub {
+    plan tests => 2;
+    
+    # make sure that session code overrides session_name via object
+    # instead of configuration, see GH#1004
+    #
+
     my $session = Dancer::Session::TestOverrideName->new;
 
     is $session->session_name, "dr_seuss", "session_name in driver";
+
+    $session->write_session_id(613);
+
+    ok( Dancer::Cookies->cookies->{'dr_seuss'}, 'session name is used' );
 }
