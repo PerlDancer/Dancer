@@ -83,15 +83,17 @@ sub build_id {
 }
 
 sub read_session_id {
-    my $name = session_name();
-    my $c = Dancer::Cookies->cookies->{$name};
+    my ($class) = @_;
+
+    my $name = $class->session_name();
+    my $c    = Dancer::Cookies->cookies->{$name};
     return (defined $c) ? $c->value : undef;
 }
 
 sub write_session_id {
     my ($class, $id) = @_;
 
-    my $name = session_name();
+    my $name = $class->session_name();
     my %cookie = (
         name   => $name,
         value  => $id,
@@ -131,8 +133,8 @@ needed to manipulate a session, whatever its storing engine is.
 
 =item B<id>
 
-The session id will be written to a cookie, by default named C<dancer.session>, 
-it is assumed that a client must accept cookies to be able to use a 
+The session id will be written to a cookie, by default named C<dancer.session>,
+it is assumed that a client must accept cookies to be able to use a
 session-aware Dancer webapp. (The cookie name can be change using the
 C<session_name> config setting.)
 

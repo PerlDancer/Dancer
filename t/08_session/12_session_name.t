@@ -25,3 +25,17 @@ note "changing session name"; {
     isnt session("up"), "down",                   "other session's values not seen";
     is session("foo"), "bar",                     "original value restored";
 }
+
+use File::Spec;
+use lib File::Spec->catdir( 't', 'lib' );
+use Dancer::Session::TestOverrideName;
+
+#
+# make sure that session code overrides session_name via object
+# instead of configuration
+#
+{
+    my $session = Dancer::Session::TestOverrideName->new;
+
+    is $session->session_name, "dr_seuss", "session_name in driver";
+}
