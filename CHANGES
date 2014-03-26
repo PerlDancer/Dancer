@@ -12,7 +12,8 @@ NEXT
         with charsets. (GH#996, Bernhard Reutner-Fischer)
    * Without Clone(), Dancer::Error::dumper() could clobber
         values in deep structures. (GH#1006, fix by asergei)
-
+   * 'session_name' in Dancer::Session::Abstract couldn't be
+        redefined. (GH#1004, patch by Lee Carmichael)
 
    [ MISC ]
    * Unused function 'path_no_verify' removed. (GH#998, 
