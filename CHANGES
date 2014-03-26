@@ -10,6 +10,8 @@ NEXT
     (GH#996, Bernhard Reutner-Fischer)
    * Serializer::Mutable now correctly deals with content-types
         with charsets. (GH#996, Bernhard Reutner-Fischer)
+   * Without Clone(), Dancer::Error::dumper() could clobber
+        values in deep structures. (GH#1006, fix by asergei)
 
 
    [ MISC ]
