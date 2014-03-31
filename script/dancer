@@ -927,6 +927,9 @@ template: \"simple\"
 #     start_tag: '[%'
 #     end_tag:   '%]'
 
+# For session support enable the following line and see Dancer::Session
+# session: \"YAML\"
+
 ",
 
 'jquery.js' => jquery_minified(),
