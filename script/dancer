@@ -395,7 +395,7 @@ WriteMakefile(
             <h3>Your application\'s environment</h3>
 
             <ul>
-                <li>Location: <code>[% appdir %]</code></li>
+                <li>Location: <code><% settings.appdir %></code></li>
                 <li>Template engine: <code><% settings.template %></code></li>
                 <li>Logger: <code><% settings.logger %></code></li>
                 <li>Environment: <code><% settings.environment %></code></li>
@@ -435,7 +435,7 @@ WriteMakefile(
                 </tr>
                 <tr>
                     <td>Appdir</td>
-                    <td><tt>[% appdir %]</tt></td>
+                    <td><tt><% settings.appdir %></tt></td>
                 </tr>
                 <tr>
                     <td>Template engine</td>
