@@ -244,6 +244,8 @@ t/10_template/views/index.ts
 t/10_template/views/index.tt
 t/10_template/views/layouts/main.ts
 t/10_template/views/layouts/main.tt
+t/10_template/views2/composite.tt
+t/10_template/views2/includes/header.tt
 t/11_logger/000_create_fake_env.t
 t/11_logger/01_abstract.t
 t/11_logger/02_factory.t

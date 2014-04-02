@@ -1,4 +1,4 @@
-use Test::More;
+use Test::More import => ['!pass'];
 
 
 use strict;
@@ -9,11 +9,13 @@ use Dancer::FileUtils 'path';
 use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 use EasyMocker;
+use Dancer;
+
 
 BEGIN {
     plan skip_all => "need Template to run this test" 
         unless Dancer::ModuleLoader->load('Template');
-    plan tests => 7;
+    plan tests => 8;
     use_ok 'Dancer::Template::TemplateToolkit';
 };
 
@@ -36,7 +38,7 @@ is $@, '',
     "Template dependency is not triggered if Template is there";
 
 # as a file path
-my $template = path('t', '10_template', 'index.txt');
+my $template = File::Spec->rel2abs(path('t', '10_template', 'index.txt'));
 my $result = $engine->render(
     $template,
     { var1 => 1,
@@ -71,3 +73,8 @@ like $@, qr/doesn't exist or not a regular file/, "prorotype failure detected";
 
 $result = $engine->render(\$template, { one => 1, two => 2, three => 3});
 is $result, $expected, "processed a template given as a scalar ref";
+
+setting views => path(setting('appdir'), 'views2');
+$template = File::Spec->rel2abs(path('t', '10_template', 'views2', 'composite.tt'));
+$result = $engine->render($template);
+is $result, 'foo bar', "changed views directory and processed a template with includes";
