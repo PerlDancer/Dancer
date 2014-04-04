@@ -118,13 +118,16 @@ sub dumper {
 
 
     # Take a copy of the data, so we can mask sensitive-looking stuff:
-    my %data     = Dancer::ModuleLoader->load('Clone') ?
-                   %{ Clone::clone($obj) }             :
-                   %$obj;
-    my $censored = _censor(\%data);
+    my $data     = Dancer::ModuleLoader->load('Clone') ?
+                   Clone::clone($obj)
+                   : eval Data::Dumper->new([$obj])->Purity(1)->Terse(1)->Deepcopy(1)->Dump;
+
+    $data = {%$data} if blessed($data); 
+
+	my $censored = _censor($data);
 
     #use Data::Dumper;
-    my $dd = Data::Dumper->new([\%data]);
+    my $dd = Data::Dumper->new([$data]);
     $dd->Terse(1)->Quotekeys(0)->Indent(1)->Sortkeys(1);
     my $content = $dd->Dump();
     $content =~ s{(\s*)(\S+)(\s*)=>}{$1<span class="key">$2</span>$3 =&gt;}g;
