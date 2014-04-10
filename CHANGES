@@ -1,5 +1,24 @@
 Revision history for Dancer
 
+1.3122 10.04.2014
+
+   [ DOCUMENTATION ]
+   * GH #995: Documentation improvements. (Colin Kuskie)
+
+   [ BUG FIXES ]
+   * Serializer::Mutable now consider 'Accept' before 'Content-Type'.
+    (GH#996, Bernhard Reutner-Fischer)
+   * Serializer::Mutable now correctly deals with content-types
+        with charsets. (GH#996, Bernhard Reutner-Fischer)
+   * Without Clone(), Dancer::Error::dumper() could clobber
+        values in deep structures. (GH#1006, fix by asergei)
+   * 'session_name' in Dancer::Session::Abstract couldn't be
+        redefined. (GH#1004, patch by Lee Carmichael)
+
+   [ MISC ]
+   * Unused function 'path_no_verify' removed. (GH#998, 
+        reported by mjemmeson)
+
 1.3121 2.02.2014
 
     [ ENHANCEMENTS ]

@@ -665,6 +665,10 @@ parameters to be added to the current request parameters, and the key
 C<options> that points to a hash of options about the redirect (for
 instance, C<method> pointing to a new request method).
 
+=head2 is_forward
+
+Flag that will be set to true if the request has been L<forwarded|forward>.
+
 =head2 to_string()
 
 Return a string representing the request object (eg: C<"GET /some/path">)
@@ -838,6 +842,10 @@ Return the content length of the request.
 Return the value of the given header, if present. If the header has multiple
 values, returns an the list of values if called in list context, the first one
 in scalar.
+
+=head2 headers()
+
+Returns the L<HTTP::Header> object used to store all the headers.
 
 =head2 body()
 

@@ -365,6 +365,15 @@ sub dancer_response {
         $extra_env->{'CONTENT_TYPE'} = $headers->header('Content-Type');
     }
 
+    # handle all the keys of Request::_build_request_env():
+    for my $key (qw( user_agent host accept_language accept_charset
+        accept_encoding keep_alive connection accept accept_type referer
+        x_requested_with )) {
+        my $k = sprintf("HTTP_%s", uc $key);
+        $extra_env->{$k} = $headers->{$key}
+            if exists $headers->{$key};
+    }
+
     # fake the REQUEST_URI
     # TODO deal with the params
     unless( $extra_env->{REQUEST_URI} ) {

@@ -7,7 +7,7 @@ use Dancer::Request;
 use Dancer::Serializer;
 use Dancer::Serializer::Abstract;
 
-plan tests => 16;
+plan tests => 18;
 
 SKIP: {
     skip 'JSON is needed to run this test', 3
@@ -71,7 +71,9 @@ SKIP: {
 
     my $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
-    my $ct = Dancer::Serializer::Mutable::_find_content_type($req);
+    my $ct = Dancer::Serializer::Mutable::_request_content_types($req);
+    is_deeply $ct, [ 'application/json' ];
+    $ct = Dancer::Serializer::Mutable::_response_content_types($req);
     is_deeply $ct, [ 'text/xml', 'text/x-yaml', 'application/json' ];
 
     %ENV = (
@@ -80,7 +82,9 @@ SKIP: {
     );
     $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
-    $ct = Dancer::Serializer::Mutable::_find_content_type($req);
+    $ct = Dancer::Serializer::Mutable::_request_content_types($req);
+    is_deeply $ct, ['application/json'];
+    $ct = Dancer::Serializer::Mutable::_response_content_types($req);
     is_deeply $ct, ['application/json'];
 
     %ENV = (
@@ -91,8 +95,8 @@ SKIP: {
     );
     $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
-    $ct = Dancer::Serializer::Mutable::_find_content_type($req);
-    is_deeply $ct, [ 'application/json', 'text/xml' ];
+    $ct = Dancer::Serializer::Mutable::_response_content_types($req);
+    is_deeply $ct, [ 'text/xml', 'application/json' ];
 }
 
 # handler helper
