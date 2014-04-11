@@ -1,4 +1,5 @@
 package Dancer::Object;
+#ABSTRACT: Objects base class for Dancer
 
 # This class is a root class for each object in Dancer.
 # It provides basic OO tools for Perl5 without being... Moose ;-)
@@ -99,10 +100,6 @@ sub attributes_defaults {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Object - Objects base class for Dancer
 
 =head1 SYNOPSIS
 

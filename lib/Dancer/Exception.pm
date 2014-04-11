@@ -1,4 +1,5 @@
 package Dancer::Exception;
+#ABSTRACT: class for throwing and catching exceptions
 
 use strict;
 use warnings;
@@ -128,10 +129,6 @@ register_exception(@$_) foreach (
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Exception - class for throwing and catching exceptions
 
 =head1 SYNOPSIS
 

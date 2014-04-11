@@ -1,4 +1,5 @@
 package Dancer::MIME;
+#ABSTRACT: Singleton object to handle MimeTypes
 
 use strict;
 use warnings;
@@ -66,10 +67,6 @@ sub for_name {
 
 42;
 
-
-=head1 NAME
-
-Dancer::MIME - Singleton object to handle MimeTypes
 
 =head1 SYNOPSIS
 

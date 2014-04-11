@@ -1,4 +1,5 @@
 package Dancer::Session::Abstract;
+#ABSTRACT: abstract class for session engine
 use strict;
 use warnings;
 use Carp;
@@ -131,10 +132,6 @@ sub write_session_id {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Session::Abstract - abstract class for session engine
 
 =head1 SPEC
 

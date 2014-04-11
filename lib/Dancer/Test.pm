@@ -1,4 +1,5 @@
 package Dancer::Test;
+#ABSTRACT: Test helpers to test a Dancer application
 
 # test helpers for Dancer apps
 
@@ -442,10 +443,6 @@ sub read_logs {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Test - Test helpers to test a Dancer application
 
 =head1 SYNOPSIS
 

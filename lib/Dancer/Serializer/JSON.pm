@@ -1,4 +1,5 @@
 package Dancer::Serializer::JSON;
+#ABSTRACT: serializer for handling JSON data
 
 use strict;
 use warnings;
@@ -101,10 +102,6 @@ sub content_type {'application/json'}
 
 1;
 __END__
-
-=head1 NAME
-
-Dancer::Serializer::JSON - serializer for handling JSON data
 
 =head1 SYNOPSIS
 

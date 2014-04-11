@@ -1,4 +1,5 @@
 package Dancer::Timer;
+#ABSTRACT: a timer for Dancer
 
 use strict;
 use warnings;
@@ -28,10 +29,6 @@ sub to_string {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Timer - a timer for Dancer
 
 =head1 SYNOPSIS
 

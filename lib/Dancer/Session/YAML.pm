@@ -1,4 +1,5 @@
 package Dancer::Session::YAML;
+#ABSTRACT: YAML-file-based session backend for Dancer
 
 use strict;
 use warnings;
@@ -98,10 +99,6 @@ sub flush {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Session::YAML - YAML-file-based session backend for Dancer
 
 =head1 DESCRIPTION
 

@@ -1,12 +1,9 @@
 package Dancer::Logger::Capture;
+# ABSTRACT: Capture dancer logs
 
 use strict;
 use warnings;
 
-
-=head1 NAME
-
-Dancer::Logger::Capture - Capture dancer logs
 
 =head1 SYNOPSIS
 

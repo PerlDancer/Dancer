@@ -1,4 +1,5 @@
 package Dancer::Hook;
+#ABSTRACT: Class to manipulate hooks with Dancer
 
 use strict;
 use warnings;
@@ -70,9 +71,6 @@ sub new {
 
 1;
 
-=head1 NAME
-
-Dancer::Hook - Class to manipulate hooks with Dancer
 
 =head1 DESCRIPTION
 

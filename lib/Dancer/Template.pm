@@ -1,4 +1,5 @@
 package Dancer::Template;
+#ABSTRACT: template wrapper for Dancer
 
 use strict;
 use warnings;
@@ -21,10 +22,6 @@ sub init {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Template - template wrapper for Dancer
 
 =head1 DESCRIPTION
 

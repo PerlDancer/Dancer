@@ -1,4 +1,5 @@
 package Dancer::Object::Singleton;
+#ABSTRACT: Singleton base class for Dancer
 
 # This class is a root class for singleton objects in Dancer.
 # It provides basic OO singleton tools for Perl5 without being... MooseX::Singleton ;-)
@@ -61,10 +62,6 @@ sub _setter_code {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Object::Singleton - Singleton base class for Dancer
 
 =head1 SYNOPSIS
 

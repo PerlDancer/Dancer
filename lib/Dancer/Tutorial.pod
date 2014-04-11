@@ -1,10 +1,7 @@
-# PODNAME: Dancer/Tutorial.pod
+# PODNAME: Dancer::Tutorial
+# ABSTRACT: An example to get you dancing
 
 =pod
-
-=head1 NAME
-
-Dancer::Tutorial - An example to get you dancing
 
 =head1 What is Dancer?
 

@@ -1,8 +1,5 @@
-# PODNAME: Dancer/Cookbook.pod
-
-=head1 NAME
-
-Dancer::Cookbook - a quick-start guide to the Dancer web framework
+# PODNAME: Dancer::Cookbook
+# ABSTRACT: a quick-start guide to the Dancer web framework
 
 =head1 DESCRIPTION
 

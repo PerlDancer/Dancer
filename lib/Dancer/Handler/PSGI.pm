@@ -1,4 +1,5 @@
 package Dancer::Handler::PSGI;
+#ABSTRACT: a PSGI handler for Dancer applications
 
 use strict;
 use warnings;
@@ -90,10 +91,6 @@ sub init_request_headers {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Handler::PSGI - a PSGI handler for Dancer applications
 
 =head1 DESCRIPTION
 

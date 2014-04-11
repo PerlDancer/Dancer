@@ -1,4 +1,5 @@
 package Dancer::Response;
+#ABSTRACT: Response object for Dancer
 
 use strict;
 use warnings;
@@ -183,10 +184,6 @@ sub build_cookie_headers {
 }
 1;
 
-
-=head1 NAME
-
-Dancer::Response - Response object for Dancer
 
 =head1 SYNOPSIS
 

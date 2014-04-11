@@ -1,4 +1,5 @@
 package Dancer::Config::Object;
+#ABSTRACT: Access the config via methods instead of hashrefs
 
 use strict;
 use warnings;
@@ -96,10 +97,6 @@ __END__
 =pod
 
 =encoding utf-8
-
-=head1 NAME
-
-Dancer::Config::Object - Access the config via methods instead of hashrefs
 
 =head1 DESCRIPTION
 

@@ -1,4 +1,5 @@
 package Dancer::Logger::Abstract;
+#ABSTRACT: Abstract logging engine for Dancer
 
 use strict;
 use warnings;
@@ -144,10 +145,6 @@ sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Logger::Abstract - Abstract logging engine for Dancer
 
 =head1 SYNOPSIS
 

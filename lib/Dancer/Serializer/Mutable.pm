@@ -1,4 +1,5 @@
 package Dancer::Serializer::Mutable;
+#ABSTRACT: Serialize and deserialize content using the appropriate HTTP header
 
 use strict;
 use warnings;
@@ -136,10 +137,6 @@ sub _load_serializer {
 
 1;
 __END__
-
-=head1 NAME
-
-Dancer::Serializer::Mutable - Serialize and deserialize content using the appropriate HTTP header
 
 =head1 SYNOPSIS
 

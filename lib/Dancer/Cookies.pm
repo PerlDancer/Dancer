@@ -1,4 +1,6 @@
 package Dancer::Cookies;
+#ABSTRACT: a singleton storage for all cookies
+
 use strict;
 use warnings;
 
@@ -75,10 +77,6 @@ sub set_cookie_object {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Cookies - a singleton storage for all cookies
 
 =head1 SYNOPSIS
 

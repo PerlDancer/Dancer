@@ -1,4 +1,5 @@
 package Dancer::ModuleLoader;
+#ABSTRACT: dynamic module loading helpers for Dancer core components
 
 # Abstraction layer for dynamic module loading
 
@@ -63,10 +64,6 @@ sub class_from_setting {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::ModuleLoader - dynamic module loading helpers for Dancer core components
 
 =head1 SYNOPSIS
 

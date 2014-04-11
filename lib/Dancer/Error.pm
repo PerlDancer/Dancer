@@ -1,4 +1,5 @@
 package Dancer::Error;
+#ABSTRACT: class for representing fatal errors
 
 use strict;
 use warnings;
@@ -317,9 +318,6 @@ __END__
 
 =pod
 
-=head1 NAME
-
-Dancer::Error - class for representing fatal errors
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,5 @@
 package Dancer::Serializer::XML;
+#ABSTRACT: serializer for handling XML data
 
 use strict;
 use warnings;
@@ -77,10 +78,6 @@ sub content_type {'text/xml'}
 
 1;
 __END__
-
-=head1 NAME
-
-Dancer::Serializer::XML - serializer for handling XML data
 
 =head1 SYNOPSIS
 

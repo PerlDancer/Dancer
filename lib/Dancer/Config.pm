@@ -1,4 +1,5 @@
 package Dancer::Config;
+#ABSTRACT:  how to configure Dancer to suit your needs
 
 use strict;
 use warnings;
@@ -267,10 +268,6 @@ load_default_settings();
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Config - how to configure Dancer to suit your needs
 
 =head1 DESCRIPTION
 

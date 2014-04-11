@@ -1,4 +1,5 @@
 package Dancer::Engine;
+#ABSTRACT: base class for Dancer engines
 
 # This is the base-class of every engine abstract class.
 # This allow us to put in that single place the engine creation
@@ -84,10 +85,6 @@ sub engine {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Engine - base class for Dancer engines
 
 =head1 SYNOPSIS
 
