@@ -6,11 +6,6 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3126';
-our $AUTHORITY = 'SUKRIA';
-
-$VERSION = eval $VERSION;
-
 use Dancer::App;
 use Dancer::Config;
 use Dancer::Cookies;
@@ -1954,12 +1949,6 @@ The following modules are optional:
 =item L<YAML> : needed for configuration file support
 
 =back
-
-
-=head1 LICENSE
-
-This module is free software and is published under the same
-terms as Perl itself.
 
 
 =head1 SEE ALSO

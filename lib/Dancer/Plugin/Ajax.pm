@@ -8,8 +8,6 @@ use Dancer ':syntax';
 use Dancer::Exception ':all';
 use Dancer::Plugin;
 
-our $VERSION = '1.00';
-
 register 'ajax' => \&ajax;
 
 hook before => sub {
