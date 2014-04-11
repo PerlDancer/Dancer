@@ -436,17 +436,3 @@ Internal method to encode entities that are illegal in (X)HTML. We output as
 UTF-8, so no need to encode all non-ASCII characters or use a module.
 FIXME : this is not true anymore, output can be any charset. Need fixing.
 
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
-
