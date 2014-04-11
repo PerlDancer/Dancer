@@ -1,4 +1,5 @@
 package Dancer::Config;
+#ABSTRACT:  how to configure Dancer to suit your needs
 
 use strict;
 use warnings;
@@ -270,7 +271,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Config - how to configure Dancer to suit your needs
+Dancer::Config -
 
 =head1 DESCRIPTION
 

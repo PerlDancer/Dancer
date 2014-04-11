@@ -1,4 +1,5 @@
 package Dancer::Session;
+#ABSTRACT: session engine for the Dancer framework
 
 use strict;
 use warnings;
@@ -68,10 +69,6 @@ sub write {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Session - session engine for the Dancer framework
 
 =head1 DESCRIPTION
 

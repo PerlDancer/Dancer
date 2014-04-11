@@ -1,4 +1,5 @@
 package Dancer::Plugin::Ajax;
+#ABSTRACT: a plugin for adding Ajax route handlers
 
 use strict;
 use warnings;
@@ -66,7 +67,7 @@ __END__
 
 =head1 NAME
 
-Dancer::Plugin::Ajax - a plugin for adding Ajax route handlers
+Dancer::Plugin::Ajax - 
 
 =head1 SYNOPSIS
 

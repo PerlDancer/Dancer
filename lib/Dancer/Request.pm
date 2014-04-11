@@ -1,4 +1,5 @@
 package Dancer::Request;
+#ABSTRACT: interface for accessing incoming requests
 
 use strict;
 use warnings;
@@ -610,10 +611,6 @@ sub _build_uploads {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Request - interface for accessing incoming requests
 
 =head1 DESCRIPTION
 

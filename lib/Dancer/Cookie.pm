@@ -1,4 +1,6 @@
 package Dancer::Cookie;
+#ABSTRACT: class representing cookies
+
 use strict;
 use warnings;
 
@@ -120,10 +122,6 @@ sub _parse_duration {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Cookie - class representing cookies
 
 =head1 SYNOPSIS
 

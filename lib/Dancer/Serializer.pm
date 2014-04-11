@@ -1,4 +1,5 @@
 package Dancer::Serializer;
+#ABSTRACT: serializer wrapper for Dancer
 
 # Factory for serializer engines
 
@@ -122,10 +123,6 @@ sub process_request {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Serializer - serializer wrapper for Dancer
 
 =head1 DESCRIPTION
 

@@ -1,4 +1,5 @@
 package Dancer::Handler::Debug;
+#ABSTRACT: a debug handler for easy tracing
 
 use strict;
 use warnings;
@@ -73,10 +74,6 @@ sub dance { start(@_) }
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Handler::Debug - a debug handler for easy tracing
 
 =head1 DESCRIPTION
 

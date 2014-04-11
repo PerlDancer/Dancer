@@ -1,4 +1,5 @@
 package Dancer::Logger;
+#ABSTRACT: common interface for logging in Dancer
 
 # Factory for logger engines
 
@@ -42,10 +43,6 @@ sub error   { defined($logger) and $logger->error(   _serialize(@_) ) }
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Logger - common interface for logging in Dancer
 
 =head1 DESCRIPTION
 

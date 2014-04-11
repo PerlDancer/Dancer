@@ -1,4 +1,5 @@
 package Dancer::Logger::File;
+#ABSTRACT: file-based logging engine for Dancer
 use strict;
 use warnings;
 use Carp;
@@ -85,10 +86,6 @@ sub _log {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Logger::File - file-based logging engine for Dancer
 
 =head1 SYNOPSIS
 

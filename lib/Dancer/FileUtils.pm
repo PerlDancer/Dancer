@@ -1,4 +1,5 @@
 package Dancer::FileUtils;
+#ABSTRACT: helper providing file utilities
 
 use strict;
 use warnings;
@@ -146,10 +147,6 @@ sub atomic_write {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::FileUtils - helper providing file utilities
 
 =head1 SYNOPSIS
 

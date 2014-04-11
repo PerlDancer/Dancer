@@ -1,4 +1,5 @@
 package Dancer::Hook::Properties;
+#ABSTRACT: Properties attached to a hook
 
 use strict;
 use warnings;
@@ -36,10 +37,6 @@ sub should_run_this_app {
 }
 
 1;
-
-=head1 NAME
-
-Dancer::Hook::Properties - Properties attached to a hook
 
 =head1 DESCRIPTION
 

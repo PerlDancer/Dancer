@@ -1,4 +1,5 @@
 package Dancer::Logger::Console;
+#ABSTRACT: console-based logging engine for Dancer
 use strict;
 use warnings;
 use base 'Dancer::Logger::Abstract';
@@ -11,10 +12,6 @@ sub _log {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Logger::Console - console-based logging engine for Dancer
 
 =head1 SYNOPSIS
 

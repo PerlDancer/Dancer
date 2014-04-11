@@ -1,4 +1,5 @@
 package Dancer::Route::Cache;
+#ABSTRACT: route caching mechanism for L<Dancer>
 
 use strict;
 use warnings;
@@ -145,10 +146,6 @@ sub route_cache_paths {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Route::Cache - route caching mechanism for L<Dancer>
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,5 @@
 package Dancer::Session::Simple;
+#ABSTRACT: in-memory session backend for Dancer
 
 use strict;
 use warnings;
@@ -39,10 +40,6 @@ sub flush {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Session::Simple - in-memory session backend for Dancer
 
 =head1 DESCRIPTION
 
