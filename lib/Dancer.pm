@@ -1,4 +1,5 @@
 package Dancer;
+#ABSTRACT: lightweight yet powerful web application framework
 
 use strict;
 use warnings;
@@ -488,10 +489,6 @@ sub _start {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer - lightweight yet powerful web application framework
 
 =head1 SYNOPSIS
 

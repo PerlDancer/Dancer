@@ -113,17 +113,3 @@ Generates attributes for whatever object is extending Dancer::Object and saves
 them in an internal hashref so they can be later fetched using
 C<get_attributes>.
 
-=head1 AUTHOR
-
-Damien Krotkine
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2010 Damien Krotkine.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
-
