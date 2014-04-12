@@ -49,10 +49,8 @@ SKIP: {
 }
 
 SKIP: {
-    skip 'JSON is needed to run this test', 3
-      unless Dancer::ModuleLoader->load('JSON');
-    skip 'YAML is needed to run this test', 3
-      unless Dancer::ModuleLoader->load('YAML');
+    Dancer::ModuleLoader->load($_) or skip "$_ is needed to run this test", 5
+        for qw/ JSON YAML /;
 
     set serializer => 'Mutable';
     my $s = Dancer::Serializer->engine;

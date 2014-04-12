@@ -1,5 +1,10 @@
 Revision history for Dancer
 
+1.3123 2014-04-12
+
+   [ BUG FIXES ]
+   * Test was skipping wrong number of tests if JSON was absent.
+
 1.3122 10.04.2014
 
    [ DOCUMENTATION ]
