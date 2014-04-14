@@ -2,7 +2,7 @@ use Test::More;
 use Dancer ':tests', ':syntax';
 use Dancer::Test;
 
-plan tests => 16;
+plan tests => 17;
 
 # basic redirect
 {
@@ -80,6 +80,10 @@ plan tests => 16;
     $ENV{X_FORWARDED_HOST} = "nice.host.name";
     response_headers_include [GET => '/bounce'] => [Location => 'http://nice.host.name/'],
       "Test X_FORWARDED_HOST";
+
+    local $ENV{X_FORWARDED_PROTO} = "proto";
+    response_headers_include [GET => '/bounce'] => [Location => 'proto://nice.host.name/'],
+      "Test X_FORWARDED_PROTO";
 
     $ENV{HTTP_FORWARDED_PROTO} = "https";
     response_headers_include [GET => '/bounce'] => [Location => 'https://nice.host.name/'],
