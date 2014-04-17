@@ -77,7 +77,7 @@ plan tests => 17;
 # redirect behind proxy
 {
     set behind_proxy => 1;
-    $ENV{X_FORWARDED_HOST} = "nice.host.name";
+    $ENV{HTTP_X_FORWARDED_HOST} = "nice.host.name";
     response_headers_include [GET => '/bounce'] => [Location => 'http://nice.host.name/'],
       "Test X_FORWARDED_HOST";
 
@@ -87,9 +87,13 @@ plan tests => 17;
 
     $ENV{HTTP_FORWARDED_PROTO} = "https";
     response_headers_include [GET => '/bounce'] => [Location => 'https://nice.host.name/'],
-      "Test HTTP_FORWARDED_PROTO";
+      "Test FORWARDED_PROTO";
 
-    $ENV{X_FORWARDED_PROTOCOL} = "ftp";  # stupid, but why not?
+    $ENV{HTTP_X_FORWARDED_PROTO} = "proto";
+    response_headers_include [GET => '/bounce'] => [Location => 'proto://nice.host.name/'],
+      "Test X_FORWARDED_PROTO";
+
+    $ENV{HTTP_X_FORWARDED_PROTOCOL} = "ftp";  # stupid, but why not?
     response_headers_include [GET => '/bounce'] => [Location => 'ftp://nice.host.name/'],
       "Test X_FORWARDED_PROTOCOL";
 

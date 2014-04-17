@@ -72,6 +72,7 @@ sub request_base          { $_[0]->env->{REQUEST_BASE} || $_[0]->env->{HTTP_REQU
 sub scheme                {
     my $scheme;
     if (setting('behind_proxy')) {
+        # The PSGI spec prefixes all headers with 'HTTP_'
         $scheme = $_[0]->env->{'X_FORWARDED_PROTOCOL'}
                || $_[0]->env->{'HTTP_X_FORWARDED_PROTOCOL'}
                || $_[0]->env->{'HTTP_X_FORWARDED_PROTO'}
