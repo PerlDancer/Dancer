@@ -77,7 +77,7 @@ command:
     + mywebapp/public/dispatch.fcgi
     + mywebapp/public/dispatch.cgi
     + mywebapp/public/javascripts
-    + mywebapp/public/javascripts/jquery.js
+    + mywebapp/public/javascripts/jquery.min.js
     + mywebapp/t
     + mywebapp/t/002_index_route.t
     + mywebapp/t/001_base.t

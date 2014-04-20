@@ -6,6 +6,7 @@ NEXT
 
     [ ENHANCEMENTS ]
     * Also check X-Forwarded-Proto. (GH#1015, Andy Jones)
+    * Update bundle jQuery to v1.11.0. (GH#1018, Michal Wojciechowski)
 
 1.3123 2014-04-12
 
