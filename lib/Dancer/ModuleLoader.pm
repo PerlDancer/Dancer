@@ -15,7 +15,6 @@ sub load {
 
 sub require {
     my ($class, $module, $version) = @_;
-    print "version $version\n" if $version;
     eval { defined $version ? use_module( $module, $version ) 
                             : use_module( $module ) } 
         or return wantarray ? (0, $@) : 0;
