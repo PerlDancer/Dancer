@@ -3,6 +3,7 @@ Revision history for Dancer
 NEXT
     [ MISC ]
     * Update mailing list url in README. (GH#1017, Racke)
+    * Markdownify the README. (GH#986, Chris Seymour)
 
     [ ENHANCEMENTS ]
     * Also check X-Forwarded-Proto. (GH#1015, Andy Jones)
