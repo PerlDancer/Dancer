@@ -12,6 +12,7 @@ NEXT
     [ BUG FIXES ]
     * Remove print statement in Dancer::ModuleLoad::require. 
         (GH#1021, John Wittkoski)
+    * Test was failing if JSON module was absent. (GH#1022)
 
 1.3123 2014-04-12
 
