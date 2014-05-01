@@ -12,7 +12,10 @@ NEXT
     [ BUG FIXES ]
     * Remove print statement in Dancer::ModuleLoad::require. 
         (GH#1021, John Wittkoski)
-    * Test was failing if JSON module was absent. (GH#1022)
+    * Test was failing if JSON module was absent. 
+        (GH#1022, Yanick Champoux)
+    * Allow for routes evaluating to false ('0', '', etc). 
+        (GH#1020, Yanick Champoux)
 
 1.3123 2014-04-12
 
