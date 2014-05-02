@@ -662,11 +662,11 @@ of responses).  See L<Dancer::Route::Cache> for details.
 
 =head3 route_cache_size_limit (bytes)
 
-Maximum size of route cache (e.g. 1024, 2M) - see L<Dancer::Route::Cache>
+Maximum size of route cache (e.g. 1024, 2M). Defaults to 10M (10MB) - see L<Dancer::Route::Cache>
 
 =head3 route_cache_path_limit (number)
 
-Maximum number of routes to cache - see L<Dancer::Route::Cache>
+Maximum number of routes to cache. Defaults to 600 - see L<Dancer::Route::Cache>
 
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
