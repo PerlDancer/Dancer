@@ -153,7 +153,8 @@ Dancer::Route::Cache - route caching mechanism for L<Dancer>
 =head1 SYNOPSIS
 
     my $cache = Dancer::Route::Cache->new(
-        path_limit => 300, # optional
+        path_limit => 300, # optional, defaults to 600 (routes to cache)
+        size_limit => 5M,  # optional, defaults to 10M (10MB)
     );
 
     # storing a path
