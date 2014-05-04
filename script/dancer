@@ -382,11 +382,11 @@ WriteMakefile(
 
             <ul class="links">
               <li><a
-              href="http://search.cpan.org/dist/Dancer/lib/Dancer/Introduction.pod">Introduction</a></li>
-              <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Cookbook.pod">Cookbook</a></li>
-              <li><a href="http://search.cpan.org/dist/Dancer/lib/Dancer/Deployment.pod">Deployment Guide</a></li>
+              href="https://metacpan.org/pod/Dancer::Introduction">Introduction</a></li>
+              <li><a href="https://metacpan.org/pod/Dancer::Cookbook">Cookbook</a></li>
+              <li><a href="https://metacpan.org/pod/Dancer::Deployment">Deployment Guide</a></li>
               <li><a
-              href="http://search.cpan.org/dist/Dancer/lib/Dancer/Tutorial.pod"
+              href="https://metacpan.org/pod/Dancer::Tutorial"
               title="a tutorial to build a small blog engine with Dancer">Tutorial</a></li>
             </ul>
           </li>
@@ -395,7 +395,7 @@ WriteMakefile(
             <h3>Your application\'s environment</h3>
 
             <ul>
-                <li>Location: <code>[% appdir %]</code></li>
+                <li>Location: <code><% settings.appdir %></code></li>
                 <li>Template engine: <code><% settings.template %></code></li>
                 <li>Logger: <code><% settings.logger %></code></li>
                 <li>Environment: <code><% settings.environment %></code></li>
@@ -435,7 +435,7 @@ WriteMakefile(
                 </tr>
                 <tr>
                     <td>Appdir</td>
-                    <td><tt>[% appdir %]</tt></td>
+                    <td><tt><% settings.appdir %></tt></td>
                 </tr>
                 <tr>
                     <td>Template engine</td>
@@ -926,6 +926,9 @@ template: \"simple\"
 #   template_toolkit:
 #     start_tag: '[%'
 #     end_tag:   '%]'
+
+# For session support enable the following line and see Dancer::Session
+# session: \"YAML\"
 
 ",
 
