@@ -5,6 +5,7 @@ NEXT
     * Update mailing list url in README. (GH#1017, Racke)
     * Markdownify the README. (GH#986, Chris Seymour)
 
+
     [ ENHANCEMENTS ]
     * Also check X-Forwarded-Proto. (GH#1015, Andy Jones)
     * Update bundle jQuery to v1.11.0. (GH#1018, Michal Wojciechowski)
@@ -16,6 +17,9 @@ NEXT
         (GH#1022, Yanick Champoux)
     * Allow for routes evaluating to false ('0', '', etc). 
         (GH#1020, Yanick Champoux)
+    
+    [DOCUMENTATION]
+    * Specify defaults in POD. (GH#1023, isync)
 
 1.3123 2014-04-12
 
