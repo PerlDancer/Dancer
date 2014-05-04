@@ -485,7 +485,7 @@ Default to false.
 =head3 server_tokens (boolean)
 
 If set to true (the default), Dancer will add an "X-Powered-By" header and also append
-the Dancer version to the "Server" header. Default is true.
+the Dancer version to the "Server" header.
 
 You can also use the environment variable C<DANCER_SERVER_TOKENS>.
 
