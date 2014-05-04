@@ -1625,6 +1625,14 @@ If you need to fetch the session ID being used for any reason:
 
     my $id = session->id;
 
+In order to be able to use sessions, first  you need to enable session support in
+one of the configuration files.  A quick way to do it is to add
+
+    session: "YAML"
+
+to config.yml.
+
+For more details, see L<Dancer::Session>.
 
 =head2 splat
 
