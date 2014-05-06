@@ -21,6 +21,7 @@ NEXT
     
     [DOCUMENTATION]
     * Specify defaults in POD. (GH#1023, isync)
+    * Fix doc for params(). (GH#1025, reported by Warren Young)
 
 1.3123 2014-04-12
 
