@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3123';
+our $VERSION   = '1.3124';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
@@ -1186,8 +1186,10 @@ commonly-used methods are summarized below:
 =head2 params
 
 I<This method should be called from a route handler>.
-It's an alias for the L<Dancer::Request params accessor|Dancer::Request/"params">. It returns
-an hash reference to all defined parameters. Check C<param> below to access quickly to a single
+It's an alias for the L<Dancer::Request params
+accessor|Dancer::Request/"params-source">. It returns
+an hash (in list context) or an hash reference (in scalar context)
+to all defined parameters. Check C<param> below to access quickly to a single
 parameter value.
 
 =head2 param
@@ -1625,6 +1627,14 @@ If you need to fetch the session ID being used for any reason:
 
     my $id = session->id;
 
+In order to be able to use sessions, first  you need to enable session support in
+one of the configuration files.  A quick way to do it is to add
+
+    session: "YAML"
+
+to config.yml.
+
+For more details, see L<Dancer::Session>.
 
 =head2 splat
 

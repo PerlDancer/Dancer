@@ -48,7 +48,7 @@ providing assistance to new users is incredibly valuable.
 
 =item *
 
-Mailing list: L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users> to
+Mailing list: L<http://lists.preshweb.co.uk/mailman/listinfo/dancer-users> to
 subscribe or view archives
 
 =item *
@@ -247,7 +247,7 @@ but with the C<frozen> branch.
 =head2 Mailing Lists
 
 A mailing list is available here:
-L<http://lists.perldancer.org/cgi-bin/listinfo/dancer-users>
+L<http://lists.preshweb.co.uk/mailman/listinfo/dancer-users>
 
 =head2 IRC Channels
 

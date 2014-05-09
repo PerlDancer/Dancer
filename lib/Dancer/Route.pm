@@ -40,9 +40,8 @@ sub init {
     my ($self) = @_;
     $self->{'_compiled_regexp'} = undef;
 
-    if (!$self->pattern) {
-        raise core_route => "cannot create Dancer::Route without a pattern";
-    }
+    raise core_route => "cannot create Dancer::Route without a pattern"
+        unless defined $self->pattern;
 
     # If the route is a Regexp, store it directly
     $self->regexp($self->pattern) 

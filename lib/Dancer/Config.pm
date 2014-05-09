@@ -457,23 +457,23 @@ L<Dancer::Config::Object> for more information.
 =head3 global_warnings (boolean, default: false)
 
 If true, C<use warnings> will be in effect for all modules and scripts loaded
-by your Dancer application.  Set to a true value to enable this.
+by your Dancer application. Default is false.
 
 =head3 startup_info (boolean)
 
-If set to true, prints a banner at the server start with information such as
-versions and the environment (or "dancefloor").
+If set to true (the default), prints a banner at server startup with information such as
+versions and the environment (or "dancefloor"). Default is true.
 
 Conforms to the environment variable DANCER_STARTUP_INFO.
 
 =head3 warnings (boolean)
 
-If set to true, tells Dancer to consider all warnings as blocking errors.
+If set to true, tells Dancer to consider all warnings as blocking errors. Default is false.
 
 =head3 traces (boolean)
 
 If set to true, Dancer will display full stack traces when a warning or a die
-occurs. (Internally sets Carp::Verbose). Default to false.
+occurs. (Internally sets Carp::Verbose). Default is false.
 
 =head3 require_environment (boolean)
 
@@ -484,8 +484,8 @@ Default to false.
 
 =head3 server_tokens (boolean)
 
-If set to true, Dancer will add an "X-Powered-By" header and also append
-the Dancer version to the "Server" header. Default to true.
+If set to true (the default), Dancer will add an "X-Powered-By" header and also append
+the Dancer version to the "Server" header.
 
 You can also use the environment variable C<DANCER_SERVER_TOKENS>.
 
@@ -657,16 +657,16 @@ so don't use the feature for anything else.
 
 =head3 route_cache (boolean)
 
-Enables route caching (for quicker route resolution on larger apps - not caching
-of responses).  See L<Dancer::Route::Cache> for details.
+If true, enables route caching (for quicker route resolution on larger apps - not caching
+of responses).  See L<Dancer::Route::Cache> for details. Default is false.
 
 =head3 route_cache_size_limit (bytes)
 
-Maximum size of route cache (e.g. 1024, 2M) - see L<Dancer::Route::Cache>
+Maximum size of route cache (e.g. 1024, 2M). Defaults to 10M (10MB) - see L<Dancer::Route::Cache>
 
 =head3 route_cache_path_limit (number)
 
-Maximum number of routes to cache - see L<Dancer::Route::Cache>
+Maximum number of routes to cache. Defaults to 600 - see L<Dancer::Route::Cache>
 
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
