@@ -1,10 +1,6 @@
 Revision history for Dancer
 
-NEXT
-    [ MISC ]
-    * Update mailing list url in README. (GH#1017, Racke)
-    * Markdownify the README. (GH#986, Chris Seymour)
-
+1.3124 2014-05-09
 
     [ ENHANCEMENTS ]
     * Also check X-Forwarded-Proto. (GH#1015, Andy Jones)
@@ -18,10 +14,14 @@ NEXT
         (GH#1022, Yanick Champoux)
     * Allow for routes evaluating to false ('0', '', etc). 
         (GH#1020, Yanick Champoux)
-    
+
     [DOCUMENTATION]
     * Specify defaults in POD. (GH#1023, isync)
     * Fix doc for params(). (GH#1025, reported by Warren Young)
+
+    [ MISC ]
+    * Update mailing list url in README. (GH#1017, Racke)
+    * Markdownify the README. (GH#986, Chris Seymour)
 
 1.3123 2014-04-12
 
