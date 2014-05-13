@@ -1,5 +1,11 @@
 Revision history for Dancer
 
+NEXT
+
+    [ DOCUMENTATION ]
+    * Improve the wording of the params() section in Dancer.
+        (GH#1025, Warren Young)
+
 1.3124 2014-05-09
 
     [ ENHANCEMENTS ]
