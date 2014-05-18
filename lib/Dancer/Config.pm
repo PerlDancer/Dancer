@@ -302,6 +302,12 @@ exists in the application directory, it will be loaded, as a setting group.
 The same is done for the environment file located in the B<environments>
 directory.
 
+To fetch the available configuration values use the B<config> keyword that returns
+a reference to a hash:
+
+    my $port   = config->{port};
+    my $appdir = config->{appdir};
+
 =head1 SUPPORTED SETTINGS
 
 =head2 Run mode and listening interface/port
