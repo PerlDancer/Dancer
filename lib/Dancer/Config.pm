@@ -225,12 +225,8 @@ sub load {
 sub load_settings_from_yaml {
     my ($file) = @_;
 
-    my $config;
-
-    eval { $config = YAML::LoadFile($file) };
-    if (my $err = $@ || (!$config)) {
-        confess "Unable to parse the configuration file: $file: $@";
-    }
+    my $config = eval { YAML::LoadFile($file) }
+        or confess "Unable to parse the configuration file: $file: $@";
 
     # groom the values of $config
     while( my ($k,$v) = each %$config ) {
@@ -239,7 +235,7 @@ sub load_settings_from_yaml {
 
     $SETTINGS = Hash::Merge::Simple::merge( $SETTINGS, $config );
 
-    return scalar(keys %$config);
+    return scalar keys %$config;
 }
 
 sub load_default_settings {
