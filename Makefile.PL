@@ -49,7 +49,7 @@ WriteMakefile1(
         'URI'                        => '1.59',
         'Try::Tiny'                  => '0.09',
         'Module::Runtime'            => '0',
-        'Merge::Hash::Simple'        => 0,
+        'Hash::Merge::Simple'        => 0,
 
         # core
         'File::Basename' => '0',
