@@ -6,7 +6,7 @@ plan skip_all => "YAML needed to run this tests"
     unless Dancer::ModuleLoader->load('YAML');
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
-plan tests => 17;
+plan tests => 22;
 
 use Dancer ':syntax';
 use File::Spec;
@@ -29,6 +29,11 @@ port: 4500
 startup_info: 0
 charset: "UTF8"
 logger: file
+plugins:
+  Test: Main
+  Deep:
+    Old: Keep
+    Common: Same
 ';
 write_file($conffile => $conf);
 ok(Dancer::Config->load, 'Config load works with a conffile');
@@ -75,5 +80,26 @@ is(setting('startup_info'), '0', 'startup_info setting looks good');
 
 Dancer::Logger::logger->{fh}->close;
 unlink Dancer::Config->environment_file;
+
+#issue GH#1016
+
+my $plugin_env = '
+plugins:
+  Test:  Env
+  Deep:
+    Common: Changed
+    New: Added
+';
+
+setting('environment' => 'plugin');
+write_file(Dancer::Config->environment_file, $plugin_env);
+
+ok(Dancer::Config->load, 'load plugin environment');
+is(setting('plugins')->{Test},            'Env',      'Plugins first-level setting merged');
+is(setting('plugins')->{Deep}->{Old},     'Keep',     'Deep merge: keep old setting');
+is(setting('plugins')->{Deep}->{Common},  'Changed',  'Deep merge: change existing setting');
+is(setting('plugins')->{Deep}->{New},     'Added',    'Deep merge: add new setting');
+unlink Dancer::Config->environment_file;
+
 unlink $conffile;
 File::Temp::cleanup();
