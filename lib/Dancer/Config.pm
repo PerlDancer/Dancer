@@ -725,10 +725,7 @@ default settings.
 Finally, the environment configuration file is loaded, according to the settings
 of B<envdir> and B<environment>. Top-level keys and their values in the existing
 configuration hash are replaced in their entirety if those settings exist in the
-environment config file. As a special exception, the keys B<plugins> and B<handlers>
-are merged according to their sub-keys, which are replaced in their entirety.
-That allows having common configuration for some plugins, while individually
-setting or overriding others by the environment configuration.
+environment config file.
 
 =begin comment
 
@@ -738,9 +735,17 @@ The exceptional keys are defined in the lexical array C<@MERGEABLE>.
 
 =back
 
-If values of any settings are references to structured data, these values are
+If values of any top-level settings are references to structured data, these values are
 replaced completely; there is no attempt to merge the values of common
 sub-structures.
+
+As a special exception, the keys B<plugins> and B<handlers>
+are merged according to their sub-keys.
+You may use common configuration for some plugins, and you may individually
+set or override them by the environment configuration. In this case, a
+deep merge of common hash keys is done, so that more complex configuration
+structures may be selectively modified for plugins. References other than C<HASH>
+references are replaced entirely; no attempt is made to merge them.
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
