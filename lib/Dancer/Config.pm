@@ -430,7 +430,8 @@ Dancer applications have a C<environments> folder with specific
 configuration files for different environments (usually development
 and production environments). They specify different kind of error
 reporting, deployment details, etc. These files are read after the
-generic C<config.yml> configuration file.
+generic C<config.yml> configuration file. See L<Configuration Files|
+Configuration Files>.
 
 The running environment can be set with:
 
@@ -703,6 +704,43 @@ Maximum size of route cache (e.g. 1024, 2M). Defaults to 10M (10MB) - see L<Danc
 
 Maximum number of routes to cache. Defaults to 600 - see L<Dancer::Route::Cache>
 
+=head2 Configuration Files
+
+At application or script startup, configuration is loaded in the following order:
+
+=over 4
+
+=item Default configuration
+
+Configuration settings are initialized from a set of defaults as noted above.
+
+=item Main configuration file
+
+If the main configuration file exists (default C<config.yml>), it is loaded next.
+Any keys and values set in this file replace the same existing keys in the
+default settings.
+
+=item Environment configuration file
+
+Finally, the environment configuration file is loaded, according to the settings
+of B<envdir> and B<environment>. Top-level keys and their values in the existing
+configuration hash are replaced in their entirety if those settings exist in the
+environment config file. As a special exception, the keys B<plugins> and B<handlers>
+are merged according to their sub-keys, which are replaced in their entirety.
+That allows having common configuration for some plugins, while individually
+setting or overriding others by the environment configuration.
+
+=begin comment
+
+The exceptional keys are defined in the lexical array C<@MERGEABLE>.
+
+=end comment
+
+=back
+
+If values of any settings are references to structured data, these values are
+replaced completely; there is no attempt to merge the values of common
+sub-structures.
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
