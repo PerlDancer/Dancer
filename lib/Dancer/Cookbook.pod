@@ -312,7 +312,6 @@ session on subsequent requests.
 
 To make use of sessions, you must first enable the session engine - pick the
 session engine you want to use, then declare it in your config file:
-config file, add:
 
     session: Simple
 
