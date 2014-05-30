@@ -245,17 +245,22 @@ sub load_settings_from_yaml {
 }
 
 sub load_default_settings {
+    $SETTINGS->{startup_info}  ||= (defined $ENV{DANCER_STARTUP_INFO} ?
+                                    $ENV{DANCER_STARTUP_INFO}         :
+                                    1);
+    $SETTINGS->{server_tokens} ||= (defined $ENV{DANCER_SERVER_TOKENS} ?
+                                    $ENV{DANCER_SERVER_TOKENS}         :
+                                    1);
+
     $SETTINGS->{server}       ||= $ENV{DANCER_SERVER}       || '0.0.0.0';
     $SETTINGS->{port}         ||= $ENV{DANCER_PORT}         || '3000';
     $SETTINGS->{content_type} ||= $ENV{DANCER_CONTENT_TYPE} || 'text/html';
     $SETTINGS->{charset}      ||= $ENV{DANCER_CHARSET}      || '';
-    $SETTINGS->{startup_info} ||= $ENV{DANCER_STARTUP_INFO} || 1;
     $SETTINGS->{daemon}       ||= $ENV{DANCER_DAEMON}       || 0;
     $SETTINGS->{apphandler}   ||= $ENV{DANCER_APPHANDLER}   || 'Standalone';
     $SETTINGS->{warnings}     ||= $ENV{DANCER_WARNINGS}     || 0;
     $SETTINGS->{auto_reload}  ||= $ENV{DANCER_AUTO_RELOAD}  || 0;
     $SETTINGS->{traces}       ||= $ENV{DANCER_TRACES}       || 0;
-    $SETTINGS->{server_tokens}||= $ENV{DANCER_SERVER_TOKENS}|| 1;
     $SETTINGS->{logger}       ||= $ENV{DANCER_LOGGER}       || 'file';
     $SETTINGS->{environment}  ||= $ENV{DANCER_ENVIRONMENT}  || $ENV{PLACK_ENV} || 'development';
 
