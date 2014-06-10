@@ -13,7 +13,7 @@ use EasyMocker;
 BEGIN {
     plan skip_all => "need Template to run this test" 
         unless Dancer::ModuleLoader->load('Template');
-    plan tests => 7;
+    plan tests => 17;
     use_ok 'Dancer::Template::TemplateToolkit';
 };
 
@@ -71,3 +71,34 @@ like $@, qr/doesn't exist or not a regular file/, "prorotype failure detected";
 
 $result = $engine->render(\$template, { one => 1, two => 2, three => 3});
 is $result, $expected, "processed a template given as a scalar ref";
+
+$engine->set_wrapper(outer => \'<!<% content %>>');
+$result = $engine->render(\$template, { one => 1, two => 2, three => 3});
+is $result, '<!'.$expected.'>', "processed a template given as a scalar ref with outer wrapper";
+
+$engine->set_wrapper(inner => \'--<% content %>--');
+$result = $engine->render(\$template, { one => 1, two => 2, three => 3});
+is $result, '<!--'.$expected.'-->', "processed a template given as a scalar ref with outer and inner wrapper";
+
+$engine->set_wrapper(\'-#-<% content %>-#-');
+$result = $engine->render(\$template, { one => 1, two => 2, three => 3});
+is $result, '-#-'.$expected.'-#-', "processed a template given as a scalar ref with single wrapper";
+
+$engine->reset_wrapper;
+$result = $engine->render(\$template, { one => 1, two => 2, three => 3});
+is $result, '<!--'.$expected.'-->', "processed a template given as a scalar ref with resetted wrapper";
+
+is ${$engine->unset_wrapper('outer')}, '<!<% content %>>', 'unset outer wrapper';
+$result = $engine->render(\$template, { one => 1, two => 2, three => 3});
+is $result, '--'.$expected.'--', "processed a template given as a scalar ref with inner wrapper";
+
+is ${$engine->unset_wrapper('inner')}, '--<% content %>--', 'unset inner wrapper';
+$result = $engine->render(\$template, { one => 1, two => 2, three => 3});
+is $result, $expected, "processed a template given as a scalar ref with no wrapper";
+
+eval { $engine->set_wrapper(nonsense => 'nothing') };
+is $@, "core - template - 'nonsense' isn't a valid identifier", 'wrong identifier for set_wrapper';
+
+eval { $engine->unset_wrapper('nonsense') };
+is $@, "core - template - 'nonsense' isn't a valid identifier", 'wrong identifier for unset_wrapper';
+
