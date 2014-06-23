@@ -37,7 +37,7 @@ sub parse_cookie_from_env {
         # cookie_name="foo=bar"
         # we want `cookie_name' as the value and `foo=bar' as the value
         my( $name, $value ) = split(/\s*=\s*/, $cookie, 2);
-        next unless ( $name );
+        next unless ( length $name );
         my @values;
         if ( defined $value && $value ne '' ) {
             @values = map { uri_unescape($_) } split( /[&;]/, $value );
