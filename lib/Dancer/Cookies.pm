@@ -36,12 +36,16 @@ sub parse_cookie_from_env {
         # a cookie string can contains something like:
         # cookie_name="foo=bar"
         # we want `cookie_name' as the value and `foo=bar' as the value
-        my( $name, $value ) = split(/\s*=\s*/, $cookie, 2);
-        next unless ( length $name );
+        my( $name, $value ) = split /\s*=\s*/, $cookie, 2;
+
+        # catch weird entries like 'cookie1=foo;;cookie2=bar'
+        next unless length $name;
+
         my @values;
         if ( defined $value && $value ne '' ) {
             @values = map { uri_unescape($_) } split( /[&;]/, $value );
         }
+
         $cookies->{$name} =
           Dancer::Cookie->new( name => $name, value => \@values );
     }
