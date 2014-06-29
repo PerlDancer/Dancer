@@ -3,6 +3,9 @@ Revision history for Dancer
 NEXT
     [ ENHANCEMENT ]
     * Skip bad cookie definitions. (GH#1036, Manuel Weiss)
+    * 'dancer' script warns and die if trying to create 
+        an app with the same name of an existing module.
+            (GH#1038, Racke)
 
     [ DOCUMENTATION ]
     * Improve the wording of the params() section in Dancer.
