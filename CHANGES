@@ -8,6 +8,7 @@ NEXT
             (GH#1038, Racke)
     * In Dancer::Logger::Abstract, default host
         name to '-' if not available. (GH#1029, John Wittkoski)
+    * Add Dancer::Serializer::JSONP. (GH#1035, David Zurborg)
 
     [ DOCUMENTATION ]
     * Improve the wording of the params() section in Dancer.
