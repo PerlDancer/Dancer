@@ -12,6 +12,7 @@ NEXT
         (GH#1025, Warren Young)
     * Explain how to access config in Dancer::Config's POD. 
         (GH#1026, Gabor Szabo)
+    * Cookbook typo fix. (GH#1031, Florian Sojer)
 
 1.3124 2014-05-09
 
