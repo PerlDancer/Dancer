@@ -89,7 +89,7 @@ sub format_message {
     my $chars_mapping = {
         h => sub {
             defined $r
-              ? $r->env->{'HTTP_X_REAL_IP'} || $r->env->{'REMOTE_ADDR'}
+              ? $r->env->{'HTTP_X_REAL_IP'} || $r->env->{'REMOTE_ADDR'} || '-'
               : '-';
         },
         t => sub { Encode::decode(setting('charset') || 'utf8',
