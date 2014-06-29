@@ -6,6 +6,8 @@ NEXT
     * 'dancer' script warns and die if trying to create 
         an app with the same name of an existing module.
             (GH#1038, Racke)
+    * In Dancer::Logger::Abstract, default host
+        name to '-' if not available. (GH#1029, John Wittkoski)
 
     [ DOCUMENTATION ]
     * Improve the wording of the params() section in Dancer.
