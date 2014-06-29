@@ -1,6 +1,8 @@
 Revision history for Dancer
 
 NEXT
+    [ ENHANCEMENT ]
+    * Skip bad cookie definitions. (GH#1036, Manuel Weiss)
 
     [ DOCUMENTATION ]
     * Improve the wording of the params() section in Dancer.
