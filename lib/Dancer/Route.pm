@@ -44,7 +44,7 @@ sub init {
         unless defined $self->pattern;
 
     # If the route is a Regexp, store it directly
-    $self->regexp($self->pattern) 
+    $self->regexp($self->pattern)
       if ref($self->pattern) eq 'Regexp';
 
     $self->check_options();
@@ -273,19 +273,26 @@ sub _init_prefix {
         }
     }
     elsif ($self->pattern eq '/') {
-
         # if pattern is '/', we should match:
         # - /prefix/
         # - /prefix
         # this is done by creating a regex for this case
         my $qpattern = quotemeta( $self->pattern );
-        my $qprefix  = quotemeta( $self->prefix );
+        my ($qprefix, @params) = $self->_pattern_to_regex( $self->prefix );
         my $regex    = qr/^$qprefix(?:$qpattern)?$/;
+
         $self->{regexp}  = $regex;
         $self->{pattern} = $regex;
+        $self->{_params} = \@params if @params;
     }
     else {
         $self->{pattern} = $prefix . $self->pattern;
+
+        if ($prefix !~ m|^/|) {
+            # If the prefix doesn't start with /, we assume it's a
+            #  regex.
+            $self->regexp($self->{pattern});
+        }
     }
 
     return $prefix;
@@ -316,6 +323,18 @@ sub _build_regexp {
     return $self->{_compiled_regexp};
 }
 
+sub _pattern_to_regex {
+    my $self = shift;
+    my $pattern = shift;
+
+    my @params = $pattern =~ /:([^\/\.\?]+)/g;
+    if (@params) {
+        $pattern =~ s/(:[^\/\.\?]+)/\(\[\^\/\]\+\)/g;
+    }
+
+    return $pattern, @params;
+}
+
 sub _build_regexp_from_string {
     my ($self, $pattern) = @_;
     my $capture = 0;
@@ -323,9 +342,8 @@ sub _build_regexp_from_string {
 
     # look for route with params (/hello/:foo)
     if ($pattern =~ /:/) {
-        @params = $pattern =~ /:([^\/\.\?]+)/g;
+        ($pattern, @params) = $self->_pattern_to_regex($pattern);
         if (@params) {
-            $pattern =~ s/(:[^\/\.\?]+)/\(\[\^\/\]\+\)/g;
             $capture = 1;
         }
     }
