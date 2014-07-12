@@ -5,7 +5,7 @@ use warnings;
 use Carp;
 use Cwd 'realpath';
 
-our $VERSION   = '1.3124';
+our $VERSION   = '1.3125';
 our $AUTHORITY = 'SUKRIA';
 
 $VERSION = eval $VERSION;
@@ -1187,9 +1187,10 @@ commonly-used methods are summarized below:
 
 I<This method should be called from a route handler>.
 It's an alias for the L<Dancer::Request params
-accessor|Dancer::Request/"params-source">. It returns
-an hash (in list context) or an hash reference (in scalar context)
-to all defined parameters. Check C<param> below to access quickly to a single
+accessor|Dancer::Request/"params-source">. In list context it returns a
+list of key/value pair of all defined parameters. In scalar context, 
+it returns a hash reference instead.
+Check C<param> below to access quickly to a single
 parameter value.
 
 =head2 param

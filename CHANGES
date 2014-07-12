@@ -1,5 +1,23 @@
 Revision history for Dancer
 
+1.3125 2014-07-12
+
+    [ ENHANCEMENT ]
+    * Skip bad cookie definitions. (GH#1036, Manuel Weiss)
+    * 'dancer' script warns and die if trying to create 
+        an app with the same name of an existing module.
+            (GH#1038, Racke)
+    * In Dancer::Logger::Abstract, default host
+        name to '-' if not available. (GH#1029, John Wittkoski)
+    * Add Dancer::Serializer::JSONP. (GH#1035, David Zurborg)
+
+    [ DOCUMENTATION ]
+    * Improve the wording of the params() section in Dancer.
+        (GH#1025, Warren Young)
+    * Explain how to access config in Dancer::Config's POD. 
+        (GH#1026, Gabor Szabo)
+    * Cookbook typo fix. (GH#1031, Florian Sojer)
+
 1.3124 2014-05-09
 
     [ ENHANCEMENTS ]
