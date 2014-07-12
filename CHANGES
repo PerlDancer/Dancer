@@ -1,6 +1,7 @@
 Revision history for Dancer
 
-NEXT
+1.3125 2014-07-12
+
     [ ENHANCEMENT ]
     * Skip bad cookie definitions. (GH#1036, Manuel Weiss)
     * 'dancer' script warns and die if trying to create 
