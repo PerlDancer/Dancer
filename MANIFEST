@@ -336,3 +336,16 @@ t/pod.t
 t/TestAppExt.pm
 t/TestPlugin.pm
 TODO
+lib/Dancer/Serializer/JSONP.pm
+README.md
+t/03_route_handler/12_response_halt.t
+t/03_route_handler/16_embedded_prefixes.t
+t/03_route_handler/30_forward_session.t
+t/03_route_handler/36_false_routes.t
+t/07_apphandlers/08_is_text.t
+t/12_response/10_error_dumper_without_clone.t
+t/14_serializer/07_request_jsonp.t
+t/14_serializer/18_mutable_template_or_serialize.t
+t/15_plugins/05b_plugins_and_c3.t
+t/23_dancer_tests/03_uris.t
+t/lib/TestPluginMRO.pm
