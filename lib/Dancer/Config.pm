@@ -233,8 +233,7 @@ sub load_settings_from_yaml {
 
     for my $key (keys %{$config}) {
         if ($MERGEABLE{$key}) {
-            my $setting = setting($key);
-            $setting->{$_} = $config->{$key}{$_} for keys %{$config->{$key}};
+            merge_deep(setting($key), $config->{$key});
         }
         else {
             _set_setting($key, $config->{$key});
@@ -242,6 +241,42 @@ sub load_settings_from_yaml {
     }
 
     return scalar(keys %$config);
+}
+
+sub merge_deep {
+  my ($merge, $new, @cycle) = @_;
+
+  # This checks for reference cycles using a standard method:
+  # Traverse the list using two pointers, one advancing one step,
+  # the other advancing two. If there are cycles in the list,
+  # eventually both pointers will point to the same node.
+  my ($history_node, $check);
+  if ($check = shift @cycle) { # check is done every second level
+    # if we are doing the cycle test, advance the history node one key
+    $history_node = $check->{ shift @cycle };
+  } else { # a false flag prevented the check
+    $history_node = shift @cycle || $new;
+  }
+  die 'Cycle detected!'
+    if $check && $new eq $check;
+
+  for my $key (keys %{ $new }) {
+    if (ref $new->{$key} eq 'HASH') {
+      if (exists $merge->{$key}) {
+        die 'Attempted to merge hash with non-hash!'
+          if ref $merge->{$key} ne 'HASH';
+        merge_deep($merge->{$key}, $new->{$key},
+          ($check
+            ? (0)
+            : ()
+          ),
+          $history_node,
+          @cycle, $key); # history of past nodes in chain
+        next;
+      }
+    }
+    $merge->{$key} = $new->{$key};
+  }
 }
 
 sub load_default_settings {
@@ -401,7 +436,8 @@ Dancer applications have a C<environments> folder with specific
 configuration files for different environments (usually development
 and production environments). They specify different kind of error
 reporting, deployment details, etc. These files are read after the
-generic C<config.yml> configuration file.
+generic C<config.yml> configuration file. See L<Configuration Files|
+Configuration Files>.
 
 The running environment can be set with:
 
@@ -674,6 +710,48 @@ Maximum size of route cache (e.g. 1024, 2M). Defaults to 10M (10MB) - see L<Danc
 
 Maximum number of routes to cache. Defaults to 600 - see L<Dancer::Route::Cache>
 
+=head2 Configuration Files
+
+At application or script startup, configuration is loaded in the following order:
+
+=over 4
+
+=item Default configuration
+
+Configuration settings are initialized from a set of defaults as noted above.
+
+=item Main configuration file
+
+If the main configuration file exists (default C<config.yml>), it is loaded next.
+Any keys and values set in this file replace the same existing keys in the
+default settings.
+
+=item Environment configuration file
+
+Finally, the environment configuration file is loaded, according to the settings
+of B<envdir> and B<environment>. Top-level keys and their values in the existing
+configuration hash are replaced in their entirety if those settings exist in the
+environment config file.
+
+=begin comment
+
+The exceptional keys are defined in the lexical array C<@MERGEABLE>.
+
+=end comment
+
+=back
+
+If values of any top-level settings are references to structured data, these values are
+replaced completely; there is no attempt to merge the values of common
+sub-structures.
+
+As a special exception, the keys B<plugins> and B<handlers>
+are merged according to their sub-keys.
+You may use common configuration for some plugins, and you may individually
+set or override them by the environment configuration. In this case, a
+deep merge of common hash keys is done, so that more complex configuration
+structures may be selectively modified for plugins. References other than C<HASH>
+references are replaced entirely; no attempt is made to merge them.
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
