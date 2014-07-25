@@ -5,6 +5,7 @@ use warnings;
 use base 'Exporter';
 use vars '@EXPORT_OK';
 
+use Hash::Merge::Simple;
 use Dancer::Config::Object 'hashref_to_object';
 use Dancer::Deprecation;
 use Dancer::Template;
@@ -224,24 +225,17 @@ sub load {
 sub load_settings_from_yaml {
     my ($file) = @_;
 
-    my $config;
+    my $config = eval { YAML::LoadFile($file) }
+        or confess "Unable to parse the configuration file: $file: $@";
 
-    eval { $config = YAML::LoadFile($file) };
-    if (my $err = $@ || (!$config)) {
-        confess "Unable to parse the configuration file: $file: $@";
+    # groom the values of $config
+    while( my ($k,$v) = each %$config ) {
+        $config->{$k} = Dancer::Config->normalize_setting($k,$v);
     }
 
-    for my $key (keys %{$config}) {
-        if ($MERGEABLE{$key}) {
-            my $setting = setting($key);
-            $setting->{$_} = $config->{$key}{$_} for keys %{$config->{$key}};
-        }
-        else {
-            _set_setting($key, $config->{$key});
-        }
-    }
+    $SETTINGS = Hash::Merge::Simple::merge( $SETTINGS, $config );
 
-    return scalar(keys %$config);
+    return scalar keys %$config;
 }
 
 sub load_default_settings {
