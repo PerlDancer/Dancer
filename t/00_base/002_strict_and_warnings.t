@@ -44,7 +44,7 @@ use Test::More tests => 10, import => ['!pass'];
 
     # check that we can enable it
     {
-        setting import_warnings => 1;
+        setting global_warnings => 1;
 
         my $warn;
         local $SIG{__WARN__} = sub { $warn = $_[0] };
