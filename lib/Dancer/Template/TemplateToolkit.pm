@@ -58,6 +58,13 @@ sub init {
             : quotemeta($stop_tag)
         );
     }
+    my @embedded = ();
+    if ($self->config->{embedded_templates}) {
+	Dancer::ModuleLoader->load('Template::Provider::FromDATA')
+	    or croak "The Package Template::Provider::FromDATA must be installed to use embedded_templates";
+
+	@embedded = ( LOAD_TEMPLATES => [Template::Provider::FromDATA->new()] );
+    }
 
     my $tt_config = {
         @anycase,
@@ -66,6 +73,7 @@ sub init {
         @inc_path,
         @start,
         @stop,
+        @embedded,
         %{$self->config},
     };
 
@@ -75,15 +83,39 @@ sub init {
 sub render {
     my ($self, $template, $tokens) = @_;
 
-    if ( ! ref $template ) {
-        -f $template or raise core_template => "'$template' doesn't exist or not a regular file";
-    }
+    $self->view_exists($template) or raise core_template => "'$template' doesn't exist or not a regular file";
 
     my $content = "";
     my $charset = setting('charset') || '';
     my @options = length($charset) ? ( binmode => ":encoding($charset)" ) : ();
     $_engine->process($template, $tokens, \$content, @options) or raise core_template => $_engine->error;
     return $content;
+}
+
+sub view_exists {
+    my ($self, $view) = @_;
+
+    return 1 if ref $view;
+
+    if ($self->config->{embedded_templates}) {
+	eval {
+	    $_engine->context->template($view);
+	};
+	return ! $@;
+    }
+
+    return -f $view;
+}
+
+sub view {
+    my ($self, $view) = @_;
+
+    if ($self->config->{embedded_templates}) {
+	return $view;
+    }
+    else {
+	$self->SUPER::view($view);
+    }
 }
 
 1;
