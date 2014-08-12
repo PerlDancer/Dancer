@@ -211,6 +211,25 @@ Change the configuration of the template to Template Toolkit:
 Done! Everything will work fine out of the box, including variables and META
 variables.
 
+=head1 EMBEDDED TEMPLATES
+
+You can embed your templates in your script file, to get a self-contained dancer
+application in one file (inspired by L<http://advent.perldancer.org/2011/3>).
+
+To enable this:
+
+    # in app.pl
+    # ...
+    set engines => {
+        template_toolkit => {
+            embedded_templates => 1,
+        },
+    };
+    set template => 'template_toolkit';
+
+This feature requires L<Tempate::Provider::FromDATA>. Put your templates in the
+__DATA__ section, and start every template with __${templatename}__.
+
 =head1 SEE ALSO
 
 L<Dancer>, L<Template>
