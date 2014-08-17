@@ -12,6 +12,10 @@ NEXT
     * Fix default test names for headers and redirection test methods.
       (GH#1048, odyniec)
 
+    [ DOCUMENTATION ]
+    * Correct POD formatting for HTTP methods in introduction.pod.
+        (GH#1047, Lx)
+
 1.3126 2014-07-14
 
     [ BUG FIXES ]
