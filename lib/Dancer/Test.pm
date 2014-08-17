@@ -253,7 +253,7 @@ sub _sort_headers {
 
 sub response_headers_include {
     my ($req, $expected, $test_name) = @_;
-    $test_name ||= "headers include expected data for @$req";
+    $test_name ||= "headers include expected data for " . _req_label($req);
     my $tb = Test::Builder->new;
 
     my $response = _req_to_response($req);
@@ -262,7 +262,7 @@ sub response_headers_include {
 
 sub response_redirect_location_is {
     my ($req, $expected, $test_name) = @_;
-    $test_name ||= "redirect location looks good for @$req";
+    $test_name ||= "redirect location looks good for " . _req_label($req);
     my $tb = Test::Builder->new;
 
     my $response = _req_to_response($req);

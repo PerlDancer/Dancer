@@ -9,6 +9,8 @@ NEXT
 
     [ BUG FIXES ]
     * Test was using deprecated 'import_warnings'. (GH#1045, mokko)
+    * Fix default test names for headers and redirection test methods.
+      (GH#1048, odyniec)
 
 1.3126 2014-07-14
 
