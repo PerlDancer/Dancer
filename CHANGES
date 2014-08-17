@@ -7,6 +7,9 @@ NEXT
         the previous behavior that was overriding the whole config
         segments. (GH#1016, Yanick Champoux)
 
+    [ BUG FIXES ]
+    * Test was using deprecated 'import_warnings'. (GH#1045, mokko)
+
 1.3126 2014-07-14
 
     [ BUG FIXES ]
