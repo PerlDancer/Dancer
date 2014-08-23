@@ -16,7 +16,7 @@ sub run {
     my ($method, $path, $query) = @ARGV;
     my $host    = "127.0.0.1";
     my $port    = "3000";
-
+    my $ajax    = $method=~s/:ajax$|^ajax://gi;
     my $env = {
         'HTTP_ACCEPT'     => '*/*',
         'HTTP_HOST'       => "$host:$port",
@@ -31,6 +31,7 @@ sub run {
         'SERVER_PROTOCOL' => 'HTTP/1.1',
         'SERVER_SOFTWARE' => 'HTTP::Server::Simple/0.41',
         'SERVER_URL'      => "http://$host:$port/",
+        $ajax ? ('HTTP_X_REQUESTED_WITH'=>'XMLHttpRequest') : (),
     };
 
     $req = Dancer::Request->new(env => $env);
@@ -93,6 +94,9 @@ the command line ($ARGV[0]).
 
     # then, run the app the following way
     perl -d bin/app.pl GET '/some/path/to/test' 'with=parameters&other=42'
+    
+    # or for an ajax query, run the app the following way
+    perl -d bin/app.pl ajax:GET '/some/path/to/test' 'with=parameters&other=42'
 
 =head1 AUTHORS
 
