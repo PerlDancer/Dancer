@@ -15,6 +15,9 @@ NEXT
     * Test was using deprecated 'import_warnings'. (GH#1045, mokko)
     * Fix default test names for headers and redirection test methods.
       (GH#1048, odyniec)
+    * DANCER_SERVER_TOKENS and DANCER_SESSION_INFO are now
+        DANCER_NO_SERVER_TOKENS and DANCER_NO_SESSION_INFO. And working. :-)
+        (GH#1014, Yanick Champoux)
 
     [ DOCUMENTATION ]
     * Correct POD formatting for HTTP methods in introduction.pod.
