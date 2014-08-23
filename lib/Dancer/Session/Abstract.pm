@@ -242,6 +242,15 @@ Returns a string with the name of cookie used for storing the session ID.
 You should probably not override this; the user can control the cookie name
 using the C<session_name> setting.
 
+=item B<get_value($key)>
+
+Retrieves the value associated with the key.
+
+=item B<set_value($key, $value)>
+
+Stores the value associated with the key.
+
+
 =back
 
 =head2 Inherited Methods

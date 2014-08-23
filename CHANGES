@@ -8,6 +8,8 @@ NEXT
         segments. (GH#1016, Yanick Champoux)
     * Dancer::Handler::Debug now accepts env variables from the command-line.
         (GH#1056, Yanick Champoux)
+    * Accessing values abstracted as methods in Dancer::Session.
+        (GH#1000, John Wittkoski)
 
     [ BUG FIXES ]
     * Test was using deprecated 'import_warnings'. (GH#1045, mokko)
