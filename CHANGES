@@ -6,6 +6,8 @@ NEXT
     * environment configs are now merged with the global config, versus
         the previous behavior that was overriding the whole config
         segments. (GH#1016, Yanick Champoux)
+    * Dancer::Handler::Debug now accepts env variables from the command-line.
+        (GH#1056, Yanick Champoux)
 
     [ BUG FIXES ]
     * Test was using deprecated 'import_warnings'. (GH#1045, mokko)
