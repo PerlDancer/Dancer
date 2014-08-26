@@ -959,14 +959,9 @@ warnings: 1
 # should Dancer show a stacktrace when an error is caught?
 show_errors: 1
 
-# auto_reload is a development and experimental feature
-# you should enable it by yourself if you want it
-# Module::Refresh is needed 
-# 
-# Be aware it's unstable and may cause a memory leak.
-# DO NOT EVER USE THIS FEATURE IN PRODUCTION 
-# OR TINY KITTENS SHALL DIE WITH LOTS OF SUFFERING
-auto_reload: 0
+# auto_reload is a deprecated feature, use Plack module instead 
+# e.g.:
+# plack -R lib/ bin/app.pl 
 ",
 
 'production.yml' =>
