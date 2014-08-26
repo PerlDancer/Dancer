@@ -623,31 +623,6 @@ The code throwing that error.
 =back
 
 
-=head3 auto_reload (boolean) (deprecated)
-
-This feature is unmaintained, to be removed in the summer of 2015,
-and B<not working>.
-Use either L<Plack::Loader::Shotgun> or plackup with the -r
-switch:
-
-   plackup -r bin/appl.pl  (will restart the app whenever a file in ./bin or ./lib is modified
-
-Former behaviour was: If set to true, Dancer would reload the route handlers
-whenever the file where they are defined is changed. This is very useful in
-development environment but B<should not be enabled in production>. Enabling
-this flag in production yields a major negative effect on performance because
-of L<Module::Refresh>.
-
-Note that L<Module::Refresh> (similar to plackup -r) only operates on files in
-C<%INC>, so if the script your Dancer app is started from changes, even with
-auto_reload enabled, you will still not see the changes reflected until you start
-your app.
-
-Could also be enabled by setting environment variable L<DANCER_AUTO_RELOAD|/"ENVIRONMENT VARIABLES">
-to a true value or passing --restart=1 to app.pl.
-
-Requires L<Module::Refresh> and L<Clone>.
-
 =head2 Session engine
 
 =head3 session (enum)
