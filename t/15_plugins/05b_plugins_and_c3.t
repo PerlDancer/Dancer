@@ -3,7 +3,7 @@ use warnings;
 use Test::More import => ['!pass'];
 plan tests => 3;
 
-{
+SKIP: {
     use Dancer ':syntax';
 
     # This plugin already inherits from Data::Dumper
