@@ -60,6 +60,20 @@ sub session_name {
     setting('session_name') || 'dancer.session';
 }
 
+# May be overriden if session key value pairs aren't stored in the
+# session object's hash
+sub get_value {
+    my ( $self, $key ) = @_;
+    return $self->{$key};
+}
+
+# May be overriden if session key value pairs aren't stored in the
+# session object's hash
+sub set_value {
+    my ( $self, $key, $value ) = @_;
+    $self->{$key} = $value;
+}
+
 
 # Methods below this line should not be overloaded.
 
@@ -227,6 +241,15 @@ Returns a string with the name of cookie used for storing the session ID.
 
 You should probably not override this; the user can control the cookie name
 using the C<session_name> setting.
+
+=item B<get_value($key)>
+
+Retrieves the value associated with the key.
+
+=item B<set_value($key, $value)>
+
+Stores the value associated with the key.
+
 
 =back
 

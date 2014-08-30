@@ -47,7 +47,7 @@ sub read {
     my ($class, $key) = @_;
     return unless $key;
     my $session = get_current_session();
-    return $session->{$key};
+    return $session->get_value($key);
 }
 
 sub write {
@@ -57,7 +57,7 @@ sub write {
     $key eq 'id' and croak 'Can\'t store to session key with name "id"';
 
     my $session = get_current_session();
-    $session->{$key} = $value;
+    $session->set_value($key, $value);
 
     # TODO : should be moved as an "after" filter
     $session->flush unless $session->is_lazy;

@@ -1,6 +1,37 @@
 Revision history for Dancer
 
 NEXT
+
+    [ ENHANCEMENTS ]
+    * environment configs are now merged with the global config, versus
+        the previous behavior that was overriding the whole config
+        segments. (GH#1016, Yanick Champoux)
+    * Dancer::Handler::Debug now accepts env variables from the command-line.
+        (GH#1056, Yanick Champoux)
+    * Accessing values abstracted as methods in Dancer::Session.
+        (GH#1000, John Wittkoski)
+
+    [ BUG FIXES ]
+    * Test was using deprecated 'import_warnings'. (GH#1045, mokko)
+    * Fix default test names for headers and redirection test methods.
+      (GH#1048, odyniec)
+    * DANCER_SERVER_TOKENS and DANCER_SESSION_INFO are now
+        DANCER_NO_SERVER_TOKENS and DANCER_NO_SESSION_INFO. And working. :-)
+        (GH#1014, Yanick Champoux)
+    * 'any' wasn't understanding 'del' (only 'delete'). 
+        (GH#1044, Yanick Champoux)
+
+    [ DOCUMENTATION ]
+    * Correct POD formatting for HTTP methods in introduction.pod.
+        (GH#1047, Lx)
+
+1.3126 2014-07-14
+
+    [ BUG FIXES ]
+    * Bunch of files were not in the MANIFEST.
+
+1.3125 2014-07-12
+
     [ ENHANCEMENT ]
     * Skip bad cookie definitions. (GH#1036, Manuel Weiss)
     * 'dancer' script warns and die if trying to create 

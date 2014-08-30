@@ -70,22 +70,30 @@ route handlers.
 
 =over 8
 
-=item B<GET>        The GET method retrieves information (when defining a route
-                    handler for the GET method, Dancer automatically defines a
-                    route handler for the HEAD method, in order to honour HEAD
-                    requests for each of your GET route handlers).
-                    To define a GET action, use the B<get> keyword.
+=item B<GET>
 
-=item B<POST>       The POST method is used to create a resource on the
-                    server.
-                    To define a POST action, use the B<post> keyword.
+The GET method retrieves information (when defining a route
+handler for the GET method, Dancer automatically defines a
+route handler for the HEAD method, in order to honour HEAD
+requests for each of your GET route handlers).
+To define a GET action, use the B<get> keyword.
 
-=item B<PUT>        The PUT method is used to update an existing resource.
-                    To define a PUT action, use the B<put> keyword.
+=item B<POST>
 
-=item B<DELETE>     The DELETE method requests that the origin server delete
-                    the resource identified by the Request-URI.
-                    To define a DELETE action, use the B<del> keyword.
+The POST method is used to create a resource on the
+server.
+To define a POST action, use the B<post> keyword.
+
+=item B<PUT>
+
+The PUT method is used to update an existing resource.
+To define a PUT action, use the B<put> keyword.
+
+=item B<DELETE>
+
+The DELETE method requests that the origin server delete
+the resource identified by the Request-URI.
+To define a DELETE action, use the B<del> keyword.
 
 =back
 
