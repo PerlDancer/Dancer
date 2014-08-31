@@ -8,8 +8,11 @@ MANIFEST
 META.json
 META.yml
 README
+README.md
 README.mkdn
 SIGNATURE
+cpanfile
+doap.xml
 examples/dancr/dancr.pl
 examples/dancr/public/css/style.css
 examples/dancr/schema.sql
@@ -77,6 +80,7 @@ lib/Dancer/Serializer.pm
 lib/Dancer/Serializer/Abstract.pm
 lib/Dancer/Serializer/Dumper.pm
 lib/Dancer/Serializer/JSON.pm
+lib/Dancer/Serializer/JSONP.pm
 lib/Dancer/Serializer/Mutable.pm
 lib/Dancer/Serializer/XML.pm
 lib/Dancer/Serializer/YAML.pm
@@ -180,6 +184,7 @@ t/03_route_handler/31_infinite_loop.t
 t/03_route_handler/33_vars.t
 t/03_route_handler/34_forward_body_post.t
 t/03_route_handler/35_no_further_routes.t
+t/03_route_handler/36_false_routes.t
 t/03_route_handler/99_bugs.t
 t/03_route_handler/public/404.html
 t/03_route_handler/public/utf8file.txt
@@ -289,6 +294,7 @@ t/14_serializer/03_request_yaml.t
 t/14_serializer/04_request_xml.t
 t/14_serializer/05_request_mutable.t
 t/14_serializer/06_api.t
+t/14_serializer/07_request_jsonp.t
 t/14_serializer/17_clear_serializer.t
 t/14_serializer/18_mutable_template_or_serialize.t
 t/14_serializer/99_bugs.t
