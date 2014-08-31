@@ -269,10 +269,6 @@ __END__
 
 =pod
 
-=head1 NAME
-
-Dancer::Config -
-
 =head1 DESCRIPTION
 
 Dancer::Config handles reading and changing the configuration of your Dancer
