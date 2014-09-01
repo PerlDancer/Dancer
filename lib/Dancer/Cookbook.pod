@@ -1,13 +1,24 @@
+# PODNAME: Dancer::Cookbook
+# ABSTRACT: a quick-start guide to the Dancer web framework
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Cookbook - a quick-start guide to the Dancer web framework
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 DESCRIPTION
 
 A quick-start guide with examples to get you up and running with the Dancer web
 framework.
-
-
 
 =head1 BEGINNER'S DANCE
 
@@ -42,8 +53,6 @@ Note that you don't need to use the C<strict> and C<warnings> pragma, they are
 already loaded by Dancer.  (If you don't want the C<warnings> pragma (which can
 lead to undesired warnings about use of undef values, for example), then set the
 L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
-
-
 
 =head2 Starting a Dancer project
 
@@ -89,8 +98,6 @@ will live), an environments directory (where environment-specific settings
 live), a module containing the actual guts of your application, a script to
 start it - or to run your web app via Plack/PSGI - more on that later.
 
-
-
 =head1 DANCE ROUTINES: ROUTES
 
 =head2 Declaring routes
@@ -126,16 +133,12 @@ The following will match GET or POST requests to /myaction:
 For convenience, any route which matches GET requests will also match HEAD
 requests.
 
-
-
 =head2 Retrieving request parameters
 
 The L<params|Dancer/params> keyword returns a hashref of request parameters; 
 these will be parameters supplied on the query string, within the path itself 
 (with named placeholders), and, for HTTP POST requests, the content of the 
 POST body.
-
-
 
 =head2 Named parameters in route path declarations
 
@@ -149,8 +152,6 @@ use something like:
         my $company_id = params->{companyid};
         # Look up the company and return appropriate page
     };
-
-
 
 =head2 Wildcard path matching and splat
 
@@ -168,8 +169,6 @@ with the L<splat|Dancer/splat> keyword:
             return "What?";
         }
     };
-
-
 
 =head2 Before hooks - processed before a request
 
@@ -213,7 +212,6 @@ Then you can set up the template as such:
 
     Please try again or contact us at our email at <...>.
 
-
 =head2 Using the auto_page feature for automatic route creation
 
 For simple "static" pages, you can simply enable the C<auto_page> config
@@ -222,8 +220,6 @@ if a request is for C</foo/bar>, Dancer will check for a matching view (e.g.
 C</foo/bar.tt> and render it with the default layout etc if found.  For full
 details, see the documentation for the 
 L<auto_page setting|Dancer::Config/"auto_page">.
-
-
 
 =head2 Why should I use the Ajax plugin
 
@@ -262,11 +258,8 @@ and
          to_xml({...}, RootName => undef);
     }
 
-
 Because it's an ajax query, you know you need to return a xml content,
 so the content type of the response is set for you.
-
-
 
 =head2 Using the prefix feature to split your application
 
@@ -299,8 +292,6 @@ The following routes will be generated for us:
     - get /admin/
     - head /
     - head /admin/
-
-
 
 =head1 MUSCLE MEMORY: STORING DATA
 
@@ -344,8 +335,6 @@ Storing data in the session is as easy as:
 
     session varname => 'value';
 
-
-
 =head3 Retrieving data from the session
 
 Retrieving data from the session is as easy as:
@@ -355,8 +344,6 @@ Retrieving data from the session is as easy as:
 Or, alternatively,
 
     session->{varname}
-
-
 
 =head3 Controlling where sessions are stored
 
@@ -372,8 +359,6 @@ and easily within your config file, for example:
 
 If the directory you specify does not exist, Dancer will attempt to create it
 for you.
-
-
 
 =head3 Destroying a session
 
@@ -447,15 +432,11 @@ wouldn't store your users passwords in the clear, would you?)) follows:
         }
     };
 
-
-
 =head3 Retrieve complete hash stored in session
 
 Get complete hash stored in session:
 
     my $hash = session;
-
-
 
 =head1 APPEARANCE
 
@@ -571,8 +552,6 @@ Then in your layout, modify your css inclusion as follows:
 From now on, you can mount your application wherever you want, without
 any further modification of the css inclusion
 
-
-
 =head3 template and unicode
 
 If you use L<Plack> and have some unicode problem with your Dancer application,
@@ -584,8 +563,6 @@ config.yml will look like this:
     engines:
       template_toolkit:
         ENCODING: utf8
-
-
 
 =head3 TT's WRAPPER directive in Dancer (META variables, SETs)
 
@@ -624,8 +601,6 @@ Change the configuration of the template to Template Toolkit:
 
 Done! Everything will work fine out of the box, including variables and META
 variables.
-
-
 
 =head1 SETTING THE STAGE: CONFIGURATION AND LOGGING
 
@@ -671,8 +646,6 @@ And in a production one:
     startup_info: 0
     show_errors:  0
 
-
-
 =head2 Accessing configuration information from your app
 
 A Dancer application can use the 'config' keyword to easily access the settings
@@ -684,8 +657,6 @@ within its config file, for instance:
 
 This makes keeping your application's settings all in one place simple and easy
 - you shouldn't need to worry about implementing all that yourself :)
-
-
 
 =head2 Accessing configuration information from a separate script
 
@@ -754,8 +725,6 @@ By the way, you not only get values, you can also set values straightforward
 like we do above with config->{environment}='production'. Of course, this value
 does not get written in any file; it only lives in memory and your webapp
 doesn't have access to it, but you can use it inside your script.
-
-
 
 =head2 Logging
 
@@ -856,8 +825,6 @@ For examples on deploying your Dancer applications (including standalone, behind
 proxy/load-balancing software, and using common web servers including Apache to
 run via CGI/FastCGI etc, see L<Dancer::Deployment>.
 
-
-
 =head1 DANCER ON THE STAGE: DEPLOYMENT
 
 =head2 Plack middlewares
@@ -907,3 +874,16 @@ C<plack_middlewares_map>. You'll need L<Plack::App::URLMap> to do that.
 =head1 AUTHORS
 
 Dancer contributors - see AUTHORS file.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

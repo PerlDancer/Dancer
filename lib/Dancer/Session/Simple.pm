@@ -1,5 +1,9 @@
 package Dancer::Session::Simple;
-
+BEGIN {
+  $Dancer::Session::Simple::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: in-memory session backend for Dancer
+$Dancer::Session::Simple::VERSION = '1.3127';
 use strict;
 use warnings;
 use base 'Dancer::Session::Abstract';
@@ -36,13 +40,20 @@ sub flush {
 }
 
 1;
+
 __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Session::Simple - in-memory session backend for Dancer
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 DESCRIPTION
 
@@ -50,12 +61,10 @@ This module implements a very simple session backend, holding all session data
 in memory.  This means that sessions are volatile, and no longer exist when the
 process exits.  This module is likely to be most useful for testing purposes.
 
-
 =head1 CONFIGURATION
 
 The setting B<session> should be set to C<Simple> in order to use this session
 engine in a Dancer application.
-
 
 =head1 AUTHOR
 
@@ -74,5 +83,16 @@ This module is copyright (c) 2010 David Precious <davidp@preshweb.co.uk>
 
 This module is free software and is released under the same terms as Perl
 itself.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

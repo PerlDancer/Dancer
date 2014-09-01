@@ -1,5 +1,9 @@
 package Dancer::Object::Singleton;
-
+BEGIN {
+  $Dancer::Object::Singleton::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: Singleton base class for Dancer
+$Dancer::Object::Singleton::VERSION = '1.3127';
 # This class is a root class for singleton objects in Dancer.
 # It provides basic OO singleton tools for Perl5 without being... MooseX::Singleton ;-)
 
@@ -62,9 +66,17 @@ sub _setter_code {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Object::Singleton - Singleton base class for Dancer
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -118,15 +130,13 @@ C<get_attributes>.
 
 =head1 AUTHOR
 
-Damien Krotkine
+Dancer Core Developers
 
-=head1 LICENSE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2010 Damien Krotkine.
+This software is copyright (c) 2010 by Alexis Sukrieh.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
-See http://dev.perl.org/licenses/ for more information.
-
+=cut

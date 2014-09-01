@@ -1,5 +1,9 @@
 package Dancer::Hook::Properties;
-
+BEGIN {
+  $Dancer::Hook::Properties::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: Properties attached to a hook
+$Dancer::Hook::Properties::VERSION = '1.3127';
 use strict;
 use warnings;
 
@@ -37,15 +41,25 @@ sub should_run_this_app {
 
 1;
 
+__END__
+
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Hook::Properties - Properties attached to a hook
 
+=head1 VERSION
+
+version 1.3127
+
+=head1 SYNOPSIS
+
 =head1 DESCRIPTION
 
 Properties attached to a hook
-
-=head1 SYNOPSIS
 
 =head1 METHODS
 
@@ -57,3 +71,16 @@ This module has been written by Alexis Sukrieh and others.
 
 This module is free software and is published under the same
 terms as Perl itself.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

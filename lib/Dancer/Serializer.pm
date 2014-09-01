@@ -1,5 +1,9 @@
 package Dancer::Serializer;
-
+BEGIN {
+  $Dancer::Serializer::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: serializer wrapper for Dancer
+$Dancer::Serializer::VERSION = '1.3127';
 # Factory for serializer engines
 
 use strict;
@@ -123,9 +127,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Serializer - serializer wrapper for Dancer
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 DESCRIPTION
 
@@ -171,7 +181,6 @@ your C<foo> route can do something like:
      #  ...
   }
 
-
 =head1 AUTHORS
 
 This module has been written by Alexis Sukrieh and Franck Cuny.
@@ -185,5 +194,16 @@ itself.
 =head1 SEE ALSO
 
 See L<Dancer> for details about the complete framework.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

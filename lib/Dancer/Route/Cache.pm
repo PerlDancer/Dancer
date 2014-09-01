@@ -1,18 +1,19 @@
 package Dancer::Route::Cache;
-
+BEGIN {
+  $Dancer::Route::Cache::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: route caching mechanism for L<Dancer>
+$Dancer::Route::Cache::VERSION = '1.3127';
 use strict;
 use warnings;
 use Carp;
 
 use base 'Dancer::Object';
 
-use vars '$VERSION';
-
 use Dancer::Config 'setting';
 use Dancer::Error;
 use Dancer::Exception qw(:all);
 
-$VERSION = '0.01';
 Dancer::Route::Cache->attributes('size_limit', 'path_limit');
 
 # static
@@ -146,9 +147,17 @@ sub route_cache_paths {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Route::Cache - route caching mechanism for L<Dancer>
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -246,14 +255,13 @@ Returns the limit (post-set).
 
 =head1 AUTHOR
 
-Sawyer X
+Dancer Core Developers
 
-=head1 LICENSE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2010 Sawyer X.
+This software is copyright (c) 2010 by Alexis Sukrieh.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
-See http://dev.perl.org/licenses/ for more information.
+=cut

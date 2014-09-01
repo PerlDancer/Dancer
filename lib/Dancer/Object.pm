@@ -1,5 +1,9 @@
 package Dancer::Object;
-
+BEGIN {
+  $Dancer::Object::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: Objects base class for Dancer
+$Dancer::Object::VERSION = '1.3127';
 # This class is a root class for each object in Dancer.
 # It provides basic OO tools for Perl5 without being... Moose ;-)
 
@@ -100,9 +104,17 @@ sub attributes_defaults {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Object - Objects base class for Dancer
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -182,15 +194,13 @@ default values. Usually called from within an C<init> function.
 
 =head1 AUTHOR
 
-Alexis Sukrieh
+Dancer Core Developers
 
-=head1 LICENSE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2009-2010 Alexis Sukrieh.
+This software is copyright (c) 2010 by Alexis Sukrieh.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
-See http://dev.perl.org/licenses/ for more information.
-
+=cut

@@ -1,5 +1,9 @@
 package Dancer::FileUtils;
-
+BEGIN {
+  $Dancer::FileUtils::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: helper providing file utilities
+$Dancer::FileUtils::VERSION = '1.3127';
 use strict;
 use warnings;
 
@@ -147,9 +151,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::FileUtils - helper providing file utilities
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -171,7 +181,6 @@ Dancer::FileUtils - helper providing file utilities
     set_file_mode($fh);
     my @content = read_file_content($fh);
     my $content = read_file_content($fh);
-
 
 =head1 DESCRIPTION
 
@@ -247,14 +256,13 @@ Nothing by default. You can provide a list of subroutines to import.
 
 =head1 AUTHOR
 
-Alexis Sukrieh
+Dancer Core Developers
 
-=head1 LICENSE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2009-2011 Alexis Sukrieh.
+This software is copyright (c) 2010 by Alexis Sukrieh.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
-See http://dev.perl.org/licenses/ for more information.
+=cut

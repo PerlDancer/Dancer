@@ -1,6 +1,19 @@
+# PODNAME: Dancer::Deployment
+# ABSTRACT: common ways to put your Dancer app into use
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Deployment - common ways to put your Dancer app into use
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 DESCRIPTION
 
@@ -235,7 +248,6 @@ A basic PSGI service description (usually in /etc/ubic/service/application):
 
 Run C<ubic start application> to start the service.
 
-
 =head4 Using daemontools
 
 daemontools is a collection of tools for managing UNIX services. You can use it
@@ -250,7 +262,6 @@ A basic script to start an application: (in /service/application/run)
 
     exec 2>&1 \
     /usr/local/bin/plackup -s Starman -a /path/to/your/application/app.pl -p 5000
-
 
 =head3 Running stand-alone behind a proxy / load balancer
 
@@ -332,7 +343,6 @@ provided with perlbal, but you'll probably want something like:
     SET verify_backend  = on
     ENABLE my_webapp
 
-
 =head4 Using balance
 
 C<balance> is a simple load-balancer from Inlab Software, available from
@@ -351,7 +361,6 @@ To listen on a specified IP only on port 80, and distribute requests between
 multiple Dancer apps on multiple other machines:
 
     balance -b 10.0.0.1 80 10.0.0.2:3000 10.0.0.3:3000 10.0.0.4:3000
-
 
 =head4 Using Lighttpd
 
@@ -503,11 +512,9 @@ A psgi chef cookbook supporting Dancer (as well as I<Catalyst>)
 written by Alexey Melezhik is available
 at L<http://community.opscode.com/cookbooks/psgi>.
 
-
 =head2 Running from Apache
 
 You can run your Dancer app from Apache using the following examples:
-
 
 =head3 Running from Apache with Plack
 
@@ -588,7 +595,6 @@ Of course, if your Apache configuration allows that, you can put the
 RewriteRules in a .htaccess file directly within the application's directory,
 which lets you add a new application without changing the Apache configuration.
 
-
 =head2 Running on lighttpd (CGI)
 
 To run as a CGI app on lighttpd, just create a soft link to the dispatch.cgi
@@ -636,3 +642,15 @@ Launch your application:
 
     plackup -s FCGI --listen /tmp/fcgi.sock bin/app.pl
 
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

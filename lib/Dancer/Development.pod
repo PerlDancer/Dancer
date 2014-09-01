@@ -1,7 +1,19 @@
+# PODNAME: Dancer::Development
+# ABSTRACT: guide for developers interested in contributing
+
+__END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
 Dancer::Development - guide for developers interested in contributing
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 DESCRIPTION
 
@@ -339,3 +351,16 @@ L<https://github.com/PerlDancer/Dancer/blob/master/TODO>.
 =head1 AUTHOR
 
 This document has been written by Alexis Sukrieh L<sukria@cpan.org>
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

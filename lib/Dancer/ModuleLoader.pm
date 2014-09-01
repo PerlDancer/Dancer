@@ -1,5 +1,9 @@
 package Dancer::ModuleLoader;
-
+BEGIN {
+  $Dancer::ModuleLoader::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: dynamic module loading helpers for Dancer core components
+$Dancer::ModuleLoader::VERSION = '1.3127';
 # Abstraction layer for dynamic module loading
 
 use strict;
@@ -64,9 +68,17 @@ sub class_from_setting {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::ModuleLoader - dynamic module loading helpers for Dancer core components
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -208,15 +220,13 @@ L<Module::Load>, L<Module::New::Loader>
 
 =head1 AUTHOR
 
-Alexis Sukrieh
+Dancer Core Developers
 
-=head1 LICENSE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2009-2010 Alexis Sukrieh.
+This software is copyright (c) 2010 by Alexis Sukrieh.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
-See http://dev.perl.org/licenses/ for more information.
-
+=cut

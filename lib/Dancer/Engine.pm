@@ -1,5 +1,9 @@
 package Dancer::Engine;
-
+BEGIN {
+  $Dancer::Engine::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: base class for Dancer engines
+$Dancer::Engine::VERSION = '1.3127';
 # This is the base-class of every engine abstract class.
 # This allow us to put in that single place the engine creation
 # from a namespace and a name, to its configuration initialization.
@@ -85,9 +89,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Engine - base class for Dancer engines
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -137,15 +147,13 @@ Builds and returns the engine.
 
 =head1 AUTHOR
 
-Alexis Sukrieh
+Dancer Core Developers
 
-=head1 LICENSE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2009-2010 Alexis Sukrieh.
+This software is copyright (c) 2010 by Alexis Sukrieh.
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
-See http://dev.perl.org/licenses/ for more information.
-
+=cut

@@ -1,5 +1,9 @@
 package Dancer::Exception;
-
+BEGIN {
+  $Dancer::Exception::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: class for throwing and catching exceptions
+$Dancer::Exception::VERSION = '1.3127';
 use strict;
 use warnings;
 use Carp;
@@ -129,9 +133,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Exception - class for throwing and catching exceptions
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -157,8 +167,6 @@ Dancer::Exception - class for throwing and catching exceptions
         $exception->rethrow
       }
     };
-
-
 
 =head1 DESCRIPTION
 
@@ -276,3 +284,16 @@ is similar to C<$Carp::Verbose>. I recommend you use it like that:
 
 All the L<Carp> global variables can also be used to alter the stacktrace
 generation.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

@@ -1,6 +1,19 @@
+#PODNAME: Dancer::Development::Integration
+#ABSTRACT: guide for Dancer's core-team members
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Development::Integration - guide for Dancer's core-team members
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 DESCRIPTION
 
@@ -16,7 +29,7 @@ ways of handling the (increasing number!) of pull requests.
 We will first define the most important terms used in this
 documentation:
 
-=over 
+=over
 
 =item * B<PR> 
 
@@ -68,7 +81,6 @@ In order to have a clean history, like the one we got with git-flow
 when working on a feature, we're going to do that in a topic branch,
 named C<review/$user>. Then, this branch will be merged into C<devel>
 and we will just have to drop it.
-
 
 First, we make sure we are in sync with C<origin/devel>
 
@@ -185,5 +197,16 @@ bumping the version number to 1.5000_01
 =head1 AUTHOR
 
 This documentation has been written by Alexis Sukrieh C<< <sukria@sukria.net> >>.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

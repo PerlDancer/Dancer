@@ -1,5 +1,9 @@
 package Dancer::Serializer::XML;
-
+BEGIN {
+  $Dancer::Serializer::XML::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: serializer for handling XML data
+$Dancer::Serializer::XML::VERSION = '1.3127';
 use strict;
 use warnings;
 use Carp;
@@ -76,11 +80,20 @@ sub deserialize {
 sub content_type {'text/xml'}
 
 1;
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
 Dancer::Serializer::XML - serializer for handling XML data
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -111,3 +124,16 @@ config file:
            AttrIndent: 1
         deserialize:
            ForceArray: 1
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

@@ -1,5 +1,9 @@
 package Dancer::Serializer::JSON;
-
+BEGIN {
+  $Dancer::Serializer::JSON::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: serializer for handling JSON data
+$Dancer::Serializer::JSON::VERSION = '1.3127';
 use strict;
 use warnings;
 use Carp;
@@ -100,11 +104,20 @@ sub _options_as_hashref {
 sub content_type {'application/json'}
 
 1;
+
 __END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
 Dancer::Serializer::JSON - serializer for handling JSON data
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -134,7 +147,6 @@ settings to the B<engines> configuration to turn these on. For example:
             canonical:       '1'
             convert_blessed: '1'
 
-
 =head1 METHODS
 
 =head2 serialize
@@ -148,3 +160,16 @@ Deserialize a JSON structure to a data structure
 =head2 content_type
 
 Return 'application/json'
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

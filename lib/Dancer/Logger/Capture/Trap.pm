@@ -1,11 +1,53 @@
 package Dancer::Logger::Capture::Trap;
-
+BEGIN {
+  $Dancer::Logger::Capture::Trap::AUTHORITY = 'cpan:SUKRIA';
+}
+$Dancer::Logger::Capture::Trap::VERSION = '1.3127';
+# ABSTRACT: a place to store captured Dancer logs
+#
 use base 'Dancer::Object';
 
+
+__PACKAGE__->attributes( "_storage" );
+
+sub init {
+    my $self = shift;
+    $self->_storage([]) unless $self->_storage;
+}
+
+sub store {
+    my($self, $level, $message) = @_;
+
+    push @{$self->_storage}, { level => $level, message => $message };
+}
+
+
+
+sub read {
+    my $self = shift;
+
+    my $logs = $self->_storage;
+    $self->_storage([]);
+    return $logs;
+}
+
+
+
+1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
 Dancer::Logger::Capture::Trap - a place to store captured Dancer logs
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -28,22 +70,6 @@ L<Dancer::Logger::Capture>.
 
 Stores a log $message and its $level.
 
-=cut
-
-__PACKAGE__->attributes( "_storage" );
-
-sub init {
-    my $self = shift;
-    $self->_storage([]) unless $self->_storage;
-}
-
-sub store {
-    my($self, $level, $message) = @_;
-
-    push @{$self->_storage}, { level => $level, message => $message };
-}
-
-
 =head3 read
 
     my $logs = $trap->read;
@@ -56,21 +82,19 @@ For example...
      { level => "error",   message => "You fail forever" }
     ];
 
-=cut
-
-sub read {
-    my $self = shift;
-
-    my $logs = $self->_storage;
-    $self->_storage([]);
-    return $logs;
-}
-
-
 =head1 SEE ALSO
 
 L<Dancer::Logger::Capture>
 
-=cut
+=head1 AUTHOR
 
-1;
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

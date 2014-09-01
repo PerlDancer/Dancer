@@ -1,12 +1,47 @@
 package Dancer::Logger::Capture;
-
+BEGIN {
+  $Dancer::Logger::Capture::AUTHORITY = 'cpan:SUKRIA';
+}
+# ABSTRACT: Capture dancer logs
+$Dancer::Logger::Capture::VERSION = '1.3127';
 use strict;
 use warnings;
 
 
+
+use base "Dancer::Logger::Abstract";
+
+use Dancer::Logger::Capture::Trap;
+my $Trap = Dancer::Logger::Capture::Trap->new;
+
+sub _log {
+    my($self, $level, $message) = @_;
+
+    $Trap->store( $level => $message );
+    return;
+}
+
+sub trap {
+    return $Trap;
+}
+
+
+
+1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Logger::Capture - Capture dancer logs
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -28,25 +63,6 @@ It's primary purpose is for testing.
 Returns the L<Dancer::Logger::Capture::Trap> object used to capture
 and read logs.
 
-=cut
-
-use base "Dancer::Logger::Abstract";
-
-use Dancer::Logger::Capture::Trap;
-my $Trap = Dancer::Logger::Capture::Trap->new;
-
-sub _log {
-    my($self, $level, $message) = @_;
-
-    $Trap->store( $level => $message );
-    return;
-}
-
-sub trap {
-    return $Trap;
-}
-
-
 =head1 EXAMPLE
 
     use Test::More import => ['!pass'], tests => 2;
@@ -66,11 +82,19 @@ sub trap {
     # each call to read cleans the trap
     is_deeply $trap->read, [];
 
-
 =head1 SEE ALSO
 
 L<Dancer::Logger>, L<Dancer::Logger::Capture::Trap>
 
-=cut
+=head1 AUTHOR
 
-1;
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

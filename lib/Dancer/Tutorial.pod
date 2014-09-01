@@ -1,8 +1,19 @@
+# PODNAME: Dancer::Tutorial
+# ABSTRACT: An example to get you dancing
+
+__END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
 Dancer::Tutorial - An example to get you dancing
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 What is Dancer?
 
@@ -59,11 +70,10 @@ Create the database by running the follow from the shell:
         text string not null
     );
     ^D
-	
+
 The above creates a single table with three columns: I<id>, I<title>, and
 I<text>.  The 'I<id>' field is the primary key and will
 automatically get an ID assigned by the database engine when a row is inserted.
-
 
 We want our application to initialize the database automatically for us when we start it, so open your favorite
 L<text editor|http://www.vim.org> and create a file called 'dancr.pl'.  We're going to put the following subroutines
@@ -81,14 +91,13 @@ in that file:
     my $schema = read_file('./schema.sql');
     $db->do($schema) or die $db->errstr;
   }
-  
+
 Nothing too fancy in here, I hope. Standard DBI except for the C<setting('database')> thing - more on that in a bit. 
 For now, just assume that the expression evaluates to file location for the database file.
 
 (Note that you may want to look at the L<Dancer::Plugin::Database> module for an
 easy way to configure and manage database connections for your Dancer apps, but
 the above will suffice for this tutorial.)
-
 
 =head1 Our first route handler
 
@@ -303,7 +312,7 @@ handler for the C</login> route.
       'err' => $err,
     };
   };
- 
+
 This is the first handler which accepts two different verb types, a GET for a
 human browsing to the URL and a POST for the browser to submit the user's input
 to the web application.  Since we're handling two different verbs, we check to
@@ -460,7 +469,6 @@ Assuming you have Git installed, you can clone the code:
 
 ... then run C<dancer.pl>.
 
-
 =head1 Advanced route moves
 
 There's a lot more to route matching than shown here. For example, you can
@@ -547,5 +555,16 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE AND DOCUMENTATION, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

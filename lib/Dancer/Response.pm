@@ -1,5 +1,9 @@
 package Dancer::Response;
-
+BEGIN {
+  $Dancer::Response::AUTHORITY = 'cpan:SUKRIA';
+}
+#ABSTRACT: Response object for Dancer
+$Dancer::Response::VERSION = '1.3127';
 use strict;
 use warnings;
 use Carp;
@@ -183,10 +187,19 @@ sub build_cookie_headers {
 }
 1;
 
+__END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
 Dancer::Response - Response object for Dancer
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 SYNOPSIS
 
@@ -226,7 +239,6 @@ create and return a new Dancer::Response object
 return the current Dancer::Response object, and reset the object
 
 =head2 exists
-
 
     if ($response->exists) {
         ...
@@ -334,4 +346,15 @@ Return the list of headers for the current response.
 
 This method is called before returning a L<< PSGI >> response. It transforms the list of headers to an array reference.
 
+=head1 AUTHOR
 
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

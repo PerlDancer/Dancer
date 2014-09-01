@@ -1,6 +1,19 @@
+# PODNAME: Dancer::Plugins
+# ABSTRACT: interesting plugins to add to Dancer's capabilities
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Dancer::Plugins - interesting plugins to add to Dancer's capabilities
+
+=head1 VERSION
+
+version 1.3127
 
 =head1 DESCRIPTION
 
@@ -39,7 +52,6 @@ keyword.  Email sending settings can be taken from your app's config.
 
 Send SMS text messages to mobile phones from your Dancer app, using any service
 supported by L<SMS::Send>.
-
 
 =item L<Dancer::Plugin::Ajax>
 
@@ -120,4 +132,15 @@ More plugins are appearing on CPAN all the time - just search for
 C<Dancer::Plugin> to see what may have been released since this document was
 last updated!
 
+=head1 AUTHOR
 
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
