@@ -1,8 +1,5 @@
-# PODNAME: Dancer/Plugins.pod
-
-=head1 NAME
-
-Dancer::Plugins - interesting plugins to add to Dancer's capabilities
+# PODNAME: Dancer::Plugins
+# ABSTRACT: interesting plugins to add to Dancer's capabilities
 
 =head1 DESCRIPTION
 

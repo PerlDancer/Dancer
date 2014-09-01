@@ -1,8 +1,6 @@
-#PODNAME: Dancer/Development/Integration.pod
+#PODNAME: Dancer::Development::Integration
+#ABSTRACT: guide for Dancer's core-team members
 
-=head1 NAME
-
-Dancer::Development::Integration - guide for Dancer's core-team members
 
 =head1 DESCRIPTION
 
