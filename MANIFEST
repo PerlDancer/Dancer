@@ -115,7 +115,6 @@ t/00_base/09_load_app.t
 t/00_base/11_file_utils.t
 t/00_base/12_utf8_charset.t
 t/00_base/13_dancer_singleton.t
-t/00_base/14_changelog.t
 t/00_base/15_dependent_modules.t
 t/00_base/16_version.t
 t/00_base/17_globalwarnings_config_on.t
