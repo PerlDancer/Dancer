@@ -1,6 +1,9 @@
 package Dancer::Timer;
+BEGIN {
+  $Dancer::Timer::AUTHORITY = 'cpan:SUKRIA';
+}
 #ABSTRACT: a timer for Dancer
-
+$Dancer::Timer::VERSION = '1.3128';
 use strict;
 use warnings;
 use base 'Dancer::Object';
@@ -29,6 +32,18 @@ sub to_string {
 1;
 
 __END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Timer - a timer for Dancer
+
+=head1 VERSION
+
+version 1.3128
 
 =head1 SYNOPSIS
 
@@ -79,3 +94,15 @@ and now.
 
 Same as C<tick>, just more expressive.
 
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

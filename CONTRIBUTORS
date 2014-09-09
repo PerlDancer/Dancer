@@ -1,0 +1,179 @@
+
+# DANCER CONTRIBUTORS #
+
+This is the (likely incomplete) list of people who have helped
+make this distribution what it is, either via code contributions, 
+patches, bug reports, help with troubleshooting, etc. A huge
+thank to all of them.
+
+    * Achim Adam <achim.adam@(none).com>
+    * Adam J. Foxson <afoxson@pobox.com>
+    * Adam Kennedy <adamk@cpan.org>
+    * Akash Ayare <akash@hairynandgate.com>
+    * Al Newkirk <github@alnewkirk.com>
+    * Al Newkirk <we@ana.im>
+    * Alan Haggai Alavi <alanhaggai@alanhaggai.org>
+    * Alberto Simoes <ambs@cpan.org>
+    * Alberto Simões <ambs@cpan.org>
+    * Alessandro Ranellucci <aar@cpan.org>
+    * Alex C <calyx238@gmail.com>
+    * Alex Kalderimis <alex.kalderimis@gmail.com>
+    * Alex Kapranoff <kapranoff@gmail.com>
+    * Alex Peters <lxp@cpan.org>
+    * Alexis Sukrieh <sukria@sukria.net>
+    * Alfie John <alfiej@opera.com>
+    * Anirvan Chatterjee <anirvan@base.mx.org>
+    * Anton Gerasimov <me@zyxmasta.com>
+    * Ask Bjørn Hansen <ask@develooper.com>
+    * Assaf Gordon <assafgordon@gmail.com>
+    * Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+    * Brian E. Lozier <brian@massassi.com>
+    * Brian Hann <emailc0bra@gmail.com>
+    * Brian Phillips <brian@thephillips.info>
+    * CPAN Service <cpanservice@chorny.net>
+    * Chris Andrews <chrisandrews@venda.com>
+    * Chris Seymour <chris.j.seymour@hotmail.com>
+    * Christian Walde <walde.christian@googlemail.com>
+    * Colin Keith <colinmkeith@gmail.com>
+    * Colin Kuskie <colink@perldreamer.com>
+    * Craig Treptow <craig.treptow@gmail.com>
+    * Dagfinn Ilmari Mannsåker <ilmari@ilmari.org>
+    * Damien Krotkine <dams@cpan.org>
+    * Danijel Tasov <dt@korn.shell.la>
+    * Dave Doyle <dave.s.doyle@gmail.com>
+    * David Cantrell <david@cantrell.org.uk>
+    * David Golden <dagolden@cpan.org>
+    * David Moreno <david@axiombox.com>
+    * David Precious <davidp@preshweb.co.uk>
+    * David Steinbrunner <dsteinbrunner@pobox.com>
+    * David Zurborg <zurborg@cpan.org>
+    * Dennis Lichtenthaeler <dennis.lichtenthaeler@stiftung-tannenhof.de>
+    * Duncan Hutty <dhutty@allgoodbits.org>
+    * Emmanuel Rodriguez <emmanuel.rodriguez@gmail.com>
+    * Fabrice Gabolde <fabrice.gabolde@gmail.com>
+    * Fabrice Gabolde <fabrice.gabolde@uperto.com>
+    * Fayland Lam <fayland@gmail.com>
+    * Felix Dorner <felix_do@web.de>
+    * Flavio Poletti <flavio@polettix.it>
+    * Florian Larysch <florolf@devbraindump.de>
+    * Florian Sojer <sojer@b1-systems.de>
+    * Franck Cuny <franck.cuny@gmail.com>
+    * François Charlier <fcharlier@ploup.net>
+    * François Charlier <naz@pwah.(none)>
+    * Gabor Szabo <gabor@szabgab.com>
+    * Gary Mullen <garymullen@gmail.com>
+    * Grzegorz Rożniecki <xaerxess@gmail.com>
+    * Hagen Fuchs <github@hfuchs.net>
+    * Hans Dieter Pearcey <hdp@weftsoar.net>
+    * Ilmari Vacklin <ilmari@dicole.com>
+    * Ilya Chesnokov <chesnokov.ilya@gmail.com>
+    * Ivan Bessarabov <ivan@bessarabov.ru>
+    * Ivan Paponov <ivan.paponov@gmail.com>
+    * JT Smith <jt@plainblack.com>
+    * Jacob Rideout <jacob.rideout@returnpath.net>
+    * Jakob Voss <jakob@nichtich.de>
+    * James Aitken <loonypandora@gmail.com>
+    * Jesse van Herk <jesse@imaginaryrobots.net>
+    * Joel Roth <joelz@pobox.com>
+    * John Barrett <johna.barrett@gmail.com>
+    * John Wittkoski <jwittkoski@gmail.com>
+    * Jonathan "Duke" Leto <jonathan@leto.net>
+    * Jonathan Otsuka <djgoku@gmail.com>
+    * Jonathan Scott Duff <duff@pobox.com>
+    * Joshua Barratt <jbarratt@serialized.net>
+    * Juan J. Martínez <reidrac@usebox.net>
+    * Jury Gorky <schwein@schwein-laptop.(none)>
+    * Kaitlyn Parkhurst <symkat@symkat.com>
+    * Kent Fredric <kentnl@cpan.org>
+    * Kirk Kimmel <kimmel.k.programmer@gmail.com>
+    * Lars Thegler <lars@thegler.dk>
+    * Lee Carmichael <lecar_red@yahoo.com>
+    * Lee Johnson <lee.johnson@netbanx.com>
+    * LoonyPandora <loonypandora@gmail.com>
+    * Manuel Weiss <manuel@weiss.io>
+    * Marc Chantreux <marc.chantreux@biblibre.com>
+    * Mark A. Stratman <stratman@gmail.com>
+    * Mark Allen <mrallen1@yahoo.com>
+    * Mark Stosberg <mark@stosberg.com>
+    * Martin Schut <github@wommm.nl>
+    * Matthew Horsfall (alh) <wolfsage@gmail.com>
+    * Maurice <mauricemengel@gmail.com>
+    * Max Maischein <corion@corion.net>
+    * Michael G. Schwern <schwern@pobox.com>
+    * Michael Genereux <mgenereu@gmail.com>
+    * Michal Wojciechowski <michal@sidnet.info>
+    * Mikolaj Kucharski <mikolaj@kucharski.name>
+    * Murray <murray@minty.org>
+    * Natal Ngétal <hobbestigrou@erakis.im>
+    * Nate Jones <nate@endot.org>
+    * Naveed <naveed@ironcamel.(none)>
+    * Naveed Massjouni <naveedm9@gmail.com>
+    * Naveen <nmani@nashresearch.com>
+    * Neil Hooey <neil@shutterstock.com>
+    * Nicolas Oudard <noudard@weborama.com>
+    * Oliver Gorwits <oliver@cpan.org>
+    * Olivier Mengué <dolmen@cpan.org>
+    * Olof Johansson <olof@ethup.se>
+    * Ovid <curtis@weborama.com>
+    * Paul Driver <frodwith@gmail.com>
+    * Paul Fenwick <pjf@perltraining.com.au>
+    * Paul Johnson <paul@pjcj.net>
+    * Paul Tomlin <ptomli@gmail.com>
+    * Pedro Melo <melo@simplicidade.org>
+    * Perlover <perlover@perlover.com>
+    * Philippe Bruhat (BooK) <book@cpan.org>
+    * Richard Simões <rsimoes@cpan.org>
+    * Rick Myers <rick@jrmyers.net>
+    * Rik Brown <rik@rikbrown.co.uk>
+    * Roberto Patriarca <rp@staged.org>
+    * Roman Galeev <ip@ncom-ufa.ru>
+    * Roman Nuritdinov <ky6uk.kun@gmail.com>
+    * Rowan Thorpe <rowanthorpe@gmail.com>
+    * Sam Kington <github@illuminated.co.uk>
+    * Sapphire Paw <devel@sapphirepaw.org>
+    * Sawyer X <xsawyerx@cpan.org>
+    * Scott Penrose <scott.penrose@(none)>
+    * Sebastian de Castelberg <sebu@kpricorn.org>
+    * Skeeve <github.mails.skeeve@xoxy.net>
+    * Squeeks <squeek@cpan.org>
+    * Stefan Hornburg (Racke) <racke@linuxia.de>
+    * Tatsuhiko Miyagawa <miyagawa@bulknews.net>
+    * Tim King <timk@JTimothyKing.com>
+    * Tom Heady <tom@punch.net>
+    * Tom Hukins <tom@eborcom.com>
+    * Tom Wyant <wyant@cpan.org>
+    * Vyacheslav Matyukhin <mmcleric@yandex-team.ru>
+    * William Wolf <throughnothing@gmail.com>
+    * Xaerxess <xaerxess@gmail.com>
+    * YOUR_NAME <YOUR_EMAIL>
+    * Yanick Champoux <yanick@cpan.org>
+    * Zefram <zefram@fysh.org>
+    * a-adam <ac@univie.ac.at>
+    * andy <andy@broadbean.com>
+    * asergei <asergei@gmail.com>
+    * boris shomodjvarac <shomodj@oginwm09.(none)>
+    * brian <brian@massassi.com>
+    * burnersk <burnersk@(none.com)>
+    * chromatic <chromatic@wgz.org>
+    * franck cuny <franck.cuny@gmail.com>
+    * geistteufel <geistteufel@yahoo.fr>
+    * isync <o.zucker@web.de>
+    * jamhed <ip@ncom-ufa.ru>
+    * jamhed <jamhed@lenobook.jh>
+    * jamhed.nb <ip@ncom-ufa.ru>
+    * jonasreinsch <jonas.reinsch@gmail.com>
+    * jonathan schatz <jon@divisionbyzero.com>
+    * miyagawa <miyagawa@gmail.com>
+    * mlbarrow <mlbarrow@(none)>
+    * mokko <mauricemengel@gmail.com>
+    * niko <nikomomo@gmail.com>
+    * pdl <perrettdl@googlemail.com>
+    * ppisar <ppisar@(none)>
+    * rowanthorpe <rowanthorpe@gmail.com>
+    * scoopio <valiouk@yahoo.co.uk>
+    * sdeseille <sebastien.deseille@gmail.com>
+    * sebastian de castelberg <sebu@kpricorn.org>
+    * smashz <mestre.smash@gmail.com>
+    * tednolan <tednolan@(none).com>
+
+
