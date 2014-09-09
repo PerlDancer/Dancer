@@ -25,6 +25,9 @@ Revision history for Dancer
     * Correct POD formatting for HTTP methods in introduction.pod.
         (GH#1047, Lx)
 
+    [ DISTRIBUTION ]
+    * Now using Dist::Zilla as package manager.
+
 1.3126 2014-07-14
 
     [ BUG FIXES ]
