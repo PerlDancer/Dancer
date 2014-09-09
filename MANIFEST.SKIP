@@ -27,3 +27,4 @@ performance
 TODO
 ^Dancer-.*
 dist.ini
+.mailmap
