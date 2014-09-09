@@ -4,6 +4,7 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
+ - Remove test dependency for Person and Person::Child. (GH#1063)
 
  [DOCUMENTATION]
 
