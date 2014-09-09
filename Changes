@@ -4,7 +4,6 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
- - Remove test dependency for Person and Person::Child. (GH#1063)
 
  [DOCUMENTATION]
 
@@ -13,6 +12,13 @@ Revision history for Dancer
  [NEW FEATURES]
 
  [STATISTICS]
+
+1.3128 2014-09-09
+ [BUG FIXES]
+ - Remove test dependency for Person and Person::Child. (GH#1063)
+
+ [STATISTICS]
+ - code churn: 
 
 1.3127 2014-09-08
  [BUG FIXES]
@@ -68,7 +74,7 @@ Revision history for Dancer
  [BUG FIXES]
  - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
    Wittkoski)
- - Test was failing if JSON module was absent.	   (GH#1022, Yanick
+ - Test was failing if JSON module was absent.		 (GH#1022, Yanick
    Champoux)
  - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
    Champoux)
@@ -232,8 +238,8 @@ Revision history for Dancer
  - Add scheme line for ngnix config in D::Deployment.
 
  [ENHANCEMENTS]
- - GH #919: 'dancer' script exits with code 255 if application	   name is
-   invalid. (ppisar)
+ - GH #919: 'dancer' script exits with code 255 if application		
+   name is invalid. (ppisar)
  - GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
  - GH #926: make messages from fatal warnings show up in the logs.  (Max
    Maischein)
@@ -267,7 +273,7 @@ Revision history for Dancer
 
  [ENHANCEMENTS]
  - GH #897 dancer script diagnostic more explicit if target directory	   
-   does not exist or is not writable (reported by Andrew Grangaard).
+      does not exist or is not writable (reported by Andrew Grangaard).
  - GH #907: skip tests of deprecated features (mokko).
 
 1.3111_02 2013-04-01
@@ -280,8 +286,8 @@ Revision history for Dancer
  [BUG FIXES]
  - GH #891: silenced warnings from non-numeric versions in Makefile.PL
    (Olof Johansson).
- - GH #702: fix request->header call throwing exceptions inside routes	  
-   of Dancer->dance($request)  (Perlover).
+ - GH #702: fix request->header call throwing exceptions inside routes	   
+      of Dancer->dance($request)  (Perlover).
  - GH #893, GH #636: handle binary files for uploads in Dancer::Test
    (Andrei).
  - GH #903: add plan for subtest (bug report by wfaulk).
@@ -707,7 +713,7 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports	   (Alberto Simões)
+ - Fix a bunch of cpan testers reports		 (Alberto Simões)
 
 1.3069_01 2011-07-07
  [BUG FIXES]
@@ -751,9 +757,9 @@ Revision history for Dancer
 1.3059_03 2011-06-11
  [BUG FIXES]
  - Fix for issue #539 https://github.com/sukria/Dancer/issues/539 Don't
-   decode twice entries in the params hash table, file	      uploads with
-   UTF-8 characters in their name are now possible. (Toby Corkindale,
-   Alexis Sukrieh)
+   decode twice entries in the params hash table, file			 
+   uploads with UTF-8 characters in their name are now possible. (Toby
+   Corkindale, Alexis Sukrieh)
  - Fix broken test with old version of HTTP::Parser::XS (Franck Cuny)
  - #492 - Don't run Test::TCP tests on win32 (Franck Cuny)
  - Fix a bug that when forwarding a post with post data stalled the code
@@ -1309,17 +1315,17 @@ Revision history for Dancer
  - We assure consistency and stability for this release and the following
    **
  - 1.2xxx releases; you should not have issues updating to any 1.2xxx	   
-    **
- - version because of it.					     **
+      **
+ - version because of it.				   **
  - A very special thanks goes to the Dancer community who improved and	   
-    ++
+      ++
  - perfected this release and worked hard on reporting bugs, fixing them,
    ++
  - improving the stability, providing important features and everything  
    ++
  - else which makes Dancer so attractive - and above all: its community  
    ++
- - so thank you!						     ++
+ - so thank you!					   ++
 
  [Sawyer X]
  - Fixing some more XML tests with missing preqreqs.
