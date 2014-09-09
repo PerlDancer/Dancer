@@ -358,4 +358,3 @@ t/lib/TestPluginMRO.pm
 t/lib/TestUtils.pm
 t/manifest.t
 t/pod.t
-xt/release/unused-vars.t
