@@ -1,4 +1,5 @@
 package Dancer::Exception::Base;
+#ABSTRACT: the base class of all Dancer exceptions
 
 use strict;
 use warnings;
@@ -96,10 +97,6 @@ sub _raised_arguments {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Exception::Base - the base class of all Dancer exceptions
 
 =head1 DESCRIPTION
 

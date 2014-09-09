@@ -1,4 +1,5 @@
 package Dancer::Deprecation;
+#ABSTRACT: handle deprecation messages
 
 use strict;
 use warnings;
@@ -31,10 +32,6 @@ sub deprecated {
 }
 
 1;
-
-=head1 NAME
-
-Dancer::Deprecation - handle deprecation messages
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,5 @@
 package Dancer::Logger::Abstract;
+#ABSTRACT: Abstract logging engine for Dancer
 
 use strict;
 use warnings;
@@ -145,10 +146,6 @@ sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
 
 __END__
 
-=head1 NAME
-
-Dancer::Logger::Abstract - Abstract logging engine for Dancer
-
 =head1 SYNOPSIS
 
 In your configuration file:
@@ -283,18 +280,4 @@ application to die.
 
 Checks a certain level number against a certain level type (core, debug, info
 warning, error).
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 

@@ -1,4 +1,5 @@
 package Dancer::Template::TemplateToolkit;
+#ABSTRACT: Template Toolkit wrapper for Dancer
 
 use strict;
 use warnings;
@@ -89,10 +90,6 @@ sub render {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Template::TemplateToolkit - Template Toolkit wrapper for Dancer
 
 =head1 DESCRIPTION
 

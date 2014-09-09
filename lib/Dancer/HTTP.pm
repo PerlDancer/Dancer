@@ -1,4 +1,5 @@
 package Dancer::HTTP;
+#ABSTRACT: helper for rendering HTTP status codes for Dancer
 
 use strict;
 use warnings;
@@ -87,10 +88,6 @@ sub codes {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::HTTP - helper for rendering HTTP status codes for Dancer
 
 =head1 DESCRIPTION
 

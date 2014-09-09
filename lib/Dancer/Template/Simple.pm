@@ -1,4 +1,5 @@
 package Dancer::Template::Simple;
+#ABSTRACT: pure Perl 5 template engine for Dancer
 use strict;
 use warnings;
 use Carp;
@@ -157,10 +158,6 @@ sub _interpolate_value {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Template::Simple - pure Perl 5 template engine for Dancer
 
 =head1 DESCRIPTION
 

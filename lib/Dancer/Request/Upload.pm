@@ -1,4 +1,5 @@
 package Dancer::Request::Upload;
+#ABSTRACT: class representing file uploads requests
 
 use File::Spec;
 use Carp;
@@ -70,10 +71,6 @@ sub type {
 # private
 
 =pod
-
-=head1 NAME
-
-Dancer::Request::Upload - class representing file uploads requests
 
 =head1 SYNOPSIS
 

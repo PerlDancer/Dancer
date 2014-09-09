@@ -1,4 +1,5 @@
 package Dancer::Serializer::YAML;
+#ABSTRACT: serializer for handling YAML data
 
 use strict;
 use warnings;
@@ -45,10 +46,6 @@ sub content_type {'text/x-yaml'}
 
 1;
 __END__
-
-=head1 NAME
-
-Dancer::Serializer::YAML - serializer for handling YAML data
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,5 @@
 package Dancer::Template::Abstract;
+#ABSTRACT: abstract class for Dancer's template engines
 
 use strict;
 use warnings;
@@ -208,10 +209,6 @@ sub view_exists { return defined $_[1] &&  -f $_[1] }
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Template::Abstract - abstract class for Dancer's template engines
 
 =head1 DESCRIPTION
 

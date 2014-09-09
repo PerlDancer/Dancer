@@ -1,4 +1,5 @@
 package Dancer::Engine;
+#ABSTRACT: base class for Dancer engines
 
 # This is the base-class of every engine abstract class.
 # This allow us to put in that single place the engine creation
@@ -85,10 +86,6 @@ __END__
 
 =pod
 
-=head1 NAME
-
-Dancer::Engine - base class for Dancer engines
-
 =head1 SYNOPSIS
 
     my $engine = Dancer::Engine->build( Serializer => 'JSON', $configuration );
@@ -134,18 +131,4 @@ You can B<only> set the configuration at initialization time, not after.
 Builds and returns the engine.
 
     my $engine = Dancer::Engine->build( $type => $name, $config );
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 

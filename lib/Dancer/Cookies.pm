@@ -1,4 +1,6 @@
 package Dancer::Cookies;
+#ABSTRACT: a singleton storage for all cookies
+
 use strict;
 use warnings;
 
@@ -76,10 +78,6 @@ sub set_cookie_object {
 
 __END__
 
-=head1 NAME
-
-Dancer::Cookies - a singleton storage for all cookies
-
 =head1 SYNOPSIS
 
     use Dancer::Cookies;
@@ -131,18 +129,4 @@ Fetches all the cookies from the environment, parses them and creates a hashref
 of all cookies.
 
 It also returns all the hashref it created.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 

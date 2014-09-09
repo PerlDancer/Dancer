@@ -1,5 +1,7 @@
 package Dancer::Serializer::JSONP;
 
+# ABSTRACT: serializer for handling JSONP data
+
 use strict;
 use warnings;
 use Dancer::SharedData;
@@ -19,10 +21,6 @@ sub content_type {'application/javascript'}
 
 1;
 __END__
-
-=head1 NAME
-
-Dancer::Serializer::JSONP - serializer for handling JSONP data
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,5 @@
 package Dancer::Route::Cache;
+#ABSTRACT: route caching mechanism for L<Dancer>
 
 use strict;
 use warnings;
@@ -6,13 +7,10 @@ use Carp;
 
 use base 'Dancer::Object';
 
-use vars '$VERSION';
-
 use Dancer::Config 'setting';
 use Dancer::Error;
 use Dancer::Exception qw(:all);
 
-$VERSION = '0.01';
 Dancer::Route::Cache->attributes('size_limit', 'path_limit');
 
 # static
@@ -146,10 +144,6 @@ sub route_cache_paths {
 
 __END__
 
-=head1 NAME
-
-Dancer::Route::Cache - route caching mechanism for L<Dancer>
-
 =head1 SYNOPSIS
 
     my $cache = Dancer::Route::Cache->new(
@@ -244,16 +238,3 @@ Returns the limit (post-set).
     $cache->path_limit('100');      # sets limit
     my $limit = $cache->path_limit; # gets limit
 
-=head1 AUTHOR
-
-Sawyer X
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2010 Sawyer X.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.

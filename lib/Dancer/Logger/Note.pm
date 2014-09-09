@@ -1,4 +1,5 @@
 package Dancer::Logger::Note;
+#ABSTRACT: Test::More note() logging engine for Dancer
 use strict;
 use warnings;
 use base 'Dancer::Logger::Abstract';
@@ -20,10 +21,6 @@ sub _log {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Logger::Note - Test::More note() logging engine for Dancer
 
 =head1 SYNOPSIS
 
@@ -47,18 +44,4 @@ lazily.
 =head2 _log
 
 Use Test::More's note() to output the log message.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 

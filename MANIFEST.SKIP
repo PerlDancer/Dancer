@@ -26,3 +26,5 @@ MANIFEST.SKIP
 performance
 TODO
 ^Dancer-.*
+dist.ini
+.mailmap

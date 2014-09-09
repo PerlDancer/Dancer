@@ -1,4 +1,5 @@
 package Dancer::Object;
+#ABSTRACT: Objects base class for Dancer
 
 # This class is a root class for each object in Dancer.
 # It provides basic OO tools for Perl5 without being... Moose ;-)
@@ -100,10 +101,6 @@ sub attributes_defaults {
 
 __END__
 
-=head1 NAME
-
-Dancer::Object - Objects base class for Dancer
-
 =head1 SYNOPSIS
 
     package My::Dancer::Extension;
@@ -179,18 +176,4 @@ structure changes in the future.
 
 given a hash (not a hashref), makes sure an object has the given attributes
 default values. Usually called from within an C<init> function.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 

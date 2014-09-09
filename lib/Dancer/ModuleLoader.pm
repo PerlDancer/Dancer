@@ -1,4 +1,5 @@
 package Dancer::ModuleLoader;
+#ABSTRACT: dynamic module loading helpers for Dancer core components
 
 # Abstraction layer for dynamic module loading
 
@@ -63,10 +64,6 @@ sub class_from_setting {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::ModuleLoader - dynamic module loading helpers for Dancer core components
 
 =head1 SYNOPSIS
 
@@ -205,18 +202,3 @@ Example:
 =head1 SEE ALSO
 
 L<Module::Load>, L<Module::New::Loader>
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
-

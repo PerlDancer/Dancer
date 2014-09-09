@@ -1,4 +1,5 @@
 package Dancer::Object::Singleton;
+#ABSTRACT: Singleton base class for Dancer
 
 # This class is a root class for singleton objects in Dancer.
 # It provides basic OO singleton tools for Perl5 without being... MooseX::Singleton ;-)
@@ -62,10 +63,6 @@ sub _setter_code {
 
 __END__
 
-=head1 NAME
-
-Dancer::Object::Singleton - Singleton base class for Dancer
-
 =head1 SYNOPSIS
 
     package My::Dancer::Extension;
@@ -115,18 +112,4 @@ Get the attributes of the specific class.
 Generates attributes for whatever object is extending Dancer::Object and saves
 them in an internal hashref so they can be later fetched using
 C<get_attributes>.
-
-=head1 AUTHOR
-
-Damien Krotkine
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2010 Damien Krotkine.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 

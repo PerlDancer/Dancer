@@ -1,4 +1,5 @@
 package Dancer::Plugin;
+#ABSTRACT: helper for writing Dancer plugins
 use strict;
 use warnings;
 use Carp;
@@ -111,10 +112,6 @@ sub set_plugin_symbols {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer::Plugin - helper for writing Dancer plugins
 
 =head1 DESCRIPTION
 

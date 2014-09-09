@@ -1,4 +1,5 @@
 package Dancer::Timer;
+#ABSTRACT: a timer for Dancer
 
 use strict;
 use warnings;
@@ -28,10 +29,6 @@ sub to_string {
 1;
 
 __END__
-
-=head1 NAME
-
-Dancer::Timer - a timer for Dancer
 
 =head1 SYNOPSIS
 
@@ -81,18 +78,4 @@ and now.
 =head2 to_string
 
 Same as C<tick>, just more expressive.
-
-=head1 AUTHOR
-
-Alexis Sukrieh
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2009-2010 Alexis Sukrieh.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
 

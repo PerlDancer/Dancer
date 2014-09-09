@@ -1,14 +1,10 @@
 package Dancer;
+#ABSTRACT: lightweight yet powerful web application framework
 
 use strict;
 use warnings;
 use Carp;
 use Cwd 'realpath';
-
-our $VERSION   = '1.3126';
-our $AUTHORITY = 'SUKRIA';
-
-$VERSION = eval $VERSION;
 
 use Dancer::App;
 use Dancer::Config;
@@ -488,10 +484,6 @@ sub _start {
 __END__
 
 =pod
-
-=head1 NAME
-
-Dancer - lightweight yet powerful web application framework
 
 =head1 SYNOPSIS
 
@@ -1957,12 +1949,6 @@ The following modules are optional:
 =item L<YAML> : needed for configuration file support
 
 =back
-
-
-=head1 LICENSE
-
-This module is free software and is published under the same
-terms as Perl itself.
 
 
 =head1 SEE ALSO
