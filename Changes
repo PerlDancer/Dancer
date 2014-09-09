@@ -1,2263 +1,2005 @@
 Revision history for Dancer
 
 {{$NEXT}}
+ [API CHANGES]
 
-    [ ENHANCEMENTS ]
-    * environment configs are now merged with the global config, versus
-        the previous behavior that was overriding the whole config
-        segments. (GH#1016, Yanick Champoux)
-    * Dancer::Handler::Debug now accepts env variables from the command-line.
-        (GH#1056, Yanick Champoux)
-    * Accessing values abstracted as methods in Dancer::Session.
-        (GH#1000, John Wittkoski)
+ [BUG FIXES]
 
-    [ BUG FIXES ]
-    * Test was using deprecated 'import_warnings'. (GH#1045, mokko)
-    * Fix default test names for headers and redirection test methods.
-      (GH#1048, odyniec)
-    * DANCER_SERVER_TOKENS and DANCER_SESSION_INFO are now
-        DANCER_NO_SERVER_TOKENS and DANCER_NO_SESSION_INFO. And working. :-)
-        (GH#1014, Yanick Champoux)
-    * 'any' wasn't understanding 'del' (only 'delete'). 
-        (GH#1044, Yanick Champoux)
+ [DOCUMENTATION]
 
-    [ DOCUMENTATION ]
-    * Correct POD formatting for HTTP methods in introduction.pod.
-        (GH#1047, Lx)
+ [ENHANCEMENTS]
 
-    [ DISTRIBUTION ]
-    * Now using Dist::Zilla as package manager.
+ [NEW FEATURES]
+
+ [STATISTICS]
+
+1.3127 2014-09-08
+ [BUG FIXES]
+ - Test was using deprecated 'import_warnings'. (GH#1045, mokko)
+ - Fix default test names for headers and redirection test methods.
+   (GH#1048, odyniec)
+ - DANCER_SERVER_TOKENS and DANCER_SESSION_INFO are now
+   DANCER_NO_SERVER_TOKENS and DANCER_NO_SESSION_INFO. And working. :-)
+   (GH#1014, Yanick Champoux)
+ - 'any' wasn't understanding 'del' (only 'delete').  (GH#1044, Yanick
+   Champoux)
+
+ [DISTRIBUTION]
+ - Now using Dist::Zilla as package manager.
+
+ [DOCUMENTATION]
+ - Correct POD formatting for HTTP methods in introduction.pod. (GH#1047,
+   Lx)
+
+ [ENHANCEMENTS]
+ - environment configs are now merged with the global config, versus the
+   previous behavior that was overriding the whole config segments.
+   (GH#1016, Yanick Champoux)
+ - Dancer::Handler::Debug now accepts env variables from the command-line.
+   (GH#1056, Yanick Champoux)
+ - Accessing values abstracted as methods in Dancer::Session. (GH#1000,
+   John Wittkoski)
+
+ [STATISTICS]
+ - code churn: 
 
 1.3126 2014-07-14
-
-    [ BUG FIXES ]
-    * Bunch of files were not in the MANIFEST.
+ [BUG FIXES]
+ - Bunch of files were not in the MANIFEST.
 
 1.3125 2014-07-12
+ [DOCUMENTATION]
+ - Improve the wording of the params() section in Dancer. (GH#1025, Warren
+   Young)
+ - Explain how to access config in Dancer::Config's POD.  (GH#1026, Gabor
+   Szabo)
+ - Cookbook typo fix. (GH#1031, Florian Sojer)
 
-    [ ENHANCEMENT ]
-    * Skip bad cookie definitions. (GH#1036, Manuel Weiss)
-    * 'dancer' script warns and die if trying to create 
-        an app with the same name of an existing module.
-            (GH#1038, Racke)
-    * In Dancer::Logger::Abstract, default host
-        name to '-' if not available. (GH#1029, John Wittkoski)
-    * Add Dancer::Serializer::JSONP. (GH#1035, David Zurborg)
-
-    [ DOCUMENTATION ]
-    * Improve the wording of the params() section in Dancer.
-        (GH#1025, Warren Young)
-    * Explain how to access config in Dancer::Config's POD. 
-        (GH#1026, Gabor Szabo)
-    * Cookbook typo fix. (GH#1031, Florian Sojer)
+ [ENHANCEMENT]
+ - Skip bad cookie definitions. (GH#1036, Manuel Weiss)
+ - 'dancer' script warns and die if trying to create  an app with the same
+   name of an existing module. (GH#1038, Racke)
+ - In Dancer::Logger::Abstract, default host name to '-' if not available.
+   (GH#1029, John Wittkoski)
+ - Add Dancer::Serializer::JSONP. (GH#1035, David Zurborg)
 
 1.3124 2014-05-09
+ [BUG FIXES]
+ - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
+   Wittkoski)
+ - Test was failing if JSON module was absent.	   (GH#1022, Yanick
+   Champoux)
+ - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
+   Champoux)
 
-    [ ENHANCEMENTS ]
-    * Also check X-Forwarded-Proto. (GH#1015, Andy Jones)
-    * Update bundle jQuery to v1.11.0. (GH#1018, Michal Wojciechowski)
-    * Add session support to the skeleton config. (GH#1008. Gabor Szabo)
+ [DOCUMENTATION]
+ - Specify defaults in POD. (GH#1023, isync)
+ - Fix doc for params(). (GH#1025, reported by Warren Young)
 
-    [ BUG FIXES ]
-    * Remove print statement in Dancer::ModuleLoad::require. 
-        (GH#1021, John Wittkoski)
-    * Test was failing if JSON module was absent. 
-        (GH#1022, Yanick Champoux)
-    * Allow for routes evaluating to false ('0', '', etc). 
-        (GH#1020, Yanick Champoux)
+ [ENHANCEMENTS]
+ - Also check X-Forwarded-Proto. (GH#1015, Andy Jones)
+ - Update bundle jQuery to v1.11.0. (GH#1018, Michal Wojciechowski)
+ - Add session support to the skeleton config. (GH#1008. Gabor Szabo)
 
-    [DOCUMENTATION]
-    * Specify defaults in POD. (GH#1023, isync)
-    * Fix doc for params(). (GH#1025, reported by Warren Young)
-
-    [ MISC ]
-    * Update mailing list url in README. (GH#1017, Racke)
-    * Markdownify the README. (GH#986, Chris Seymour)
+ [MISC]
+ - Update mailing list url in README. (GH#1017, Racke)
+ - Markdownify the README. (GH#986, Chris Seymour)
 
 1.3123 2014-04-12
-
-   [ BUG FIXES ]
-   * Test was skipping wrong number of tests if JSON was absent.
-
-1.3122    2014-04-10
-
-   [ DOCUMENTATION ]
-   * GH #995: Documentation improvements. (Colin Kuskie)
-
-   [ BUG FIXES ]
-   * Serializer::Mutable now consider 'Accept' before 'Content-Type'.
-    (GH#996, Bernhard Reutner-Fischer)
-   * Serializer::Mutable now correctly deals with content-types
-        with charsets. (GH#996, Bernhard Reutner-Fischer)
-   * Without Clone(), Dancer::Error::dumper() could clobber
-        values in deep structures. (GH#1006, fix by asergei)
-   * 'session_name' in Dancer::Session::Abstract couldn't be
-        redefined. (GH#1004, patch by Lee Carmichael)
-
-   [ MISC ]
-   * Unused function 'path_no_verify' removed. (GH#998, 
-        reported by mjemmeson)
-
-1.3121    2014-02-02
-
-    [ ENHANCEMENTS ]
-    * GH #994: change heuristic so that
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        is not recognized as text. (Skeeve)
-    * GH #987: get_current_session() now accepts option 'no_update'.
-        (Lee Carmichael)
-
-    [ DOCUMENTATION ]
-    * GH #983: Correction of various typos. (Akash Ayare)
-    * GH #981: Add synopsis to Dancer::Request::Upload. (smashz)
-    * GH #985: Change mentions of 'PerlHandler' to 'PerlResponseHandler'
-        (Xaerxess)
-
-1.3120    2013-12-24
-
-    [ ENHANCEMENTS ] 
-    * GH #974: Make plugins play nicely with mro 'c3'. (Fabrice Gabolde)
-
-    [ DOCUMENTATION ]
-    * GH #972: Correction of a truckload of typos. (David Steinbrunner)
-    * GH #971: Stress that the request's 'env()' method is prefered over
-        accessing '%ENV' directly. (isync)
-    * GH #968: Fix 'ScriptAlias' example in Deployment docs. (reported
-        by tednolan)
-    * GH #976: Document and trap limitation in Dancer::Test. (Tom Hukins)
-    * GH #976: Improve references to related modules. (Tom Hukins)
-
-1.3119    2013-10-26
-
-    [ ENHANCEMENTS ]
-    * GH #965: Serializer also serialize content for DELETE.
-        (reported by Achim Adam)
-
-    [ BUG FIXES ]
-    * GH #959: hash randomization could cause .pl MIME to vary and test
-        to fail. (Olof Johansson)
-    * GH #961: fix bug in require_environment's logic. (reported by
-        sapphirecat)
-
-    [ DOCUMENTATION ]
-    * GH #962: Improvements of the Dancer::Test docs. (Tom Hukins)
-    * GH #970: Small documentation edit. (Matthew Horsfall)
-
-1.3118    2013-09-01
-
-    [ ENHANCEMENTS ]
-    * GH #946: new 'require_environment' setting. (Jesse van Herk)
-    * GH #952: don't set defaults for Template subclasses for 
-        Dancer::Template::TemplateToolkit. (Rick Myers)
-    * GH #945: add function 'template_or_serialize' to
-        Dancer::Serializer::Mutable. (Yanick Champoux)
-
-    [ BUG FIXES ]
-    * GH #655: clarify logger error message. (Yanick Champoux, 
-        reported by Gabor Szabo)
-    * GH #951: fix quoting of TemplateToolkit start_tag/stop_tag.
-        (Rick Myers)
-    * GH #940: carry over the session when we forward(). 
-        (Yanick Champoux, reported by sciurius)
-    * GH #954: don't die on autoflush for older perls. 
-        (Yanick Champoux, reported by metateck and David Golden)
-    * GH #950: Dancer::Test functions now populate REQUEST_URI.
-        (Yanick Champoux, reported by Sören Kornetzki)
-
-    [ DOCUMENTATION ]
-    * GH #942: simpilify the Apache deployment docs for cgi/fcgi.
-        (bug report by Scott Penrose)
-
-    [ MISC ]
-    * GH #949: fixes a few errors in the serializer testsuite. 
-        (Franck Cuny)
-
-1.3117    2013-07-31
-
-    [ ENHANCEMENTS ]
-    * GH #836: Provide more information when an engine fails to load.
-        (Yanick Champoux, reported by Daniel Perrett)
-
-    [ BUG FIXES ]
-    * GH #794: Upload data was not kept for forwarded requests. 
-        (reported by William Wolf)
-    * GH #898: calling halt() doesn't discard set headers anymore. 
-        (Yanick Champoux, reported by Nicolas Franck)
-    * GH #842: embedded 'prefix' now properly localized. 
-        (Yanick Champoux, reported by Jashank Jeremy)
-
-    [ DOCUMENTATION ]
-    * GH #938: fix doc typos in Dancer::Serializer. (Fabrice Gabolde)
-    * GH #712: add all status codes known to Dancer to Dancer::HTTP. 
-        (Yanick Champoux, reported by Brian J Miller)
-    * Add warning that 'forward' doesn't preserver the session. (Alberto Simões)
-    * GH #941: minor correction to code snippets in documentation. 
-        (Grzegorz Rożniecki)
-    * GH #929: add warning on the use of Corona as underlying web server. 
-        (issue reported by berekuk)
-    * GH #943: remove mention to 'Dancer::Plugin::Validation', 
-        clean 'dancer -a' sample output. (Grzegorz Rożniecki)
-
-1.3116    2013-07-03
-
-    [ ENHANCEMENTS ]
-    * GH #767: forwarded_for_address() now looks for HTTP_X_FORWARDED_FOR if
-        X_FORWARDED_FOR is not there. (Jakob Voss)
-    * GH #936: Add file locking to file logger. (David Golden)
-    * GH #937: Add details to tutorial. (Craig Treptow)
-
-1.3115    2013-06-09 
-
-    [ BUG FIXES ]
-    * GH #605: pass'ed megasplat with no further routes cause 404, not 500.
-        (vlyon)
-
-    [ DOCUMENTATION ]
-    * GH #934: Added example of HAProxy deployment. (Anton Gerasimov)
-
-    [ MISC ]
-    * Tests now require Test::TCP v1.30+ (previous version had too short a
-        timeout and tests were failing). (Yanick Champoux)
-
-1.3114    2013-06-02
-
-    [ ENHANCEMENTS ]
-    * GH #919: 'dancer' script exits with code 255 if application 
-        name is invalid. (ppisar)
-    * GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
-    * GH #926: make messages from fatal warnings show up in the logs. 
-        (Max Maischein)
-    * GH #930: speed improvement. (ichesnokov)
-    * GH #859: strip illegal characters from cookie name. (Colin Keith)
-    * GH #924: non-'/' apps behind proxies now possible using 'request-base'
-        header. (Mikolaj Kucharski)
-
-    [ BUG FIXES ]
-    * GH #724: app.pl obeys --confdir. (Yanick Champoux)
-    * GH #927: logging format using 'h' now play nicely if no header present.
-        (ironcamel)
-
-    [ DOCUMENTATION ]
-    * GH #922: Add example of request parameters. (Gabor Szabo)
-    * Add scheme line for ngnix config in D::Deployment.
-
-1.3113    2013-05-08
-
-    [ ENHANCEMENTS ]
-    * GH #869: leave body parameters alone if deserialization failed
-        (brianphillips).
-    * GH #912: send_file was returning 500 instead of 404 for non-existent
-        files. (Fabrice Gabolde)
-    * GH #914: add link to melezhik's psgi chef cookbook.
-    * GH #923: implement lazy session flushing. (David Golden)
-
-    [ BUG FIXES ]
-    * GH #920: fix pod for Dancer::Development. (ppisar)
-
-    [ DOCUMENTATION ]
-    * GH #915: add warning about behaviour of hooks with multiple packages
-     loaded by load_app (racke).
-    * GH #918: Fix headers syntax in Dancer::Response perldoc
-      (Vyacheslav Matyukhin).
-
-
-1.3112    2013-04-10
-
-    [ ENHANCEMENTS ]
-    * GH #897 dancer script diagnostic more explicit if target directory   
-        does not exist or is not writable (reported by Andrew Grangaard).
-    * GH #907: skip tests of deprecated features (mokko).
-
-    [ BUG FIXES ]
-    * GH #900: backport the security patch for Dancer::ModuleLoader
-        from Dancer2 (mokko).
-
-1.3111_02    2013-04-01
-
-    [ BUG FIXES ]
-    * RT #84198: silencing wide-character in-memory file handle error
-        (Tom Wyant).
-    * wrong number of tests to skip in t/14_serializer/01_helpers.t.
-
-
-1.3111_01    2013-03-30
-
-    [ ENHANCEMENTS ]
-    * GH #895: JSON serializer now uses JSON's "-support_by_pp"
-        (Jonathan Schatz).
-
-    [ BUG FIXES ]
-    * GH #891: silenced warnings from non-numeric versions in Makefile.PL
-        (Olof Johansson).
-    * GH #702: fix request->header call throwing exceptions inside routes 
-        of Dancer->dance($request)  (Perlover).
-    * GH #893, GH #636: handle binary files for uploads in Dancer::Test
-        (Andrei).
-    * GH #903: add plan for subtest (bug report by wfaulk).
-
-    [ DOCUMENTATION ]
-    * GH #899: mention that response_exist and response_doesnt_exist are
-        deprecated (Fabrice Gabolde).
-    * GH #902, #903: change example to use path_info() instead of path()
-        (Anton Ukolov, Lee Carmichael).
-
-1.3111    2013-02-24
-
-    [ BUG FIXES ]
-    * GH #877: fix Dancer Error when so that 'exception' object is not passed
-      to serializers, because XML/JSON serializers don't understand objects
-      (rikbrown).
-    * GH #858: Check for definedness, not truth, when testing if we read
-      into the buffer when parsing a request body (florolf).
-    * GH #845: Fix uninitialized warning when loading modules (Fabrice Gabolde).
-    * GH #851, GH #853: Atomic YAML session writing (Roman Galeev).
-    * GH #852: Saner UTF logging (Roman Galeev).
-    * GH #849, GH #850: Serve autopages with text/html content type.
-      (Philippe Bruhat - BooK)
-    * GH #848: Handle If-Modified-Since header in the request for static files.
-      (Philippe Bruhat - BooK)
-    * GH #848: Send a Last-Modified header for static files.
-      (Philippe Bruhat - BooK)
-    * GH #856: Don't export non-existing subroutine (mokko).
-    * GH #874: Reduce dependence on %ENV for internal code (Kent Fredric).
-    * GH #875: Don't expect specific order in cookies (Yanick Champoux).
-    * Remove 'exception' object from message being passed to serializers. 
-        (Rik Brown)
-    * Added .travis.yml to MANIFEST.SKIP so t/manifest.t passes (Kaitlyn Parkhurst).
-    * GH #887, GH #890: keyword 'global_warnings' added to replace 'import_warnings'
-        (Kaitlyn Parkhurst).
-    * GH #892: add 'private_key' to the list of potentially sensitive keys (Tom Heady).
-
-    [ DOCUMENTATION ]
-    * GH #847: Fix typo (John Wittkoski).
-    * GH #865: Correct 'before' hook documentation (David Precious, Maurice).
-    * GH #860, GH #844, GH #760: Misleading plack middleware documentation.
-      (Paul Fenwick)
-    * GH #862: Fix heading level for strict_config entry in Dancer::Config.
-      (Stefan Hornburg - Racke)
-    * GH #863: Correct example apache config (John Wittkoski).
-    * GH #867: correct doc for ModuleLoader::load_with_params (mokko).
-    * Document route_cache option (David Precious).
-    * Docs for route_cache_size_limit & route_cache_path_limit (David Precious).
-    * Remove meaningless 'encoding' to TT config (David Precious).
-    * Remove docs for mounting multiple apps (Naveed Massjouni).
-    * Update doc URLs (David Precious).
-    * Fix inconsistency in Perlbal deployment example (Slaven Rezić, Racke).
-    * GH #894: Replace spurious character in Dancer::Session's POD (Racke).
-    * GH #880: Add deprecation mention for 'after' (pdl and Yanick Champoux).
-
-
-1.3110    2012-10-06
-
-    [ BUG FIXES ]
-    * GH #817, #823, #825: Removing Clone from core. Pure-perl environments
-      supported again (Sawyer X).
-    * GH #755, #819, #827, #828: HTTP::Headers accepted by dancer_response
-      (Roberto Patriarca, Dagfinn Ilmari Mannsåker, draxil, perlpong).
-
-    [ ENHANCEMENTS ]
-    * GH #826: The version of wallflower shipped with Dancer has been removed.
-      It was well out of date.  BooK is now maintaining it as a more general
-      solution under the name App::Wallflower. (BooK)
-    * GH #834: Provide empty Headers object if not defined (Yanick Champoux).
-    * GH #840, #841: Dancer::Plugin::Ajax now has content_type (Lee Carmichael).
-
-    [ DOCUMENTATION ]
-    * GH #821: Pointing to new homepage (alfie).
-    * GH #822: Typos in documentation (Stefan Hornburg - racke).
-    * GH #824: Fix in Dancer/Session.pm (pdl).
-    * GH #830: Fix Github links to https:// (Olivier Mengué).
-    * GH #838: Error in Dancer::Plugin::Ajax Documentation (Lee Carmichael).
-    * GH #839: Typo (goblin).
-
-1.3100    2012-08-25
-
-    [ BUG FIXES ]
-    * GH #816: Improve wording when failed to load engine. (Sawyer X)
-    * GH #817: Fix CODE reference uncloned using Clone::clone.
-      (David Previous, Sawyer X)
-
-    [ ENHANCEMENTS ]
-    * GH #755: HTTP::Headers accepted by dancer_response. (Roberto Patriarca)
-
-    [ DOCUMENTATION ]
-    * GH #818: Use "MyWeb::App" instead of "mywebapp" in examples. (pdl)
-
-1.3099    2012-08-11
-
-    [ BUG FIXES ]
-    * GH #683: Fix uninitialized warnings. (Sawyer X)
-    * GH #700: Take into account the app name in route caching. (Perlover)
-    * GH #775: Clone variables for templates.
-      (Reported by Wanradt Koell, fixed by David Precious, Sawyer X)
-    * GH #776: get should be default to get/head even it's inside any.
-      (Fayland Lam)
-    * GH #788: Make sure ID key in sessions are clobbered. (kocoureasy)
-    * Fix uninitialized variables in config file path. (Sawyer X)
-    * GH #809: Require all necessarily modules in Dancer::Config.
-      (John Wittkoski)
-
-    [ ENHANCEMENTS ]
-    * GH #799: New test function: response_redirect_location_is. (Martin Schut)
-    * send_file now accepts an IO::Scalar. (David Precious)
-    * Clean up $VERSION. (Damien Krotkine)
-
-    [ DOCUMENTATION ]
-    * GH #784: Synopsis fix in Dancer::Error. (Alex C)
-    * Document session_domain in Dancer::Config. (David Precious)
-    * Pod fixes in abstract session. (David Precious)
-    * Synopsis fix in Dancer::Test. (Stefan Hornburg <Racke>)
-
-1.3098    2012-07-28
-
-    [ ENHANCEMENTS ]
-    * New keyword 'plugin_args' exported by Dancer::Plugin to provide
-      a consistent way with Dancer 2 to obtain arguments from a plugin
-      keyword. (Alberto Simões).
-    * Add 'execute_hook' and deprecate 'execute_hooks' for homogeneity
-      with Dancer 2.
-    * send_file will do the right thing if given an IO::Scalar object
-      (David Precious, prompted by Ilya Chesnokov).
-
-    [ DOCUMENTATION ]
-    * Fix escaping on some docs (Stefan Hornburg @racke).
-
-1.3097    2012-07-08
-
-    [ ENHANCEMENTS ]
-    * New keywords 'register_hook' and 'execute_hooks' exported by
-      Dancer::Plugin to provide a consistent way with Dancer 2 to declare and
-      run hooks from within a plugin (Alexis Sukrieh, idea from David Precious).
-
-1.3096    2012-07-06
-    ** Codename: Chop Hooey // Neil Hooey **
-
-    [ ENHANCEMENTS ]
-    * Finally released, thanks to Neil Hooey bugging my sorry ass.
-
-1.3095_02    2012-07-03
-
-    [ BUG FIXES ]
-    * fix exception tests in some cases (GH #734) (Damien Krotkine & katkad )
-
-    [ ENHANCEMENTS ]
-    * If YAML does not load, Dancer::Config now reports why (Ovid)
-
-    [ DOCUMENTATION ]
-    * Clarify serialization in introduction POD (Mark A. Stratman)
-    * Typo fix (Sam Kington)
-
-1.3095_01    2012-06-22
-
-    [ BUG FIXES ]
-    * Don't assume returned references are blessed when considering
-      continuations (Neil Hooey, GH-778)
-    * Malformed/missing cookies caused warnings 
-      (James Aitken/LoonyPandora, GH-782 and GH-783)
-    * Avoid potential crash in t/14_serializer/06_api.t if tmp dir is replaced
-      when %ENV gets cleared (Adam Kennedy)
-    * Properly initialize %callbacks to default empty hashref  in _send_file if 
-      not provided (Gary Mullen)
-
-    [ ENHANCEMENTS ]
-    * Add UTC timestamp options for logger_format (Alex C - perlpong).
-    * Tests can now run in parallel (Richard Simões).
-    * dancer_version keyword added (Damien "dams" Krotkine).
-    * New session_domain paramter allows you to set the domain of the default
-      session cookie (William Wolf)
-
-    [ DOCUMENTATION ]
-    * Update Ubic service example (Vyacheslav Matyukhin)
-    * Silly typo fixing (Paul Fenwick)
-    * Typo in Dancer::Test file upload example (Jonathan "Duke" Leto)
-    * UTF-8 fixes in POD (ambs)
-
-1.3095    2012-04-01
-
-    [ BUG FIXES ]
-    * Small fix to skip tests when YAML is not available.
-      (Sawyer X)
-
-    [ ENHANCEMENTS ]
-    * Added 'info' log level for messages that should always go to the logs
-      but aren't really debug, warning or error messages (Ovid)
-
-1.3094    2012-03-31
-
-    [ BUG FIXES ]
-    * GH #763: Fix exceptions in ajax routes clobbering layout (ilmari)
-    * GH #748 & GH 647: Don't force override environment from PLACK_ENV (jwittkoski)
-    * GH #762: fix param parsing lacking limit on split (leejo)
-    * GH #758: Fix Dancer::Test: make sure the request is properly converted to
-      a response. (Ovid)
-    * GH #729: Fix dancer exception composition, and message pattern application
-      (Damien Krotkine)
-    * GH #752: Exceptions raised in hooks were not propagated back to the route
-      code, but instead canceleld and replaced by a Dancer halt exception. That
-      was wrong. Now it is fixed, exceptions raised in hooks can be properly
-      caught in route code.
-      (Damien Krotkine)
-    * Be more flexible in single vs. mutliple values in key hiding.
-      (Sam Kington)
-    * Use isa() for checking relationships instead of ref() in Dancer::Test.
-      (Ovid)
-
-    [ ENHANCEMENTS ]
-    * Added 'strict_config' option to have the config return an object instead
-      of a hashref. (Ovid)
-    * GH #708: Added support for query strings in dancer_request (Jacob Rideout)
-    * It's possible for the user to set the environments directory using a new
-      environment variable (DANCER_ENVDIR) or using `set envdir => $path`
-    * Sort hash keys when serializing references in log messages (Ovid).
-
-    [ DOCUMENTATION ]
-    * Explain in POD that if there are multiple fields with the same name,
-      params('fieldname') returns an arrayref of them (alexrj).
-    * GH #750: Fix in Dancer::Deployment: appdir needs to be set before calling
-      load_app (Paul Johnson)
-    * Update 'before' hook document (David Cantrell).
-
-1.3093    2012-02-29
-
-    [ BUG FIXES ]
-    * GH #738: Define exception type ::Core::Request, to avoid things blowing 
-      up when Dancer::Request raises exceptions of that type
-      (David Precious, thanks to damog for reporting)
-    * GH #671: Fix Dancer::Plugin::Ajax with Plack::Builders.
-      (Activeg, Sawyer X)
-    * Auto-page feature cleanup and fixup. (David Precious)
-    * Remove uninitialized warnings. (Sawyer X, David Precious)
-
-    [ ENHANCEMENTS ]
-    * Winning release race to Catalyst (nice try rafl++!)
-    * Add exception type ::Core::Request. (David Precious)
-    * JSON decode from UTF8. (Sam Kington)
-    * Provide the method when a route crashes to help debug. (Sam Kington)
-    * More helpful log messages. (David Precious)
-
-    [ DOCUMENTATION ]
-    * Fix examples for multi-app deployment under Plack::Builder in deployment.
-    * Deployment docs. (c0bra)
-    * Update tutorial. (David Precious)
-    * Clean up EXPORTS. (David Precious)
-    * Keyword documentation fixups. (Kirk Kimmel)
-    * Clarify forward docs with better examples. (David Precious)
-
-1.3092    2012-01-27
-
-    [ BUG FIXES ]
-    * Don't call isa() on unblessed refs in Dancer::Exception. (Sam Kington)
-    * Assume UTF-8 by default when serialising JSON. (Sam Kington)
-    * GH #725: If a cookie is set multiple times, last value wins.
-      (David Precious)
-    * More intuitive, backwards compatible appending of default template 
-      extension. (GH #716, David Precious)
-    * Prevent recursion in censoring. (Yanick Champoux, Damien dams Krotkine)
-    * GH #734: More tests flexibility (Sawyer X, reported by @birdy-)
-
-    [ ENHANCEMENTS ]
-    * Return the current set prefix using prefix(). (Michal Wojciechowski)
-    * More intuitive appending of default template extension. Makes for cleaner
-      more DWIM code. (David Precious, reported by Nick Knutov)
-    * Allow any options to JSON serializer. (Lee Johnson)
-    * Support complex views with multiple document roots. (Pedro Melo)
-
-    [ DOCUMENTATION ]
-    * Document how to work with Dotcloud. (Oliver Gorwits)
-    * Clean ups and fix ups. (David Precious, Sawyer X, Michal Wojciechowski)
-
-1.3091    2011-12-17
-
-    [ BUG FIXES ]
-    * Reverting template() behavior by popular demand. (Damien Krotkine)
-    * GH #714: Run post-request hooks when custom continuations were created.
-      (Damien Krotkine)
-    * Always call write_session_id() to update expires. (David Precious)
-
-    [ ENHANCEMENTS ]
-    * GH #711, #652: Add server_tokens variable to allow removal of headers.
-      (John Wittkoski)
-
-    [ DOCUMENTATION ]
-    * GH #680: Document problems with multiple apps in Dancer using
-      Plack::Handler::Apache2 and recommend a workaround.
-      (Asaf Gordon, Pedro Melo)
-    * RT #73258: Spelling glitches. (Damyan Ivanov)
-    * Use ":script" instead of ":syntax" in Cookbook. (John Barrett)
-    * Typos in Deployment doc. (David Precious)
-
-1.3090    2011-12-13
-    ** Codename: Hornburg of Hannover // Stefan Hornburg (racke) **
-
-    [ BUG FIXES ]
-    * GH #685: Set VERSION for Dancer::Plugin::Ajax.
-      (Sawyer X, Naveed Massjouni)
-
-    [ DOCUMENTATION ]
-    * GH #694: Typo fix. (Yanick Champoux)
-    * GH #698: Document further TT init options. (Dennis Lichtenthaeler)
-    * GH #709: Update POD documentation regarding hook. (Stefan Hornburg)
-
-1.3089_01    2011-11-26
-
-    [ BUG FIXES ]
-    * Fix bug that made system() fail with -1 under Dancer (felixdo).
-    * Support for 'content_type' option on send_file when sending a
-      system wide file (Emmanuel Rodriguez).
-    * Support HTTP_X_FORWARDED_HOST in behing proxy (Ipaponov).
-    * Deserialize PATCH requests (Sam Kington).
-    * Encode log messages properly if charset UTF-8 is set (David Precious,
-      thanks to Penfold for the fix & MiklerGM for reporting).
-
-    [ ENHANCEMENTS ]
-    * Continuations-style exception system! (Damien Krotkine).
-    * The ability for dancer_response to send file contents for file uploads
-      as a scalar, instead of reading from file on disk (Squeeks).
-
-    [ DOCUMENTATION ]
-    * Clean up "plack_middlewares" example in docs (Richard Simões).
-
-1.3080    2011-10-25
-    ** Codename: Sawyer's Sugar Stream // Sawyer X **
-
-    [ ENHANCEMENTS ]
-    * No functional changes, just releasing as stable.
-
-1.3079_05    2011-10-02
-
-    [ API CHANGES ]
-    * Deprecation of 'before', 'before_template' and 'after' in favor of hook
-      (Alberto Simões)
-
-    [ BUG FIXES ]
-    * Minor corrections (jamhed, felixdo)
-    * Log if a view and or a layout is not found (Alberto Simões, reported
-      by David Previous)
-
-    [ ENHANCEMENTS ]
-    * Add support for the HTTP 'PATCH' verb (David Precious)
-
-1.3079_04    2011-10-02
-
-    [ ENHANCEMENTS ]
-    * PSGI handler code cleaned up (chromatic).
-    * Improved warning localizations (chromatic).
-
-    [ DOCUMENTATION ]
-    * Dancer::Plugins typos (Olof Johansson).
-    * PSGI handler documented (chromatic).
-
-1.3079_03    2011-09-10
-
-    [ ENHANCEMENTS ]
-    * Support XML::Simple configuration for serializing/deserializing
-      (Alberto Simões)
-    * Hard deprecate lots of stuff (Alberto Simões)
-
-    [ BUG FIXES ]
-    * Don't clobber TT INCLUDE_PATH if the user set it specifically in the
-      config file - Issue 643 (David Precious, reported by meraxes)
-    * Don't require a space after semi-colon delimiting multiple name=value
-      cookie pairs - Issue 642 (David Precious, reported by travisbeck)
-
-1.3079_02    2011-08-28
-
-    [ BUG FIXES ]
-    * Remove hard-coded version from 404.html and 500.html (Alberto Simões)
-    * Fix logging of UTF8-encoded strings (jamhed)
-    * Do not clean 'vars' during forward (Alberto Simões)
-
-    [ ENHANCEMENTS ]
-    * Add streaming support to send_file. (Sawyer X)
-
-1.3072    2011-08-23
-    ** Codename: Precious David Precious // David Precious (bigpresh) **
-
-    [ ENHANCEMENTS ]
-    * No functional changes, just releasing as stable.
-
-1.3079_01    2011-08-17
-
-    [ BUG FIXES ]
-    * Fix prefix behavior with load_app (alexrj)
-    * send_file() shouldn't clobber previously-set response status
-      (David Precious, reported by tylerdu - thanks!)
-    * Depend on URI 1.59 - Fixes problems when redirecting with
-      UTF-8 strings (Alberto Simões)
-    * Fix before_serializer POD fix (Yanick Champoux)
-
-    [ ENHANCEMENTS ]
-    * send_file can send data (pass a reference to a scalar), and can
-      specify a content-disposition filename. (Alberto Simões)
-    * Set 'Server' HTTP response header as well as 'X-Powered-By'.  For cases
-      where Dancer is being accessed directly, or the proxy passes on this
-      header, it's nice to see it.  (David Precious)
-
-    [ DOCUMENTATION ]
-    * Cookbook links to canonical documentation of keywords in Dancer.pm, so
-      readers encountering a new keyword can easily see the docs for it
-      (David Precious)
-    * Docs for debug/warning/error link to Dancer::Logger for details on how to
-      control where logs go (David Precious)
-    * Document import_warnings option, and mention it & link to that
-      documentation in opportune places.
-    * Document that 'get' also creates a route for 'HEAD' requests
-      (David Precious, prompted by Matt S Trout)
-    * Extend request() keyword docs with examples (David Precious)
-    * Correct port in Lighty/FCGI example in Dancer::Deployment
-      (David Precious, thanks to pwfraley in Issue 621)
-
-1.3071    2011-07-26
-    ** Security release based on 1.3070 **
-
-    [ SECURITY ]
-    * FIX directory traversal issue
-      Since 1.3070, it was possible to abuse the static file serving feature to
-      obtain files from a directory immediately above the directory configured to
-      serve static files from.
-      (Vladimir Lettiev and David Precious)
-
-1.3070    2011-07-14
-    ** Codename: The Exceptional Mr. Dams // Damien Krotkine (dams) **
-
-    [ ENHANCEMENTS ]
-    * No functional changes, just releasing as stable.
-
-1.3069_02    2011-07-10
-
-    [ BUG FIXES ]
-    * Fix a bunch of cpan testers reports 
-      (Alberto Simões)
-
-1.3069_01    2011-07-07
-
-    [ BUG FIXES ]
-    * Fix a bug while parsing some cookies
-      (Franck Cuny)
-    * Documentation and tests on how to use many Dancer application
-      inside one PSGI file (PR 564)
-      (Alex Kalderimis and Franck Cuny)
-    * More flexible test for locale-aware logging (Alberto Simões)
-    * Do not re-read config files when dance starts if they were
-      already loaded.  (Alberto Simões)
-    * Fixed shell-dependent tests for Window testing. (Alberto Simões)
-    * Die properly if halt is call inside an hook.
-      (Damien Krotkine and Alberto Simões)
-    * Make template work outside of requests (Issue 592) (David Precious)
-    * Cleanup session tests folder (Issue 594) (Sawyer X)
-
-    [ ENHANCEMENTS ]
-    * Error Hook (PR 563 - JT Smith)
-    * Exceptions system (Damien Krotkine)
-    * The no prefix can be set using 'prefix "/";' (Alberto Simões)
-    * Support for nested prefixes (Alberto Simões)
-    * Cleanup on Dancer::FileUtils (Sawyer X)
-    * Cleanup on File::Temp dependencies (Sawyer X)
-
-    [ DOCUMENTATION ]
-    * Documentation on tokens automatically added to templates.
-      (Alberto Simões)
-    * Documentation on serializer magical access to put/posted data.
-      (Alberto Simões)
-
-1.3060    2011-06-15
-    ** Codename: Pirouetting Pedro // Pedro Melo **
-
-    [ ENHANCEMENTS ]
-    * No functional changes, just releasing as stable.
-
-1.3059_04    2011-06-12
-
-    [ BUG FIXES ]
-    * Fix a bunch of cpan testers reports 
-    (Alberto Simões)
-
-1.3059_03    2011-06-11
-
-    [ BUG FIXES ]
-    * Fix for issue #539
-      https://github.com/sukria/Dancer/issues/539
-      Don't decode twice entries in the params hash table, file 
-      uploads with UTF-8 characters in their name are now possible.
-      (Toby Corkindale, Alexis Sukrieh)
-    * Fix broken test with old version of HTTP::Parser::XS
-      (Franck Cuny)
-    * #492 - Don't run Test::TCP tests on win32
-      (Franck Cuny)
-    * Fix a bug that when forwarding a post with post data stalled the
-      code (read on no data handle).  (Alberto Simões)
-    * Tweak tests regular expression to be more flexible (Pedro Melo)
-    * Require a recent Test::TCP (1.13) to run tests. (Alberto Simões)
-    * Fix hooks implementation that failed when user messes $_ (Pedro Melo)
-    * Fix broken params('query') and params('body') during forward and
-      dancer_request test function. (Alberto Simões and Squeek)
-
-    [ ENHANCEMENTS ]
-    * Fix for issue #516
-      https://github.com/sukria/Dancer/issues/516
-      No more legacy code in Dancer::Route to handle routes created 
-      with the deprecated keyword "r". The related code is now more 
-      concise and should be slightly more efficient.
-      (Alexis Sukrieh)
-    * Merge PR #541
-      https://github.com/sukria/Dancer/pull/541
-      New "param" accessor to retrieve a parameter easily.
-      (Alberto Simões)
-    * Implement session directory testing cache for Session::YAML
-      (Damien Krotkine)
-    * Tests rework (improve speed, remove useless tests, ...)
-      (Alberto Simões and Franck Cuny)
-    * Configuration for log_dir and log_file.
-      (Alberto Simões)
-    * Pass vars to templates automatically (David Precious)
-    * Support lexical prefix (Pedro Melo)
-
-    [ DOCUMENTATION ]
-    * Improve FileUtils documentation. (mokko)
-
-1.3059_02    2011-05-29
-
-    [ BUG FIXES ]
-    * Fix for smoker failure under Perl 5.13.4
-      http://www.cpantesters.org/cpan/report/b37416b8-88df-11e0-9c74-cad5bcb8094c
-      Better use of Time::Hires in t/22_hooks/04_template.t
-      (Franck Cuny)
-
-1.3059_01    2011-05-27
-
-    [ API CHANGES ]
-    * Second level of deprecation for render_with_layout method.
-      (Alberto Simões)
-    * Second level of deprecation for mime_type method.
-      (Alberto Simões)
-
-    [ BUG FIXES ]
-    * Dancer::Test was broken for tests using data in POST (GH#534)
-      (Franck Cuny)
-    * Multiple setter implemented at 1.3039_01 was broken for App
-      specific settings.
-      (Alberto Simões)
-
-    [ ENHANCEMENTS ]
-    * Cookie accessor to manipulate cookies directly.
-      (Niko)
-
-    [ DOCUMENTATION ]
-    * Improve Serializers documentation
-      (Damien Krotkine)
-
-1.3051    2011-05-27
-    ** Security release based on 1.3050 **
-
-    [ SECURITY ]
-    * FIX CVE-2011-1589 (Mojolicious report, but Dancer was vulnerable as well).
-      Return "400 Bad Request" when requested filename seems suspicious
-      http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1589
-      (Vladimir Lettiev and Franck Cuny)
-
-1.3050    2011-05-20
-    ** Codename: The Captain Hook Adventure // Franck Cuny **
-
-    [ ENHANCEMENTS ]
-    * No functional changes, just releasing as stable.
-
-    [ DOCUMENTATION ]
-    * Improve Dancer documentation
-      (Damien Krotkine)
-
-1.3049_01    2011-05-14
-
-    [ API CHANGES ]
-    * Deprecation of 'logger' (use set). (Alberto Simões)
-    * Deprecate 'layout' (use set). (Alberto Simões)
-    * Definitely remove plack_middlewares HashRef deprecation.
-      (Alberto Simões & Damien Krotkine)
-
-    [ BUG FIXES ]
-    * Unbreaking auto_page somewhat - the catch-all route added will
-      pass unless a suitable view exists.  This means that routes like
-      /foo are not obscured, and made up URLs will result in a proper
-      404, not 500.  A little more work required here, though. 
-      (David Precious)
-    * Anchor regular expression routes. Before regular expressions
-      were matching anywhere in the URL.
-      (Alberto Simões)
-
-    [ ENHANCEMENTS ]
-    * GH #519: remove redundant lines from CSS
-      (Alberto Simões)
-    * When scaffolding an app, show a warning if YAML not installed.
-      Prompted by Issue 496.  (David Precious)
-    * Hooks! add new positions for hooks, and possibility to create
-      your own hooks inside your application and your plugin.
-      (Franck Cuny)
-    * Don't try to read/set session vars with empty/undef keys.  It
-      doesn't make sense to do so, and can cause warnings elsewhere.
-      (David Precious)
-    * Check HTTP status code/alias passed to status() is valid;
-      previously, and invalid code would result in the response status
-      being unset
-      (David Precious, prompted on IRC by jonas)
-    * Lowercase status aliases and swap spaces for underscores before
-      trying to match
-      (David Precious, suggested on IRC by jonas)
-    * Added 'behind_proxy' setting, making Dancer honor
-      X_FORWARDED_PROTOCOL and X_FORWARDED_HOST
-      (Alberto Simões, requested by sukria and others)
-
-1.3040    2011-05-01
-    ** Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
-
-    [ ENHANCEMENTS ]
-    * No functional changes, just releasing as stable.
-
-1.3039_01    2011-04-27
-
-    [ BUG FIXES ]
-    * Fix 404 results from forwarding.
-      (Alberto Simões)
-    * Don't remove trailing slashes from route patterns under prefix.
-      (Brian E. Lozier)
-    * Remove deprecated r() function from list of exports.
-      (Stefan Hornburg)
-    * GH #402: make session_expires honor +2h style formatting.
-      (Michael G. Schwern)
-    * GH #433: encoding issues with forward().
-      (Alberto Simões)
-    * GH #390: Renaming access_log to startup_info (+doc).
-      (Sawyer X)
-    * Rewrite scalar usage of qw() that is incompatible with 5.14.
-      (Alberto Simões)
-    * Don't parse ARGV when under PSGI (closes #473)
-      (Franck Cuny)
-
-    [ ENHANCEMENTS ]
-    * Forward can change method GH#493
-      (Alberto Simões)
-    * Introducing the "megasplat"!
-      (Yanick Champoux)
-    * More tests for versions, setings and variables.
-      (Alberto Simões)
-    * Improve Dancer::Test so failures report the correct line numbers.
-      (Michael G. Schwern)
-    * GH #466: Can now set cookies with http_only => 0 for JS integration.
-      (Alberto Simões)
-    * Session engine can be told to set cookies without HttpOnly attribute using
-      new session_is_http_only setting.
-      (Alberto Simões, requested by JT Smith)
-    * GH #296: Show versions of loaded modules in startup info.
-      (Sawyer X)
-    * Able to set more than one value at once using set().
-      (Alberto Simões)
-    * GH #253: Use Clone::clone() if available to clone data before censoring.
-      (Sawyer X)
-    * GH #246: Dancer::Test can now test for file uploads as well.
-      (Franck Cuny)
-    * Allow parameters in forward().
-      (Alberto Simões)
-
-    [ DOCUMENTATION ]
-    * Major rewrite/reorganization on Dancer::Config documentation.
-      (David Precious, pushed by Alberto Simões PR)
-    * GH #284: Document hosting multiples Dancer apps in a single PSGI file.
-      (Franck Cuny)
-    * Dancer::Session POD typos and spurious characters.
-      (Stefan Hornburg)
-
-1.3030    2011-04-13
-    ** Codename: Silence of the ambs // Alberto Simões **
-
-    [ ENHANCEMENTS ]
-    * Change the flag for sending system-wide path with send_file to
-      'system_path' (was 'absolute').
-      (Alberto Simões)
-
-1.3029_03    2011-04-10
-
-    [ BUG FIXES ]
-    * Dancer::Session::Cookie 0.14 is required for dependency test.
-    * Only test for undef serializer if we have the default (JSON) available.
-      (Sawyer X)
-
-    [ ENHANCEMENTS ]
-    * Test before_template & auto_page.
-
-1.3029_02    2011-04-08
-
-    [ BUG FIXES ]
-    * Better way to initialize the logdir in Dancer::Logger::File.
-      Works now cleanly if the appdir is not writable but the logdir exist and
-      is writable.
-      (Alberto Simões)
-    * fix warnings in t/03_route_handler/28_plack_mount.t.
-      (Franck Cuny)
-
-    [ ENHANCEMENTS ]
-    * Support for error templates.
-      If the setting "error_template" is set, it is used when building an error
-      page instead of using the default template.
-      Added the appropirate documentation as well.
-      (Alberto Simões)
-    * Dancer::Test::dancer_response() returns a 404 response when no route
-      handler is found. This is consistent with what Dancer does internally.
-      (Alberto Simões)
-    * Dancer::Test provides a new helper for inspecting subsets of headers:
-      "response_headers_include".
-      (Alberto Simões, Alexis Sukrieh)
-    * dancer_response now handles the rendering of static pages as well.
-      (Alberto Simões)
-    * Cleanup some tests.
-      (Alberto Simões)
-
-    [ DOCUMENTATION ]
-    * POD fix.
-      (Stefan Hornburg - Racke)
-
-1.3029_01    2011-04-01
-
-    [ BUG FIXES ]
-    * Fix t/14_serializer/02_json.t to work with older JSON (relates to GH#416)
-      (Damien Krotkine)
-    * the Changelog test now supports Codenames. It suggests to add codenames
-      for table releaes as well
-      (Damien Krotkine)
-    * GH #420: Extra content generated
-      (Alberto Simões, Damien Krotkine)
-    * GH #409: If pass has no more matching routes, return 404.
-      (Alberto Simões)
-
-    [ ENHANCEMENTS ]
-    * GH #396: Test that Dancer::Session::Cookie isn't broken
-      (Michael G. Schwern)
-    * GH #399: Make sure session can have their name changed.
-      (Michael G. Schwern)
-    * Dancer::Test tests assumes 'GET' if their first argument is scalar.
-      (Yanick Champoux)
-    * send_file accepts optional content-type declaration, to override guessed
-      MIME type, e.g. send_file $filename, content_type => 'image/png'
-      (Alberto Simões, requested by Michael G Schwern)
-    * send_file accepts optional absolute option, to send an absolute path
-      (Alberto Simões)
-    * Have `dancer` cmd tool create MANIFEST and MANIFEST.SKIP.
-      (Alberto Simões)
-    * mime_type is deprecated; new keyword 'mime'; new config key
-      'default_mime_type';
-      (Alberto Simões and Michael G. Schwern)
-    * Recognize absolute redirects 
-      (Yanick Champoux)
-
-    [ DOCUMENTATION ]
-    * Add documentation to send_file optional argument
-      (Alberto Simões)
-    * Fix plack_middlewares example in the cookbook
-      (Michael G. Schwern)
-    * Extend the POD on plugin_setting to prevent a pitfall with plugin
-      modules more than 3 levels deep.
-      (Stefan Hornburg)
-    * GH #400: Documenting the plack_middlewares_map.
-      (Michael G. Schwern, Sawyer X)
-    * GH #422: Documenting no need for caret when you have a prefix.
-      (Sawyer X)
-
-1.3020    2011-03-21
-    ** Codename: The Schwern Cometh // Michael G. Schwern **
-
-    [ ENHANCEMENTS ]
-    * No functional changes, just releasing as stable.
-
-1.3019_02    2011-03-14
-
-    [ BUG FIXES ]
-    * GH #354: Tokens are not passed to layout if no params are passed to
-      template.
-      (Damien Krotkine)
-
-1.3019_01    2011-03-13
-
-    [ BUG FIXES ]
-    * GH #393: Reset vars for each new request.
-      (Franck Cuny)
-
-    [ ENHANCEMENTS ]
-    * GH #391: Dancer::Logger::Note now exists. :)
-      (Sawyer X)
-    * Porting documentation on WRAPPER to Dancer::Template::TemplateToolkit.
-      (Sawyer X)
-    * GH #387: Document views and appdir in Dancer::Config.
-      (Michael G. Schwern)
-    * Add a new symbol to exporter ':script'.
-      (Franck Cuny)
-    * GH #397: Support cookie expire times like "+2h".
-      (Michael G. Schwern)
-
-1.3014_01    2011-03-10
-
-    [ BUG FIXES ]
-    * GH #373: Display valid path to the main app file in the welcome screen.
-      (Franck Cuny)
-    * GH #152, GH #170, GH #362: Log dir is not created when logger is not set
-      to 'file', and setting log_path works as expected.
-      (Franck Cuny)
-    * GH #308: Use request's uri_base.
-      (Sawyer X)
-    * GH #378: Some routes with prefix where wrongly matched.
-      (Franck Cuny)
-
-    [ ENHANCEMENTS ]
-    * GH #351: Explicitly exclude some keywords when important Dancer's syntax,
-      add modes that also excludes some keywords (:moose, :tests).
-      (Sawyer X, Naveed Massjouni, Michael G. Schwern, Franck Cuny)
-    * All logging options accept any number of variables.
-      (Sawyer X)
-    * GH #297: All logging options can automatically serialize references.
-      (Sawyer X)
-    * Add Dancer::Logger::Capture to capture and read log messages during
-      testing.
-      (Michael G. Schwern)
-    * Dancer::Cookie make secure (https only) cookies. It also adds the
-      "session_secure" setting instructing sessions to use secure cookies.
-      (Michael G. Schwern)
-    * Adding uri_base to Request.pm.
-      (Sawyer X)
-    * Make Dancer::Test use the capture logger
-      (Michael G. Schwern)
-
-    [ DOCUMENTATION ]
-    * Dancing on command line.
-      (Maurice Mengel)
-    * Improve Dancer::Cookbook.
-      (Maurice Mengel)
-
-1.3014    2011-03-04
-
-    [ BUG FIXES ]
-    * YAML Session UTF-8 Fix
-      (Roman Galeev)
-    * Tests and documentations for Dancer::Request::Upload + type method in
-      Dancer::Request::Upload
-      (Michael G. Schwern)
-    * Dancer::Test::dancer_response handles correctly its 'body' parameter
-      We can now pass a hash ref as the body of dancer_response, it will
-      automatically be serialized as an URL-encoded string with the appropriate
-      content_type header.
-      (Alexis Sukrieh)
-
-1.3013    2011-03-01
-
-    [ ENHANCEMENTS ]
-    * Fix test suite: the changelog test is skipped if not under 
-      RELEASE_TESTING environment.
-
-1.3012    2011-03-01
-
-    [ BUG FIXES ]
-    * Fix cookies disappearing when more than one is set.
-      Complete refactoring of the cookie handling.
-      (Chris Andrews, Geistteufel)
-    * Properly set the settings in Dancer::Test only after config loading.
-      (Sawyer X)
-    * Fix possible loss of last directory in path.
-      (Sawyer X)
-    * No need for default upper directory in Dancer::Test. This fixes an issue
-      raised on the list about the default scaffolded test failing.
-      (Sawyer X)
-    *  Fix anti UNC substitution under Cygwin
-      (Rowan Thorpe)
-    * GH#299 Return appropriate headers on HEAD request (content-type, ...)
-      (franck cuny)
-    * Use the dancer_version variable in scaffolded app.
-      (Sawyer X, reported by Brian E. Lozier)
-
-    [ ENHANCEMENTS ]
-    * Fix manifest
-      (Damien Krotkine)
-    * Various packaging, changelog and test fixes
-      (Damien Krotkine)
-    * Add a new accessor to Dancer::Request: ->uri.
-      (it's an alias to ->request_uri)
-      (Franck Cuny)
-    * Removes Dancer::Helpers, refactor Dancer.pm accordingly.
-      (Franck Cuny)
-    * Introduce changelog test of hell.
-      (Damien Krotkine)
-    * Add Dancer::Logger::Null.
-      (Sawyer X)
-    * Add Dancer::Logger::Diag.
-      (Sawyer X)
-    * Refactor Dancer::Response
-      (franck cuny)
-    * Allow to use a subclass of Template::Toolkit.
-      (Michael G. Schwern)
-    * Dancer::Test now uses Dancer::Logger::Null instead of ::File.
-      (Sawyer X)
-    * Add Dancer::Deprecation. (handle deprecation messages)
-      (franck cuny)
-    * Introduce new timestamp format in logger (%T)
-      (Roman Galeev)
-    * Refactoring of the forward method
-      (Alex Kalderimis)
-    * Refactoring of internal objects in the core, 
-      use more of Dancer::Object. Introduce attributes_defaults
-      (Damien Krotkine)
-    * Add a perl_version variable to all templates, used in scaffolded app.
-      (Sawyer X, reported by Brian E. Lozier)
-    * Better output when template file is missing.
-      (Brian E. Lozier, Sawyer X)
-
-    [ DOCUMENTATION ]
-    * Add missing methods (e.g. "referer"), sorting, clean up.
-      (Flavio Poletti)
-    * Complete working example of deployment under Nginx/Starman in
-      Deployment.pod
-      (Geistteufel)
-
-1.3010_01    2011.02.12
-
-    [ BUG FIXES ]
-    * GH#136: fix again Mime::Type issues in preforking environment
-      (Chris Andrews)
-    * GH#220: fix for path issues under MacOS X and Windows platforms.
-      A new function is provided by Dancer::FileUtils: path_no_verify()
-      (Rowan Thorpe)
-    * Fix for infinite loops detection in before filters
-      (Flavio Poletti)
-
-    [ ENHANCEMENTS ]
-    * Better detection of the application layout under non-UNIX platforms.
-      (Rowan Thorpe, Alexis Sukrieh)
-
-    [ DOCUMENTATION ]
-    * Fix a typo in Dancer::Request::Upload's POD
-      (Rowan Thorpe)
-    * Better documentation for the before filters, explanations about the
-      potential infinite loops that can happen when using before filters (and 
-      what Dancer does in that case).
-      (Flavio Poletti)
-
-1.3011    2011.02.14
-
-    [ BUG FIXES ]
-    * Set binmode in write_data_to_file() to fix image corruption in
-      Windows
-      (Rowan Thorpe)
-    * GH#319, GH#278, GH#276, GH#217: Fix file issues on Cygwin and 
-      Win32 platforms
-      (Rowan Thorpe)
-    * GH#322: Detect errors in scaffolded dispatchers
-      (Alberto Simões)
-    * Fix tests so that they don't fail if JSON is not installed
-      (Damien Krotkine)
-    
-    [ DOCUMENTATION ]
-    * Small spaces fix (Alberto Simões).
-
-1.3010_01   2011.02.12
-
-    [ BUG FIXES ]
-    * GH#136: fix again Mime::Type issues in preforking environment
-      (Chris Andrews)
-	* GH#220: fix for path issues under MacOS X and Windows platforms.
-	  A new function is provided by Dancer::FileUtils: path_no_verify()
-	  (Rowan Thorpe)
-	* Fix for infinite loops detection in before filters
-	  (Flavio Poletti)
-	
-	[ ENHANCEMENTS ]
-	* Better detection of the application layout under non-UNIX platforms.
-	  (Rowan Thorpe, Alexis Sukrieh)
-
-	[ DOCUMENTATION ]
-	* Fix a typo in Dancer::Request::Upload's POD
-	  (Rowan Thorpe)
-	* Better documentation for the before filters, explanations about the
-	  potential infinite loops that can happen when using before filters (and 
-	  what Dancer does in that case).
-	  (Flavio Poletti)
-
-1.3010  2011.02.10
-
-    [ BUG FIXES ]
-    * GH#303: Generated Makefile.PL's clean is done correctly now.
-      (Sawyer X)
-    * Minimum version of HTTP::Headers to avoid test fails.
-      (LoonyPandora)
-    * Do not require JSON to get version number (fixes tests).
-      (Sawyer X)
-
-    [ ENHANCEMENTS ]
-    * Allow read_file DWIMishness using wantarray.
-      (LoonyPandora)
-    * Tidy up Dancer.pm
-      (Damien Krotkine)
-    * Document forward should use return.
-      (Sawyer X)
-    * GH#290: Use return with redirect examples in docs.
-      (Damien Krotkine)
-    * Document that base() returns a URI object.
-      (David Precious)
-    * Show version when starting standalone server.
-      (David Precious)
-
-1.3003  2011.02.06
-
-    [ API CHANGES ]
-    * Remove load_plugin from the core's DSL (was deprecated).
-
-    [ BUG FIXES ]
-    * Eliminate test warnings on Windows.
-      (Gabor Szabo)
-    * GH#271 - use correct VERSION_FROM in scaffolded application.
-      (Sawyer X)
-    * GH#260 - send_file doesn't clobber existing headers
-      (Alexis Sukrieh)
-    * logger unicode bugfix in the formated date
-      (jahmed)
-    * GH#281 - Don't crash if splat is used with no captures
-      (David Precious)
-    * Possible to given "template" a view name with the extenstion.
-      (Alexis Sukrieh)
-    
-    [ ENHANCEMENTS ]
-    * New setting log_path to allow for alternalte logging path in logger
-      "file".
-      (Natal Ngétal)
-    * GH#289: Add more aliases on the ENV, provide more smart accessors to Plack env
-      entries
-      (Franck Cuny)
-    
+ [BUG FIXES]
+ - Test was skipping wrong number of tests if JSON was absent.
+
+1.3122 2014-04-10
+ [BUG FIXES]
+ - Serializer::Mutable now consider 'Accept' before 'Content-Type'.
+   (GH#996, Bernhard Reutner-Fischer)
+ - Serializer::Mutable now correctly deals with content-types with
+   charsets. (GH#996, Bernhard Reutner-Fischer)
+ - Without Clone(), Dancer::Error::dumper() could clobber values in deep
+   structures. (GH#1006, fix by asergei)
+ - 'session_name' in Dancer::Session::Abstract couldn't be redefined.
+   (GH#1004, patch by Lee Carmichael)
+
+ [DOCUMENTATION]
+ - GH #995: Documentation improvements. (Colin Kuskie)
+
+ [MISC]
+ - Unused function 'path_no_verify' removed. (GH#998,  reported by
+   mjemmeson)
+
+1.3121 2014-02-02
+ [DOCUMENTATION]
+ - GH #983: Correction of various typos. (Akash Ayare)
+ - GH #981: Add synopsis to Dancer::Request::Upload. (smashz)
+ - GH #985: Change mentions of 'PerlHandler' to 'PerlResponseHandler'
+   (Xaerxess)
+
+ [ENHANCEMENTS]
+ - GH #994: change heuristic so that
+   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' is
+   not recognized as text. (Skeeve)
+ - GH #987: get_current_session() now accepts option 'no_update'. (Lee
+   Carmichael)
+
+1.3120 2013-12-24
+ [DOCUMENTATION]
+ - GH #972: Correction of a truckload of typos. (David Steinbrunner)
+ - GH #971: Stress that the request's 'env()' method is prefered over
+   accessing '%ENV' directly. (isync)
+ - GH #968: Fix 'ScriptAlias' example in Deployment docs. (reported by
+   tednolan)
+ - GH #976: Document and trap limitation in Dancer::Test. (Tom Hukins)
+ - GH #976: Improve references to related modules. (Tom Hukins)
+
+ [ENHANCEMENTS]
+ - GH #974: Make plugins play nicely with mro 'c3'. (Fabrice Gabolde)
+
+1.3119 2013-10-26
+ [BUG FIXES]
+ - GH #959: hash randomization could cause .pl MIME to vary and test to
+   fail. (Olof Johansson)
+ - GH #961: fix bug in require_environment's logic. (reported by
+   sapphirecat)
+
+ [DOCUMENTATION]
+ - GH #962: Improvements of the Dancer::Test docs. (Tom Hukins)
+ - GH #970: Small documentation edit. (Matthew Horsfall)
+
+ [ENHANCEMENTS]
+ - GH #965: Serializer also serialize content for DELETE. (reported by
+   Achim Adam)
+
+1.3118 2013-09-01
+ [BUG FIXES]
+ - GH #655: clarify logger error message. (Yanick Champoux,  reported by
+   Gabor Szabo)
+ - GH #951: fix quoting of TemplateToolkit start_tag/stop_tag. (Rick Myers)
+ - GH #940: carry over the session when we forward().  (Yanick Champoux,
+   reported by sciurius)
+ - GH #954: don't die on autoflush for older perls.  (Yanick Champoux,
+   reported by metateck and David Golden)
+ - GH #950: Dancer::Test functions now populate REQUEST_URI. (Yanick
+   Champoux, reported by Sören Kornetzki)
+
+ [DOCUMENTATION]
+ - GH #942: simpilify the Apache deployment docs for cgi/fcgi. (bug report
+   by Scott Penrose)
+
+ [ENHANCEMENTS]
+ - GH #946: new 'require_environment' setting. (Jesse van Herk)
+ - GH #952: don't set defaults for Template subclasses for 
+   Dancer::Template::TemplateToolkit. (Rick Myers)
+ - GH #945: add function 'template_or_serialize' to
+   Dancer::Serializer::Mutable. (Yanick Champoux)
+
+ [MISC]
+ - GH #949: fixes a few errors in the serializer testsuite.  (Franck Cuny)
+
+1.3117 2013-07-31
+ [BUG FIXES]
+ - GH #794: Upload data was not kept for forwarded requests.  (reported by
+   William Wolf)
+ - GH #898: calling halt() doesn't discard set headers anymore.  (Yanick
+   Champoux, reported by Nicolas Franck)
+ - GH #842: embedded 'prefix' now properly localized.  (Yanick Champoux,
+   reported by Jashank Jeremy)
+
+ [DOCUMENTATION]
+ - GH #938: fix doc typos in Dancer::Serializer. (Fabrice Gabolde)
+ - GH #712: add all status codes known to Dancer to Dancer::HTTP.  (Yanick
+   Champoux, reported by Brian J Miller)
+ - Add warning that 'forward' doesn't preserver the session. (Alberto
+   Simões)
+ - GH #941: minor correction to code snippets in documentation.  (Grzegorz
+   Rożniecki)
+ - GH #929: add warning on the use of Corona as underlying web server. 
+   (issue reported by berekuk)
+ - GH #943: remove mention to 'Dancer::Plugin::Validation',  clean 'dancer
+   -a' sample output. (Grzegorz Rożniecki)
+
+ [ENHANCEMENTS]
+ - GH #836: Provide more information when an engine fails to load. (Yanick
+   Champoux, reported by Daniel Perrett)
+
+1.3116 2013-07-03
+ [ENHANCEMENTS]
+ - GH #767: forwarded_for_address() now looks for HTTP_X_FORWARDED_FOR if
+   X_FORWARDED_FOR is not there. (Jakob Voss)
+ - GH #936: Add file locking to file logger. (David Golden)
+ - GH #937: Add details to tutorial. (Craig Treptow)
+
+1.3115 2013-06-09
+ [BUG FIXES]
+ - GH #605: pass'ed megasplat with no further routes cause 404, not 500.
+   (vlyon)
+
+ [DOCUMENTATION]
+ - GH #934: Added example of HAProxy deployment. (Anton Gerasimov)
+
+ [MISC]
+ - Tests now require Test::TCP v1.30+ (previous version had too short a
+   timeout and tests were failing). (Yanick Champoux)
+
+1.3114 2013-06-02
+ [BUG FIXES]
+ - GH #724: app.pl obeys --confdir. (Yanick Champoux)
+ - GH #927: logging format using 'h' now play nicely if no header present.
+   (ironcamel)
+
+ [DOCUMENTATION]
+ - GH #922: Add example of request parameters. (Gabor Szabo)
+ - Add scheme line for ngnix config in D::Deployment.
+
+ [ENHANCEMENTS]
+ - GH #919: 'dancer' script exits with code 255 if application	   name is
+   invalid. (ppisar)
+ - GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
+ - GH #926: make messages from fatal warnings show up in the logs.  (Max
+   Maischein)
+ - GH #930: speed improvement. (ichesnokov)
+ - GH #859: strip illegal characters from cookie name. (Colin Keith)
+ - GH #924: non-'/' apps behind proxies now possible using 'request-base'
+   header. (Mikolaj Kucharski)
+
+1.3113 2013-05-08
+ [BUG FIXES]
+ - GH #920: fix pod for Dancer::Development. (ppisar)
+
+ [DOCUMENTATION]
+ - GH #915: add warning about behaviour of hooks with multiple packages
+   loaded by load_app (racke).
+ - GH #918: Fix headers syntax in Dancer::Response perldoc (Vyacheslav
+   Matyukhin).
+
+ [ENHANCEMENTS]
+ - GH #869: leave body parameters alone if deserialization failed
+   (brianphillips).
+ - GH #912: send_file was returning 500 instead of 404 for non-existent
+   files. (Fabrice Gabolde)
+ - GH #914: add link to melezhik's psgi chef cookbook.
+ - GH #923: implement lazy session flushing. (David Golden)
+
+1.3112 2013-04-10
+ [BUG FIXES]
+ - GH #900: backport the security patch for Dancer::ModuleLoader from
+   Dancer2 (mokko).
+
+ [ENHANCEMENTS]
+ - GH #897 dancer script diagnostic more explicit if target directory	   
+   does not exist or is not writable (reported by Andrew Grangaard).
+ - GH #907: skip tests of deprecated features (mokko).
+
+1.3111_02 2013-04-01
+ [BUG FIXES]
+ - RT #84198: silencing wide-character in-memory file handle error (Tom
+   Wyant).
+ - wrong number of tests to skip in t/14_serializer/01_helpers.t.
+
+1.3111_01 2013-03-30
+ [BUG FIXES]
+ - GH #891: silenced warnings from non-numeric versions in Makefile.PL
+   (Olof Johansson).
+ - GH #702: fix request->header call throwing exceptions inside routes	  
+   of Dancer->dance($request)  (Perlover).
+ - GH #893, GH #636: handle binary files for uploads in Dancer::Test
+   (Andrei).
+ - GH #903: add plan for subtest (bug report by wfaulk).
+
+ [DOCUMENTATION]
+ - GH #899: mention that response_exist and response_doesnt_exist are
+   deprecated (Fabrice Gabolde).
+ - GH #902, #903: change example to use path_info() instead of path()
+   (Anton Ukolov, Lee Carmichael).
+
+ [ENHANCEMENTS]
+ - GH #895: JSON serializer now uses JSON's "-support_by_pp" (Jonathan
+   Schatz).
+
+1.3111 2013-02-24
+ [BUG FIXES]
+ - GH #877: fix Dancer Error when so that 'exception' object is not passed
+   to serializers, because XML/JSON serializers don't understand objects
+   (rikbrown).
+ - GH #858: Check for definedness, not truth, when testing if we read into
+   the buffer when parsing a request body (florolf).
+ - GH #845: Fix uninitialized warning when loading modules (Fabrice
+   Gabolde).
+ - GH #851, GH #853: Atomic YAML session writing (Roman Galeev).
+ - GH #852: Saner UTF logging (Roman Galeev).
+ - GH #849, GH #850: Serve autopages with text/html content type. (Philippe
+   Bruhat - BooK)
+ - GH #848: Handle If-Modified-Since header in the request for static
+   files. (Philippe Bruhat - BooK)
+ - GH #848: Send a Last-Modified header for static files. (Philippe Bruhat
+   - BooK)
+ - GH #856: Don't export non-existing subroutine (mokko).
+ - GH #874: Reduce dependence on %ENV for internal code (Kent Fredric).
+ - GH #875: Don't expect specific order in cookies (Yanick Champoux).
+ - Remove 'exception' object from message being passed to serializers. 
+   (Rik Brown)
+ - Added .travis.yml to MANIFEST.SKIP so t/manifest.t passes (Kaitlyn
+   Parkhurst).
+ - GH #887, GH #890: keyword 'global_warnings' added to replace
+   'import_warnings' (Kaitlyn Parkhurst).
+ - GH #892: add 'private_key' to the list of potentially sensitive keys
+   (Tom Heady).
+
+ [DOCUMENTATION]
+ - GH #847: Fix typo (John Wittkoski).
+ - GH #865: Correct 'before' hook documentation (David Precious, Maurice).
+ - GH #860, GH #844, GH #760: Misleading plack middleware documentation.
+   (Paul Fenwick)
+ - GH #862: Fix heading level for strict_config entry in Dancer::Config.
+   (Stefan Hornburg - Racke)
+ - GH #863: Correct example apache config (John Wittkoski).
+ - GH #867: correct doc for ModuleLoader::load_with_params (mokko).
+ - Document route_cache option (David Precious).
+ - Docs for route_cache_size_limit & route_cache_path_limit (David
+   Precious).
+ - Remove meaningless 'encoding' to TT config (David Precious).
+ - Remove docs for mounting multiple apps (Naveed Massjouni).
+ - Update doc URLs (David Precious).
+ - Fix inconsistency in Perlbal deployment example (Slaven Rezić, Racke).
+ - GH #894: Replace spurious character in Dancer::Session's POD (Racke).
+ - GH #880: Add deprecation mention for 'after' (pdl and Yanick Champoux).
+
+1.3110 2012-10-06
+ [BUG FIXES]
+ - GH #817, #823, #825: Removing Clone from core. Pure-perl environments
+   supported again (Sawyer X).
+ - GH #755, #819, #827, #828: HTTP::Headers accepted by dancer_response
+   (Roberto Patriarca, Dagfinn Ilmari Mannsåker, draxil, perlpong).
+
+ [DOCUMENTATION]
+ - GH #821: Pointing to new homepage (alfie).
+ - GH #822: Typos in documentation (Stefan Hornburg - racke).
+ - GH #824: Fix in Dancer/Session.pm (pdl).
+ - GH #830: Fix Github links to https:// (Olivier Mengué).
+ - GH #838: Error in Dancer::Plugin::Ajax Documentation (Lee Carmichael).
+ - GH #839: Typo (goblin).
+
+ [ENHANCEMENTS]
+ - GH #826: The version of wallflower shipped with Dancer has been removed.
+   It was well out of date.  BooK is now maintaining it as a more general
+   solution under the name App::Wallflower. (BooK)
+ - GH #834: Provide empty Headers object if not defined (Yanick Champoux).
+ - GH #840, #841: Dancer::Plugin::Ajax now has content_type (Lee
+   Carmichael).
+
+1.3100 2012-08-25
+ [BUG FIXES]
+ - GH #816: Improve wording when failed to load engine. (Sawyer X)
+ - GH #817: Fix CODE reference uncloned using Clone::clone. (David
+   Previous, Sawyer X)
+
+ [DOCUMENTATION]
+ - GH #818: Use "MyWeb::App" instead of "mywebapp" in examples. (pdl)
+
+ [ENHANCEMENTS]
+ - GH #755: HTTP::Headers accepted by dancer_response. (Roberto Patriarca)
+
+1.3099 2012-08-11
+ [BUG FIXES]
+ - GH #683: Fix uninitialized warnings. (Sawyer X)
+ - GH #700: Take into account the app name in route caching. (Perlover)
+ - GH #775: Clone variables for templates. (Reported by Wanradt Koell,
+   fixed by David Precious, Sawyer X)
+ - GH #776: get should be default to get/head even it's inside any.
+   (Fayland Lam)
+ - GH #788: Make sure ID key in sessions are clobbered. (kocoureasy)
+ - Fix uninitialized variables in config file path. (Sawyer X)
+ - GH #809: Require all necessarily modules in Dancer::Config. (John
+   Wittkoski)
+
+ [DOCUMENTATION]
+ - GH #784: Synopsis fix in Dancer::Error. (Alex C)
+ - Document session_domain in Dancer::Config. (David Precious)
+ - Pod fixes in abstract session. (David Precious)
+ - Synopsis fix in Dancer::Test. (Stefan Hornburg <Racke>)
+
+ [ENHANCEMENTS]
+ - GH #799: New test function: response_redirect_location_is. (Martin
+   Schut)
+ - send_file now accepts an IO::Scalar. (David Precious)
+ - Clean up $VERSION. (Damien Krotkine)
+
+1.3098 2012-07-28
+ [DOCUMENTATION]
+ - Fix escaping on some docs (Stefan Hornburg @racke).
+
+ [ENHANCEMENTS]
+ - New keyword 'plugin_args' exported by Dancer::Plugin to provide a
+   consistent way with Dancer 2 to obtain arguments from a plugin keyword.
+   (Alberto Simões).
+ - Add 'execute_hook' and deprecate 'execute_hooks' for homogeneity with
+   Dancer 2.
+ - send_file will do the right thing if given an IO::Scalar object (David
+   Precious, prompted by Ilya Chesnokov).
+
+1.3097 2012-07-08
+ [ENHANCEMENTS]
+ - New keywords 'register_hook' and 'execute_hooks' exported by
+   Dancer::Plugin to provide a consistent way with Dancer 2 to declare and
+   run hooks from within a plugin (Alexis Sukrieh, idea from David
+   Precious).
+
+1.3096 2012-07-06
+ - Codename: Chop Hooey // Neil Hooey **
+
+ [ENHANCEMENTS]
+ - Finally released, thanks to Neil Hooey bugging my sorry ass.
+
+1.3095_02 2012-07-03
+ [BUG FIXES]
+ - fix exception tests in some cases (GH #734) (Damien Krotkine & katkad )
+
+ [DOCUMENTATION]
+ - Clarify serialization in introduction POD (Mark A. Stratman)
+ - Typo fix (Sam Kington)
+
+ [ENHANCEMENTS]
+ - If YAML does not load, Dancer::Config now reports why (Ovid)
+
+1.3095_01 2012-06-22
+ [BUG FIXES]
+ - Don't assume returned references are blessed when considering
+   continuations (Neil Hooey, GH-778)
+ - Malformed/missing cookies caused warnings  (James Aitken/LoonyPandora,
+   GH-782 and GH-783)
+ - Avoid potential crash in t/14_serializer/06_api.t if tmp dir is replaced
+   when %ENV gets cleared (Adam Kennedy)
+ - Properly initialize %callbacks to default empty hashref  in _send_file
+   if  not provided (Gary Mullen)
+
+ [DOCUMENTATION]
+ - Update Ubic service example (Vyacheslav Matyukhin)
+ - Silly typo fixing (Paul Fenwick)
+ - Typo in Dancer::Test file upload example (Jonathan "Duke" Leto)
+ - UTF-8 fixes in POD (ambs)
+
+ [ENHANCEMENTS]
+ - Add UTC timestamp options for logger_format (Alex C - perlpong).
+ - Tests can now run in parallel (Richard Simões).
+ - dancer_version keyword added (Damien "dams" Krotkine).
+ - New session_domain paramter allows you to set the domain of the default
+   session cookie (William Wolf)
+
+1.3095 2012-04-01
+ [BUG FIXES]
+ - Small fix to skip tests when YAML is not available. (Sawyer X)
+
+ [ENHANCEMENTS]
+ - Added 'info' log level for messages that should always go to the logs
+   but aren't really debug, warning or error messages (Ovid)
+
+1.3094 2012-03-31
+ [BUG FIXES]
+ - GH #763: Fix exceptions in ajax routes clobbering layout (ilmari)
+ - GH #748 & GH 647: Don't force override environment from PLACK_ENV
+   (jwittkoski)
+ - GH #762: fix param parsing lacking limit on split (leejo)
+ - GH #758: Fix Dancer::Test: make sure the request is properly converted
+   to a response. (Ovid)
+ - GH #729: Fix dancer exception composition, and message pattern
+   application (Damien Krotkine)
+ - GH #752: Exceptions raised in hooks were not propagated back to the
+   route code, but instead canceleld and replaced by a Dancer halt
+   exception. That was wrong. Now it is fixed, exceptions raised in hooks
+   can be properly caught in route code. (Damien Krotkine)
+ - Be more flexible in single vs. mutliple values in key hiding. (Sam
+   Kington)
+ - Use isa() for checking relationships instead of ref() in Dancer::Test.
+   (Ovid)
+
+ [DOCUMENTATION]
+ - Explain in POD that if there are multiple fields with the same name,
+   params('fieldname') returns an arrayref of them (alexrj).
+ - GH #750: Fix in Dancer::Deployment: appdir needs to be set before
+   calling load_app (Paul Johnson)
+ - Update 'before' hook document (David Cantrell).
+
+ [ENHANCEMENTS]
+ - Added 'strict_config' option to have the config return an object instead
+   of a hashref. (Ovid)
+ - GH #708: Added support for query strings in dancer_request (Jacob
+   Rideout)
+ - It's possible for the user to set the environments directory using a new
+   environment variable (DANCER_ENVDIR) or using `set envdir => $path`
+ - Sort hash keys when serializing references in log messages (Ovid).
+
+1.3093 2012-02-29
+ [BUG FIXES]
+ - GH #738: Define exception type ::Core::Request, to avoid things blowing 
+   up when Dancer::Request raises exceptions of that type (David Precious,
+   thanks to damog for reporting)
+ - GH #671: Fix Dancer::Plugin::Ajax with Plack::Builders. (Activeg, Sawyer
+   X)
+ - Auto-page feature cleanup and fixup. (David Precious)
+ - Remove uninitialized warnings. (Sawyer X, David Precious)
+
+ [DOCUMENTATION]
+ - Fix examples for multi-app deployment under Plack::Builder in
+   deployment.
+ - Deployment docs. (c0bra)
+ - Update tutorial. (David Precious)
+ - Clean up EXPORTS. (David Precious)
+ - Keyword documentation fixups. (Kirk Kimmel)
+ - Clarify forward docs with better examples. (David Precious)
+
+ [ENHANCEMENTS]
+ - Winning release race to Catalyst (nice try rafl++!)
+ - Add exception type ::Core::Request. (David Precious)
+ - JSON decode from UTF8. (Sam Kington)
+ - Provide the method when a route crashes to help debug. (Sam Kington)
+ - More helpful log messages. (David Precious)
+
+1.3092 2012-01-27
+ [BUG FIXES]
+ - Don't call isa() on unblessed refs in Dancer::Exception. (Sam Kington)
+ - Assume UTF-8 by default when serialising JSON. (Sam Kington)
+ - GH #725: If a cookie is set multiple times, last value wins. (David
+   Precious)
+ - More intuitive, backwards compatible appending of default template 
+   extension. (GH #716, David Precious)
+ - Prevent recursion in censoring. (Yanick Champoux, Damien dams Krotkine)
+ - GH #734: More tests flexibility (Sawyer X, reported by @birdy-)
+
+ [DOCUMENTATION]
+ - Document how to work with Dotcloud. (Oliver Gorwits)
+ - Clean ups and fix ups. (David Precious, Sawyer X, Michal Wojciechowski)
+
+ [ENHANCEMENTS]
+ - Return the current set prefix using prefix(). (Michal Wojciechowski)
+ - More intuitive appending of default template extension. Makes for
+   cleaner more DWIM code. (David Precious, reported by Nick Knutov)
+ - Allow any options to JSON serializer. (Lee Johnson)
+ - Support complex views with multiple document roots. (Pedro Melo)
+
+1.3091 2011-12-17
+ [BUG FIXES]
+ - Reverting template() behavior by popular demand. (Damien Krotkine)
+ - GH #714: Run post-request hooks when custom continuations were created.
+   (Damien Krotkine)
+ - Always call write_session_id() to update expires. (David Precious)
+
+ [DOCUMENTATION]
+ - GH #680: Document problems with multiple apps in Dancer using
+   Plack::Handler::Apache2 and recommend a workaround. (Asaf Gordon, Pedro
+   Melo)
+ - RT #73258: Spelling glitches. (Damyan Ivanov)
+ - Use ":script" instead of ":syntax" in Cookbook. (John Barrett)
+ - Typos in Deployment doc. (David Precious)
+
+ [ENHANCEMENTS]
+ - GH #711, #652: Add server_tokens variable to allow removal of headers.
+   (John Wittkoski)
+
+1.3090 2011-12-13
+ - Codename: Hornburg of Hannover // Stefan Hornburg (racke) **
+
+ [BUG FIXES]
+ - GH #685: Set VERSION for Dancer::Plugin::Ajax. (Sawyer X, Naveed
+   Massjouni)
+
+ [DOCUMENTATION]
+ - GH #694: Typo fix. (Yanick Champoux)
+ - GH #698: Document further TT init options. (Dennis Lichtenthaeler)
+ - GH #709: Update POD documentation regarding hook. (Stefan Hornburg)
+
+1.3089_01 2011-11-26
+ [BUG FIXES]
+ - Fix bug that made system() fail with -1 under Dancer (felixdo).
+ - Support for 'content_type' option on send_file when sending a system
+   wide file (Emmanuel Rodriguez).
+ - Support HTTP_X_FORWARDED_HOST in behing proxy (Ipaponov).
+ - Deserialize PATCH requests (Sam Kington).
+ - Encode log messages properly if charset UTF-8 is set (David Precious,
+   thanks to Penfold for the fix & MiklerGM for reporting).
+
+ [DOCUMENTATION]
+ - Clean up "plack_middlewares" example in docs (Richard Simões).
+
+ [ENHANCEMENTS]
+ - Continuations-style exception system! (Damien Krotkine).
+ - The ability for dancer_response to send file contents for file uploads
+   as a scalar, instead of reading from file on disk (Squeeks).
+
+1.3080 2011-10-25
+ - Codename: Sawyer's Sugar Stream // Sawyer X **
+
+ [ENHANCEMENTS]
+ - No functional changes, just releasing as stable.
+
+1.3079_05 2011-10-02
+ [API CHANGES]
+ - Deprecation of 'before', 'before_template' and 'after' in favor of hook
+   (Alberto Simões)
+
+ [BUG FIXES]
+ - Minor corrections (jamhed, felixdo)
+ - Log if a view and or a layout is not found (Alberto Simões, reported by
+   David Previous)
+
+ [ENHANCEMENTS]
+ - Add support for the HTTP 'PATCH' verb (David Precious)
+
+1.3079_04 2011-10-02
+ [DOCUMENTATION]
+ - Dancer::Plugins typos (Olof Johansson).
+ - PSGI handler documented (chromatic).
+
+ [ENHANCEMENTS]
+ - PSGI handler code cleaned up (chromatic).
+ - Improved warning localizations (chromatic).
+
+1.3079_03 2011-09-10
+ [BUG FIXES]
+ - Don't clobber TT INCLUDE_PATH if the user set it specifically in the
+   config file - Issue 643 (David Precious, reported by meraxes)
+ - Don't require a space after semi-colon delimiting multiple name=value
+   cookie pairs - Issue 642 (David Precious, reported by travisbeck)
+
+ [ENHANCEMENTS]
+ - Support XML::Simple configuration for serializing/deserializing (Alberto
+   Simões)
+ - Hard deprecate lots of stuff (Alberto Simões)
+
+1.3079_02 2011-08-28
+ [BUG FIXES]
+ - Remove hard-coded version from 404.html and 500.html (Alberto Simões)
+ - Fix logging of UTF8-encoded strings (jamhed)
+ - Do not clean 'vars' during forward (Alberto Simões)
+
+ [ENHANCEMENTS]
+ - Add streaming support to send_file. (Sawyer X)
+
+1.3079_01 2011-08-17
+ [BUG FIXES]
+ - Fix prefix behavior with load_app (alexrj)
+ - send_file() shouldn't clobber previously-set response status (David
+   Precious, reported by tylerdu - thanks!)
+ - Depend on URI 1.59 - Fixes problems when redirecting with UTF-8 strings
+   (Alberto Simões)
+ - Fix before_serializer POD fix (Yanick Champoux)
+
+ [DOCUMENTATION]
+ - Cookbook links to canonical documentation of keywords in Dancer.pm, so
+   readers encountering a new keyword can easily see the docs for it (David
+   Precious)
+ - Docs for debug/warning/error link to Dancer::Logger for details on how
+   to control where logs go (David Precious)
+ - Document import_warnings option, and mention it & link to that
+   documentation in opportune places.
+ - Document that 'get' also creates a route for 'HEAD' requests (David
+   Precious, prompted by Matt S Trout)
+ - Extend request() keyword docs with examples (David Precious)
+ - Correct port in Lighty/FCGI example in Dancer::Deployment (David
+   Precious, thanks to pwfraley in Issue 621)
+
+ [ENHANCEMENTS]
+ - send_file can send data (pass a reference to a scalar), and can specify
+   a content-disposition filename. (Alberto Simões)
+ - Set 'Server' HTTP response header as well as 'X-Powered-By'.  For cases
+   where Dancer is being accessed directly, or the proxy passes on this
+   header, it's nice to see it.  (David Precious)
+
+1.3072 2011-08-23
+ - Codename: Precious David Precious // David Precious (bigpresh) **
+
+ [ENHANCEMENTS]
+ - No functional changes, just releasing as stable.
+
+1.3071 2011-07-26
+ - Security release based on 1.3070 **
+
+ [SECURITY]
+ - FIX directory traversal issue Since 1.3070, it was possible to abuse the
+   static file serving feature to obtain files from a directory immediately
+   above the directory configured to serve static files from. (Vladimir
+   Lettiev and David Precious)
+
+1.3070 2011-07-14
+ - Codename: The Exceptional Mr. Dams // Damien Krotkine (dams) **
+
+ [ENHANCEMENTS]
+ - No functional changes, just releasing as stable.
+
+1.3069_02 2011-07-10
+ [BUG FIXES]
+ - Fix a bunch of cpan testers reports	   (Alberto Simões)
+
+1.3069_01 2011-07-07
+ [BUG FIXES]
+ - Fix a bug while parsing some cookies (Franck Cuny)
+ - Documentation and tests on how to use many Dancer application inside one
+   PSGI file (PR 564) (Alex Kalderimis and Franck Cuny)
+ - More flexible test for locale-aware logging (Alberto Simões)
+ - Do not re-read config files when dance starts if they were already
+   loaded.  (Alberto Simões)
+ - Fixed shell-dependent tests for Window testing. (Alberto Simões)
+ - Die properly if halt is call inside an hook. (Damien Krotkine and
+   Alberto Simões)
+ - Make template work outside of requests (Issue 592) (David Precious)
+ - Cleanup session tests folder (Issue 594) (Sawyer X)
+
+ [DOCUMENTATION]
+ - Documentation on tokens automatically added to templates. (Alberto
+   Simões)
+ - Documentation on serializer magical access to put/posted data. (Alberto
+   Simões)
+
+ [ENHANCEMENTS]
+ - Error Hook (PR 563 - JT Smith)
+ - Exceptions system (Damien Krotkine)
+ - The no prefix can be set using 'prefix "/";' (Alberto Simões)
+ - Support for nested prefixes (Alberto Simões)
+ - Cleanup on Dancer::FileUtils (Sawyer X)
+ - Cleanup on File::Temp dependencies (Sawyer X)
+
+1.3060 2011-06-15
+ - Codename: Pirouetting Pedro // Pedro Melo **
+
+ [ENHANCEMENTS]
+ - No functional changes, just releasing as stable.
+
+1.3059_04 2011-06-12
+ [BUG FIXES]
+ - Fix a bunch of cpan testers reports 
+ - (Alberto Simões)
+
+1.3059_03 2011-06-11
+ [BUG FIXES]
+ - Fix for issue #539 https://github.com/sukria/Dancer/issues/539 Don't
+   decode twice entries in the params hash table, file	      uploads with
+   UTF-8 characters in their name are now possible. (Toby Corkindale,
+   Alexis Sukrieh)
+ - Fix broken test with old version of HTTP::Parser::XS (Franck Cuny)
+ - #492 - Don't run Test::TCP tests on win32 (Franck Cuny)
+ - Fix a bug that when forwarding a post with post data stalled the code
+   (read on no data handle).  (Alberto Simões)
+ - Tweak tests regular expression to be more flexible (Pedro Melo)
+ - Require a recent Test::TCP (1.13) to run tests. (Alberto Simões)
+ - Fix hooks implementation that failed when user messes $_ (Pedro Melo)
+ - Fix broken params('query') and params('body') during forward and
+   dancer_request test function. (Alberto Simões and Squeek)
+
+ [DOCUMENTATION]
+ - Improve FileUtils documentation. (mokko)
+
+ [ENHANCEMENTS]
+ - Fix for issue #516 https://github.com/sukria/Dancer/issues/516 No more
+   legacy code in Dancer::Route to handle routes created  with the
+   deprecated keyword "r". The related code is now more  concise and should
+   be slightly more efficient. (Alexis Sukrieh)
+ - Merge PR #541 https://github.com/sukria/Dancer/pull/541 New "param"
+   accessor to retrieve a parameter easily. (Alberto Simões)
+ - Implement session directory testing cache for Session::YAML (Damien
+   Krotkine)
+ - Tests rework (improve speed, remove useless tests, ...) (Alberto Simões
+   and Franck Cuny)
+ - Configuration for log_dir and log_file. (Alberto Simões)
+ - Pass vars to templates automatically (David Precious)
+ - Support lexical prefix (Pedro Melo)
+
+1.3059_02 2011-05-29
+ [BUG FIXES]
+ - Fix for smoker failure under Perl 5.13.4
+   http://www.cpantesters.org/cpan/report/b37416b8-88df-11e0-9c74-cad5bcb80
+   94c Better use of Time::Hires in t/22_hooks/04_template.t (Franck Cuny)
+
+1.3059_01 2011-05-27
+ [API CHANGES]
+ - Second level of deprecation for render_with_layout method. (Alberto
+   Simões)
+ - Second level of deprecation for mime_type method. (Alberto Simões)
+
+ [BUG FIXES]
+ - Dancer::Test was broken for tests using data in POST (GH#534) (Franck
+   Cuny)
+ - Multiple setter implemented at 1.3039_01 was broken for App specific
+   settings. (Alberto Simões)
+
+ [DOCUMENTATION]
+ - Improve Serializers documentation (Damien Krotkine)
+
+ [ENHANCEMENTS]
+ - Cookie accessor to manipulate cookies directly. (Niko)
+
+1.3051 2011-05-27
+ - Security release based on 1.3050 **
+
+ [SECURITY]
+ - FIX CVE-2011-1589 (Mojolicious report, but Dancer was vulnerable as
+   well). Return "400 Bad Request" when requested filename seems suspicious
+   http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1589 (Vladimir
+   Lettiev and Franck Cuny)
+
+1.3050 2011-05-20
+ - Codename: The Captain Hook Adventure // Franck Cuny **
+
+ [DOCUMENTATION]
+ - Improve Dancer documentation (Damien Krotkine)
+
+ [ENHANCEMENTS]
+ - No functional changes, just releasing as stable.
+
+1.3049_01 2011-05-14
+ [API CHANGES]
+ - Deprecation of 'logger' (use set). (Alberto Simões)
+ - Deprecate 'layout' (use set). (Alberto Simões)
+ - Definitely remove plack_middlewares HashRef deprecation. (Alberto
+   Simões & Damien Krotkine)
+
+ [BUG FIXES]
+ - Unbreaking auto_page somewhat - the catch-all route added will pass
+   unless a suitable view exists.  This means that routes like /foo are not
+   obscured, and made up URLs will result in a proper 404, not 500.  A
+   little more work required here, though.  (David Precious)
+ - Anchor regular expression routes. Before regular expressions were
+   matching anywhere in the URL. (Alberto Simões)
+
+ [ENHANCEMENTS]
+ - GH #519: remove redundant lines from CSS (Alberto Simões)
+ - When scaffolding an app, show a warning if YAML not installed. Prompted
+   by Issue 496.  (David Precious)
+ - Hooks! add new positions for hooks, and possibility to create your own
+   hooks inside your application and your plugin. (Franck Cuny)
+ - Don't try to read/set session vars with empty/undef keys.  It doesn't
+   make sense to do so, and can cause warnings elsewhere. (David Precious)
+ - Check HTTP status code/alias passed to status() is valid; previously,
+   and invalid code would result in the response status being unset (David
+   Precious, prompted on IRC by jonas)
+ - Lowercase status aliases and swap spaces for underscores before trying
+   to match (David Precious, suggested on IRC by jonas)
+ - Added 'behind_proxy' setting, making Dancer honor X_FORWARDED_PROTOCOL
+   and X_FORWARDED_HOST (Alberto Simões, requested by sukria and others)
+
+1.3040 2011-05-01
+ - Codename: Yanick in Black // Yanick Champoux, Labor Day - May Day **
+
+ [ENHANCEMENTS]
+ - No functional changes, just releasing as stable.
+
+1.3039_01 2011-04-27
+ [BUG FIXES]
+ - Fix 404 results from forwarding. (Alberto Simões)
+ - Don't remove trailing slashes from route patterns under prefix. (Brian
+   E. Lozier)
+ - Remove deprecated r() function from list of exports. (Stefan Hornburg)
+ - GH #402: make session_expires honor +2h style formatting. (Michael G.
+   Schwern)
+ - GH #433: encoding issues with forward(). (Alberto Simões)
+ - GH #390: Renaming access_log to startup_info (+doc). (Sawyer X)
+ - Rewrite scalar usage of qw() that is incompatible with 5.14. (Alberto
+   Simões)
+ - Don't parse ARGV when under PSGI (closes #473) (Franck Cuny)
+
+ [DOCUMENTATION]
+ - Major rewrite/reorganization on Dancer::Config documentation. (David
+   Precious, pushed by Alberto Simões PR)
+ - GH #284: Document hosting multiples Dancer apps in a single PSGI file.
+   (Franck Cuny)
+ - Dancer::Session POD typos and spurious characters. (Stefan Hornburg)
+
+ [ENHANCEMENTS]
+ - Forward can change method GH#493 (Alberto Simões)
+ - Introducing the "megasplat"! (Yanick Champoux)
+ - More tests for versions, setings and variables. (Alberto Simões)
+ - Improve Dancer::Test so failures report the correct line numbers.
+   (Michael G. Schwern)
+ - GH #466: Can now set cookies with http_only => 0 for JS integration.
+   (Alberto Simões)
+ - Session engine can be told to set cookies without HttpOnly attribute
+   using new session_is_http_only setting. (Alberto Simões, requested by
+   JT Smith)
+ - GH #296: Show versions of loaded modules in startup info. (Sawyer X)
+ - Able to set more than one value at once using set(). (Alberto Simões)
+ - GH #253: Use Clone::clone() if available to clone data before censoring.
+   (Sawyer X)
+ - GH #246: Dancer::Test can now test for file uploads as well. (Franck
+   Cuny)
+ - Allow parameters in forward(). (Alberto Simões)
+
+1.3030 2011-04-13
+ - Codename: Silence of the ambs // Alberto Simões **
+
+ [ENHANCEMENTS]
+ - Change the flag for sending system-wide path with send_file to
+   'system_path' (was 'absolute'). (Alberto Simões)
+
+1.3029_03 2011-04-10
+ [BUG FIXES]
+ - Dancer::Session::Cookie 0.14 is required for dependency test.
+ - Only test for undef serializer if we have the default (JSON) available.
+   (Sawyer X)
+
+ [ENHANCEMENTS]
+ - Test before_template & auto_page.
+
+1.3029_02 2011-04-08
+ [BUG FIXES]
+ - Better way to initialize the logdir in Dancer::Logger::File. Works now
+   cleanly if the appdir is not writable but the logdir exist and is
+   writable. (Alberto Simões)
+ - fix warnings in t/03_route_handler/28_plack_mount.t. (Franck Cuny)
+
+ [DOCUMENTATION]
+ - POD fix. (Stefan Hornburg - Racke)
+
+ [ENHANCEMENTS]
+ - Support for error templates. If the setting "error_template" is set, it
+   is used when building an error page instead of using the default
+   template. Added the appropirate documentation as well. (Alberto Simões)
+ - Dancer::Test::dancer_response() returns a 404 response when no route
+   handler is found. This is consistent with what Dancer does internally.
+   (Alberto Simões)
+ - Dancer::Test provides a new helper for inspecting subsets of headers:
+   "response_headers_include". (Alberto Simões, Alexis Sukrieh)
+ - dancer_response now handles the rendering of static pages as well.
+   (Alberto Simões)
+ - Cleanup some tests. (Alberto Simões)
+
+1.3029_01 2011-04-01
+ [BUG FIXES]
+ - Fix t/14_serializer/02_json.t to work with older JSON (relates to
+   GH#416) (Damien Krotkine)
+ - the Changelog test now supports Codenames. It suggests to add codenames
+   for table releaes as well (Damien Krotkine)
+ - GH #420: Extra content generated (Alberto Simões, Damien Krotkine)
+ - GH #409: If pass has no more matching routes, return 404. (Alberto
+   Simões)
+
+ [DOCUMENTATION]
+ - Add documentation to send_file optional argument (Alberto Simões)
+ - Fix plack_middlewares example in the cookbook (Michael G. Schwern)
+ - Extend the POD on plugin_setting to prevent a pitfall with plugin
+   modules more than 3 levels deep. (Stefan Hornburg)
+ - GH #400: Documenting the plack_middlewares_map. (Michael G. Schwern,
+   Sawyer X)
+ - GH #422: Documenting no need for caret when you have a prefix. (Sawyer
+   X)
+
+ [ENHANCEMENTS]
+ - GH #396: Test that Dancer::Session::Cookie isn't broken (Michael G.
+   Schwern)
+ - GH #399: Make sure session can have their name changed. (Michael G.
+   Schwern)
+ - Dancer::Test tests assumes 'GET' if their first argument is scalar.
+   (Yanick Champoux)
+ - send_file accepts optional content-type declaration, to override guessed
+   MIME type, e.g. send_file $filename, content_type => 'image/png'
+   (Alberto Simões, requested by Michael G Schwern)
+ - send_file accepts optional absolute option, to send an absolute path
+   (Alberto Simões)
+ - Have `dancer` cmd tool create MANIFEST and MANIFEST.SKIP. (Alberto
+   Simões)
+ - mime_type is deprecated; new keyword 'mime'; new config key
+   'default_mime_type'; (Alberto Simões and Michael G. Schwern)
+ - Recognize absolute redirects  (Yanick Champoux)
+
+1.3020 2011-03-21
+ - Codename: The Schwern Cometh // Michael G. Schwern **
+
+ [ENHANCEMENTS]
+ - No functional changes, just releasing as stable.
+
+1.3019_02 2011-03-14
+ [BUG FIXES]
+ - GH #354: Tokens are not passed to layout if no params are passed to
+   template. (Damien Krotkine)
+
+1.3019_01 2011-03-13
+ [BUG FIXES]
+ - GH #393: Reset vars for each new request. (Franck Cuny)
+
+ [ENHANCEMENTS]
+ - GH #391: Dancer::Logger::Note now exists. :) (Sawyer X)
+ - Porting documentation on WRAPPER to Dancer::Template::TemplateToolkit.
+   (Sawyer X)
+ - GH #387: Document views and appdir in Dancer::Config. (Michael G.
+   Schwern)
+ - Add a new symbol to exporter ':script'. (Franck Cuny)
+ - GH #397: Support cookie expire times like "+2h". (Michael G. Schwern)
+
+1.3014_01 2011-03-10
+ [BUG FIXES]
+ - GH #373: Display valid path to the main app file in the welcome screen.
+   (Franck Cuny)
+ - GH #152, GH #170, GH #362: Log dir is not created when logger is not set
+   to 'file', and setting log_path works as expected. (Franck Cuny)
+ - GH #308: Use request's uri_base. (Sawyer X)
+ - GH #378: Some routes with prefix where wrongly matched. (Franck Cuny)
+
+ [DOCUMENTATION]
+ - Dancing on command line. (Maurice Mengel)
+ - Improve Dancer::Cookbook. (Maurice Mengel)
+
+ [ENHANCEMENTS]
+ - GH #351: Explicitly exclude some keywords when important Dancer's
+   syntax, add modes that also excludes some keywords (:moose, :tests).
+   (Sawyer X, Naveed Massjouni, Michael G. Schwern, Franck Cuny)
+ - All logging options accept any number of variables. (Sawyer X)
+ - GH #297: All logging options can automatically serialize references.
+   (Sawyer X)
+ - Add Dancer::Logger::Capture to capture and read log messages during
+   testing. (Michael G. Schwern)
+ - Dancer::Cookie make secure (https only) cookies. It also adds the
+   "session_secure" setting instructing sessions to use secure cookies.
+   (Michael G. Schwern)
+ - Adding uri_base to Request.pm. (Sawyer X)
+ - Make Dancer::Test use the capture logger (Michael G. Schwern)
+
+1.3014 2011-03-04
+ [BUG FIXES]
+ - YAML Session UTF-8 Fix (Roman Galeev)
+ - Tests and documentations for Dancer::Request::Upload + type method in
+   Dancer::Request::Upload (Michael G. Schwern)
+ - Dancer::Test::dancer_response handles correctly its 'body' parameter We
+   can now pass a hash ref as the body of dancer_response, it will
+   automatically be serialized as an URL-encoded string with the
+   appropriate content_type header. (Alexis Sukrieh)
+
+1.3013 2011-03-01
+ [ENHANCEMENTS]
+ - Fix test suite: the changelog test is skipped if not under 
+   RELEASE_TESTING environment.
+
+1.3012 2011-03-01
+ [BUG FIXES]
+ - Fix cookies disappearing when more than one is set. Complete refactoring
+   of the cookie handling. (Chris Andrews, Geistteufel)
+ - Properly set the settings in Dancer::Test only after config loading.
+   (Sawyer X)
+ - Fix possible loss of last directory in path. (Sawyer X)
+ - No need for default upper directory in Dancer::Test. This fixes an issue
+   raised on the list about the default scaffolded test failing. (Sawyer X)
+ - Fix anti UNC substitution under Cygwin (Rowan Thorpe)
+ - GH#299 Return appropriate headers on HEAD request (content-type, ...)
+   (franck cuny)
+ - Use the dancer_version variable in scaffolded app. (Sawyer X, reported
+   by Brian E. Lozier)
+
+ [DOCUMENTATION]
+ - Add missing methods (e.g. "referer"), sorting, clean up. (Flavio
+   Poletti)
+ - Complete working example of deployment under Nginx/Starman in
+   Deployment.pod (Geistteufel)
+
+ [ENHANCEMENTS]
+ - Fix manifest (Damien Krotkine)
+ - Various packaging, changelog and test fixes (Damien Krotkine)
+ - Add a new accessor to Dancer::Request: ->uri. (it's an alias to
+   ->request_uri) (Franck Cuny)
+ - Removes Dancer::Helpers, refactor Dancer.pm accordingly. (Franck Cuny)
+ - Introduce changelog test of hell. (Damien Krotkine)
+ - Add Dancer::Logger::Null. (Sawyer X)
+ - Add Dancer::Logger::Diag. (Sawyer X)
+ - Refactor Dancer::Response (franck cuny)
+ - Allow to use a subclass of Template::Toolkit. (Michael G. Schwern)
+ - Dancer::Test now uses Dancer::Logger::Null instead of ::File. (Sawyer X)
+ - Add Dancer::Deprecation. (handle deprecation messages) (franck cuny)
+ - Introduce new timestamp format in logger (%T) (Roman Galeev)
+ - Refactoring of the forward method (Alex Kalderimis)
+ - Refactoring of internal objects in the core,  use more of
+   Dancer::Object. Introduce attributes_defaults (Damien Krotkine)
+ - Add a perl_version variable to all templates, used in scaffolded app.
+   (Sawyer X, reported by Brian E. Lozier)
+ - Better output when template file is missing. (Brian E. Lozier, Sawyer X)
+
+1.3011 2011 .02.14
+ [BUG FIXES]
+ - Set binmode in write_data_to_file() to fix image corruption in Windows
+   (Rowan Thorpe)
+ - GH#319, GH#278, GH#276, GH#217: Fix file issues on Cygwin and  Win32
+   platforms (Rowan Thorpe)
+ - GH#322: Detect errors in scaffolded dispatchers (Alberto Simões)
+ - Fix tests so that they don't fail if JSON is not installed (Damien
+   Krotkine)
+
+ [DOCUMENTATION]
+ - Small spaces fix (Alberto Simões).
+
+1.3010_01 2011 .02.12
+ [BUG FIXES]
+ - GH#136: fix again Mime::Type issues in preforking environment (Chris
+   Andrews) * GH#220: fix for path issues under MacOS X and Windows
+   platforms. A new function is provided by Dancer::FileUtils:
+   path_no_verify() (Rowan Thorpe) * Fix for infinite loops detection in
+   before filters (Flavio Poletti)
+
+ [DOCUMENTATION]
+ - Fix a typo in Dancer::Request::Upload's POD (Rowan Thorpe)
+ - Better documentation for the before filters, explanations about the
+   potential infinite loops that can happen when using before filters (and 
+   what Dancer does in that case). (Flavio Poletti)
+
+ [ENHANCEMENTS]
+ - Better detection of the application layout under non-UNIX platforms.
+   (Rowan Thorpe, Alexis Sukrieh)
+
+1.3010 2011 .02.10
+ [BUG FIXES]
+ - GH#303: Generated Makefile.PL's clean is done correctly now. (Sawyer X)
+ - Minimum version of HTTP::Headers to avoid test fails. (LoonyPandora)
+ - Do not require JSON to get version number (fixes tests). (Sawyer X)
+
+ [ENHANCEMENTS]
+ - Allow read_file DWIMishness using wantarray. (LoonyPandora)
+ - Tidy up Dancer.pm (Damien Krotkine)
+ - Document forward should use return. (Sawyer X)
+ - GH#290: Use return with redirect examples in docs. (Damien Krotkine)
+ - Document that base() returns a URI object. (David Precious)
+ - Show version when starting standalone server. (David Precious)
+
+1.3003 2011 .02.06
+ [API CHANGES]
+ - Remove load_plugin from the core's DSL (was deprecated).
+
+ [BUG FIXES]
+ - Eliminate test warnings on Windows. (Gabor Szabo)
+ - GH#271 - use correct VERSION_FROM in scaffolded application. (Sawyer X)
+ - GH#260 - send_file doesn't clobber existing headers (Alexis Sukrieh)
+ - logger unicode bugfix in the formated date (jahmed)
+ - GH#281 - Don't crash if splat is used with no captures (David Precious)
+ - Possible to given "template" a view name with the extenstion. (Alexis
+   Sukrieh)
+
+ [ENHANCEMENTS]
+ - New setting log_path to allow for alternalte logging path in logger
+   "file". (Natal Ngétal)
+ - GH#289: Add more aliases on the ENV, provide more smart accessors to
+   Plack env entries (Franck Cuny)
 
 1.3002 2011-02-02
+ [API CHANGES]
+ - to_json and from_json accept options as hashref instead of hash. Passing
+   arguments as hash is deprecated  (Franck Cuny).
 
-	[ API CHANGES ]
-	
-	* to_json and from_json accept options as hashref instead of hash.
-	  Passing arguments as hash is deprecated 
-	  (Franck Cuny).
+ [BUGFIXES]
+ - status is kept even when halt is used in a before filter (Alexis
+   Sukrieh) * Proper handling of temporary file creation using File::Temp
+   module instead of homebrew solution. (jahmed) * Logger::Abstract unicode
+   bug fix. (jahmed)
 
-	[ BUGFIXES ]
-
-	* status is kept even when halt is used in a before filter
-	  (Alexis Sukrieh)
-        * Proper handling of temporary file creation using File::Temp module
-          instead of homebrew solution. (jahmed)
-        * Logger::Abstract unicode bug fix. (jahmed)
-	
-	[ ENHANCEMENTS ]
-
-	* In development, pretty-print JSON serializations for easier development 
-	  (Ask Bjørn Hansen)
+ [ENHANCEMENTS]
+ - In development, pretty-print JSON serializations for easier development 
+   (Ask Bjørn Hansen)
 
 1.3001 2011-01-27
+ [Alberto Simoes]
+ - Support for aliases for content_type and refactoring of  mime-types
+   handling, with a new class Dancer::MIME (closes issue GH #124)
+ - Deprecation of Dancer::Config::mime_types (now handled by Dancer::MIME).
 
-	[ Flavio Poletti ]
-	* Added "git fetch upstream" for remote tracking
-	* turned a tab into the right number of spaces
-	* Fix weird Plack error "status code needs to be an integer greater than
-	  or equal to 100", because of a typo in a call to Dancer::Error
-	  (Closes issue GH#264)
+ [David Precious]
+ - Point people towards D::P::Database in the tutorial.
+ - Mention leaving ratings on cpanratings. 
+ - Some minor typo fixed in the documentations.
 
-	[ Franck Cuny ]
-	* uri_(un)escape cookie value; closes GH-248 
-	* remove websocket tutorial (it has its own distro now)
-	* add a new tests to make sure unknown templates produce a warning 
-	* path for send_file must be relative from the public directory 
-	* Support for complex values in cookies (scalars, flat arrays and 
-	  flat hashes). Fixes issue GH#249
+ [Flavio Poletti]
+ - Added "git fetch upstream" for remote tracking
+ - turned a tab into the right number of spaces
+ - Fix weird Plack error "status code needs to be an integer greater than
+   or equal to 100", because of a typo in a call to Dancer::Error (Closes
+   issue GH#264)
 
-	[ David Precious ]
-	* Point people towards D::P::Database in the tutorial.
-	* Mention leaving ratings on cpanratings. 
-	* Some minor typo fixed in the documentations.
-	
-	[ mokko ]
-	* typos and a little more substatial changes to Development.pod 
+ [Franck Cuny]
+ - uri_(un)escape cookie value; closes GH-248 
+ - remove websocket tutorial (it has its own distro now)
+ - add a new tests to make sure unknown templates produce a warning 
+ - path for send_file must be relative from the public directory 
+ - Support for complex values in cookies (scalars, flat arrays and  flat
+   hashes). Fixes issue GH#249
 
-	[ Hagen Fuchs ]
-	* Request.pm Decode HTTP::Request's uploads
+ [Hagen Fuchs]
+ - Request.pm Decode HTTP::Request's uploads
 
-	[ Alberto Simoes ]
-	* Support for aliases for content_type and refactoring of 
-	  mime-types handling, with a new class Dancer::MIME
-	  (closes issue GH #124)
-	* Deprecation of Dancer::Config::mime_types (now handled by Dancer::MIME).
+ [jahmed]
+ - Fix a bug in YAML session backend, during the creation of the session
+   file.
 
-	[ jahmed ]
-	* Fix a bug in YAML session backend, during the creation of the session
-	  file.
+ [mokko]
+ - typos and a little more substatial changes to Development.pod 
 
 1.3000_02 2011-01-03
+ [Damien Krotkine]
+ - FIX for --no-check switch in script/dancer
+ - Refactoring of Dancer::Template::Abstract - add support of apply_layout
+   and apply_renderer - deprecation of render_with_layout (now handled
+   better) - add an accessor "engine" to the DSL to access any engine
+   singleton - better interface for Dancer::Object and
+   Dancer::Object::Singleton - updated tests accordingly
 
-	[ Sawyer X ]
-	* Added forward() functionality (incl. tests and docs)
+ [Jonathan Otsuka]
+ - Bring dancer application creation pod up-to-date 1.2003
 
-	[ Damien Krotkine ]
-	* FIX for --no-check switch in script/dancer
-	* Refactoring of Dancer::Template::Abstract
-	  - add support of apply_layout and apply_renderer
-	  - deprecation of render_with_layout (now handled better)
-	  - add an accessor "engine" to the DSL to access any engine singleton
-	  - better interface for Dancer::Object and Dancer::Object::Singleton
-	  - updated tests accordingly
-
-	[ Jonathan Otsuka ]
-	* Bring dancer application creation pod up-to-date 1.2003
+ [Sawyer X]
+ - Added forward() functionality (incl. tests and docs)
 
 1.3000_01 2010-12-22
+ [Alan Haggai]
+ - Fixing up typos in various places.
+ - Show the correct filename in usage.
 
-	[ Damien Krotkine ]
-	* Better check of keywords used in plugins.
-	* internal refactoring:
-	  - Dancer::Object::Singleton added to refactor engines later
-	  - Support of inheritance in attributes declared with Dancer::Object
+ [Alexis Sukrieh]
+ - Update documentation for developers. Dancer::Development reflects the
+   new releases startegy since 1.2 is out. Also better explaining about how
+   to contribute pull-requests to the core team.
+ - New documentation for integrators: Dancer::Development::Integration
+   describes precisely how integrators should handle pull-requests.
 
-	[ jamhed ]
-	* Fix some unicode issues, refactored all file openings in one function in
-	  Dancer::FileUtils.
+ [Damien Krotkine]
+ - Better check of keywords used in plugins.
+ - internal refactoring: - Dancer::Object::Singleton added to refactor
+   engines later - Support of inheritance in attributes declared with
+   Dancer::Object
 
-	[ Gabor Szabo ]
-	* Adding test for multi-leveled scaffolding.
+ [Franck Cuny]
+ - Support for configurable log format in logger engines
+ - Refactoring of Dancer::Route, some optimisations and code cleanup
+ - Add several tests to increase the coverage (reached 92.4%, for 1399
+   tests)
 
-	[ Maurice Mengel (mokko) ]
-	* Skip file upload tests on Cygwin, not just win32.
+ [Gabor Szabo]
+ - Adding test for multi-leveled scaffolding.
 
-	[ Alan Haggai ]
-	* Fixing up typos in various places.
-	* Show the correct filename in usage.
+ [Maurice Mengel (mokko)]
+ - Skip file upload tests on Cygwin, not just win32.
 
-	[ Alexis Sukrieh ]
-	* Update documentation for developers. Dancer::Development reflects the new
-	  releases startegy since 1.2 is out. Also better explaining about how 
-	  to contribute pull-requests to the core team.
-	* New documentation for integrators: Dancer::Development::Integration
-	  describes precisely how integrators should handle pull-requests.
+ [Naveen]
+ - add a --no-check switch to script/dancer to disable remote check of new
+   Dancer versions.
 
-	[ Naveen ]
-	* add a --no-check switch to script/dancer to disable remote check of new
-	  Dancer versions.
+ [Philippe Bruhat]
+ - add script/wallflower, helper to turn a Dancer application into a static
+   web site.
+ - better behaviour for plugin_setting (better search, more user-friendly)
 
-	[ Philippe Bruhat ]
-	* add script/wallflower, helper to turn a Dancer application into a static
-	  web site.
-	* better behaviour for plugin_setting (better search, more user-friendly)
-
-	[ Franck Cuny ]
-	* Support for configurable log format in logger engines
-	* Refactoring of Dancer::Route, some optimisations and code cleanup
-	* Add several tests to increase the coverage (reached 92.4%, for 1399 tests)
+ [jamhed]
+ - Fix some unicode issues, refactored all file openings in one function in
+   Dancer::FileUtils.
 
 1.2003 2010-12-10
-	* Production release.
+ - Production release.
 
 1.2002_02 2010-12-08
-	[ Danijel Tasov ]
-	* Correct HTTP.pm POD's 503 entry with 403.
+ [Danijel Tasov]
+ - Correct HTTP.pm POD's 503 entry with 403.
 
-	[ Paul Tomlin ]
-	* Tests for URI object in uri_for.
-	* Update Plack middleware tests compatibility.
+ [Paul Tomlin]
+ - Tests for URI object in uri_for.
+ - Update Plack middleware tests compatibility.
 
 1.2002_01 2010-12-07
-	[ Joel Roth ]
-	* Code fixes in documentation (Dancer::Session, Dancer::Introduction).
+ [Franck Cuny]
+ - Fix test failures on old machines with Test::More without done_testing.
 
-	[ Franck Cuny ]
-	* Fix test failures on old machines with Test::More without done_testing.
+ [Joel Roth]
+ - Code fixes in documentation (Dancer::Session, Dancer::Introduction).
 
-1.2002  2011-01-27
-	* Productionized! :)
+1.2002 2011-01-27
+ - Productionized! :)
 
 1.2001_01 2010-12-02
-	[ David Precious, Ivan Bessarabov ]
-	* Fixing TT example config.
+ [Danijel Tasov]
+ - Default layout now validates.
 
-	[ Danijel Tasov ]
-	* Default layout now validates.
+ [David Precious, Ivan Bessarabov]
+ - Fixing TT example config.
 
 1.2001 2010-11-30
-	[ Sawyer X ]
-	* Fix clash with KiokuDB because of Dancer::Serializer::Dumper.
+ [David Precious]
+ - Doc fixes. Clarifications to Cookbook's REST section.
+ - Don't crash if application name is invalid and provide better
+   information.
 
-	[ Franck Cuny ]
-	* Refactoring engine triggers. This resolves an issue of engine inits being
-	  run before all configuration is read. That also crashes D::S::Cookie.
-	  As a side effect we now have a refactored _set_setting() which does not
-	  trigger any engine hooks (unlike setting()).
-	* Fix failing test t/07_apphandlers/06_debug.t
+ [Franck Cuny]
+ - Refactoring engine triggers. This resolves an issue of engine inits
+   being run before all configuration is read. That also crashes
+   D::S::Cookie. As a side effect we now have a refactored _set_setting()
+   which does not trigger any engine hooks (unlike setting()).
+ - Fix failing test t/07_apphandlers/06_debug.t
 
-	[ David Precious ]
-	* Doc fixes. Clarifications to Cookbook's REST section.
-	* Don't crash if application name is invalid and provide better information.
+ [Sawyer X]
+ - Fix clash with KiokuDB because of Dancer::Serializer::Dumper.
 
 1.2000 2011-01-27
-	** 1.2 is a stable release of Dancer **
-	** We assure consistency and stability for this release and the following **
-	** 1.2xxx releases; you should not have issues updating to any 1.2xxx     **
-	** version because of it.                                                 **
+ - 1.2 is a stable release of Dancer **
+ - We assure consistency and stability for this release and the following
+   **
+ - 1.2xxx releases; you should not have issues updating to any 1.2xxx	   
+    **
+ - version because of it.					     **
+ - A very special thanks goes to the Dancer community who improved and	   
+    ++
+ - perfected this release and worked hard on reporting bugs, fixing them,
+   ++
+ - improving the stability, providing important features and everything  
+   ++
+ - else which makes Dancer so attractive - and above all: its community  
+   ++
+ - so thank you!						     ++
 
-	++ A very special thanks goes to the Dancer community who improved and    ++
-	++ perfected this release and worked hard on reporting bugs, fixing them, ++
-	++ improving the stability, providing important features and everything   ++
-	++ else which makes Dancer so attractive - and above all: its community   ++
-	++ so thank you!                                                          ++
-
-	[ Sawyer X ]
-	* Fixing some more XML tests with missing preqreqs.
+ [Sawyer X]
+ - Fixing some more XML tests with missing preqreqs.
 
 1.1999_04 2010-11-14
-	[ Sawyer X ]
-	* Load Plack::Loader dynamically in test.
+ [Sawyer X]
+ - Load Plack::Loader dynamically in test.
 
-	[ Yanick Champoux ]
-	* Doc fix.
+ [Yanick Champoux]
+ - Doc fix.
 
 1.1999_03 2010-11-11
-	[ Alexis Sukrieh ]
-	* Transparent unicode support
-	  Dancer now takes care transparently of decoding unicode strings
-	  used within route handlers and encoding them back before sending
-	  a response content. Once the 'charset' setting is set, the user
-	  has nothing more to do to have a working unicode-aware application.
-	* FIX for issue #172
-	  More documentation added to Dancer::Request, all public method
-	  are documented. A pod coverage test has been added for this
-	  module.
-	* Documentation update The deployment documentation is more precise about
-	  cgi/fast-cgi deployment under Apache.
-	* FIX for issue GH#171
-	  Scaffolded configuration files are fully commented in order to quickly
-	  guide the user in her first steps.
+ [Al Newkirk]
+ - fixed redirect to redirect immediately (+ refactoring by franck)
 
-	[ Damien Krotkine ]
-	* Fix Dancer::Plugin OO issue
+ [Alexis Sukrieh]
+ - Transparent unicode support Dancer now takes care transparently of
+   decoding unicode strings used within route handlers and encoding them
+   back before sending a response content. Once the 'charset' setting is
+   set, the user has nothing more to do to have a working unicode-aware
+   application.
+ - FIX for issue #172 More documentation added to Dancer::Request, all
+   public method are documented. A pod coverage test has been added for
+   this module.
+ - Documentation update The deployment documentation is more precise about
+   cgi/fast-cgi deployment under Apache.
+ - FIX for issue GH#171 Scaffolded configuration files are fully commented
+   in order to quickly guide the user in her first steps.
 
-	[ Danijel Tasov ]
-	* Fixed expires in cookies + tests
+ [Damien Krotkine]
+ - Fix Dancer::Plugin OO issue
 
-	[ Philippe Bruhat ]
-	* Dancer::Logger::Abstract: turn _should() into a closure, and avoid
-	  setting up the hash again and agai
+ [Danijel Tasov]
+ - Fixed expires in cookies + tests
 
-	[ Franck Cuny ]
-	* Closes issue 181 (unknown log level)
-	* Plack middlewares must be listed in an arrayref (listing them in a
-	  hashref is now deprecated)
+ [Dave Doyle]
+ - clarify Pod as to how before_template works
 
-	[ Al Newkirk ]
-	* fixed redirect to redirect immediately (+ refactoring by franck)
+ [Franck Cuny]
+ - Closes issue 181 (unknown log level)
+ - Plack middlewares must be listed in an arrayref (listing them in a
+   hashref is now deprecated)
 
-	[ Dave Doyle ]
-	* clarify Pod as to how before_template works
+ [Philippe Bruhat]
+ - Dancer::Logger::Abstract: turn _should() into a closure, and avoid
+   setting up the hash again and agai
 
-	[ Sawyer X ]
-	* Overhaul tests to use lib t/lib instead of t::lib::.
-	  (fixes Windows test fails)
-	* PSGI envs on Windows is in capital letters.
-	  (fixes Windows test fails)
-	* Add tests on every required directory to create a fake environment.
-	  (realpath() on Windows fails when path doesn't exist)
+ [Sawyer X]
+ - Overhaul tests to use lib t/lib instead of t::lib::. (fixes Windows test
+   fails)
+ - PSGI envs on Windows is in capital letters. (fixes Windows test fails)
+ - Add tests on every required directory to create a fake environment.
+   (realpath() on Windows fails when path doesn't exist)
 
 1.1999_02 2010-10-15
+ [Alexis Sukrieh]
+ - FIX for issue GH #151 utf8 pragma is imported automatically when Dancer
+   is loaded to allow the usage of UTF-8 strings in the application code.
+   (Thanks to kocoureasy for the report).
+ - FIX for "UTF-8" issues (GH#153): - response content is encoded only if
+   content_type is text - charset setting is normalized to UTF-8 when
+   appropriate - automatically decode UTF-8 strings in params
+ - FIX scaffolded dispatchers (script/dancer) The PLACK_ENV variable is not
+   propagated by Apoache to the dispatchers (at least with our Deployment
+   examples) so the dispatchers aren't aware of the PSGI context if we
+   don't tell them explicitly. This patch forces the dispatchers in PSGI
+   mode.
+ - FIX (unknown bug) When a serializer is set and show_errors is true,
+   don't expose internal errors caught.
 
-	[ Mark Allen ]
-	* Add a tutorial (Dancer::Tutorial)
-	* example application 'Dancr', provided in example/
+ [Damien Krotkine]
+ - replace all die and warn with croak and carp
 
-	[ Franck Cuny ]
-	* Dancer::Test load D::Session::Simple
-	* rewrite how Dancer handle HTTP headers
-	  - no more Dancer::Headers
-	  - all headers are HTTP::Headers object
+ [Franck Cuny]
+ - Dancer::Test load D::Session::Simple
+ - rewrite how Dancer handle HTTP headers - no more Dancer::Headers - all
+   headers are HTTP::Headers object
 
-	[ Philippe Bruhat ]
-	* use Pod::Usage
+ [Mark Allen]
+ - Add a tutorial (Dancer::Tutorial)
+ - example application 'Dancr', provided in example/
 
-	[ Damien Krotkine ]
-	* replace all die and warn with croak and carp
+ [Naveen]
+ - add --version to the dancer CLI
+ - changed the URI fetched by the dancer script to check Dancer's version
 
-	[ Alexis Sukrieh ]
-	* FIX for issue GH #151
-	  utf8 pragma is imported automatically when Dancer is loaded
-	  to allow the usage of UTF-8 strings in the application code.
-	  (Thanks to kocoureasy for the report).
-	* FIX for "UTF-8" issues (GH#153):
-	  - response content is encoded only if content_type is text
-	  - charset setting is normalized to UTF-8 when appropriate
-	  - automatically decode UTF-8 strings in params
-	* FIX scaffolded dispatchers (script/dancer)
-	  The PLACK_ENV variable is not propagated by Apoache to the dispatchers (at
-	  least with our Deployment examples) so the dispatchers aren't aware of the
-	  PSGI context if we don't tell them explicitly.
-	  This patch forces the dispatchers in PSGI mode.
-	* FIX (unknown bug)
-	  When a serializer is set and show_errors is true, don't expose internal
-	  errors caught.
-
-	[ Naveen ]
-	* add --version to the dancer CLI
-	* changed the URI fetched by the dancer script to check Dancer's version
+ [Philippe Bruhat]
+ - use Pod::Usage
 
 1.1999_01 2010-10-14
+ [Adam J. Foxson]
+ - FIX for issue GH#136: "readline() on closed filehandle DATA" error that
+   appears when running the app with Starman
 
-	[ Alexis Sukrieh ]
-	* FIX for utf8 content in views
-	  Dancer now handles correctly templates with non-ASCII characters in views.
-	  All you have to do is to set the "charset" setting in your config. Your
-	  content response will then be encoded appropriately on-the-fly by Dancer.
-	* Scaffolded app sets the charset to "utf8" by default.
-	* Better design for the scaffolded app (logo, favicon and background image
-	  added)
-	* Environment info available on scaffolded app
-	* LWP is used by the dancer helper to download files
-	* jQuery 1.4.2 (minified) is included in the scaffolded app
-	* default layout uses <% request.base %> in order to support mounted apps
-	  (Thanks to Naveed Massjouni and Franck Cuny for the concept/idea).
-	* The main.tt layout sources jQuery first from Google CDN and falls back to
-	  the local minified version if on offline mode.
-	* New default token provided to the "template" helper: dancer_version
+ [Alexis Sukrieh]
+ - FIX for utf8 content in views Dancer now handles correctly templates
+   with non-ASCII characters in views. All you have to do is to set the
+   "charset" setting in your config. Your content response will then be
+   encoded appropriately on-the-fly by Dancer.
+ - Scaffolded app sets the charset to "utf8" by default.
+ - Better design for the scaffolded app (logo, favicon and background image
+   added)
+ - Environment info available on scaffolded app
+ - LWP is used by the dancer helper to download files
+ - jQuery 1.4.2 (minified) is included in the scaffolded app
+ - default layout uses <% request.base %> in order to support mounted apps
+   (Thanks to Naveed Massjouni and Franck Cuny for the concept/idea).
+ - The main.tt layout sources jQuery first from Google CDN and falls back
+   to the local minified version if on offline mode.
+ - New default token provided to the "template" helper: dancer_version
 
-	[ Sebastian de Castelberg ]
-	* The dancer helper is able to download files via a transparent proxy
-	  (thanks to LWP).
+ [Damien Krotkine]
+ - FIX for issue GH#115 documentation about compression in
+   Dancer::Deployment
 
-	[ Adam J. Foxson ]
-	* FIX for issue GH#136:
-	  "readline() on closed filehandle DATA" error that appears when running
-	  the app with Starman
+ [David Precious]
+ - Make the 'layout' param to the template keyword work as you'd expect and
+   allow you to set a custom layout to use, e.g.: template 'templatename',
+   {}, { layout => 'layoutname' };
 
-	[ Naveed Massjouni ]
-	* Dancer::Test function get_response is renamed to dancer_response
-	  get_response still works but is deprecated
-	* dispatch.f?cgi scripts use FindBin to resolve their location.
-	  FIX a bug when using symlinks.
+ [Franck Cuny]
+ - FIX for issue GH#129 don't add multiple content-type to headers
+ - fix broken tests (they were testing incorrect content type)
 
-	[ Franck Cuny ]
-	* FIX for issue GH#129
-	  don't add multiple content-type to headers
-	* fix broken tests (they were testing incorrect content type)
+ [Naveed Massjouni]
+ - Dancer::Test function get_response is renamed to dancer_response
+   get_response still works but is deprecated
+ - dispatch.f?cgi scripts use FindBin to resolve their location. FIX a bug
+   when using symlinks.
 
-	[ Damien Krotkine ]
-	* FIX for issue GH#115
-	  documentation about compression in Dancer::Deployment
+ [Philippe Bruhat]
+ - Make sure a plugin refuse to register a keyword twice
 
-	[ David Precious ]
-	* Make the 'layout' param to the template keyword work as you'd expect and
-	  allow you to set a custom layout to use, e.g.:
-	  template 'templatename', {}, { layout => 'layoutname' };
+ [Sawyer X]
+ - Lots of documentation updates
+ - Dancer now logs caught crashes in rendering (easier to debug Ajax
+   routes)
 
-	[ Philippe Bruhat ]
-	* Make sure a plugin refuse to register a keyword twice
-
-	[ Sawyer X ]
-	* Lots of documentation updates
-	* Dancer now logs caught crashes in rendering
-	  (easier to debug Ajax routes)
+ [Sebastian de Castelberg]
+ - The dancer helper is able to download files via a transparent proxy
+   (thanks to LWP).
 
 1.1904 2011-01-27
-	[ Sawyer X, Franck Cuny ]
-	* SAX, not Sax.
-	* Check for XML::Parser or XML::SAX in test as well.
+ [Sawyer X, Franck Cuny]
+ - SAX, not Sax.
+ - Check for XML::Parser or XML::SAX in test as well.
 
 1.1903 2011-01-27
-	[ Sawyer X, Franck Cuny ]
-	* XML::Simple needs either XML::SAX or XML::Parser.
-	  (fixed test fails from Dancer::Serializer::XML)
+ [Sawyer X, Franck Cuny]
+ - XML::Simple needs either XML::SAX or XML::Parser. (fixed test fails from
+   Dancer::Serializer::XML)
 
 1.1902 2010-11-02
+ [Adam J. Foxson]
+ - Addresses issue #136: "readline() on closed filehandle DATA"
 
-	[ Adam J. Foxson ]
-	* Addresses issue #136: "readline() on closed filehandle DATA"
+1.1901 2010-09-24
+ [Alexis Sukrieh]
+ - load_plugin is DEPRECATED; 'use' should be used instead to load a
+   plugin. This is fixes the major issue with plugins about symbol exports
+   that didn't work well (issue #101).
+ - All paths built in a scaffolded application are dynamic, it's now
+   possible to move a scaffolded application after it's been generated.
+   (fixes issues #88,
+ - The auto_reload feature is now disabled by default due to too many
+   unsolved issues (it works most of the time, but some race conditions are
+   still present) This feature is still being working on, but it's now
+   flagged "experimental").
+ - Default log level in development environment is now 'core' in order to
+   provide more information.
+ - New scaffolded application design. More neutral and with lots of
+   information for a beginner, and links to useful material. Based on the
+   Ruby on Rails start page (kudos to the Rails team,
+   http://www.rubyonrails.org).
 
-1.1901 2010-09-24 
+ [Boris Shomodjvarac]
+ - Support for a clean way for Template engines to define their template
+   file extensions (issue #126).
 
-	[ Franck Cuny ]
-	* implemented GH#120:
-	  - methods {to,from}_{xml,json,yaml} accept more than one arguments. The
-	    first argument is the data to transform. All the remainings arguments
-	    are parameters to alter the behavior of the serializers. Refer to the
-	    documentation for more informations.
-	* more tests added
+ [Franck Cuny]
+ - implemented GH#120: - methods {to,from}_{xml,json,yaml} accept more than
+   one arguments. The first argument is the data to transform. All the
+   remainings arguments are parameters to alter the behavior of the
+   serializers. Refer to the documentation for more informations.
+ - more tests added
 
-	[ Alexis Sukrieh ]
-	* load_plugin is DEPRECATED; 'use' should be used instead to load a plugin.
-	  This is fixes the major issue with plugins about symbol exports that
-	  didn't work well (issue #101).
-	* All paths built in a scaffolded application are dynamic, it's now
-	  possible to move a scaffolded application after it's been generated.
-	  (fixes issues #88,
-	* The auto_reload feature is now disabled by default due to too many
-	  unsolved issues (it works most of the time, but some race conditions are
-	  still present) This feature is still being working on, but it's now
-	  flagged "experimental").
-	* Default log level in development environment is now 'core' in order to
-	  provide more information.
-	* New scaffolded application design. More neutral and with lots of
-	  information for a beginner, and links to useful material.
-	  Based on the Ruby on Rails start page (kudos to the Rails team,
-	  http://www.rubyonrails.org).
+1.1812 2010-09-21
+ [Alexis Sukrieh]
+ - Fix for scaffolded apps
+ - Dancer::Deployment cleanup (CGI section)
+ - Declare LWP explicitly (already implied by HTTP::Body and HTTP::Headers)
 
-	[ Boris Shomodjvarac ]
-	* Support for a clean way for Template engines to define their template
-	  file extensions (issue #126).
+ [Franck Cuny]
+ - Skip bogus uploads test on Win32 (thanks to Alias for reporting)
 
-1.1812  2010-09-21
-
-	[ Franck Cuny ]
-	* Skip bogus uploads test on Win32 (thanks to Alias for reporting)
-
-	[ Alexis Sukrieh ]
-	* Fix for scaffolded apps
-	* Dancer::Deployment cleanup (CGI section)
-	* Declare LWP explicitly (already implied by HTTP::Body and HTTP::Headers)
-
-	[ Sawyer X ]
-	* Nitpicking at tabs and spaces at end of lines
+ [Sawyer X]
+ - Nitpicking at tabs and spaces at end of lines
 
 1.1811 2010-09-03
+ [Franck Cuny]
+ - FIX for issue #113 and #112
 
-	[ Franck Cuny ]
-	* FIX for issue #113 and #112
-
-	[ Naveed Massjouni ]
-	* FIX for issues #111 and #108
+ [Naveed Massjouni]
+ - FIX for issues #111 and #108
 
 1.1810 2010-09-01
+ [Alexis Sukrieh]
+ - Fix a test that depends on YAML (pass if not present) (Smoker failure
+   '2010-08-30T11:07:59Z').
 
-	[ Naveed Massjouni ]
-	* FIX for issue #108
-	  replaced Clone::clone() with Storable::dclone().
-	* Fixed the plan of one of the test files.
-
-	[ Alexis Sukrieh ]
-	* Fix a test that depends on YAML (pass if not present)
-	  (Smoker failure '2010-08-30T11:07:59Z').
+ [Naveed Massjouni]
+ - FIX for issue #108 replaced Clone::clone() with Storable::dclone().
+ - Fixed the plan of one of the test files.
 
 1.1809 2010-08-25
+ [Alexis Sukrieh]
+ - fix plan for t/03_route_handler/24_named_captures.t
 
-	[ Franck Cuny ]
-	* update Deployement.pod and Cookbook.pod
-	* fix bug in route building with prefix
-	* don't use app.psgi anymore in generated scripts
-	* fix GH#106: serializer
-	* fix bug in PSGI handler using HTTP::Headers when using some header
-	* fix bug in ajax query
-	* more tests
-
-	[ Alexis Sukrieh ]
-	* fix plan for t/03_route_handler/24_named_captures.t
+ [Franck Cuny]
+ - update Deployement.pod and Cookbook.pod
+ - fix bug in route building with prefix
+ - don't use app.psgi anymore in generated scripts
+ - fix GH#106: serializer
+ - fix bug in PSGI handler using HTTP::Headers when using some header
+ - fix bug in ajax query
+ - more tests
 
 1.1808 2010-08-24
-
-	[ Alexis Sukrieh ]
-	* FIX test failures
-	  - t/08_session/07_session_expires.t
-	  - t/08_session/07_session_expires.t
+ [Alexis Sukrieh]
+ - FIX test failures - t/08_session/07_session_expires.t -
+   t/08_session/07_session_expires.t
 
 1.1807 2010-08-23
+ [Alexis Sukrieh]
+ - Global rewrite of Dancer's core to allow support for sub-application,
+   better route resolution and a better design.
+ - Support for mountable applications via "load_app". Mounted applications
+   can have their own settings registry and can be mounted under a given
+   prefix.
 
-	[ Sawyer X ]
-	* Fix for RT #60403: removing Test::Exception requirement
+ [Franck Cuny]
+ - Support for new hooks: - after: to allow response post-processing -
+   before_template: to allow defaut tokens to be given at anytime to the
+   template function.
+ - Fix and test for bug  RT#57829 (Custom response headers lost when using
+   JSON serializer)
+ - FIX PSGI compatibility layer (request->path_info is used when
+   appropriate instead of request->path)
+ - FIX for GH#100 When loading a module, it's possible to require a minimal
+   version.
+ - New option "ajax" for route handlers.
+ - Fix a bug in ajax route when processing the route resolution (when a
+   route is defined with options, it's pushed in the beggining of the route
+   handler tree).
 
-	[ Alexis Sukrieh ]
-	* Global rewrite of Dancer's core to allow support for
-	  sub-application, better route resolution and a better design.
-	* Support for mountable applications via "load_app".
-	  Mounted applications can have their own settings registry and
-	  can be mounted under a given prefix.
+ [Naveed Massjouni]
+ - Dancer::Test can now test requests with a body
 
-	[ Franck Cuny ]
-	* Support for new hooks:
-	  - after: to allow response post-processing
-	  - before_template: to allow defaut tokens to be given at anytime
-	    to the template function.
-	* Fix and test for bug  RT#57829
-	  (Custom response headers lost when using JSON serializer)
-	* FIX PSGI compatibility layer (request->path_info is used when appropriate
-	  instead of request->path)
-	* FIX for GH#100
-	  When loading a module, it's possible to require a minimal
-	  version.
-	* New option "ajax" for route handlers.
-	* Fix a bug in ajax route when processing the route resolution
-	  (when a route is defined with options, it's pushed in the
-	  beggining of the route handler tree).
+ [Sawyer X]
+ - Fix for RT #60403: removing Test::Exception requirement
 
-	[ jamhed ]
-	* Support for new setting "session_expire" in order to allow
-	  session cookies to expire before the browser is closed.
-
-	[ Naveed Massjouni ]
-	* Dancer::Test can now test requests with a body
+ [jamhed]
+ - Support for new setting "session_expire" in order to allow session
+   cookies to expire before the browser is closed.
 
 1.1806_02 2010-08-16
+ [David Precious]
+ - Add Dancer::Plugins POD, describing useful plugins
+ - Extend sessions & logging in entry in cookbook
 
-	[James Aitken]
-	* fix issues GH #84 #86 and #87 (failing tests on < 5.10 due to regex with named captures)
+ [François Charlier]
+ - fix for GH#76 and GH#88
 
-	[franck cuny]
-	* update cookbook
+ [James Aitken]
+ - fix issues GH #84 #86 and #87 (failing tests on < 5.10 due to regex with
+   named captures)
 
-	[François Charlier]
-	* fix for GH#76 and GH#88
-
-	[David Precious]
-	* Add Dancer::Plugins POD, describing useful plugins
-	* Extend sessions & logging in entry in cookbook
+ [franck cuny]
+ - update cookbook
 
 1.1806_01 2010-08-15
+ [Alexis Sukrieh]
+ - Fix for RT#56239 logger calls are better traced
+ - Fix for GH#72 New keyword 'load_plugin' for loading a plugin in the
+   current namespace. Plugins can be used anywhere thanks to that method.
+ - Fix for issue #77 Passing and caching works well together again.
+ - Applied miyagawa's patch for droping the app.psgi file. Refactoring of
+   Dancer::Handler::PSGI and friends.
+ - Applied LoonyPandora's patch for checking Dancer's VERSION when running
+   script/dancer. Changed it a bit so it can check against CPAN rather than
+   GitHub.
+ - Documentation update: r('') is now DEPRECATED, the method triggers a
+   warning when called and will be removed in the next stable release
+   (1.2).
+ - Transparent wrapping of Plack middlewares in Dancer's configuration.
+   It's possible to enable/disable middlewares right from Dancer's config
+   files. Thanks to Tatsuiko Miyagawa and Franck Cuny for their help.
 
-	[ sebastian de castelberg ]
-	* Support for path_info() in Dancer::Request so it's possible to
-	  mount an application under a directory.
+ [Marc Chantreux]
+ - Support for regexp objects in route definition
+ - Support for named captures (keyword 'captures' added to Dancer's
+   syntax).
 
-	[ Alexis Sukrieh ]
-	* Fix for RT#56239
-	  logger calls are better traced
-	* Fix for GH#72
-	  New keyword 'load_plugin' for loading a plugin in the current namespace.
-	  Plugins can be used anywhere thanks to that method.
-	* Fix for issue #77
-	  Passing and caching works well together again.
-	* Applied miyagawa's patch for droping the app.psgi file. Refactoring of
-	  Dancer::Handler::PSGI and friends.
-	* Applied LoonyPandora's patch for checking Dancer's VERSION when running
-	  script/dancer. Changed it a bit so it can check against CPAN rather than
-	  GitHub.
-	* Documentation update: r('') is now DEPRECATED, the method triggers a warning
-	  when called and will be removed in the next stable release (1.2).
-	* Transparent wrapping of Plack middlewares in Dancer's configuration.
-	  It's possible to enable/disable middlewares right from Dancer's config files.
-	  Thanks to Tatsuiko Miyagawa and Franck Cuny for their help.
+ [jbarratt]
+ - Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
+   options.
 
-	[jbarratt]
-	* Dancer::Serializer::JSON supports 'allow_blessed' and 'convert_blessed'
-	  options.
-
-	[ Marc Chantreux ]
-	* Support for regexp objects in route definition
-	* Support for named captures (keyword 'captures' added to Dancer's syntax).
-
+ [sebastian de castelberg]
+ - Support for path_info() in Dancer::Request so it's possible to mount an
+   application under a directory.
 
 1.1805 2010-06-22
-	[ Alexis Sukrieh ]
-	* Fix for RT#56239
-	  logger calls are better traced
-	* Fix for GH#72
-	  New keyword 'load_plugin' for loading a plugin in the current namespace.
-	  Plugins can be used anywhere thanks to that method.
+ [Alexis Sukrieh]
+ - Fix for RT#56239 logger calls are better traced
+ - Fix for GH#72 New keyword 'load_plugin' for loading a plugin in the
+   current namespace. Plugins can be used anywhere thanks to that method.
 
-	[ Minty ]
-	* Update Introduction pod with (required) -a dancer opt (Murray, 5 hours ago)
-	* Bump HTTP::Body dependency to 1.07 (Murray, 6 hours ago)
+ [Minty]
+ - Update Introduction pod with (required) -a dancer opt (Murray, 5 hours
+   ago)
+ - Bump HTTP::Body dependency to 1.07 (Murray, 6 hours ago)
 
 1.1804 2010-06-18
-	[ sebastian de castelberg ]
-	* Fix priority in D::S::Mutable.
+ [Alexis Sukrieh]
+ - FIX for bug RT#58355 Rewrite of Dancer::Template::Simple's parser, now
+   more robust, based on Perl's regexp engine.
+ - FIX a warning when remote_address is undefined
 
-	[ David Precious ]
-	* Fix test failures with old Plack versions (Issue 73).
-	* Don't surround content with <p> tags in layout.
-	* Add $ENV{REMOTE_ADDR} in core log messages
+ [Daniel Pittman]
+ - FIX for issue #80 Make sure the tempfiles created during uploads are
+   removed when the request object dies.
 
-	[ SawyerX ]
-	* Fix issue #75, reported by nanis.
-	  perl -MDancer -e "print $Dancer::VERSION" now works as expected
+ [David Precious]
+ - Fix test failures with old Plack versions (Issue 73).
+ - Don't surround content with <p> tags in layout.
+ - Add $ENV{REMOTE_ADDR} in core log messages
 
-	[ Daniel Pittman ]
-	* FIX for issue #80
-	  Make sure the tempfiles created during uploads are removed when the
-	  request object dies.
+ [SawyerX]
+ - Fix issue #75, reported by nanis. perl -MDancer -e "print
+   $Dancer::VERSION" now works as expected
 
-	[ Alexis Sukrieh ]
-	* FIX for bug RT#58355
-	  Rewrite of Dancer::Template::Simple's parser, now more robust,
-	  based on Perl's regexp engine.
-	* FIX a warning when remote_address is undefined
+ [sebastian de castelberg]
+ - Fix priority in D::S::Mutable.
 
 1.1803 2010-05-23
-	[ Alexis Sukrieh ]
-	* Fix for issue #69
-	  The issue was resolved in 1.1801, this time, the fix is working as
-	  expected.
+ [Alexis Sukrieh]
+ - Fix for issue #69 The issue was resolved in 1.1801, this time, the fix
+   is working as expected.
 
-	[ Sawyer X ]
-	* Fix for RT #57715, require Test::More 0.88 and up.
+ [Sawyer X]
+ - Fix for RT #57715, require Test::More 0.88 and up.
 
 1.1802 2010-05-19
-	[ Sawyer X ]
-	* Fix RT #57158 (route_cache does not work with multiple parameters)
-	  Cache revealed a small design overlook of not cloning a route before
-	  returning it to the user, making multiple parameters disabled.
-	  (Thanks to Stéphane Alnet for reporting and adding a test for it!)
+ [Sawyer X]
+ - Fix RT #57158 (route_cache does not work with multiple parameters) Cache
+   revealed a small design overlook of not cloning a route before returning
+   it to the user, making multiple parameters disabled. (Thanks to
+   Stéphane Alnet for reporting and adding a test for it!)
 
 1.1801 2010-05-19
-	[ Alexis Sukrieh ]
-	* FIX issue #69
-	  Error are trapped even if occuring from Dancer's source code.
-	  auto_reload is set to false in scaffolded applications to
-	  prevent errors if Module::Refresh is not installed.
+ [Alexis Sukrieh]
+ - FIX issue #69 Error are trapped even if occuring from Dancer's source
+   code. auto_reload is set to false in scaffolded applications to prevent
+   errors if Module::Refresh is not installed.
 
 1.1800 2010-05-16
-	[ Alexis Sukrieh ]
-	* merge of the devel branch into master, first stable release of
-	  1.178_01 and 1.178_02
+ [Alexis Sukrieh]
+ - merge of the devel branch into master, first stable release of 1.178_01
+   and 1.178_02
 
 1.178_02 2010-05-11
-	[ Alexis Sukrieh ]
-	* Errors are caught in before filters
-	* halt can be given a Dancer::Response object rahter than plain text content
+ [Alexis Sukrieh]
+ - Errors are caught in before filters
+ - halt can be given a Dancer::Response object rahter than plain text
+   content
 
 1.178_01 2010-05-05
+ [Alex Kapranof]
+ - Support for on-the-fly charset encoding when the setting is set and a
+   content is sent by Dancer and needs to be encoded. The response
+   Content-Type is updated accordingly as well.
 
-	[ Alexis Sukrieh ]
-	* New logger for sending log message to STDERR: Dancer::Logger::Console
-	  Thanks to Gabor Szabo for the idea.
-	* Logger engines don't have anymore to implement _format(), they can use
-	  $self->format_message instead.
-	* New log level: "core" for letting Dancer's core express itself on crucial
-	  events.
-	  That way, when the app config sets log to "core", any core messages is
-	  sent to the logger, and the end-user can see which route is chosen for
-	  each request received.
-	  Thanks to Gabor Szabo for the idea.
-	* New class Dancer::Timer added so any logger engine can now show a timer
-	  string.
-	* Scaffolded applications are now built like a CPAN distribution, with a
-	  Makefile.PL
-	  and test scripts (thanks to Gabor Szabo for the idea).
-	* Added Dancer::Test to provide helpers for writing test script for Dancer
-	  applications
-	* FIX bug when returning a void context after redirecting a route.
-	  Thanks to Juan J. Martínez  for the report.
-	* Add support for request headers in Dancer::Request
-	* Add support for halt() in Dancer's syntax.
+ [Alexis Sukrieh]
+ - New logger for sending log message to STDERR: Dancer::Logger::Console
+   Thanks to Gabor Szabo for the idea.
+ - Logger engines don't have anymore to implement _format(), they can use
+   $self->format_message instead.
+ - New log level: "core" for letting Dancer's core express itself on
+   crucial events. That way, when the app config sets log to "core", any
+   core messages is sent to the logger, and the end-user can see which
+   route is chosen for each request received. Thanks to Gabor Szabo for the
+   idea.
+ - New class Dancer::Timer added so any logger engine can now show a timer
+   string.
+ - Scaffolded applications are now built like a CPAN distribution, with a
+   Makefile.PL and test scripts (thanks to Gabor Szabo for the idea).
+ - Added Dancer::Test to provide helpers for writing test script for Dancer
+   applications
+ - FIX bug when returning a void context after redirecting a route. Thanks
+   to Juan J. Martínez  for the report.
+ - Add support for request headers in Dancer::Request
+ - Add support for halt() in Dancer's syntax.
 
-	[ Alex Kapranof ]
-	* Support for on-the-fly charset encoding when the setting is set and a
-	  content is sent by Dancer and needs to be encoded.
-	  The response Content-Type is updated accordingly as well.
-
-	[ Sawyer X ]
-	* Adding "import_warnings" settings. On by default, but allows to disable
-	  auto-import of "warnings" pragma. Reported by Adam Kennedy.
+ [Sawyer X]
+ - Adding "import_warnings" settings. On by default, but allows to disable
+   auto-import of "warnings" pragma. Reported by Adam Kennedy.
 
 1.176 2010-04-22
-	* Bringing 1.175_01 into production.
+ - Bringing 1.175_01 into production.
 
-1.175_01  2010-04-19
-	[ Sawyer X ]
-	* Documentation for Dancer::FileUtils.
-	* Documentation for Dancer::Cookie.
-	* Fixing PNG bug on IE (reported by Adam Kennedy - thank you).
+1.175_01 2010-04-19
+ [Sawyer X]
+ - Documentation for Dancer::FileUtils.
+ - Documentation for Dancer::Cookie.
+ - Fixing PNG bug on IE (reported by Adam Kennedy - thank you).
 
 1.175 2010-04-11
-	[ Sawyer X ]
-	* RT #56395 reported by Jonathan Yu on behalf of Debian Perl team.
-	* Documentation for Dancer::Error.
+ [Alexis Sukrieh]
+ - fixed t/15_plugins/02_config.t when YAML is not installed
 
-	[ Alexis Sukrieh ]
-	* fixed t/15_plugins/02_config.t when YAML is not installed
+ [Sawyer X]
+ - RT #56395 reported by Jonathan Yu on behalf of Debian Perl team.
+ - Documentation for Dancer::Error.
 
 1.174 2010-04-08
-	[ Gabor Szabo ]
-	* Docs fixes, typo in warning.
-	* TestUtils.pm is now in "t/lib".
+ [David Precious]
+ - Support semi-colons as name=value pair separators when parsing
+   querystring.  Satisfies feature request/issue 59. Thanks to deepakg for
+   requesting this feature.
 
-	[ David Precious ]
-	* Support semi-colons as name=value pair separators when parsing
-	  querystring.  Satisfies feature request/issue 59.
-	  Thanks to deepakg for requesting this feature.
+ [Gabor Szabo]
+ - Docs fixes, typo in warning.
+ - TestUtils.pm is now in "t/lib".
 
-	[ Sawyer X ]
-	* RT #56381 reported by Jonathan Yu on behalf of Debian Perl team.
-	  (Adding LICENSE file)
+ [Sawyer X]
+ - RT #56381 reported by Jonathan Yu on behalf of Debian Perl team. (Adding
+   LICENSE file)
 
-1.173_01  2010-04-04
-	[ Franck Cuny ]
-	* Doc fixes.
-	  (Thanks to poisonbit)
-	* Plugins configuration
-	* Cleaning up tests
+1.173_01 2010-04-04
+ [Alexis Sukrieh]
+ - New serializer: Dumper for easily output dumped variable in text/plain.
+ - Before filters can now access route params
+ - Support for '.' as a token separator in params parsing
+ - The standalone server respect the 'access_log' setting, the starting
+   banner is printed on STDERR only if the setting is set to true.
 
-	[ Alexis Sukrieh ]
-	* New serializer: Dumper for easily output dumped variable
-	  in text/plain.
-	* Before filters can now access route params
-	* Support for '.' as a token separator in params parsing
-	* The standalone server respect the 'access_log' setting,
-	  the starting banner is printed on STDERR only if the
-	  setting is set to true.
+ [Franck Cuny]
+ - Doc fixes. (Thanks to poisonbit)
+ - Plugins configuration
+ - Cleaning up tests
 
-	[ Sawyer X ]
-	* Fixed Windows PSGI.URL_SCHEME bug, causing tests to fail
-	  (Thanks to ADAMK for reporting)
+ [Sawyer X]
+ - Fixed Windows PSGI.URL_SCHEME bug, causing tests to fail (Thanks to
+   ADAMK for reporting)
 
-1.173  2010-04-04
-	[ Alexis Sukrieh ]
-	* Documenting set_cookie in Dancer.pm.
+1.173 2010-04-04
+ [Alexis Sukrieh]
+ - Documenting set_cookie in Dancer.pm.
 
-	[ Franck Cuny ]
-	* Cleaning up serializer test.
+ [David Precious]
+ - Fix issue 52 - creating invalid cookie expiration dates. Thanks to
+   Juanjo (reidrac) for reporting!
 
-	[ François Charlier ]
-	* Documenting layout disabling.
+ [Franck Cuny]
+ - Cleaning up serializer test.
 
-	[ Sawyer X ]
-	* Fix a few failing tests because of compilation errors.
-	* Add init{} subs for all serializers.
-	* Dancer::Engine documentation
+ [François Charlier]
+ - Documenting layout disabling.
 
-	[ David Precious ]
-	* Fix issue 52 - creating invalid cookie expiration dates.
-	  Thanks to Juanjo (reidrac) for reporting!
+ [Sawyer X]
+ - Fix a few failing tests because of compilation errors.
+ - Add init{} subs for all serializers.
+ - Dancer::Engine documentation
 
 1.172 2010-03-28
-	[ Alexis Sukrieh ]
-	* Plugin support.
+ [Alexis Sukrieh]
+ - Plugin support.
 
-	[ Franck Cuny ]
-	* Prevent usage of reserved Dancer keywords in plugins.
-	* Tests cleanups.
+ [Franck Cuny]
+ - Prevent usage of reserved Dancer keywords in plugins.
+ - Tests cleanups.
 
-	[ Robert Olson ]
-	* Fixing docs to clarify layouts can use variables too.
+ [Robert Olson]
+ - Fixing docs to clarify layouts can use variables too.
 
 1.171 2010-03-24
-	[ Alexis Sukrieh ]
-	* Removed bogus TestApp/ directory
+ [Alexis Sukrieh]
+ - Removed bogus TestApp/ directory
 
 1.170 2010-03-24
+ [Alexis Sukrieh]
+ - Query string params are not dropped anymore when their value is 0.
+   thanks to "Squeeks" for the report. (closes: bug #49)
+ - Support for file uploads The Dancer::Request class provides a common
+   interface to access file uploads. Syntactic sugar has been added to
+   Dancer's as well (keyword 'upload'). (closes whish #36)
 
-	[ David Precious ]
-	* Fixed bug with status keyword not converting aliases (e.g. 'not_found') to
-	  real usable status lines with valid HTTP codes.
-	  Thanks to P Kishor for reporting this on the dancer-users mailing list!
-	* Accept end_tag as a synonym for stop_tag when configuring TemplateToolkit.
-	  Thanks to James Ronan for bringing this up.
+ [David Precious]
+ - Fixed bug with status keyword not converting aliases (e.g. 'not_found')
+   to real usable status lines with valid HTTP codes. Thanks to P Kishor
+   for reporting this on the dancer-users mailing list!
+ - Accept end_tag as a synonym for stop_tag when configuring
+   TemplateToolkit. Thanks to James Ronan for bringing this up.
 
-	[ Sawyer X]
-	* Route::Cache store_route = store_path, beefed up docs
-	* Changed names of limits in settings
-	* Added documentation for it in Dancer.pm
-	* More documentation about Module::Refresh dependency
-	  (closes bug #48)
-	* uri_for now accepts a boolean for not escaping URIs,
-	  and redirect calls uri_for with that boolean.
-	  (closes: bug #47)
+ [Franck Cuny]
+ - Support for automatic serialization/deserialization Dancer is now able
+   to serialize route handler's response in various format (JSON, YAML,
+   XML); and can also deserialize request body when appropriate. (closes:
+   wish #29)
 
-	[ Alexis Sukrieh ]
-	* Query string params are not dropped anymore when their value is 0. thanks
-	  to "Squeeks" for the report.
-	  (closes: bug #49)
-	* Support for file uploads
-	  The Dancer::Request class provides a common interface to access file
-	  uploads. Syntactic sugar has been added to Dancer's as well
-	  (keyword 'upload').
-	  (closes whish #36)
-
-	[ Franck Cuny ]
-	* Support for automatic serialization/deserialization
-	  Dancer is now able to serialize route handler's response in various
-	  format (JSON, YAML, XML); and can also deserialize request body when
-	  appropriate.
-	  (closes: wish #29)
-
+ [Sawyer X]
+ - Route::Cache store_route = store_path, beefed up docs
+ - Changed names of limits in settings
+ - Added documentation for it in Dancer.pm
+ - More documentation about Module::Refresh dependency (closes bug #48)
+ - uri_for now accepts a boolean for not escaping URIs, and redirect calls
+   uri_for with that boolean. (closes: bug #47)
 
 1.160 2010-03-07
+ [Alexis Sukrieh]
+ - Dancer helper propagates its perl executable into the generated
+   $appname.pl script (FIX for RT #54759).
+ - FIX for issue #34 No more warnings undeer Win32 for tests script that
+   needs a tempdir
+ - FIX (unknown bug) The standalone server now parses commandline options
+   (was broken since 1.140).
+ - FIX for issue #37 A new setting "confdir" is provided for making Dancer
+   read the application configuration files from an alternate location.
+ - Core settings can be initialized via environment variables, prefixed
+   with "DANCER_" (e.g.  "DANCER_DAEMON" for the setting "daemon").
+ - Config and command-line arguments are parsed and loaded at import time,
+   rather than when the handler is initialized.
+ - Routes are compiled at startup instead of being compiled whenever a
+   request is handled. This can increase performances up to 50%.
+ - FIX Params are not polluted anymore by the 'splat' keyword when no
+   capture is needed by the pattern.
+ - New feature 'auto_page' (closes: #41) Lets the user have automatic route
+   resolution for requests that match an existing template in the views
+   dir. Thanks to David Precious for the idea and his help.
 
-	[ David Precious ]
-	* Added session backend Dancer::Session::Simple
-	* Dump session contents on development error page, if session is in use
-	* Censor sensitive-looking information on development error page settings /
-	  session dumps, to help avoid passwords / card details etc being leaked.
-	* Add deployment guide
+ [Daniel Tasov]
+ - Plack environment is propagated to Dancer if none specified.
 
-	[ Alexis Sukrieh ]
-	* Dancer helper propagates its perl executable into the generated
-	  $appname.pl script (FIX for RT #54759).
-	* FIX for issue #34
-	  No more warnings undeer Win32 for tests script that needs a tempdir
-	* FIX (unknown bug)
-	  The standalone server now parses commandline options (was broken
-	  since 1.140).
-	* FIX for issue #37
-	  A new setting "confdir" is provided for making Dancer
-	  read the application configuration files from an
-	  alternate location.
-	* Core settings can be initialized via environment
-	  variables, prefixed with "DANCER_" (e.g.  "DANCER_DAEMON"
-	  for the setting "daemon").
-	* Config and command-line arguments are parsed and loaded at import time,
-	  rather than when the handler is initialized.
-	* Routes are compiled at startup instead of being compiled whenever a
-	  request is handled.  This can increase performances up to 50%.
-	* FIX Params are not polluted anymore by the 'splat' keyword when no capture
-	  is needed by the pattern.
-	* New feature 'auto_page' (closes: #41)
-	  Lets the user have automatic route resolution for
-	  requests that match an existing template in the views dir. Thanks to
-	  David Precious for the idea and his help.
+ [David Precious]
+ - Added session backend Dancer::Session::Simple
+ - Dump session contents on development error page, if session is in use
+ - Censor sensitive-looking information on development error page settings
+   / session dumps, to help avoid passwords / card details etc being
+   leaked.
+ - Add deployment guide
 
-	[ Daniel Tasov ]
-	* Plack environment is propagated to Dancer if none specified.
-
-	[ Sawyer X ]
-	* Route Caching with size and path number limits: Dancer::Route::Cache.
-	* FIX for issue #39.
-	* Dancer::ModuleLoader documentation
-	* Cleaned Dancer::Template::Abstract docs
-	* Cleaner die in Dancer::Engine if can't find engine
-	* Added default route example in Dancer::Cookbook
-
+ [Sawyer X]
+ - Route Caching with size and path number limits: Dancer::Route::Cache.
+ - FIX for issue #39.
+ - Dancer::ModuleLoader documentation
+ - Cleaned Dancer::Template::Abstract docs
+ - Cleaner die in Dancer::Engine if can't find engine
+ - Added default route example in Dancer::Cookbook
 
 1.150 2010-02-17
+ [Alexis Sukrieh]
+ - Refactored all core engines with Dancer::Engine
+ - Support for engine configuration via config files
+ - Each core template engine now uses start_tag/stop_tag from the
+   configuration instead of harcoding '<%' and '%>'.
+ - FIX for issue #34 Cookies can now be used when the application is ran
+   under a Plack server.
 
-	[ Alexis Sukrieh ]
-	* Refactored all core engines with Dancer::Engine
-	* Support for engine configuration via config files
-	* Each core template engine now uses start_tag/stop_tag from the
-	  configuration instead of harcoding '<%' and '%>'.
-	* FIX for issue #34
-	  Cookies can now be used when the application is ran under a Plack
-	  server.
+ [Anirvan Chatterjee]
+ - Various documentation typo fixes
 
-	[ David Precious ]
-	* Lots of documentation cleaning and fixes.
-	* Make the session available to the views, if possible.
-	* Added Dancer::Cookbook to provide lots of concrete examples for
-	  newcomers.
-	* Helper script `dancer' now provides a default favicon.ico in the
-	  application public directory.
-	* FIX for issue #30
-	  Added 'config' method to provide easy access to app config
+ [Danijel Tasov]
+ - FIX for issue #24 Dancer now depends on MIME::Types rather than using
+   File::MimeInfo::Simple which uses a fork().
 
-	[ Anirvan Chatterjee ]
-	* Various documentation typo fixes
+ [David Precious]
+ - Lots of documentation cleaning and fixes.
+ - Make the session available to the views, if possible.
+ - Added Dancer::Cookbook to provide lots of concrete examples for
+   newcomers.
+ - Helper script `dancer' now provides a default favicon.ico in the
+   application public directory.
+ - FIX for issue #30 Added 'config' method to provide easy access to app
+   config
 
-	[ Danijel Tasov ]
-	* FIX for issue #24
-	  Dancer now depends on MIME::Types rather than using
-	  File::MimeInfo::Simple which uses a fork().
+ [Franck Cuny]
+ - Test scripts cleanup: + Cleanup is performed in test scripts when
+   necessary (all temp files are removed at the end of the script). + FIX
+   for issue #23 Test scripts that try to write logfiles set the appdir.
 
-	[ Paul Driver ]
-	* Support for virtual location.
-	  It's now possible to mount a Dancer app under a user-defined prefix.
-
-	[ Franck Cuny ]
-	* Test scripts cleanup:
-	  + Cleanup is performed in test scripts when necessary
-	    (all temp files are removed at the end of the script).
-	  + FIX for issue #23
-	    Test scripts that try to write logfiles set the appdir.
+ [Paul Driver]
+ - Support for virtual location. It's now possible to mount a Dancer app
+   under a user-defined prefix.
 
 1.140 2010-02-09
-
-	* Dancer now depends on HTTP::Server::Simple::PSGI in
-	  order to rely on a PSGI environement even when running
-	  the app with the standalone server
-	  (Thanks to Tatsuiko Miyagawa).
-	* Dancer::Request object enhancements:
-	    + Dancer::Request now provide an accesor to the raw body
-	      of the request.
-	    + FIX for issue #13
-	      The params helper now provides accessors to route
-	      params, query string params and body params so the
-	      user can chose from which source they want to access
-	      params instead of dealing with a mixed structure.
-	    + Added accessors to referer and remote_address
-	* The Standalone server now uses the setting 'server' to
-	  bind itself to the IP address given by the setting.
-	  Default value is 0.0.0.0
+ - Dancer now depends on HTTP::Server::Simple::PSGI in order to rely on a
+   PSGI environement even when running the app with the standalone server
+   (Thanks to Tatsuiko Miyagawa).
+ - Dancer::Request object enhancements: + Dancer::Request now provide an
+   accesor to the raw body of the request. + FIX for issue #13 The params
+   helper now provides accessors to route params, query string params and
+   body params so the user can chose from which source they want to access
+   params instead of dealing with a mixed structure. + Added accessors to
+   referer and remote_address
+ - The Standalone server now uses the setting 'server' to bind itself to
+   the IP address given by the setting. Default value is 0.0.0.0
 
 1.130 2010-01-29
-	* Fix a memory leak that could occur between two
-	  requests under mod_perl (Thanks to Nicolas Rennert for
-	  the report and diagnosis).
-	* remove all optional modules from the core, they are now
-	  shipped as separate CPAN distributions:
-	  - Dancer::Template::MicroTemplate
-	  - Dancer::Session::Cookie
-	  - Dancer::Session::Memcached
-	  - Dancer::Logger::LogHandler
-	  - Dancer::Logger::Syslog
-	* support for the `header' keyword in Dancer's syntax.
-	  The user is now able to alter response-headers in route
-	  handlers.
-	* support for `prefix' keyword in Dancer's syntax.
-	  A prefix can be set by the user before defining routes handlers.
-	  All route defined then will be automatically prefixed accordingly.
+ - Fix a memory leak that could occur between two requests under mod_perl
+   (Thanks to Nicolas Rennert for the report and diagnosis).
+ - remove all optional modules from the core, they are now shipped as
+   separate CPAN distributions: - Dancer::Template::MicroTemplate -
+   Dancer::Session::Cookie - Dancer::Session::Memcached -
+   Dancer::Logger::LogHandler - Dancer::Logger::Syslog
+ - support for the `header' keyword in Dancer's syntax. The user is now
+   able to alter response-headers in route handlers.
+ - support for `prefix' keyword in Dancer's syntax. A prefix can be set by
+   the user before defining routes handlers. All route defined then will be
+   automatically prefixed accordingly.
 
 1.122 2010-01-16
-
-	* Fix the test suite under Perl 5.8.x
-	* Security Fix: protection from CRLF injection in
-	  response headers (thanks to Mark Stosberg for the report).
-	* Support for multi-valued params in GET/POST data (thanks to
-	  Mark Stosberg for the report).
-	* Backward compatibility with old app.psgi files, don't die
-	  when a request is initialized with a CGI::PSGI object.
+ - Fix the test suite under Perl 5.8.x
+ - Security Fix: protection from CRLF injection in response headers (thanks
+   to Mark Stosberg for the report).
+ - Support for multi-valued params in GET/POST data (thanks to Mark
+   Stosberg for the report).
+ - Backward compatibility with old app.psgi files, don't die when a request
+   is initialized with a CGI::PSGI object.
 
 1.121 2010-01-15
-
-	* Fix for POST data parsing (was broken in 1.120)
-	  now Dancer depends on HTTP::Body for that.
+ - Fix for POST data parsing (was broken in 1.120) now Dancer depends on
+   HTTP::Body for that.
 
 1.120 2010-01-15
-
-	* ROADMAP updated
-	* Dancer is now compliant with Plack::Server::Apache2
-	* Remove the CGI.pm dependency, huge refactoring
-	* POD typo fixes (Naveed)
-	* Support for syntax-only importation (Sawyer X)
-	* Remove the example/ directory, useless and deprecated
-	* New logger engine: Log::Handler (franck cuny)
-	* New template engine Text::Microtemplate (franck cuny)
-	* Remove compilation-time warnings catching (issue #14)
+ - ROADMAP updated
+ - Dancer is now compliant with Plack::Server::Apache2
+ - Remove the CGI.pm dependency, huge refactoring
+ - POD typo fixes (Naveed)
+ - Support for syntax-only importation (Sawyer X)
+ - Remove the example/ directory, useless and deprecated
+ - New logger engine: Log::Handler (franck cuny)
+ - New template engine Text::Microtemplate (franck cuny)
+ - Remove compilation-time warnings catching (issue #14)
 
 1.110 2010-01-11
-
-	* Fix test script `t/11_logger/04_syslog.t'
-	* Fix test script `t/10_template/05_template_toolkit.t'
+ - Fix test script `t/11_logger/04_syslog.t'
+ - Fix test script `t/10_template/05_template_toolkit.t'
 
 1.100 2009-01-01
-
-	* Support for multiple method routes at once with 'any'
-	* Templates engines
-	    + Bug fixes in Dancer::Template::Simple (Jury Gorky)
-	    + Refactoring of the factory
-	    + option for disabling the layout in the template helper.
-	* New session engine based on encrypted cookies (Alex Kapranof)
-	* More HTTP codes supported for a better REST compat (Nate Jones)
-	* Documentation updates
-	* script/dancer now requires an appname
-	* New Makefile.PL with better metadata (CPAN Service)
+ - Support for multiple method routes at once with 'any'
+ - Templates engines + Bug fixes in Dancer::Template::Simple (Jury Gorky) +
+   Refactoring of the factory + option for disabling the layout in the
+   template helper.
+ - New session engine based on encrypted cookies (Alex Kapranof)
+ - More HTTP codes supported for a better REST compat (Nate Jones)
+ - Documentation updates
+ - script/dancer now requires an appname
+ - New Makefile.PL with better metadata (CPAN Service)
 
 1.000 2009-01-01
-
-	* Support for Syslog logger (Dancer::Logger::Syslog)
-	* Basic template engine so Template is no more a hard deps.
-	* Memcache Session support (Dancer::Session::Memcache)
-	* YAML file-based session support (Dancer::Session::YAML)
-	* Lots of tests (more than 80% of the code is covered)
+ - Support for Syslog logger (Dancer::Logger::Syslog)
+ - Basic template engine so Template is no more a hard deps.
+ - Memcache Session support (Dancer::Session::Memcache)
+ - YAML file-based session support (Dancer::Session::YAML)
+ - Lots of tests (more than 80% of the code is covered)
 
 0.9906 2009-01-01
-
-	* move from File::MimeInfo to File::MimeInfo::Simple for
-	  smooth run on Mac OSX and Win32 systems.
+ - move from File::MimeInfo to File::MimeInfo::Simple for smooth run on Mac
+   OSX and Win32 systems.
 
 0.9005 2009-01-01
-
-	* Source code extract on error catching
-	* Support for configurable error handling
-	* New design for the starting app built with script/dancer
+ - Source code extract on error catching
+ - Support for configurable error handling
+ - New design for the starting app built with script/dancer
 
 0.9004 2009-01-01
-
-	* Support for PSGI/Plack environment
-	* script/dancer helper script for bootstraping a new app
+ - Support for PSGI/Plack environment
+ - script/dancer helper script for bootstraping a new app
 
 0.9003 2009-01-01
-
-	* Detect differently compilation-time warnings and runtime warnings
-	  closes bug #48440 (Thanks to Enric Joffrion for the report, and to
-	  Vincent Pit for the diagnosis)
+ - Detect differently compilation-time warnings and runtime warnings closes
+   bug #48440 (Thanks to Enric Joffrion for the report, and to Vincent Pit
+   for the diagnosis)
 
