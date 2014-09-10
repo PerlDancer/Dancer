@@ -11,6 +11,7 @@ README
 README.md
 README.mkdn
 SIGNATURE
+bin/dancer
 cpanfile
 doap.xml
 examples/dancr/dancr.pl
@@ -96,7 +97,6 @@ lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 lib/Dancer/Tutorial.pod
-script/dancer
 t/00-compile.t
 t/000-report-versions-tiny.t
 t/00_base/000_create_fake_env.t

@@ -4,6 +4,7 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
+ - Dzil conversion left 'dancer' script behind. (GH#1066)
 
  [DOCUMENTATION]
 
