@@ -26,7 +26,7 @@ chdir $dir;
 my $libdir = File::Spec->catdir($cwd, 'blib', 'lib');
 $libdir = '"'.$libdir.'"' if $libdir =~ / /;
 
-my $dancer = File::Spec->catdir($cwd, 'script', 'dancer');
+my $dancer = File::Spec->catdir($cwd, 'bin', 'dancer');
 $dancer = '"'.$dancer.'"' if $dancer =~ / /;
 
 my $cmd = "$^X -I $libdir $dancer";
