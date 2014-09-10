@@ -6,8 +6,6 @@ Revision history for Dancer
  [BUG FIXES]
  - Dzil conversion left 'dancer' script behind. (GH#1066)
 
- [DOCUMENTATION]
-
  [ENHANCEMENTS]
 
  [NEW FEATURES]
@@ -17,9 +15,6 @@ Revision history for Dancer
 1.3128 2014-09-09
  [BUG FIXES]
  - Remove test dependency for Person and Person::Child. (GH#1063)
-
- [STATISTICS]
- - code churn: 
 
 1.3127 2014-09-08
  [BUG FIXES]
@@ -47,9 +42,6 @@ Revision history for Dancer
    (GH#1056, Yanick Champoux)
  - Accessing values abstracted as methods in Dancer::Session. (GH#1000,
    John Wittkoski)
-
- [STATISTICS]
- - code churn: 
 
 1.3126 2014-07-14
  [BUG FIXES]
