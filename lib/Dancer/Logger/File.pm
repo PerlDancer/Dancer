@@ -1,5 +1,6 @@
 package Dancer::Logger::File;
 #ABSTRACT: file-based logging engine for Dancer
+
 use strict;
 use warnings;
 use Carp;

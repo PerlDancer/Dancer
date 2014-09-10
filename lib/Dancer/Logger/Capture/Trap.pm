@@ -1,6 +1,6 @@
 package Dancer::Logger::Capture::Trap;
 # ABSTRACT: a place to store captured Dancer logs
-#
+
 use base 'Dancer::Object';
 
 =head1 SYNOPSIS

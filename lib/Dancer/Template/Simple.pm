@@ -1,5 +1,6 @@
 package Dancer::Template::Simple;
 #ABSTRACT: pure Perl 5 template engine for Dancer
+
 use strict;
 use warnings;
 use Carp;

@@ -1,5 +1,6 @@
 package Dancer::Logger::Null;
 #ABSTRACT: blackhole-like silent logging engine for Dancer
+
 use strict;
 use warnings;
 use base 'Dancer::Logger::Abstract';

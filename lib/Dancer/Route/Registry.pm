@@ -1,4 +1,5 @@
 package Dancer::Route::Registry;
+
 use strict;
 use warnings;
 use Carp;

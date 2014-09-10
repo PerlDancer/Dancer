@@ -1,5 +1,6 @@
 package Dancer::Logger::Diag;
 #ABSTRACT: Test::More diag() logging engine for Dancer
+
 use strict;
 use warnings;
 use base 'Dancer::Logger::Abstract';

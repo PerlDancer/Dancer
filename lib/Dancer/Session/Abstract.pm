@@ -1,5 +1,6 @@
 package Dancer::Session::Abstract;
 #ABSTRACT: abstract class for session engine
+
 use strict;
 use warnings;
 use Carp;

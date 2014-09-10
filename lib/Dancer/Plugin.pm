@@ -1,5 +1,6 @@
 package Dancer::Plugin;
 #ABSTRACT: helper for writing Dancer plugins
+
 use strict;
 use warnings;
 use Carp;
