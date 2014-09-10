@@ -1,16 +1,11 @@
 Revision history for Dancer
 
-{{$NEXT}}
- [API CHANGES]
-
+1.3129 2014-09-09
  [BUG FIXES]
  - Dzil conversion left 'dancer' script behind. (GH#1066)
 
- [ENHANCEMENTS]
-
- [NEW FEATURES]
-
  [STATISTICS]
+ - code churn: 17 files changed, 1425 insertions(+), 1432 deletions(-)
 
 1.3128 2014-09-09
  [BUG FIXES]
@@ -67,8 +62,8 @@ Revision history for Dancer
  [BUG FIXES]
  - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
    Wittkoski)
- - Test was failing if JSON module was absent.		 (GH#1022, Yanick
-   Champoux)
+ - Test was failing if JSON module was absent.		       (GH#1022,
+   Yanick Champoux)
  - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
    Champoux)
 
@@ -231,8 +226,8 @@ Revision history for Dancer
  - Add scheme line for ngnix config in D::Deployment.
 
  [ENHANCEMENTS]
- - GH #919: 'dancer' script exits with code 255 if application		
-   name is invalid. (ppisar)
+ - GH #919: 'dancer' script exits with code 255 if application		   
+      name is invalid. (ppisar)
  - GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
  - GH #926: make messages from fatal warnings show up in the logs.  (Max
    Maischein)
@@ -706,7 +701,7 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports		 (Alberto Simões)
+ - Fix a bunch of cpan testers reports		       (Alberto Simões)
 
 1.3069_01 2011-07-07
  [BUG FIXES]
@@ -750,9 +745,9 @@ Revision history for Dancer
 1.3059_03 2011-06-11
  [BUG FIXES]
  - Fix for issue #539 https://github.com/sukria/Dancer/issues/539 Don't
-   decode twice entries in the params hash table, file			 
-   uploads with UTF-8 characters in their name are now possible. (Toby
-   Corkindale, Alexis Sukrieh)
+   decode twice entries in the params hash table, file			   
+	 uploads with UTF-8 characters in their name are now possible.
+   (Toby Corkindale, Alexis Sukrieh)
  - Fix broken test with old version of HTTP::Parser::XS (Franck Cuny)
  - #492 - Don't run Test::TCP tests on win32 (Franck Cuny)
  - Fix a bug that when forwarding a post with post data stalled the code
@@ -827,8 +822,8 @@ Revision history for Dancer
  [API CHANGES]
  - Deprecation of 'logger' (use set). (Alberto Simões)
  - Deprecate 'layout' (use set). (Alberto Simões)
- - Definitely remove plack_middlewares HashRef deprecation. (Alberto
-   Simões & Damien Krotkine)
+ - Definitely remove plack_middlewares HashRef deprecation. (Alberto Simões
+   & Damien Krotkine)
 
  [BUG FIXES]
  - Unbreaking auto_page somewhat - the catch-all route added will pass
@@ -890,8 +885,8 @@ Revision history for Dancer
  - GH #466: Can now set cookies with http_only => 0 for JS integration.
    (Alberto Simões)
  - Session engine can be told to set cookies without HttpOnly attribute
-   using new session_is_http_only setting. (Alberto Simões, requested by
-   JT Smith)
+   using new session_is_http_only setting. (Alberto Simões, requested by JT
+   Smith)
  - GH #296: Show versions of loaded modules in startup info. (Sawyer X)
  - Able to set more than one value at once using set(). (Alberto Simões)
  - GH #253: Use Clone::clone() if available to clone data before censoring.
@@ -1309,7 +1304,7 @@ Revision history for Dancer
    **
  - 1.2xxx releases; you should not have issues updating to any 1.2xxx	   
       **
- - version because of it.				   **
+ - version because of it.			 **
  - A very special thanks goes to the Dancer community who improved and	   
       ++
  - perfected this release and worked hard on reporting bugs, fixing them,
@@ -1318,7 +1313,7 @@ Revision history for Dancer
    ++
  - else which makes Dancer so attractive - and above all: its community  
    ++
- - so thank you!					   ++
+ - so thank you!				 ++
 
  [Sawyer X]
  - Fixing some more XML tests with missing preqreqs.
@@ -1675,8 +1670,8 @@ Revision history for Dancer
  [Sawyer X]
  - Fix RT #57158 (route_cache does not work with multiple parameters) Cache
    revealed a small design overlook of not cloning a route before returning
-   it to the user, making multiple parameters disabled. (Thanks to
-   Stéphane Alnet for reporting and adding a test for it!)
+   it to the user, making multiple parameters disabled. (Thanks to Stéphane
+   Alnet for reporting and adding a test for it!)
 
 1.1801 2010-05-19
  [Alexis Sukrieh]
@@ -1718,7 +1713,7 @@ Revision history for Dancer
  - Added Dancer::Test to provide helpers for writing test script for Dancer
    applications
  - FIX bug when returning a void context after redirecting a route. Thanks
-   to Juan J. Martínez  for the report.
+   to Juan J. Martínez	   for the report.
  - Add support for request headers in Dancer::Request
  - Add support for halt() in Dancer's syntax.
 

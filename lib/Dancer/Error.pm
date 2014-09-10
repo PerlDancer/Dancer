@@ -1,6 +1,9 @@
 package Dancer::Error;
+BEGIN {
+  $Dancer::Error::AUTHORITY = 'cpan:SUKRIA';
+}
 #ABSTRACT: class for representing fatal errors
-
+$Dancer::Error::VERSION = '1.3129';
 use strict;
 use warnings;
 use Carp;
@@ -318,6 +321,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Error - class for representing fatal errors
+
+=head1 VERSION
+
+version 1.3129
 
 =head1 SYNOPSIS
 
@@ -436,3 +448,15 @@ Internal method to encode entities that are illegal in (X)HTML. We output as
 UTF-8, so no need to encode all non-ASCII characters or use a module.
 FIXME : this is not true anymore, output can be any charset. Need fixing.
 
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
