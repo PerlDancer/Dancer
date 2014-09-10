@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 #PODNAME: dancer
+#ABSTRACT: helper script to create new Dancer applications
 
 use strict;
 use warnings;
@@ -1323,9 +1324,6 @@ EOF
 __END__
 =pod
 
-=head1 NAME
-
-dancer - helper script to create new Dancer applications
 
 =head1 SYNOPSIS
 
@@ -1390,19 +1388,5 @@ The application is ready to serve:
     >> Listening on 127.0.0.1:3000
     == Entering the development dance floor ...
 
-=head1 AUTHOR
-
-This script has been written by Sebastien Deseille
-<sebastien.deseille@gmail.com> and Alexis Sukrieh
-<sukria@cpan.org>.
-
-=head1 SOURCE CODE
-
-See L<Dancer> for more information.
-
-=head1 LICENSE
-
-This module is free software and is published under the same
-terms as Perl itself.
 
 =cut
