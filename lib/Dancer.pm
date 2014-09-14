@@ -367,7 +367,8 @@ sub _send_file {
     my ($path, %options) = @_;
     my $env = Dancer::SharedData->request->env;
 
-    my $request = Dancer::Request->new_for_request('GET' => $path);
+    my $request = Dancer::Request->new_for_request('GET' => $path, undef, undef,
+        undef, $env);
     Dancer::SharedData->request($request);
 
     # if you asked for streaming but it's not supported in PSGI
