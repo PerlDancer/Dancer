@@ -229,12 +229,11 @@ sub load_settings_from_yaml {
     my $config = eval { YAML::LoadFile($file) }
         or confess "Unable to parse the configuration file: $file: $@";
 
-    # groom the values of $config
-    while( my ($k,$v) = each %$config ) {
-        $config->{$k} = Dancer::Config->normalize_setting($k,$v);
-    }
-
-    $SETTINGS = Hash::Merge::Simple::merge( $SETTINGS, $config );
+    $SETTINGS = Hash::Merge::Simple::merge( $SETTINGS, {
+        map {
+            $_ => Dancer::Config->normalize_setting( $_, $config->{$_} )
+        } keys %$config
+    } );
 
     return scalar keys %$config;
 }
