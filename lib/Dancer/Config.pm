@@ -234,7 +234,7 @@ sub load_settings_from_yaml {
     while( my ($k,$v) = each %$config ) {
         my $nv = Dancer::Config->normalize_setting($k,$v);
 
-        if (readonly $config->{$k} and $v ne $v) {
+        if (readonly $config->{$k} and $v ne $nv) {
             # YAML or YAML::XS creates readonly hash keys. die if we need to
             # update but cannot.
             confess "Cannot normalize+merge config for key: $k!";
