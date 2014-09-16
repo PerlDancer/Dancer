@@ -4,7 +4,6 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
- - Bogus dependency for 'mro'. (GH#1069)
 
  [DOCUMENTATION]
 
@@ -13,6 +12,13 @@ Revision history for Dancer
  [NEW FEATURES]
 
  [STATISTICS]
+
+1.3130 2014-09-15
+ [BUG FIXES]
+ - Bogus dependency for 'mro'. (GH#1069)
+
+ [STATISTICS]
+ - code churn: 2 files changed, 21 insertions(+), 12 deletions(-)
 
 1.3129 2014-09-09
  [BUG FIXES]
@@ -76,8 +82,8 @@ Revision history for Dancer
  [BUG FIXES]
  - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
    Wittkoski)
- - Test was failing if JSON module was absent.		       (GH#1022,
-   Yanick Champoux)
+ - Test was failing if JSON module was absent.			    
+   (GH#1022, Yanick Champoux)
  - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
    Champoux)
 
@@ -715,7 +721,8 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports		       (Alberto Simões)
+ - Fix a bunch of cpan testers reports			     (Alberto
+   Simões)
 
 1.3069_01 2011-07-07
  [BUG FIXES]
@@ -1318,7 +1325,7 @@ Revision history for Dancer
    **
  - 1.2xxx releases; you should not have issues updating to any 1.2xxx	   
       **
- - version because of it.			 **
+ - version because of it.	       **
  - A very special thanks goes to the Dancer community who improved and	   
       ++
  - perfected this release and worked hard on reporting bugs, fixing them,
@@ -1327,7 +1334,7 @@ Revision history for Dancer
    ++
  - else which makes Dancer so attractive - and above all: its community  
    ++
- - so thank you!				 ++
+ - so thank you!		       ++
 
  [Sawyer X]
  - Fixing some more XML tests with missing preqreqs.
