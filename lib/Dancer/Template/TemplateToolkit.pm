@@ -72,6 +72,46 @@ sub init {
     $_engine = $class->new(%$tt_config);
 }
 
+sub set_wrapper {
+	my ($self, $when, $file) = @_;
+	my $wrappers = $_engine->{SERVICE}->{WRAPPER};
+	unless (defined $file) {
+		$file = $when;
+		my @orig = @$wrappers;
+        $self->{orig_wrappers} = \@orig;
+		@$wrappers = ($file);
+        return;
+	}
+	if ($when eq 'outer') {
+        unshift @$wrappers => $file;
+    } elsif ($when eq 'inner') {
+        push @$wrappers => $file;
+    } else {
+        raise core_template => "'$when' isn't a valid identifier";
+    }
+}
+
+sub reset_wrapper {
+    my ($self) = @_;
+	my $wrappers = $_engine->{SERVICE}->{WRAPPER};
+    my $orig = $self->{orig_wrappers} || [];
+    my @old = @$wrappers;
+    @$wrappers = @$orig;
+    return @old;
+}
+
+sub unset_wrapper {
+    my ($self, $when) = @_;
+	my $wrappers = $_engine->{SERVICE}->{WRAPPER};
+	if ($when eq 'outer') {
+        return shift @$wrappers;
+    } elsif ($when eq 'inner') {
+        return pop @$wrappers;
+    } else {
+        raise core_template => "'$when' isn't a valid identifier";
+    }
+}
+
 sub render {
     my ($self, $template, $tokens) = @_;
 
@@ -179,13 +219,47 @@ Change the configuration of the template to Template Toolkit:
 Done! Everything will work fine out of the box, including variables and META
 variables.
 
+=head1 USING TT'S WRAPPER STACK
+
+This engine provides three additional methods to access the WRAPPER stack of
+TemplateToolkit.
+
+=head2 set_wrapper
+
+Synopsis:
+
+    engine('template')->set_wrapper inner => 'inner_layout.tt';
+    engine('template')->set_wrapper outer => 'outer_layout.tt';
+    engine('template')->set_wrapper 'only_layout.tt';
+
+The first two lines pushes/unshifts layout files to the wrapper array.
+The third line overwrites the wrapper array with a single element.
+
+=head2 unset_wrapper
+
+Synopsis:
+
+    engine('template')->unset_wrapper('inner') # returns 'inner_layout.tt';
+    engine('template')->unset_wrapper('outer') # returns 'outer_layout.tt';
+
+These lines pops/shifts layout files from the wrapper array and returns the
+removed elements.
+
+=head2 reset_wrapper
+
+Synopsis:
+
+    engine('template')->reset_wrapper;
+
+This method restores the wrapper array after a set_wrapper call.
+
 =head1 SEE ALSO
 
 L<Dancer>, L<Template>
 
 =head1 AUTHOR
 
-This module has been written by Alexis Sukrieh
+This module has been written by Alexis Sukrieh and David Zurborg
 
 =head1 LICENSE
 
