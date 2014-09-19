@@ -8,6 +8,7 @@ Revision history for Dancer
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
+ - D::Serializer::YAML and Dancer::Config can now use 'YAML::XS'.
 
  [NEW FEATURES]
 
