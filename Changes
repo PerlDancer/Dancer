@@ -13,6 +13,7 @@ Revision history for Dancer
  - Dancer::Template::TemplateToolkit now supports DATA-embedded
     templates. (GH#1061, Jochen Lutz)
  - New function 'param_array'. (GH#1055, Yanick Champoux)
+ - D::Serializer::YAML and Dancer::Config can now use 'YAML::XS'.
 
  [NEW FEATURES]
 

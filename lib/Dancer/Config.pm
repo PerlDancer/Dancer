@@ -189,12 +189,13 @@ sub load {
     return 1 unless -f conffile;
 
     # load YAML
-    my ( $result, $error ) = Dancer::ModuleLoader->load('YAML');
-    if ( not $result ) {
-        confess "Configuration file found but could not load YAML: $error";
-    }
+    my $module = $SETTINGS->{engines}{YAML}{module} || 'YAML';
 
-    if (!$_LOADED{conffile()}) {
+    my ( $result, $error ) = Dancer::ModuleLoader->load($module);
+    confess "Configuration file found but could not load $module: $error"
+        unless $result;
+
+    unless ($_LOADED{conffile()}) {
         load_settings_from_yaml(conffile);
         $_LOADED{conffile()}++;
     }
@@ -297,6 +298,14 @@ a reference to a hash:
 
     my $port   = config->{port};
     my $appdir = config->{appdir};
+
+By default, the module L<YAML> will be used to parse the configuration files.
+If desired, it is possible to use L<YAML::XS> instead by changing the YAML
+engine configuration in the application code:
+
+    config->{engines}{YAML}{module} = 'YAML::XS';
+
+See L<Dancer::Serializer::YAML> for more details.
 
 =head1 SUPPORTED SETTINGS
 
