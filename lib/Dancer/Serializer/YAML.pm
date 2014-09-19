@@ -28,8 +28,8 @@ sub to_yaml {
 sub loaded { 
     my $module = Dancer::Config::settings->{engines}{YAML}{module} || 'YAML';
 
-    raise core_serializer => q{Dancer::Serializer::YAML only support 'YAML' or 'YAML::XS'}
-        unless $module =~ /^YAML(?:::XS)$/;
+    raise core_serializer => q{Dancer::Serializer::YAML only support 'YAML' or 'YAML::XS', not $module}
+        unless $module =~ /^YAML(?:::XS)?$/;
 
     Dancer::ModuleLoader->load($module) 
         or raise core_serializer => "$module is needed and is not installed";
