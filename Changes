@@ -8,6 +8,8 @@ Revision history for Dancer
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
+ - Dancer::Template::TemplateToolkit now supports DATA-embedded
+    templates. (GH#1061, Jochen Lutz)
 
  [NEW FEATURES]
 
