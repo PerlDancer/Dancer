@@ -227,7 +227,7 @@ To enable this:
     };
     set template => 'template_toolkit';
 
-This feature requires L<Tempate::Provider::FromDATA>. Put your templates in the
+This feature requires L<Template::Provider::FromDATA>. Put your templates in the
 __DATA__ section, and start every template with __${templatename}__.
 
 =head1 SEE ALSO
