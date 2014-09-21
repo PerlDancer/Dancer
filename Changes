@@ -4,6 +4,7 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
+ - Test was failing under perl 5.8.9. (GH#1057, Tom Hukins)
 
  [DOCUMENTATION]
 
