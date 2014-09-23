@@ -7,6 +7,7 @@ use base 'Exporter';
 use vars '@EXPORT_OK';
 
 use Hash::Merge::Simple;
+use Scalar::Util 'readonly';
 use Dancer::Config::Object 'hashref_to_object';
 use Dancer::Deprecation;
 use Dancer::Template;
@@ -231,7 +232,16 @@ sub load_settings_from_yaml {
 
     # groom the values of $config
     while( my ($k,$v) = each %$config ) {
-        $config->{$k} = Dancer::Config->normalize_setting($k,$v);
+        my $nv = Dancer::Config->normalize_setting($k,$v);
+
+        if (readonly $config->{$k} and $v ne $nv) {
+            # YAML or YAML::XS creates readonly hash keys. die if we need to
+            # update but cannot.
+            confess "Cannot normalize+merge config for key: $k!";
+        }
+        elsif (not readonly $config->{$k}) {
+            $config->{$k} = $nv;
+        }
     }
 
     $SETTINGS = Hash::Merge::Simple::merge( $SETTINGS, $config );
