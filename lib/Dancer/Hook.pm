@@ -56,7 +56,7 @@ sub new {
         my $app = Dancer::App->current();
         return unless $properties->should_run_this_app($app->name);
 
-        Dancer::Logger::core( "entering " . $hook_name . " hook" );
+        Dancer::Logger::debug( "entering " . $hook_name . " hook" );
 
         $code->(@arguments);
 
