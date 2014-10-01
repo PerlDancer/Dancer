@@ -48,20 +48,33 @@ sub routes {
 sub add_route {
     my ($self, $route) = @_;
     $self->{routes}{$route->method} ||= [];
-    my @registered = @{$self->routes($route->method)};
-    my $last       = $registered[-1];
+    my $registered = $self->routes($route->method);
+    my $last       = $registered->[-1];
     $route->set_previous($last) if defined $last;
 
-    # if the route have options, we store the route at the beginning
-    # of the routes. This way, we can have the following routes:
-    # get '/' => sub {} and ajax '/' => sub {}
-    # and the user won't have to declare the ajax route before the get
+    # Routes are stored in the order they are declared. However,
+    # routes with options (such as ajax routes) should be stored
+    # before non-options/non-ajax routes. This way, we can have the
+    # following routes:
+    #
+    #   get  '/'    => sub {};
+    #   get  qr{.*} => sub {};
+    #   ajax '/'    => sub {};
+    #   ajax qr{.*} => sub {};
+    #
+    # And the user won't have to declare the ajax routes before the
+    # get routes.
     if (keys %{$route->{options}}) {
-        unshift @{$self->routes($route->method)}, $route;
+        my $index = @$registered;
+        for my $i (0..$#$registered) {
+            $index = $i, last if ! keys %{$registered->[$i]{options}};
+        }
+        splice @$registered, $index, 0, $route;
     }
     else {
-        push @{$self->routes($route->method)}, $route;
+        push @$registered, $route;
     }
+
     return $route;
 }
 

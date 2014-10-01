@@ -10,7 +10,7 @@ plan skip_all => 'Test::TCP is needed to run this test'
 
 use LWP::UserAgent;
 
-plan tests => 43;
+plan tests => 58;
 
 ok(Dancer::App->current->registry->is_empty,
     "registry is empty");
@@ -33,6 +33,9 @@ Test::TCP::test_tcp(
             { path => 'layout', ajax => 0, success => 1, content => 'wibble' },
             { path => 'die', ajax => 1, success => 0 },
             { path => 'layout', ajax => 0, success => 1, content => 'wibble' },
+            { path => 'order/A', ajax => 1, success => 1, content => 'A' },
+            { path => 'order/*', ajax => 1, success => 1, content => '*' },
+            { path => 'order/Z', ajax => 1, success => 1, content => '*' },
         );
 
         foreach my $query (@queries) {
@@ -94,6 +97,15 @@ Test::TCP::test_tcp(
         };
         get '/layout' => sub {
             return setting 'layout';
+        };
+        ajax '/order/A' => sub {
+            return 'A';
+        };
+        ajax '/order/*' => sub {
+            return '*';
+        };
+        ajax '/order/Z' => sub {
+            return 'Z';
         };
         start();
     },
