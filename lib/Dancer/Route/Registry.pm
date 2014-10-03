@@ -76,7 +76,7 @@ sub add_route {
     # get routes.
     if (keys %{$route->{options}}) {
         splice @{$self->routes($route->method)},
-               $self->{routes_boundary}{$route->method}++,
+               $self->{routes_border}{$route->method}++,
                0,
                $route;
     }
