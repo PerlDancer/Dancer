@@ -75,7 +75,13 @@ sub retrieve {
 
 sub yaml_file {
     my ($id) = @_;
-    return path(setting('session_dir'), "$id.yml");
+
+    # Untaint Session ID before using it in file actions
+    # required when running under Perl Taint mode
+    $id =~ m/^([\d]*)$/;
+    my $yaml_file = "$1.yml";
+
+    return path(setting('session_dir'), $yaml_file);
 }
 
 sub destroy {
