@@ -19,7 +19,17 @@ sub init {
     unless (defined $self->{id}) {
         $self->id($id++);
     }
+
+    # Routes are stored here.  Keys are route methods, and values are
+    # arrays of routes.  Routes with options are stored in the
+    # beginning of the array while routes without options are stored
+    # at the end.
     $self->{routes} = {};
+
+    # Keep track of the border between routes with and without
+    # options, so that routes with options can be easily inserted into
+    # its routes array.
+    $self->{routes_border} = {};
 
     return $self;
 }
@@ -49,14 +59,14 @@ sub routes {
 sub add_route {
     my ($self, $route) = @_;
     $self->{routes}{$route->method} ||= [];
-    my $registered = $self->routes($route->method);
-    my $last       = $registered->[-1];
+    my @registered = @{$self->routes($route->method)};
+    my $last       = $registered[-1];
     $route->set_previous($last) if defined $last;
 
     # Routes are stored in the order they are declared. However,
-    # routes with options (such as ajax routes) should be stored
-    # before non-options/non-ajax routes. This way, we can have the
-    # following routes:
+    # routes with options (such as ajax routes) are stored before
+    # routes without options. This way, we can have the following
+    # routes:
     #
     #   get  '/'    => sub {};
     #   get  qr{.*} => sub {};
@@ -66,14 +76,13 @@ sub add_route {
     # And the user won't have to declare the ajax routes before the
     # get routes.
     if (keys %{$route->{options}}) {
-        my $index = @$registered;
-        for my $i (0..$#$registered) {
-            $index = $i, last if ! keys %{$registered->[$i]{options}};
-        }
-        splice @$registered, $index, 0, $route;
+        splice @{$self->routes($route->method)},
+               $self->{routes_boundary}{$route->method}++,
+               0,
+               $route;
     }
     else {
-        push @$registered, $route;
+        push @{$self->routes($route->method)}, $route;
     }
 
     return $route;
