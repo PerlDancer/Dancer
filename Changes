@@ -5,6 +5,7 @@ Revision history for Dancer
 
  [BUG FIXES]
  - Test was failing under perl 5.8.9. (GH#1057, Tom Hukins)
+ - Don't get tripped by YAML::XS's readonly values. (GH#1070)
 
  [DOCUMENTATION]
 
