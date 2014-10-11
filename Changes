@@ -10,6 +10,7 @@ Revision history for Dancer
  [DOCUMENTATION]
  - Minor doc update to detail how to pass protocol information in Apache
     (GH#1079, Andy Beverley)
+ - Add the Dancer policy POD.
 
  [ENHANCEMENTS]
  - Dancer::Template::TemplateToolkit now supports DATA-embedded
