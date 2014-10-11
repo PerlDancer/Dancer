@@ -70,6 +70,7 @@ lib/Dancer/Object/Singleton.pm
 lib/Dancer/Plugin.pm
 lib/Dancer/Plugin/Ajax.pm
 lib/Dancer/Plugins.pod
+lib/Dancer/Policy.pod
 lib/Dancer/Renderer.pm
 lib/Dancer/Request.pm
 lib/Dancer/Request/Upload.pm
