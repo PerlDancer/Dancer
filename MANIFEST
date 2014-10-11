@@ -144,6 +144,7 @@ t/02_request/04_forward.t
 t/02_request/05_cgi_pm_compat.t
 t/02_request/06_init_env.t
 t/02_request/07_raw_data.t
+t/02_request/08_param_array.t
 t/02_request/08_params.t
 t/02_request/10_mixed_params.t
 t/02_request/11_accessors.t
@@ -253,6 +254,7 @@ t/10_template/01_factory.t
 t/10_template/02_abstract_class.t
 t/10_template/03_simple.t
 t/10_template/05_template_toolkit.t
+t/10_template/05_template_toolkit_fromdata.t
 t/10_template/extension.t
 t/10_template/index.txt
 t/10_template/template.t
@@ -347,6 +349,7 @@ t/TestAppExt.pm
 t/TestPlugin.pm
 t/lib/EasyMocker.pm
 t/lib/Forum.pm
+t/lib/FromDataApp.pm
 t/lib/Hookee.pm
 t/lib/LinkBlocker.pm
 t/lib/TestApp.pm
