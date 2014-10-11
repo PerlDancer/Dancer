@@ -4,26 +4,36 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
+
+ [DOCUMENTATION]
+
+ [ENHANCEMENTS]
+
+ [NEW FEATURES]
+
+ [STATISTICS]
+
+1.3131_0 2014-10-11
+ [BUG FIXES]
  - Test was failing under perl 5.8.9. (GH#1057, Tom Hukins)
  - Don't get tripped by YAML::XS's readonly values. (GH#1070)
 
  [DOCUMENTATION]
  - Minor doc update to detail how to pass protocol information in Apache
-    (GH#1079, Andy Beverley)
+   (GH#1079, Andy Beverley)
  - Add the Dancer policy POD.
 
  [ENHANCEMENTS]
- - Dancer::Template::TemplateToolkit now supports DATA-embedded
-    templates. (GH#1061, Jochen Lutz)
+ - Dancer::Template::TemplateToolkit now supports DATA-embedded templates.
+   (GH#1061, Jochen Lutz)
  - New function 'param_array'. (GH#1055, Yanick Champoux)
  - D::Serializer::YAML and Dancer::Config can now use 'YAML::XS'.
 
  [MISC]
  - Add 'YAML' as a recommended dependency. (GH#1080)
 
- [NEW FEATURES]
-
  [STATISTICS]
+ - code churn: 14 files changed, 348 insertions(+), 30 deletions(-)
 
 1.3130 2014-09-15
  [BUG FIXES]
@@ -94,7 +104,7 @@ Revision history for Dancer
  [BUG FIXES]
  - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
    Wittkoski)
- - Test was failing if JSON module was absent.			    
+ - Test was failing if JSON module was absent.				  
    (GH#1022, Yanick Champoux)
  - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
    Champoux)
@@ -733,7 +743,7 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports			     (Alberto
+ - Fix a bunch of cpan testers reports				   (Alberto
    Simões)
 
 1.3069_01 2011-07-07
@@ -1337,7 +1347,7 @@ Revision history for Dancer
    **
  - 1.2xxx releases; you should not have issues updating to any 1.2xxx	   
       **
- - version because of it.	       **
+ - version because of it.    **
  - A very special thanks goes to the Dancer community who improved and	   
       ++
  - perfected this release and worked hard on reporting bugs, fixing them,
@@ -1346,7 +1356,7 @@ Revision history for Dancer
    ++
  - else which makes Dancer so attractive - and above all: its community  
    ++
- - so thank you!		       ++
+ - so thank you!	     ++
 
  [Sawyer X]
  - Fixing some more XML tests with missing preqreqs.
