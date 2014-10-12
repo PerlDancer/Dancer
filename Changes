@@ -4,6 +4,7 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
+ - One test would fail if Template::Toolkit was not installed. (GH#1083)
 
  [DOCUMENTATION]
 

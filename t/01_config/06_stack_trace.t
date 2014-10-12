@@ -1,10 +1,15 @@
 use strict;
 use warnings;
 
-use Test::More tests => 18, import => ['!pass'];
+use Test::More import => ['!pass'];
 
 use Dancer ':syntax';
 use Dancer::Template::TemplateToolkit;
+
+eval "use Template; 1" 
+    or plan skip_all => "tests require module 'Template' to be installed";
+
+plan tests => 18;
 
 # scoping for $Carp::Verbose localization
 
