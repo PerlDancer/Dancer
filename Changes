@@ -4,7 +4,6 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
- - One test would fail if Template::Toolkit was not installed. (GH#1083)
 
  [DOCUMENTATION]
 
@@ -13,6 +12,13 @@ Revision history for Dancer
  [NEW FEATURES]
 
  [STATISTICS]
+
+1.3131_1 2014-10-13
+ [BUG FIXES]
+ - One test would fail if Template::Toolkit was not installed. (GH#1083)
+
+ [STATISTICS]
+ - code churn: 2 files changed, 26 insertions(+), 10 deletions(-)
 
 1.3131_0 2014-10-11
  [BUG FIXES]
@@ -105,8 +111,8 @@ Revision history for Dancer
  [BUG FIXES]
  - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
    Wittkoski)
- - Test was failing if JSON module was absent.				  
-   (GH#1022, Yanick Champoux)
+ - Test was failing if JSON module was absent.				   
+      (GH#1022, Yanick Champoux)
  - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
    Champoux)
 
@@ -744,8 +750,8 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports				   (Alberto
-   Simões)
+ - Fix a bunch of cpan testers reports					
+   (Alberto Simões)
 
 1.3069_01 2011-07-07
  [BUG FIXES]
@@ -1357,7 +1363,7 @@ Revision history for Dancer
    ++
  - else which makes Dancer so attractive - and above all: its community  
    ++
- - so thank you!	     ++
+ - so thank you!   ++
 
  [Sawyer X]
  - Fixing some more XML tests with missing preqreqs.
