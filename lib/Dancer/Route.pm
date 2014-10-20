@@ -78,24 +78,13 @@ sub match {
 
     my $method = lc($request->method);
     my $path   = $request->path_info;
-    my %params;
 
     Dancer::Logger::core(
         sprintf "Trying to match '%s %s' against /%s/ (generated from '%s')",
             $request->method, $path, $self->{_compiled_regexp}, $self->pattern
     );
 
-
     my @values = $path =~ $self->{_compiled_regexp};
-
-    # the regex comments are how we know if we captured
-    # a splat or a megasplat
-    if( my @splat_or_megasplat
-            = $self->{_compiled_regexp} =~ /\(\?#((?:mega)?splat)\)/g ) {
-        for ( @values ) {
-            $_ = [ split '/' => $_ ] if ( shift @splat_or_megasplat ) =~ /megasplat/;
-        }
-    }
 
     Dancer::Logger::core("  --> got ".
         map { defined $_ ? $_ : 'undef' } @values)
@@ -123,18 +112,37 @@ sub match {
     # IT WILL MOVE VERY SOON
     $request->{_route_pattern} = $self->pattern;
 
-    # named tokens
-    my @tokens = @{$self->{_params} || []};
+    # regex comments are how we know if we captured a token,
+    # splat or a megasplat
+    my @token_or_splat
+        = $self->{_compiled_regexp} =~ /\(\?#([token|(?:mega)?splat]+)\)/g;
+    if (@token_or_splat) {
+        # named tokens
+        my @tokens = @{$self->{_params} || []};
+        Dancer::Logger::core("  --> named tokens are: @tokens") if @tokens;
 
-    Dancer::Logger::core("  --> named tokens are: @tokens") if @tokens;
-    if (@tokens) {
-        for (my $i = 0; $i < @tokens; $i++) {
-            $params{$tokens[$i]} = $values[$i];
+        my %params;
+        my @splat;
+        for ( my $i = 0; $i < @values; $i++ ) {
+            # Is this value from a token?
+            if ( $token_or_splat[$i] eq 'token' ) {
+                $params{ shift @tokens } = $values[$i];
+                next;
+            }
+
+            # megasplat values are split on '/'
+            if ($token_or_splat[$i] eq 'megasplat') {
+                $values[$i] = [ split '/' => $values[$i] ];
+            }
+            push @splat, $values[$i];
         }
-        return $self->save_match_data($request, \%params);
+        return $self->save_match_data( $request, {
+            %params,
+            (splat => \@splat)x!! @splat,
+        });
     }
 
-    elsif ($self->{_should_capture}) {
+    if ($self->{_should_capture}) {
         return $self->save_match_data($request, {splat => \@values});
     }
 
@@ -325,7 +333,7 @@ sub _build_regexp_from_string {
     if ($pattern =~ /:/) {
         @params = $pattern =~ /:([^\/\.\?]+)/g;
         if (@params) {
-            $pattern =~ s/(:[^\/\.\?]+)/\(\[\^\/\]\+\)/g;
+            $pattern =~ s!(:[^\/\.\?]+)!(?#token)([^/]+)!g;
             $capture = 1;
         }
     }
