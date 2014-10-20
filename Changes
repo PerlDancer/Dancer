@@ -13,6 +13,10 @@ Revision history for Dancer
 
  [STATISTICS]
 
+1.3132 2014-10-20
+ [STATISTICS]
+ - code churn: 1 file changed, 12 insertions(+), 6 deletions(-)
+
 1.3131_1 2014-10-13
  [BUG FIXES]
  - One test would fail if Template::Toolkit was not installed. (GH#1083)
@@ -750,8 +754,8 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports					
-   (Alberto Simões)
+ - Fix a bunch of cpan testers reports					   
+      (Alberto Simões)
 
 1.3069_01 2011-07-07
  [BUG FIXES]
