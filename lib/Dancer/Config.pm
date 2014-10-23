@@ -430,7 +430,7 @@ content.
 It is typically set by C<use Dancer> to use the same directory as your
 script.
 
-Can also be set witht environment variable L<DANCER_APPDIR|/"ENVIRONMENT VARIABLES">
+Can also be set with environment variable L<DANCER_APPDIR|/"ENVIRONMENT VARIABLES">
 
 =head3 public (directory)
 
@@ -713,8 +713,7 @@ and setting `DANCER_ENVDIR` will be similar to:
 
 =head1 ENVIRONMENT VARIABLES
 
-You can set few settings with environment variables. See above for details.
-
+Some settings can be provided via environment variables at runtime, as detailed above; a full list of environment variables you can use follows.
 
 L<DANCER_APPDIR|/"appdir (directory)">
 
