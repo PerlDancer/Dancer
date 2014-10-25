@@ -6,7 +6,7 @@ use warnings;
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
 
-plan tests => 9;
+plan tests => 12;
 
 my $struct = {eris => 23};
 
@@ -39,4 +39,13 @@ SKIP: {
     ok my $test         = to_xml($struct), 'to xml';
     ok my $final_struct = from_xml($test), 'from xml';
     is_deeply $final_struct, $struct, 'from => to works';
+}
+
+SKIP: {
+    skip 'CBOR::XS is needed to run this test', 3
+      unless Dancer::ModuleLoader->load('CBOR::XS');
+    ok my $test         = to_cbor($struct), 'to cbor';
+    ok my $final_struct = from_cbor($test), 'from cbor';
+    is_deeply $final_struct, $struct, 'from => to works';
+
 }
