@@ -7,6 +7,7 @@ Revision history for Dancer
 
  [DOCUMENTATION]
  - Mention environment variables in Dancer::Config. (GH#1085, Sniperovitch)
+ - Replace "return send_file" with "send_file". (GH#1089, Ashley Willis)
 
  [ENHANCEMENTS]
 
