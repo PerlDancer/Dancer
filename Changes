@@ -6,6 +6,7 @@ Revision history for Dancer
  [BUG FIXES]
 
  [DOCUMENTATION]
+ - Mention environment variables in Dancer::Config. (GH#1085, Sniperovitch)
 
  [ENHANCEMENTS]
 
