@@ -1437,7 +1437,7 @@ the path of the file must be relative to the B<public> directory unless you use
 the C<system_path> option (see below).
 
     get '/download/:file' => sub {
-        return send_file(params->{file});
+        send_file(params->{file});
     }
 
 B<WARNING> : Issuing a send_file immediately exits the current route, and perform
@@ -1457,7 +1457,7 @@ Send file supports streaming possibility using PSGI streaming. The server should
 support it but normal streaming is supported on most, if not all.
 
     get '/download/:file' => sub {
-        return send_file( params->{file}, streaming => 1 );
+        send_file( params->{file}, streaming => 1 );
     }
 
 You can control what happens using callbacks.
@@ -1466,7 +1466,7 @@ First, C<around_content> allows you to get the writer object and the chunk of
 content read, and then decide what to do with each chunk:
 
     get '/download/:file' => sub {
-        return send_file(
+        send_file(
             params->{file},
             streaming => 1,
             callbacks => {
@@ -1483,7 +1483,7 @@ a regular file or a full string if it's a scalar ref) and decide what to do with
 it:
 
     get '/download/:file' => sub {
-        return send_file(
+        send_file(
             params->{file},
             streaming => 1,
             callbacks => {
@@ -1503,7 +1503,7 @@ it:
 Or you could use C<override> to control the entire streaming callback request:
 
     get '/download/:file' => sub {
-        return send_file(
+        send_file(
             params->{file},
             streaming => 1,
             callbacks => {
@@ -1521,7 +1521,7 @@ You can also set the number of bytes that will be read at a time (default being
 42K bytes) using C<bytes>:
 
     get '/download/:file' => sub {
-        return send_file(
+        send_file(
             params->{file},
             streaming => 1,
             bytes     => 524288, # 512K
@@ -1535,24 +1535,24 @@ The content-type will be set depending on the current MIME types definition
 If your filename does not have an extension, or you need to force a
 specific mime type, you can pass it to C<send_file> as follows:
 
-    return send_file(params->{file}, content_type => 'image/png');
+    send_file(params->{file}, content_type => 'image/png');
 
 Also, you can use your aliases or file extension names on
 C<content_type>, like this:
 
-    return send_file(params->{file}, content_type => 'png');
+    send_file(params->{file}, content_type => 'png');
 
 For files outside your B<public> folder, you can use the C<system_path>
 switch. Just bear in mind that its use needs caution as it can be
 dangerous.
 
-   return send_file('/etc/passwd', system_path => 1);
+   send_file('/etc/passwd', system_path => 1);
 
 If you have your data in a scalar variable, C<send_file> can be useful
 as well. Pass a reference to that scalar, and C<send_file> will behave
 as if there was a file with that contents:
 
-   return send_file( \$data, content_type => 'image/png' );
+   send_file( \$data, content_type => 'image/png' );
 
 Note that Dancer is unable to guess the content type from the data
 contents. Therefore you might need to set the C<content_type>
@@ -1560,11 +1560,8 @@ properly. For this kind of usage an attribute named C<filename> can be
 useful.  It is used as the Content-Disposition header, to hint the
 browser about the filename it should use.
 
-   return send_file( \$data, content_type => 'image/png'
+   send_file( \$data, content_type => 'image/png'
                              filename     => 'onion.png' );
-
-Note that you should always use C<return send_file ...> to stop execution of
-your route handler at that point.
 
 =head2 set
 
