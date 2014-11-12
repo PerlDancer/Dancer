@@ -7,8 +7,8 @@ use Test::More tests => 10, import => ['!pass'];
     # strict
     eval '$foo = 5;';
     ::ok($@, 'got an error because strict is on');
-    ::like($@, qr/Global symbol \"\$foo\" requires explicit package name at/, 
-        'got the right error');
+    ::like $@, qr/Global symbol "\$foo" requires explicit package name/,
+        'got the right error';
 
     # checking warnings are on by default
     {
