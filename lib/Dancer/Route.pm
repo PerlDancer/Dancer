@@ -80,11 +80,13 @@ sub match {
     my $path   = $request->path_info;
     my %params;
 
-    Dancer::Logger::core(
-        sprintf "Trying to match '%s %s' against /%s/ (generated from '%s')",
-            $request->method, $path, $self->{_compiled_regexp}, $self->pattern
-    );
+    # Shared portion of the log message,
+    # for both when the request matches and when it does not.
+    my $match_message = sprintf "'%s %s' against /%s/ (generated from '%s')",
+      $request->method, $path, $self->{_compiled_regexp}, $self->pattern;
 
+    # Mismatches only logged at debug to remove excessive log volume.
+    Dancer::Logger::debug("Trying to match $match_message");
 
     my @values = $path =~ $self->{_compiled_regexp};
 
@@ -97,7 +99,7 @@ sub match {
         }
     }
 
-    Dancer::Logger::core("  --> got ".
+    Dancer::Logger::core("Matched $match_message --> got ".
         map { defined $_ ? $_ : 'undef' } @values)
         if @values;
 
