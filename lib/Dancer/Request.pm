@@ -536,8 +536,8 @@ sub _read_to_end {
         my $buffer;
         while (defined ($buffer = $self->_read())) {
             $self->{body} .= $buffer;
-            $self->{_http_body}->add($buffer);
         }
+        $self->{_http_body}->add($self->{body});
     }
 
     return $self->{body};
