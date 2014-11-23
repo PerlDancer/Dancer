@@ -527,17 +527,18 @@ sub _parse_get_params {
 }
 
 sub _read_to_end {
-    my ($self) = @_;
+    my $self = shift;
+    
+    return unless $self->_has_something_to_read;
 
-    my $content_length = $self->content_length;
-    return unless $self->_has_something_to_read();
+    if ( $self->content_length > 0 ) {
+        my $body = '';
 
-    if ($content_length > 0) {
-        my $buffer;
-        while (defined ($buffer = $self->_read())) {
-            $self->{body} .= $buffer;
+        while ( my $buffer = $self->_read ) {
+            $body .= $buffer;
         }
-        $self->{_http_body}->add($self->{body});
+
+        $self->{_http_body}->add( $self->{body} = $body );
     }
 
     return $self->{body};
