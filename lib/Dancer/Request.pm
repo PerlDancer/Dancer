@@ -544,8 +544,7 @@ sub _read_to_end {
 }
 
 sub _has_something_to_read {
-    my ($self) = @_;
-    return 0 unless defined $self->input_handle;
+    defined $_[0]->input_handle;
 }
 
 # taken from Miyagawa's Plack::Request::BodyParser
