@@ -13,6 +13,7 @@ Revision history for Dancer
  - Fix NAME section for Dancer::Plugin::Ajax. (GH#1090, Ivan Bessarabov)
 
  [ENHANCEMENTS]
+ - Speedup in the upload of large files. (GH#1092, snakpak)
 
  [NEW FEATURES]
 
