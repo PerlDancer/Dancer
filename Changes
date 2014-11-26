@@ -1,11 +1,9 @@
 Revision history for Dancer
 
-{{$NEXT}}
- [API CHANGES]
-
+1.3133 2014-11-26
  [BUG FIXES]
- - Test was failing for Perl 5.21+ (error message changed).
-    (GH#1073, cpansprout)
+ - Test was failing for Perl 5.21+ (error message changed). (GH#1073,
+   cpansprout)
 
  [DOCUMENTATION]
  - Mention environment variables in Dancer::Config. (GH#1085, Sniperovitch)
@@ -16,9 +14,8 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Speedup in the upload of large files. (GH#1092, snakpak)
 
- [NEW FEATURES]
-
  [STATISTICS]
+ - code churn: 6 files changed, 100 insertions(+), 35 deletions(-)
 
 1.3132 2014-10-20
  [STATISTICS]
@@ -883,8 +880,8 @@ Revision history for Dancer
  [API CHANGES]
  - Deprecation of 'logger' (use set). (Alberto Simões)
  - Deprecate 'layout' (use set). (Alberto Simões)
- - Definitely remove plack_middlewares HashRef deprecation. (Alberto
-   Simões & Damien Krotkine)
+ - Definitely remove plack_middlewares HashRef deprecation. (Alberto Simões
+   & Damien Krotkine)
 
  [BUG FIXES]
  - Unbreaking auto_page somewhat - the catch-all route added will pass
@@ -946,8 +943,8 @@ Revision history for Dancer
  - GH #466: Can now set cookies with http_only => 0 for JS integration.
    (Alberto Simões)
  - Session engine can be told to set cookies without HttpOnly attribute
-   using new session_is_http_only setting. (Alberto Simões, requested by
-   JT Smith)
+   using new session_is_http_only setting. (Alberto Simões, requested by JT
+   Smith)
  - GH #296: Show versions of loaded modules in startup info. (Sawyer X)
  - Able to set more than one value at once using set(). (Alberto Simões)
  - GH #253: Use Clone::clone() if available to clone data before censoring.
@@ -1731,8 +1728,8 @@ Revision history for Dancer
  [Sawyer X]
  - Fix RT #57158 (route_cache does not work with multiple parameters) Cache
    revealed a small design overlook of not cloning a route before returning
-   it to the user, making multiple parameters disabled. (Thanks to
-   Stéphane Alnet for reporting and adding a test for it!)
+   it to the user, making multiple parameters disabled. (Thanks to Stéphane
+   Alnet for reporting and adding a test for it!)
 
 1.1801 2010-05-19
  [Alexis Sukrieh]
@@ -1774,7 +1771,7 @@ Revision history for Dancer
  - Added Dancer::Test to provide helpers for writing test script for Dancer
    applications
  - FIX bug when returning a void context after redirecting a route. Thanks
-   to Juan J. Martínez  for the report.
+   to Juan J. Martínez	   for the report.
  - Add support for request headers in Dancer::Request
  - Add support for halt() in Dancer's syntax.
 
