@@ -4,8 +4,19 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
- - Test was failing for Perl 5.21+ (error message changed).
-    (GH#1073, cpansprout)
+
+ [DOCUMENTATION]
+
+ [ENHANCEMENTS]
+
+ [NEW FEATURES]
+
+ [STATISTICS]
+
+1.3133 2014-11-26
+ [BUG FIXES]
+ - Test was failing for Perl 5.21+ (error message changed). (GH#1073,
+   cpansprout)
 
  [DOCUMENTATION]
  - Mention environment variables in Dancer::Config. (GH#1085, Sniperovitch)
@@ -16,9 +27,8 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Speedup in the upload of large files. (GH#1092, snakpak)
 
- [NEW FEATURES]
-
  [STATISTICS]
+ - code churn: 6 files changed, 100 insertions(+), 35 deletions(-)
 
 1.3132 2014-10-20
  [STATISTICS]
