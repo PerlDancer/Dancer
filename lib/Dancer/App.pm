@@ -1,4 +1,5 @@
 package Dancer::App;
+# ABSTRACT: Base application class for Dancer.
 
 use strict;
 use warnings;
