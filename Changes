@@ -8,6 +8,8 @@ Revision history for Dancer
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
+ - Skip tests requiring 'fork' if on a perl that doesn't implement it.
+   (GH#1094, Steve Hay)
 
  [NEW FEATURES]
 
