@@ -230,6 +230,8 @@ sub warning         { goto &Dancer::Logger::warning }
 
 # When importing the package, strict and warnings pragma are loaded,
 # and the appdir detection is performed.
+{
+    my $as_script   = 0;
 sub import {
     my ($class, @args) = @_;
     my ($package, $script) = caller;
@@ -240,7 +242,6 @@ sub import {
 
     my @final_args;
     my $syntax_only = 0;
-    my $as_script   = 0;
     foreach (@args) {
         if ( $_ eq ':moose' ) {
             push @final_args, '!before', '!after';
@@ -269,6 +270,7 @@ sub import {
 
     _init_script_dir($script);
     Dancer::Config->load;
+}
 }
 
 # private code
