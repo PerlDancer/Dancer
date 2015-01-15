@@ -903,7 +903,7 @@ Given a request to http://perldancer.org:5000/request-methods?a=1 these are
 the values returned by the various request->  method calls:
 
   base         http://perldancer.org:5000/
-  host         perldancer.org:5000
+  host         perldancer.org
   uri_base     http://perldancer.org:5000
   uri          /request-methods?a=1
   request_uri  /request-methods?a=1
