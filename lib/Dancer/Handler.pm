@@ -1,4 +1,5 @@
 package Dancer::Handler;
+# ABSTRACT: Dancer request handler
 
 use strict;
 use warnings;

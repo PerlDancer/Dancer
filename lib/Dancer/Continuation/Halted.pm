@@ -1,4 +1,5 @@
 package Dancer::Continuation::Halted;
+# ABSTRACT: Halted internal exception class for Dancer
 
 use strict;
 use warnings;

@@ -1,4 +1,5 @@
 package Dancer::Handler::Standalone;
+# ABSTRACT: Web server wrapper for Dancer
 
 use strict;
 use warnings;
