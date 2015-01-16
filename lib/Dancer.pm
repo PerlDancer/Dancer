@@ -232,6 +232,7 @@ sub warning         { goto &Dancer::Logger::warning }
 # and the appdir detection is performed.
 {
     my $as_script   = 0;
+
 sub import {
     my ($class, @args) = @_;
     my ($package, $script) = caller;
@@ -266,11 +267,12 @@ sub import {
 
     $as_script = 1 if $ENV{PLACK_ENV};
 
-    Dancer::GetOpt->process_args() if !$as_script;
+    Dancer::GetOpt->process_args unless $as_script;
 
     _init_script_dir($script);
     Dancer::Config->load;
 }
+
 }
 
 # private code
@@ -598,7 +600,8 @@ It can be combined with other export pragmas. For example, while testing...
 
 =head2 :script
 
-This will export all the keywords, and will also load the configuration.
+This will export all the keywords, load the configuration,
+and will not try to parse command-line arguments via L<Dancer::GetOpt>.
 
 This is useful when you want to use your Dancer application from a script.
 
@@ -609,6 +612,11 @@ This is useful when you want to use your Dancer application from a script.
 By default, the L<warnings> pragma will also be exported, meaning your
 app/script will be running under C<use warnings>.  If you do not want this, set
 the L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
+
+Note that using C<:script>  will disable command-line parsing for all 
+subsequent invocations of C<use Dancer> (such that you don't have to
+use C<:script> for each and every module to make sure the command-line
+arguments don't get stolen by Dancer).
 
 =head2 !keyword
 
