@@ -7,6 +7,7 @@ Revision history for Dancer
 
  [DOCUMENTATION]
  - Improve Dancer::Request documentation. (GH#1095, Gabor Szabo)
+ - Added descriptions to a bunch of internal modules. (GH#1097, Brad Macpherson)
 
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.

@@ -1,4 +1,5 @@
 package Dancer::Continuation;
+# ABSTRACT: Continuation exception (internal exception) for Dancer
 
 use strict;
 use warnings;

@@ -1,4 +1,5 @@
 package Dancer::Factory::Hook;
+# ABSTRACT: Singleton class to create Dancer hooks
 
 use strict;
 use warnings;
