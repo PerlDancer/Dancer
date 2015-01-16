@@ -12,6 +12,8 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.
    (GH#1094, Steve Hay)
+  - Using ':script' disable command-line argument munging globally.
+    (GH#1098,  Brad Macpherson)
 
  [NEW FEATURES]
 
