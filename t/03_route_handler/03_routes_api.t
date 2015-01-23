@@ -56,7 +56,7 @@ $r2->run($req);
 
 $response = Dancer::SharedData->response;
 is $response->{content} => 'this is r4',
-    "route 2 passed, r3 skipped (dont match), r4 served the response";
+    "route 2 passed, r3 skipped (don't match), r4 served the response";
 
 setting 'public' => 't/03_route_handler/public';
 

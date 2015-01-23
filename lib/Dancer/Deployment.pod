@@ -10,9 +10,9 @@ choices when deploying your Dancer app.
 =head2 Running as a cgi-script (or fast-cgi) under Apache
 
 In providing ultimate flexibility in terms of deployment, your Dancer app can
-be run as a simple cgi-script out-of-the-box. No additional web-server
-configuration needed.  Your web server should recognize .cgi files and be able
-to serve Perl scripts.  The Perl module L<Plack::Runner> is required.
+be run as a simple cgi-script out-of-the-box with no additional web server
+configuration needed. Your web server should recognize .cgi files and be able
+to serve Perl scripts. The Perl module L<Plack::Runner> is required.
 
 Start by adding the following to your apache configuration (httpd.conf or
 sites-available/*site*):
@@ -51,7 +51,7 @@ slower than all other options.
 You can use the same technique to deploy with FastCGI, by just changing the
 lines:
 
-	AddHandler cgi-script .cgi
+    AddHandler cgi-script .cgi
     
     ...
     
@@ -59,7 +59,7 @@ lines:
 
 To:
 
-	AddHandler fastcgi-script .fcgi
+    AddHandler fastcgi-script .fcgi
 
     ...
 

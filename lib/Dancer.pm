@@ -321,7 +321,7 @@ sub _init_script_dir {
 
     my $LAYOUT_PRE_DANCER_1_2 = 1;
 
-    # in bin/ or public/ or t/ we need to go one level upper to find the appdir
+    # in bin/ or public/ or t/ we need to go one level up to find the appdir
     $LAYOUT_PRE_DANCER_1_2 = 0
       if ($script_dirs[$#script_dirs - 1] eq 'bin')
       or ($script_dirs[$#script_dirs - 1] eq 'public')
@@ -534,7 +534,7 @@ cumbersome for your project, Dancer is what you need.
 
 Dancer has few pre-requisites, so your Dancer webapps will be easy to deploy.
 
-Dancer apps can be used with a an embedded web server (great for easy testing),
+Dancer apps can be used with an embedded web server (great for easy testing),
 and can run under PSGI/Plack for easy deployment in a variety of webserver
 environments.
 
@@ -667,7 +667,7 @@ Accesses cookies values, it returns a HashRef of L<Dancer::Cookie> objects:
         return $cookie->value;
     };
 
-In the case you have stored something else than a Scalar in your cookie:
+In the case you have stored something other than a Scalar in your cookie:
 
     get '/some_action' => sub {
         my $cookie = cookies->{oauth};
@@ -989,7 +989,7 @@ it is equivalent to the deprecated
 
 This is an alias to 'before_template'.
 
-This hook receives as argument a HashRef, containing the tokens that
+This hook receives as argument a HashRef containing the tokens that
 will be passed to the template. You can use it to add more tokens, or
 delete some specific token.
 
@@ -1202,7 +1202,7 @@ commonly-used methods are summarized below:
 I<This method should be called from a route handler>.
 It's an alias for the L<Dancer::Request params
 accessor|Dancer::Request/"params-source">. In list context it returns a
-list of key/value pair of all defined parameters. In scalar context, 
+list of key/value pair of all defined parameters. In scalar context
 it returns a hash reference instead.
 Check C<param> below to access quickly to a single
 parameter value.
@@ -1239,9 +1239,9 @@ I<This method should be called from a route handler>.
 Tells Dancer to pass the processing of the request to the next
 matching route.
 
-B<WARNING> : Issuing a pass immediately exits the current route, and perform
-the pass. Thus, any code after a pass is ignored, until the end of the route.
-So it's not necessary anymore to use C<return> with pass.
+B<WARNING> : Issuing a pass immediately exits the current route, and performs
+the pass. Thus, any code after a pass is ignored until the end of the route.
+So it's not necessary any more to use C<return> with pass.
 
     get '/some/route' => sub {
         if (...) {
@@ -1354,7 +1354,7 @@ Defines a route for HTTP B<PUT> requests to the given URL:
 
 =head2 redirect
 
-Generates a HTTP redirect (302).  You can either redirect to a complete
+Generates an HTTP redirect (302).  You can either redirect to a completely
 different site or within the application:
 
     get '/twitter', sub {
@@ -1368,7 +1368,7 @@ You can also force Dancer to return a specific 300-ish HTTP response code:
     };
 
 It is important to note that issuing a redirect by itself does not exit and
-redirect immediately, redirection is deferred until after the current route
+redirect immediately. Redirection is deferred until after the current route
 or filter has been processed. To exit and redirect immediately, use the return
 function, e.g.
 
@@ -1417,7 +1417,7 @@ example:
 
 =head2 send_error
 
-Returns a HTTP error.  By default the HTTP code returned is 500:
+Returns an HTTP error.  By default the HTTP code returned is 500:
 
     get '/photo/:id' => sub {
         if (...) {
@@ -1450,9 +1450,9 @@ the C<system_path> option (see below).
         send_file(params->{file});
     }
 
-B<WARNING> : Issuing a send_file immediately exits the current route, and perform
-the send_file. Thus, any code after a send_file is ignored, until the end of the route.
-So it's not necessary anymore to use C<return> with send_file.
+B<WARNING> : Issuing a send_file immediately exits the current route, and performs
+the send_file. Thus, any code after a send_file is ignored until the end of the route.
+So it's not necessary any more to use C<return> with send_file.
 
     get '/some/route' => sub {
         if (...) {
@@ -1560,7 +1560,7 @@ dangerous.
 
 If you have your data in a scalar variable, C<send_file> can be useful
 as well. Pass a reference to that scalar, and C<send_file> will behave
-as if there was a file with that contents:
+as if there were a file with that contents:
 
    send_file( \$data, content_type => 'image/png' );
 
@@ -1723,11 +1723,11 @@ produce an C<HTTP 200 OK> status code, meaning everything is OK:
         # serving the file...
     };
 
-In that example, Dancer will notice that the status has changed, and will
+In that example Dancer will notice that the status has changed, and will
 render the response accordingly.
 
 The status keyword receives either a numeric status code or its name in
-lower case, with underscores as a separator for blanks - see the list in
+lower case, with underscores as a separator for blanks. See the list in
 L<Dancer::HTTP/"HTTP CODES">.
 
 =head2 template
@@ -1736,7 +1736,7 @@ Returns the response of processing the given template with the given parameters
 (and optional settings), wrapping it in the default or specified layout too, if
 layouts are in use.
 
-An example of a  route handler which returns the result of using template to 
+An example of a route handler which returns the result of using template to 
 build a response with the current template engine:
 
     get '/' => sub {
@@ -1828,7 +1828,7 @@ L<Dancer::Request::Upload> object. You can access all parsed uploads via:
         # file is a Dancer::Request::Upload object
     };
 
-If you named multiple input of type "file" with the same name, the upload
+If you named multiple inputs of type "file" with the same name, the upload
 keyword will return an Array of Dancer::Request::Upload objects:
 
     post '/some/route' => sub {
@@ -1942,7 +1942,7 @@ L<irc://irc.perl.org/dancer>
 If you don't have an IRC client installed/configured, there is a simple web chat
 client at L<http://www.perldancer.org/irc> for you.
 
-There is also a Dancer users mailing list available - subscribe at:
+There is also a Dancer users mailing list available. Subscribe at:
 
 L<http://lists.preshweb.co.uk/mailman/listinfo/dancer-users>
 
