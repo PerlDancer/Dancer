@@ -567,6 +567,12 @@ L<Exporter> mechanism.  For example:
     use Test::More;
     use Dancer qw(!pass);
 
+Please note that the L<utf8> and L<strict> pragmas are exported by this module.
+
+By default, the L<warnings> pragma will also be exported, meaning your
+app/script will be running under C<use warnings>.  If you do not want this, set
+the L<global_warnings|Dancer::Config/global_warnings> setting to a false value.
+
 There are also some special tags to control exports and behaviour.
 
 =head2 :moose
@@ -608,10 +614,6 @@ This is useful when you want to use your Dancer application from a script.
     use MyApp;
     use Dancer ':script';
     MyApp::schema('DBSchema')->deploy();
-
-By default, the L<warnings> pragma will also be exported, meaning your
-app/script will be running under C<use warnings>.  If you do not want this, set
-the L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
 
 Note that using C<:script>  will disable command-line parsing for all 
 subsequent invocations of C<use Dancer> (such that you don't have to
