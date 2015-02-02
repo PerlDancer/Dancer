@@ -288,7 +288,7 @@ You can change a setting with the keyword B<set>, like the following:
 
 A better way of defining settings exists: using YAML file. For this to be
 possible, you have to install the L<YAML> module. If a file named B<config.yml>
-exists in the application directory, it will be loaded, as a setting group.
+exists in the application directory it will be loaded as a setting group.
 
 The same is done for the environment file located in the B<environments>
 directory.
@@ -406,9 +406,9 @@ C<text/plain>.
 =head3 environment (string)
 
 This is the name of the environment that should be used. Standard
-Dancer applications have a C<environments> folder with specific
+Dancer applications have an C<environments> folder with specific
 configuration files for different environments (usually development
-and production environments). They specify different kind of error
+and production environments). They specify different kinds of error
 reporting, deployment details, etc. These files are read after the
 generic C<config.yml> configuration file.
 
@@ -438,7 +438,7 @@ This is the directory, where static files are stored. Any existing
 file in that directory will be served as a static file, before
 matching any route.
 
-By default, it points to $appdir/public.
+By default it points to $appdir/public.
 
 =head3 views (directory)
 
@@ -505,7 +505,7 @@ Can also be enabled by setting environment variable L<DANCER_TRACES|/"ENVIRONMEN
 If set to true, Dancer will fail during startup if your environment file is
 missing or can't be read. This is especially useful in production when you
 have things like memcached settings that need to be set per-environment.
-Default to false.
+Defaults to false.
 
 =head3 server_tokens (boolean)
 
@@ -517,7 +517,7 @@ a true value.
 
 =head3 log_path (string)
 
-Folder where the ``file C<logger>'' saves logfiles.
+Folder where the ``file C<logger>'' saves log files.
 
 =head3 log_file (string)
 
@@ -623,8 +623,8 @@ value.
 
 =head3 session (enum)
 
-This setting lets you enable a session engine for your web application. Be
-default, sessions are disabled in Dancer, you must choose a session engine to
+This setting lets you enable a session engine for your web application. By
+default sessions are disabled in Dancer. You must choose a session engine to
 use them.
 
 See L<Dancer::Session> for supported engines and their respective configuration.
@@ -632,7 +632,7 @@ See L<Dancer::Session> for supported engines and their respective configuration.
 =head3 session_expires
 
 The session expiry time in seconds, or as e.g. "2 hours" (see
-L<Dancer::Cookie/expires>.  By default, there is no specific expiry time.
+L<Dancer::Cookie/expires>.  By default there is no specific expiry time.
 
 =head3 session_name
 
@@ -649,7 +649,7 @@ only be sent over HTTPS connections.
 
 This setting defaults to 1 and instructs the session cookie to be
 created with the C<HttpOnly> option active, meaning that JavaScript
-will not be able to access to its value.
+will not be able to access its value.
 
 =head3 session_domain
 
@@ -678,8 +678,7 @@ Then, if you request C</foo/bar>, Dancer will look in the views dir for
 C</foo/bar.tt>.
 
 Dancer will honor your C<before_template_render> code, and all default
-variables. They will be accessible and interpolated on automatic
-served pages.
+variables. They will be accessible and interpolated on automaticly-served pages.
 
 The pages served this way will have C<Content-Type> set to C<text/html>,
 so don't use the feature for anything else.
@@ -702,7 +701,7 @@ Maximum number of routes to cache. Defaults to 600 - see L<Dancer::Route::Cache>
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
-It's possible to set the configuration directory and environment directory using this two
+It's possible to set the configuration directory and environment directory using these two
 environment variables. Setting `DANCER_CONFDIR` will have the same effect as doing
 
     set confdir => '/path/to/confdir'
