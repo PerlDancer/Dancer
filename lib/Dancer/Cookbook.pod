@@ -726,7 +726,7 @@ By default Dancer loads development environment (typically
 $webapp/environment/development.yml). In contrast to the example before, you
 do have a value from the development environment (environment/development.yml)
 now. Also note that in the above example Cwd and FindBin are used. They are
-likely to be already loaded by Dancer anyways, so it's not a big overhead. You
+likely to be already loaded by Dancer any way, so it's not a big overhead. You
 could just as well hand over a simple path for the app if you like that better,
 e.g.:
 

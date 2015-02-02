@@ -811,7 +811,7 @@ end of the route. e.g.
         more_stuff();
     };
 
-So it's not necessary anymore to use C<return> with forward.
+So it's not necessary any more to use C<return> with forward.
 
 Note that forward doesn't parse GET arguments. So, you can't use
 something like:
@@ -847,7 +847,7 @@ Deserializes a YAML structure.
 
 =head2 from_xml ($structure, %options)
 
-Deserializes a XML structure. Can receive optional arguments. These arguments
+Deserializes an XML structure. Can receive optional arguments. These arguments
 are valid L<XML::Simple> arguments to change the behaviour of the default
 C<XML::Simple::XMLin> function.
 
@@ -1429,7 +1429,7 @@ Returns an HTTP error.  By default the HTTP code returned is 500:
 
 B<WARNING> : Issuing a send_error immediately exits the current route, and perform
 the send_error. Thus, any code after a send_error is ignored, until the end of the route.
-So it's not necessary anymore to use C<return> with send_error.
+So it's not necessary any more to use C<return> with send_error.
 
     get '/some/route' => sub {
         if (...) {
@@ -1567,7 +1567,7 @@ as if there were a file with that contents:
 Note that Dancer is unable to guess the content type from the data
 contents. Therefore you might need to set the C<content_type>
 properly. For this kind of usage an attribute named C<filename> can be
-useful.  It is used as the Content-Disposition header, to hint the
+useful.  It is used as the Content-Disposition header to hint the
 browser about the filename it should use.
 
    send_file( \$data, content_type => 'image/png'

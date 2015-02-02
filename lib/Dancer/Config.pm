@@ -434,8 +434,8 @@ Can also be set with environment variable L<DANCER_APPDIR|/"ENVIRONMENT VARIABLE
 
 =head3 public (directory)
 
-This is the directory, where static files are stored. Any existing
-file in that directory will be served as a static file, before
+This is the directory where static files are stored. Any existing
+file in that directory will be served as a static file before
 matching any route.
 
 By default it points to $appdir/public.

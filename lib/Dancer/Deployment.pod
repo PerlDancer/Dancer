@@ -67,7 +67,7 @@ To:
 
 =head2 Running stand-alone
 
-At the simplest, your Dancer app can run standalone, operating as its own
+At the simplest, your Dancer app can run stand-alone, operating as its own
 webserver using HTTP::Server::Simple::PSGI.
 
 Simply fire up your app:
