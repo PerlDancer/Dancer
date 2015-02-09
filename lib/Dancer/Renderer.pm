@@ -1,4 +1,5 @@
 package Dancer::Renderer;
+# ABSTRACT: Rendering class for Dancer
 
 use strict;
 use warnings;

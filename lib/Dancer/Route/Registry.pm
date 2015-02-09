@@ -1,4 +1,5 @@
 package Dancer::Route::Registry;
+# ABSTRACT: Route registry for Dancer
 
 use strict;
 use warnings;

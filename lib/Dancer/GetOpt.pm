@@ -1,4 +1,5 @@
 package Dancer::GetOpt;
+# ABSTRACT: Process command-line options for Dancer scripts
 
 use strict;
 use warnings;

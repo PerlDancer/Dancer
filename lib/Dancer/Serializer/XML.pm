@@ -87,11 +87,11 @@ __END__
 
 =head2 serialize
 
-Serialize a data structure to a XML structure.
+Serialize a data structure to an XML structure.
 
 =head2 deserialize
 
-Deserialize a XML structure to a data structure
+Deserialize an XML structure to a data structure
 
 =head2 content_type
 

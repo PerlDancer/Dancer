@@ -1,4 +1,5 @@
 package Dancer::Serializer::Dumper;
+# ABSTRACT: Data::Dumper serialisation for Dancer
 
 use strict;
 use warnings;

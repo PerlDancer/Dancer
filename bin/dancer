@@ -335,7 +335,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 # Normalize version strings like 6.30_02 to 6.3002,
-# so that we can do numerical comparisons on it.
+# so that we can do numerical comparisons on them.
 my \$eumm_version = \$ExtUtils::MakeMaker::VERSION;
 \$eumm_version =~ s/_//;
 
@@ -360,8 +360,8 @@ WriteMakefile(
 'index.tt'  => 
 '  
 <!-- 
-    Credit goes to the Ruby on Rails team for this page 
-    has been heavily based on the default Rails page that is 
+    Credit goes to the Ruby on Rails team for this page which
+    has been heavily based on the default Rails page that is
     built with a scaffolded application.
 
     Thanks a lot to them for their work.
@@ -539,7 +539,7 @@ use Dancer ':syntax';
 use FindBin '\$RealBin';
 use Plack::Runner;
 
-# For some reason Apache SetEnv directives dont propagate
+# For some reason Apache SetEnv directives don't propagate
 # correctly to the dispatchers, so forcing PSGI and env here 
 # is safer.
 set apphandler => 'PSGI';
@@ -558,7 +558,7 @@ use Dancer ':syntax';
 use FindBin '\$RealBin';
 use Plack::Handler::FCGI;
 
-# For some reason Apache SetEnv directives dont propagate
+# For some reason Apache SetEnv directives don't propagate
 # correctly to the dispatchers, so forcing PSGI and env here 
 # is safer.
 set apphandler => 'PSGI';
@@ -906,8 +906,8 @@ EOH
 'config.yml' =>
 
 "# This is the main configuration file of your Dancer app
-# env-related settings should go to environments/\$env.yml
-# all the settings in this file will be loaded at Dancer's startup.
+# env-related settings should go to environments/\$env.yml.
+# All the settings in this file will be loaded at Dancer's startup.
 
 # Your application's name
 appname: \"$name\"
@@ -916,7 +916,7 @@ appname: \"$name\"
 # views/layouts/main.tt)
 layout: \"main\"
 
-# when the charset is set to UTF-8 Dancer will handle for you
+# When the charset is set to UTF-8 Dancer will handle for you
 # all the magic of encoding and decoding. You should not care
 # about unicode within your app when this setting is set (recommended).
 charset: \"UTF-8\"
@@ -956,14 +956,14 @@ logger: \"console\"
 # (debug, info, warning and error)
 log: \"core\"
 
-# should Dancer consider warnings as critical errors?
+# Should Dancer consider warnings as critical errors?
 warnings: 1
 
-# should Dancer show a stacktrace when an error is caught?
+# Should Dancer show a stacktrace when an error is caught?
 show_errors: 1
 
-# auto_reload is a development and experimental feature
-# you should enable it by yourself if you want it
+# auto_reload is a development and experimental feature.
+# You should enable it by yourself if you want it.
 # Module::Refresh is needed 
 # 
 # Be aware it's unstable and may cause a memory leak.

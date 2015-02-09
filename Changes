@@ -4,8 +4,28 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
- - Test was failing for Perl 5.21+ (error message changed).
-    (GH#1073, cpansprout)
+
+ [DOCUMENTATION]
+ - Improve Dancer::Request documentation. (GH#1095, Gabor Szabo)
+ - Added descriptions to a bunch of internal modules. (GH#1097, Brad Macpherson)
+ - Correcting the documentation's grammar. (GH#1101, Jonathan Hall)
+ - Improve Dancer.pm's documentation wrt the export of 'warnings'. 
+     (GH#1100, Brad Macpherson)
+
+ [ENHANCEMENTS]
+ - Skip tests requiring 'fork' if on a perl that doesn't implement it.
+   (GH#1094, Steve Hay)
+  - Using ':script' disable command-line argument munging globally.
+    (GH#1098,  Brad Macpherson)
+
+ [NEW FEATURES]
+
+ [STATISTICS]
+
+1.3133 2014-11-26
+ [BUG FIXES]
+ - Test was failing for Perl 5.21+ (error message changed). (GH#1073,
+   cpansprout)
 
  [DOCUMENTATION]
  - Mention environment variables in Dancer::Config. (GH#1085, Sniperovitch)
@@ -16,9 +36,8 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Speedup in the upload of large files. (GH#1092, snakpak)
 
- [NEW FEATURES]
-
  [STATISTICS]
+ - code churn: 6 files changed, 100 insertions(+), 35 deletions(-)
 
 1.3132 2014-10-20
  [STATISTICS]
