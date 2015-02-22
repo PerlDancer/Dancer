@@ -11,6 +11,8 @@ Revision history for Dancer
  - Correcting the documentation's grammar. (GH#1101, Jonathan Hall)
  - Improve Dancer.pm's documentation wrt the export of 'warnings'. 
      (GH#1100, Brad Macpherson)
+ - Generated development.yml was saying the logs appear on STDOUT whereas
+    it's really STDERR. (GH#1102, Fabrice Gabolde)
 
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.
