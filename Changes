@@ -6,23 +6,31 @@ Revision history for Dancer
  [BUG FIXES]
 
  [DOCUMENTATION]
- - Improve Dancer::Request documentation. (GH#1095, Gabor Szabo)
- - Added descriptions to a bunch of internal modules. (GH#1097, Brad Macpherson)
- - Correcting the documentation's grammar. (GH#1101, Jonathan Hall)
- - Improve Dancer.pm's documentation wrt the export of 'warnings'. 
-     (GH#1100, Brad Macpherson)
- - Generated development.yml was saying the logs appear on STDOUT whereas
-    it's really STDERR. (GH#1102, Fabrice Gabolde)
 
  [ENHANCEMENTS]
- - Skip tests requiring 'fork' if on a perl that doesn't implement it.
-   (GH#1094, Steve Hay)
-  - Using ':script' disable command-line argument munging globally.
-    (GH#1098,  Brad Macpherson)
 
  [NEW FEATURES]
 
  [STATISTICS]
+
+1.3134 2015-02-22
+ [DOCUMENTATION]
+ - Improve Dancer::Request documentation. (GH#1095, Gabor Szabo)
+ - Added descriptions to a bunch of internal modules. (GH#1097, Brad
+   Macpherson)
+ - Correcting the documentation's grammar. (GH#1101, Jonathan Hall)
+ - Improve Dancer.pm's documentation wrt the export of 'warnings'. 
+   (GH#1100, Brad Macpherson)
+ - Generated development.yml was saying the logs appear on STDOUT whereas
+   it's really STDERR. (GH#1102, Fabrice Gabolde)
+
+ [ENHANCEMENTS]
+ - Skip tests requiring 'fork' if on a perl that doesn't implement it.
+   (GH#1094, Steve Hay) - Using ':script' disable command-line argument
+   munging globally. (GH#1098,	  Brad Macpherson)
+
+ [STATISTICS]
+ - code churn: 33 files changed, 173 insertions(+), 113 deletions(-)
 
 1.3133 2014-11-26
  [BUG FIXES]
