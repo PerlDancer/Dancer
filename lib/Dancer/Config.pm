@@ -1,6 +1,9 @@
 package Dancer::Config;
+BEGIN {
+  $Dancer::Config::AUTHORITY = 'cpan:SUKRIA';
+}
 #ABSTRACT:  how to configure Dancer to suit your needs
-
+$Dancer::Config::VERSION = '1.3134';
 use strict;
 use warnings;
 use base 'Exporter';
@@ -269,6 +272,16 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Config - how to configure Dancer to suit your needs
+
+=head1 VERSION
+
+version 1.3134
+
 =head1 DESCRIPTION
 
 Dancer::Config handles reading and changing the configuration of your Dancer
@@ -400,7 +413,6 @@ have a lot of files being served in the B<public> folder that do not
 have an extension, and are text files, set the C<default_mime_type> to
 C<text/plain>.
 
-
 =head2 File / directory locations
 
 =head3 environment (string)
@@ -456,7 +468,6 @@ use Template Toolkit, add the following to C<config.yml>:
 
     template: template_toolkit
 
-
 =head3 layout (string)
 
 The name of the layout to use when rendering view. Dancer will look for
@@ -464,7 +475,6 @@ a matching template in the directory $views/layouts.
 
 Your can override the default layout using the third argument of the
 C<template> keyword. Check C<Dancer> manpage for details.
-
 
 =head2 Logging, debugging and error handling
 
@@ -565,7 +575,6 @@ During development, you'll probably want to use C<debug> to see your own debug
 messages, and C<core> if you need to see what Dancer is doing.  In production,
 you'll likely want C<error> or C<warning> only, for less-chatty logs.
 
-
 =head3 show_errors (boolean)
 
 If set to true, Dancer will render a detailed debug screen whenever an error is
@@ -576,7 +585,6 @@ C<error_template> setting.
 The error screen attempts to sanitise sensitive looking information (passwords /
 card numbers in the request, etc) but you still should not have show_errors
 enabled whilst in production, as there is still a risk of divulging details.
-
 
 =head3 error_template (template path)
 
@@ -598,7 +606,6 @@ The error message.
 The code throwing that error.
 
 =back
-
 
 =head3 auto_reload (boolean)
 
@@ -658,7 +665,6 @@ override the default.  This is useful for setting the session cookie's
 domain to something like C<.domain.com> so that the same cookie will
 be applicable and usable across subdomains of a base domain.
 
-
 =head2 auto_page (boolean)
 
 For simple pages where you're not doing anything dynamic, but still
@@ -697,7 +703,6 @@ Maximum size of route cache (e.g. 1024, 2M). Defaults to 10M (10MB) - see L<Danc
 =head3 route_cache_path_limit (number)
 
 Maximum number of routes to cache. Defaults to 600 - see L<Dancer::Route::Cache>
-
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
@@ -746,7 +751,6 @@ L<DANCER_TRACES|/"traces (boolean)">
 
 L<DANCER_WARNINGS|/"global_warnings (boolean, default: false)">
 
-
 =head1 AUTHOR
 
 This module has been written by Alexis Sukrieh <sukria@cpan.org> and others,
@@ -760,5 +764,16 @@ itself.
 =head1 SEE ALSO
 
 L<Dancer>
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

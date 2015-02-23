@@ -1,6 +1,9 @@
 package Dancer::Factory::Hook;
+BEGIN {
+  $Dancer::Factory::Hook::AUTHORITY = 'cpan:SUKRIA';
+}
 # ABSTRACT: Singleton class to create Dancer hooks
-
+$Dancer::Factory::Hook::VERSION = '1.3134';
 use strict;
 use warnings;
 use Carp;
@@ -76,3 +79,30 @@ sub get_hooks_for {
 
 
 1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Factory::Hook - Singleton class to create Dancer hooks
+
+=head1 VERSION
+
+version 1.3134
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
