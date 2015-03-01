@@ -35,7 +35,7 @@ my $setters = {
     },
     log_file => sub {
         require Dancer::Logger;
-        Dancer::Logger->init(setting("logger"), setting());
+        Dancer::Logger->init(setting("logger"), settings());
     },
     session => sub {
         my ($setting, $value) = @_;
