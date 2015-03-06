@@ -23,7 +23,19 @@ use vars qw(@EXPORT);
   execute_hooks
   execute_hook
   plugin_args
+
+  log_core
+  log_debug
+  log_info
+  log_warning
+  log_error
 );
+
+sub log_core(&@)    { Dancer::Logger::core->(   shift->(@_)); @_ }
+sub log_debug(&@)   { Dancer::Logger::debug->(  shift->(@_)); @_ }
+sub log_info(&@)    { Dancer::Logger::info->(   shift->(@_)); @_ }
+sub log_warning(&@) { Dancer::Logger::warning->(shift->(@_)); @_ }
+sub log_error(&@)   { Dancer::Logger::error->(  shift->(@_)); @_ }
 
 sub register($&);
 
