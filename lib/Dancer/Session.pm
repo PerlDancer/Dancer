@@ -7,6 +7,7 @@ use warnings;
 use Carp;
 use Dancer::Cookies;
 use Dancer::Engine;
+use Dancer::SharedData;
 
 # Singleton representing the session engine class to use
 my $ENGINE = undef;
@@ -20,24 +21,42 @@ sub init {
     #$ENGINE->init(); already done
 }
 
+sub _get_session_key {
+    return '_dancer::session_' . engine->read_session_id;
+}
+
+sub _get_cached_session {
+    return Dancer::SharedData->var(_get_session_key);
+}
+
+sub _cache_session {
+    my ($session) = @_;
+
+    return Dancer::SharedData->var(_get_session_key => $session);
+}
+
 # retrieve or create a session for the client
 sub get_current_session {
     shift;
     my %p       = @_;
     my $sid     = engine->read_session_id;
-    my $session = undef;
+    my $session = _get_cached_session;
     my $class   = ref(engine);
 
-    $session = $class->retrieve($sid) if $sid;
 
-    if (not defined $session) {
-        $session = $class->create();
+    if ( !$session ) {
+        $session = $class->retrieve($sid) if $sid;
+
+        if (not defined $session) {
+            $session = $class->create();
+        }
+        _cache_session $session;
+
+        # Generate a session cookie; we want to do this regardless of whether
+        # the session is new or existing, so that the cookie expiry is updated.
+        engine->write_session_id($session->id)
+            unless $p{no_update};
     }
-
-    # Generate a session cookie; we want to do this regardless of whether the
-    # session is new or existing, so that the cookie expiry is updated.
-    engine->write_session_id($session->id)
-        unless $p{no_update};
 
     return $session;
 }
@@ -59,6 +78,8 @@ sub write {
 
     my $session = get_current_session();
     $session->set_value($key, $value);
+
+    _cache_session $session;
 
     # TODO : should be moved as an "after" filter
     $session->flush unless $session->is_lazy;
