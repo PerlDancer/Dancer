@@ -600,24 +600,29 @@ The code throwing that error.
 =back
 
 
-=head3 auto_reload (boolean)
+=head3 auto_reload (boolean) (deprecated)
 
-Requires L<Module::Refresh> and L<Clone>.
+Currently, this feature is unmaintained, likely to be removed and B<not working>.
+Workarounds are to use either L<Plack::Loader::Shotgun> or plackup with the -r
+switch:
 
-If set to true, Dancer will reload the route handlers whenever the file where
-they are defined is changed. This is very useful in development environment but
-B<should not be enabled in production>. Enabling this flag in production yields
-a major negative effect on performance because of L<Module::Refresh>.
+   plackup -r bin/appl.pl  (will restart the app whenever a file in ./bin or ./lib is modified
 
-When this flag is set, you don't have to restart your webserver whenever you
-make a change in a route handler.
+Former behaviour was: If set to true, Dancer would reload the route handlers
+whenever the file where they are defined is changed. This is very useful in
+development environment but B<should not be enabled in production>. Enabling
+this flag in production yields a major negative effect on performance because
+of L<Module::Refresh>.
 
-Note that L<Module::Refresh> only operates on files in C<%INC>, so if the script
-your Dancer app is started from changes, even with auto_reload enabled, you will
-still not see the changes reflected until you start your app.
+Note that L<Module::Refresh> (similar to plackup -r) only operates on files in
+C<%INC>, so if the script your Dancer app is started from changes, even with
+auto_reload enabled, you will still not see the changes reflected until you start
+your app.
 
-Can also be enabled by setting environment variable L<DANCER_AUTO_RELOAD|/"ENVIRONMENT VARIABLES"> to a true
-value.
+Could also be enabled by setting environment variable L<DANCER_AUTO_RELOAD|/"ENVIRONMENT VARIABLES">
+to a true value or passing --restart=1 to app.pl.
+
+Required L<Module::Refresh> and L<Clone>.
 
 =head2 Session engine
 
