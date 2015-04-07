@@ -70,9 +70,7 @@ sub handle_request {
 
     Dancer::Cookies->init;
 
-    if (Dancer::Config::setting('auto_reload')) {
-        Dancer::App->reload_apps;
-    }
+    Dancer::App->reload_apps if Dancer::Config::setting('auto_reload');
 
     render_request($request);
     return $self->render_response();
