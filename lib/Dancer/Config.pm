@@ -602,8 +602,9 @@ The code throwing that error.
 
 =head3 auto_reload (boolean) (deprecated)
 
-Currently, this feature is unmaintained, likely to be removed and B<not working>.
-Workarounds are to use either L<Plack::Loader::Shotgun> or plackup with the -r
+This feature is unmaintained, to be removed in the summer of 2015,
+and B<not working>.
+Use either L<Plack::Loader::Shotgun> or plackup with the -r
 switch:
 
    plackup -r bin/appl.pl  (will restart the app whenever a file in ./bin or ./lib is modified
@@ -622,7 +623,7 @@ your app.
 Could also be enabled by setting environment variable L<DANCER_AUTO_RELOAD|/"ENVIRONMENT VARIABLES">
 to a true value or passing --restart=1 to app.pl.
 
-Required L<Module::Refresh> and L<Clone>.
+Requires L<Module::Refresh> and L<Clone>.
 
 =head2 Session engine
 
