@@ -555,8 +555,7 @@ A setting is key/value pair assigned by the keyword B<set>:
 
 More usefully, settings can be defined in a YAML configuration file.
 Environment-specific settings can also be defined in environment-specific files
-(for instance, you don't want auto_reload in production, and might want extra
-logging in development).  See the cookbook for examples.
+(for instance, you might want extra logging in development).  See the cookbook for examples.
 
 See L<Dancer::Config> for complete details about supported settings.
 

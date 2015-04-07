@@ -902,6 +902,15 @@ C<plack_middlewares_map>. You'll need L<Plack::App::URLMap> to do that.
         '/':      ['Debug']
         '/timer': ['Timer'],
 
-=head1 AUTHORS
+=head1 DEVELOPMENT TOOLS
 
-Dancer contributors - see AUTHORS file.
+=head2 Auto-reloading code
+
+When you are furiously hacking on your Dancer app, it might come in handy to
+have the application auto-detect changes in the code and reload itself.
+
+To do that, you can use L<Plack::Loader::Shotgun>, L<Plack::Middleware::Refresh>,
+or plackup with the C<-r> switch:
+
+   plackup -r bin/appl.pl  (will restart the app whenever a file in ./bin or ./lib is modified
+

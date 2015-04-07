@@ -80,9 +80,7 @@ Which environment to use. By default this value is set to development.
 
 --restart
 
-Set the value of the B<auto_reload> setting. Useful when you want to switch
-this setting for a test without changing the value in your configurations
-file.
+Set the value of the B<auto_reload> setting. DEPRECATED
 
 EOF
 }
