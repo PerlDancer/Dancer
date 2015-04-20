@@ -10,6 +10,7 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Deprecate 'auto_reload' and document alternatives.
     (GH#1106, isync)
+ - Change YAML tests to be in line with new specs. (GH#1108, Slaven Rezić)
 
  [NEW FEATURES]
 
