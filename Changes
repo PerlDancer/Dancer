@@ -6,6 +6,7 @@ Revision history for Dancer
  [BUG FIXES]
 
  [DOCUMENTATION]
+ - Document how to work with Dist::Zilla and the 'devel' branch.
 
  [ENHANCEMENTS]
  - Deprecate 'auto_reload' and document alternatives.
