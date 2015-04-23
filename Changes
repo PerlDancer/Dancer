@@ -6,16 +6,23 @@ Revision history for Dancer
  [BUG FIXES]
 
  [DOCUMENTATION]
- - Document how to work with Dist::Zilla and the 'devel' branch.
 
  [ENHANCEMENTS]
- - Deprecate 'auto_reload' and document alternatives.
-    (GH#1106, isync)
- - Change YAML tests to be in line with new specs. (GH#1108, Slaven Rezić)
 
  [NEW FEATURES]
 
  [STATISTICS]
+
+1.3135 2015-04-22
+ [DOCUMENTATION]
+ - Document how to work with Dist::Zilla and the 'devel' branch.
+
+ [ENHANCEMENTS]
+ - Deprecate 'auto_reload' and document alternatives. (GH#1106, isync)
+ - Change YAML tests to be in line with new specs. (GH#1108, Slaven Rezić)
+
+ [STATISTICS]
+ - code churn: 12 files changed, 150 insertions(+), 50 deletions(-)
 
 1.3134 2015-02-22
  [DOCUMENTATION]
@@ -31,7 +38,7 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.
    (GH#1094, Steve Hay) - Using ':script' disable command-line argument
-   munging globally. (GH#1098,	  Brad Macpherson)
+   munging globally. (GH#1098,	      Brad Macpherson)
 
  [STATISTICS]
  - code churn: 33 files changed, 173 insertions(+), 113 deletions(-)
