@@ -182,6 +182,9 @@ sub init_envdir {
 }
 
 sub load {
+
+    my (undef, $extra_config) = @_;
+
     init_confdir();
     init_envdir();
 
@@ -214,6 +217,10 @@ sub load {
         }
     }
 
+    if ($extra_config) {
+        load_settings_from_hashref($extra_config);
+    }
+
     foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
         $setters->{$key}->($key, $SETTINGS->{$key});
     }
@@ -222,6 +229,20 @@ sub load {
     }
 
     return 1;
+}
+
+sub load_settings_from_hashref {
+    my ($config) = @_;
+
+    # exactly like load_settings_from_yaml without the YAML part.
+
+    $SETTINGS = Hash::Merge::Simple::merge( $SETTINGS, {
+        map {
+            $_ => Dancer::Config->normalize_setting( $_, $config->{$_} )
+        } keys %$config
+    } );
+
+    return scalar keys %$config;
 }
 
 sub load_settings_from_yaml {
