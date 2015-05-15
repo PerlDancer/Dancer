@@ -6,7 +6,7 @@ plan skip_all => "YAML needed to run this tests"
     unless Dancer::ModuleLoader->load('YAML');
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
-plan tests => 6;
+plan tests => 9;
 
 use Dancer ':syntax';
 use File::Spec;
@@ -17,6 +17,13 @@ my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 set appdir => $dir;
 my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;
+
+ok(Dancer::Config->load({ different => 'config' }),
+   'load settings entirely from hashref');
+
+is(setting('different'),
+   'config',
+   'settings from hashref can be read');
 
 my $conffile = Dancer::Config->conffile;
 
@@ -55,6 +62,8 @@ is(setting('foo_test'),
 is(setting('log'),
    'info',
    'settings from the env file still override the config file');
+
+# hashref cases:
 is(setting('startup_info'),
    2,
    'settings from the hashref override both');
@@ -63,6 +72,10 @@ is_deeply(setting('structure'),
             key2 => 'value2',
             key3 => 'added_value3' },
           'settings from the hashref are deep-merged like the rest');
+
+is(setting('different'),
+   'config',
+   'settings from an old hashref are still set');
 
 Dancer::Logger::logger->{fh}->close;
 unlink Dancer::Config->environment_file;
