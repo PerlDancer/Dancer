@@ -757,7 +757,7 @@ If you need to load values from somewhere custom (maybe your configuration lives
 in an external data source like an SQL server or a ZooKeeper instance), you can
 use a variant of C<Dancer::Config::load()>:
 
-    my $custom_config_hashref = $zookeeper->get('/path/to/dancer/config');
+    my $custom_config_hashref = from_json($zookeeper->get('/path/to/dancer/config'));
     Dancer::Config::load($custom_config_hashref);
 
 This form of C<load()> grabs configuration values from the YAML files as usual,
