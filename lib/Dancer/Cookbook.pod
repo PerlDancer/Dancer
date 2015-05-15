@@ -753,7 +753,15 @@ like we do above with config->{environment}='production'. Of course, this value
 does not get written in any file; it only lives in memory and your webapp
 doesn't have access to it, but you can use it inside your script.
 
+If you need to load values from somewhere custom (maybe your configuration lives
+in an external data source like an SQL server or a ZooKeeper instance), you can
+use a variant of C<Dancer::Config::load()>:
 
+    my $custom_config_hashref = $zookeeper->get('/path/to/dancer/config');
+    Dancer::Config::load($custom_config_hashref);
+
+This form of C<load()> grabs configuration values from the YAML files as usual,
+but it also applies the values found in C<$custom_config_hashref>.
 
 =head2 Logging
 
