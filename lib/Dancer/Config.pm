@@ -189,32 +189,34 @@ sub load {
     init_envdir();
 
     # look for the conffile
-    return 1 unless -f conffile;
+    if (-f conffile) {
 
-    # load YAML
-    my $module = $SETTINGS->{engines}{YAML}{module} || 'YAML';
+        # load YAML
+        my $module = $SETTINGS->{engines}{YAML}{module} || 'YAML';
 
-    my ( $result, $error ) = Dancer::ModuleLoader->load($module);
-    confess "Configuration file found but could not load $module: $error"
-        unless $result;
+        my ( $result, $error ) = Dancer::ModuleLoader->load($module);
+        confess "Configuration file found but could not load $module: $error"
+            unless $result;
 
-    unless ($_LOADED{conffile()}) {
-        load_settings_from_yaml(conffile);
-        $_LOADED{conffile()}++;
-    }
-
-    my $env = environment_file;
-
-    # don't load the same env twice
-    unless( $_LOADED{$env} ) {
-        if (-f $env ) {
-            load_settings_from_yaml($env);
-            $_LOADED{$env}++;
+        unless ($_LOADED{conffile()}) {
+            load_settings_from_yaml(conffile);
+            $_LOADED{conffile()}++;
         }
-        elsif (setting('require_environment')) {
-            # failed to load the env file, and the main config said we needed it.
-            confess "Could not load environment file '$env', and require_environment is set";
+
+        my $env = environment_file;
+
+        # don't load the same env twice
+        unless( $_LOADED{$env} ) {
+            if (-f $env ) {
+                load_settings_from_yaml($env);
+                $_LOADED{$env}++;
+            }
+            elsif (setting('require_environment')) {
+                # failed to load the env file, and the main config said we needed it.
+                confess "Could not load environment file '$env', and require_environment is set";
+            }
         }
+
     }
 
     if ($extra_config) {
