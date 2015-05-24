@@ -6,16 +6,24 @@ Revision history for Dancer
  [BUG FIXES]
 
  [DOCUMENTATION]
- - Remove mention of format 'with_id' from Dancer::Logger::Abstract. 
-    (GH#112, Fabrice Gabolde)
 
  [ENHANCEMENTS]
- - Cache sessions such that they are only retrieved once
-    per request. (GH#1105, GH#992, Yanick Champoux)
 
  [NEW FEATURES]
 
  [STATISTICS]
+
+1.3136 2015-05-24
+ [DOCUMENTATION]
+ - Remove mention of format 'with_id' from Dancer::Logger::Abstract. 
+   (GH#112, Fabrice Gabolde)
+
+ [ENHANCEMENTS]
+ - Cache sessions such that they are only retrieved once per request.
+   (GH#1105, GH#992, Yanick Champoux)
+
+ [STATISTICS]
+ - code churn: 7 files changed, 119 insertions(+), 16 deletions(-)
 
 1.3135 2015-04-22
  [DOCUMENTATION]
@@ -42,7 +50,7 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.
    (GH#1094, Steve Hay) - Using ':script' disable command-line argument
-   munging globally. (GH#1098,	      Brad Macpherson)
+   munging globally. (GH#1098,		  Brad Macpherson)
 
  [STATISTICS]
  - code churn: 33 files changed, 173 insertions(+), 113 deletions(-)
