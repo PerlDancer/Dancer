@@ -1,6 +1,9 @@
 package Dancer;
+BEGIN {
+  $Dancer::AUTHORITY = 'cpan:SUKRIA';
+}
 #ABSTRACT: lightweight yet powerful web application framework
-
+$Dancer::VERSION = '1.3136';
 use strict;
 use warnings;
 use Carp;
@@ -497,9 +500,20 @@ sub _start {
 
 
 1;
+
 __END__
 
 =pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer - lightweight yet powerful web application framework
+
+=head1 VERSION
+
+version 1.3136
 
 =head1 SYNOPSIS
 
@@ -552,7 +566,6 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 
 You can find out more about the many useful plugins available for Dancer in
 L<Dancer::Plugins>.
-
 
 =head1 EXPORTS
 
@@ -631,7 +644,6 @@ them:
 
 The above would import all keywords as normal, with the exception of C<session>.
 
-
 =head1 FUNCTIONS
 
 =head2 after
@@ -676,7 +688,6 @@ In the case you have stored something other than a Scalar in your cookie:
         my %values = $cookie->value;
         return ($values{token}, $values{token_secret});
     };
-
 
 =head2 cookie
 
@@ -740,7 +751,7 @@ Returns the version of Dancer. If you need the major version, do something like:
 Logs a message of debug level:
 
     debug "This is a debug message";
-    
+
 See L<Dancer::Logger> for details on how to configure where log messages go.
 
 =head2 dirname
@@ -831,8 +842,6 @@ only used to change the method of your request. Use with caution.
 
     return forward '/home', { auth => 1 }, { method => 'POST' };
 
-
-
 =head2 from_dumper ($structure)
 
 Deserializes a L<< Data::Dumper >> structure.
@@ -862,7 +871,6 @@ Defines a route for HTTP B<GET> requests to the given path:
     }
 
 Note that a route to match B<HEAD> requests is automatically created as well.
-
 
 =head2 halt
 
@@ -952,7 +960,6 @@ This hook receives as argument the path of the file to render.
     ...
   };
 
-
 =item before_error_init
 
 This hook receives as argument a L<Dancer::Error> object.
@@ -961,7 +968,6 @@ This hook receives as argument a L<Dancer::Error> object.
     my $error = shift;
     ...
   };
-
 
 =item before_error_render
 
@@ -1272,7 +1278,6 @@ you can find at:
 
 L<https://github.com/bestpractical/http-server-simple/pull/1>
 
-
 =head2 path
 
 Concatenates multiple paths together, without worrying about the underlying
@@ -1416,7 +1421,6 @@ example:
     request->remote_address;  # user's IP address
     request->user_agent;      # User-Agent header value
 
-
 =head2 send_error
 
 Returns an HTTP error.  By default the HTTP code returned is 500:
@@ -1539,7 +1543,6 @@ You can also set the number of bytes that will be read at a time (default being
             bytes     => 524288, # 512K
         );
     };
-
 
 The content-type will be set depending on the current MIME types definition
 (see C<mime> if you want to define your own).
@@ -1884,7 +1887,6 @@ versions:
         "i don't want to $$value_for{action} the $$value_for{object} $$value_for{id} !"
     };
 
-
 =head2 var
 
 Provides an accessor for variables shared between filters and route handlers.
@@ -1935,7 +1937,6 @@ contribute).
 Also, why not L<watch the repo|https://github.com/PerlDancer/Dancer/toggle_watch>
 to keep up to date with the latest upcoming changes?
 
-
 =head1 GETTING HELP / CONTRIBUTING
 
 The Dancer development team can be found on #dancer on irc.perl.org:
@@ -1950,7 +1951,6 @@ L<http://lists.preshweb.co.uk/mailman/listinfo/dancer-users>
 
 If you'd like to contribute to the Dancer project, please see
 L<http://www.perldancer.org/contribute> for all the ways you can help!
-
 
 =head1 DEPENDENCIES
 
@@ -1986,12 +1986,22 @@ The following modules are optional:
 
 =back
 
-
 =head1 SEE ALSO
 
 Main Dancer web site: L<http://perldancer.org/>.
 
 The concept behind this module comes from the Sinatra ruby project,
 see L<http://www.sinatrarb.com/> for details.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

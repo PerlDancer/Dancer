@@ -1,21 +1,16 @@
 Revision history for Dancer
 
-{{$NEXT}}
- [API CHANGES]
-
- [BUG FIXES]
-
+1.3136 2015-05-24
  [DOCUMENTATION]
  - Remove mention of format 'with_id' from Dancer::Logger::Abstract. 
-    (GH#112, Fabrice Gabolde)
+   (GH#112, Fabrice Gabolde)
 
  [ENHANCEMENTS]
- - Cache sessions such that they are only retrieved once
-    per request. (GH#1105, GH#992, Yanick Champoux)
-
- [NEW FEATURES]
+ - Cache sessions such that they are only retrieved once per request.
+   (GH#1105, GH#992, Yanick Champoux)
 
  [STATISTICS]
+ - code churn: 7 files changed, 119 insertions(+), 16 deletions(-)
 
 1.3135 2015-04-22
  [DOCUMENTATION]
@@ -42,7 +37,7 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.
    (GH#1094, Steve Hay) - Using ':script' disable command-line argument
-   munging globally. (GH#1098,	      Brad Macpherson)
+   munging globally. (GH#1098,		  Brad Macpherson)
 
  [STATISTICS]
  - code churn: 33 files changed, 173 insertions(+), 113 deletions(-)
@@ -927,8 +922,8 @@ Revision history for Dancer
  [API CHANGES]
  - Deprecation of 'logger' (use set). (Alberto Simões)
  - Deprecate 'layout' (use set). (Alberto Simões)
- - Definitely remove plack_middlewares HashRef deprecation. (Alberto
-   Simões & Damien Krotkine)
+ - Definitely remove plack_middlewares HashRef deprecation. (Alberto Simões
+   & Damien Krotkine)
 
  [BUG FIXES]
  - Unbreaking auto_page somewhat - the catch-all route added will pass
@@ -990,8 +985,8 @@ Revision history for Dancer
  - GH #466: Can now set cookies with http_only => 0 for JS integration.
    (Alberto Simões)
  - Session engine can be told to set cookies without HttpOnly attribute
-   using new session_is_http_only setting. (Alberto Simões, requested by
-   JT Smith)
+   using new session_is_http_only setting. (Alberto Simões, requested by JT
+   Smith)
  - GH #296: Show versions of loaded modules in startup info. (Sawyer X)
  - Able to set more than one value at once using set(). (Alberto Simões)
  - GH #253: Use Clone::clone() if available to clone data before censoring.
@@ -1775,8 +1770,8 @@ Revision history for Dancer
  [Sawyer X]
  - Fix RT #57158 (route_cache does not work with multiple parameters) Cache
    revealed a small design overlook of not cloning a route before returning
-   it to the user, making multiple parameters disabled. (Thanks to
-   Stéphane Alnet for reporting and adding a test for it!)
+   it to the user, making multiple parameters disabled. (Thanks to Stéphane
+   Alnet for reporting and adding a test for it!)
 
 1.1801 2010-05-19
  [Alexis Sukrieh]
@@ -1818,7 +1813,7 @@ Revision history for Dancer
  - Added Dancer::Test to provide helpers for writing test script for Dancer
    applications
  - FIX bug when returning a void context after redirecting a route. Thanks
-   to Juan J. Martínez  for the report.
+   to Juan J. Martínez	   for the report.
  - Add support for request headers in Dancer::Request
  - Add support for halt() in Dancer's syntax.
 
