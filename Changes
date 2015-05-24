@@ -6,6 +6,8 @@ Revision history for Dancer
  [BUG FIXES]
 
  [DOCUMENTATION]
+ - Remove mention of format 'with_id' from Dancer::Logger::Abstract. 
+    (GH#112, Fabrice Gabolde)
 
  [ENHANCEMENTS]
  - Cache sessions such that they are only retrieved once
