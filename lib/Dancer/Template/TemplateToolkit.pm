@@ -7,7 +7,7 @@ use Carp;
 use Dancer::Config 'setting';
 use Dancer::ModuleLoader;
 use Dancer::Exception qw(:all);
-
+use Scalar::Util qw(weaken);
 use base 'Dancer::Template::Abstract';
 
 my $_engine;
@@ -27,9 +27,15 @@ sub init {
     my @anycase  = $is_subclass ? () : ( ANYCASE  => 1 );
     my @absolute = $is_subclass ? () : ( ABSOLUTE => 1 );
 
+    weaken(my $copy_self = $self);
     my @inc_path = $is_subclass ? ()
-        : ( INCLUDE_PATH => $self->config->{INCLUDE_PATH} || setting('views') );
-
+        : ( INCLUDE_PATH => [ sub {
+            my $delim = $copy_self->config->{DELIMITER};
+            # tweak delim to ignore C:/
+            $delim //= $^O eq 'MSWin32' ? ':(?!\\/)' : ':';
+            [ split /$delim/, $copy_self->config->{INCLUDE_PATH} || setting('views') ] }
+        ] );
+    
     my $start_tag = $is_subclass
         ? $self->config->{start_tag}
         : $self->config->{start_tag} || '<%';
