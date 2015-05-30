@@ -12,6 +12,7 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Provide a way to load settings directly from hash.
     (GH#1113, fgabolde)
+ - Remove 'auto-reload' feature. (GH#1058, alambike)
 
  [NEW FEATURES]
 
