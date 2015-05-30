@@ -29,7 +29,6 @@ sub process_args {
         'daemon'        => sub { arg_to_setting(@_) },
         'environment=s' => sub { arg_to_setting(@_) },
         'confdir=s'     => sub { arg_to_setting(@_) },
-        'restart=s'     => sub { arg_to_setting( auto_reload => $_[1] ) },
     ) || usage_and_exit();
 
     usage_and_exit() if $help;
@@ -47,7 +46,6 @@ sub print_usage {
    --port=XXXX          Port number to bind to (3000)
    --confdir=PATH       Path the config dir (appdir if not specified)
    --environment=ENV    Environment to use (development)
-   --restart=1|0        Should we restart the application between each request
    --help               Display usage information
 
 OPTIONS
@@ -78,9 +76,6 @@ If not specified, confdir points to appdir.
 
 Which environment to use. By default this value is set to development.
 
---restart
-
-Set the value of the B<auto_reload> setting. DEPRECATED
 
 EOF
 }
