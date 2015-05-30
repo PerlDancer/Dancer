@@ -1,3 +1,15 @@
+## IMPORTANT: This version of Dancer is deprecated
+
+There is a completely new re-write of the Dancer framework called
+"Dancer2" located at:
+
+https://github.com/PerlDancer/Dancer2
+
+New projects should use that version, existing projects should move to
+that version.
+
+For details see the Readme at Dancer2
+
 ## Dancer
 
 The easiest way to write a webapp with Perl                                    
