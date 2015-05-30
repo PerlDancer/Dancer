@@ -8,6 +8,8 @@ Revision history for Dancer
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
+ - Provide a way to load settings directly from hash.
+    (GH#1113, fgabolde)
 
  [NEW FEATURES]
 
