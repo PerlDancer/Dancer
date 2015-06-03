@@ -7,6 +7,8 @@ Revision history for Dancer
  - Dancer::Logger->init invocation was using `setting()`
     instead of `settings()`. (GH#1103, jwittkoski)
  - Skip utf8 tests on cygwin. (GH#1046, mokko)
+ - Dancer::Session::YAML now refuse cookies that aren't alphanumerical.
+    (yanick)
 
  [DOCUMENTATION]
 
