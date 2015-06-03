@@ -309,13 +309,4 @@ This method restores the wrapper array after a set_wrapper call.
 
 L<Dancer>, L<Template>
 
-=head1 AUTHOR
-
-This module has been written by Alexis Sukrieh and David Zurborg
-
-=head1 LICENSE
-
-This module is free software and is released under the same terms as Perl
-itself.
-
 =cut
