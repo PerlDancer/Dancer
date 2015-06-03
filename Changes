@@ -16,6 +16,7 @@ Revision history for Dancer
  - Provide a way to load settings directly from hash.
     (GH#1113, fgabolde)
  - Remove 'auto-reload' feature. (GH#1058, alambike)
+ - Add methods to interact with TT's wrappers. (GH#1034, David Zurborg)
 
  [NEW FEATURES]
 
