@@ -279,9 +279,9 @@ TemplateToolkit.
 
 Synopsis:
 
-    engine('template')->set_wrapper inner => 'inner_layout.tt';
-    engine('template')->set_wrapper outer => 'outer_layout.tt';
-    engine('template')->set_wrapper 'only_layout.tt';
+    engine('template')->set_wrapper( inner => 'inner_layout.tt' );
+    engine('template')->set_wrapper( outer => 'outer_layout.tt' );
+    engine('template')->set_wrapper( 'only_layout.tt' );
 
 The first two lines pushes/unshifts layout files to the wrapper array.
 The third line overwrites the wrapper array with a single element.
