@@ -8,7 +8,6 @@ META.json
 META.yml
 Makefile.PL
 README
-README.md
 README.mkdn
 SIGNATURE
 bin/dancer
@@ -99,7 +98,8 @@ lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 lib/Dancer/Tutorial.pod
 t/00-compile.t
-t/000-report-versions-tiny.t
+t/00-report-prereqs.dd
+t/00-report-prereqs.t
 t/00_base/000_create_fake_env.t
 t/00_base/001_load.t
 t/00_base/002_strict_and_warnings.t
@@ -136,6 +136,7 @@ t/01_config/06_config_api.t
 t/01_config/06_stack_trace.t
 t/01_config/07_strict_config.t
 t/01_config/08_environments.t
+t/01_config/09_load_settings_from_hashref.t
 t/01_config/environments/development.pl
 t/01_config/yaml_dependency.t
 t/02_request/000_create_fake_env.t
