@@ -1,6 +1,7 @@
 package Dancer::Test;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: Test helpers to test a Dancer application
-
+$Dancer::Test::VERSION = '1.3137'; # TRIAL
 # test helpers for Dancer apps
 
 use strict;
@@ -440,9 +441,20 @@ sub read_logs {
 
 
 1;
+
 __END__
 
 =pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Test - Test helpers to test a Dancer application
+
+=head1 VERSION
+
+version 1.3137
 
 =head1 SYNOPSIS
 
@@ -455,7 +467,6 @@ __END__
 
     response_status_is [GET => '/'], 200, "GET / is found";
     response_content_like [GET => '/'], qr/hello, world/, "content looks good for /";
-
 
 =head1 DESCRIPTION
 
@@ -494,7 +505,6 @@ Asserts that the given request does not match any route handler
 in Dancer's registry.
 
     route_doesnt_exist [GET => '/bogus_path'], "GET /bogus_path is not handled";
-
 
 =head2 response_exists([$method, $path], $test_name)
 
@@ -673,5 +683,16 @@ This module has been written by Alexis Sukrieh <sukria@sukria.net>
 =head1 SEE ALSO
 
 L<Test::More>
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
