@@ -1,6 +1,7 @@
 package Dancer::Session;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: session engine for the Dancer framework
-
+$Dancer::Session::VERSION = '1.3138';
 use strict;
 use warnings;
 
@@ -67,9 +68,20 @@ sub write {
 }
 
 1;
+
 __END__
 
 =pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Session - session engine for the Dancer framework
+
+=head1 VERSION
+
+version 1.3138
 
 =head1 DESCRIPTION
 
@@ -137,7 +149,6 @@ whether the user is logged in for each route handler; there's an example in the
 L<Dancer::Cookbook> showing how to use a before filter to check whether the user
 is logged in before all requests, and redirect to a login page if not.
 
-
 =head1 SUPPORTED ENGINES
 
 Dancer has a modular session engine that makes implementing new session backends
@@ -203,7 +214,6 @@ between a Dancer app and other Plack-based apps.
 Dancer::Session may depend on third-party modules, depending on the session
 engine used. See the session engine module for details.
 
-
 =head1 AUTHORS
 
 This module has been written by Alexis Sukrieh. See the AUTHORS file that comes
@@ -217,5 +227,16 @@ itself.
 =head1 SEE ALSO
 
 See L<Dancer> for details about the complete framework.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
