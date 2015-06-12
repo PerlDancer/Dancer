@@ -1,9 +1,23 @@
 Revision history for Dancer
 
 {{$NEXT}}
+  [ API CHANGES ]
+
+  [ BUG FIXES ]
+
+  [ DOCUMENTATION ]
+
+  [ ENHANCEMENTS ]
+
+  [ NEW FEATURES ]
+
+  [ STATISTICS ]
+
+1.3138 2015-06-12
   - Promote 1.3137 to non-trial release.
 
   [ STATISTICS ]
+    - code churn: 1 file changed, 1796 insertions(+), 1754 deletions(-)
 
 1.3137 2015-06-05
   [ BUG FIXES ]
@@ -60,7 +74,7 @@ Revision history for Dancer
   [ ENHANCEMENTS ]
     - Skip tests requiring 'fork' if on a perl that doesn't implement it.
       (GH#1094, Steve Hay) - Using ':script' disable command-line argument
-      munging globally. (GH#1098,	    Brad Macpherson)
+      munging globally. (GH#1098,     Brad Macpherson)
 
   [ STATISTICS ]
     - code churn: 33 files changed, 173 insertions(+), 113 deletions(-)
@@ -185,7 +199,7 @@ Revision history for Dancer
   [ BUG FIXES ]
     - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021,
       John Wittkoski)
-    - Test was failing if JSON module was absent.			 
+    - Test was failing if JSON module was absent.		     
       (GH#1022, Yanick Champoux)
     - Allow for routes evaluating to false ('0', '', etc).  (GH#1020,
       Yanick Champoux)
@@ -269,14 +283,14 @@ Revision history for Dancer
 
 1.3118 2013-09-01
   [ BUG FIXES ]
-    - GH #655: clarify logger error message. (Yanick Champoux,	     
-      reported by Gabor Szabo)
+    - GH #655: clarify logger error message. (Yanick Champoux,		   
+	    reported by Gabor Szabo)
     - GH #951: fix quoting of TemplateToolkit start_tag/stop_tag. (Rick
       Myers)
     - GH #940: carry over the session when we forward().  (Yanick Champoux,
       reported by sciurius)
-    - GH #954: don't die on autoflush for older perls.	      (Yanick
-      Champoux, reported by metateck and David Golden)
+    - GH #954: don't die on autoflush for older perls.			 
+      (Yanick Champoux, reported by metateck and David Golden)
     - GH #950: Dancer::Test functions now populate REQUEST_URI. (Yanick
       Champoux, reported by Sören Kornetzki)
 
@@ -292,8 +306,8 @@ Revision history for Dancer
       Dancer::Serializer::Mutable. (Yanick Champoux)
 
   [ MISC ]
-    - GH #949: fixes a few errors in the serializer testsuite.	     
-      (Franck Cuny)
+    - GH #949: fixes a few errors in the serializer testsuite.		   
+	    (Franck Cuny)
 
 1.3117 2013-07-31
   [ BUG FIXES ]
@@ -314,8 +328,8 @@ Revision history for Dancer
       (Grzegorz Rożniecki)
     - GH #929: add warning on the use of Corona as underlying web server. 
       (issue reported by berekuk)
-    - GH #943: remove mention to 'Dancer::Plugin::Validation',	      clean
-      'dancer -a' sample output. (Grzegorz Rożniecki)
+    - GH #943: remove mention to 'Dancer::Plugin::Validation',		   
+	    clean 'dancer -a' sample output. (Grzegorz Rożniecki)
 
   [ ENHANCEMENTS ]
     - GH #836: Provide more information when an engine fails to load.
@@ -351,7 +365,7 @@ Revision history for Dancer
     - Add scheme line for ngnix config in D::Deployment.
 
   [ ENHANCEMENTS ]
-    - GH #919: 'dancer' script exits with code 255 if application	 
+    - GH #919: 'dancer' script exits with code 255 if application      
       name is invalid. (ppisar)
     - GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
     - GH #926: make messages from fatal warnings show up in the logs.  (Max
@@ -837,7 +851,7 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
   [ BUG FIXES ]
-    - Fix a bunch of cpan testers reports				 
+    - Fix a bunch of cpan testers reports			     
       (Alberto Simões)
 
 1.3069_01 2011-07-07
