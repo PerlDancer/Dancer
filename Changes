@@ -4,6 +4,8 @@ Revision history for Dancer
   [ API CHANGES ]
 
   [ BUG FIXES ]
+  - Reverted caching of session, as it can cause problem when the user 
+    is using 'session->destroy' (GH#1120).
 
   [ DOCUMENTATION ]
 

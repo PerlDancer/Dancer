@@ -7,7 +7,6 @@ use warnings;
 use Carp;
 use Dancer::Cookies;
 use Dancer::Engine;
-use Dancer::SharedData;
 
 # Singleton representing the session engine class to use
 my $ENGINE = undef;
@@ -26,13 +25,13 @@ sub get_current_session {
     shift;
     my %p       = @_;
     my $sid     = engine->read_session_id;
-    my $session = $sid ? Dancer::SharedData->session($sid) : undef;
+    my $session = undef;
     my $class   = ref(engine);
 
-    unless ( $session ) {
-        $session = $class->retrieve($sid) if $sid;
-        $session ||= $class->create;
-        Dancer::SharedData->session($session->id => $session);
+    $session = $class->retrieve($sid) if $sid;
+
+    if (not defined $session) {
+        $session = $class->create();
     }
 
     # Generate a session cookie; we want to do this regardless of whether the
