@@ -189,6 +189,8 @@ sub load {
     init_envdir();
 
     # look for the conffile
+    return 1 unless -f conffile or $extra_config;
+
     if (-f conffile) {
 
         # load YAML
