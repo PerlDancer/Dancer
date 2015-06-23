@@ -182,45 +182,36 @@ sub init_envdir {
 }
 
 sub load {
-
-    my (undef, $extra_config) = @_;
-
     init_confdir();
     init_envdir();
 
     # look for the conffile
-    if (-f conffile) {
+    return 1 unless -f conffile;
 
-        # load YAML
-        my $module = $SETTINGS->{engines}{YAML}{module} || 'YAML';
+    # load YAML
+    my $module = $SETTINGS->{engines}{YAML}{module} || 'YAML';
 
-        my ( $result, $error ) = Dancer::ModuleLoader->load($module);
-        confess "Configuration file found but could not load $module: $error"
-            unless $result;
+    my ( $result, $error ) = Dancer::ModuleLoader->load($module);
+    confess "Configuration file found but could not load $module: $error"
+        unless $result;
 
-        unless ($_LOADED{conffile()}) {
-            load_settings_from_yaml(conffile);
-            $_LOADED{conffile()}++;
-        }
-
-        my $env = environment_file;
-
-        # don't load the same env twice
-        unless( $_LOADED{$env} ) {
-            if (-f $env ) {
-                load_settings_from_yaml($env);
-                $_LOADED{$env}++;
-            }
-            elsif (setting('require_environment')) {
-                # failed to load the env file, and the main config said we needed it.
-                confess "Could not load environment file '$env', and require_environment is set";
-            }
-        }
-
+    unless ($_LOADED{conffile()}) {
+        load_settings_from_yaml(conffile);
+        $_LOADED{conffile()}++;
     }
 
-    if ($extra_config) {
-        load_settings_from_hashref($extra_config);
+    my $env = environment_file;
+
+    # don't load the same env twice
+    unless( $_LOADED{$env} ) {
+        if (-f $env ) {
+            load_settings_from_yaml($env);
+            $_LOADED{$env}++;
+        }
+        elsif (setting('require_environment')) {
+            # failed to load the env file, and the main config said we needed it.
+            confess "Could not load environment file '$env', and require_environment is set";
+        }
     }
 
     foreach my $key (grep { $setters->{$_} } keys %$SETTINGS) {
@@ -231,20 +222,6 @@ sub load {
     }
 
     return 1;
-}
-
-sub load_settings_from_hashref {
-    my ($config) = @_;
-
-    # exactly like load_settings_from_yaml without the YAML part.
-
-    $SETTINGS = Hash::Merge::Simple::merge( $SETTINGS, {
-        map {
-            $_ => Dancer::Config->normalize_setting( $_, $config->{$_} )
-        } keys %$config
-    } );
-
-    return scalar keys %$config;
 }
 
 sub load_settings_from_yaml {
