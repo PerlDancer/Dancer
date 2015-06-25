@@ -6,6 +6,7 @@ Revision history for Dancer
   [ BUG FIXES ]
   - Reverted caching of session, as it can cause problem when the user 
     is using 'session->destroy' (GH#1120).
+  - Reverted loading config from hash. (GH#1121)
 
   [ DOCUMENTATION ]
 
