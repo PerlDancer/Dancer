@@ -1,6 +1,7 @@
 package Dancer::Cookie;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: class representing cookies
-
+$Dancer::Cookie::VERSION = '1.3139'; # TRIAL
 use strict;
 use warnings;
 
@@ -123,6 +124,16 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Cookie - class representing cookies
+
+=head1 VERSION
+
+version 1.3139
+
 =head1 SYNOPSIS
 
     use Dancer::Cookie;
@@ -204,3 +215,15 @@ Runs an expiration test and sets a default path if not set.
 
 Creates a proper HTTP cookie header from the content.
 
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

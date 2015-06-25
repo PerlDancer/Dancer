@@ -1,6 +1,7 @@
 package Dancer::Handler::Debug;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: a debug handler for easy tracing
-
+$Dancer::Handler::Debug::VERSION = '1.3139'; # TRIAL
 use strict;
 use warnings;
 
@@ -75,6 +76,16 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Handler::Debug - a debug handler for easy tracing
+
+=head1 VERSION
+
+version 1.3139
+
 =head1 DESCRIPTION
 
 When developing a Dancer application, it can be useful to trace precisely what
@@ -103,3 +114,16 @@ the command line, which must follow the pattern
 =head1 AUTHORS
 
 Dancer contributors
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
