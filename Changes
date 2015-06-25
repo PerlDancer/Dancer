@@ -4,9 +4,6 @@ Revision history for Dancer
   [ API CHANGES ]
 
   [ BUG FIXES ]
-  - Reverted caching of session, as it can cause problem when the user 
-    is using 'session->destroy' (GH#1120).
-  - Reverted loading config from hash. (GH#1121)
 
   [ DOCUMENTATION ]
 
@@ -15,6 +12,15 @@ Revision history for Dancer
   [ NEW FEATURES ]
 
   [ STATISTICS ]
+
+1.3139 2015-06-25
+  [ BUG FIXES ]
+    - Reverted caching of session, as it can cause problem when the user 
+      is using 'session->destroy' (GH#1120).
+    - Reverted loading config from hash. (GH#1121)
+
+  [ STATISTICS ]
+    - code churn: 9 files changed, 55 insertions(+), 249 deletions(-)
 
 1.3138 2015-06-12
   - Promote 1.3137 to non-trial release.
@@ -202,8 +208,8 @@ Revision history for Dancer
   [ BUG FIXES ]
     - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021,
       John Wittkoski)
-    - Test was failing if JSON module was absent.		     
-      (GH#1022, Yanick Champoux)
+    - Test was failing if JSON module was absent.		  (GH#1022,
+      Yanick Champoux)
     - Allow for routes evaluating to false ('0', '', etc).  (GH#1020,
       Yanick Champoux)
 
@@ -292,8 +298,8 @@ Revision history for Dancer
       Myers)
     - GH #940: carry over the session when we forward().  (Yanick Champoux,
       reported by sciurius)
-    - GH #954: don't die on autoflush for older perls.			 
-      (Yanick Champoux, reported by metateck and David Golden)
+    - GH #954: don't die on autoflush for older perls.			   
+	    (Yanick Champoux, reported by metateck and David Golden)
     - GH #950: Dancer::Test functions now populate REQUEST_URI. (Yanick
       Champoux, reported by Sören Kornetzki)
 
@@ -854,8 +860,8 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
   [ BUG FIXES ]
-    - Fix a bunch of cpan testers reports			     
-      (Alberto Simões)
+    - Fix a bunch of cpan testers reports			  (Alberto
+      Simões)
 
 1.3069_01 2011-07-07
   [ BUG FIXES ]
