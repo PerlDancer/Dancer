@@ -1,8 +1,6 @@
 Revision history for Dancer
 
 {{$NEXT}}
-  - Promote 1.3139 to non-trial release.
-
   [ API CHANGES ]
 
   [ BUG FIXES ]
@@ -14,6 +12,12 @@ Revision history for Dancer
   [ NEW FEATURES ]
 
   [ STATISTICS ]
+
+1.3140 2015-07-03
+  - Promote 1.3139 to non-trial release.
+
+  [ STATISTICS ]
+    - code churn: 1 file changed, 17 insertions(+), 9 deletions(-)
 
 1.3139 2015-06-25
   [ BUG FIXES ]
@@ -210,7 +214,7 @@ Revision history for Dancer
   [ BUG FIXES ]
     - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021,
       John Wittkoski)
-    - Test was failing if JSON module was absent.		  (GH#1022,
+    - Test was failing if JSON module was absent.	      (GH#1022,
       Yanick Champoux)
     - Allow for routes evaluating to false ('0', '', etc).  (GH#1020,
       Yanick Champoux)
@@ -862,7 +866,7 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
   [ BUG FIXES ]
-    - Fix a bunch of cpan testers reports			  (Alberto
+    - Fix a bunch of cpan testers reports		      (Alberto
       Simões)
 
 1.3069_01 2011-07-07
