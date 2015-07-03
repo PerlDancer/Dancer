@@ -1,6 +1,8 @@
 Revision history for Dancer
 
 {{$NEXT}}
+  - Promote 1.3139 to non-trial release.
+
   [ API CHANGES ]
 
   [ BUG FIXES ]
