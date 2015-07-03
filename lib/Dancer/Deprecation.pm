@@ -1,6 +1,7 @@
 package Dancer::Deprecation;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: handle deprecation messages
-
+$Dancer::Deprecation::VERSION = '1.3140';
 use strict;
 use warnings;
 use Carp;
@@ -32,6 +33,20 @@ sub deprecated {
 }
 
 1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Deprecation - handle deprecation messages
+
+=head1 VERSION
+
+version 1.3140
 
 =head1 SYNOPSIS
 
@@ -77,5 +92,16 @@ This module has been written by Alexis Sukrieh <sukria@sukria.net>
 =head1 SEE ALSO
 
 L<Package::DeprecationManager>
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

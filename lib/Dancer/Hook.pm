@@ -1,6 +1,7 @@
 package Dancer::Hook;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: Class to manipulate hooks with Dancer
-
+$Dancer::Hook::VERSION = '1.3140';
 use strict;
 use warnings;
 use Carp;
@@ -71,16 +72,29 @@ sub new {
 
 1;
 
+__END__
 
-=head1 DESCRIPTION
+=pod
 
-Manipulate hooks with Dancer
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Hook - Class to manipulate hooks with Dancer
+
+=head1 VERSION
+
+version 1.3140
 
 =head1 SYNOPSIS
 
   # inside a plugin
   use Dancer::Hook;
   Dancer::Hook->register_hooks_name(qw/before_auth after_auth/);
+
+=head1 DESCRIPTION
+
+Manipulate hooks with Dancer
 
 =head1 METHODS
 
@@ -89,7 +103,7 @@ Manipulate hooks with Dancer
     hook 'before', {apps => ['main']}, sub {...};
 
     hook 'before' => sub {...};
-    
+
 Attaches a hook at some point, with a possible list of properties.
 
 Currently supported properties:
@@ -129,3 +143,16 @@ This module has been written by Alexis Sukrieh and others.
 
 This module is free software and is published under the same
 terms as Perl itself.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
