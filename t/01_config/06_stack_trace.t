@@ -32,7 +32,7 @@ plan tests => 18;
     like $error_lines[1] 
         => qr!^\s*Dancer::Template::TemplateToolkit::render\(['"]?Dancer::Template::TemplateToolkit=HASH\(0x[0-9a-fA-F]+\)['"]?, ['"]/not/a/valid/file['"]\) called at!, 
         "test verbose croak stack trace";
-    like($error_lines[2], qr!^\s*eval \{...\} called at (?:[.]/)?t/01_config/06_stack_trace.t!, "test verbose croak stack trace");
+    like($error_lines[2], qr!^\s*eval \{...\} called at (?:[.]/)?\Q$0\E!, "test verbose croak stack trace");
 }
 
 {
@@ -58,5 +58,5 @@ plan tests => 18;
     like $error_lines[1] 
         => qr!^\s*Dancer::Template::TemplateToolkit::render\(['"]?Dancer::Template::TemplateToolkit=HASH\(0x[0-9a-fA-F]+\)['"]?, ['"]/not/a/valid/file['"]\) called at!, 
         "test verbose croak stack trace";
-    like($error_lines[2], qr!^\s*eval \{...\} called at (?:[.]/)?t/01_config/06_stack_trace.t!, "test verbose croak stack trace");
+    like($error_lines[2], qr!^\s*eval \{...\} called at (?:[.]/)?\Q$0\E!, "test verbose croak stack trace");
 }
