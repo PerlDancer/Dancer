@@ -8,6 +8,8 @@ Revision history for Dancer
     charset. (GH#1125, ironcamel)
   - Tweak code such that tests don't complain about a missing Dancer version
     in the devel branch. (yanick)
+  - Fix test that was failing on Windows because of platform-specific
+    directory separators. (GH#1122, nanis)
 
   [ DOCUMENTATION ]
 
