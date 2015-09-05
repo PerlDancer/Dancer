@@ -16,7 +16,7 @@ use warnings;
 
 This is a logger class for L<Dancer> which captures all logs to an object.
 
-It's primary purpose is for testing.
+Its primary purpose is for testing.
 
 =head2 Methods
 
