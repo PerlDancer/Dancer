@@ -4,6 +4,8 @@ Revision history for Dancer
   [ API CHANGES ]
 
   [ BUG FIXES ]
+  - Dancer::Logger::Abstract now always try to convert to the configured
+    charset. (GH#1125, ironcamel)
 
   [ DOCUMENTATION ]
 
