@@ -108,6 +108,8 @@ our @EXPORT    = qw(
   warning
 );
 
+$Dancer::VERSION = '0' unless $Dancer::VERSION;
+
 # Dancer's syntax
 
 sub after           {

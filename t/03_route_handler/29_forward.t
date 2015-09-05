@@ -58,8 +58,8 @@ response_content_is [ GET => '/b' ] => 'test is 1';
 my $expected_headers = [
     'Content-Length' => 5,
     'Content-Type' => 'text/html',
-    'Server'       => "Perl Dancer ${Dancer::VERSION}",
-    'X-Powered-By' => "Perl Dancer ${Dancer::VERSION}",
+    'Server'       => "Perl Dancer " . Dancer->VERSION,
+    'X-Powered-By' => "Perl Dancer " . Dancer->VERSION,
 ];
 
 response_headers_are_deeply [ GET => '/bounce/' ], $expected_headers;
