@@ -1,21 +1,14 @@
 Revision history for Dancer
 
-{{$NEXT}}
-  [ API CHANGES ]
-
+1.3141 2015-09-07
   [ BUG FIXES ]
-  - Dancer::Logger::Abstract now always try to convert to the configured
-    charset. (GH#1125, ironcamel)
-  - Fix test that was failing on Windows because of platform-specific
-    directory separators. (GH#1122, nanis)
-
-  [ DOCUMENTATION ]
-
-  [ ENHANCEMENTS ]
-
-  [ NEW FEATURES ]
+    - Dancer::Logger::Abstract now always try to convert to the configured
+      charset. (GH#1125, ironcamel)
+    - Fix test that was failing on Windows because of platform-specific
+      directory separators. (GH#1122, nanis)
 
   [ STATISTICS ]
+    - code churn: 11 files changed, 52 insertions(+), 37 deletions(-)
 
 1.3140 2015-07-03
   - Promote 1.3139 to non-trial release.
@@ -218,8 +211,8 @@ Revision history for Dancer
   [ BUG FIXES ]
     - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021,
       John Wittkoski)
-    - Test was failing if JSON module was absent.	      (GH#1022,
-      Yanick Champoux)
+    - Test was failing if JSON module was absent.	  (GH#1022, Yanick
+      Champoux)
     - Allow for routes evaluating to false ('0', '', etc).  (GH#1020,
       Yanick Champoux)
 
@@ -870,8 +863,7 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
   [ BUG FIXES ]
-    - Fix a bunch of cpan testers reports		      (Alberto
-      Simões)
+    - Fix a bunch of cpan testers reports		  (Alberto Simões)
 
 1.3069_01 2011-07-07
   [ BUG FIXES ]
