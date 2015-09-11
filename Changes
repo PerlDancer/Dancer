@@ -1,6 +1,8 @@
 Revision history for Dancer
 
 {{$NEXT}}
+    - Promotion to stable release.
+
   [ API CHANGES ]
 
   [ BUG FIXES ]
