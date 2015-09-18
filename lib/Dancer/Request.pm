@@ -668,7 +668,7 @@ instance, C<method> pointing to a new request method).
 
 =head2 is_forward
 
-Flag that will be set to true if the request has been L<forwarded|forward>.
+Flag that will be set to true if the request has been L<forwarded|Dancer::Request::forward>.
 
 =head2 to_string()
 
