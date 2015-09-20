@@ -14,7 +14,7 @@ use Dancer::Object;
 
 {
     package Person;
-    use base 'Dancer::Object';
+    use parent 'Dancer::Object';
     __PACKAGE__->attributes('name', 'age', 'sex');
 }
 
@@ -41,7 +41,7 @@ is_deeply $attrs, ['name', 'age', 'sex'], "attributes are ok";
 
 {
     package Person::Child;
-    use base 'Person';
+    use parent -norequire => 'Person';
     __PACKAGE__->attributes('parent');
 }
 
@@ -57,7 +57,7 @@ is_deeply $child_attrs, ['parent', 'name', 'age', 'sex'], "attributes are ok";
 
 {
     package Person::Child::Blond;
-    use base 'Person::Child';
+    use parent -norequire => 'Person::Child';
     __PACKAGE__->attributes('hair_length');
 }
 
