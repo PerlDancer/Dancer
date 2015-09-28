@@ -138,7 +138,7 @@ sub match {
         }
         return $self->save_match_data( $request, {
             %params,
-            (splat => \@splat)x!! @splat,
+            ( @splat ? ( splat => \@splat ) : () ),
         });
     }
 
