@@ -8,5 +8,9 @@ perl:
     - "5.10"
 
 before_install:
-  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-  - source ~/travis-perl-helpers/init --auto
+    - cpanm --quiet --notest Dist::Zilla
+    - dzil authordeps | cpanm --quiet --notest
+install:
+    - dzil listdeps | cpanm --quiet --notest
+script:
+    - dzil test
