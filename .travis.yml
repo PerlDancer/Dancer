@@ -7,6 +7,6 @@ perl:
     - "5.12"
     - "5.10"
 
-script:
-    - perl Makefile.PL
-    - make test
+before_install:
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init --auto
