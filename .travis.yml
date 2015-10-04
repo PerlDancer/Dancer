@@ -10,6 +10,8 @@ perl:
     - "5.10"
 
 before_install:
+  - git config --global user.email "dancer-dev@dancer.pm"
+  - git config --global user.name "Perl Dancer dev team"
   - cpanm --quiet --notest Dist::Zilla
   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
   - source ~/travis-perl-helpers/init --auto
