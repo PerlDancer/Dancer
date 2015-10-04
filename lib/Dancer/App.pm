@@ -57,7 +57,7 @@ sub set_prefix {
     undef $prefix if defined($prefix) and $prefix eq "/";
 
     raise core_app => "not a valid prefix: `$prefix', must start with a /"
-      if defined($prefix) && $prefix !~ /^\//;
+      if defined($prefix) && ref $prefix ne 'Regexp' && $prefix !~ /^\//;
 
     my $app_prefix = defined $self->app_prefix ? $self->app_prefix : "";
     my $previous = Dancer::App->current->prefix;
