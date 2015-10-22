@@ -201,8 +201,7 @@ is $resp->content,
 ## test #23
 # create a file, 256MB of zeros
 $dest_file = File::Spec->catfile($dest_dir, "zeros");
-system("dd if=/dev/zero of=$dest_file count=500000 bs=1024");
-my $digest = Digest::MD5->new;
+system("dd if=/dev/zero of=$dest_file count=250000 bs=1024");
 open(my $zerosfh, "<", $dest_file)
     or die "Failed to open $dest_file - $!";
 my $digest = Digest::MD5->new;
