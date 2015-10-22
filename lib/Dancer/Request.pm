@@ -504,7 +504,7 @@ sub _parse_post_params {
     my ($self) = @_;
     return $self->{_body_params} if defined $self->{_body_params};
 
-    my $body = $self->_read_to_end();
+    $self->_read_to_end();
     $self->{_body_params} = $self->{_http_body}->param;
 }
 
@@ -554,7 +554,7 @@ sub _read_to_end {
 
     }
 
-    return $self->{_http_body}->body;
+    return $self->{_http_body};
 }
 
 sub _has_something_to_read {
