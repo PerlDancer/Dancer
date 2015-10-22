@@ -59,7 +59,7 @@ get '/read_session' => sub {
     "name='$name'"
 };
 
-put '/jsondata' => sub {
+any['put','post'] => '/jsondata' => sub {
     request->body;
 };
 
