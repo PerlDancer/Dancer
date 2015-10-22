@@ -104,8 +104,8 @@ sub header                { $_[0]->{headers}->header($_[1]) }
 # requirements of anyone who was fetching the request body, without having file
 # uploads stored in RAM.
 sub body {
-    my $http_body = shift->{_http_body} or return;
-    my $body_fh = $http_body->body or return;
+    my $http_body = shift->{_http_body} or return '';
+    my $body_fh = $http_body->body or return '';
     $body_fh->seek(0, 0);
     my $raw_body = join '', $body_fh->getlines;
     return $raw_body;
