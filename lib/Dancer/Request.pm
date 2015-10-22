@@ -106,8 +106,8 @@ sub header                { $_[0]->{headers}->header($_[1]) }
 sub body {
     my $http_body = shift->{_http_body} or return;
     my $body_fh = $http_body->body or return;
+    $body_fh->seek(0, 0);
     my $raw_body = join '', $body_fh->getlines;
-    warn "request->body convenience method called, returning: [$raw_body]";
     return $raw_body;
 }
 
