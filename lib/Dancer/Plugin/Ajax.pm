@@ -63,10 +63,6 @@ __END__
 
 =pod
 
-=head1 NAME
-
-Dancer::Plugin::Ajax - 
-
 =head1 SYNOPSIS
 
     package MyWebApp;

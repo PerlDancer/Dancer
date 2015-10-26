@@ -165,7 +165,7 @@ sub _censor {
         if (ref $hash->{$key} eq 'HASH') {
             $censored += _censor( $hash->{$key}, $recursecount );
         }
-        elsif ($key =~ /(pass|card?num|pan|secret|private_key)/i) {
+        elsif ($key =~ /(pass|card?num|pan|cvv|cvv2|ccv|secret|private_key)/i) {
             $hash->{$key} = "Hidden (looks potentially sensitive)";
             $censored++;
         }
@@ -362,7 +362,7 @@ This is only an attribute getter, you'll have to set it at C<new>.
 =head2 exception
 
 The exception that caused the error. If the error was not caused by an
-exception, returns undef. Exceptions are usually objects that inherits of
+exception, returns undef. Exceptions are usually objects that inherit from
 Dancer::Exception.
 
 This is only an attribute getter, you'll have to set it at C<new>.
@@ -434,5 +434,5 @@ C<dumper> calls this method to censor things like passwords and such.
 
 Internal method to encode entities that are illegal in (X)HTML. We output as
 UTF-8, so no need to encode all non-ASCII characters or use a module.
-FIXME : this is not true anymore, output can be any charset. Need fixing.
+FIXME : this is not true any more, output can be any charset. Need fixing.
 

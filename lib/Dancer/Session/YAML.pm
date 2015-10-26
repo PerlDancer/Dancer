@@ -60,6 +60,12 @@ sub reset {
 # Return the session object corresponding to the given id
 sub retrieve {
     my ($class, $id) = @_;
+
+    unless( $id =~ /^[\da-z]+$/i ) {
+        warn "session id '$id' contains illegal characters\n";
+        return;
+    }
+
     my $session_file = yaml_file($id);
 
     return unless -f $session_file;
@@ -74,7 +80,8 @@ sub retrieve {
 # instance
 
 sub yaml_file {
-    my ($id) = @_;
+    my $id = shift;
+
     return path(setting('session_dir'), "$id.yml");
 }
 

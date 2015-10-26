@@ -62,9 +62,8 @@ sub format_message {
     my ($self, $level, $message) = @_;
     chomp $message;
 
-    if (!Encode::is_utf8($message) && setting('charset')) {
-        $message = Encode::encode(setting('charset'), $message);
-    }
+    $message = Encode::encode(setting('charset'), $message)
+        if setting('charset');
 
     $level = 'warn' if $level eq 'warning';
     $level = sprintf('%5s', $level);
@@ -231,17 +230,13 @@ header value
 
 =back
 
-There is two preset possible:
+There is currently a single preset log format:
 
 =over 4
 
 =item simple
 
-will format the message like: [%P] %L @%D> %m in %f l. %l
-
-=item with_id
-
-will format the message like: [%P] %L @%D> [hit #%i] %m in %f l. %l
+will format the message like: [%P] %L @%D> %i%m in %f l. %l
 
 =back
 

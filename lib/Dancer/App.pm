@@ -1,4 +1,5 @@
 package Dancer::App;
+# ABSTRACT: Base application class for Dancer.
 
 use strict;
 use warnings;
@@ -10,6 +11,7 @@ use Dancer::ModuleLoader;
 use Dancer::Route::Registry;
 use Dancer::Logger;
 use Dancer::Exception qw(:all);
+use Dancer::Deprecation;
 
 Dancer::App->attributes(qw(name app_prefix prefix registry settings on_lexical_prefix));
 
@@ -86,6 +88,11 @@ sub routes {
 
 sub reload_apps {
     my ($class) = @_;
+
+    Dancer::Deprecation->deprecated(
+        feature => 'auto_reload',
+        reason => 'use plackup -r instead',
+    );
 
     my @missing_modules = grep { not Dancer::ModuleLoader->load($_) }
         qw(Module::Refresh Clone);

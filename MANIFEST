@@ -8,7 +8,6 @@ META.json
 META.yml
 Makefile.PL
 README
-README.md
 README.mkdn
 SIGNATURE
 bin/dancer
@@ -99,7 +98,8 @@ lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 lib/Dancer/Tutorial.pod
 t/00-compile.t
-t/000-report-versions-tiny.t
+t/00-report-prereqs.dd
+t/00-report-prereqs.t
 t/00_base/000_create_fake_env.t
 t/00_base/001_load.t
 t/00_base/002_strict_and_warnings.t
@@ -117,7 +117,6 @@ t/00_base/11_file_utils.t
 t/00_base/12_utf8_charset.t
 t/00_base/13_dancer_singleton.t
 t/00_base/15_dependent_modules.t
-t/00_base/16_version.t
 t/00_base/17_globalwarnings_config_on.t
 t/00_base/config.t
 t/00_base/lib/AppWithError.pm
@@ -275,6 +274,7 @@ t/11_logger/08_serialize.t
 t/11_logger/09_capture.t
 t/11_logger/10_note.t
 t/11_logger/11_runtime_file.t
+t/11_logger/unicode.t
 t/12_response/000_create_fake_env.t
 t/12_response/01_CRLF_injection.t
 t/12_response/02_headers.t
@@ -359,5 +359,4 @@ t/lib/TestPlugin.pm
 t/lib/TestPlugin2.pm
 t/lib/TestPluginMRO.pm
 t/lib/TestUtils.pm
-t/manifest.t
 t/pod.t

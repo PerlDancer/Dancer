@@ -12,7 +12,7 @@ framework.
 
 =head2 Your first Dancer web app
 
-Dancer has been designed to be easy to work with - it's trivial to write a
+Dancer has been designed to be easy to work with. It's trivial to write a
 simple web app, but still has the power to work with larger projects.  To start
 with, let's make an incredibly simple "Hello World" example:
 
@@ -26,15 +26,15 @@ with, let's make an incredibly simple "Hello World" example:
 
     dance;
 
-Yes - the above is a fully-functioning web app; running that script will launch
-a webserver listening on the default port (3000); now you can make a request
+Yes, the above is a fully-functioning web app; running that script will launch
+a webserver listening on the default port (3000). Now you can make a request
 
     $ curl http://localhost:3000/hello/Bob
     Why, hello there Bob
 
 (or the name of the machine you ran it on, if it's not your local system),
 and it will say hello.  The C<:name> part is a named parameter within the
-route specification, whose value is made available through C<params>
+route specification whose value is made available through C<params>
 - more on that later.
 
 Note that you don't need to use the C<strict> and C<warnings> pragma, they are
@@ -47,7 +47,7 @@ L<import_warnings|Dancer::Config/import_warnings> setting to a false value.
 =head2 Starting a Dancer project
 
 The first simple example is fine for trivial projects, but for anything more
-complex, you'll want a more maintainable solution - enter the C<dancer> helper
+complex you'll want a more maintainable solution - enter the C<dancer> helper
 script, which will build the framework of your application with a single
 command:
 
@@ -95,8 +95,8 @@ start it - or to run your web app via Plack/PSGI - more on that later.
 =head2 Declaring routes
 
 To control what happens when a web request is received by your webapp, you'll
-need to declare C<routes>.  A route declaration indicates which HTTP method(s)
-it is valid for, the path it matches (e.g. /foo/bar), and a coderef to execute,
+need to declare C<routes>.  A route declaration indicates for which HTTP method(s)
+it is valid, the path it matches (e.g. /foo/bar), and a coderef to execute,
 which returns the response.
 
     get '/hello/:name' => sub {
@@ -226,7 +226,7 @@ L<auto_page setting|Dancer::Config/"auto_page">.
 
 =head2 Why should I use the Ajax plugin
 
-As an Ajax query is just a HTTP query, it's similar to a GET or POST
+As an Ajax query is just an HTTP query, it's similar to a GET or POST
 route. You may ask yourself why you may want to use the C<ajax>
 keyword (from the L<Dancer::Plugin::Ajax> plugin) instead of a simple
 C<get>.
@@ -262,14 +262,14 @@ and
     }
 
 
-Because it's an ajax query, you know you need to return a xml content,
+Because it's an Ajax query you know you need to return XML content,
 so the content type of the response is set for you.
 
 
 
 =head2 Using the prefix feature to split your application
 
-For better maintainability, you may want to separate some of your application
+For better maintainability you may want to separate some of your application
 components to different packages. Let's say we have a simple web app with an
 admin section, and want to maintain this in a different package:
 
@@ -309,7 +309,7 @@ It's common to want to use sessions to give your web applications state; for
 instance, allowing a user to log in, creating a session, and checking that
 session on subsequent requests.
 
-To make use of sessions, you must first enable the session engine - pick the
+To make use of sessions you must first enable the session engine. Pick the
 session engine you want to use, then declare it in your config file:
 
     session: Simple
@@ -361,11 +361,10 @@ Or, alternatively,
 
 For disc-based session back ends like L<Dancer::Session::YAML>,
 L<Dancer::Session::Storable> etc, session files are written to the session dir
-specified by the C<session_dir> setting, which defaults to C<appdir/sessions> if
-not specifically set.
+specified by the C<session_dir> setting, which defaults to C<appdir/sessions>.
 
 If you need to control where session files are created, you can do so quickly
-and easily within your config file, for example:
+and easily within your config file. For example:
 
     session_dir: /tmp/dancer-sessions
 
@@ -416,14 +415,14 @@ the path originally requested, so that it's sent back in the POST submission,
 and can be used by the post route to redirect onwards to the page originally
 requested once you're logged in.
 
-Of course, you'll probably want to validate your users against a database table,
+Of course you'll probably want to validate your users against a database table,
 or maybe via IMAP/LDAP/SSH/POP3/local system accounts via PAM etc.
 L<Authen::Simple> is probably a good starting point here!
 
 A simple working example of handling authentication against a database table
 yourself (using L<Dancer::Plugin::Database> which provides the C<database>
 keyword, and L<Crypt::SaltedHash> to handle salted hashed passwords (well, you
-wouldn't store your users passwords in the clear, would you?)) follows:
+wouldn't store your users' passwords in the clear, would you?)) follows:
 
     post '/login' => sub {
         my $user = database->quick_select('users', 
@@ -493,11 +492,11 @@ by using the following in your config file:
 
 All views must have a '.tt' extension. This may change in the future.
 
-In order to render a view, just call the C<template|Dancer/template> keyword at
+To render a view just call the C<template|Dancer/template> keyword at
 the end of the action by giving the view name and the HASHREF of tokens to
 interpolate in the view (note that for convenience, the request, session, params
 and vars are automatically accessible in the view, named C<request>, C<session>,
-C<params> and C<vars>) - for example:
+C<params> and C<vars>). For example:
 
     hook 'before' => sub { var time => scalar(localtime) };
 
@@ -523,7 +522,7 @@ L<Dancer::Template::Abstract>).
 
 A layout is a special view, located in the 'layouts' directory (inside the views
 directory) which must have a token named 'content'. That token marks the place
-where to render the action view. This lets you define a global layout for your
+to render the action view. This lets you define a global layout for your
 actions, and have each individual view contain only the specific content.  This
 is a good thing to avoid lots of needless duplication of HTML :)
 
@@ -589,7 +588,7 @@ config.yml will look like this:
 =head3 TT's WRAPPER directive in Dancer (META variables, SETs)
 
 Dancer already provides a WRAPPER-like ability, which we call a "layout". The
-reason we do not use TT's WRAPPER (which also makes it incompatible with it) is
+reason we do not use TT's WRAPPER (which also makes it incompatible with Dancer) is
 because not all template systems support it. Actually, most don't.
 
 However, you might want to use it, and be able to define META variables and
@@ -634,12 +633,12 @@ Configuring a Dancer application can be done in many ways. The easiest one (and
 maybe the dirtiest) is to put all your settings statements at the top of
 your script, before calling the dance() method.
 
-Other ways are possible, you can define all your settings in the file
+Other ways are possible. You can define all your settings in the file
 `appdir/config.yml'. For this, you must have installed the YAML module, and of
 course, write the config file in YAML.
 
 That's better than the first option, but it's still not perfect as you can't
-switch easily from an environment to another without rewriting the config.yml
+switch easily from one environment to another without rewriting the config.yml
 file.
 
 The better way is to have one config.yml file with default global settings,
@@ -650,7 +649,7 @@ like the following:
     layout: 'main'
 
 And then write as many environment files as you like in C<appdir/environments>.
-That way, the appropriate environment config file will be loaded according to
+That way the appropriate environment config file will be loaded according to
 the running environment (if none is specified, it will be 'development').
 
 Note that you can change the running environment using the C<--environment>
@@ -681,8 +680,8 @@ within its config file, for instance:
         return "This is " . config->{appname};
     };
 
-This makes keeping your application's settings all in one place simple and easy
-- you shouldn't need to worry about implementing all that yourself :)
+This makes keeping your application's settings all in one place simple and easy.
+You shouldn't need to worry about implementing all that yourself :)
 
 
 
@@ -700,13 +699,13 @@ values from config.yml and some additional default values:
 	print "template:".config->{template}."\n"; #simple
 	print "log:".config->{log}."\n"; #undef
 
-Note that config->{log} should result undef error on a default scaffold since
+Note that config->{log} should result in an undef error on a default scaffold since
 you did not load the environment and in the default scaffold log is defined in
 the environment and not in config.yml. Hence undef.
 
 If you want to load an environment you need to tell Dancer where to look for it.
 One way to do so, is to tell Dancer where the webapp lives. From there Dancer
-deducts where the config.yml file is (typically $webapp/config.yml).
+deduces where the config.yml file is (typically $webapp/config.yml).
 
 	# bin/script2.pl
 	use FindBin;
@@ -724,7 +723,7 @@ deducts where the config.yml file is (typically $webapp/config.yml).
 	print "log:".config->{log}."\n"; #value from development environment
 
 By default Dancer loads development environment (typically
-$webapp/environment/development.yml). In contrast to the example before,  you
+$webapp/environment/development.yml). In contrast to the example before, you
 do have a value from the development environment (environment/development.yml)
 now. Also note that in the above example Cwd and FindBin are used. They are
 likely to be already loaded by Dancer anyways, so it's not a big overhead. You
@@ -819,25 +818,25 @@ Or right in your code:
 
    set serializer => 'JSON';
 
-From now, all hash ref or array ref returned by a route will be serialized to
+From now, all HashRefs or ArrayRefs returned by a route will be serialized to
 the format you chose, and all data received from B<POST> or B<PUT> requests
 will be automatically deserialized.
 
     get '/hello/:name' => sub {
         # this structure will be returned to the client as
-	# {"name":"$name"}
+        # {"name":"$name"}
         return {name => params->{name}};
     };
 
-It's possible to let the client choose which serializer he want to use. For
+It's possible to let the client choose which serializer he wants to use. For
 this, use the B<mutable> serializer, and an appropriate serializer will be
 chosen from the B<Content-Type> header.
 
 It's also possible to return a custom error, using the
 L<send_error|Dancer/send_error> keyword..
 When you don't use a serializer, the C<send_error> function will take a string
-as first parameter (the message), and an optional HTTP code. When using a
-serializer, the message can be a string, an arrayref or a hashref:
+as the first parameter (the message), and an optional HTTP code. When using a
+serializer, the message can be a string, an ArrayRef or a HashRef:
 
     get '/hello/:name' => sub {
         if (...) {
@@ -851,7 +850,7 @@ The content of the error will be serialized using the appropriate serializer.
 
 =head2 Deploying your Dancer applications
 
-For examples on deploying your Dancer applications (including standalone, behind
+For examples on deploying your Dancer applications including standalone, behind
 proxy/load-balancing software, and using common web servers including Apache to
 run via CGI/FastCGI etc, see L<Dancer::Deployment>.
 
@@ -896,13 +895,22 @@ even in your environment configuration files:
 
 =head3 Path-based middlewares
 
-If you want to setup a middleware for a specific path, you can do that using
+If you want to set up a middleware for a specific path, you can do that using
 C<plack_middlewares_map>. You'll need L<Plack::App::URLMap> to do that.
 
     plack_middlewares_map:
         '/':      ['Debug']
         '/timer': ['Timer'],
 
-=head1 AUTHORS
+=head1 DEVELOPMENT TOOLS
 
-Dancer contributors - see AUTHORS file.
+=head2 Auto-reloading code
+
+When you are furiously hacking on your Dancer app, it might come in handy to
+have the application auto-detect changes in the code and reload itself.
+
+To do that, you can use L<Plack::Loader::Shotgun>, L<Plack::Middleware::Refresh>,
+or plackup with the C<-r> switch:
+
+   plackup -r bin/appl.pl  (will restart the app whenever a file in ./bin or ./lib is modified
+

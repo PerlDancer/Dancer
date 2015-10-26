@@ -133,7 +133,7 @@ __END__
 
 =head1 DESCRIPTION
 
-Dancer::Cookie provides a HTTP cookie object to work with cookies.
+Dancer::Cookie provides an HTTP cookie object to work with cookies.
 
 =head1 ATTRIBUTES
 
@@ -151,7 +151,7 @@ The cookie's expiration date.  There are several formats.
 
 Unix epoch time like 1288817656 to mean "Wed, 03-Nov-2010 20:54:16 GMT"
 
-A human readable offset from the current time such as "2 hours".  It currently
+A human-readable offset from the current time such as "2 hours".  It currently
 understands...
 
     s second seconds sec secs
@@ -177,11 +177,11 @@ The cookie's path.
 =head2 secure
 
 If true, it instructs the client to only serve the cookie over secure
-connections such as https.
+connections such as HTTPS.
 
 =head2 http_only
 
-By default, cookies are created with a property, named C<HttpOnly>,
+By default cookies are created with a property named C<HttpOnly>,
 that can be used for security, forcing the cookie to be used only by
 the server (via HTTP) and not by any JavaScript code.
 

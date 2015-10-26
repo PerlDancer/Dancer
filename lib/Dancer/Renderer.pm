@@ -1,4 +1,5 @@
 package Dancer::Renderer;
+# ABSTRACT: Rendering class for Dancer
 
 use strict;
 use warnings;
@@ -59,7 +60,7 @@ sub response_with_headers {
 
     if (Dancer::Config::setting('server_tokens')) {
         $response->{headers} ||= HTTP::Headers->new;
-        my $powered_by = "Perl Dancer " . $Dancer::VERSION;
+        my $powered_by = "Perl Dancer " . Dancer->VERSION;
         $response->header('X-Powered-By' => $powered_by);
         $response->header('Server'       => $powered_by);
     }

@@ -55,16 +55,15 @@ SKIP: {
     set serializer => 'Mutable';
     my $s = Dancer::Serializer->engine;
 
-    # Ensure the temp directory is resolved before we destroy the environment
-    # (since it needs the environment to do so, and caches after the first time)
-    File::Spec->tmpdir;
-    
+    my $tmpdir = File::Spec->tmpdir;
+
     %ENV = (
         'REQUEST_METHOD'    => 'GET',
         'HTTP_CONTENT_TYPE' => 'application/json',
         'HTTP_ACCEPT'       => 'text/xml',
         'HTTP_ACCEPT_TYPE'  => 'text/x-yaml',
         'PATH_INFO'         => '/',
+        'TMPDIR'            => $tmpdir,
     );
 
     my $req = Dancer::Request->new( env => \%ENV );
@@ -77,6 +76,7 @@ SKIP: {
     %ENV = (
         'REQUEST_METHOD' => 'PUT',
         'PATH_INFO'      => '/',
+        'TMPDIR'         => $tmpdir,
     );
     $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);
@@ -90,6 +90,7 @@ SKIP: {
         'PATH_INFO'      => '/',
         'HTTP_ACCEPT'    => 'text/xml',
         'CONTENT_TYPE'   => 'application/json',
+        'TMPDIR'         => $tmpdir,
     );
     $req = Dancer::Request->new( env => \%ENV );
     Dancer::SharedData->request($req);

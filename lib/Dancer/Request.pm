@@ -29,7 +29,7 @@ __PACKAGE__->attributes(
     # query
     'env',          'path',    'method',
     'content_type', 'content_length',
-    'body',         'id',
+    'id',
     'uploads',      'headers', 'path_info',
     'ajax',         'is_forward',
     @http_env_keys,
@@ -99,6 +99,18 @@ sub is_delete             { $_[0]->{method} eq 'DELETE' }
 sub is_patch              { $_[0]->{method} eq 'PATCH' }
 sub header                { $_[0]->{headers}->header($_[1]) }
 
+# We used to store the whole raw unparsed body; this was a big problem for large
+# file uploads (Issue 1129).  This convenient accessor should suit the
+# requirements of anyone who was fetching the request body, without having file
+# uploads stored in RAM.
+sub body {
+    my $http_body = shift->{_http_body} or return '';
+    my $body_fh = $http_body->body or return '';
+    $body_fh->seek(0, 0);
+    my $raw_body = join '', $body_fh->getlines;
+    return $raw_body;
+}
+
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
 sub Vars           { params(@_) }
@@ -111,7 +123,6 @@ sub init {
     $self->{path}           = undef;
     $self->{method}         = undef;
     $self->{params}         = {};
-    $self->{body}           = '';
     $self->{is_forward}     ||= 0;
     $self->{content_length} = $self->env->{CONTENT_LENGTH} || 0;
     $self->{content_type}   = $self->env->{CONTENT_TYPE} || '';
@@ -164,8 +175,12 @@ sub new_for_request {
     $req->{params}        = {%{$req->{params}}, %{$params}};
     $req->_build_params();
     $req->{_query_params} = $req->{params};
-    $req->{body}          = $body    if defined $body;
     $req->{headers}       = $headers || HTTP::Headers->new;
+
+    # We would normally have read the request into the HTTP::Body object in
+    # chunks in _read_to_end(), but here we need to do it in one hit as we were
+    # passed the body to use:
+    $req->{_http_body}->add($body);
 
     return $req;
 }
@@ -192,7 +207,6 @@ sub forward {
     $new_request->{_query_params} = $request->{_query_params};
     $new_request->{_route_params} = $request->{_route_params};
     $new_request->{_params_are_decoded} = 1;
-    $new_request->{body}    = $request->body;
     $new_request->{headers} = $request->headers;
 
     if( my $session = Dancer::Session->engine 
@@ -490,7 +504,7 @@ sub _parse_post_params {
     my ($self) = @_;
     return $self->{_body_params} if defined $self->{_body_params};
 
-    my $body = $self->_read_to_end();
+    $self->_read_to_end();
     $self->{_body_params} = $self->{_http_body}->param;
 }
 
@@ -527,25 +541,24 @@ sub _parse_get_params {
 }
 
 sub _read_to_end {
-    my ($self) = @_;
+    my $self = shift;
+    
+    return unless $self->_has_something_to_read;
 
-    my $content_length = $self->content_length;
-    return unless $self->_has_something_to_read();
+    if ( $self->content_length > 0 ) {
+        my $body = '';
 
-    if ($content_length > 0) {
-        my $buffer;
-        while (defined ($buffer = $self->_read())) {
-            $self->{body} .= $buffer;
+        while ( my $buffer = $self->_read ) {
             $self->{_http_body}->add($buffer);
         }
+
     }
 
-    return $self->{body};
+    return $self->{_http_body};
 }
 
 sub _has_something_to_read {
-    my ($self) = @_;
-    return 0 unless defined $self->input_handle;
+    defined $_[0]->input_handle;
 }
 
 # taken from Miyagawa's Plack::Request::BodyParser
@@ -668,7 +681,7 @@ instance, C<method> pointing to a new request method).
 
 =head2 is_forward
 
-Flag that will be set to true if the request has been L<forwarded|forward>.
+Flag that will be set to true if the request has been L<forwarded|Dancer::Request::forward>.
 
 =head2 to_string()
 
@@ -903,10 +916,12 @@ Given a request to http://perldancer.org:5000/request-methods?a=1 these are
 the values returned by the various request->  method calls:
 
   base         http://perldancer.org:5000/
+  host         perldancer.org
   uri_base     http://perldancer.org:5000
   uri          /request-methods?a=1
   request_uri  /request-methods?a=1
   path         /request-methods
+  path_info    /request-methods
   method       GET
   port         5000
   protocol     HTTP/1.1

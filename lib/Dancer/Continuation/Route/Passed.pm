@@ -1,4 +1,5 @@
 package Dancer::Continuation::Route::Passed;
+# ABSTRACT: Internal Dancer exception class
 
 use strict;
 use warnings;

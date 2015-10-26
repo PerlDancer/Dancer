@@ -35,7 +35,7 @@ my $setters = {
     },
     log_file => sub {
         require Dancer::Logger;
-        Dancer::Logger->init(setting("logger"), setting());
+        Dancer::Logger->init(setting("logger"), settings());
     },
     session => sub {
         my ($setting, $value) = @_;
@@ -288,7 +288,7 @@ You can change a setting with the keyword B<set>, like the following:
 
 A better way of defining settings exists: using YAML file. For this to be
 possible, you have to install the L<YAML> module. If a file named B<config.yml>
-exists in the application directory, it will be loaded, as a setting group.
+exists in the application directory it will be loaded as a setting group.
 
 The same is done for the environment file located in the B<environments>
 directory.
@@ -316,6 +316,8 @@ See L<Dancer::Serializer::YAML> for more details.
 The IP address that the Dancer app should bind to.  Default is 0.0.0.0, i.e.
 bind to all available interfaces.
 
+Can also be set with environment variable L<DANCER_SERVER|/"ENVIRONMENT VARIABLES">
+
 =head3 port (int)
 
 The port Dancer will listen to.
@@ -323,10 +325,14 @@ The port Dancer will listen to.
 Default value is 3000. This setting can be changed on the command-line with the
 B<--port> switch.
 
+Can also be set with environment variable L<DANCER_PORT|/"ENVIRONMENT VARIABLES">
+
 =head3 daemon (boolean)
 
 If set to true, runs the standalone webserver in the background.
 This setting can be changed on the command-line with the B<--daemon> flag.
+
+Can also be enabled by setting environment variable L<DANCER_DAEMON|/"ENVIRONMENT VARIABLES"> to a true value. 
 
 =head3 behind_proxy (boolean)
 
@@ -340,6 +346,8 @@ C<redirect>. This is useful if your application is behind a proxy.
 
 The default content type of outgoing content.
 Default value is 'text/html'.
+
+Can also be set with environment variable L<DANCER_CONTENT_TYPE|/"ENVIRONMENT VARIABLES">
 
 =head3 charset (string)
 
@@ -382,6 +390,8 @@ Also, since automatically serialized JSON responses have
 C<application/json> Content-Type, you should always encode them by
 hand.
 
+Can also be set with environment variable L<DANCER_CHARSET|/"ENVIRONMENT VARIABLES">
+
 =head3 default_mime_type (string)
 
 Dancer's L<Dancer::MIME> module uses C<application/data> as a default
@@ -396,9 +406,9 @@ C<text/plain>.
 =head3 environment (string)
 
 This is the name of the environment that should be used. Standard
-Dancer applications have a C<environments> folder with specific
+Dancer applications have an C<environments> folder with specific
 configuration files for different environments (usually development
-and production environments). They specify different kind of error
+and production environments). They specify different kinds of error
 reporting, deployment details, etc. These files are read after the
 generic C<config.yml> configuration file.
 
@@ -409,6 +419,8 @@ The running environment can be set with:
 Note that this variable is also used as a default value if other
 values are not defined.
 
+Can also be set with environment variable L<DANCER_ENVIRONMENT|/"ENVIRONMENT VARIABLES">
+
 =head3 appdir (directory)
 
 This is the path where your application will live.  It's where Dancer
@@ -418,13 +430,15 @@ content.
 It is typically set by C<use Dancer> to use the same directory as your
 script.
 
+Can also be set with environment variable L<DANCER_APPDIR|/"ENVIRONMENT VARIABLES">
+
 =head3 public (directory)
 
 This is the directory, where static files are stored. Any existing
 file in that directory will be served as a static file, before
 matching any route.
 
-By default, it points to $appdir/public.
+By default it points to $appdir/public.
 
 =head3 views (directory)
 
@@ -446,7 +460,7 @@ use Template Toolkit, add the following to C<config.yml>:
 =head3 layout (string)
 
 The name of the layout to use when rendering view. Dancer will look for
-a matching template in the directory $views/layout.
+a matching template in the directory $views/layouts.
 
 Your can override the default layout using the third argument of the
 C<template> keyword. Check C<Dancer> manpage for details.
@@ -464,12 +478,15 @@ L<Dancer::Config::Object> for more information.
 If true, C<use warnings> will be in effect for all modules and scripts loaded
 by your Dancer application. Default is false.
 
+Can also be enabled by setting the environment variable L<DANCER_WARNINGS|/"ENVIRONMENT VARIABLES"> to
+a true value.
+
 =head3 startup_info (boolean)
 
 If set to true (the default), prints a banner at server startup with information such as
 versions and the environment (or "dancefloor").
 
-Can also be disabled by setting the environment variable DANCER_NO_STARTUP_INFO to
+Can also be disabled by setting the environment variable L<DANCER_NO_STARTUP_INFO|/"ENVIRONMENT VARIABLES"> to
 a true value.
 
 =head3 warnings (boolean)
@@ -481,24 +498,26 @@ If set to true, tells Dancer to consider all warnings as blocking errors. Defaul
 If set to true, Dancer will display full stack traces when a warning or a die
 occurs. (Internally sets Carp::Verbose). Default is false.
 
+Can also be enabled by setting environment variable L<DANCER_TRACES|/"ENVIRONMENT VARIABLES"> to a true value.
+
 =head3 require_environment (boolean)
 
 If set to true, Dancer will fail during startup if your environment file is
 missing or can't be read. This is especially useful in production when you
 have things like memcached settings that need to be set per-environment.
-Default to false.
+Defaults to false.
 
 =head3 server_tokens (boolean)
 
 If set to true (the default), Dancer will add an "X-Powered-By" header and also append
 the Dancer version to the "Server" header.
 
-Can also be disabled by setting the environment variable C<DANCER_NO_SERVER_TOKENS> to
+Can also be disabled by setting the environment variable L<DANCER_NO_SERVER_TOKENS|/"ENVIRONMENT VARIABLES"> to
 a true value.
 
 =head3 log_path (string)
 
-Folder where the ``file C<logger>'' saves logfiles.
+Folder where the ``file C<logger>'' saves log files.
 
 =head3 log_file (string)
 
@@ -520,6 +539,8 @@ Various other logger backends are available on CPAN, including
 L<Dancer::Logger::Syslog>, L<Dancer::Logger::Log4perl>, L<Dancer::Logger::PSGI>
 (which can, with the aid of Plack middlewares, send log messages to a browser's
 console window) and others.
+
+Can also be set with environment variable L<DANCER_LOGGER|/"ENVIRONMENT VARIABLES">
 
 =head3 log (enum)
 
@@ -579,28 +600,12 @@ The code throwing that error.
 =back
 
 
-=head3 auto_reload (boolean)
-
-Requires L<Module::Refresh> and L<Clone>.
-
-If set to true, Dancer will reload the route handlers whenever the file where
-they are defined is changed. This is very useful in development environment but
-B<should not be enabled in production>. Enabling this flag in production yields
-a major negative effect on performance because of L<Module::Refresh>.
-
-When this flag is set, you don't have to restart your webserver whenever you
-make a change in a route handler.
-
-Note that L<Module::Refresh> only operates on files in C<%INC>, so if the script
-your Dancer app is started from changes, even with auto_reload enabled, you will
-still not see the changes reflected until you start your app.
-
 =head2 Session engine
 
 =head3 session (enum)
 
-This setting lets you enable a session engine for your web application. Be
-default, sessions are disabled in Dancer, you must choose a session engine to
+This setting lets you enable a session engine for your web application. By
+default sessions are disabled in Dancer. You must choose a session engine to
 use them.
 
 See L<Dancer::Session> for supported engines and their respective configuration.
@@ -608,7 +613,7 @@ See L<Dancer::Session> for supported engines and their respective configuration.
 =head3 session_expires
 
 The session expiry time in seconds, or as e.g. "2 hours" (see
-L<Dancer::Cookie/expires>.  By default, there is no specific expiry time.
+L<Dancer::Cookie/expires>.  By default there is no specific expiry time.
 
 =head3 session_name
 
@@ -625,7 +630,7 @@ only be sent over HTTPS connections.
 
 This setting defaults to 1 and instructs the session cookie to be
 created with the C<HttpOnly> option active, meaning that JavaScript
-will not be able to access to its value.
+will not be able to access its value.
 
 =head3 session_domain
 
@@ -654,8 +659,7 @@ Then, if you request C</foo/bar>, Dancer will look in the views dir for
 C</foo/bar.tt>.
 
 Dancer will honor your C<before_template_render> code, and all default
-variables. They will be accessible and interpolated on automatic
-served pages.
+variables. They will be accessible and interpolated on automaticly-served pages.
 
 The pages served this way will have C<Content-Type> set to C<text/html>,
 so don't use the feature for anything else.
@@ -678,7 +682,7 @@ Maximum number of routes to cache. Defaults to 600 - see L<Dancer::Route::Cache>
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 
-It's possible to set the configuration directory and environment directory using this two
+It's possible to set the configuration directory and environment directory using these two
 environment variables. Setting `DANCER_CONFDIR` will have the same effect as doing
 
     set confdir => '/path/to/confdir'
@@ -686,6 +690,43 @@ environment variables. Setting `DANCER_CONFDIR` will have the same effect as doi
 and setting `DANCER_ENVDIR` will be similar to:
 
     set envdir => '/path/to/environments'
+
+=head1 ENVIRONMENT VARIABLES
+
+Some settings can be provided via environment variables at runtime, as detailed above; a full list of environment variables you can use follows.
+
+L<DANCER_APPDIR|/"appdir (directory)">
+
+DANCER_APPHANDLER a L<Dancer::Handler::*> by default L<Dancer::Handler::Standalone> 
+
+L<DANCER_AUTO_RELOAD|/"auto_reload (boolean)">
+
+L<DANCER_CHARSET|/"charset (string)">
+
+DANCER_CONFDIR
+
+L<DANCER_CONTENT_TYPE|/"content_type (string)">
+
+L<DANCER_DAEMON|/"daemon (boolean)">
+
+DANCER_ENVDIR
+
+L<DANCER_ENVIRONMENT|/"environment (string)">
+
+L<DANCER_NO_SERVER_TOKENS|/"server_tokens (boolean)">
+
+L<DANCER_NO_STARTUP_INFO|/"startup_info (boolean)">
+
+L<DANCER_LOGGER|/"logger (enum)">
+
+L<DANCER_PORT|/"port (int)">
+
+L<DANCER_SERVER|/"server (string)">
+
+L<DANCER_TRACES|/"traces (boolean)">
+
+L<DANCER_WARNINGS|/"global_warnings (boolean, default: false)">
+
 
 =head1 AUTHOR
 

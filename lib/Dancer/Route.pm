@@ -1,4 +1,5 @@
 package Dancer::Route;
+# ABSTRACT: Class to represent a route in Dancer
 
 use strict;
 use warnings;

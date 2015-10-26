@@ -16,20 +16,20 @@ eval {
     Dancer::Config::load_settings_from_yaml('foo');
 };
 
-like $@, qr/Unable to parse the configuration file/;
+like $@, qr/Unable to parse the configuration file/, 'non-existent yaml file';
 
 my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 
 my $config_file = File::Spec->catfile($dir, 'settings.yml');
 
 open my $fh, '>', $config_file;
-print $fh '---foo\n';
+print $fh '---"foo';
 close $fh;
 
 eval {
     Dancer::Config::load_settings_from_yaml($config_file);
 };
 
-like $@, qr/Unable to parse the configuration file/;
+like $@, qr/Unable to parse the configuration file/, 'invalid yaml file';
 
 File::Temp::cleanup();

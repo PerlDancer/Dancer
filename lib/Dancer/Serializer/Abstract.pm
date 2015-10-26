@@ -1,4 +1,5 @@
 package Dancer::Serializer::Abstract;
+# ABSTRACT: Base serialiser class for Dancer
 
 use strict;
 use warnings;
