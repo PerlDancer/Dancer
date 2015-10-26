@@ -1,7 +1,7 @@
 Revision history for Dancer
 
 {{$NEXT}}
-  [ API CHANGES ]
+  Note: new release manager for Dancer1: David Precious (BIGPRESH)
 
   [ BUG FIXES ]
     - Fix temporary directory handling in serialiser tests (PR 1133, nanis)
@@ -12,10 +12,11 @@ Revision history for Dancer
     - More efficient handling of large requests - don't store the raw request
       body, but fish it out of the HTTP::Body object's temp file if required
       (PR 1134, David Precious (bigpresh))
+
+  [ NEW FEATURES ]
     - Allow mixd named params and splats in route definitions (PR 1086,
       veryrusty)
 
-  [ NEW FEATURES ]
 
   [ STATISTICS ]
 
