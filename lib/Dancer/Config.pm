@@ -240,19 +240,20 @@ sub load_settings_from_yaml {
 }
 
 sub load_default_settings {
-    $SETTINGS->{server}        ||= $ENV{DANCER_SERVER}        || '0.0.0.0';
-    $SETTINGS->{port}          ||= $ENV{DANCER_PORT}          || '3000';
-    $SETTINGS->{content_type}  ||= $ENV{DANCER_CONTENT_TYPE}  || 'text/html';
-    $SETTINGS->{charset}       ||= $ENV{DANCER_CHARSET}       || '';
-    $SETTINGS->{startup_info}  ||= !$ENV{DANCER_NO_STARTUP_INFO};
-    $SETTINGS->{daemon}        ||= $ENV{DANCER_DAEMON}        || 0;
-    $SETTINGS->{apphandler}    ||= $ENV{DANCER_APPHANDLER}    || 'Standalone';
-    $SETTINGS->{warnings}      ||= $ENV{DANCER_WARNINGS}      || 0;
-    $SETTINGS->{auto_reload}   ||= $ENV{DANCER_AUTO_RELOAD}   || 0;
-    $SETTINGS->{traces}        ||= $ENV{DANCER_TRACES}        || 0;
-    $SETTINGS->{server_tokens} ||= !$ENV{DANCER_NO_SERVER_TOKENS};
-    $SETTINGS->{logger}        ||= $ENV{DANCER_LOGGER}        || 'file';
-    $SETTINGS->{environment}   ||=
+    $SETTINGS->{server}                 ||= $ENV{DANCER_SERVER}        || '0.0.0.0';
+    $SETTINGS->{port}                   ||= $ENV{DANCER_PORT}          || '3000';
+    $SETTINGS->{content_type}           ||= $ENV{DANCER_CONTENT_TYPE}  || 'text/html';
+    $SETTINGS->{charset}                ||= $ENV{DANCER_CHARSET}       || '';
+    $SETTINGS->{startup_info}           ||= !$ENV{DANCER_NO_STARTUP_INFO};
+    $SETTINGS->{daemon}                 ||= $ENV{DANCER_DAEMON}        || 0;
+    $SETTINGS->{apphandler}             ||= $ENV{DANCER_APPHANDLER}    || 'Standalone';
+    $SETTINGS->{warnings}               ||= $ENV{DANCER_WARNINGS}      || 0;
+    $SETTINGS->{auto_reload}            ||= $ENV{DANCER_AUTO_RELOAD}   || 0;
+    $SETTINGS->{traces}                 ||= $ENV{DANCER_TRACES}        || 0;
+    $SETTINGS->{server_tokens}          ||= !$ENV{DANCER_NO_SERVER_TOKENS};
+    $SETTINGS->{logger}                 ||= $ENV{DANCER_LOGGER}        || 'file';
+    $SETTINGS->{allow_encoded_slashes}  ||= $ENV{DANCER_ALLOW_ENCODED_SLASHES} || 'Off';
+    $SETTINGS->{environment}            ||=
          $ENV{DANCER_ENVIRONMENT}
       || $ENV{PLACK_ENV}
       || 'development';
@@ -679,6 +680,13 @@ Maximum size of route cache (e.g. 1024, 2M). Defaults to 10M (10MB) - see L<Danc
 
 Maximum number of routes to cache. Defaults to 600 - see L<Dancer::Route::Cache>
 
+=head2 Route handling
+
+=head3 allow_encoded_slashes (string)
+
+Possible values are 'On', 'Off', and 'NoDecode'.
+If not set to 'Off', forward slashes encoded as %2F contained in the route will not be considered for the pattern matching.
+Encoded slashes as parameter values will be decoded if the value is 'On'. Default is 'Off'.
 
 =head2 DANCER_CONFDIR and DANCER_ENVDIR
 

@@ -124,6 +124,15 @@ sub match {
     # IT WILL MOVE VERY SOON
     $request->{_route_pattern} = $self->pattern;
 
+    # decode encoded slashes if appropriate
+    my $allow_encoded_slashes = setting('allow_encoded_slashes') || 'Off';
+    if ( $allow_encoded_slashes eq 'On' )
+    {
+	foreach my $i ( 0 .. $#values ) {
+	    $values[$i] =~ s,%2[Ff],/,g;
+	}
+    }
+
     # named tokens
     my @tokens = @{$self->{_params} || []};
 

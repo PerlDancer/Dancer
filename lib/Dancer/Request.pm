@@ -459,13 +459,40 @@ sub _build_path {
     my ($self) = @_;
     my $path = "";
 
+    # prevent decoding encoded slashes if appropriate
+    # which is a MAY condition according to RFC 3875
+    my $allow_encoded_slashes = setting('allow_encoded_slashes') || 'Off';
+
+    my $unencode_slashes = $allow_encoded_slashes eq 'Off' ? 1 : 0;
+
     $path .= $self->script_name if defined $self->script_name;
-    $path .= $self->env->{PATH_INFO} if defined $self->env->{PATH_INFO};
+
+    # CGI.pm rigorously unescapes PATH_INFO, so we cannot use that
+    # ... unless $request_uri is not defined
+    my $request_uri = $self->request_uri;
+    $unencode_slashes = 1 if (! defined $request_uri);
+
+    if ($unencode_slashes) {
+	$path .= $self->env->{PATH_INFO} if defined $self->env->{PATH_INFO};
+    }
 
     # fallback to REQUEST_URI if nothing found
     # we have to decode it, according to PSGI specs.
-    if (defined $self->request_uri) {
-        $path ||= $self->_url_decode($self->request_uri);
+    # however, we should cut off the trailing query_string
+
+    if ($path eq '' && defined $request_uri) {
+	# $request_uri =~ s/\?.*$//;
+	my ( $request_uri_path, $query_string ) =
+	    $request_uri =~ /^([^?]+)(\?.*)$/ ? ( $1, $2 ) : ( $request_uri, '' );
+	$path = $self->_url_decode($request_uri_path, !$unencode_slashes);
+
+	# change PATH_INFO in retrospect if we can safely do so
+	my $path_info = $self->env->{PATH_INFO} || '';
+	my $unencoded_request_uri_path = $self->_url_decode($request_uri_path);
+	if ( $unencoded_request_uri_path ne $path &&
+	     $unencoded_request_uri_path eq $path_info ) {
+	    $self->env->{PATH_INFO} = $path;
+	}
     }
 
     raise core_request => "Cannot resolve path" if not $path;
@@ -493,10 +520,16 @@ sub _build_method {
 }
 
 sub _url_decode {
-    my ($self, $encoded) = @_;
+    my ($self, $encoded, $allow_encoded_slashes) = @_;
     my $clean = $encoded;
     $clean =~ tr/\+/ /;
-    $clean =~ s/%([a-fA-F0-9]{2})/pack "H2", $1/eg;
+    if ($allow_encoded_slashes) {
+	# don't pack %2F
+	$clean =~ s/%([a-fA-F013-9][a-fA-F0-9]|2[a-eA-E0-9])/pack "H2", $1/eg;
+    } 
+    else {
+	$clean =~ s/%([a-fA-F0-9]{2})/pack "H2", $1/eg;
+    }
     return $clean;
 }
 
