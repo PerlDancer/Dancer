@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 20;
+use Test::More import => ['!pass'], tests => 21;
 
 use strict;
 use warnings;
@@ -37,8 +37,11 @@ response_headers_include [GET => '/with_headers'], [ 'X-Foo-Dancer' => '42' ];
 my $resp = dancer_response(@$req);
 is $resp->{status}, 200, "response status from dancer_response looks good";
 
+
+response_content_is [POST => '/jsondata', { body => 42 }], 42,
+    "a POST request with a body looks good";
 response_content_is [PUT => '/jsondata', { body => 42 }], 42,
-    "a request with a body looks good";
+    "a PUT request with a body looks good";
 
 response_content_is [POST => '/name', { params => {name => 'Bob'} }],
     "Your name: Bob", "a request with params looks good";

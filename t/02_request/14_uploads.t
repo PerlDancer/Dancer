@@ -6,6 +6,7 @@ use Dancer::Request;
 use Dancer::Test;
 use Dancer::FileUtils;
 use Test::More 'import' => ['!pass'];
+use Digest::MD5;
 
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
@@ -63,7 +64,7 @@ SHOGUN6
 $content =~ s/\r\n/\n/g;
 $content =~ s/\n/\r\n/g;
 
-plan tests => 21;
+plan tests => 22;
 
 do {
     open my $in, '<', \$content;
@@ -145,8 +146,13 @@ post(
     '/upload',
     sub {
         my $file = upload('test');
-        is $file->{filename}, $dest_file;
-        return $file->content;
+        diag "/upload handler dealing with file uploaded as named param"
+            . " test with filename " . $file->{filename};
+        is $file->{filename}, $dest_file, "Uploaded file with right filename";
+
+        # Return the filename and MD5 hash of the content so we can
+        # double-check we got what we expected:
+        return join ":", 'test', Digest::MD5::md5_hex($file->content);
     }
 );
 
@@ -155,10 +161,10 @@ post(
     sub {
         my $content;
         my $uploads = request->uploads;
-        foreach my $u (keys %$uploads){
-            $content .= $uploads->{$u}->content;
-        }
-        return $content;
+        return join ";",
+            map {
+                join ":", $_, Digest::MD5::md5_hex($uploads->{$_}->content)
+            } sort keys %$uploads;
     }
 );
 
@@ -170,7 +176,9 @@ close $fh;
 my $resp =
   dancer_response( 'POST', '/upload',
     { files => [ { name => 'test', filename => $dest_file } ] } );
-is $resp->content, $content;
+is $resp->content,
+    'test:acbd18db4cc2f85cedef654fccc4a4d8',
+    "Expected response for a single file upload";    
 
 my $files;
 for (qw/a b c/){
@@ -182,5 +190,33 @@ for (qw/a b c/){
 }
 
 $resp =  dancer_response( 'POST', '/uploads', {files => $files});
-is length($resp->content), 3;
-like $resp->content, qr/a/;
+is $resp->content, 
+    join(';',"a:0cc175b9c0f1b6a831c399e269772661",
+    "b:92eb5ffee6ae2fec3ad71c777531578f",
+    "c:4a8a08f09d37b73795649038408b5f33"),
+    "Expected response for multi uploads";
+
+
+
+## test #23
+# create a file, 256MB of zeros
+$dest_file = File::Spec->catfile($dest_dir, "zeros");
+system("dd if=/dev/zero of=$dest_file count=250000 bs=1024");
+open(my $zerosfh, "<", $dest_file)
+    or die "Failed to open $dest_file - $!";
+my $digest = Digest::MD5->new;
+$digest->addfile($zerosfh);
+my $expect_md5 = $digest->hexdigest;
+undef $digest;
+close $zerosfh;
+
+my $bigf_resp =
+  dancer_response( 'POST', '/upload',
+    { files => [ { name => 'test', filename => $dest_file } ] } );
+is(
+    $bigf_resp->content, 
+    "test:$expect_md5",
+    "Large file uploaded OK"
+);
+
+
