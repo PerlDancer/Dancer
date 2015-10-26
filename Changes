@@ -12,6 +12,8 @@ Revision history for Dancer
     - More efficient handling of large requests - don't store the raw request
       body, but fish it out of the HTTP::Body object's temp file if required
       (PR 1134, David Precious (bigpresh))
+    - Allow mixd named params and splats in route definitions (PR 1086,
+      veryrusty)
 
   [ NEW FEATURES ]
 
