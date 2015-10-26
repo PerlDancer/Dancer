@@ -64,7 +64,7 @@ SHOGUN6
 $content =~ s/\r\n/\n/g;
 $content =~ s/\n/\r\n/g;
 
-plan tests => 22;
+plan tests => $ENV{TEST_LARGE_FILE_UPLOAD} ? 22 : 20;
 
 do {
     open my $in, '<', \$content;
@@ -146,8 +146,6 @@ post(
     '/upload',
     sub {
         my $file = upload('test');
-        diag "/upload handler dealing with file uploaded as named param"
-            . " test with filename " . $file->{filename};
         is $file->{filename}, $dest_file, "Uploaded file with right filename";
 
         # Return the filename and MD5 hash of the content so we can
@@ -198,25 +196,29 @@ is $resp->content,
 
 
 
-## test #23
-# create a file, 256MB of zeros
-$dest_file = File::Spec->catfile($dest_dir, "zeros");
-system("dd if=/dev/zero of=$dest_file count=250000 bs=1024");
-open(my $zerosfh, "<", $dest_file)
-    or die "Failed to open $dest_file - $!";
-my $digest = Digest::MD5->new;
-$digest->addfile($zerosfh);
-my $expect_md5 = $digest->hexdigest;
-undef $digest;
-close $zerosfh;
+# Test for a request with a large file upload - not run by default as it
+# involves creating a large file to upload, which is a bit rude, and this test
+# may exhaust available RAM on small systems.
+if ($ENV{TEST_LARGE_FILE_UPLOAD}) {
+    # create a file, 256MB of zeros
+    $dest_file = File::Spec->catfile($dest_dir, "zeros");
+    system("dd if=/dev/zero of=$dest_file count=250000 bs=1024");
+    open(my $zerosfh, "<", $dest_file)
+        or die "Failed to open $dest_file - $!";
+    my $digest = Digest::MD5->new;
+    $digest->addfile($zerosfh);
+    my $expect_md5 = $digest->hexdigest;
+    undef $digest;
+    close $zerosfh;
 
-my $bigf_resp =
-  dancer_response( 'POST', '/upload',
-    { files => [ { name => 'test', filename => $dest_file } ] } );
-is(
-    $bigf_resp->content, 
-    "test:$expect_md5",
-    "Large file uploaded OK"
-);
+    my $bigf_resp =
+    dancer_response( 'POST', '/upload',
+        { files => [ { name => 'test', filename => $dest_file } ] } );
+    is(
+        $bigf_resp->content, 
+        "test:$expect_md5",
+        "Large file uploaded OK"
+    );
+}
 
 
