@@ -4,10 +4,14 @@ Revision history for Dancer
   [ API CHANGES ]
 
   [ BUG FIXES ]
+    - Fix temporary directory handling in serialiser tests (PR 1133, nanis)
 
   [ DOCUMENTATION ]
 
   [ ENHANCEMENTS ]
+    - More efficient handling of large requests - don't store the raw request
+      body, but fish it out of the HTTP::Body object's temp file if required
+      (PR 1134, David Precious (bigpresh))
 
   [ NEW FEATURES ]
 
