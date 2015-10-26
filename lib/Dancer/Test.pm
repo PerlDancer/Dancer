@@ -313,7 +313,7 @@ sub dancer_response {
         elsif ( $args->{body} ) {
             $content      = $args->{body};
             $content_type = $args->{content_type}
-                || 'application/x-www-form-urlencoded';
+                || 'text/plain';
 
             # coerce hashref into an url-encoded string
             if ( ref($content) && ( ref($content) eq 'HASH' ) ) {
@@ -324,6 +324,7 @@ sub dancer_response {
                     push @tokens, "${name}=${value}";
                 }
                 $content = join( '&', @tokens );
+                $content_type = 'application/x-www-form-urlencoded';
             }
         }
         elsif ( $args->{files} ) {
