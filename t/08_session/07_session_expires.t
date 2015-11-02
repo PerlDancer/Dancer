@@ -64,6 +64,7 @@ for my $session_expires (keys %tests) {
                  session_expires => $session_expires,
                  environment     => 'production',
                  port            => $port,
+                 server          => '127.0.0.1',
                  startup_info    => 0 );
             Dancer->dance();
         },

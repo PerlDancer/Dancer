@@ -46,6 +46,7 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
         set( port         => $port,
+             server       => '127.0.0.1',
              startup_info => 0 );
         Dancer->dance();
     },

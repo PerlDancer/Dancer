@@ -38,6 +38,7 @@ Test::TCP::test_tcp(
         use t::lib::TestAppUnicode;
 
         set( charset      => 'utf8',
+             host         => '127.0.0.1',
              port         => $port,
              show_errors  => 1,
              startup_info => 0,

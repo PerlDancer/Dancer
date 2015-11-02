@@ -38,6 +38,7 @@ Test::TCP::test_tcp(
 
         set( apphandler   => $handler,
              port         => $port,
+             server       => '127.0.0.1',
              show_errors  => 1,
              startup_info => 0 );
 

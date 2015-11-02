@@ -50,6 +50,7 @@ Test::TCP::test_tcp(
         set( charset      => 'utf-8',
              environment  => 'production',
              port         => $port,
+             server       => '127.0.0.1',
              startup_info => 0 );
         Dancer->dance();
     },
@@ -81,6 +82,7 @@ Test::TCP::test_tcp(
             # no charset
             environment  => 'production',
             port         => $port,
+            server       => '127.0.0.1',
             startup_info => 0,
         );
         Dancer->dance;
@@ -114,6 +116,7 @@ SKIP: {
                 # no charset
                 environment  => 'production',
                 port         => $port,
+                server       => '127.0.0.1',
                 startup_info => 0,
                 serializer   => 'JSON',
             );

@@ -53,7 +53,7 @@ Test::TCP::test_tcp(
         my $handler = sub {
             use Dancer;
 
-            set port => $port, apphandler => 'PSGI', startup_info => 0;
+            set port => $port, server => '127.0.0.1', apphandler => 'PSGI', startup_info => 0;
 
             get  '/'    => sub {$js_content};
             ajax '/foo' => sub {'bar'};

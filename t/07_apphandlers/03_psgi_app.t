@@ -44,6 +44,6 @@ Test::TCP::test_tcp(
         set apphandler  => 'PSGI', environment => 'production';
         Dancer::Config->load;
 
-        Plack::Loader->auto(port => $port)->run($app);
+        Plack::Loader->auto(port => $port, server => '127.0.0.1')->run($app);
     },
 );
