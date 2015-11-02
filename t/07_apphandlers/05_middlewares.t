@@ -42,10 +42,11 @@ foreach my $c (@$confs) {
             set( environment       => 'production',
                  apphandler        => 'PSGI',
                  port              => $port,
+                 server            => '127.0.0.1',
                  startup_info      => 0,
                  plack_middlewares => $c->[0] );
             my $app = Dancer::Handler->get_handler()->dance;
-            Plack::Loader->auto( port => $port )->run($app);
+            Plack::Loader->auto( port => $port, server => '127.0.0.1' )->run($app);
         },
     );
 

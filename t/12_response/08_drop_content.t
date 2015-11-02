@@ -33,7 +33,7 @@ sub test {
         },
         server => sub {
             my $port = shift;
-            set port => $port, startup_info => 0;
+            set port => $port, server => '127.0.0.1', startup_info => 0;
 
             get '/204' => sub {
                 status 204;

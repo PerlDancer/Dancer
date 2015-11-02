@@ -52,7 +52,8 @@ Test::TCP::test_tcp(
 
         set( startup_info => 0,
              environment  => 'production',
-             port         => $port );
+             port         => $port,
+             server       => '127.0.0.1' );
         Dancer->dance();
     },
 );

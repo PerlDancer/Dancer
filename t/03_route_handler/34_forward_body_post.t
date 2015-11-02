@@ -42,7 +42,7 @@ Test::TCP::test_tcp(
 
       post '/foz' => sub { forward '/baz';  };
       post '/baz' => sub { join(":",params('body')) };
-      set startup_info => 0, port => $port, show_errors  => 1;
+      set startup_info => 0, port => $port, server => '127.0.0.1', show_errors  => 1;
       Dancer->dance();
   },
                    );

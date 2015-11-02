@@ -32,7 +32,7 @@ Test::TCP::test_tcp(
         # vars should be reset before the handler is called
         var foo => 42;
 
-        set startup_info => 0, port => $port;
+        set startup_info => 0, port => $port, server => '127.0.0.1';
 
         get "/getvarfoo" => sub {
             return ++vars->{foo};

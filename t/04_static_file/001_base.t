@@ -62,7 +62,7 @@ Test::TCP::test_tcp(
         setting apphandler => 'PSGI';
         Dancer::Config->load;
         my $app = Dancer::Handler->psgi_app;
-        Plack::Loader->auto( port => $port )->run($app);
+        Plack::Loader->auto( port => $port, host => '127.0.0.1' )->run($app);
         Dancer->dance();
     }
 );
@@ -83,7 +83,7 @@ Test::TCP::test_tcp(
         setting apphandler => 'PSGI';
         Dancer::Config->load;
         my $app = Dancer::Handler->psgi_app;
-        Plack::Loader->auto( port => $port )->run($app);
+        Plack::Loader->auto( port => $port, host => '127.0.0.1' )->run($app);
         Dancer->dance();
     }
 );

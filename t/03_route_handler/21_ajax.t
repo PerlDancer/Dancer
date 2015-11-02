@@ -68,7 +68,7 @@ Test::TCP::test_tcp(
         use Dancer;
         use Dancer::Plugin::Ajax;
 
-        set startup_info => 0, port => $port, layout => 'wibble';
+        set startup_info => 0, port => $port, server => '127.0.0.1', layout => 'wibble';
 
         ajax '/req' => sub {
             return 1;
