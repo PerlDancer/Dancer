@@ -8,6 +8,8 @@ Revision history for Dancer
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
+ - Bind to 127.0.0.1 in tests to avoid occasional spurious failures on busy
+   build hosts (PR 1136, thanks to @redbaron)
 
  [NEW FEATURES]
 
