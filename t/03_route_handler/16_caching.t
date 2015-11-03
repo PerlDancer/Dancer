@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 66, import => ['!pass'];
+use Test::More tests => 55, import => ['!pass'];
 use Dancer::Test;
 use Dancer ':syntax';
 setting route_cache => 1;
@@ -126,38 +126,20 @@ SKIP: {
     # testing size_limit
     delete $cache->{'path_limit'};
 
-    # doing it manually since parse_size is only in init
-    $cache->size_limit( $cache->parse_size('3K') );
+    my $size_limit = $cache->parse_size('3K');
+    $cache->size_limit( $size_limit );
 
-    # creating large routes
-    my @paths = ();
-    foreach my $iter ( 1 .. 10 ) {
-        my $all = '';
-        while ( length $all < 300 ) {
-            $all .= rand 99999;
-        }
-
-        push @paths, "/$all";
+    # Add lots of long routes to the cache, so we can then check that the size
+    # didn't grow out of control:
+    for (1..500) {
+        my $path = "/" . join '', map { int rand 10 } (1..10_000);
+        $cache->store_path(
+            'RETICULATE',
+            $path,
+            sub { 1 },
+        );
     }
 
-    foreach my $path (@paths) {
-        get "/$path" => sub {1};
-    }
-
-    foreach my $path (@paths) {
-        response_status_is [GET => $path] => 200, 'get request';
-    }
-
-    # check that only 10 remained
-    cmp_ok( $cache->route_cache_paths, '==', 9, 'Only 9 paths' );
-
-    # because we use a FIFO method, we know which ones they are
-    shift @paths;
-    my @expected_paths = map { [ 'get', $_, 'main' ] } @paths;
-
-    is_deeply(
-        $cache->{'cache_array'},
-        \@expected_paths,
-        'Correct paths',
-    );
+    cmp_ok($cache->route_cache_size, '<', $size_limit,
+        "Cache size stayed below limit");
 }
