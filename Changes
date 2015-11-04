@@ -8,12 +8,15 @@ Revision history for Dancer
  [DOCUMENTATION]
 
  [ENHANCEMENTS]
- - Bind to 127.0.0.1 in tests to avoid occasional spurious failures on busy
-   build hosts (PR 1136, thanks to @redbaron)
 
  [NEW FEATURES]
 
  [STATISTICS]
+
+1.3144 2015-11-04
+ [ENHANCEMENTS]
+ - Bind to 127.0.0.1 in tests to avoid occasional spurious failures on busy
+   build hosts (PR 1136, thanks to @redbaron)
 
 1.3143 2015-10-26
  - Note: new release manager for Dancer1: David Precious (BIGPRESH)
@@ -120,7 +123,7 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.
    (GH#1094, Steve Hay) - Using ':script' disable command-line argument
-   munging globally. (GH#1098,	   Brad Macpherson)
+   munging globally. (GH#1098,	     Brad Macpherson)
 
  [STATISTICS]
  - code churn: 33 files changed, 173 insertions(+), 113 deletions(-)
@@ -244,7 +247,7 @@ Revision history for Dancer
  [BUG FIXES]
  - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
    Wittkoski)
- - Test was failing if JSON module was absent.	   (GH#1022, Yanick
+ - Test was failing if JSON module was absent.	      (GH#1022, Yanick
    Champoux)
  - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
    Champoux)
@@ -409,8 +412,8 @@ Revision history for Dancer
  - Add scheme line for ngnix config in D::Deployment.
 
  [ENHANCEMENTS]
- - GH #919: 'dancer' script exits with code 255 if application	     name
-   is invalid. (ppisar)
+ - GH #919: 'dancer' script exits with code 255 if application	       
+   name is invalid. (ppisar)
  - GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
  - GH #926: make messages from fatal warnings show up in the logs.  (Max
    Maischein)
@@ -443,7 +446,7 @@ Revision history for Dancer
    Dancer2 (mokko).
 
  [ENHANCEMENTS]
- - GH #897 dancer script diagnostic more explicit if target directory	
+ - GH #897 dancer script diagnostic more explicit if target directory	   
    does not exist or is not writable (reported by Andrew Grangaard).
  - GH #907: skip tests of deprecated features (mokko).
 
@@ -457,8 +460,8 @@ Revision history for Dancer
  [BUG FIXES]
  - GH #891: silenced warnings from non-numeric versions in Makefile.PL
    (Olof Johansson).
- - GH #702: fix request->header call throwing exceptions inside routes	 of
-   Dancer->dance($request)	  (Perlover).
+ - GH #702: fix request->header call throwing exceptions inside routes	   
+   of Dancer->dance($request)	    (Perlover).
  - GH #893, GH #636: handle binary files for uploads in Dancer::Test
    (Andrei).
  - GH #903: add plan for subtest (bug report by wfaulk).
@@ -884,7 +887,7 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports		 (Alberto Simões)
+ - Fix a bunch of cpan testers reports		    (Alberto Simões)
 
 1.3069_01 2011-07-07
  [BUG FIXES]
@@ -928,8 +931,8 @@ Revision history for Dancer
 1.3059_03 2011-06-11
  [BUG FIXES]
  - Fix for issue #539 https://github.com/sukria/Dancer/issues/539 Don't
-   decode twice entries in the params hash table, file			 
-   uploads with UTF-8 characters in their name are now possible. (Toby
+   decode twice entries in the params hash table, file			   
+       uploads with UTF-8 characters in their name are now possible. (Toby
    Corkindale, Alexis Sukrieh)
  - Fix broken test with old version of HTTP::Parser::XS (Franck Cuny)
  - #492 - Don't run Test::TCP tests on win32 (Franck Cuny)
@@ -1488,8 +1491,8 @@ Revision history for Dancer
  - 1.2xxx releases; you should not have issues updating to any 1.2xxx	   
       **
  - version because of it.    **
- - A very special thanks goes to the Dancer community who improved and	  
-   ++
+ - A very special thanks goes to the Dancer community who improved and	   
+     ++
  - perfected this release and worked hard on reporting bugs, fixing them,
    ++
  - improving the stability, providing important features and everything  
@@ -1896,7 +1899,7 @@ Revision history for Dancer
  - Added Dancer::Test to provide helpers for writing test script for Dancer
    applications
  - FIX bug when returning a void context after redirecting a route. Thanks
-   to Juan J. Martínez	for the report.
+   to Juan J. Martínez	   for the report.
  - Add support for request headers in Dancer::Request
  - Add support for halt() in Dancer's syntax.
 
