@@ -1,0 +1,43 @@
+This is the Perl distribution Dancer.
+
+Installing Dancer is straightforward.
+
+## Installation with cpanm
+
+If you have cpanm, you only need one line:
+
+    % cpanm Dancer
+
+If you are installing into a system-wide directory, you may need to pass the
+"-S" flag to cpanm, which uses sudo to install the module:
+
+    % cpanm -S Dancer
+
+## Installing with the CPAN shell
+
+Alternatively, if your CPAN shell is set up, you should just be able to do:
+
+    % cpan Dancer
+
+## Manual installation
+
+As a last resort, you can manually install it. Download the tarball, untar it,
+then build it:
+
+    % perl Makefile.PL
+    % make && make test
+
+Then install it:
+
+    % make install
+
+If you are installing into a system-wide directory, you may need to run:
+
+    % sudo make install
+
+## Documentation
+
+Dancer documentation is available as POD.
+You can run perldoc from a shell to read the documentation:
+
+    % perldoc Dancer

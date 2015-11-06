@@ -1,9 +1,19 @@
 # PODNAME: Dancer::Policy
 # ABSTRACT: Dancer core and community policy and standards of conduct
 
+__END__
+
 =pod
 
-=encoding utf8
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Policy - Dancer core and community policy and standards of conduct
+
+=head1 VERSION
+
+version 1.3200
 
 =head1 DESCRIPTION
 
@@ -90,3 +100,15 @@ the Perl language development, provided by B<p5p> (the Perl 5 Porters).
 
 The original inspiration policy document can be read at L<perlpolicy>.
 
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
