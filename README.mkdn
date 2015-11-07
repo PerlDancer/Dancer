@@ -1,0 +1,1472 @@
+# NAME
+
+Dancer - lightweight yet powerful web application framework
+
+# VERSION
+
+version 1.3202
+
+# SYNOPSIS
+
+    #!/usr/bin/perl
+    use Dancer;
+
+    get '/hello/:name' => sub {
+        return "Why, hello there " . param('name');
+    };
+
+    dance;
+
+The above is a basic but functional web app created with Dancer.  If you want
+to see more examples and get up and running quickly, check out the
+[Dancer::Introduction](https://metacpan.org/pod/Dancer::Introduction) and the [Dancer::Cookbook](https://metacpan.org/pod/Dancer::Cookbook).  For examples on
+deploying your Dancer applications, see [Dancer::Deployment](https://metacpan.org/pod/Dancer::Deployment).
+
+# DESCRIPTION
+
+Dancer is a web application framework designed to be as effortless as possible
+for the developer, taking care of the boring bits as easily as possible, yet
+staying out of your way and letting you get on with writing your code.
+
+Dancer aims to provide the simplest way for writing web applications, and
+offers the flexibility to scale between a very simple lightweight web service
+consisting of a few lines of code in a single file, all the way up to a more
+complex fully-fledged web application with session support, templates for views
+and layouts, etc.
+
+If you don't want to write CGI scripts by hand, and find Catalyst too big or
+cumbersome for your project, Dancer is what you need.
+
+Dancer has few pre-requisites, so your Dancer webapps will be easy to deploy.
+
+Dancer apps can be used with an embedded web server (great for easy testing),
+and can run under PSGI/Plack for easy deployment in a variety of webserver
+environments.
+
+# MORE DOCUMENTATION
+
+This documentation describes all the exported symbols of Dancer. If you want
+a quick start guide to discover the framework, you should look at
+[Dancer::Introduction](https://metacpan.org/pod/Dancer::Introduction), or [Dancer::Tutorial](https://metacpan.org/pod/Dancer::Tutorial) to learn by example.
+
+If you want to have specific examples of code for real-life problems, see the
+[Dancer::Cookbook](https://metacpan.org/pod/Dancer::Cookbook).
+
+If you want to see configuration examples of different deployment solutions
+involving Dancer and Plack, see [Dancer::Deployment](https://metacpan.org/pod/Dancer::Deployment).
+
+You can find out more about the many useful plugins available for Dancer in
+[Dancer::Plugins](https://metacpan.org/pod/Dancer::Plugins).
+
+# EXPORTS
+
+By default, `use Dancer` exports all the functions below plus sets up
+your app.  You can control the exporting through the normal
+[Exporter](https://metacpan.org/pod/Exporter) mechanism.  For example:
+
+    # Just export the route controllers
+    use Dancer qw(get post put patch del);
+
+    # Export everything but pass to avoid clashing with Test::More
+    use Test::More;
+    use Dancer qw(!pass);
+
+Please note that the [utf8](https://metacpan.org/pod/utf8) and [strict](https://metacpan.org/pod/strict) pragmas are exported by this module.
+
+By default, the [warnings](https://metacpan.org/pod/warnings) pragma will also be exported, meaning your
+app/script will be running under `use warnings`.  If you do not want this, set
+the [global\_warnings](https://metacpan.org/pod/Dancer::Config#global_warnings) setting to a false value.
+
+There are also some special tags to control exports and behaviour.
+
+## :moose
+
+This will export everything except functions which clash with
+Moose. Currently these are `after` and `before`.
+
+## :syntax
+
+This tells Dancer to just export symbols and not set up your app.
+This is most useful for writing Dancer code outside of your main route
+handler.
+
+## :tests
+
+This will export everything except functions which clash with
+commonly used testing modules. Currently these are `pass`.
+
+It can be combined with other export pragmas. For example, while testing...
+
+    use Test::More;
+    use Dancer qw(:syntax :tests);
+
+    # Test::Most also exports "set" and "any"
+    use Test::Most;
+    use Dancer qw(:syntax :tests !set !any);
+
+    # Alternatively, if you want to use Dancer's set and any...
+    use Test::Most qw(!set !any);
+    use Dancer qw(:syntax :tests);
+
+## :script
+
+This will export all the keywords, load the configuration,
+and will not try to parse command-line arguments via [Dancer::GetOpt](https://metacpan.org/pod/Dancer::GetOpt).
+
+This is useful when you want to use your Dancer application from a script.
+
+    use MyApp;
+    use Dancer ':script';
+    MyApp::schema('DBSchema')->deploy();
+
+Note that using `:script`  will disable command-line parsing for all 
+subsequent invocations of `use Dancer` (such that you don't have to
+use `:script` for each and every module to make sure the command-line
+arguments don't get stolen by Dancer).
+
+## !keyword
+
+If you want to simply prevent Dancer from exporting specific keywords (perhaps
+you plan to implement them yourself in a different way, or you don't plan to use
+them and they clash with another module you're loading), you can simply exclude
+them:
+
+    use Dancer qw(!session);
+
+The above would import all keywords as normal, with the exception of `session`.
+
+# FUNCTIONS
+
+## after
+
+Deprecated - see the `after` [hook](https://metacpan.org/pod/Dancer#hook).
+
+## any
+
+Defines a route for multiple HTTP methods at once:
+
+    any ['get', 'post'] => '/myaction' => sub {
+        # code
+    };
+
+Or even, a route handler that would match any HTTP methods:
+
+    any '/myaction' => sub {
+        # code
+    };
+
+## before
+
+Deprecated - see the `before` [hook](https://metacpan.org/pod/Dancer#hook).
+
+## before\_template
+
+Deprecated - see the `before_template` [hook](https://metacpan.org/pod/Dancer#hook).
+
+## cookies
+
+Accesses cookies values, it returns a HashRef of [Dancer::Cookie](https://metacpan.org/pod/Dancer::Cookie) objects:
+
+    get '/some_action' => sub {
+        my $cookie = cookies->{name};
+        return $cookie->value;
+    };
+
+In the case you have stored something other than a Scalar in your cookie:
+
+    get '/some_action' => sub {
+        my $cookie = cookies->{oauth};
+        my %values = $cookie->value;
+        return ($values{token}, $values{token_secret});
+    };
+
+## cookie
+
+Accesses a cookie value (or sets it). Note that this method will
+eventually be preferred over `set_cookie`.
+
+    cookie lang => "fr-FR";              # set a cookie and return its value
+    cookie lang => "fr-FR", expires => "2 hours";   # extra cookie info
+    cookie "lang"                        # return a cookie value
+
+If your cookie value is a key/value URI string, like
+
+    token=ABC&user=foo
+
+`cookie` will only return the first part (`token=ABC`) if called in scalar context.
+Use list context to fetch them all:
+
+    my @values = cookie "name";
+
+## config
+
+Accesses the configuration of the application:
+
+    get '/appname' => sub {
+        return "This is " . config->{appname};
+    };
+
+## content\_type
+
+Sets the **content-type** rendered, for the current route handler:
+
+    get '/cat/:txtfile' => sub {
+        content_type 'text/plain';
+
+        # here we can dump the contents of param('txtfile')
+    };
+
+You can use abbreviations for content types. For instance:
+
+    get '/svg/:id' => sub {
+        content_type 'svg';
+
+        # here we can dump the image with id param('id')
+    };
+
+Note that if you want to change the default content-type for every route, you
+have to change the `content_type` setting instead.
+
+## dance
+
+Alias for the `start` keyword.
+
+## dancer\_version
+
+Returns the version of Dancer. If you need the major version, do something like:
+
+    int(dancer_version);
+
+## debug
+
+Logs a message of debug level:
+
+    debug "This is a debug message";
+
+See [Dancer::Logger](https://metacpan.org/pod/Dancer::Logger) for details on how to configure where log messages go.
+
+## dirname
+
+Returns the dirname of the path given:
+
+    my $dir = dirname($some_path);
+
+## engine
+
+Given a namespace, returns the current engine object
+
+    my $template_engine = engine 'template';
+    my $html = $template_engine->apply_renderer(...);
+    $template_engine->apply_layout($html);
+
+## error
+
+Logs a message of error level:
+
+    error "This is an error message";
+
+See [Dancer::Logger](https://metacpan.org/pod/Dancer::Logger) for details on how to configure where log messages go.
+
+## false
+
+Constant that returns a false value (0).
+
+## forward
+
+Runs an internal redirect of the current request to another request. This helps
+you avoid having to redirect the user using HTTP and set another request to your
+application.
+
+It effectively lets you chain routes together in a clean manner.
+
+    get '/demo/articles/:article_id' => sub {
+
+        # you'll have to implement this next sub yourself :)
+        change_the_main_database_to_demo();
+
+        forward "/articles/" . params->{article_id};
+    };
+
+In the above example, the users that reach _/demo/articles/30_ will actually
+reach _/articles/30_ but we've changed the database to demo before.
+
+This is pretty cool because it lets us retain our paths and offer a demo
+database by merely going to _/demo/..._.
+
+You'll notice that in the example we didn't indicate whether it was **GET** or
+**POST**. That is because `forward` chains the same type of route the user
+reached. If it was a **GET**, it will remain a **GET** (but if you do need to
+change the method, you can do so; read on below for details.)
+
+**WARNING** : using forward will **not** preserve session data set on
+the forwarding rule.
+
+**WARNING** : Issuing a forward immediately exits the current route,
+and perform the forward. Thus, any code after a forward is ignored, until the
+end of the route. e.g.
+
+    get '/foo/:article_id' => sub {
+        if ($condition) {
+            forward "/articles/" . params->{article_id};
+            # The following code is never executed
+            do_stuff();
+        }
+
+        more_stuff();
+    };
+
+So it's not necessary anymore to use `return` with forward.
+
+Note that forward doesn't parse GET arguments. So, you can't use
+something like:
+
+     return forward '/home?authorized=1';
+
+But `forward` supports an optional HashRef with parameters to be added
+to the actual parameters:
+
+     return forward '/home', { authorized => 1 };
+
+Finally, you can add some more options to the forward method, in a
+third argument, also as a HashRef. That option is currently
+only used to change the method of your request. Use with caution.
+
+    return forward '/home', { auth => 1 }, { method => 'POST' };
+
+## from\_dumper ($structure)
+
+Deserializes a [Data::Dumper](https://metacpan.org/pod/Data::Dumper) structure.
+
+## from\_json ($structure, %options)
+
+Deserializes a JSON structure. Can receive optional arguments. Those arguments
+are valid [JSON](https://metacpan.org/pod/JSON) arguments to change the behaviour of the default
+`JSON::from_json` function.
+
+## from\_yaml ($structure)
+
+Deserializes a YAML structure.
+
+## from\_xml ($structure, %options)
+
+Deserializes a XML structure. Can receive optional arguments. These arguments
+are valid [XML::Simple](https://metacpan.org/pod/XML::Simple) arguments to change the behaviour of the default
+`XML::Simple::XMLin` function.
+
+## get
+
+Defines a route for HTTP **GET** requests to the given path:
+
+    get '/' => sub {
+        return "Hello world";
+    }
+
+Note that a route to match **HEAD** requests is automatically created as well.
+
+## halt
+
+Sets a response object with the content given.
+
+When used as a return value from a filter, this breaks the execution flow and
+renders the response immediately:
+
+    hook before sub {
+        if ($some_condition) {
+            halt("Unauthorized");
+            # This code is not executed :
+            do_stuff();
+        }
+    };
+
+    get '/' => sub {
+        "hello there";
+    };
+
+**WARNING** : Issuing a halt immediately exits the current route, and perform
+the halt. Thus, any code after a halt is ignored, until the end of the route.
+So it's not necessary anymore to use `return` with halt.
+
+## headers
+
+Adds custom headers to responses:
+
+    get '/send/headers', sub {
+        headers 'X-Foo' => 'bar', X-Bar => 'foo';
+    }
+
+## header
+
+adds a custom header to response:
+
+    get '/send/header', sub {
+        header 'x-my-header' => 'shazam!';
+    }
+
+Note that it will overwrite the old value of the header, if any. To avoid that,
+see ["push\_header"](#push_header).
+
+## push\_header
+
+Do the same as `header`, but allow for multiple headers with the same name.
+
+    get '/send/header', sub {
+        push_header 'x-my-header' => '1';
+        push_header 'x-my-header' => '2';
+        will result in two headers "x-my-header" in the response
+    }
+
+## hook
+
+Adds a hook at some position. For example :
+
+    hook before_serializer => sub {
+      my $response = shift;
+      $response->content->{generated_at} = localtime();
+    };
+
+There can be multiple hooks assigned to a given position, and each will be
+executed in order. Note that **all** hooks are always called, even if they
+are defined in a different package loaded via `load_app`.
+
+(For details on how to register new hooks from within plugins, see
+[Dancer::Hook](https://metacpan.org/pod/Dancer::Hook).)
+Supported **before** hooks (in order of execution):
+
+- before\_deserializer
+
+    This hook receives no arguments.
+
+        hook before_deserializer => sub {
+          ...
+        };
+
+- before\_file\_render
+
+    This hook receives as argument the path of the file to render.
+
+        hook before_file_render => sub {
+          my $path = shift;
+          ...
+        };
+
+- before\_error\_init
+
+    This hook receives as argument a [Dancer::Error](https://metacpan.org/pod/Dancer::Error) object.
+
+        hook before_error_init => sub {
+          my $error = shift;
+          ...
+        };
+
+- before\_error\_render
+
+    This hook receives as argument a [Dancer::Error](https://metacpan.org/pod/Dancer::Error) object.
+
+        hook before_error_render => sub {
+          my $error = shift;
+        };
+
+- before
+
+    This hook receives one argument, the route being executed (a [Dancer::Route](https://metacpan.org/pod/Dancer::Route)
+    object).
+
+        hook before => sub {
+          my $route_handler = shift;
+          ...
+        };
+
+    it is equivalent to the deprecated
+
+        before sub {
+          ...
+        };
+
+- before\_template\_render
+
+    This is an alias to 'before\_template'.
+
+    This hook receives as argument a HashRef containing the tokens that
+    will be passed to the template. You can use it to add more tokens, or
+    delete some specific token.
+
+        hook before_template_render => sub {
+          my $tokens = shift;
+          delete $tokens->{user};
+          $tokens->{time} = localtime;
+        };
+
+    is equivalent to
+
+        hook before_template => sub {
+          my $tokens = shift;
+          delete $tokens->{user};
+          $tokens->{time} = localtime;
+        };
+
+- before\_layout\_render
+
+    This hook receives two arguments. The first one is a HashRef containing the
+    tokens. The second is a ScalarRef representing the content of the template.
+
+        hook before_layout_render => sub {
+          my ($tokens, $html_ref) = @_;
+          ...
+        };
+
+- before\_serializer
+
+    This hook receives as argument a [Dancer::Response](https://metacpan.org/pod/Dancer::Response) object.
+
+        hook before_serializer => sub {
+          my $response = shift;
+          $response->content->{start_time} = time();
+        };
+
+Supported **after** hooks (in order of execution):
+
+- after\_deserializer
+
+    This hook receives no arguments.
+
+        hook after_deserializer => sub {
+          ...
+        };
+
+- after\_file\_render
+
+    This hook receives as argument a [Dancer::Response](https://metacpan.org/pod/Dancer::Response) object.
+
+        hook after_file_render => sub {
+          my $response = shift;
+        };
+
+- after\_template\_render
+
+    This hook receives as argument a ScalarRef representing the content generated
+    by the template.
+
+        hook after_template_render => sub {
+          my $html_ref = shift;
+        };
+
+- after\_layout\_render
+
+    This hook receives as argument a ScalarRef representing the content generated
+    by the layout
+
+        hook after_layout_render => sub {
+          my $html_ref = shift;
+        };
+
+- after
+
+    This is an alias for `after`.
+
+    This hook runs after a request has been processed, but before the response is
+    sent.
+
+    It receives a [Dancer::Response](https://metacpan.org/pod/Dancer::Response) object, which it can modify
+    if it needs to make changes to the response which is about to be sent.
+
+        hook after => sub {
+          my $response = shift;
+        };
+
+    This is equivalent to the deprecated
+
+        after sub {
+          my $response = shift;
+        };
+
+- after\_error\_render
+
+    This hook receives as argument a [Dancer::Response](https://metacpan.org/pod/Dancer::Response) object.
+
+        hook after_error_render => sub {
+          my $response = shift;
+        };
+
+- on\_handler\_exception
+
+    This hook is called when an exception has been caught, at the handler level,
+    just before creating and rendering [Dancer::Error](https://metacpan.org/pod/Dancer::Error). This hook receives as
+    argument a [Dancer::Exception](https://metacpan.org/pod/Dancer::Exception) object.
+
+        hook on_handler_exception => sub {
+          my $exception = shift;
+        };
+
+- on\_reset\_state
+
+    This hook is called when global state is reset to process a new request.
+    It receives a boolean value that indicates whether the reset was called
+    as part of a forwarded request.
+
+        hook on_reset_state => sub {
+          my $is_forward = shift;
+        };
+
+- on\_route\_exception
+
+    This hook is called when an exception has been caught, at the route level, just
+    before rethrowing it higher. This hook receives the exception as argument. It
+    can be a Dancer::Exception, or a string, or whatever was used to `die`.
+
+        hook on_route_exception => sub {
+          my $exception = shift;
+        };
+
+## info
+
+Logs a message of info level:
+
+    info "This is a info message";
+
+See [Dancer::Logger](https://metacpan.org/pod/Dancer::Logger) for details on how to configure where log messages go.
+
+## layout
+
+This method is deprecated. Use `set`:
+
+    set layout => 'user';
+
+## logger
+
+Deprecated. Use `<set logger => 'console'`> to change current logger engine.
+
+## load
+
+Loads one or more perl scripts in the current application's namespace. Syntactic
+sugar around Perl's `require`:
+
+    load 'UserActions.pl', 'AdminActions.pl';
+
+## load\_app
+
+Loads a Dancer package. This method sets the libdir to the current `./lib`
+directory:
+
+    # if we have lib/Webapp.pm, we can load it like:
+    load_app 'Webapp';
+    # or with options
+    load_app 'Forum', prefix => '/forum', settings => {foo => 'bar'};
+
+Note that the package loaded using load\_app **must** import Dancer with the
+`:syntax` option.
+
+To load multiple apps repeat load\_app:
+
+    load_app 'one';
+    load_app 'two';
+
+The old way of loading multiple apps in one go (load\_app 'one', 'two';) is
+deprecated.
+
+## mime
+
+Shortcut to access the instance object of [Dancer::MIME](https://metacpan.org/pod/Dancer::MIME). You should
+read the [Dancer::MIME](https://metacpan.org/pod/Dancer::MIME) documentation for full details, but the most
+commonly-used methods are summarized below:
+
+    # set a new mime type
+    mime->add_type( foo => 'text/foo' );
+
+    # set a mime type alias
+    mime->add_alias( f => 'foo' );
+
+    # get mime type for an alias
+    my $m = mime->for_name( 'f' );
+
+    # get mime type for a file (based on extension)
+    my $m = mime->for_file( "foo.bar" );
+
+    # get current defined default mime type
+    my $d = mime->default;
+
+    # set the default mime type using config.yml
+    # or using the set keyword
+    set default_mime_type => 'text/plain';
+
+## params
+
+_This method should be called from a route handler_.
+It's an alias for the [Dancer::Request params
+accessor](https://metacpan.org/pod/Dancer::Request#params-source). In list context it returns a
+list of key/value pair of all defined parameters. In scalar context
+it returns a hash reference instead.
+Check `param` below to access quickly to a single
+parameter value.
+
+## param
+
+_This method should be called from a route handler_.
+This method is an accessor to the parameters hash table.
+
+    post '/login' => sub {
+        my $username = param "user";
+        my $password = param "pass";
+        # ...
+    }
+
+## param\_array
+
+_This method should be called from a route handler_.
+Like _param_, but always returns the parameter value or values as a list.
+Returns the number of values in scalar context.
+
+    # if request is '/tickets?tag=open&tag=closed&order=desc'...
+    get '/tickets' => sub {
+        my @tags = param_array 'tag';  # ( 'open', 'closed' )
+        my $tags = param 'tag';        # array ref
+
+        my @order = param_array 'order';  # ( 'desc' )
+        my $order = param 'order';        # 'desc'
+    };
+
+## pass
+
+_This method should be called from a route handler_.
+Tells Dancer to pass the processing of the request to the next
+matching route.
+
+**WARNING** : Issuing a pass immediately exits the current route, and performs
+the pass. Thus, any code after a pass is ignored until the end of the route.
+So it's not necessary any more to use `return` with pass.
+
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            pass(...);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
+
+## patch
+
+Defines a route for HTTP **PATCH** requests to the given URL:
+
+    patch '/resource' => sub { ... };
+
+(`PATCH` is a relatively new and not-yet-common HTTP verb, which is intended to
+work as a "partial-PUT", transferring just the changes; please see
+[http://tools.ietf.org/html/rfc5789|RFC5789](http://tools.ietf.org/html/rfc5789|RFC5789) for further details.)
+
+Please be aware that, if you run your app in standalone mode, `PATCH` requests
+will not reach your app unless you have a new version of [HTTP::Server::Simple](https://metacpan.org/pod/HTTP::Server::Simple)
+which accepts `PATCH` as a valid verb.  The current version at time of writing,
+`0.44`, does not.  A pull request has been submitted to add this support, which
+you can find at:
+
+[https://github.com/bestpractical/http-server-simple/pull/1](https://github.com/bestpractical/http-server-simple/pull/1)
+
+## path
+
+Concatenates multiple paths together, without worrying about the underlying
+operating system:
+
+    my $path = path(dirname($0), 'lib', 'File.pm');
+
+It also normalizes (cleans) the path aesthetically. It does not verify the
+path exists.
+
+## post
+
+Defines a route for HTTP **POST** requests to the given URL:
+
+    post '/' => sub {
+        return "Hello world";
+    }
+
+## prefix
+
+Defines a prefix for each route handler, like this:
+
+    prefix '/home';
+
+From here, any route handler is defined to /home/\*:
+
+    get '/page1' => sub {}; # will match '/home/page1'
+
+You can unset the prefix value:
+
+    prefix undef;
+    get '/page1' => sub {}; will match /page1
+
+For a safer alternative you can use lexical prefix like this:
+
+    prefix '/home' => sub {
+        ## Prefix is set to '/home' here
+
+        get ...;
+        get ...;
+    };
+    ## prefix reset to the previous version here
+
+This makes it possible to nest prefixes:
+
+    prefix '/home' => sub {
+        ## some routes
+        
+       prefix '/private' => sub {
+          ## here we are under /home/private...
+
+          ## some more routes
+       };
+       ## back to /home
+    };
+    ## back to the root
+
+**Notice:** once you have a prefix set, do not add a caret to the regex:
+
+    prefix '/foo';
+    get qr{^/bar} => sub { ... } # BAD BAD BAD
+    get qr{/bar}  => sub { ... } # Good!
+
+## del
+
+Defines a route for HTTP **DELETE** requests to the given URL:
+
+    del '/resource' => sub { ... };
+
+## options
+
+Defines a route for HTTP **OPTIONS** requests to the given URL:
+
+    options '/resource' => sub { ... };
+
+## put
+
+Defines a route for HTTP **PUT** requests to the given URL:
+
+    put '/resource' => sub { ... };
+
+## redirect
+
+Generates an HTTP redirect (302).  You can either redirect to a completely
+different site or within the application:
+
+    get '/twitter', sub {
+        redirect 'http://twitter.com/me';
+    };
+
+You can also force Dancer to return a specific 300-ish HTTP response code:
+
+    get '/old/:resource', sub {
+        redirect '/new/'.params->{resource}, 301;
+    };
+
+It is important to note that issuing a redirect by itself does not exit and
+redirect immediately. Redirection is deferred until after the current route
+or filter has been processed. To exit and redirect immediately, use the return
+function, e.g.
+
+    get '/restricted', sub {
+        return redirect '/login' if accessDenied();
+        return 'Welcome to the restricted section';
+    };
+
+## render\_with\_layout
+
+Allows a handler to provide plain HTML (or other content), but have it rendered
+within the layout still.
+
+This method is **DEPRECATED**, and will be removed soon. Instead, you should be
+using the `engine` keyword:
+
+    get '/foo' => sub {
+        # Do something which generates HTML directly (maybe using
+        # HTML::Table::FromDatabase or something)
+        my $content = ...;
+
+        # get the template engine
+        my $template_engine = engine 'template';
+
+        # apply the layout (not the renderer), and return the result
+        $template_engine->apply_layout($content)
+    };
+
+It works very similarly to `template` in that you can pass tokens to be used in
+the layout, and/or options to control the way the layout is rendered.  For
+instance, to use a custom layout:
+
+    render_with_layout $content, {}, { layout => 'layoutname' };
+
+## request
+
+Returns a [Dancer::Request](https://metacpan.org/pod/Dancer::Request) object representing the current request.
+
+See the [Dancer::Request](https://metacpan.org/pod/Dancer::Request) documentation for the methods you can call, for
+example:
+
+    request->referer;         # value of the HTTP referer header
+    request->remote_address;  # user's IP address
+    request->user_agent;      # User-Agent header value
+
+## send\_error
+
+Returns an HTTP error.  By default the HTTP code returned is 500:
+
+    get '/photo/:id' => sub {
+        if (...) {
+            send_error("Not allowed", 403);
+        } else {
+           # return content
+        }
+    }
+
+**WARNING** : Issuing a send\_error immediately exits the current route, and perform
+the send\_error. Thus, any code after a send\_error is ignored, until the end of the route.
+So it's not necessary anymore to use `return` with send\_error.
+
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            send_error(..);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
+
+## send\_file
+
+Lets the current route handler send a file to the client. Note that
+the path of the file must be relative to the **public** directory unless you use
+the `system_path` option (see below).
+
+    get '/download/:file' => sub {
+        send_file(params->{file});
+    }
+
+**WARNING** : Issuing a send\_file immediately exits the current route, and performs
+the send\_file. Thus, any code after a send\_file is ignored until the end of the route.
+So it's not necessary any more to use `return` with send\_file.
+
+    get '/some/route' => sub {
+        if (...) {
+            # we want to let the next matching route handler process this one
+            send_file(...);
+            # This code will be ignored
+            do_stuff();
+        }
+    };
+
+Send file supports streaming possibility using PSGI streaming. The server should
+support it but normal streaming is supported on most, if not all.
+
+    get '/download/:file' => sub {
+        send_file( params->{file}, streaming => 1 );
+    }
+
+You can control what happens using callbacks.
+
+First, `around_content` allows you to get the writer object and the chunk of
+content read, and then decide what to do with each chunk:
+
+    get '/download/:file' => sub {
+        send_file(
+            params->{file},
+            streaming => 1,
+            callbacks => {
+                around_content => sub {
+                    my ( $writer, $chunk ) = @_;
+                    $writer->write("* $chunk");
+                },
+            },
+        );
+    }
+
+You can use `around` to all get all the content (whether a filehandle if it's
+a regular file or a full string if it's a scalar ref) and decide what to do with
+it:
+
+    get '/download/:file' => sub {
+        send_file(
+            params->{file},
+            streaming => 1,
+            callbacks => {
+                around => sub {
+                    my ( $writer, $content ) = @_;
+
+                    # we know it's a text file, so we'll just stream
+                    # line by line
+                    while ( my $line = <$content> ) {
+                        $writer->write($line);
+                    }
+                },
+            },
+        );
+    }
+
+Or you could use `override` to control the entire streaming callback request:
+
+    get '/download/:file' => sub {
+        send_file(
+            params->{file},
+            streaming => 1,
+            callbacks => {
+                override => sub {
+                    my ( $respond, $response ) = @_;
+
+                    my $writer = $respond->( [ $newstatus, $newheaders ] );
+                    $writer->write("some line");
+                },
+            },
+        );
+    }
+
+You can also set the number of bytes that will be read at a time (default being
+42K bytes) using `bytes`:
+
+    get '/download/:file' => sub {
+        send_file(
+            params->{file},
+            streaming => 1,
+            bytes     => 524288, # 512K
+        );
+    };
+
+The content-type will be set depending on the current MIME types definition
+(see `mime` if you want to define your own).
+
+If your filename does not have an extension, or you need to force a
+specific mime type, you can pass it to `send_file` as follows:
+
+    send_file(params->{file}, content_type => 'image/png');
+
+Also, you can use your aliases or file extension names on
+`content_type`, like this:
+
+    send_file(params->{file}, content_type => 'png');
+
+For files outside your **public** folder, you can use the `system_path`
+switch. Just bear in mind that its use needs caution as it can be
+dangerous.
+
+    send_file('/etc/passwd', system_path => 1);
+
+If you have your data in a scalar variable, `send_file` can be useful
+as well. Pass a reference to that scalar, and `send_file` will behave
+as if there were a file with that contents:
+
+    send_file( \$data, content_type => 'image/png' );
+
+Note that Dancer is unable to guess the content type from the data
+contents. Therefore you might need to set the `content_type`
+properly. For this kind of usage an attribute named `filename` can be
+useful.  It is used as the Content-Disposition header, to hint the
+browser about the filename it should use.
+
+    send_file( \$data, content_type => 'image/png'
+                              filename     => 'onion.png' );
+
+## set
+
+Defines a setting:
+
+    set something => 'value';
+
+You can set more than one value at once:
+
+    set something => 'value', otherthing => 'othervalue';
+
+## setting
+
+Returns the value of a given setting:
+
+    setting('something'); # 'value'
+
+## set\_cookie
+
+Creates or updates cookie values:
+
+    get '/some_action' => sub {
+        set_cookie name => 'value',
+                   expires => (time + 3600),
+                   domain  => '.foo.com';
+    };
+
+In the example above, only 'name' and 'value' are mandatory.
+
+You can also store more complex structure in your cookies:
+
+    get '/some_auth' => sub {
+        set_cookie oauth => {
+            token        => $twitter->request_token,
+            token_secret => $twitter->secret_token,
+            ...
+        };
+    };
+
+You can't store more complex structure than this. All keys in the HashRef
+should be Scalars; storing references will not work.
+
+See [Dancer::Cookie](https://metacpan.org/pod/Dancer::Cookie) for further options when creating your cookie.
+
+Note that this method will be eventually deprecated in favor of the
+new `cookie` method.
+
+## session
+
+Provides access to all data stored in the user's session (if any).
+
+It can also be used as a setter to store data in the session:
+
+    # getter example
+    get '/user' => sub {
+        if (session('user')) {
+            return "Hello, ".session('user')->name;
+        }
+    };
+
+    # setter example
+    post '/user/login' => sub {
+        ...
+        if ($logged_in) {
+            session user => $user;
+        }
+        ...
+    };
+
+You may also need to clear a session:
+
+    # destroy session
+    get '/logout' => sub {
+        ...
+        session->destroy;
+        ...
+    };
+
+If you need to fetch the session ID being used for any reason:
+
+    my $id = session->id;
+
+In order to be able to use sessions, first  you need to enable session support in
+one of the configuration files.  A quick way to do it is to add
+
+    session: "YAML"
+
+to config.yml.
+
+For more details, see [Dancer::Session](https://metacpan.org/pod/Dancer::Session).
+
+## splat
+
+Returns the list of captures made from a route handler with a route pattern
+which includes wildcards:
+
+    get '/file/*.*' => sub {
+        my ($file, $extension) = splat;
+        ...
+    };
+
+There is also the extensive splat (A.K.A. "megasplat"), which allows extensive
+greedier matching, available using two asterisks. The additional path is broken
+down and returned as an ArrayRef:
+
+    get '/entry/*/tags/**' => sub {
+        my ( $entry_id, $tags ) = splat;
+        my @tags = @{$tags};
+    };
+
+This helps with chained actions:
+
+    get '/team/*/**' => sub {
+        my ($team) = splat;
+        var team => $team;
+        pass;
+    };
+
+    prefix '/team/*';
+
+    get '/player/*' => sub {
+        my ($player) = splat;
+
+        # etc...
+    };
+
+    get '/score' => sub {
+        return score_for( vars->{'team'} );
+    };
+
+## start
+
+Starts the application or the standalone server (depending on the deployment
+choices).
+
+This keyword should be called at the very end of the script, once all routes
+are defined.  At this point, Dancer takes over control.
+
+## status
+
+Changes the status code provided by an action.  By default, an action will
+produce an `HTTP 200 OK` status code, meaning everything is OK:
+
+    get '/download/:file' => {
+        if (! -f params->{file}) {
+            status 'not_found';
+            return "File does not exist, unable to download";
+        }
+        # serving the file...
+    };
+
+In that example Dancer will notice that the status has changed, and will
+render the response accordingly.
+
+The status keyword receives either a numeric status code or its name in
+lower case, with underscores as a separator for blanks. See the list in
+["HTTP CODES" in Dancer::HTTP](https://metacpan.org/pod/Dancer::HTTP#HTTP-CODES).
+
+## template
+
+Returns the response of processing the given template with the given parameters
+(and optional settings), wrapping it in the default or specified layout too, if
+layouts are in use.
+
+An example of a route handler which returns the result of using template to 
+build a response with the current template engine:
+
+    get '/' => sub {
+        ...
+        return template 'some_view', { token => 'value'};
+    };
+
+Note that `template` simply returns the content, so when you use it in a route
+handler, if execution of the route handler should stop at that point, make
+sure you use 'return' to ensure your route handler returns the content.
+
+Since template just returns the result of rendering the template, you can also
+use it to perform other templating tasks, e.g. generating emails:
+
+    post '/some/route' => sub {
+        if (...) {
+            email {
+                to      => 'someone@example.com',
+                from    => 'foo@example.com',
+                subject => 'Hello there',
+                msg     => template('emails/foo', { name => params->{name} }),
+            };
+
+            return template 'message_sent';
+        } else {
+            return template 'error';
+        }
+    };
+
+Compatibility notice: `template` was changed in version 1.3090 to immediately
+interrupt execution of a route handler and return the content, as it's typically
+used at the end of a route handler to return content.  However, this caused
+issues for some people who were using `template` to generate emails etc, rather
+than accessing the template engine directly, so this change has been reverted
+in 1.3091.
+
+The first parameter should be a template available in the views directory, the
+second one (optional) is a HashRef of tokens to interpolate, and the third
+(again optional) is a HashRef of options.
+
+For example, to disable the layout for a specific request:
+
+    get '/' => sub {
+        template 'index', {}, { layout => undef };
+    };
+
+Or to request a specific layout, of course:
+
+    get '/user' => sub {
+        template 'user', {}, { layout => 'user' };
+    };
+
+Some tokens are automatically added to your template (`perl_version`,
+`dancer_version`, `settings`, `request`, `params`, `vars` and, if
+you have sessions enabled, `session`).  Check
+[Dancer::Template::Abstract](https://metacpan.org/pod/Dancer::Template::Abstract) for further details.
+
+## to\_dumper ($structure)
+
+Serializes a structure with [Data::Dumper](https://metacpan.org/pod/Data::Dumper).
+
+## to\_json ($structure, %options)
+
+Serializes a structure to JSON. Can receive optional arguments. Thoses arguments
+are valid [JSON](https://metacpan.org/pod/JSON) arguments to change the behaviour of the default
+`JSON::to_json` function.
+
+## to\_yaml ($structure)
+
+Serializes a structure to YAML.
+
+## to\_xml ($structure, %options)
+
+Serializes a structure to XML. Can receive optional arguments. Thoses arguments
+are valid [XML::Simple](https://metacpan.org/pod/XML::Simple) arguments to change the behaviour of the default
+`XML::Simple::XMLout` function.
+
+## true
+
+Constant that returns a true value (1).
+
+## upload
+
+Provides access to file uploads.  Any uploaded file is accessible as a
+[Dancer::Request::Upload](https://metacpan.org/pod/Dancer::Request::Upload) object. You can access all parsed uploads via:
+
+    post '/some/route' => sub {
+        my $file = upload('file_input_foo');
+        # file is a Dancer::Request::Upload object
+    };
+
+If you named multiple inputs of type "file" with the same name, the upload
+keyword will return an Array of Dancer::Request::Upload objects:
+
+    post '/some/route' => sub {
+        my ($file1, $file2) = upload('files_input');
+        # $file1 and $file2 are Dancer::Request::Upload objects
+    };
+
+You can also access the raw HashRef of parsed uploads via the current request
+object:
+
+    post '/some/route' => sub {
+        my $all_uploads = request->uploads;
+        # $all_uploads->{'file_input_foo'} is a Dancer::Request::Upload object
+        # $all_uploads->{'files_input'} is an ArrayRef of Dancer::Request::Upload objects
+    };
+
+Note that you can also access the filename of the upload received via the params
+keyword:
+
+    post '/some/route' => sub {
+        # params->{'files_input'} is the filename of the file uploaded
+    };
+
+See [Dancer::Request::Upload](https://metacpan.org/pod/Dancer::Request::Upload) for details about the interface provided.
+
+## uri\_for
+
+Returns a fully-qualified URI for the given path:
+
+    get '/' => sub {
+        redirect uri_for('/path');
+        # can be something like: http://localhost:3000/path
+    };
+
+## captures
+
+Returns a reference to a copy of `%+`, if there are named captures in the route
+Regexp.
+
+Named captures are a feature of Perl 5.10, and are not supported in earlier
+versions:
+
+    get qr{
+        / (?<object> user   | ticket | comment )
+        / (?<action> delete | find )
+        / (?<id> \d+ )
+        /?$
+    }x
+    , sub {
+        my $value_for = captures;
+        "i don't want to $$value_for{action} the $$value_for{object} $$value_for{id} !"
+    };
+
+## var
+
+Provides an accessor for variables shared between filters and route handlers.
+Given a key/value pair, it sets a variable:
+
+    hook before sub {
+        var foo => 42;
+    };
+
+Later, route handlers and other filters will be able to read that variable:
+
+    get '/path' => sub {
+        my $foo = var 'foo';
+        ...
+    };
+
+## vars
+
+Returns the HashRef of all shared variables set during the filter/route
+chain with the `var` keyword:
+
+    get '/path' => sub {
+        if (vars->{foo} eq 42) {
+            ...
+        }
+    };
+
+## warning
+
+Logs a warning message through the current logger engine:
+
+    warning "This is a warning";
+
+See [Dancer::Logger](https://metacpan.org/pod/Dancer::Logger) for details on how to configure where log messages go.
+
+# AUTHOR
+
+This module has been written by Alexis Sukrieh &lt;sukria@cpan.org> and others,
+see the AUTHORS file that comes with this distribution for details.
+
+# SOURCE CODE
+
+The source code for this module is hosted on GitHub
+[https://github.com/PerlDancer/Dancer](https://github.com/PerlDancer/Dancer).  Feel free to fork the repository and
+submit pull requests!  (See [Dancer::Development](https://metacpan.org/pod/Dancer::Development) for details on how to
+contribute).
+
+Also, why not [watch the repo](https://github.com/PerlDancer/Dancer/toggle_watch)
+to keep up to date with the latest upcoming changes?
+
+# GETTING HELP / CONTRIBUTING
+
+The Dancer development team can be found on #dancer on irc.perl.org:
+[irc://irc.perl.org/dancer](irc://irc.perl.org/dancer)
+
+If you don't have an IRC client installed/configured, there is a simple web chat
+client at [http://www.perldancer.org/irc](http://www.perldancer.org/irc) for you.
+
+There is also a Dancer users mailing list available. Subscribe at:
+
+[http://lists.preshweb.co.uk/mailman/listinfo/dancer-users](http://lists.preshweb.co.uk/mailman/listinfo/dancer-users)
+
+If you'd like to contribute to the Dancer project, please see
+[http://www.perldancer.org/contribute](http://www.perldancer.org/contribute) for all the ways you can help!
+
+# DEPENDENCIES
+
+The following modules are mandatory (Dancer cannot run without them):
+
+- [HTTP::Server::Simple::PSGI](https://metacpan.org/pod/HTTP::Server::Simple::PSGI)
+- [HTTP::Body](https://metacpan.org/pod/HTTP::Body)
+- [LWP](https://metacpan.org/pod/LWP)
+- [MIME::Types](https://metacpan.org/pod/MIME::Types)
+- [URI](https://metacpan.org/pod/URI)
+
+The following modules are optional:
+
+- [JSON](https://metacpan.org/pod/JSON) : needed to use JSON serializer
+- [Plack](https://metacpan.org/pod/Plack) : in order to use PSGI
+- [Template](https://metacpan.org/pod/Template) : in order to use TT for rendering views
+- [XML::Simple](https://metacpan.org/pod/XML::Simple) and [XML:SAX](XML:SAX) or [XML:Parser](XML:Parser) for XML serialization
+- [YAML](https://metacpan.org/pod/YAML) : needed for configuration file support
+
+# SEE ALSO
+
+Main Dancer web site: [http://perldancer.org/](http://perldancer.org/).
+
+The concept behind this module comes from the Sinatra ruby project,
+see [http://www.sinatrarb.com/](http://www.sinatrarb.com/) for details.
+
+# AUTHOR
+
+Dancer Core Developers
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.

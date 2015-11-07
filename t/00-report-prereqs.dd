@@ -1,0 +1,84 @@
+do { my $x = {
+       'configure' => {
+                        'requires' => {
+                                        'ExtUtils::MakeMaker' => '0'
+                                      }
+                      },
+       'develop' => {
+                      'requires' => {
+                                      'Test::PAUSE::Permissions' => '0'
+                                    }
+                    },
+       'runtime' => {
+                      'recommends' => {
+                                        'YAML' => '0'
+                                      },
+                      'requires' => {
+                                      'Carp' => '0',
+                                      'Cwd' => '0',
+                                      'Data::Dumper' => '0',
+                                      'Encode' => '0',
+                                      'Exporter' => '0',
+                                      'Fcntl' => '0',
+                                      'File::Basename' => '0',
+                                      'File::Copy' => '0',
+                                      'File::Path' => '0',
+                                      'File::Spec' => '0',
+                                      'File::Spec::Functions' => '0',
+                                      'File::Temp' => '0',
+                                      'File::stat' => '0',
+                                      'FindBin' => '0',
+                                      'Getopt::Long' => '0',
+                                      'HTTP::Body' => '0',
+                                      'HTTP::Date' => '0',
+                                      'HTTP::Headers' => '0',
+                                      'HTTP::Server::Simple::PSGI' => '0',
+                                      'Hash::Merge::Simple' => '0',
+                                      'IO::File' => '0',
+                                      'LWP::UserAgent' => '0',
+                                      'MIME::Types' => '0',
+                                      'Module::Runtime' => '0',
+                                      'POSIX' => '0',
+                                      'Pod::Usage' => '0',
+                                      'Scalar::Util' => '0',
+                                      'Test::Builder' => '0',
+                                      'Test::More' => '0',
+                                      'Time::HiRes' => '0',
+                                      'Try::Tiny' => '0',
+                                      'URI' => '0',
+                                      'URI::Escape' => '0',
+                                      'base' => '0',
+                                      'bytes' => '0',
+                                      'constant' => '0',
+                                      'lib' => '0',
+                                      'overload' => '0',
+                                      'parent' => '0',
+                                      'strict' => '0',
+                                      'vars' => '0',
+                                      'warnings' => '0'
+                                    }
+                    },
+       'test' => {
+                   'recommends' => {
+                                     'CPAN::Meta' => '2.120900'
+                                   },
+                   'requires' => {
+                                   'Devel::Hide' => '0',
+                                   'Digest::MD5' => '0',
+                                   'ExtUtils::MakeMaker' => '0',
+                                   'File::Spec' => '0',
+                                   'HTTP::Cookies' => '0',
+                                   'HTTP::Request' => '0',
+                                   'IO::Handle' => '0',
+                                   'IPC::Open3' => '0',
+                                   'Plack::Builder' => '0',
+                                   'Test::More' => '0',
+                                   'Test::NoWarnings' => '0',
+                                   'blib' => '1.01',
+                                   'perl' => '5.006',
+                                   'utf8' => '0'
+                                 }
+                 }
+     };
+  $x;
+ }
