@@ -360,3 +360,4 @@ t/lib/TestPlugin2.pm
 t/lib/TestPluginMRO.pm
 t/lib/TestUtils.pm
 t/pod.t
+xt/release/pause-permissions.t
