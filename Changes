@@ -1,22 +1,12 @@
 Revision history for Dancer
 
 {{$NEXT}}
- [API CHANGES]
-
- [BUG FIXES]
-
- [DOCUMENTATION]
-
- [ENHANCEMENTS]
-
- [NEW FEATURES]
-
- [STATISTICS]
+ - Re-releasing 1.3200 again now CPAN perms should be fully sorted.
 
 1.3201 2015-11-07
- - Re-releasing now I should have the required permissions.
- - (Can't re-upload as 1.3200 even though it wasn't indexed due to PAUSE
- - restrictions)
+ - Re-releasing 1.3200 now I should have the required permissions.
+   (Can't re-upload as 1.3200 even though it wasn't indexed due to PAUSE
+   restrictions)
 
 1.3200 2015-11-06
  [BUG FIXES]
