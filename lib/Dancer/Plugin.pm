@@ -1,6 +1,7 @@
 package Dancer::Plugin;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: helper for writing Dancer plugins
-
+$Dancer::Plugin::VERSION = '1.3201';
 use strict;
 use warnings;
 use Carp;
@@ -110,13 +111,20 @@ sub set_plugin_symbols {
 }
 
 1;
+
 __END__
 
 =pod
 
-=head1 DESCRIPTION
+=encoding UTF-8
 
-Create plugins for Dancer
+=head1 NAME
+
+Dancer::Plugin - helper for writing Dancer plugins
+
+=head1 VERSION
+
+version 1.3201
 
 =head1 SYNOPSIS
 
@@ -145,6 +153,10 @@ And in your application:
     use Dancer::Plugin::LinkBlocker;
 
     block_links_from; # this is exported by the plugin
+
+=head1 DESCRIPTION
+
+Create plugins for Dancer
 
 =head1 PLUGINS
 
@@ -215,7 +227,6 @@ for B<Dancer::Plugin::Foo::Bar>, use:
     "Foo::Bar":
       key: value
 
-
 =item B<plugin_args>
 
 To easy migration and interoperability between Dancer 1 and Dancer 2
@@ -240,5 +251,16 @@ This module has been written by Alexis Sukrieh and others.
 
 This module is free software and is published under the same
 terms as Perl itself.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

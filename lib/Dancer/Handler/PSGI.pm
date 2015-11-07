@@ -1,6 +1,7 @@
 package Dancer::Handler::PSGI;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: a PSGI handler for Dancer applications
-
+$Dancer::Handler::PSGI::VERSION = '1.3201';
 use strict;
 use warnings;
 use Carp;
@@ -88,9 +89,20 @@ sub init_request_headers {
 }
 
 1;
+
 __END__
 
 =pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Handler::PSGI - a PSGI handler for Dancer applications
+
+=head1 VERSION
+
+version 1.3201
 
 =head1 DESCRIPTION
 
@@ -104,7 +116,7 @@ C<plack_middlewares> key. See L<Dancer::Cookbook> for more information.
 Note that you must have L<Plack> installed for this handler to work.
 
 =head1 USAGE
-    
+
     # in bin/app.pl
     set apphandler => 'Debug';
 
@@ -114,3 +126,16 @@ Note that you must have L<Plack> installed for this handler to work.
 =head1 AUTHORS
 
 Dancer contributors
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

@@ -1,18 +1,17 @@
 Revision history for Dancer
 
-{{$NEXT}}
-Re-releasing now I should have the required permissions.
-
-(Can't re-upload as 1.3200 even though it wasn't indexed due to PAUSE
-restrictions)
+1.3201 2015-11-07
+ - Re-releasing now I should have the required permissions.
+ - (Can't re-upload as 1.3200 even though it wasn't indexed due to PAUSE
+ - restrictions)
 
 1.3200 2015-11-06
  [BUG FIXES]
  - Fix temporary directory handling in serialiser tests (PR 1133, nanis)
 
  [ENHANCEMENTS]
- - Promoting 1.3144 to stable.	Only one odd, rare failure remains on CPAN
-   Testers, which I cannot reproduce.
+ - Promoting 1.3144 to stable.	   Only one odd, rare failure remains on
+   CPAN Testers, which I cannot reproduce.
  - Bind to 127.0.0.1 in tests to avoid occasional spurious failures on busy
    build hosts (PR 1136, thanks to @redbaron)
  - More efficient handling of large requests - don't store the raw request
@@ -133,7 +132,7 @@ restrictions)
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.
    (GH#1094, Steve Hay) - Using ':script' disable command-line argument
-   munging globally. (GH#1098,	       Brad Macpherson)
+   munging globally. (GH#1098,		 Brad Macpherson)
 
  [STATISTICS]
  - code churn: 33 files changed, 173 insertions(+), 113 deletions(-)
@@ -257,8 +256,8 @@ restrictions)
  [BUG FIXES]
  - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
    Wittkoski)
- - Test was failing if JSON module was absent.		 (GH#1022, Yanick
-   Champoux)
+ - Test was failing if JSON module was absent.		    (GH#1022,
+   Yanick Champoux)
  - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
    Champoux)
 
@@ -422,8 +421,8 @@ restrictions)
  - Add scheme line for ngnix config in D::Deployment.
 
  [ENHANCEMENTS]
- - GH #919: 'dancer' script exits with code 255 if application		  
-   name is invalid. (ppisar)
+ - GH #919: 'dancer' script exits with code 255 if application		   
+     name is invalid. (ppisar)
  - GH #871: now recognize HTTP_X_FORWARDED_PROTO. (mlbarrow)
  - GH #926: make messages from fatal warnings show up in the logs.  (Max
    Maischein)
@@ -897,7 +896,7 @@ restrictions)
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports		       (Alberto Simões)
+ - Fix a bunch of cpan testers reports			  (Alberto Simões)
 
 1.3069_01 2011-07-07
  [BUG FIXES]
@@ -1909,7 +1908,7 @@ restrictions)
  - Added Dancer::Test to provide helpers for writing test script for Dancer
    applications
  - FIX bug when returning a void context after redirecting a route. Thanks
-   to Juan J. Martínez	      for the report.
+   to Juan J. Martínez		 for the report.
  - Add support for request headers in Dancer::Request
  - Add support for halt() in Dancer's syntax.
 

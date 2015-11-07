@@ -1,6 +1,7 @@
 package Dancer::Session::Abstract;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: abstract class for session engine
-
+$Dancer::Session::Abstract::VERSION = '1.3201';
 use strict;
 use warnings;
 use Carp;
@@ -130,43 +131,20 @@ sub write_session_id {
 }
 
 1;
+
 __END__
 
 =pod
 
-=head1 SPEC
+=encoding UTF-8
 
-=over 4
+=head1 NAME
 
-=item B<role>
+Dancer::Session::Abstract - abstract class for session engine
 
-A Dancer::Session object represents a session engine and should provide anything
-needed to manipulate a session, whatever its storing engine is.
+=head1 VERSION
 
-=item B<id>
-
-The session id will be written to a cookie, by default named C<dancer.session>,
-it is assumed that a client must accept cookies to be able to use a
-session-aware Dancer webapp. (The cookie name can be change using the
-C<session_name> config setting.)
-
-=item B<storage engine>
-
-When the session engine is enabled, a I<before> filter takes care to initialize
-the appropriate session engine (according to the setting C<session>).
-
-Then, the filter looks for a cookie named C<dancer.session> (or whatever you've
-set the C<session_name> setting to, if you've used it) in order to
-I<retrieve> the current session object. If not found, a new session object is
-I<created> and its id written to the cookie.
-
-Whenever a session call is made within a route handler, the singleton
-representing the current session object is modified.
-
-A I<flush> is made to the session object after every modification unless
-the session engine overrides the C<is_lazy> method to return true.
-
-=back
+version 1.3201
 
 =head1 DESCRIPTION
 
@@ -248,7 +226,6 @@ Retrieves the value associated with the key.
 
 Stores the value associated with the key.
 
-
 =back
 
 =head2 Inherited Methods
@@ -277,5 +254,50 @@ modification and the session engine (or application) will need to ensure
 that a flush is called before the end of the request.
 
 =back
+
+=head1 SPEC
+
+=over 4
+
+=item B<role>
+
+A Dancer::Session object represents a session engine and should provide anything
+needed to manipulate a session, whatever its storing engine is.
+
+=item B<id>
+
+The session id will be written to a cookie, by default named C<dancer.session>,
+it is assumed that a client must accept cookies to be able to use a
+session-aware Dancer webapp. (The cookie name can be change using the
+C<session_name> config setting.)
+
+=item B<storage engine>
+
+When the session engine is enabled, a I<before> filter takes care to initialize
+the appropriate session engine (according to the setting C<session>).
+
+Then, the filter looks for a cookie named C<dancer.session> (or whatever you've
+set the C<session_name> setting to, if you've used it) in order to
+I<retrieve> the current session object. If not found, a new session object is
+I<created> and its id written to the cookie.
+
+Whenever a session call is made within a route handler, the singleton
+representing the current session object is modified.
+
+A I<flush> is made to the session object after every modification unless
+the session engine overrides the C<is_lazy> method to return true.
+
+=back
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

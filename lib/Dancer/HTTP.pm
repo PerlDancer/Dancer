@@ -1,6 +1,7 @@
 package Dancer::HTTP;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: helper for rendering HTTP status codes for Dancer
-
+$Dancer::HTTP::VERSION = '1.3201';
 use strict;
 use warnings;
 use base 'Exporter';
@@ -85,9 +86,20 @@ sub codes {
 }
 
 1;
+
 __END__
 
 =pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::HTTP - helper for rendering HTTP status codes for Dancer
+
+=head1 VERSION
+
+version 1.3201
 
 =head1 DESCRIPTION
 
@@ -112,14 +124,12 @@ keys are the numerical statuses and the values their string equivalents.
 
     print Dancer::HTTP->codes->{404}; # prints 'File Not Found'
 
-
 =head1 HTTP CODES 
 
 The following codes/aliases are understood by any status() call made
 from a Dancer script. The aliases can be used as-is (e.g., I<Moved
 Permanently>), or as lower-case string with all non-alphanumerical 
 characters changed to underscores (e.g., I<moved_permanently>).
-
 
     get '/user/:user' => sub {
         my $user = find_user( param('user') );
@@ -244,5 +254,16 @@ L<https://github.com/PerlDancer/Dancer>
 
 This module is free software and is published under the same
 terms as Perl itself.
+
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
