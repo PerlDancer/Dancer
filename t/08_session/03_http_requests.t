@@ -15,7 +15,8 @@ BEGIN {
         unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 }
 
-use LWP::UserAgent;
+use HTTP::Tiny;
+use HTTP::CookieJar;
 
 use File::Spec;
 my $tempdir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
@@ -41,23 +42,20 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         foreach my $client (@clients) {
-            my $ua = LWP::UserAgent->new;
-            $ua->cookie_jar({ file => "$tempdir/.cookies.txt" });
+            my $ua = HTTP::Tiny->new(cookie_jar => HTTP::CookieJar->new);
 
             my $res = $ua->get("http://127.0.0.1:$port/read_session");
-            like $res->content, qr/name=''/, 
+            like $res->{content}, qr/name=''/, 
             "empty session for client $client";
 
             $res = $ua->get("http://127.0.0.1:$port/set_session/$client");
-            ok($res->is_success, "set_session for client $client");
+            ok($res->{success}, "set_session for client $client");
 
             $res = $ua->get("http://127.0.0.1:$port/read_session");
-            like $res->content, qr/name='$client'/,
+            like $res->{content}, qr/name='$client'/,
             "session looks good for client $client";
 
         }
-
-        File::Temp::cleanup();
     },
     server => sub {
         my $port = shift;

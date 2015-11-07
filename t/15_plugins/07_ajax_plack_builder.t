@@ -13,8 +13,7 @@ BEGIN {
       unless Dancer::ModuleLoader->load('Plack::Builder');
 }
 
-use HTTP::Request;
-use LWP::UserAgent;
+use HTTP::Tiny;
 use Plack::Builder;
 use HTTP::Server::Simple::PSGI;
 
@@ -33,19 +32,17 @@ Test::TCP::test_tcp(
         my $port = shift;
         my $url  = "http://127.0.0.1:$port/";
 
-        my $req = HTTP::Request->new(GET => $url);
-        my $ua  = LWP::UserAgent->new();
+        my $ua  = HTTP::Tiny->new();
 
-        ok my $res = $ua->request($req), 'Got GET result';
-        ok $res->is_success, 'Successful';
-        is $res->content, $js_content, 'Correct JS content';
+        ok my $res = $ua->get($url), 'Got GET result';
+        ok $res->{success}, 'Successful';
+        is $res->{content}, $js_content, 'Correct JS content';
 
-        $req = HTTP::Request->new( POST => "${url}foo" );
-        $req->header( 'X-Requested-With' => 'XMLHttpRequest' );
+        my %headers = ( 'X-Requested-With' => 'XMLHttpRequest' );
 
-        ok( $res = $ua->request($req), 'Got POST result' );
-        ok( $res->is_success, 'Successful' );
-        is( $res->content, 'bar', 'Correct content' );
+        ok( $res = $ua->post("${url}foo", { headers => \%headers }), 'Got POST result' );
+        ok( $res->{success}, 'Successful' );
+        is( $res->{content}, 'bar', 'Correct content' );
     },
 
     server => sub {

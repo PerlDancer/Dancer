@@ -5,6 +5,7 @@ use vars '@EXPORT';
 
 use File::Path qw(mkpath rmtree);
 use Dancer::Request;
+use HTTP::Tiny;
 
 @EXPORT =
   qw(http_request write_file clean_tmp_files);
@@ -12,9 +13,8 @@ use Dancer::Request;
 sub http_request {
     my ($port, $method, $path) = @_;
     my $url = "http://localhost:${port}${path}";
-    my $lwp = LWP::UserAgent->new;
-    my $req = HTTP::Request->new($method => $url);
-    return $lwp->request($req);
+    my $http = HTTP::Tiny->new;
+    return $http->request($method => $url);
 }
 
 sub write_file {

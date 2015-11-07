@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More;
 
-use LWP::UserAgent;
+use HTTP::Tiny;
 
 plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
@@ -15,13 +15,10 @@ plan tests => 10;
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua  = LWP::UserAgent->new;
+        my $ua  = HTTP::Tiny->new;
         for (1..10) {
-            my $req = HTTP::Request->new( 
-                GET => "http://127.0.0.1:$port/getvarfoo"
-            );
-            my $res = $ua->request($req);
-            is $res->content, 1;
+            my $res = $ua->get("http://127.0.0.1:$port/getvarfoo");
+            is $res->{content}, 1;
         }
     },
     server => sub {

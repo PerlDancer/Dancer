@@ -9,33 +9,33 @@ plan skip_all => "Test::TCP is needed for this test"
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Plack::Loader");
 
-use LWP::UserAgent;
+use HTTP::Tiny;
 
 plan tests => 6;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = LWP::UserAgent->new;
+        my $ua = HTTP::Tiny->new;
 
         my $res = $ua->get("http://127.0.0.1:$port/env");
-        like $res->content, qr/PATH_INFO/, 'path info is found in response';
+        like $res->{content}, qr/PATH_INFO/, 'path info is found in response';
 
         $res = $ua->get("http://127.0.0.1:$port/name/bar");
-        like $res->content, qr/Your name: bar/, 'name is found on a GET';
+        like $res->{content}, qr/Your name: bar/, 'name is found on a GET';
 
         $res = $ua->get("http://127.0.0.1:$port/name/baz");
-        like $res->content, qr/Your name: baz/, 'name is found on a GET';
+        like $res->{content}, qr/Your name: baz/, 'name is found on a GET';
 
-        $res = $ua->post("http://127.0.0.1:$port/name", { name => "xxx" });
-        like $res->content, qr/Your name: xxx/, 'name is found on a POST';
+        $res = $ua->post_form("http://127.0.0.1:$port/name", { name => "xxx" });
+        like $res->{content}, qr/Your name: xxx/, 'name is found on a POST';
 
         # we are already skipping under MSWin32 (check plan above)
         $res = $ua->get("http://127.0.0.1:$port/issues/499/true");
-        is $res->content, "OK";
+        is $res->{content}, "OK";
 
         $res = $ua->get("http://127.0.0.1:$port/issues/499/false");
-        is $res->content, "OK";
+        is $res->{content}, "OK";
     },
     server => sub {
         my $port = shift;

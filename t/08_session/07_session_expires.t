@@ -21,7 +21,7 @@ plan skip_all => "YAML is needed for this test"
 
 plan tests => 8;
 
-use LWP::UserAgent;
+use HTTP::Tiny;
 use File::Path 'rmtree';
 use Dancer::Config;
 
@@ -40,12 +40,10 @@ for my $session_expires (keys %tests) {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
-            my $ua   = LWP::UserAgent->new;
-            my $req =
-              HTTP::Request->new(GET => "http://127.0.0.1:$port/set_session/test");
-            my $res = $ua->request($req);
-            ok $res->is_success, 'req is success';
-            my $cookie = $res->header('Set-Cookie');
+            my $ua   = HTTP::Tiny->new;
+            my $res = $ua->get("http://127.0.0.1:$port/set_session/test");
+            ok $res->{success}, 'req is success';
+            my $cookie = $res->{headers}{'set-cookie'};
             ok $cookie, 'cookie is set';
             my ($expires) = ($cookie =~ /expires=(.*?);/);
             ok $expires, 'expires is present in cookie';
