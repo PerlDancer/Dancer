@@ -4,12 +4,14 @@ use strict;
 use warnings FATAL => 'all';
 
 use Dancer::Request;
+use File::Spec;
 
 %ENV = (
           'REQUEST_METHOD' => 'GET',
           'REQUEST_URI' => '/',
           'PATH_INFO' => '/',
           'QUERY_STRING' => 'foo=bar&number=42',
+          'TMPDIR' => File::Spec->tmpdir,
           );
 
 my $req = Dancer::Request->new(env => \%ENV);
