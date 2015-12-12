@@ -28,7 +28,7 @@ foreach my $c (@$confs) {
             my $port = shift;
             my $ua   = LWP::UserAgent->new;
 
-            my $req = HTTP::Request->new( GET => "http://localhost:$port/" );
+            my $req = HTTP::Request->new( GET => "http://127.0.0.1:$port/" );
             my $res = $ua->request($req);
             ok $res;
             ok $res->header('X-Runtime');
