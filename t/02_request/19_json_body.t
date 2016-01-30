@@ -24,5 +24,3 @@ my $request = Dancer::Request->new_for_request(
 
 is($request->body, $json_string);
 
-done_testing;
-
