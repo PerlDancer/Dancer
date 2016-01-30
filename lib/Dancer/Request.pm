@@ -169,7 +169,8 @@ sub new_for_request {
         %{$extra_env},
         PATH_INFO      => $path,
         QUERY_STRING   => $query_string || $ENV{QUERY_STRING} || '',
-        REQUEST_METHOD => $method
+        REQUEST_METHOD => $method,
+        CONTENT_LENGTH => length($body),
     };
     my $req = $class->new(env => $env);
     $req->{params}        = {%{$req->{params}}, %{$params}};
