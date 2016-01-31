@@ -170,8 +170,8 @@ sub new_for_request {
         PATH_INFO      => $path,
         QUERY_STRING   => $query_string || $ENV{QUERY_STRING} || '',
         REQUEST_METHOD => $method,
-        CONTENT_LENGTH => length($body),
     };
+    $env->{CONTENT_LENGTH} = length($body) if !exists $env->{CONTENT_LENGTH};
     my $req = $class->new(env => $env);
     $req->{params}        = {%{$req->{params}}, %{$params}};
     $req->_build_params();
