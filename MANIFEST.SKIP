@@ -28,3 +28,4 @@ TODO
 ^Dancer-.*
 dist.ini
 .mailmap
+xt/release/pause-permissions.t
