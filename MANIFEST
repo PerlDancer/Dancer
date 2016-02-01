@@ -155,6 +155,7 @@ t/02_request/15_headers.t
 t/02_request/16_delete.t
 t/02_request/17_uri_base.t
 t/02_request/18_param_accessor.t
+t/02_request/19_json_body.t
 t/03_route_handler/01_http_methods.t
 t/03_route_handler/02_params.t
 t/03_route_handler/03_routes_api.t
@@ -360,4 +361,3 @@ t/lib/TestPlugin2.pm
 t/lib/TestPluginMRO.pm
 t/lib/TestUtils.pm
 t/pod.t
-xt/release/pause-permissions.t
