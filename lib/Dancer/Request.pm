@@ -951,6 +951,8 @@ Dancer::Request object through specific accessors, here are those supported:
 
 =item C<forwarded_for_address>
 
+Looks for HTTP_X_FORWARDED_FOR if X_FORWARDED_FOR is not there.
+
 =item C<forwarded_protocol>
 
 =item C<forwarded_host>
