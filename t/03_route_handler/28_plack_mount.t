@@ -11,8 +11,7 @@ BEGIN {
       unless Dancer::ModuleLoader->load('Plack::Builder');
 }
 
-use HTTP::Request;
-use LWP::UserAgent;
+use HTTP::Tiny;
 
 use Plack::Builder; # should be loaded in BEGIN block, but it seems that it's not the case ...
 use HTTP::Server::Simple::PSGI;
@@ -24,11 +23,10 @@ Test::TCP::test_tcp(
         my $port = shift;
         my $url = "http://127.0.0.1:$port/mount/test/foo";
 
-        my $req = HTTP::Request->new(GET => $url);
-        my $ua = LWP::UserAgent->new();
-        ok my $res = $ua->request($req);
-        ok $res->is_success;
-        is $res->content, '/foo';
+        my $ua = HTTP::Tiny->new();
+        ok my $res = $ua->get($url);
+        ok $res->{success};
+        is $res->{content}, '/foo';
     },
     server => sub {
         my $port    = shift;

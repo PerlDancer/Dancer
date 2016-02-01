@@ -17,39 +17,35 @@ plan skip_all => "Test::TCP required"
     unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 Test::TCP->import;
 
-plan skip_all => "HTTP::Cookies required"
-    unless Dancer::ModuleLoader->load('HTTP::Cookies');
-HTTP::Cookies->import;
-
 plan tests=> 7;
 
 test_tcp(
     client => sub {
         my $port = shift;
 
-        require LWP::UserAgent;
-        require HTTP::Cookies;
+        require HTTP::Tiny;
+        require HTTP::CookieJar;
 
-        my $ua = LWP::UserAgent->new;
+        my $ua = HTTP::Tiny->new;
 
         # Simulate two different browsers with two different jars
-        my @jars = (HTTP::Cookies->new, HTTP::Cookies->new);
+        my @jars = (HTTP::CookieJar->new, HTTP::CookieJar->new);
         for my $jar (@jars) {
             $ua->cookie_jar( $jar );
 
             my $res = $ua->get("http://0.0:$port/foo");
-            is $res->content, "hits: 0, last_hit: ";
+            is $res->{content}, "hits: 0, last_hit: ";
 
             $res = $ua->get("http://0.0:$port/bar");
-            is $res->content, "hits: 1, last_hit: foo";
+            is $res->{content}, "hits: 1, last_hit: foo";
 
             $res = $ua->get("http://0.0:$port/baz");
-            is $res->content, "hits: 2, last_hit: bar";
+            is $res->{content}, "hits: 2, last_hit: bar";
         }
 
         $ua->cookie_jar($jars[0]);
         my $res = $ua->get("http://0.0:$port/wibble");
-        is $res->content, "hits: 3, last_hit: baz", "session not overwritten";
+        is $res->{content}, "hits: 3, last_hit: baz", "session not overwritten";
     },
     server => sub {
         my $port = shift;

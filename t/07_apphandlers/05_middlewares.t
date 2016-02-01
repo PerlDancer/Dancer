@@ -4,7 +4,7 @@ use warnings;
 
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
-use LWP::UserAgent;
+use HTTP::Tiny;
 
 use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
@@ -26,12 +26,11 @@ foreach my $c (@$confs) {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
-            my $ua   = LWP::UserAgent->new;
+            my $ua   = HTTP::Tiny->new;
 
-            my $req = HTTP::Request->new( GET => "http://127.0.0.1:$port/" );
-            my $res = $ua->request($req);
+            my $res = $ua->get("http://127.0.0.1:$port/");
             ok $res;
-            ok $res->header('X-Runtime');
+            ok $res->{headers}{'x-runtime'};
         },
         server => sub {
             my $port = shift;

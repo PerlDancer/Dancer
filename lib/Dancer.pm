@@ -1962,7 +1962,7 @@ The following modules are mandatory (Dancer cannot run without them):
 
 =item L<HTTP::Body>
 
-=item L<LWP>
+=item L<HTTP::Tiny>
 
 =item L<MIME::Types>
 

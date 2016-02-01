@@ -15,8 +15,7 @@ BEGIN {
 }
 
 use Dancer;
-use LWP::UserAgent;
-use HTTP::Request;
+use HTTP::Tiny;
 
 plan tests => 2;
 
@@ -24,12 +23,12 @@ Test::TCP::test_tcp(
   client => sub {
       my $port = shift;
       my $url_base  = "http://127.0.0.1:$port";
-      my $ua  = LWP::UserAgent->new;
-      my $res = $ua->post($url_base . "/foo", { data => 'foo'});
-      is($res->decoded_content, "data:foo");
+      my $ua  = HTTP::Tiny->new;
+      my $res = $ua->post_form($url_base . "/foo", { data => 'foo'});
+      is($res->{content}, "data:foo");
 
-      $res = $ua->post($url_base . "/foz", { data => 'foo'});
-      is($res->decoded_content, "data:foo");
+      $res = $ua->post_form($url_base . "/foz", { data => 'foo'});
+      is($res->{content}, "data:foo");
   },
   server => sub {
       my $port = shift;

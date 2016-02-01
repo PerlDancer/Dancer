@@ -8,9 +8,9 @@ plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 
-use LWP::UserAgent;
+use HTTP::Tiny;
 
-plan tests => 43;
+plan tests => 33;
 
 ok(Dancer::App->current->registry->is_empty,
     "registry is empty");
@@ -21,7 +21,7 @@ ok(!Dancer::App->current->registry->is_empty,
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = LWP::UserAgent->new;
+        my $ua = HTTP::Tiny->new;
 
         my @queries = (
             { path => 'req', ajax => 1, success => 1, content => 1 },
@@ -36,31 +36,26 @@ Test::TCP::test_tcp(
         );
 
         foreach my $query (@queries) {
-            ok my $request =
-              HTTP::Request->new(
-                GET => "http://127.0.0.1:$port/" . $query->{path} );
-
-            $request->header( 'X-Requested-With' => 'XMLHttpRequest' )
+            my %headers;
+            $headers{'X-Requested-With'} = 'XMLHttpRequest'
               if ( $query->{ajax} == 1);
 
-            ok my $res = $ua->request($request);
+            ok my $res = $ua->get("http://127.0.0.1:$port/" . $query->{path}, { headers => \%headers });
 
             if ( $query->{success} == 1) {
-                ok $res->is_success;
-                is $res->content, $query->{content};
-                like $res->header('Content-Type'), qr/text\/xml/ if $query->{ajax} == 1;
+                ok $res->{success};
+                is $res->{content}, $query->{content};
+                like $res->{headers}{'content-type'}, qr/text\/xml/ if $query->{ajax} == 1;
             }
             else {
-                ok !$res->is_success;
+                ok !$res->{success};
             }
         }
 
         # test ajax with content_type to json
-        ok my $request =
-          HTTP::Request->new( GET => "http://127.0.0.1:$port/ajax.json" );
-        $request->header( 'X-Requested-With' => 'XMLHttpRequest' );
-        ok my $res = $ua->request($request);
-        like $res->header('Content-Type'), qr/json/;
+        my %headers = ( 'X-Requested-With' => 'XMLHttpRequest' );
+        ok my $res = $ua->get("http://127.0.0.1:$port/ajax.json", { headers => \%headers });
+        like $res->{headers}{'content-type'}, qr/json/;
     },
     server => sub {
         my $port = shift;

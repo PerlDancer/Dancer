@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More import => ['!pass'];
-use LWP::UserAgent;
+use HTTP::Tiny;
 
 BEGIN {
     use Dancer::ModuleLoader;
@@ -23,12 +23,11 @@ sub test {
             my $port = shift;
             my $url  = "http://127.0.0.1:$port/";
 
-            my $ua = LWP::UserAgent->new;
+            my $ua = HTTP::Tiny->new;
             for (qw/204 304/) {
-                my $req = HTTP::Request->new( GET => $url . $_ );
-                my $res = $ua->request($req);
-                ok !$res->content, 'no content for '.$_;
-                ok !$res->header('Content-Length'), 'no content-length for '.$_;
+                my $res = $ua->get($url . $_);
+                ok !$res->{content}, 'no content for '.$_;
+                ok !$res->{headers}{'content-length'}, 'no content-length for '.$_;
             }
         },
         server => sub {

@@ -14,31 +14,28 @@ plan skip_all => "Test::TCP is needed for this test"
 
 plan skip_all => "HTTP::Headers $min_hh required (use of content_type_charset)"
     unless Dancer::ModuleLoader->load( 'HTTP::Headers', $min_hh );
-plan skip_all => "HTTP::Request::Common is needed for this test"
-    unless Dancer::ModuleLoader->load('HTTP::Request::Common');
 
-
-use LWP::UserAgent;
+use HTTP::Tiny;
 
 plan tests => 10;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = LWP::UserAgent->new;
-        my $req = HTTP::Request::Common::POST("http://127.0.0.1:$port/name", [ name => 'vasya' ]);
-        my $res = $ua->request($req);
+        my $ua = HTTP::Tiny->new;
+        my $res = $ua->post_form("http://127.0.0.1:$port/name", [ name => 'vasya' ]);
 
-        is $res->content_type, 'text/html';
-        ok $res->content_type_charset; # we always have charset if the setting is set
-        is $res->content, 'Your name: vasya';
+        my $headers = HTTP::Headers->new(%{$res->{headers}});
+        is $headers->content_type, 'text/html';
+        ok $headers->content_type_charset; # we always have charset if the setting is set
+        is $res->{content}, 'Your name: vasya';
 
-        $req = HTTP::Request::Common::GET("http://127.0.0.1:$port/unicode");
-        $res = $ua->request($req);
+        $res = $ua->get("http://127.0.0.1:$port/unicode");
 
-        is $res->content_type, 'text/html';
-        is $res->content_type_charset, 'UTF-8';
-        is $res->content, Encode::encode('utf-8', "cyrillic shcha \x{0429}");
+        $headers = HTTP::Headers->new(%{$res->{headers}});
+        is $headers->content_type, 'text/html';
+        is $headers->content_type_charset, 'UTF-8';
+        is $res->{content}, Encode::encode('utf-8', "cyrillic shcha \x{0429}");
     },
     server => sub {
         my $port = shift;
@@ -59,17 +56,16 @@ Test::TCP::test_tcp(
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = LWP::UserAgent->new;
+        my $ua = HTTP::Tiny->new;
 
-        my $req = HTTP::Request::Common::GET(
-            "http://127.0.0.1:$port/unicode-content-length");
-        my $res = $ua->request($req);
+        my $res = $ua->get("http://127.0.0.1:$port/unicode-content-length");
 
-        is $res->content_type, 'text/html';
+        my $headers = HTTP::Headers->new(%{$res->{headers}});
+        is $headers->content_type, 'text/html';
         # UTF-8 seems to be Dancer's default encoding
         my $v = "\x{100}0123456789";
         utf8::encode($v);
-        is $res->content, $v;
+        is $res->{content}, $v;
     },
     server => sub {
         my $port = shift;
@@ -96,14 +92,13 @@ SKIP: {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
-            my $ua = LWP::UserAgent->new;
+            my $ua = HTTP::Tiny->new;
 
-            my $req = HTTP::Request::Common::GET(
-                "http://127.0.0.1:$port/unicode-content-length-json");
-            my $res = $ua->request($req);
+            my $res = $ua->get("http://127.0.0.1:$port/unicode-content-length-json");
 
-            is $res->content_type, 'application/json';
-            is_deeply(from_json($res->content), { test => "\x{100}" });
+            my $headers = HTTP::Headers->new(%{$res->{headers}});
+            is $headers->content_type, 'application/json';
+            is_deeply(from_json($res->{content}), { test => "\x{100}" });
         },
         server => sub {
             my $port = shift;
