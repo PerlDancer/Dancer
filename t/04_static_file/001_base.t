@@ -43,19 +43,15 @@ my $r = Dancer::SharedData->response();
 is $r->status,  400;
 is $r->content, 'Bad Request';
 
-require HTTP::Request;
-require LWP::UserAgent;
+require HTTP::Tiny;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $req =
-          HTTP::Request->new(
-            GET => "http://127.0.0.1:$port/hello%00.txt" );
-        my $ua  = LWP::UserAgent->new();
-        my $res = $ua->request($req);
-        ok !$res->is_success;
-        is $res->code, 400;
+        my $ua  = HTTP::Tiny->new();
+        my $res = $ua->get("http://127.0.0.1:$port/hello%00.txt");
+        ok !$res->{success};
+        is $res->{status}, 400;
     },
     server => sub {
         my $port = shift;
@@ -70,13 +66,11 @@ Test::TCP::test_tcp(
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $req =
-          HTTP::Request->new(
-            GET => "http://127.0.0.1:$port/hello.txt", [ 'If-Modified-Since' => $date ] );
-        my $ua  = LWP::UserAgent->new();
-        my $res = $ua->request($req);
-        ok !$res->is_success;
-        is $res->code, 304;
+        my $headers = { 'If-Modified-Since' => $date };
+        my $ua  = HTTP::Tiny->new();
+        my $res = $ua->get("http://127.0.0.1:$port/hello.txt", { headers => $headers });
+        ok !$res->{success};
+        is $res->{status}, 304;
     },
     server => sub {
         my $port = shift;

@@ -6,7 +6,7 @@ plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 
-use LWP::UserAgent;
+use HTTP::Tiny;
 
 my $plack_available = Dancer::ModuleLoader->load('Plack::Request');
 Dancer::ModuleLoader->load('Plack::Loader') if $plack_available;
@@ -20,17 +20,15 @@ for my $handler (@handlers) {
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = LWP::UserAgent->new;
+        my $ua = HTTP::Tiny->new;
 
-        my $request = HTTP::Request->new(GET => "http://127.0.0.1:$port/req");
-        $request->header('X-User-Head1' => 42);
-        $request->header('X-User-Head2' => 43);
+        my $headers = { 'X-User-Head1' => 42, 'X-User-Head2' => 43 };
 
-        my $res = $ua->request($request);
-        ok($res->is_success, "$handler server responded");
-        is($res->header('X-Foo'), 2);
-        is($res->header('X-Bar'), 3);
-        is($res->header('Content-Type'), 'text/plain');
+        my $res = $ua->get("http://127.0.0.1:$port/req", { headers => $headers });
+        ok($res->{success}, "$handler server responded");
+        is($res->{headers}{'x-foo'}, 2);
+        is($res->{headers}{'x-bar'}, 3);
+        is($res->{headers}{'content-type'}, 'text/plain');
     },
     server => sub {
         my $port = shift;

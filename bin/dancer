@@ -12,7 +12,7 @@ use File::Spec::Functions;
 use Getopt::Long;
 use Pod::Usage;
 use Dancer::Renderer;
-use LWP::UserAgent;
+use HTTP::Tiny;
 use constant FILE => 1;
 
 # options
@@ -269,14 +269,13 @@ sub write_data_to_file {
 
 sub send_http_request {
     my $url = shift;
-    my $ua = LWP::UserAgent->new;
+    my $ua = HTTP::Tiny->new;
     $ua->timeout(5);
-    $ua->env_proxy();
 
     my $response = $ua->get($url);
 
-    if ($response->is_success) {
-        return $response->content;
+    if ($response->{success}) {
+        return $response->{content};
     }
     else {
         return;

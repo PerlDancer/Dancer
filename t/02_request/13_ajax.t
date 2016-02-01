@@ -7,24 +7,22 @@ plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 plan tests => 8;
 
-use LWP::UserAgent;
+use HTTP::Tiny;
 use HTTP::Headers;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = LWP::UserAgent->new;
+        my $ua = HTTP::Tiny->new;
 
-        my $request = HTTP::Request->new(GET => "http://127.0.0.1:$port/req");
-        $request->header('X-Requested-With' => 'XMLHttpRequest');
-        my $res = $ua->request($request);
-        ok($res->is_success, "server responded");
-        is($res->content, 1, "content ok");
+        my $headers = { 'X-Requested-With' => 'XMLHttpRequest' };
+        my $res = $ua->get("http://127.0.0.1:$port/req", { headers => $headers });
+        ok($res->{success}, "server responded");
+        is($res->{content}, 1, "content ok");
 
-        $request = HTTP::Request->new(GET => "http://127.0.0.1:$port/req");
-        $res = $ua->request($request);
-        ok($res->is_success, "server responded");
-        is($res->content, 0, "content ok");
+        $res = $ua->get("http://127.0.0.1:$port/req");
+        ok($res->{success}, "server responded");
+        is($res->{content}, 0, "content ok");
     },
     server => sub {
         my $port = shift;

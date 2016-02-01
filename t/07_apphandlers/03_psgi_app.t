@@ -9,7 +9,7 @@ plan skip_all => "Test::TCP is needed to run this test"
 plan skip_all => "Plack is needed to run this test"
     unless Dancer::ModuleLoader->load('Plack::Request');
 
-use LWP::UserAgent;
+use HTTP::Tiny;
 
 Dancer::ModuleLoader->load('Plack::Loader');
 
@@ -20,18 +20,18 @@ plan tests => 3;
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = LWP::UserAgent->new;
+        my $ua = HTTP::Tiny->new;
 
         my $res = $ua->get("http://127.0.0.1:$port/env");
-        like $res->content, qr/psgi\.version/,
+        like $res->{content}, qr/psgi\.version/,
             'content looks good for /env';
 
         $res = $ua->get("http://127.0.0.1:$port/name/bar");
-        like $res->content, qr/Your name: bar/,
+        like $res->{content}, qr/Your name: bar/,
             'content looks good for /name/bar';
 
         $res = $ua->get("http://127.0.0.1:$port/name/baz");
-        like $res->content, qr/Your name: baz/,
+        like $res->{content}, qr/Your name: baz/,
             'content looks good for /name/baz';
     },
     server => sub {

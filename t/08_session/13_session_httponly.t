@@ -14,7 +14,7 @@ plan skip_all => "YAML is needed for this test"
 
 plan tests => 3 * 3;
 
-use LWP::UserAgent;
+use HTTP::Tiny;
 use File::Path 'rmtree';
 use Dancer::Config;
 
@@ -25,12 +25,10 @@ for my $setting ("default", "on", "off") {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
-            my $ua   = LWP::UserAgent->new;
-            my $req =
-              HTTP::Request->new(GET => "http://127.0.0.1:$port/set_session/test_13");
-            my $res = $ua->request($req);
-            ok $res->is_success, 'req is success';
-            my $cookie = $res->header('Set-Cookie');
+            my $ua   = HTTP::Tiny->new;
+            my $res = $ua->get("http://127.0.0.1:$port/set_session/test_13");
+            ok $res->{success}, 'req is success';
+            my $cookie = $res->{headers}{'set-cookie'};
             ok $cookie, 'cookie is set';
             if ($setting eq "on" || $setting eq "default") {
                 my ($httponly) = ($cookie =~ /HttpOnly/);

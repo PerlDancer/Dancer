@@ -13,7 +13,7 @@ BEGIN {
 
 use Dancer;
 use Plack::Builder;
-use LWP::UserAgent;
+use HTTP::Tiny;
 use HTTP::Server::Simple::PSGI;
 
 plan tests => 100;
@@ -23,12 +23,11 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         my @apps = (qw/app1 app2/);
-        my $ua = LWP::UserAgent->new();
+        my $ua = HTTP::Tiny->new();
         for(1..100){
             my $app = $apps[int(rand(scalar @apps - 1))];
-            my $req = HTTP::Request->new(GET => "http://127.0.0.1:$port/$app");
-            my $res = $ua->request($req);
-            like $res->content, qr/Hello $app/;
+            my $res = $ua->get("http://127.0.0.1:$port/$app");
+            like $res->{content}, qr/Hello $app/;
         }
     },
     server => sub {
