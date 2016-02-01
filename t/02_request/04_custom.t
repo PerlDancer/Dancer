@@ -8,12 +8,12 @@ use Dancer::Request;
 my $tmpdir = File::Spec->tmpdir;
 
 %ENV = (
-          'REQUEST_METHOD' => 'GET',
-          'REQUEST_URI' => '/',
-          'PATH_INFO' => '/',
-          'QUERY_STRING' => 'foo=bar&number=42',
-          'TMPDIR' => $tmpdir,
-          );
+    'REQUEST_METHOD' => 'GET',
+    'REQUEST_URI'    => '/',
+    'PATH_INFO'      => '/',
+    'QUERY_STRING'   => 'foo=bar&number=42',
+    'TMPDIR'         => $tmpdir,
+);
 
 my $req = Dancer::Request->new(env => \%ENV);
 is $req->path, '/', 'path is /';
