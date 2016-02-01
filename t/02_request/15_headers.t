@@ -24,7 +24,7 @@ Test::TCP::test_tcp(
 
         my $headers = { 'X-User-Head1' => 42, 'X-User-Head2' => 43 };
 
-        my $res = $ua->get("http://127.0.0.1:$port/req", { headers => $headers });
+        my $res = $ua->get("http://127.0.0.10:$port/req", { headers => $headers });
         ok($res->{success}, "$handler server responded");
         is($res->{headers}{'x-foo'}, 2);
         is($res->{headers}{'x-bar'}, 3);
@@ -36,7 +36,7 @@ Test::TCP::test_tcp(
 
         set( apphandler   => $handler,
              port         => $port,
-             server       => '127.0.0.1',
+             server       => '127.0.0.10',
              show_errors  => 1,
              startup_info => 0 );
 

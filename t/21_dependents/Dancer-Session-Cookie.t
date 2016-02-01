@@ -53,7 +53,7 @@ test_tcp(
         use Dancer ':tests';
 
         set( port                => $port,
-             server              => '127.0.0.1',
+             server              => '127.0.0.10',
              appdir              => '',          # quiet warnings not having an appdir
              startup_info        => 0,           # quiet startup banner
              session_cookie_key  => "John has a long mustache",

@@ -30,7 +30,7 @@ my $js_content = q[<script type="text/javascript">
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $url  = "http://127.0.0.1:$port/";
+        my $url  = "http://127.0.0.10:$port/";
 
         my $ua  = HTTP::Tiny->new();
 
@@ -50,7 +50,7 @@ Test::TCP::test_tcp(
         my $handler = sub {
             use Dancer;
 
-            set port => $port, server => '127.0.0.1', apphandler => 'PSGI', startup_info => 0;
+            set port => $port, server => '127.0.0.10', apphandler => 'PSGI', startup_info => 0;
 
             get  '/'    => sub {$js_content};
             ajax '/foo' => sub {'bar'};
@@ -65,7 +65,7 @@ Test::TCP::test_tcp(
         };
 
         my $server = HTTP::Server::Simple::PSGI->new($port);
-        $server->host("127.0.0.1");
+        $server->host("127.0.0.10");
         $server->app($app);
         $server->run;
     },

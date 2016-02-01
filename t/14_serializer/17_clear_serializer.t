@@ -23,7 +23,7 @@ Test::TCP::test_tcp(
         my $ua      = HTTP::Tiny->new;
         my $res;
 
-        $res = $ua->get("http://127.0.0.1:$port/");
+        $res = $ua->get("http://127.0.0.10:$port/");
         ok( $res->{success}, 'Successful response from server' );
         like(
             $res->{content},
@@ -32,7 +32,7 @@ Test::TCP::test_tcp(
         );
 
         # new request, no serializer
-        $res = $ua->get("http://127.0.0.1:$port/");
+        $res = $ua->get("http://127.0.0.10:$port/");
         ok( $res->{success}, 'Successful response from server' );
         like($res->{content}, qr/HASH\(0x.+\)/,
             'Serializer undef, response not serialised');
@@ -44,7 +44,7 @@ Test::TCP::test_tcp(
 
         set( apphandler   => 'Standalone',
              port         => $port,
-             server       => '127.0.0.1',
+             server       => '127.0.0.10',
              show_errors  => 1,
              startup_info => 0 );
 

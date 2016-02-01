@@ -17,7 +17,7 @@ Test::TCP::test_tcp(
         my $port = shift;
         my $ua  = HTTP::Tiny->new;
         for (1..10) {
-            my $res = $ua->get("http://127.0.0.1:$port/getvarfoo");
+            my $res = $ua->get("http://127.0.0.10:$port/getvarfoo");
             is $res->{content}, 1;
         }
     },
@@ -29,7 +29,7 @@ Test::TCP::test_tcp(
         # vars should be reset before the handler is called
         var foo => 42;
 
-        set startup_info => 0, port => $port, server => '127.0.0.1';
+        set startup_info => 0, port => $port, server => '127.0.0.10';
 
         get "/getvarfoo" => sub {
             return ++vars->{foo};

@@ -16,11 +16,11 @@ Test::TCP::test_tcp(
         my $ua = HTTP::Tiny->new;
 
         my $headers = { 'X-Requested-With' => 'XMLHttpRequest' };
-        my $res = $ua->get("http://127.0.0.1:$port/req", { headers => $headers });
+        my $res = $ua->get("http://127.0.0.10:$port/req", { headers => $headers });
         ok($res->{success}, "server responded");
         is($res->{content}, 1, "content ok");
 
-        $res = $ua->get("http://127.0.0.1:$port/req");
+        $res = $ua->get("http://127.0.0.10:$port/req");
         ok($res->{success}, "server responded");
         is($res->{content}, 0, "content ok");
     },
@@ -28,7 +28,7 @@ Test::TCP::test_tcp(
         my $port = shift;
         use Dancer;
         set (port         => $port,
-             server       => '127.0.0.1',
+             server       => '127.0.0.10',
              startup_info => 0);
 
         get '/req' => sub {

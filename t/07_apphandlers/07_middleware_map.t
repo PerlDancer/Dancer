@@ -30,7 +30,7 @@ Test::TCP::test_tcp(
         my $ua   = HTTP::Tiny->new;
 
         foreach my $test (@tests) {
-            my $res = $ua->get("http://127.0.0.1:$port" . $test->{path});
+            my $res = $ua->get("http://127.0.0.10:$port" . $test->{path});
             ok $res;
             if ( $test->{runtime} ) {
                 ok $res->{headers}{'x-runtime'};
@@ -49,11 +49,11 @@ Test::TCP::test_tcp(
         set( environment           => 'production',
              apphandler            => 'PSGI',
              port                  => $port,
-             server                => '127.0.0.1',
+             server                => '127.0.0.10',
              startup_info          => 0,
              plack_middlewares_map => $confs );
 
         my $app = Dancer::Handler->get_handler()->dance;
-        Plack::Loader->auto( port => $port, server => '127.0.0.1' )->run($app);
+        Plack::Loader->auto( port => $port, server => '127.0.0.10' )->run($app);
     },
 );

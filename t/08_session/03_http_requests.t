@@ -44,14 +44,14 @@ Test::TCP::test_tcp(
         foreach my $client (@clients) {
             my $ua = HTTP::Tiny->new(cookie_jar => HTTP::CookieJar->new);
 
-            my $res = $ua->get("http://127.0.0.1:$port/read_session");
+            my $res = $ua->get("http://127.0.0.10:$port/read_session");
             like $res->{content}, qr/name=''/, 
             "empty session for client $client";
 
-            $res = $ua->get("http://127.0.0.1:$port/set_session/$client");
+            $res = $ua->get("http://127.0.0.10:$port/set_session/$client");
             ok($res->{success}, "set_session for client $client");
 
-            $res = $ua->get("http://127.0.0.1:$port/read_session");
+            $res = $ua->get("http://127.0.0.10:$port/read_session");
             like $res->{content}, qr/name='$client'/,
             "session looks good for client $client";
 
@@ -72,7 +72,7 @@ Test::TCP::test_tcp(
              startup_info => 0,
              environment  => 'production',
              port         => $port,
-             server       => '127.0.0.1' );
+             server       => '127.0.0.10' );
         Dancer->dance();
     },
 );

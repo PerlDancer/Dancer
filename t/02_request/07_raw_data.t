@@ -21,7 +21,7 @@ Test::TCP::test_tcp(
         my $rawdata = RAW_DATA;
         my $ua = HTTP::Tiny->new;
         my $headers = { 'Content-Length' => length($rawdata) };
-        my $res = $ua->put("http://127.0.0.1:$port/jsondata", { headers => $headers, content => $rawdata });
+        my $res = $ua->put("http://127.0.0.10:$port/jsondata", { headers => $headers, content => $rawdata });
 
         ok $res->{success}, 'req is success';
         is $res->{content}, $rawdata, "raw_data is OK";
@@ -34,7 +34,7 @@ Test::TCP::test_tcp(
 
         set( environment  => 'production',
              port         => $port,
-             server       => '127.0.0.1',
+             server       => '127.0.0.10',
              startup_info => 0);
         Dancer->dance();
     },

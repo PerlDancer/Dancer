@@ -22,7 +22,7 @@ plan tests => 2;
 Test::TCP::test_tcp(
   client => sub {
       my $port = shift;
-      my $url_base  = "http://127.0.0.1:$port";
+      my $url_base  = "http://127.0.0.10:$port";
       my $ua  = HTTP::Tiny->new;
       my $res = $ua->post_form($url_base . "/foo", { data => 'foo'});
       is($res->{content}, "data:foo");
@@ -41,7 +41,7 @@ Test::TCP::test_tcp(
 
       post '/foz' => sub { forward '/baz';  };
       post '/baz' => sub { join(":",params('body')) };
-      set startup_info => 0, port => $port, server => '127.0.0.1', show_errors  => 1;
+      set startup_info => 0, port => $port, server => '127.0.0.10', show_errors  => 1;
       Dancer->dance();
   },
                    );

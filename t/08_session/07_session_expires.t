@@ -41,7 +41,7 @@ for my $session_expires (keys %tests) {
         client => sub {
             my $port = shift;
             my $ua   = HTTP::Tiny->new;
-            my $res = $ua->get("http://127.0.0.1:$port/set_session/test");
+            my $res = $ua->get("http://127.0.0.10:$port/set_session/test");
             ok $res->{success}, 'req is success';
             my $cookie = $res->{headers}{'set-cookie'};
             ok $cookie, 'cookie is set';
@@ -62,7 +62,7 @@ for my $session_expires (keys %tests) {
                  session_expires => $session_expires,
                  environment     => 'production',
                  port            => $port,
-                 server          => '127.0.0.1',
+                 server          => '127.0.0.10',
                  startup_info    => 0 );
             Dancer->dance();
         },

@@ -21,7 +21,7 @@ sub test {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
-            my $url  = "http://127.0.0.1:$port/";
+            my $url  = "http://127.0.0.10:$port/";
 
             my $ua = HTTP::Tiny->new;
             for (qw/204 304/) {
@@ -32,7 +32,7 @@ sub test {
         },
         server => sub {
             my $port = shift;
-            set port => $port, server => '127.0.0.1', startup_info => 0;
+            set port => $port, server => '127.0.0.10', startup_info => 0;
 
             get '/204' => sub {
                 status 204;

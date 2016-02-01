@@ -22,15 +22,15 @@ Test::TCP::test_tcp(
         my $port = shift;
         my $ua = HTTP::Tiny->new;
 
-        my $res = $ua->get("http://127.0.0.1:$port/env");
+        my $res = $ua->get("http://127.0.0.10:$port/env");
         like $res->{content}, qr/psgi\.version/,
             'content looks good for /env';
 
-        $res = $ua->get("http://127.0.0.1:$port/name/bar");
+        $res = $ua->get("http://127.0.0.10:$port/name/bar");
         like $res->{content}, qr/Your name: bar/,
             'content looks good for /name/bar';
 
-        $res = $ua->get("http://127.0.0.1:$port/name/baz");
+        $res = $ua->get("http://127.0.0.10:$port/name/baz");
         like $res->{content}, qr/Your name: baz/,
             'content looks good for /name/baz';
     },
@@ -44,6 +44,6 @@ Test::TCP::test_tcp(
         set apphandler  => 'PSGI', environment => 'production';
         Dancer::Config->load;
 
-        Plack::Loader->auto(port => $port, server => '127.0.0.1')->run($app);
+        Plack::Loader->auto(port => $port, server => '127.0.0.10')->run($app);
     },
 );
