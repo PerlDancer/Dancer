@@ -4,8 +4,13 @@ Revision history for Dancer
  [API CHANGES]
 
  [BUG FIXES]
+ - More temp directory handling fixes (Issue #1147)
+ - Avoid request body truncation in hand-assembled requests in tests
+   (PR 1148, skington)
+ - Avoid tests failing when "localhost" doesn't resolve (PR 1142, gbarco)
 
  [DOCUMENTATION]
+ - Better doc for forward_for_address (PR 1146, Relequestual)
 
  [ENHANCEMENTS]
 
