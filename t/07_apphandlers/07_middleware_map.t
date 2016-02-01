@@ -32,7 +32,7 @@ Test::TCP::test_tcp(
         foreach my $test (@tests) {
             my $req =
               HTTP::Request->new(
-                GET => "http://localhost:$port" . $test->{path} );
+                GET => "http://127.0.0.1:$port" . $test->{path} );
             my $res = $ua->request($req);
             ok $res;
             if ( $test->{runtime} ) {
