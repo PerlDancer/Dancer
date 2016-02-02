@@ -8,6 +8,9 @@ Revision history for Dancer
  - Avoid request body truncation in hand-assembled requests in tests
    (PR 1148, skington)
  - Avoid tests failing when "localhost" doesn't resolve (PR 1142, gbarco)
+ - Avoid test failures due to race condition in selecting a port to listen on
+   by using 127.0.0.10 instead (more of a hacky workaround than a fix, but
+   should help (bigpresh)
 
  [DOCUMENTATION]
  - Better doc for forward_for_address (PR 1146, Relequestual)
