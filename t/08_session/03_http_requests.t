@@ -37,6 +37,8 @@ plan tests => 3 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
 foreach my $engine (@engines) {
 
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
@@ -44,14 +46,14 @@ Test::TCP::test_tcp(
         foreach my $client (@clients) {
             my $ua = HTTP::Tiny->new(cookie_jar => HTTP::CookieJar->new);
 
-            my $res = $ua->get("http://127.0.0.1:$port/read_session");
+            my $res = $ua->get("http://$host:$port/read_session");
             like $res->{content}, qr/name=''/, 
             "empty session for client $client";
 
-            $res = $ua->get("http://127.0.0.1:$port/set_session/$client");
+            $res = $ua->get("http://$host:$port/set_session/$client");
             ok($res->{success}, "set_session for client $client");
 
-            $res = $ua->get("http://127.0.0.1:$port/read_session");
+            $res = $ua->get("http://$host:$port/read_session");
             like $res->{content}, qr/name='$client'/,
             "session looks good for client $client";
 
@@ -68,13 +70,16 @@ Test::TCP::test_tcp(
         setting appdir => $tempdir;
         Dancer::Logger->init('File');
         ok(setting(session => $engine), "using engine $engine");
-        set( show_errors  => 1,
-             startup_info => 0,
-             environment  => 'production',
-             port         => $port,
-             server       => '127.0.0.1' );
+        set(
+            show_errors  => 1,
+            startup_info => 0,
+            environment  => 'production',
+            port         => $port,
+            server       => $host,
+        );
         Dancer->dance();
     },
+    host => $host,
 );
 }
 

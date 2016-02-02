@@ -19,9 +19,9 @@ my $env = {};
 
 my $document_root = File::Spec->rel2abs('.');
 my $server_name = 'localhost.localdomain';
-my $remote_addr = '127.0.0.1';
+my $remote_addr = '127.0.0.10';
 my $server_admin = 'admin@domain.com';
-my $server_addr = '127.0.0.1';
+my $server_addr = '127.0.0.10';
 my $host_name = 'app.localdomain.com';
 
 # a / request

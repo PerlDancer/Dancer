@@ -17,6 +17,9 @@ use Dancer;
 use File::Spec;
 
 plan tests => 9;
+
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
@@ -24,15 +27,15 @@ Test::TCP::test_tcp(
         foreach my $client (qw(one two three)) {
             my $ua = HTTP::Tiny->new(cookie_jar => HTTP::CookieJar->new);
 
-            my $res = $ua->get("http://127.0.0.1:$port/cookies");
+            my $res = $ua->get("http://$host:$port/cookies");
             like $res->{content}, qr/\$VAR1 = \{\}/,
             "no cookies found for the client $client";
 
-            $res = $ua->get("http://127.0.0.1:$port/set_cookie/$client/42");
+            $res = $ua->get("http://$host:$port/set_cookie/$client/42");
             # use YAML::Syck; warn Dump $res;
             ok($res->{success}, "set_cookie for client $client");
 
-            $res = $ua->get("http://127.0.0.1:$port/cookies");
+            $res = $ua->get("http://$host:$port/cookies");
             like $res->{content}, qr/'name' => '$client'/,
             "cookie looks good for client $client";
         }
@@ -45,10 +48,13 @@ Test::TCP::test_tcp(
         use TestApp;
         Dancer::Config->load;
 
-        set( startup_info => 0,
-             environment  => 'production',
-             port         => $port,
-             server       => '127.0.0.1' );
+        set(
+            startup_info => 0,
+            environment  => 'production',
+            port         => $port,
+            server       => $host,
+        );
         Dancer->dance();
     },
+    host => $host,
 );

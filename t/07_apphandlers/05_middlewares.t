@@ -28,7 +28,7 @@ foreach my $c (@$confs) {
             my $port = shift;
             my $ua   = HTTP::Tiny->new;
 
-            my $res = $ua->get("http://127.0.0.1:$port/");
+            my $res = $ua->get("http://127.0.0.10:$port/");
             ok $res;
             ok $res->{headers}{'x-runtime'};
         },
@@ -41,11 +41,11 @@ foreach my $c (@$confs) {
             set( environment       => 'production',
                  apphandler        => 'PSGI',
                  port              => $port,
-                 server            => '127.0.0.1',
+                 server            => '127.0.0.10',
                  startup_info      => 0,
                  plack_middlewares => $c->[0] );
             my $app = Dancer::Handler->get_handler()->dance;
-            Plack::Loader->auto( port => $port, server => '127.0.0.1' )->run($app);
+            Plack::Loader->auto( port => $port, server => '127.0.0.10' )->run($app);
         },
     );
 

@@ -16,6 +16,8 @@ plan tests => $plack_available ? 12 : 6;
 my @handlers = ('Standalone');
 push @handlers, 'PSGI' if $plack_available;
 
+my $host = '127.0.0.10';
+
 for my $handler (@handlers) {
 Test::TCP::test_tcp(
     client => sub {
@@ -24,7 +26,7 @@ Test::TCP::test_tcp(
 
         my $headers = { 'X-User-Head1' => 42, 'X-User-Head2' => 43 };
 
-        my $res = $ua->get("http://127.0.0.1:$port/req", { headers => $headers });
+        my $res = $ua->get("http://$host:$port/req", { headers => $headers });
         ok($res->{success}, "$handler server responded");
         is($res->{headers}{'x-foo'}, 2);
         is($res->{headers}{'x-bar'}, 3);
@@ -36,7 +38,7 @@ Test::TCP::test_tcp(
 
         set( apphandler   => $handler,
              port         => $port,
-             server       => '127.0.0.1',
+             server       => $host,
              show_errors  => 1,
              startup_info => 0 );
 
@@ -62,5 +64,6 @@ Test::TCP::test_tcp(
             Dancer->dance();
         }
     },
+    host => $host,
 );
 }

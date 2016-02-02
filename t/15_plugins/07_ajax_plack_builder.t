@@ -19,6 +19,8 @@ use HTTP::Server::Simple::PSGI;
 
 plan tests => 6;
 
+my $host = '127.0.0.10';
+
 my $js_content = q[<script type="text/javascript">
     var xhr = new XMLHttpRequest();
     xhr.open( 'POST', '/foo' );
@@ -30,7 +32,7 @@ my $js_content = q[<script type="text/javascript">
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $url  = "http://127.0.0.1:$port/";
+        my $url  = "http://$host:$port/";
 
         my $ua  = HTTP::Tiny->new();
 
@@ -50,7 +52,7 @@ Test::TCP::test_tcp(
         my $handler = sub {
             use Dancer;
 
-            set port => $port, server => '127.0.0.1', apphandler => 'PSGI', startup_info => 0;
+            set port => $port, server => $host, apphandler => 'PSGI', startup_info => 0;
 
             get  '/'    => sub {$js_content};
             ajax '/foo' => sub {'bar'};
@@ -65,9 +67,10 @@ Test::TCP::test_tcp(
         };
 
         my $server = HTTP::Server::Simple::PSGI->new($port);
-        $server->host("127.0.0.1");
+        $server->host($host);
         $server->app($app);
         $server->run;
     },
+    host => $host,
 );
 

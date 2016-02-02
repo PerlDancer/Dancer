@@ -12,12 +12,15 @@ plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP" => "1.30");
 
 plan tests => 10;
+
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua  = HTTP::Tiny->new;
         for (1..10) {
-            my $res = $ua->get("http://127.0.0.1:$port/getvarfoo");
+            my $res = $ua->get("http://$host:$port/getvarfoo");
             is $res->{content}, 1;
         }
     },
@@ -29,7 +32,7 @@ Test::TCP::test_tcp(
         # vars should be reset before the handler is called
         var foo => 42;
 
-        set startup_info => 0, port => $port, server => '127.0.0.1';
+        set startup_info => 0, port => $port, server => $host;
 
         get "/getvarfoo" => sub {
             return ++vars->{foo};
@@ -37,4 +40,5 @@ Test::TCP::test_tcp(
 
         Dancer->dance;
     },
+    host => $host,
 );
