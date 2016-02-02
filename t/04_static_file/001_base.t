@@ -45,11 +45,13 @@ is $r->content, 'Bad Request';
 
 require HTTP::Tiny;
 
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua  = HTTP::Tiny->new();
-        my $res = $ua->get("http://127.0.0.10:$port/hello%00.txt");
+        my $res = $ua->get("http://$host:$port/hello%00.txt");
         ok !$res->{success};
         is $res->{status}, 400;
     },
@@ -58,9 +60,10 @@ Test::TCP::test_tcp(
         setting apphandler => 'PSGI';
         Dancer::Config->load;
         my $app = Dancer::Handler->psgi_app;
-        Plack::Loader->auto( port => $port, host => '127.0.0.10' )->run($app);
+        Plack::Loader->auto( port => $port, host => $host )->run($app);
         Dancer->dance();
-    }
+    },
+    host => $host,
 );
 
 Test::TCP::test_tcp(
@@ -68,7 +71,7 @@ Test::TCP::test_tcp(
         my $port = shift;
         my $headers = { 'If-Modified-Since' => $date };
         my $ua  = HTTP::Tiny->new();
-        my $res = $ua->get("http://127.0.0.10:$port/hello.txt", { headers => $headers });
+        my $res = $ua->get("http://$host:$port/hello.txt", { headers => $headers });
         ok !$res->{success};
         is $res->{status}, 304;
     },
@@ -77,7 +80,8 @@ Test::TCP::test_tcp(
         setting apphandler => 'PSGI';
         Dancer::Config->load;
         my $app = Dancer::Handler->psgi_app;
-        Plack::Loader->auto( port => $port, host => '127.0.0.10' )->run($app);
+        Plack::Loader->auto( port => $port, host => $host )->run($app);
         Dancer->dance();
-    }
+    },
+    host => $host,
 );

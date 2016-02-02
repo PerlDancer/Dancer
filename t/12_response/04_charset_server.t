@@ -19,18 +19,20 @@ use HTTP::Tiny;
 
 plan tests => 10;
 
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua = HTTP::Tiny->new;
-        my $res = $ua->post_form("http://127.0.0.10:$port/name", [ name => 'vasya' ]);
+        my $res = $ua->post_form("http://$host:$port/name", [ name => 'vasya' ]);
 
         my $headers = HTTP::Headers->new(%{$res->{headers}});
         is $headers->content_type, 'text/html';
         ok $headers->content_type_charset; # we always have charset if the setting is set
         is $res->{content}, 'Your name: vasya';
 
-        $res = $ua->get("http://127.0.0.10:$port/unicode");
+        $res = $ua->get("http://$host:$port/unicode");
 
         $headers = HTTP::Headers->new(%{$res->{headers}});
         is $headers->content_type, 'text/html';
@@ -47,10 +49,11 @@ Test::TCP::test_tcp(
         set( charset      => 'utf-8',
              environment  => 'production',
              port         => $port,
-             server       => '127.0.0.10',
+             server       => $host,
              startup_info => 0 );
         Dancer->dance();
     },
+    host => $host,
 );
 
 Test::TCP::test_tcp(
@@ -58,7 +61,7 @@ Test::TCP::test_tcp(
         my $port = shift;
         my $ua = HTTP::Tiny->new;
 
-        my $res = $ua->get("http://127.0.0.10:$port/unicode-content-length");
+        my $res = $ua->get("http://$host:$port/unicode-content-length");
 
         my $headers = HTTP::Headers->new(%{$res->{headers}});
         is $headers->content_type, 'text/html';
@@ -78,11 +81,12 @@ Test::TCP::test_tcp(
             # no charset
             environment  => 'production',
             port         => $port,
-            server       => '127.0.0.10',
+            server       => $host,
             startup_info => 0,
         );
         Dancer->dance;
     },
+    host => $host,
 );
 
 SKIP: {
@@ -94,7 +98,7 @@ SKIP: {
             my $port = shift;
             my $ua = HTTP::Tiny->new;
 
-            my $res = $ua->get("http://127.0.0.10:$port/unicode-content-length-json");
+            my $res = $ua->get("http://$host:$port/unicode-content-length-json");
 
             my $headers = HTTP::Headers->new(%{$res->{headers}});
             is $headers->content_type, 'application/json';
@@ -111,12 +115,13 @@ SKIP: {
                 # no charset
                 environment  => 'production',
                 port         => $port,
-                server       => '127.0.0.10',
+                server       => $host,
                 startup_info => 0,
                 serializer   => 'JSON',
             );
             Dancer->dance;
         },
+        host => $host,
     );
 
 }

@@ -19,10 +19,12 @@ use HTTP::Tiny;
 
 plan tests => 2;
 
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port     = shift;
-        my $url_base = "http://127.0.0.10:$port";
+        my $url_base = "http://$host:$port";
         my $ua       = HTTP::Tiny->new;
         my $res      = $ua->post_form($url_base . "/foo", {data => 'foo'});
         is($res->{content}, "data:foo");
@@ -45,9 +47,10 @@ Test::TCP::test_tcp(
         set
           startup_info => 0,
           port         => $port,
-          server       => '127.0.0.10',
+          server       => $host,
           show_errors  => 1;
         Dancer->dance();
     },
+    host => $host,
 );
 

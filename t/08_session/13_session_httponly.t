@@ -21,12 +21,14 @@ use Dancer::Config;
 my $session_dir = path( Dancer::Config::settings->{appdir}, "sessions_$$" );
 set session_dir => $session_dir;
 
+my $host = '127.0.0.10';
+
 for my $setting ("default", "on", "off") {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
             my $ua   = HTTP::Tiny->new;
-            my $res = $ua->get("http://127.0.0.10:$port/set_session/test_13");
+            my $res = $ua->get("http://$host:$port/set_session/test_13");
             ok $res->{success}, 'req is success';
             my $cookie = $res->{headers}{'set-cookie'};
             ok $cookie, 'cookie is set';
@@ -55,11 +57,12 @@ for my $setting ("default", "on", "off") {
         }
         set( environment          => 'production',
              port                 => $port,
-             server               => '127.0.0.10',
+             server               => $host,
              startup_info         => 0 );
         Dancer->dance();
-        },
-    );
+    },
+    host => $host,
+);
 
 }
 

@@ -18,6 +18,8 @@ use HTTP::Server::Simple::PSGI;
 
 plan tests => 100;
 
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
@@ -26,7 +28,7 @@ Test::TCP::test_tcp(
         my $ua = HTTP::Tiny->new();
         for(1..100){
             my $app = $apps[int(rand(scalar @apps - 1))];
-            my $res = $ua->get("http://127.0.0.10:$port/$app");
+            my $res = $ua->get("http://$host:$port/$app");
             like $res->{content}, qr/Hello $app/;
         }
     },
@@ -55,8 +57,9 @@ Test::TCP::test_tcp(
         };
 
         my $server = HTTP::Server::Simple::PSGI->new($port);
-        $server->host("127.0.0.10");
+        $server->host($host);
         $server->app($app);
         $server->run;
     },
+    host => $host,
 );

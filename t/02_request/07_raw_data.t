@@ -14,6 +14,8 @@ use HTTP::Tiny;
 
 use constant RAW_DATA => "var: 2; foo: 42; bar: 57\nHey I'm here.\r\n\r\n";
 
+my $host = '127.0.0.10';
+
 plan tests => 2;
 Test::TCP::test_tcp(
     client => sub {
@@ -21,7 +23,7 @@ Test::TCP::test_tcp(
         my $rawdata = RAW_DATA;
         my $ua = HTTP::Tiny->new;
         my $headers = { 'Content-Length' => length($rawdata) };
-        my $res = $ua->put("http://127.0.0.10:$port/jsondata", { headers => $headers, content => $rawdata });
+        my $res = $ua->put("http://$host:$port/jsondata", { headers => $headers, content => $rawdata });
 
         ok $res->{success}, 'req is success';
         is $res->{content}, $rawdata, "raw_data is OK";
@@ -34,8 +36,9 @@ Test::TCP::test_tcp(
 
         set( environment  => 'production',
              port         => $port,
-             server       => '127.0.0.10',
+             server       => $host,
              startup_info => 0);
         Dancer->dance();
     },
+    host => $host,
 );

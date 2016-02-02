@@ -14,11 +14,14 @@ plan skip_all => "Test::TCP is needed for this test"
 use HTTP::Tiny;
 
 plan tests => 2;
+
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $ua = HTTP::Tiny->new;
-        my $res = $ua->post_form("http://127.0.0.10:$port/params/route?a=1&var=query",
+        my $res = $ua->post_form("http://$host:$port/params/route?a=1&var=query",
                             {var => 'post', b => 2});
 
         ok $res->{success}, 'req is success';
@@ -53,8 +56,9 @@ Test::TCP::test_tcp(
 
         set ( environment  => 'production',
               port         => $port,
-              server       => '127.0.0.10',
+              server       => $host,
               startup_info => 0);
         Dancer->dance();
     },
+    host => $host,
 );

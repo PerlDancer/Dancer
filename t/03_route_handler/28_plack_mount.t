@@ -18,10 +18,12 @@ use HTTP::Server::Simple::PSGI;
 
 plan tests => 3;
 
+my $host = '127.0.0.10';
+
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $url = "http://127.0.0.10:$port/mount/test/foo";
+        my $url = "http://$host:$port/mount/test/foo";
 
         my $ua = HTTP::Tiny->new();
         ok my $res = $ua->get($url);
@@ -48,8 +50,9 @@ Test::TCP::test_tcp(
         };
 
         my $server = HTTP::Server::Simple::PSGI->new($port);
-        $server->host("127.0.0.10");
+        $server->host($host);
         $server->app($app);
         $server->run;
     },
+    host => $host,
 );
