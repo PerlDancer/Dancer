@@ -11,6 +11,7 @@ Revision history for Dancer
  - Avoid test failures due to race condition in selecting a port to listen on
    by using 127.0.0.10 instead (more of a hacky workaround than a fix, but
    should help (bigpresh)
+ - Fix YAML session handler under taint mode (chrisjrob)
 
  [DOCUMENTATION]
  - Better doc for forward_for_address (PR 1146, Relequestual)
