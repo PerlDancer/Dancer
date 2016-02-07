@@ -696,6 +696,10 @@ Use list context to fetch them all:
 
     my @values = cookie "name";
 
+Note that if the client has sent more than one cookie with the same value, the
+one returned will be the last one seen.  This should only happen if you have
+set multiple cookies with the same name but different paths. So, don't do that.
+
 =head2 config
 
 Accesses the configuration of the application:
