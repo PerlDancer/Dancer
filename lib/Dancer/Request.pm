@@ -959,6 +959,9 @@ Looks for HTTP_X_FORWARDED_FOR if X_FORWARDED_FOR is not there.
 
 =item C<host>
 
+If you app is on a non-standard port, you can expect this to return the hostname
+and port, e.g. C<example.com:5000>.
+
 =item C<keep_alive>
 
 =item C<path_info>
