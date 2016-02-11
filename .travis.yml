@@ -32,4 +32,4 @@ install:
 sudo: false
 
 script:
-    - dzil test --author --release
+    - dzil smoke --author --release
