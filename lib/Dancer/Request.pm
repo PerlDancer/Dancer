@@ -8,12 +8,12 @@ use Carp;
 use base 'Dancer::Object';
 
 use Dancer::Config 'setting';
+use Dancer::HTTP::Body;
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Dancer::Session;
 use Dancer::Exception qw(:all);
 use Encode;
-use HTTP::Body;
 use URI;
 use URI::Escape;
 
@@ -140,7 +140,7 @@ sub init {
     $self->_build_method()    unless $self->method;
 
     $self->{_http_body} =
-      HTTP::Body->new($self->content_type, $self->content_length);
+      Dancer::HTTP::Body->new($self->content_type, $self->content_length);
     $self->{_http_body}->cleanup(1);
     $self->_build_params();
     $self->_build_uploads unless $self->uploads;

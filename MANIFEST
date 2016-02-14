@@ -46,6 +46,12 @@ lib/Dancer/Factory/Hook.pm
 lib/Dancer/FileUtils.pm
 lib/Dancer/GetOpt.pm
 lib/Dancer/HTTP.pm
+lib/Dancer/HTTP/Body.pm
+lib/Dancer/HTTP/Body/MultiPart.pm
+lib/Dancer/HTTP/Body/OctetStream.pm
+lib/Dancer/HTTP/Body/UrlEncoded.pm
+lib/Dancer/HTTP/Body/XForms.pm
+lib/Dancer/HTTP/Body/XFormsMultipart.pm
 lib/Dancer/Handler.pm
 lib/Dancer/Handler/Debug.pm
 lib/Dancer/Handler/PSGI.pm
@@ -156,6 +162,7 @@ t/02_request/16_delete.t
 t/02_request/17_uri_base.t
 t/02_request/18_param_accessor.t
 t/02_request/19_json_body.t
+t/02_request/20_body.t
 t/03_route_handler/01_http_methods.t
 t/03_route_handler/02_params.t
 t/03_route_handler/03_routes_api.t

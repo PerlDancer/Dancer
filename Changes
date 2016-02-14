@@ -12,6 +12,8 @@ Revision history for Dancer
    by using 127.0.0.10 instead (more of a hacky workaround than a fix, but
    should help (bigpresh)
  - Fix YAML session handler under taint mode (chrisjrob)
+ - Make request->body work again for URL-encoded POST requests - Issue 1140
+   reported by miyagawa (bigpresh)
 
  [DOCUMENTATION]
  - Better doc for forward_for_address (PR 1146, Relequestual)

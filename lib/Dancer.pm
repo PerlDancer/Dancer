@@ -1964,8 +1964,6 @@ The following modules are mandatory (Dancer cannot run without them):
 
 =item L<HTTP::Server::Simple::PSGI>
 
-=item L<HTTP::Body>
-
 =item L<HTTP::Tiny>
 
 =item L<MIME::Types>
