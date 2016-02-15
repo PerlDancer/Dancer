@@ -320,8 +320,11 @@ sub dancer_response {
                 my @tokens;
                 while ( my ( $name, $value ) = each %{$content} ) {
                     $name  = _url_encode($name);
-                    $value = _url_encode($value);
-                    push @tokens, "${name}=${value}";
+                    my @values = ref $value eq 'ARRAY' ? @$value : ($value);
+                    for my $value (@values) {
+                        $value = _url_encode($value);
+                        push @tokens, "${name}=${value}";
+                    }
                 }
                 $content = join( '&', @tokens );
                 $content_type = 'application/x-www-form-urlencoded';
