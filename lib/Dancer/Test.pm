@@ -321,7 +321,7 @@ sub dancer_response {
                 while ( my ( $name, $value ) = each %{$content} ) {
                     $name  = _url_encode($name);
                     my @values = ref $value eq 'ARRAY' ? @$value : ($value);
-                    for my $value (@$value) {
+                    for my $value (@values) {
                         $value = _url_encode($value);
                         push @tokens, "${name}=${value}";
                     }
