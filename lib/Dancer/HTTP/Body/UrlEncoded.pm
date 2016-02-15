@@ -1,5 +1,6 @@
 package Dancer::HTTP::Body::UrlEncoded;
-
+our $AUTHORITY = 'cpan:SUKRIA';
+$Dancer::HTTP::Body::UrlEncoded::VERSION = '1.3300'; # TRIAL
 use strict;
 use base 'Dancer::HTTP::Body';
 use bytes;
@@ -13,25 +14,6 @@ for my $num ( 0 .. 255 ) {
     $hex_chr{ lc $h } = $hex_chr{ uc $h } = chr $num;
 }
 
-=head1 NAME
-
-Dancer::HTTP::Body::UrlEncoded - HTTP Body UrlEncoded Parser
-
-=head1 SYNOPSIS
-
-    use Dancer::HTTP::Body::UrlEncoded;
-
-=head1 DESCRIPTION
-
-HTTP Body UrlEncoded Parser.
-
-=head1 METHODS
-
-=over 4
-
-=item spin
-
-=cut
 
 sub spin {
     my $self = shift;
@@ -76,6 +58,41 @@ sub spin {
     $self->{state}  = 'done';
 }
 
+
+1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::HTTP::Body::UrlEncoded
+
+=head1 VERSION
+
+version 1.3300
+
+=head1 SYNOPSIS
+
+    use Dancer::HTTP::Body::UrlEncoded;
+
+=head1 DESCRIPTION
+
+HTTP Body UrlEncoded Parser.
+
+=head1 NAME
+
+Dancer::HTTP::Body::UrlEncoded - HTTP Body UrlEncoded Parser
+
+=head1 METHODS
+
+=over 4
+
+=item spin
+
 =back
 
 =head1 AUTHORS
@@ -89,6 +106,15 @@ Andy Grundman, C<andy@hybridized.org>
 This library is free software . You can redistribute it and/or modify 
 it under the same terms as perl itself.
 
-=cut
+=head1 AUTHOR
 
-1;
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

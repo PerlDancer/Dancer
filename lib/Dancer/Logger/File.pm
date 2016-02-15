@@ -1,6 +1,7 @@
 package Dancer::Logger::File;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: file-based logging engine for Dancer
-
+$Dancer::Logger::File::VERSION = '1.3300'; # TRIAL
 use strict;
 use warnings;
 use Carp;
@@ -88,6 +89,18 @@ sub _log {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Logger::File - file-based logging engine for Dancer
+
+=head1 VERSION
+
+version 1.3300
+
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -114,3 +127,15 @@ It's also possible to specify a logs directory with the log_path option.
 
 Writes the log message to the file.
 
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

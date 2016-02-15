@@ -1,30 +1,12 @@
 package Dancer::HTTP::Body::OctetStream;
-
+our $AUTHORITY = 'cpan:SUKRIA';
+$Dancer::HTTP::Body::OctetStream::VERSION = '1.3300'; # TRIAL
 use strict;
 use base 'Dancer::HTTP::Body';
 use bytes;
 
 use File::Temp 0.14;
 
-=head1 NAME
-
-Dancer::HTTP::Body::OctetStream - HTTP Body OctetStream Parser
-
-=head1 SYNOPSIS
-
-    use Dancer::HTTP::Body::OctetStream;
-
-=head1 DESCRIPTION
-
-HTTP Body OctetStream Parser.
-
-=head1 METHODS
-
-=over 4
-
-=item spin
-
-=cut
 
 sub spin {
     my $self = shift;
@@ -43,6 +25,41 @@ sub spin {
     }
 }
 
+
+1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::HTTP::Body::OctetStream
+
+=head1 VERSION
+
+version 1.3300
+
+=head1 SYNOPSIS
+
+    use Dancer::HTTP::Body::OctetStream;
+
+=head1 DESCRIPTION
+
+HTTP Body OctetStream Parser.
+
+=head1 NAME
+
+Dancer::HTTP::Body::OctetStream - HTTP Body OctetStream Parser
+
+=head1 METHODS
+
+=over 4
+
+=item spin
+
 =back
 
 =head1 AUTHOR
@@ -54,6 +71,15 @@ Christian Hansen, C<ch@ngmedia.com>
 This library is free software . You can redistribute it and/or modify 
 it under the same terms as perl itself.
 
-=cut
+=head1 AUTHOR
 
-1;
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

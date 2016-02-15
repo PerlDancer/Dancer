@@ -1,6 +1,7 @@
 package Dancer::Logger::Abstract;
+our $AUTHORITY = 'cpan:SUKRIA';
 #ABSTRACT: Abstract logging engine for Dancer
-
+$Dancer::Logger::Abstract::VERSION = '1.3300'; # TRIAL
 use strict;
 use warnings;
 use Carp;
@@ -145,6 +146,18 @@ sub error   { $_[0]->_should('error')   and $_[0]->_log('error',   $_[1]) }
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::Logger::Abstract - Abstract logging engine for Dancer
+
+=head1 VERSION
+
+version 1.3300
+
 =head1 SYNOPSIS
 
 In your configuration file:
@@ -276,3 +289,15 @@ application to die.
 Checks a certain level number against a certain level type (core, debug, info
 warning, error).
 
+=head1 AUTHOR
+
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
