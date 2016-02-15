@@ -14,11 +14,16 @@ Revision history for Dancer
  - Fix YAML session handler under taint mode (chrisjrob)
  - Make request->body work again for URL-encoded POST requests - Issue 1140
    reported by miyagawa (bigpresh)
+ - Validate session IDs read from cookies before passing to session engine, to
+   protect against any engine that might feed that value straight to a file path
+   for security - Issue 1118 (bigpresh)
 
  [DOCUMENTATION]
  - Better doc for forward_for_address (PR 1146, Relequestual)
 
  [ENHANCEMENTS]
+ - Let Dancer::Test::dancer_response() handle supplying multiple params with the
+   same name - Issue 1116 (bigpresh)
 
  [NEW FEATURES]
 
