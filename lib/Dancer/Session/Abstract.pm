@@ -103,7 +103,7 @@ sub read_session_id {
 
     my $name = $class->session_name();
     my $c    = Dancer::Cookies->cookies->{$name};
-    return (defined $c && $c->value =~ /^\d+$/) ? $c->value : undef;
+    return (defined $c) ? $c->value : undef;
 }
 
 sub write_session_id {
