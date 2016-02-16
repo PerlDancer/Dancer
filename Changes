@@ -13,6 +13,11 @@ Revision history for Dancer
 
  [STATISTICS]
 
+1.3301 2016-02-16
+ [BUG FIXES]
+ - Reverted session ID validation (PR-1155) as it breaks
+   Dancer::Session::Cookie (bigpresh)
+
 1.3300 2016-02-15
  [BUG FIXES]
  - More temp directory handling fixes (Issue #1147)
@@ -49,8 +54,8 @@ Revision history for Dancer
  - Fix temporary directory handling in serialiser tests (PR 1133, nanis)
 
  [ENHANCEMENTS]
- - Promoting 1.3144 to stable.		 Only one odd, rare failure remains
-   on CPAN Testers, which I cannot reproduce.
+ - Promoting 1.3144 to stable.		    Only one odd, rare failure
+   remains on CPAN Testers, which I cannot reproduce.
  - Bind to 127.0.0.1 in tests to avoid occasional spurious failures on busy
    build hosts (PR 1136, thanks to @redbaron)
  - More efficient handling of large requests - don't store the raw request
@@ -171,7 +176,7 @@ Revision history for Dancer
  [ENHANCEMENTS]
  - Skip tests requiring 'fork' if on a perl that doesn't implement it.
    (GH#1094, Steve Hay) - Using ':script' disable command-line argument
-   munging globally. (GH#1098,		     Brad Macpherson)
+   munging globally. (GH#1098,		       Brad Macpherson)
 
  [STATISTICS]
  - code churn: 33 files changed, 173 insertions(+), 113 deletions(-)
@@ -295,8 +300,8 @@ Revision history for Dancer
  [BUG FIXES]
  - Remove print statement in Dancer::ModuleLoad::require.  (GH#1021, John
    Wittkoski)
- - Test was failing if JSON module was absent.			  (GH#1022,
-   Yanick Champoux)
+ - Test was failing if JSON module was absent.			    
+   (GH#1022, Yanick Champoux)
  - Allow for routes evaluating to false ('0', '', etc).  (GH#1020, Yanick
    Champoux)
 
@@ -935,7 +940,7 @@ Revision history for Dancer
 
 1.3069_02 2011-07-10
  [BUG FIXES]
- - Fix a bunch of cpan testers reports				(Alberto
+ - Fix a bunch of cpan testers reports				   (Alberto
    Simões)
 
 1.3069_01 2011-07-07
@@ -1948,7 +1953,7 @@ Revision history for Dancer
  - Added Dancer::Test to provide helpers for writing test script for Dancer
    applications
  - FIX bug when returning a void context after redirecting a route. Thanks
-   to Juan J. Martínez		       for the report.
+   to Juan J. Martínez			  for the report.
  - Add support for request headers in Dancer::Request
  - Add support for halt() in Dancer's syntax.
 
