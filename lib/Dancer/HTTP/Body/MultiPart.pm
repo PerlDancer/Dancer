@@ -1,5 +1,6 @@
 package Dancer::HTTP::Body::MultiPart;
-
+our $AUTHORITY = 'cpan:SUKRIA';
+$Dancer::HTTP::Body::MultiPart::VERSION = '1.3301'; # TRIAL
 use strict;
 use base 'Dancer::HTTP::Body';
 use bytes;
@@ -8,25 +9,6 @@ use IO::File;
 use File::Temp 0.14;
 use File::Spec;
 
-=head1 NAME
-
-Dancer::HTTP::Body::MultiPart - HTTP Body Multipart Parser
-
-=head1 SYNOPSIS
-
-    use Dancer::HTTP::Body::MultiPart;
-
-=head1 DESCRIPTION
-
-HTTP Body Multipart Parser.
-
-=head1 METHODS
-
-=over 4
-
-=item init
-
-=cut
 
 sub init {
     my $self = shift;
@@ -42,9 +24,6 @@ sub init {
     return $self;
 }
 
-=item spin
-
-=cut
 
 sub spin {
     my $self = shift;
@@ -62,59 +41,38 @@ sub spin {
     }
 }
 
-=item boundary
-
-=cut
 
 sub boundary {
     return shift->{boundary};
 }
 
-=item boundary_begin
-
-=cut
 
 sub boundary_begin {
     return "--" . shift->boundary;
 }
 
-=item boundary_end
-
-=cut
 
 sub boundary_end {
     return shift->boundary_begin . "--";
 }
 
-=item crlf
-
-=cut
 
 sub crlf () {
     return "\x0d\x0a";
 }
 
-=item delimiter_begin
-
-=cut
 
 sub delimiter_begin {
     my $self = shift;
     return $self->crlf . $self->boundary_begin;
 }
 
-=item delimiter_end
-
-=cut
 
 sub delimiter_end {
     my $self = shift;
     return $self->crlf . $self->boundary_end;
 }
 
-=item parse_preamble
-
-=cut
 
 sub parse_preamble {
     my $self = shift;
@@ -133,9 +91,6 @@ sub parse_preamble {
     return 1;
 }
 
-=item parse_boundary
-
-=cut
 
 sub parse_boundary {
     my $self = shift;
@@ -161,9 +116,6 @@ sub parse_boundary {
     return 0;
 }
 
-=item parse_header
-
-=cut
 
 sub parse_header {
     my $self = shift;
@@ -213,9 +165,6 @@ sub parse_header {
     return 1;
 }
 
-=item parse_body
-
-=cut
 
 sub parse_body {
     my $self = shift;
@@ -251,9 +200,6 @@ sub parse_body {
     return 1;
 }
 
-=item handler
-
-=cut
 
 our $basename_regexp = qr/[^.]+(\.[^\\\/]+)$/;
 #our $basename_regexp = qr/(\.\w+(?:\.\w+)*)$/;
@@ -309,6 +255,65 @@ sub handler {
     }
 }
 
+
+1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::HTTP::Body::MultiPart
+
+=head1 VERSION
+
+version 1.3301
+
+=head1 SYNOPSIS
+
+    use Dancer::HTTP::Body::MultiPart;
+
+=head1 DESCRIPTION
+
+HTTP Body Multipart Parser.
+
+=head1 NAME
+
+Dancer::HTTP::Body::MultiPart - HTTP Body Multipart Parser
+
+=head1 METHODS
+
+=over 4
+
+=item init
+
+=item spin
+
+=item boundary
+
+=item boundary_begin
+
+=item boundary_end
+
+=item crlf
+
+=item delimiter_begin
+
+=item delimiter_end
+
+=item parse_preamble
+
+=item parse_boundary
+
+=item parse_header
+
+=item parse_body
+
+=item handler
+
 =back
 
 =head1 AUTHOR
@@ -320,6 +325,15 @@ Christian Hansen, C<ch@ngmedia.com>
 This library is free software . You can redistribute it and/or modify 
 it under the same terms as perl itself.
 
-=cut
+=head1 AUTHOR
 
-1;
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

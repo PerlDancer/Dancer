@@ -1,5 +1,6 @@
 package Dancer::HTTP::Body;
-
+our $AUTHORITY = 'cpan:SUKRIA';
+$Dancer::HTTP::Body::VERSION = '1.3301'; # TRIAL
 use strict;
 
 use Carp       qw[ ];
@@ -22,65 +23,6 @@ require Dancer::HTTP::Body::XForms;
 use HTTP::Headers;
 use HTTP::Message;
 
-=head1 NAME
-
-Dancer::HTTP::Body - HTTP Body Parser
-
-=head1 SYNOPSIS
-
-    use Dancer::HTTP::Body;
-    
-    sub handler : method {
-        my ( $class, $r ) = @_;
-
-        my $content_type   = $r->headers_in->get('Content-Type');
-        my $content_length = $r->headers_in->get('Content-Length');
-        
-        my $body   = Dancer::HTTP::Body->new( $content_type, $content_length );
-        my $length = $content_length;
-
-        while ( $length ) {
-
-            $r->read( my $buffer, ( $length < 8192 ) ? $length : 8192 );
-
-            $length -= length($buffer);
-            
-            $body->add($buffer);
-        }
-        
-        my $uploads     = $body->upload;     # hashref
-        my $params      = $body->param;      # hashref
-        my $param_order = $body->param_order # arrayref
-        my $body        = $body->body;       # IO::Handle
-    }
-
-=head1 DESCRIPTION
-
-Dancer::HTTP::Body parses chunks of HTTP POST data and supports
-application/octet-stream, application/json, application/x-www-form-urlencoded,
-and multipart/form-data.
-
-Chunked bodies are supported by not passing a length value to new().
-
-It is currently used by L<Catalyst> to parse POST bodies.
-
-=head1 NOTES
-
-When parsing multipart bodies, temporary files are created to store any
-uploaded files.  You must delete these temporary files yourself after
-processing them, or set $body->cleanup(1) to automatically delete them
-at DESTROY-time.
-
-=head1 METHODS
-
-=over 4 
-
-=item new 
-
-Constructor. Takes content type and content length as parameters,
-returns a L<Dancer::HTTP::Body> object.
-
-=cut
 
 sub new {
     my ( $class, $content_type, $content_length ) = @_;
@@ -137,12 +79,6 @@ sub DESTROY {
     }
 }
 
-=item add
-
-Add string to internal buffer. Will call spin unless done. returns
-length before adding self.
-
-=cut
 
 sub add {
     my $self = shift;
@@ -219,11 +155,6 @@ sub add {
     return ( $self->length - $cl );
 }
 
-=item body
-
-accessor for the body.
-
-=cut
 
 sub body {
     my $self = shift;
@@ -231,21 +162,11 @@ sub body {
     return $self->{body};
 }
 
-=item chunked
-
-Returns 1 if the request is chunked.
-
-=cut
 
 sub chunked {
     return shift->{chunked};
 }
 
-=item cleanup
-
-Set to 1 to enable automatic deletion of temporary files at DESTROY-time.
-
-=cut
 
 sub cleanup {
     my $self = shift;
@@ -253,75 +174,36 @@ sub cleanup {
     return $self->{cleanup};
 }
 
-=item content_length
-
-Returns the content-length for the body data if known.
-Returns -1 if the request is chunked.
-
-=cut
 
 sub content_length {
     return shift->{content_length};
 }
 
-=item content_type
-
-Returns the content-type of the body data.
-
-=cut
 
 sub content_type {
     return shift->{content_type};
 }
 
-=item init
-
-return self.
-
-=cut
 
 sub init {
     return $_[0];
 }
 
-=item length
-
-Returns the total length of data we expect to read if known.
-In the case of a chunked request, returns the amount of data
-read so far.
-
-=cut
 
 sub length {
     return shift->{length};
 }
 
-=item trailing_headers
-
-If a chunked request body had trailing headers, trailing_headers will
-return an HTTP::Headers object populated with those headers.
-
-=cut
 
 sub trailing_headers {
     return shift->{trailing_headers};
 }
 
-=item spin
-
-Abstract method to spin the io handle.
-
-=cut
 
 sub spin {
     Carp::croak('Define abstract method spin() in implementation');
 }
 
-=item state
-
-Returns the current state of the parser.
-
-=cut
 
 sub state {
     my $self = shift;
@@ -329,11 +211,6 @@ sub state {
     return $self->{state};
 }
 
-=item param
-
-Get/set body parameters.
-
-=cut
 
 sub param {
     my $self = shift;
@@ -358,11 +235,6 @@ sub param {
     return $self->{param};
 }
 
-=item upload
-
-Get/set file uploads.
-
-=cut
 
 sub upload {
     my $self = shift;
@@ -385,23 +257,6 @@ sub upload {
     return $self->{upload};
 }
 
-=item part_data
-
-Just like 'param' but gives you a hash of the full data associated with the
-part in a multipart type POST/PUT.  Example:
-
-    {
-      data => "test",
-      done => 1,
-      headers => {
-        "Content-Disposition" => "form-data; name=\"arg2\"",
-        "Content-Type" => "text/plain"
-      },
-      name => "arg2",
-      size => 4
-    }
-
-=cut
 
 sub part_data {
     my $self = shift;
@@ -424,11 +279,6 @@ sub part_data {
     return $self->{part_data};
 }
 
-=item tmpdir 
-
-Specify a different path for temporary files.  Defaults to the system temporary path.
-
-=cut
 
 sub tmpdir {
     my $self = shift;
@@ -436,15 +286,166 @@ sub tmpdir {
     return $self->{tmpdir};
 }
 
-=item param_order
-
-Returns the array ref of the param keys in the order how they appeared on the body
-
-=cut
 
 sub param_order {
     return shift->{param_order};
 }
+
+
+1;
+
+__END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Dancer::HTTP::Body
+
+=head1 VERSION
+
+version 1.3301
+
+=head1 SYNOPSIS
+
+    use Dancer::HTTP::Body;
+    
+    sub handler : method {
+        my ( $class, $r ) = @_;
+
+        my $content_type   = $r->headers_in->get('Content-Type');
+        my $content_length = $r->headers_in->get('Content-Length');
+        
+        my $body   = Dancer::HTTP::Body->new( $content_type, $content_length );
+        my $length = $content_length;
+
+        while ( $length ) {
+
+            $r->read( my $buffer, ( $length < 8192 ) ? $length : 8192 );
+
+            $length -= length($buffer);
+            
+            $body->add($buffer);
+        }
+        
+        my $uploads     = $body->upload;     # hashref
+        my $params      = $body->param;      # hashref
+        my $param_order = $body->param_order # arrayref
+        my $body        = $body->body;       # IO::Handle
+    }
+
+=head1 DESCRIPTION
+
+Dancer::HTTP::Body parses chunks of HTTP POST data and supports
+application/octet-stream, application/json, application/x-www-form-urlencoded,
+and multipart/form-data.
+
+Chunked bodies are supported by not passing a length value to new().
+
+It is currently used by L<Catalyst> to parse POST bodies.
+
+=head1 NAME
+
+Dancer::HTTP::Body - HTTP Body Parser
+
+=head1 NOTES
+
+When parsing multipart bodies, temporary files are created to store any
+uploaded files.  You must delete these temporary files yourself after
+processing them, or set $body->cleanup(1) to automatically delete them
+at DESTROY-time.
+
+=head1 METHODS
+
+=over 4 
+
+=item new 
+
+Constructor. Takes content type and content length as parameters,
+returns a L<Dancer::HTTP::Body> object.
+
+=item add
+
+Add string to internal buffer. Will call spin unless done. returns
+length before adding self.
+
+=item body
+
+accessor for the body.
+
+=item chunked
+
+Returns 1 if the request is chunked.
+
+=item cleanup
+
+Set to 1 to enable automatic deletion of temporary files at DESTROY-time.
+
+=item content_length
+
+Returns the content-length for the body data if known.
+Returns -1 if the request is chunked.
+
+=item content_type
+
+Returns the content-type of the body data.
+
+=item init
+
+return self.
+
+=item length
+
+Returns the total length of data we expect to read if known.
+In the case of a chunked request, returns the amount of data
+read so far.
+
+=item trailing_headers
+
+If a chunked request body had trailing headers, trailing_headers will
+return an HTTP::Headers object populated with those headers.
+
+=item spin
+
+Abstract method to spin the io handle.
+
+=item state
+
+Returns the current state of the parser.
+
+=item param
+
+Get/set body parameters.
+
+=item upload
+
+Get/set file uploads.
+
+=item part_data
+
+Just like 'param' but gives you a hash of the full data associated with the
+part in a multipart type POST/PUT.  Example:
+
+    {
+      data => "test",
+      done => 1,
+      headers => {
+        "Content-Disposition" => "form-data; name=\"arg2\"",
+        "Content-Type" => "text/plain"
+      },
+      name => "arg2",
+      size => 4
+    }
+
+=item tmpdir 
+
+Specify a different path for temporary files.  Defaults to the system temporary path.
+
+=item param_order
+
+Returns the array ref of the param keys in the order how they appeared on the body
 
 =back
 
@@ -485,6 +486,15 @@ Torsten Raudssus <torsten@raudssus.de>
 This library is free software. You can redistribute it and/or modify 
 it under the same terms as perl itself.
 
-=cut
+=head1 AUTHOR
 
-1;
+Dancer Core Developers
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Alexis Sukrieh.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
