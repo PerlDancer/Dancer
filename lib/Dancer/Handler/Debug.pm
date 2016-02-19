@@ -15,7 +15,7 @@ sub run {
     my ($self, $req) = @_;
 
     my ($method, $path, $query, @env ) = @ARGV;
-    my $host    = "127.0.0.10";
+    my $host    = "127.0.0.1";
     my $port    = "3000";
 
     my $env = {

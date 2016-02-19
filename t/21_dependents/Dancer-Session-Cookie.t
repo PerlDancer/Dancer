@@ -19,7 +19,6 @@ Test::TCP->import;
 
 plan tests=> 7;
 
-my $host = '127.0.0.10';
 test_tcp(
     client => sub {
         my $port = shift;
@@ -34,18 +33,18 @@ test_tcp(
         for my $jar (@jars) {
             $ua->cookie_jar( $jar );
 
-            my $res = $ua->get("http://$host:$port/foo");
+            my $res = $ua->get("http://0.0:$port/foo");
             is $res->{content}, "hits: 0, last_hit: ";
 
-            $res = $ua->get("http://$host:$port/bar");
+            $res = $ua->get("http://0.0:$port/bar");
             is $res->{content}, "hits: 1, last_hit: foo";
 
-            $res = $ua->get("http://$host:$port/baz");
+            $res = $ua->get("http://0.0:$port/baz");
             is $res->{content}, "hits: 2, last_hit: bar";
         }
 
         $ua->cookie_jar($jars[0]);
-        my $res = $ua->get("http://$host:$port/wibble");
+        my $res = $ua->get("http://0.0:$port/wibble");
         is $res->{content}, "hits: 3, last_hit: baz", "session not overwritten";
     },
     server => sub {
@@ -54,7 +53,7 @@ test_tcp(
         use Dancer ':tests';
 
         set( port                => $port,
-             server              => $host,
+             server              => '127.0.0.1',
              appdir              => '',          # quiet warnings not having an appdir
              startup_info        => 0,           # quiet startup banner
              session_cookie_key  => "John has a long mustache",
@@ -71,6 +70,5 @@ test_tcp(
         };
 
         dance;
-    },
-    host => $host,
+    }
 );

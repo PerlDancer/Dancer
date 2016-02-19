@@ -19,38 +19,30 @@ use HTTP::Tiny;
 
 plan tests => 2;
 
-my $host = '127.0.0.10';
-
 Test::TCP::test_tcp(
-    client => sub {
-        my $port     = shift;
-        my $url_base = "http://$host:$port";
-        my $ua       = HTTP::Tiny->new;
-        my $res      = $ua->post_form($url_base . "/foo", {data => 'foo'});
-        is($res->{content}, "data:foo");
+  client => sub {
+      my $port = shift;
+      my $url_base  = "http://127.0.0.1:$port";
+      my $ua  = HTTP::Tiny->new;
+      my $res = $ua->post_form($url_base . "/foo", { data => 'foo'});
+      is($res->{content}, "data:foo");
 
-        $res = $ua->post_form($url_base . "/foz", {data => 'foo'});
-        is($res->{content}, "data:foo");
-    },
-    server => sub {
-        my $port = shift;
-        Dancer::Config->load;
-        post '/foo' => sub {
-            forward '/bar';
-            fail "This line should not be executed - "
-                . "forward should have aborted the route execution";
-        };
-        post '/bar' => sub { join(":", params) };
+      $res = $ua->post_form($url_base . "/foz", { data => 'foo'});
+      is($res->{content}, "data:foo");
+  },
+  server => sub {
+      my $port = shift;
+      Dancer::Config->load;
+      post '/foo' => sub {
+          forward '/bar';
+          fail "This line should not be executed - forward should have aborted the route execution";
+      };
+      post '/bar' => sub { join(":",params) };
 
-        post '/foz' => sub { forward '/baz'; };
-        post '/baz' => sub { join(":", params('body')) };
-        set
-          startup_info => 0,
-          port         => $port,
-          server       => $host,
-          show_errors  => 1;
-        Dancer->dance();
-    },
-    host => $host,
-);
+      post '/foz' => sub { forward '/baz';  };
+      post '/baz' => sub { join(":",params('body')) };
+      set startup_info => 0, port => $port, server => '127.0.0.1', show_errors  => 1;
+      Dancer->dance();
+  },
+                   );
 

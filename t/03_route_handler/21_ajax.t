@@ -12,8 +12,6 @@ use HTTP::Tiny;
 
 plan tests => 33;
 
-my $host = '127.0.0.10';
-
 ok(Dancer::App->current->registry->is_empty,
     "registry is empty");
 ok(Dancer::Plugin::Ajax::ajax( '/', sub { "ajax" } ), "ajax helper called");
@@ -42,7 +40,7 @@ Test::TCP::test_tcp(
             $headers{'X-Requested-With'} = 'XMLHttpRequest'
               if ( $query->{ajax} == 1);
 
-            ok my $res = $ua->get("http://$host:$port/" . $query->{path}, { headers => \%headers });
+            ok my $res = $ua->get("http://127.0.0.1:$port/" . $query->{path}, { headers => \%headers });
 
             if ( $query->{success} == 1) {
                 ok $res->{success};
@@ -56,7 +54,7 @@ Test::TCP::test_tcp(
 
         # test ajax with content_type to json
         my %headers = ( 'X-Requested-With' => 'XMLHttpRequest' );
-        ok my $res = $ua->get("http://$host:$port/ajax.json", { headers => \%headers });
+        ok my $res = $ua->get("http://127.0.0.1:$port/ajax.json", { headers => \%headers });
         like $res->{headers}{'content-type'}, qr/json/;
     },
     server => sub {
@@ -65,7 +63,7 @@ Test::TCP::test_tcp(
         use Dancer;
         use Dancer::Plugin::Ajax;
 
-        set startup_info => 0, port => $port, server => $host, layout => 'wibble';
+        set startup_info => 0, port => $port, server => '127.0.0.1', layout => 'wibble';
 
         ajax '/req' => sub {
             return 1;
@@ -94,5 +92,4 @@ Test::TCP::test_tcp(
         };
         start();
     },
-    host => $host,
 );

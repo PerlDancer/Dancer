@@ -38,7 +38,7 @@ Test::TCP::test_tcp(
         use t::lib::TestAppUnicode;
 
         set( charset      => 'utf8',
-             host         => '127.0.0.10',
+             host         => '127.0.0.1',
              port         => $port,
              show_errors  => 1,
              startup_info => 0,
@@ -61,6 +61,6 @@ sub _get_http_response {
     my ($method, $path, $port) = @_;
 
     my $ua = HTTP::Tiny->new;
-    return $ua->request($method => "http://127.0.0.10:$port${path}");
+    return $ua->request($method => "http://127.0.0.1:$port${path}");
 }
 
