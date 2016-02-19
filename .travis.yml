@@ -1,5 +1,4 @@
 language: perl
-sudo: false
 
 perl:
     - "5.20"
@@ -10,7 +9,6 @@ perl:
     - "5.10"
 
 before_install:
-<<<<<<< HEAD
     - git config --global user.email "dancer-dev@dancer.pm"
     - git config --global user.name "Perl Dancer dev team"
 install:
