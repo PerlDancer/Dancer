@@ -8,6 +8,15 @@ perl:
     - "5.12"
     - "5.10"
 
+notifications:
+  irc:
+    channels:
+      - "irc.perl.org#dancer-core"
+    template:
+      - "%{branch}#%{build_number} by %{author}: %{message} (%{build_url})"
+    on_success: change
+    on_failure: always
+    use_notice: true
 before_install:
     - git config --global user.email "dancer-dev@dancer.pm"
     - git config --global user.name "Perl Dancer dev team"
