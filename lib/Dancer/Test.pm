@@ -46,6 +46,7 @@ use vars '@EXPORT';
   response_headers_are_deeply
   response_headers_include
   response_redirect_location_is
+  response_redirect_location_like
 
   dancer_response
 
@@ -268,6 +269,15 @@ sub response_redirect_location_is {
 
     my $response = _req_to_response($req);
     return  $tb->is_eq($response->header('location'), $expected, $test_name);
+}
+
+sub response_redirect_location_like {
+    my ($req, $matcher, $test_name) = @_;
+    $test_name ||= "redirect location looks good for " . _req_label($req);
+    my $tb = Test::Builder->new;
+
+    my $response = _req_to_response($req);
+    return  $tb->like($response->header('location'), $matcher, $test_name);
 }
 
 
@@ -591,11 +601,18 @@ Asserts that the response headers data structure includes some of the defined on
 
 =head2 response_redirect_location_is([$method, $path], $expected, $test_name)
 
-Asserts that the location header send with a 302 redirect equals to the C<$expected>
+Asserts that the location header sent with a 302 redirect is equal to the C<$expected>
 location.
 
     response_redirect_location_is [GET => '/'], 'http://localhost/index.html';
 
+=head2 response_redirect_location_like([$method, $path], $regexp, $test_name)
+
+Asserts that the location header sent with a 302 redirect matches the C<$regexp>
+provided. Useful if the redirect location includes a query string. 
+
+    response_redirect_location_like [GET => '/'], qr/some_pattern/;
+    
 =head2 dancer_response($method, $path, { params => $params, body => $body, headers => $headers, files => [{filename => '/path/to/file', name => 'my_file'}] })
 
 Returns a L<< Dancer::Response >> object for the given request.
