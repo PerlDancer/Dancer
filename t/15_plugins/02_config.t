@@ -4,7 +4,8 @@ use Dancer::ModuleLoader;
 use Test::More import => ['!pass'];
 
 plan skip_all => "YAML is needed for this test"
-    unless Dancer::ModuleLoader->load('YAML');
+    unless Dancer::ModuleLoader->load('YAML::XS')
+        or Dancer::ModuleLoader->load('YAML');
 
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
@@ -38,6 +39,9 @@ plugins:
   Test:
     foo: baz
 CONF
+
+Dancer::ModuleLoader->load('YAML::XS')
+    and config->{engines}->{YAML}->{module} = 'YAML::XS';
 
 ok( Dancer::Config->load, 'Config load works with a conffile' );
 

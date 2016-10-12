@@ -2,8 +2,9 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-plan skip_all => "YAML needed to run this tests"
-    unless Dancer::ModuleLoader->load('YAML');
+plan skip_all => "YAML needed to run these tests"
+    unless Dancer::ModuleLoader->load('YAML::XS')
+        or Dancer::ModuleLoader->load('YAML');
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 plan tests => 12;
@@ -19,6 +20,9 @@ my $envdir = File::Spec->catdir($dir, 'environments');
 mkdir $envdir;
 
 my $conffile = Dancer::Config->conffile;
+
+Dancer::ModuleLoader->load('YAML::XS')
+    and config->{engines}->{YAML}->{module} = 'YAML::XS';
 
 # create the conffile
 my $conf = <<"END";

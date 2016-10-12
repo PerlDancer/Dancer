@@ -3,8 +3,9 @@ use warnings;
 use Test::More import => ['!pass'];
 use Dancer::ModuleLoader;
 
-Dancer::ModuleLoader->load('YAML')
-    or plan skip_all => 'YAML is needed to run this test';
+plan skip_all => "YAML needed to run these tests"
+    unless Dancer::ModuleLoader->load('YAML::XS')
+        or Dancer::ModuleLoader->load('YAML');
 
 plan tests => 7;
 
@@ -28,6 +29,9 @@ logger: file
 log: "debug"
 ';
 write_file($conffile => $conf);
+
+Dancer::ModuleLoader->load('YAML::XS')
+    and config->{engines}->{YAML}->{module} = 'YAML::XS';
 
 ok(Dancer::Config->load, 'Config load works without conffile');
 
