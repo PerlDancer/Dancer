@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-plan skip_all => "YAML needed to run these tests"
+plan skip_all => "YAML or YAML::XS needed to run these tests"
     unless Dancer::ModuleLoader->load('YAML::XS')
         or Dancer::ModuleLoader->load('YAML');
 plan skip_all => "File::Temp 0.22 required"

@@ -3,7 +3,7 @@ use warnings;
 use Dancer::ModuleLoader;
 use Test::More import => ['!pass'];
 
-plan skip_all => "YAML is needed for this test"
+plan skip_all => "YAML or YAML::XS is needed for this test"
     unless Dancer::ModuleLoader->load('YAML::XS')
         or Dancer::ModuleLoader->load('YAML');
 
