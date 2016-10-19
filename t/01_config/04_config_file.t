@@ -2,8 +2,9 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-plan skip_all => "YAML needed to run this tests"
-    unless Dancer::ModuleLoader->load('YAML');
+plan skip_all => "YAML or YAML::XS needed to run these tests"
+    unless Dancer::ModuleLoader->load('YAML::XS')
+        or Dancer::ModuleLoader->load('YAML');
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 plan tests => 17;
@@ -20,6 +21,9 @@ mkdir $envdir;
 
 my $conffile = Dancer::Config->conffile;
 ok(defined($conffile), 'default conffile is defined');
+
+Dancer::ModuleLoader->load('YAML::XS')
+    and config->{engines}->{YAML}->{module} = 'YAML::XS';
 
 ok(Dancer::Config->load, 'Config load works without conffile');
 

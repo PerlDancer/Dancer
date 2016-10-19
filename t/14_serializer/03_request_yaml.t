@@ -7,10 +7,14 @@ use Dancer::Test;
 plan tests => 10;
 
 SKIP: {
-    skip 'YAML is needed to run this test', 10
-      unless Dancer::ModuleLoader->load('YAML');
-
-    set serializer => 'YAML', show_errors => 1;
+    if ( Dancer::ModuleLoader->load('YAML::XS') ) {
+        config->{engines}->{YAML}->{module} = 'YAML::XS';
+        set serializer => 'YAML', show_errors => 1;
+    }  elsif ( Dancer::ModuleLoader->load('YAML') ) {
+        set serializer => 'YAML', show_errors => 1;
+    } else {
+        skip 'YAML::XS or YAML is needed to run this test', 10;
+    }
 
     get '/'          => sub { { foo => 'bar' } };
     post '/'         => sub { request->params };

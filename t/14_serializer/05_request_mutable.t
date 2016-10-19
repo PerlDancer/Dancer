@@ -5,13 +5,17 @@ use Dancer ':tests';
 use Dancer::Test;
 
 BEGIN {
-    plan skip_all => 'YAML is needed to run this test'
-      unless Dancer::ModuleLoader->load('YAML');
+    plan skip_all => 'YAML or YAML::XS is needed to run this test'
+      unless Dancer::ModuleLoader->load('YAML::XS')
+        or Dancer::ModuleLoader->load('YAML');
     plan skip_all => 'JSON is needed to run this test'
       unless Dancer::ModuleLoader->load('JSON');
 }
 
 plan tests => 10;
+
+Dancer::ModuleLoader->load('YAML::XS')
+    and config->{engines}->{YAML}->{module} = 'YAML::XS';
 
 setting serializer => 'mutable';
 
