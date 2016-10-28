@@ -1,17 +1,15 @@
 Revision history for Dancer
 
 {{$NEXT}}
- [API CHANGES]
-
- [BUG FIXES]
-
  [DOCUMENTATION]
+ - Add environment var hint to cookbook (PR 1161, castaway)
 
  [ENHANCEMENTS]
+ - Make it possible to switch out YAML for YAML::XS for config parsing and
+   serialisation (there was already an attempt at this in place, and it was
+   documented as posisble, but didn't work) (PR 1164, 1nickt)
+ - New test method response_redirect_like (PR 1159, 1nickt)
 
- [NEW FEATURES]
-
- [STATISTICS]
 
 1.3301 2016-02-16
  [BUG FIXES]
