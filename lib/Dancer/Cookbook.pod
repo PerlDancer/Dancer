@@ -753,7 +753,9 @@ like we do above with config->{environment}='production'. Of course, this value
 does not get written in any file; it only lives in memory and your webapp
 doesn't have access to it, but you can use it inside your script.
 
-
+If you don't want to make your script environment-specific, or add extra arguments
+to it, you can also set the environment using a shell variable, DANCER_ENVIRONMENT.
+See also L<Dancer::Config/DANCER_CONFDIR-and-DANCER_ENVDIR>
 
 =head2 Logging
 
