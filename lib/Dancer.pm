@@ -847,6 +847,11 @@ Deserializes a JSON structure. Can receive optional arguments. Those arguments
 are valid L<JSON> arguments to change the behaviour of the default
 C<JSON::from_json> function.
 
+If no explicit I<utf8>
+argument is passed, it'll default to C<true>, making the function
+behave like I<decode_json>.
+
+
 =head2 from_yaml ($structure)
 
 Deserializes a YAML structure.
@@ -1809,6 +1814,10 @@ Serializes a structure with L<< Data::Dumper >>.
 Serializes a structure to JSON. Can receive optional arguments. Thoses arguments
 are valid L<JSON> arguments to change the behaviour of the default
 C<JSON::to_json> function.
+
+If no explicit I<utf8>
+argument is passed, it'll default to C<true>, making the serialization
+behave like I<encode_json>.
 
 =head2 to_yaml ($structure)
 
