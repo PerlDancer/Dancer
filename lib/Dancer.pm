@@ -1869,6 +1869,12 @@ Returns a fully-qualified URI for the given path:
         # can be something like: http://localhost:3000/path
     };
 
+Querystring parameters can be provided by passing a hashref as a second param,
+and URL-encoding can be disabled via a third parameter:
+
+    uri_for('/path', { foo => 'bar' }, 1);
+    # would return e.g. http://localhost:3000/?foo=bar
+
 =head2 captures
 
 Returns a reference to a copy of C<%+>, if there are named captures in the route
