@@ -841,11 +841,14 @@ only used to change the method of your request. Use with caution.
 
 Deserializes a L<< Data::Dumper >> structure.
 
-=head2 from_json ($structure, %options)
+=head2 from_json ($structure, \%options)
 
 Deserializes a JSON structure. Can receive optional arguments. Those arguments
 are valid L<JSON> arguments to change the behaviour of the default
 C<JSON::from_json> function.
+
+Compatibility notice: C<from_json> changed in 1.3002 to take a hashref as options,
+instead of a hash.
 
 =head2 from_yaml ($structure)
 
@@ -1804,11 +1807,14 @@ L<Dancer::Template::Abstract> for further details.
 
 Serializes a structure with L<< Data::Dumper >>.
 
-=head2 to_json ($structure, %options)
+=head2 to_json ($structure, \%options)
 
 Serializes a structure to JSON. Can receive optional arguments. Thoses arguments
 are valid L<JSON> arguments to change the behaviour of the default
 C<JSON::to_json> function.
+
+Compatibility notice: C<to_json> changed in 1.3002 to take a hashref as options,
+instead of a hash.
 
 =head2 to_yaml ($structure)
 
