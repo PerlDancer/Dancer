@@ -55,6 +55,7 @@ sub reset_all {
 
     if (!$is_forward) {
         $vars = {};
+        %ENV = {};
     }
     undef $_request;
     undef $_headers;
