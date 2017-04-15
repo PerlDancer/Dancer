@@ -58,6 +58,7 @@ sub reset_all {
     }
     undef $_request;
     undef $_headers;
+    undef %ENV;
     reset_timer();
     reset_response();
 }
