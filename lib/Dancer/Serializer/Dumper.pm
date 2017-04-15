@@ -15,16 +15,16 @@ sub from_dumper {
 }
 
 sub to_dumper {
-    my ($data) = @_;
+    my (@data) = @_;
     my $s = Dancer::Serializer::Dumper->new;
-    $s->serialize($data);
+    $s->serialize(\@data);
 }
 
 sub serialize {
     my ($self, $entity) = @_;
     {
         local $Data::Dumper::Purity = 1;
-        return Dumper($entity);
+        return Dumper(@$entity);
     }
 }
 
