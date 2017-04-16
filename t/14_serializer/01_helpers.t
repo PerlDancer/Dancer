@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Dancer ':tests';
 
-plan tests => 53;
+plan tests => 63;
 
 my $struct = {eris => 23};
 
@@ -201,4 +201,31 @@ SKIP: {
 
     is $s->content_type, 'text/x-data-dumper',
       "content_type is text/x-data-dumper";
+}
+
+SKIP: {
+    skip 'CBOR::XS is needed to run this test', 10
+      unless Dancer::ModuleLoader->load('CBOR::XS');
+
+    # helpers syntax
+    ok my $test         = to_cbor($struct), 'to cbor';
+    ok my $final_struct = from_cbor($test), 'from cbor';
+    is_deeply $final_struct, $struct, 'from => to works';
+
+    # OO API
+    setting('serializer' => 'CBOR');
+    my $s = Dancer::Serializer->engine;
+
+    isa_ok( $s, $_ ) for qw(
+      Dancer::Engine
+      Dancer::Serializer::Abstract
+      Dancer::Serializer::CBOR);
+    can_ok $s, qw(serialize deserialize);
+
+    my $cbor = $s->serialize($struct);
+    is $cbor, chr(0xa1).chr(0x40 + 4).'eris'.chr(23), "data is correctly serialized";
+    my $data = $s->deserialize($cbor);
+    is_deeply $struct, $data, "data is correctly deserialized";
+
+    is $s->content_type, 'application/cbor', "content_type is ok";
 }

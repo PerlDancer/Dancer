@@ -20,6 +20,7 @@ my @keywords = qw(
     from_json
     from_yaml
     from_xml
+    from_cbor
     get
     halt
     header
@@ -55,6 +56,7 @@ my @keywords = qw(
     to_json
     to_yaml
     to_xml
+    to_cbor
     true
     upload
     captures

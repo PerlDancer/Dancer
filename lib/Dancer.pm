@@ -20,6 +20,7 @@ use Dancer::Serializer::JSON;
 use Dancer::Serializer::YAML;
 use Dancer::Serializer::XML;
 use Dancer::Serializer::Dumper;
+use Dancer::Serializer::CBOR;
 use Dancer::Session;
 use Dancer::SharedData;
 use Dancer::Handler;
@@ -61,6 +62,7 @@ our @EXPORT    = qw(
   from_json
   from_yaml
   from_xml
+  from_cbor
   get
   halt
   header
@@ -99,6 +101,7 @@ our @EXPORT    = qw(
   to_json
   to_yaml
   to_xml
+  to_cbor
   true
   upload
   captures
@@ -151,6 +154,7 @@ sub from_dumper     { Dancer::Serializer::Dumper::from_dumper(@_) }
 sub from_json       { Dancer::Serializer::JSON::from_json(@_) }
 sub from_xml        { Dancer::Serializer::XML::from_xml(@_) }
 sub from_yaml       { Dancer::Serializer::YAML::from_yaml(@_) }
+sub from_cbor       { Dancer::Serializer::CBOR::from_cbor(@_) }
 sub get             { map { my $r = $_; Dancer::App->current->registry->universal_add($r, @_) } qw(head get)  }
 sub halt            { Dancer::SharedData->response->halt(@_);
                       # throw a special continuation exception
@@ -221,6 +225,7 @@ sub to_dumper       { Dancer::Serializer::Dumper::to_dumper(@_) }
 sub to_json         { Dancer::Serializer::JSON::to_json(@_) }
 sub to_xml          { Dancer::Serializer::XML::to_xml(@_) }
 sub to_yaml         { Dancer::Serializer::YAML::to_yaml(@_) }
+sub to_cbor         { Dancer::Serializer::CBOR::to_cbor(@_) }
 sub true            { 1 }
 sub upload          { Dancer::SharedData->request->upload(@_) }
 sub uri_for         { Dancer::SharedData->request->uri_for(@_) }
@@ -859,6 +864,10 @@ Deserializes a YAML structure.
 Deserializes a XML structure. Can receive optional arguments. These arguments
 are valid L<XML::Simple> arguments to change the behaviour of the default
 C<XML::Simple::XMLin> function.
+
+=head2 from_cbor ($structure)
+
+Deserializes a CBOR structure.
 
 =head2 get
 
@@ -1825,6 +1834,10 @@ Serializes a structure to YAML.
 Serializes a structure to XML. Can receive optional arguments. Thoses arguments
 are valid L<XML::Simple> arguments to change the behaviour of the default
 C<XML::Simple::XMLout> function.
+
+=head2 to_cbor ($structure)
+
+Serializes a structure to CBOR.
 
 =head2 true
 
