@@ -49,6 +49,8 @@ Test::TCP::test_tcp(
     },
 );
 
+print "GH!\n";
+
 sub u {
     encode('UTF-8', $_[0]);
 }
