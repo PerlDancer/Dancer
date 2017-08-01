@@ -76,9 +76,9 @@ sub scheme                {
         # PSGI specs say that X_FORWARDED_PROTO will
         # be converted into HTTP_X_FORWARDED_PROTO
         # but Dancer::Test doesn't use PSGI (for now)
-        $scheme = $_[0]->env->{'X_FORWARDED_PROTOCOL'}
+        $scheme = $_[0]->env->{'HTTP_X_FORWARDED_PROTO'}
+               || $_[0]->env->{'X_FORWARDED_PROTOCOL'}
                || $_[0]->env->{'HTTP_X_FORWARDED_PROTOCOL'}
-               || $_[0]->env->{'HTTP_X_FORWARDED_PROTO'}
                || $_[0]->env->{'HTTP_FORWARDED_PROTO'}
                || $_[0]->env->{'X_FORWARDED_PROTO'}
                || ""
