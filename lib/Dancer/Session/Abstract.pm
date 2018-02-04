@@ -120,6 +120,14 @@ sub read_session_id {
 # session ID, but the actual sesssion contents)
 sub validate_session_id {
     my ($class, $id) = @_;
+
+    # FIXME: it's dirty for the superclass to know about subclasses, but the
+    # alternative is breakage for anyone using D::S::Cookie who updates Dancer
+    # but not D::::Cookie at the same time, so for now, skip session ID
+    # validation for D::S::Cookie (because the cookie doesn't actually contain
+    # just a session ID, but rather the whole serialised & signed session)
+    return 1 if $class->isa('Dancer::Session::Cookie');
+
     return $id =~ m{^[A-Za-z0-9_\-~]+$};
 }
 
