@@ -115,9 +115,8 @@ sub read_session_id {
 # Validate session ID (base64 chars plus hyphen by default) to avoid potential
 # issues, e.g. if the ID is used insecurely elsewhere.  If a session provider
 # expects more unusual IDs, it can override this class method with one that
-# validates according to that provider's expectation (probably necessary for
-# D::S::Cookie, for instance, where the value of the session cookie isn't the
-# session ID, but the actual sesssion contents)
+# validates according to that provider's expectation of how a session ID should
+# look.
 sub validate_session_id {
     my ($class, $id) = @_;
     return $id =~ m{^[A-Za-z0-9_\-~]+$};
