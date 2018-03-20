@@ -14,17 +14,33 @@ use HTTP::Tiny;
 
 use constant RAW_DATA => "var: 2; foo: 42; bar: 57\nHey I'm here.\r\n\r\n";
 
-plan tests => 2;
+my $host = '127.0.0.10';
+
+plan tests => 5;
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $rawdata = RAW_DATA;
         my $ua = HTTP::Tiny->new;
         my $headers = { 'Content-Length' => length($rawdata) };
-        my $res = $ua->put("http://127.0.0.1:$port/jsondata", { headers => $headers, content => $rawdata });
+        my $res = $ua->put("http://$host:$port/jsondata", { headers => $headers, content => $rawdata });
 
         ok $res->{success}, 'req is success';
         is $res->{content}, $rawdata, "raw_data is OK";
+
+        # Now, turn off storing raw request body in RAM, check that it was
+        # effective
+        $res = $ua->put("http://$host:$port/set/raw_request_body_in_ram/0");
+        is $res->{status}, 200, 'success changing setting';
+        diag($res->{content});
+
+        $res = $ua->put("http://$host:$port/jsondata", { headers => $headers, content => $rawdata });
+
+        ok $res->{success}, 'req is success';
+        is $res->{content}, "", "request body was empty with raw_request_body_in_ram false";
+
+        
+
     },
     server => sub {
         my $port = shift;
