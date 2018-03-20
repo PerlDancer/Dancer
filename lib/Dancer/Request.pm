@@ -174,12 +174,12 @@ sub new_for_request {
     $req->{params}        = {%{$req->{params}}, %{$params}};
     $req->_build_params();
     $req->{_query_params} = $req->{params};
+    my $store_raw_body = setting('raw_request_body_in_ram');
+    $store_raw_body = defined $store_raw_body ? $store_raw_body : 1;
+    if ($store_raw_body) {
+        $req->{body} = $body;
+    }
     $req->{headers}       = $headers || HTTP::Headers->new;
-
-    # We would normally have read the request into the HTTP::Body object in
-    # chunks in _read_to_end(), but here we need to do it in one hit as we were
-    # passed the body to use:
-    $req->{_http_body}->add($body);
 
     return $req;
 }
