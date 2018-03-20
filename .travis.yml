@@ -1,6 +1,9 @@
 language: perl
 
 perl:
+    - "5.26"
+    - "5.24"
+    - "5.22"
     - "5.20"
     - "5.18"
     - "5.16"
@@ -25,7 +28,7 @@ install:
     - perl -E 'exit($] < 5.014)' || cpanm --no-skip-satisfied Safe || cpanm --no-skip-satisfied --notest Safe || { cat ~/.cpanm/build.log ; false ; }
 #Moo fails to install without Class::Method::Modifiers since 2012/10/19 
     - cpanm --no-skip-satisfied Class::Method::Modifiers YAML::XS || { cat ~/.cpanm/build.log ; false ; }
-    - dzil authordeps --missing | cpanm --no-skip-satisfied || { cat ~/.cpanm/build.log ; false ; }
+    - dzil authordeps --missing | cpanm --no-skip-satisfied --notest || { cat ~/.cpanm/build.log ; false ; }
     - dzil listdeps --author --missing | cpanm --no-skip-satisfied || { cat ~/.cpanm/build.log ; false ; }
 
 # We do not need sudo. Setting this allows travis to use (Docker) containers on EC2
