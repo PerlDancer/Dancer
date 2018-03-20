@@ -546,12 +546,16 @@ sub _read_to_end {
     if ( $self->content_length > 0 ) {
         my $body = '';
 
+        my $store_raw_body = setting('raw_request_body_in_ram');
+        $store_raw_body = defined $store_raw_body ? $store_raw_body : 1;
+
         while ( my $buffer = $self->_read ) {
             $self->{_http_body}->add($buffer);
 
             # Only keep a copy of the raw request body in RAM if the user has
             # asked us to
-            if (setting('raw_request_body_in_ram')) {
+            
+            if ($store_raw_body) {
                 $self->{body} .= $buffer;
             }
         }
@@ -875,13 +879,14 @@ handle large requests (file uploads, etc), so in 1.3143 that was ditched, and
 the body accessor replaced by a convenience method which would get the temp file
 handle that HTTP::Body uses, read it for you and return the content, so that if
 you did want the raw body, it was there.  However, HTTP::Body only creates a
-temp file for certain types of request - see issue #1140.
+temp file for certain types of request, leading to unpredictable behaviour and
+confusion - see issue #1140.
 
 So, handling of the raw request body is now controlled by a configuration
 setting, raw_request_body_in_ram, which controls whether or not the raw request
-body will be kept in RAM when it's parsed; if this is not set to a true value,
-then I<the body accessor will not return anything>.
-
+body will be kept in RAM when it's parsed; if this is set to a false value,
+then I<the body accessor will not return anything>, giving you lower memory
+usage, at the cost of not having access to the raw (unparsed) request body.
 
 
 
