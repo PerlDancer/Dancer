@@ -137,8 +137,8 @@ sub init {
     $self->_build_path_info() unless $self->path_info;
     $self->_build_method()    unless $self->method;
 
-    $self->{_http_body} =
-      Dancer::HTTP::Body->new($self->content_type, $self->content_length);
+    $self->{_http_body} 
+        = HTTP::Body->new($self->content_type, $self->content_length);
     $self->{_http_body}->cleanup(1);
     $self->_build_params();
     $self->_build_uploads unless $self->uploads;
