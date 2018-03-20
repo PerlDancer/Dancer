@@ -106,7 +106,7 @@ sub header                { $_[0]->{headers}->header($_[1]) }
 # doesn't work for e.g. parsed form submissions, only certain types.
 # So, back to the older way - we may have a request body squirreled away
 # in memory if the config included the raw_request_body_in_ram boolean
-sub body { $_[-]->{body} }
+sub body { $_[0]->{body} }
 
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
@@ -551,7 +551,7 @@ sub _read_to_end {
 
             # Only keep a copy of the raw request body in RAM if the user has
             # asked us to
-            if (config->{raw_request_body_in_ram}) {
+            if (setting('raw_request_body_in_ram')) {
                 $self->{body} .= $buffer;
             }
         }
