@@ -139,6 +139,7 @@ sub init {
     $self->{_http_body} 
         = HTTP::Body->new($self->content_type, $self->content_length);
     $self->{_http_body}->cleanup(1);
+    $self->{body} = ''; # default, because we might not store it now.
     $self->_build_params();
     $self->_build_uploads unless $self->uploads;
     $self->{ajax} = $self->is_ajax;
