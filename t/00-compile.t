@@ -6,7 +6,7 @@ use warnings;
 
 use Test::More;
 
-plan tests => 77 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
+plan tests => 71 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
 
 my @module_files = (
     'Dancer.pm',
