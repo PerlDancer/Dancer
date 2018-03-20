@@ -3,6 +3,13 @@ use strict;
 use warnings;
 
 use Dancer ':syntax';
+my $dir = '';
+BEGIN {
+	use File::Basename;
+	$dir = dirname($0) . "/lib";
+	print "\nDIR: [" . $dir . "]\n\n";
+}
+use lib $dir;
 
 # XXX appdir is set to the path of the current test
 use Dancer::Test appdir => path($0);
