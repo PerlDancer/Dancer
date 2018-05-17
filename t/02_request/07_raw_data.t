@@ -30,9 +30,12 @@ Test::TCP::test_tcp(
 
         # Now, turn off storing raw request body in RAM, check that it was
         # effective
-        $res = $ua->put("http://$host:$port/set/raw_request_body_in_ram/0");
+        $res = $ua->put("http://$host:$port/setting/raw_request_body_in_ram/0");
         is $res->{status}, 200, 'success changing setting';
         diag($res->{content});
+
+        $res = $ua->get("http://$host:$port/setting/raw_request_body_in_ram");
+        is $res->{content}, "0", "setting change was stored";
 
         $res = $ua->put("http://$host:$port/jsondata", { headers => $headers, content => $rawdata });
 
