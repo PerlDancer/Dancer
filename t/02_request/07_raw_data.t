@@ -16,7 +16,7 @@ use constant RAW_DATA => "var: 2; foo: 42; bar: 57\nHey I'm here.\r\n\r\n";
 
 my $host = '127.0.0.10';
 
-plan tests => 5;
+plan tests => 6;
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
