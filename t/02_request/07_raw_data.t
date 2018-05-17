@@ -14,7 +14,7 @@ use HTTP::Tiny;
 
 use constant RAW_DATA => "var: 2; foo: 42; bar: 57\nHey I'm here.\r\n\r\n";
 
-my $host = '127.0.0.10';
+my $host = '127.0.0.1';
 
 plan tests => 6;
 Test::TCP::test_tcp(
@@ -53,7 +53,7 @@ Test::TCP::test_tcp(
 
         set( environment  => 'production',
              port         => $port,
-             server       => '127.0.0.1',
+             server       => $host,
              startup_info => 0);
         Dancer->dance();
     },
