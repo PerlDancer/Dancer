@@ -46,12 +46,6 @@ lib/Dancer/Factory/Hook.pm
 lib/Dancer/FileUtils.pm
 lib/Dancer/GetOpt.pm
 lib/Dancer/HTTP.pm
-lib/Dancer/HTTP/Body.pm
-lib/Dancer/HTTP/Body/MultiPart.pm
-lib/Dancer/HTTP/Body/OctetStream.pm
-lib/Dancer/HTTP/Body/UrlEncoded.pm
-lib/Dancer/HTTP/Body/XForms.pm
-lib/Dancer/HTTP/Body/XFormsMultipart.pm
 lib/Dancer/Handler.pm
 lib/Dancer/Handler/Debug.pm
 lib/Dancer/Handler/PSGI.pm

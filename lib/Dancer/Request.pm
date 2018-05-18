@@ -8,12 +8,12 @@ use Carp;
 use base 'Dancer::Object';
 
 use Dancer::Config 'setting';
-use Dancer::HTTP::Body;
 use Dancer::Request::Upload;
 use Dancer::SharedData;
 use Dancer::Session;
 use Dancer::Exception qw(:all);
 use Encode;
+use HTTP::Body;
 use URI;
 use URI::Escape;
 
@@ -100,16 +100,13 @@ sub is_patch              { $_[0]->{method} eq 'PATCH' }
 sub header                { $_[0]->{headers}->header($_[1]) }
 
 # We used to store the whole raw unparsed body; this was a big problem for large
-# file uploads (Issue 1129).  This convenient accessor should suit the
-# requirements of anyone who was fetching the request body, without having file
-# uploads stored in RAM.
-sub body {
-    my $http_body = shift->{_http_body} or return '';
-    my $body_fh = $http_body->body or return '';
-    $body_fh->seek(0, 0);
-    my $raw_body = join '', $body_fh->getlines;
-    return $raw_body;
-}
+# file uploads (Issue 1129).  
+# The original fix was to stop doing so, and replace the accessor with one that
+# would read it out of the temp file returned by HTTP::Body->body - but that
+# doesn't work for e.g. parsed form submissions, only certain types.
+# So, back to the older way - we may have a request body squirreled away
+# in memory if the config included the raw_request_body_in_ram boolean
+sub body { $_[0]->{body} }
 
 # public interface compat with CGI.pm objects
 sub request_method { method(@_) }
@@ -139,9 +136,10 @@ sub init {
     $self->_build_path_info() unless $self->path_info;
     $self->_build_method()    unless $self->method;
 
-    $self->{_http_body} =
-      Dancer::HTTP::Body->new($self->content_type, $self->content_length);
+    $self->{_http_body} 
+        = HTTP::Body->new($self->content_type, $self->content_length);
     $self->{_http_body}->cleanup(1);
+    $self->{body} = ''; # default, because we might not store it now.
     $self->_build_params();
     $self->_build_uploads unless $self->uploads;
     $self->{ajax} = $self->is_ajax;
@@ -176,12 +174,12 @@ sub new_for_request {
     $req->{params}        = {%{$req->{params}}, %{$params}};
     $req->_build_params();
     $req->{_query_params} = $req->{params};
+    my $store_raw_body = setting('raw_request_body_in_ram');
+    $store_raw_body = defined $store_raw_body ? $store_raw_body : 1;
+    if ($store_raw_body) {
+        $req->{body} = $body;
+    }
     $req->{headers}       = $headers || HTTP::Headers->new;
-
-    # We would normally have read the request into the HTTP::Body object in
-    # chunks in _read_to_end(), but here we need to do it in one hit as we were
-    # passed the body to use:
-    $req->{_http_body}->add($body);
 
     return $req;
 }
@@ -549,8 +547,18 @@ sub _read_to_end {
     if ( $self->content_length > 0 ) {
         my $body = '';
 
+        my $store_raw_body = setting('raw_request_body_in_ram');
+        $store_raw_body = defined $store_raw_body ? $store_raw_body : 1;
+
         while ( my $buffer = $self->_read ) {
             $self->{_http_body}->add($buffer);
+
+            # Only keep a copy of the raw request body in RAM if the user has
+            # asked us to
+            
+            if ($store_raw_body) {
+                $self->{body} .= $buffer;
+            }
         }
 
     }
@@ -866,9 +874,22 @@ Returns the L<HTTP::Header> object used to store all the headers.
 
 Return the raw body of the request, unparsed.
 
-If you need to access the body of the request, you have to use this accessor and
-should not try to read C<psgi.input> by hand. C<Dancer::Request> already did it for you
-and kept the raw body untouched in there.
+NOTE: the behaviour of this keyword has changed.  Originally, the entire raw
+request body was kept in RAM for this accessor, but that's not ideal if you
+handle large requests (file uploads, etc), so in 1.3143 that was ditched, and
+the body accessor replaced by a convenience method which would get the temp file
+handle that HTTP::Body uses, read it for you and return the content, so that if
+you did want the raw body, it was there.  However, HTTP::Body only creates a
+temp file for certain types of request, leading to unpredictable behaviour and
+confusion - see issue #1140.
+
+So, handling of the raw request body is now controlled by a configuration
+setting, raw_request_body_in_ram, which controls whether or not the raw request
+body will be kept in RAM when it's parsed; if this is set to a false value,
+then I<the body accessor will not return anything>, giving you lower memory
+usage, at the cost of not having access to the raw (unparsed) request body.
+
+
 
 =head2 is_ajax()
 

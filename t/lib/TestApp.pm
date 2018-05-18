@@ -83,4 +83,14 @@ get '/issues/499/false' => sub {
     "OK" if system('false') != 0  
 };
 
+# TODO: will need to be made more Clever if we need to test changing
+# nested settings
+put '/setting/:setting_name/:new_value' => sub {
+    set params->{setting_name} => params->{new_value};
+    return "OK";
+};
+get '/setting/:setting_name' => sub {
+    return setting( params->{setting_name} );
+};
+
 true;
