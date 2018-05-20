@@ -1,6 +1,8 @@
 Revision history for Dancer
 
 {{$NEXT}}
+
+1.3203    2018-05-20 20:44:30+01:00 Europe/London (TRIAL RELEASE)
  [DOCUMENTATION]
  - Add environment var hint to cookbook (PR 1161, castaway)
 
@@ -9,6 +11,14 @@ Revision history for Dancer
    serialisation (there was already an attempt at this in place, and it was
    documented as posisble, but didn't work) (PR 1164, 1nickt)
  - New test method response_redirect_like (PR 1159, 1nickt)
+ - New config option raw_request_body_in_ram, which controls whether the
+   raw request body is available via request->body or not.  See Issue #1140
+   for the problems the previous approach, of getting it from the temp file
+   that HTTP::Body might (or might not) have written it to.
+ - Validate session IDs read from client - GH #1172 - potential security
+   risk if the session provider in use passes the session ID in a way
+   where injection is possible.
+
 
 
 1.3301 2016-02-16
