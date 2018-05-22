@@ -8,7 +8,6 @@ META.json
 META.yml
 Makefile.PL
 README
-README.mkdn
 SIGNATURE
 bin/dancer
 cpanfile
@@ -349,6 +348,7 @@ t/25_exceptions/04_exceptions_warn.t
 t/25_exceptions/views/error.tt
 t/25_exceptions/views/index.tt
 t/25_exceptions/views/layouts/main.tt
+t/author-pod-syntax.t
 t/TestAppExt.pm
 t/TestPlugin.pm
 t/lib/EasyMocker.pm
@@ -363,3 +363,4 @@ t/lib/TestPlugin2.pm
 t/lib/TestPluginMRO.pm
 t/lib/TestUtils.pm
 t/pod.t
+t/release-distmeta.t
