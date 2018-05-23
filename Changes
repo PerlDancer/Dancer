@@ -1,6 +1,9 @@
 Revision history for Dancer
 
 {{$NEXT}}
+ [ENHANCEMENTS]
+ - Try to use 127.0.0.11 for listen tests, fall back to 127.0.0.1
+   on systems that don't have 127/8, e.g. FreeBSD (GH 1183, PR 1185, bigpresh)
 
 1.3203    2018-05-20 20:44:30+01:00 Europe/London (TRIAL RELEASE)
  [DOCUMENTATION]
