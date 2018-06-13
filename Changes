@@ -1,8 +1,17 @@
 Revision history for Dancer
 
 {{$NEXT}}
+ [ENHANCEMENTS]
  - require MIME::Types 2.17, as 2.16 has some funny ideas, like responding to a
    ZIP file with 'application/vnd.easykaraoke.cdgdownload'
+ - Fix YAML-related test failures if YAML::XS not installed
+   (GH 1184, PR 1189, bigpresh)
+
+ [BUG FIXES]
+ - Avoid accidental route matches if a previous successful match had left %+
+   populated (GH 1187, PR 1188, bigpresh, reported by skington)
+
+
 
 1.3204    2018-05-23 14:40:33+01:00 Europe/London (TRIAL RELEASE)
  [ENHANCEMENTS]
