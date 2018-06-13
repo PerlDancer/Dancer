@@ -12,28 +12,42 @@ plan skip_all => "YAML or YAML::XS needed to run these tests"
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 
-plan tests => 2;
 
-my $module = Dancer::ModuleLoader->load('YAML::XS') ? 'YAML::XS' : 'YAML';
+for my $module (qw(YAML::XS YAML)) {
+    SKIP: {
+        if (!Dancer::ModuleLoader->load($module)) {
+            skip "$module not available", 2;
+        }
 
-eval {
-    Dancer::Config::load_settings_from_yaml('foo', $module);
-};
+        my $mversion = $module->VERSION;
+        diag "Testing YAML parsing with $module version $mversion";
 
-like $@, qr/Unable to parse the configuration file/, 'non-existent yaml file';
+        eval {
+            Dancer::Config::load_settings_from_yaml('foo', $module);
+        };
 
-my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
+        like $@, qr/Unable to parse the configuration file/,
+            "non-existent YAML file reported correctly, using $module";
 
-my $config_file = File::Spec->catfile($dir, 'settings.yml');
+        my $dir = File::Temp::tempdir(CLEANUP => 1, TMPDIR => 1);
 
-open my $fh, '>', $config_file;
-print $fh 'foo: bar: baz';
-close $fh;
+        my $config_file = File::Spec->catfile($dir, 'settings.yml');
 
-eval {
-    Dancer::Config::load_settings_from_yaml($config_file, $module);
-};
+        open my $fh, '>', $config_file;
+        print $fh '><(((o>'; # fishy-looking YAML
+        close $fh;
 
-like $@, qr/Unable to parse the configuration file/, 'invalid yaml file';
+        eval {
+            Dancer::Config::load_settings_from_yaml($config_file, $module);
+        };
 
-File::Temp::cleanup();
+        like $@, qr/Unable to parse the configuration file/,
+            "invalid YAML file reported correctly, using $module";
+
+        File::Temp::cleanup();
+    }
+
+}
+
+done_testing();
+
