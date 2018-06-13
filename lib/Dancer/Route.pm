@@ -87,9 +87,13 @@ sub match {
 
     my @values = $path =~ $self->{_compiled_regexp};
 
-    Dancer::Logger::core("  --> got ".
-        map { defined $_ ? $_ : 'undef' } @values)
-        if @values;
+    return unless @values;
+
+    Dancer::Logger::core(
+        "  --> got " .
+        map { defined $_ ? $_ : 'undef' } @values
+    );
+
 
     # if some named captures found, return captures
     # no warnings is for perl < 5.10
@@ -103,7 +107,6 @@ sub match {
         return $self->save_match_data($request, {captures => \%captures});
     }
 
-    return unless @values;
 
     # save the route pattern that matched
     # TODO : as soon as we have proper Dancer::Internal, we should remove
