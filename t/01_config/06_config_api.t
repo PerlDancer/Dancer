@@ -34,7 +34,7 @@ for my $module (qw(YAML::XS YAML)) {
         my $config_file = File::Spec->catfile($dir, 'settings.yml');
 
         open my $fh, '>', $config_file;
-        print $fh 'foo: bar: baz';
+        print $fh '><(((o>'; # fishy-looking YAML
         close $fh;
 
         eval {
