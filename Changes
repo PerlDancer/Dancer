@@ -1,6 +1,9 @@
 Revision history for Dancer
 
 {{$NEXT}}
+ Promoting previous trial releases to stable.
+
+1.3205    2018-06-13 22:59:32+01:00 Europe/London (TRIAL RELEASE)
  [ENHANCEMENTS]
  - require MIME::Types 2.17, as 2.16 has some funny ideas, like responding to a
    ZIP file with 'application/vnd.easykaraoke.cdgdownload'
