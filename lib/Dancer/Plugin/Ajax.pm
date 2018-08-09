@@ -87,7 +87,7 @@ The route handler code will be compiled to behave like the following:
 
 =item *
 
-Pass if the request header X-Requested-With doesnt equal XMLHttpRequest
+Pass if the request header X-Requested-With doesn't equal XMLHttpRequest
 
 =item *
 
