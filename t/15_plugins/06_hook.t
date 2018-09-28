@@ -5,6 +5,8 @@ use Dancer ':syntax';
 use Dancer::Test;
 
 use lib 't/lib';
+use FindBin qw($Bin);
+use lib "$Bin/../../";
 
 plan tests => 6;
 
