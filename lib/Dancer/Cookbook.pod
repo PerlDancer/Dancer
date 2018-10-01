@@ -889,7 +889,7 @@ even in your environment configuration files:
     plack_middlewares:
       -
         - Debug          # first element of the array is the name of the middleware
-        - panels         # following elements are the configuration ofthe middleware
+        - panels         # following elements are the configuration of the middleware
         -
             - DBITrace
             - Memory
