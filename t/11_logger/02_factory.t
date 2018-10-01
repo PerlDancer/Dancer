@@ -2,6 +2,10 @@ use Test::More import => ['!pass'];
 
 use strict;
 use warnings;
+
+use FindBin qw($Bin);
+use lib "$Bin/../../";
+
 use t::lib::TestUtils;
 
 use Dancer ':syntax';
