@@ -2,6 +2,11 @@ Revision history for Dancer
 
 {{$NEXT}}
 
+ [ENHANCEMENTS]
+ - Avoid test failures on perls without '.' in @INC
+ - censor cookie_key in dumps (PR-1193, thefatphil) 
+ - spelling fixes in POD from Debian Perl Group, PR-1191
+
 1.3400    2018-06-15 23:08:34+01:00 Europe/London
  Promoting previous trial releases to stable.
 
