@@ -6,7 +6,7 @@ plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 my $plack_available = Dancer::ModuleLoader->load('Plack::Request');
 Dancer::ModuleLoader->load('Plack::Loader') if $plack_available;
@@ -20,7 +20,7 @@ for my $handler (@handlers) {
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = HTTP::Tiny->new;
+        my $ua = HTTP::Tiny::NoProxy->new;
 
         my $headers = { 'X-User-Head1' => 42, 'X-User-Head2' => 43 };
 

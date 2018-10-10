@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More import => ['!pass'];
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 BEGIN {
     use Dancer::ModuleLoader;
@@ -23,7 +23,7 @@ sub test {
             my $port = shift;
             my $url  = "http://127.0.0.1:$port/";
 
-            my $ua = HTTP::Tiny->new;
+            my $ua = HTTP::Tiny::NoProxy->new;
             for (qw/204 304/) {
                 my $res = $ua->get($url . $_);
                 ok !$res->{content}, 'no content for '.$_;

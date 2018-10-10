@@ -15,7 +15,7 @@ BEGIN {
 }
 
 use Dancer;
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 plan tests => 2;
 
@@ -23,7 +23,7 @@ Test::TCP::test_tcp(
   client => sub {
       my $port = shift;
       my $url_base  = "http://127.0.0.1:$port";
-      my $ua  = HTTP::Tiny->new;
+      my $ua  = HTTP::Tiny::NoProxy->new;
       my $res = $ua->post_form($url_base . "/foo", { data => 'foo'});
       is($res->{content}, "data:foo");
 

@@ -7,13 +7,13 @@ plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 plan tests => 8;
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 use HTTP::Headers;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = HTTP::Tiny->new;
+        my $ua = HTTP::Tiny::NoProxy->new;
 
         my $headers = { 'X-Requested-With' => 'XMLHttpRequest' };
         my $res = $ua->get("http://127.0.0.1:$port/req", { headers => $headers });

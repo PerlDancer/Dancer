@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More;
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => "Test::TCP is needed for this test"
@@ -15,7 +15,7 @@ plan tests => 10;
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua  = HTTP::Tiny->new;
+        my $ua  = HTTP::Tiny::NoProxy->new;
         for (1..10) {
             my $res = $ua->get("http://127.0.0.1:$port/getvarfoo");
             is $res->{content}, 1;

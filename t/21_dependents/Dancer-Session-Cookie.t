@@ -23,10 +23,10 @@ test_tcp(
     client => sub {
         my $port = shift;
 
-        require HTTP::Tiny;
+        require HTTP::Tiny::NoProxy;
         require HTTP::CookieJar;
 
-        my $ua = HTTP::Tiny->new;
+        my $ua = HTTP::Tiny::NoProxy->new;
 
         # Simulate two different browsers with two different jars
         my @jars = (HTTP::CookieJar->new, HTTP::CookieJar->new);

@@ -21,7 +21,7 @@ plan skip_all => "YAML is needed for this test"
 
 plan tests => 8;
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 use File::Path 'rmtree';
 use Dancer::Config;
 
@@ -40,7 +40,7 @@ for my $session_expires (keys %tests) {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
-            my $ua   = HTTP::Tiny->new;
+            my $ua   = HTTP::Tiny::NoProxy->new;
             my $res = $ua->get("http://127.0.0.1:$port/set_session/test");
             ok $res->{success}, 'req is success';
             my $cookie = $res->{headers}{'set-cookie'};

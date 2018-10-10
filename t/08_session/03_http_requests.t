@@ -15,7 +15,7 @@ BEGIN {
         unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 }
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 use HTTP::CookieJar;
 
 use File::Spec;
@@ -42,7 +42,7 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         foreach my $client (@clients) {
-            my $ua = HTTP::Tiny->new(cookie_jar => HTTP::CookieJar->new);
+            my $ua = HTTP::Tiny::NoProxy->new(cookie_jar => HTTP::CookieJar->new);
 
             my $res = $ua->get("http://127.0.0.1:$port/read_session");
             like $res->{content}, qr/name=''/, 

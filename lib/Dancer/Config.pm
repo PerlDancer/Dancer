@@ -227,6 +227,8 @@ sub load {
 sub load_settings_from_yaml {
     my ($file, $module) = @_;
 
+    $module ||= 'YAML';
+
     my $config;
     {
         no strict 'refs';
