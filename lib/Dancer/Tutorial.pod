@@ -19,7 +19,7 @@ that type of traffic to that specific URL.
 
 This example shows a single HTTP verb "GET" followed by the root URL "/" and an anonymous subroutine which returns
 the string C<"Hello World!">  If you were to run this example, it would display "Hello World!" when you point your
-browser at L<http://localhost:3000>.
+browser at C<http://localhost:3000>.
 
 =head1 How about a little more involved example?
 
@@ -483,15 +483,15 @@ Happy dancing!
 
 =item *
 
-http://perldancer.org
+L<http://perldancer.org>
 
 =item *
 
-https://github.com/PerlDancer/Dancer
+L<https://github.com/PerlDancer/Dancer>
 
 =item * 
 
-http://search.cpan.org/~sukria/Dancer/lib/Dancer/Plugins.pod
+L<Dancer::Plugin>
 
 =back
 
