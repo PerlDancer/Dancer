@@ -42,6 +42,7 @@ sub init {
 
 sub serialize {
     my ($self, $entity) = @_;
+    return unless $entity;
     my $module = Dancer::Config::settings->{engines}{YAML}{module} || 'YAML';
     {
         no strict 'refs';
@@ -52,6 +53,7 @@ sub serialize {
 sub deserialize {
     my ($self, $content) = @_;
     my $module = Dancer::Config::settings->{engines}{YAML}{module} || 'YAML';
+    return unless $content;
     {
         no strict 'refs';
         &{ $module . '::Load' }($content);
