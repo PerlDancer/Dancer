@@ -8,7 +8,7 @@ plan skip_all => "skip test with Test::TCP in win32" if $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
     unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 plan tests => 33;
 
@@ -21,7 +21,7 @@ ok(!Dancer::App->current->registry->is_empty,
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = HTTP::Tiny->new;
+        my $ua = HTTP::Tiny::NoProxy->new;
 
         my @queries = (
             { path => 'req', ajax => 1, success => 1, content => 1 },

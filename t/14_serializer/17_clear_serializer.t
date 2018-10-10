@@ -2,7 +2,7 @@ use Dancer ':tests';
 use Dancer::Test;
 use Test::More;
 use Dancer::ModuleLoader;
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 plan skip_all => "skip test with Test::TCP in win32" if  $^O eq 'MSWin32';
 plan skip_all => 'Test::TCP is needed to run this test'
@@ -20,7 +20,7 @@ my $data = { foo => 'bar' };
 Test::TCP::test_tcp(
     client => sub {
         my $port    = shift;
-        my $ua      = HTTP::Tiny->new;
+        my $ua      = HTTP::Tiny::NoProxy->new;
         my $res;
 
         $res = $ua->get("http://127.0.0.1:$port/");

@@ -15,14 +15,14 @@ plan skip_all => "Test::TCP is needed for this test"
 plan skip_all => "HTTP::Headers $min_hh required (use of content_type_charset)"
     unless Dancer::ModuleLoader->load( 'HTTP::Headers', $min_hh );
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 plan tests => 10;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = HTTP::Tiny->new;
+        my $ua = HTTP::Tiny::NoProxy->new;
         my $res = $ua->post_form("http://127.0.0.1:$port/name", [ name => 'vasya' ]);
 
         my $headers = HTTP::Headers->new(%{$res->{headers}});
@@ -56,7 +56,7 @@ Test::TCP::test_tcp(
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = HTTP::Tiny->new;
+        my $ua = HTTP::Tiny::NoProxy->new;
 
         my $res = $ua->get("http://127.0.0.1:$port/unicode-content-length");
 
@@ -92,7 +92,7 @@ SKIP: {
     Test::TCP::test_tcp(
         client => sub {
             my $port = shift;
-            my $ua = HTTP::Tiny->new;
+            my $ua = HTTP::Tiny::NoProxy->new;
 
             my $res = $ua->get("http://127.0.0.1:$port/unicode-content-length-json");
 

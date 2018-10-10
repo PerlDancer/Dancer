@@ -43,12 +43,12 @@ my $r = Dancer::SharedData->response();
 is $r->status,  400;
 is $r->content, 'Bad Request';
 
-require HTTP::Tiny;
+require HTTP::Tiny::NoProxy;
 
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua  = HTTP::Tiny->new();
+        my $ua  = HTTP::Tiny::NoProxy->new();
         my $res = $ua->get("http://127.0.0.1:$port/hello%00.txt");
         ok !$res->{success};
         is $res->{status}, 400;
@@ -67,7 +67,7 @@ Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $headers = { 'If-Modified-Since' => $date };
-        my $ua  = HTTP::Tiny->new();
+        my $ua  = HTTP::Tiny::NoProxy->new();
         my $res = $ua->get("http://127.0.0.1:$port/hello.txt", { headers => $headers });
         ok !$res->{success};
         is $res->{status}, 304;

@@ -4,7 +4,7 @@ use warnings;
 
 use Dancer ':syntax';
 use Dancer::ModuleLoader;
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 use File::Spec;
 use lib File::Spec->catdir('t','lib');
@@ -27,7 +27,7 @@ plan tests => (2 * scalar @tests);
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua   = HTTP::Tiny->new;
+        my $ua   = HTTP::Tiny::NoProxy->new;
 
         foreach my $test (@tests) {
             my $res = $ua->get("http://127.0.0.1:$port" . $test->{path});

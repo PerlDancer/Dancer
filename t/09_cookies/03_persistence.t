@@ -10,7 +10,7 @@ BEGIN {
         unless Dancer::ModuleLoader->load('Test::TCP' => "1.30");
 };
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 use HTTP::CookieJar;
 use Dancer;
 
@@ -22,7 +22,7 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         foreach my $client (qw(one two three)) {
-            my $ua = HTTP::Tiny->new(cookie_jar => HTTP::CookieJar->new);
+            my $ua = HTTP::Tiny::NoProxy->new(cookie_jar => HTTP::CookieJar->new);
 
             my $res = $ua->get("http://127.0.0.1:$port/cookies");
             like $res->{content}, qr/\$VAR1 = \{\}/,

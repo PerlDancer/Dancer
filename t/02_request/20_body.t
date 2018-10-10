@@ -12,7 +12,7 @@ plan skip_all => "skip test with Test::TCP in win32/cygwin" if ($^O eq 'MSWin32'
 plan skip_all => "Test::TCP is needed for this test"
     unless Dancer::ModuleLoader->load("Test::TCP" => "1.30");
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 use constant RAW_DATA => "foo=bar&bar=baz";
 
@@ -23,7 +23,7 @@ Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $rawdata = RAW_DATA;
-        my $ua = HTTP::Tiny->new;
+        my $ua = HTTP::Tiny::NoProxy->new;
         my $headers = { 'Content-Length' => length($rawdata), 'Content-Type' => 'application/x-www-form-urlencoded' };
         my $res = $ua->request(POST => "http://$host:$port/jsondata", { headers => $headers, content => $rawdata });
 

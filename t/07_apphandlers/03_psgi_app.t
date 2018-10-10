@@ -9,7 +9,7 @@ plan skip_all => "Test::TCP is needed to run this test"
 plan skip_all => "Plack is needed to run this test"
     unless Dancer::ModuleLoader->load('Plack::Request');
 
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 
 Dancer::ModuleLoader->load('Plack::Loader');
 
@@ -20,7 +20,7 @@ plan tests => 3;
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
-        my $ua = HTTP::Tiny->new;
+        my $ua = HTTP::Tiny::NoProxy->new;
 
         my $res = $ua->get("http://127.0.0.1:$port/env");
         like $res->{content}, qr/psgi\.version/,

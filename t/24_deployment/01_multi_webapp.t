@@ -13,7 +13,7 @@ BEGIN {
 
 use Dancer;
 use Plack::Builder;
-use HTTP::Tiny;
+use HTTP::Tiny::NoProxy;
 use HTTP::Server::Simple::PSGI;
 
 plan tests => 100;
@@ -23,7 +23,7 @@ Test::TCP::test_tcp(
         my $port = shift;
 
         my @apps = (qw/app1 app2/);
-        my $ua = HTTP::Tiny->new();
+        my $ua = HTTP::Tiny::NoProxy->new();
         for(1..100){
             my $app = $apps[int(rand(scalar @apps - 1))];
             my $res = $ua->get("http://127.0.0.1:$port/$app");
