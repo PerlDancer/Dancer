@@ -85,6 +85,7 @@ sub yaml_file {
     # Untaint Session ID before using it in file actions
     # required when running under Perl Taint mode
     $id =~ m/^([\d]*)$/;
+    return unless $1;
     my $yaml_file = "$1.yml";
 
     return path(setting('session_dir'), $yaml_file);
