@@ -38,7 +38,7 @@ is_deeply $s, $session, "session is retrieved";
 is_deeply( Dancer::Session::YAML->retrieve( $session->id ),
     $session->retrieve( $session->id ) );
 
-my $yaml_file = $session->yaml_file;
+my $yaml_file = Dancer::Session::YAML::yaml_file($session->id);
 like $yaml_file, qr/\.yml$/, 'session file have valid name';
 
 $session->{foo} = 42;
