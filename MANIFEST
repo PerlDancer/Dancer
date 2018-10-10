@@ -96,6 +96,7 @@ lib/Dancer/Template/TemplateToolkit.pm
 lib/Dancer/Test.pm
 lib/Dancer/Timer.pm
 lib/Dancer/Tutorial.pod
+lib/HTTP/Tiny/NoProxy.pm
 t/00-compile.t
 t/00-report-prereqs.dd
 t/00-report-prereqs.t
