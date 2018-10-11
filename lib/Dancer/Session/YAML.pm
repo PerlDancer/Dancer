@@ -68,7 +68,7 @@ sub retrieve {
 
     my $session_file = yaml_file($id);
 
-    return unless -f $session_file;
+    return unless defined $session_file && -f $session_file;
 
     open my $fh, '+<', $session_file or die "Can't open '$session_file': $!\n";
     my $content = YAML::LoadFile($fh);
