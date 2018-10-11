@@ -2,12 +2,13 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 
-plan tests => 5;
+plan tests => 7;
 
 use Dancer ':syntax';
 use File::Spec;
 use lib File::Spec->catdir( 't', 'lib' );
 use EasyMocker;
+use Dancer::Session::YAML;
 
 {
     # checking that EasyMocker works
@@ -52,4 +53,24 @@ is($@, '', "the session engine can be set with CGI::Session");
 eval { set(session => 'galactica') };
 like $@, qr/unable to load session engine 'galactica'/,
     "Unknown session engine is refused";
+
+
+# Test we can unmock stuff, too.
+mock 'Dancer::Session::YAML'
+    => method 'yaml_file'
+    => should sub { 'really big shoe' };
+
+is(
+    Dancer::Session::YAML::yaml_file(42),
+    'really big shoe',
+    "Mocked a method successfully..."
+);
+
+unmock 'Dancer::Session::YAML' => method 'yaml_file';
+
+like(
+  Dancer::Session::YAML::yaml_file(42),  
+  qr/42.yml/,
+  "Unmocked method, original method works again",
+);
 
