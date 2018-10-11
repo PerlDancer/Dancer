@@ -189,11 +189,7 @@ sub load {
     return 1 unless -f conffile;
 
     # load YAML
-    my $module = $SETTINGS->{engines}{YAML}{module} || 'YAML';
-
-    my ( $result, $error ) = Dancer::ModuleLoader->load($module);
-    confess "Configuration file found but could not load $module: $error"
-        unless $result;
+    my $module = load_yaml_module();
 
     unless ($_LOADED{conffile()}) {
         load_settings_from_yaml(conffile, $module);
@@ -227,7 +223,7 @@ sub load {
 sub load_settings_from_yaml {
     my ($file, $module) = @_;
 
-    $module ||= 'YAML';
+    $module ||= load_yaml_module();
 
     my $config;
     {
@@ -243,6 +239,18 @@ sub load_settings_from_yaml {
     } );
 
     return scalar keys %$config;
+}
+
+sub load_yaml_module {
+    my ($module) = @_;
+
+    $module ||= $SETTINGS->{engines}{YAML}{module} || 'YAML';
+
+    my ( $result, $error ) = Dancer::ModuleLoader->load($module);
+    confess "Could not load $module: $error"
+        unless $result;
+
+    return $module;
 }
 
 sub load_default_settings {
