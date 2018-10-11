@@ -346,6 +346,16 @@ If set to true, Dancer will look to C<X-Forwarded-Protocol> and
 C<X-Forwarded-host> when constructing URLs (for example, when using
 C<redirect>. This is useful if your application is behind a proxy.
 
+It will also cause L<< Dancer::Request->address|Dancer::Request/address >>
+to return what L<< Dancer::Request->forwarded_for_address|Dancer::Request/forwarded_for_address >>
+would return, namely the content of the `HTTP_X_FORWARDED_FOR` env var/header,
+so that requests will appear to have come from the end user's IP and
+not the proxy's.
+
+Because of the above, you should *not* turn this on if your app isn't
+behind a proxy which will pass this information on appropriately, otherwise
+a malicious user could supply false information.
+
 =head2 Content type / character set
 
 =head3 content_type (string)
