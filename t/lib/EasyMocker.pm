@@ -35,10 +35,6 @@ sub mock {
             $orig_coderef{$method} = \&$method;
             *$method = $sub;
         }
-
-        use Data::Dump;
-        warn "After adding mock, \%orig_coderef: "
-            . Data::Dump::dump(\%orig_coderef);
     }
 }
 
