@@ -1,7 +1,17 @@
 Revision history for Dancer
 
 {{$NEXT}}
-
+[ENHANCEMENTS]
+ - request->address now respects behind_proxy - if behind_proxy is set,
+   then request->address looks at HTTP_X_FORWARDED_FOR, so you get the
+   user's IP, not the proxy. (PR-1199, bigpresh)
+ - restore ability to use load_settings_from_yaml() without passing
+   YAML parser class (PR-1198, snakpak)
+ - Fixing some spurious cpantesters test failures by subclassing HTTP::Tiny
+   in our tests and disabling proxying for 127.0.0.1 - otherwise smokers
+   with HTTP proxy env vars set fail tests (PR-1197, bigpresh)
+- Tidied POD for Tutorial (PR-1196, manwar)
+ 
 1.3402    2018-10-10 11:42:07+01:00 Europe/London (TRIAL RELEASE)
 
 1.3401    2018-10-01 12:49:53+01:00 Europe/London (TRIAL RELEASE)
