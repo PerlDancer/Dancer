@@ -1,6 +1,8 @@
 Revision history for Dancer
 
 {{$NEXT}}
+
+1.3403    2018-10-11 23:41:11+01:00 Europe/London (TRIAL RELEASE)
 [ENHANCEMENTS]
  - request->address now respects behind_proxy - if behind_proxy is set,
    then request->address looks at HTTP_X_FORWARDED_FOR, so you get the
