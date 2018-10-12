@@ -23,9 +23,12 @@ like $@, qr/Could not load YAML: Fish error. Goldfish in YAML./,
 
 unmock 'Dancer::ModuleLoader' => method 'load';
 
+SKIP: {
+    skip 'YAML not available', 1 unless Dancer::ModuleLoader->load('YAML');
 mock 'YAML'
     => method 'LoadFile'
     => should sub { undef };
 eval { Dancer::Config::load_settings_from_yaml('foo.yml') };
 like $@, qr/Unable to parse the configuration file: foo.yml/, "YAML error caught";
+}
 
