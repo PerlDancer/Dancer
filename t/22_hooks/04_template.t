@@ -1,18 +1,18 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7, import => ['!pass'];
+use Test::More tests => 6, import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::Test;
-use Time::HiRes qw/gettimeofday tv_interval/;
 
-my ($t0, $elapsed);
+
+my @events;
 
 ok(
     hook before_template => sub {
         my $tokens = shift;
         $tokens->{foo} = 'bar';
-        $t0 = [gettimeofday];
+        push @events, 'before_template_hook';
     }
 );
 
@@ -20,19 +20,24 @@ ok(
     hook after_template_render => sub {
         my $full_content = shift;
         like $$full_content, qr/foo => bar/;
-        my ( undef, $end ) = gettimeofday();
-        $elapsed = tv_interval($t0);
+        push @events, 'after_template_hook';
     }
 );
 
 setting views => path( 't', '22_hooks', 'views' );
 
 get '/' => sub {
+    push @events, 'route_handler';
     template 'index', { foo => 'baz' };
 };
 
 route_exists [ GET => '/' ];
 response_content_like( [ GET => '/' ], qr/foo => bar/ );
 
-ok $elapsed;
-cmp_ok $elapsed, '>', 0;
+
+is_deeply(
+    \@events,
+    [ qw( route_handler before_template_hook after_template_hook ) ],
+    "Hooks triggered as we expected",
+);
+
