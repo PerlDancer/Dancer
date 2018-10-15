@@ -553,6 +553,23 @@ involving Dancer and Plack, see L<Dancer::Deployment>.
 You can find out more about the many useful plugins available for Dancer in
 L<Dancer::Plugins>.
 
+=head1 DANCER 2
+
+This is the original version of Dancer, which is now in maintenance mode.
+This means that it will not receive significant new features, but will 
+continue to receive bugfixes and security fixes.  However, no "end of life"
+date has been set, and it is expected that this version of Dancer will
+continue to receive bugfixes and security fixes for quite some time yet.
+
+However, you should consider migrating to L<Dancer2> instead when you can,
+and are advised to use Dancer2 for newly-started apps.
+
+L<Dancer2> is mostly backwards compatible, but has been re-written from the
+ground up to be more maintainable and extensible, and is the future of
+Dancer.
+
+L<Dancer2::Manual::Migration> covers the changes you should be aware of when
+migrating an existing Dancer 1 powered app to Dancer 2.
 
 =head1 EXPORTS
 
