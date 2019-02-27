@@ -59,6 +59,33 @@ get '/read_session' => sub {
     "name='$name'"
 };
 
+# For testing whether we can *read* a session var within the after hook (but not
+# set, because it's too late by then
+get '/session/after_hook/read' => sub {
+    session after_hook => "value set in route";
+    return "Meh";
+};
+hook after => sub {
+    my $response = shift;
+    if (request->path eq '/session/after_hook/read') {
+        $response->content("Read " . session('after_hook'));
+    }
+};
+
+# But we can't *set* a session var in the after hook, as the headers have been
+# built
+get '/session/after_hook/write' => sub {
+    session after_hook => "value set in route";
+    return "Meh";
+};
+hook after => sub {
+    my $response = shift;
+    if (request->path eq '/session/after_hook/write') {
+        session after_hook => "value changed in hook";
+        $response->content("Read " . session('after_hook'));
+    }
+};
+
 any['put','post'] => '/jsondata' => sub {
     request->body;
 };

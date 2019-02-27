@@ -33,7 +33,7 @@ if ($ENV{DANCER_TEST_COOKIE}) {
 }
 
 
-plan tests => 3 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
+plan tests => 7 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
 foreach my $engine (@engines) {
 
@@ -54,6 +54,22 @@ Test::TCP::test_tcp(
             $res = $ua->get("http://127.0.0.1:$port/read_session");
             like $res->{content}, qr/name='$client'/,
             "session looks good for client $client";
+
+            $res = $ua->get("http://127.0.0.1:$port/session/after_hook/read");
+            ok($res->{success}, "Reading a session var in after hook worked");
+            is(
+                $res->{content},
+                "Read value set in route",
+                "Session var read in after hook and returned",
+            );
+
+            $res = $ua->get("http://127.0.0.1:$port/session/after_hook/write");
+            ok($res->{success}, "writing a session var in after hook worked");
+            is(
+                $res->{content},
+                "Read value changed in hook",
+                "Session var set changed in hook successfully",
+            );
 
         }
     },
