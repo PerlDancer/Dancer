@@ -169,6 +169,10 @@ sub add_cookie {
     $self->{_cookies}{$name} = $cookie;
 }
 
+sub get_cookie {
+    my ($self, $name) = @_;
+    return $self->{_cookies}{$name};
+}
 
 # When the response is about to be rendered, that's when we build up the
 # Set-Cookie headers
