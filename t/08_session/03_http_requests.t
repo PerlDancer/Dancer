@@ -25,7 +25,7 @@ use Dancer;
 use Dancer::Logger;
  
 my @clients = qw(one two three);
-my @engines = qw(YAML);
+my @engines = qw(Simple YAML);
 
 if ($ENV{DANCER_TEST_COOKIE}) {
     push @engines, "cookie";
