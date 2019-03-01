@@ -32,6 +32,21 @@ if ($ENV{DANCER_TEST_COOKIE}) {
     setting(session_cookie_key => "secret/foo*@!");
 }
 
+# Support testing with Dancer::Session::DBI if explictly told to by being
+# provided with DB connection details via env vars (the appropriate table would
+# have to have been created, too)
+if ($ENV{DANCER_TEST_SESSION_DBI_DSN}) {
+    push @engines, "DBI";
+    setting(
+        session_options => {
+            dsn      => $ENV{DANCER_TEST_SESSION_DBI_DSN},
+            user     => $ENV{DANCER_TEST_SESSION_DBI_USER},
+            password => $ENV{DANCER_TEST_SESSION_DBI_PASS},
+            table    => $ENV{DANCER_TEST_SESSION_DBI_TABLE},
+        }
+    );
+}
+
 
 plan tests => 9 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
@@ -94,6 +109,8 @@ Test::TCP::test_tcp(
         setting appdir => $tempdir;
         Dancer::Logger->init('File');
         ok(setting(session => $engine), "using engine $engine");
+        setting(log => "debug");
+        setting(logger => "console");
         set( show_errors  => 1,
              startup_info => 0,
              environment  => 'production',
