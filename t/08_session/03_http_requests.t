@@ -33,7 +33,7 @@ if ($ENV{DANCER_TEST_COOKIE}) {
 }
 
 
-plan tests => 7 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
+plan tests => 9 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
 foreach my $engine (@engines) {
 
@@ -69,6 +69,16 @@ Test::TCP::test_tcp(
                 $res->{content},
                 "Read value changed in hook",
                 "Session var set changed in hook successfully",
+            );
+
+            # Now read once more, to make sure that the session var set in the
+            # after hook in the last test was actually persisted:
+            $res = $ua->get("http://127.0.0.1:$port/session/after_hook");
+            ok($res->{success}, "Fetched the session var");
+            is(
+                $res->{content},
+                "value changed in hook",
+                "Session var set in hook persisted",
             );
 
         }

@@ -86,6 +86,10 @@ hook after => sub {
     }
 };
 
+get '/session/after_hook' => sub {
+    session('after_hook');
+};
+
 any['put','post'] => '/jsondata' => sub {
     request->body;
 };
