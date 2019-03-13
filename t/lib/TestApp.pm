@@ -106,11 +106,6 @@ hook after => sub {
         );
     }
 };
-hook before_serializer => sub {
-    if (1 || request->path eq '/session/after_hook/write') {
-        my $name = session('person');
-    }
-};
 
 any['put','post'] => '/jsondata' => sub {
     request->body;
