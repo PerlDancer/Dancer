@@ -59,8 +59,8 @@ get '/read_session' => sub {
     "name='$name'"
 };
 
-# For testing whether we can *read* a session var within the after hook (but not
-# set, because it's too late by then
+# Test routes for GH #1205 - avoiding "Too late to set another cookie..."
+# explosions if accessing the session in an after hook
 get '/session/after_hook/read' => sub {
     session after_hook => "value set in route";
     return "Meh";
@@ -72,8 +72,6 @@ hook after => sub {
     }
 };
 
-# But we can't *set* a session var in the after hook, as the headers have been
-# built
 get '/session/after_hook/write' => sub {
     session after_hook => "value set in route";
     return "Meh";
@@ -88,6 +86,30 @@ hook after => sub {
 
 get '/session/after_hook' => sub {
     session('after_hook');
+};
+
+get '/session/after_hook/send_file' => sub {
+    my $name = session('person') || "random person";
+    my $content = "Hi there, $name";
+    return send_file(\$content, content_type => 'text/plain');
+};
+hook after => sub {
+    my $response = shift;
+    # If the request path is stringified to 'SCALAR(...)' then it was a 
+    # send_file(\$content,...) call; check we can still access session 
+    # contents without exploding (GH #1205)
+    if (request->path =~ /^SCALAR/) {
+        my $name = session('person');
+        my $session = session();
+        $response->content(
+            $response->content . " (after hook fired)"
+        );
+    }
+};
+hook before_serializer => sub {
+    if (1 || request->path eq '/session/after_hook/write') {
+        my $name = session('person');
+    }
 };
 
 any['put','post'] => '/jsondata' => sub {

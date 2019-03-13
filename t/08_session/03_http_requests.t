@@ -48,7 +48,7 @@ if ($ENV{DANCER_TEST_SESSION_DBI_DSN}) {
 }
 
 
-plan tests => 9 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
+plan tests => 11 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
 foreach my $engine (@engines) {
 
@@ -95,6 +95,19 @@ Test::TCP::test_tcp(
                 "value changed in hook",
                 "Session var set in hook persisted",
             );
+
+            $res = $ua->get("http://127.0.0.1:$port/session/after_hook/send_file");
+            ok(
+                $res->{success},
+                "after hook accessing session after send_file doesn't explode"
+                . " (GH #1205)",
+            );
+            is(
+                $res->{content},
+                "Hi there, random person (after hook fired)",
+                "send_file route sent expected content and no explosion",
+            );
+
 
         }
     },
