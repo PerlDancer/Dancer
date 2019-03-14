@@ -25,15 +25,30 @@ use Dancer;
 use Dancer::Logger;
  
 my @clients = qw(one two three);
-my @engines = qw(YAML);
+my @engines = qw(Simple YAML);
 
 if ($ENV{DANCER_TEST_COOKIE}) {
     push @engines, "cookie";
     setting(session_cookie_key => "secret/foo*@!");
 }
 
+# Support testing with Dancer::Session::DBI if explictly told to by being
+# provided with DB connection details via env vars (the appropriate table would
+# have to have been created, too)
+if ($ENV{DANCER_TEST_SESSION_DBI_DSN}) {
+    push @engines, "DBI";
+    setting(
+        session_options => {
+            dsn      => $ENV{DANCER_TEST_SESSION_DBI_DSN},
+            user     => $ENV{DANCER_TEST_SESSION_DBI_USER},
+            password => $ENV{DANCER_TEST_SESSION_DBI_PASS},
+            table    => $ENV{DANCER_TEST_SESSION_DBI_TABLE},
+        }
+    );
+}
 
-plan tests => 3 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
+
+plan tests => 11 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
 foreach my $engine (@engines) {
 
@@ -55,6 +70,45 @@ Test::TCP::test_tcp(
             like $res->{content}, qr/name='$client'/,
             "session looks good for client $client";
 
+            $res = $ua->get("http://127.0.0.1:$port/session/after_hook/read");
+            ok($res->{success}, "Reading a session var in after hook worked");
+            is(
+                $res->{content},
+                "Read value set in route",
+                "Session var read in after hook and returned",
+            );
+
+            $res = $ua->get("http://127.0.0.1:$port/session/after_hook/write");
+            ok($res->{success}, "writing a session var in after hook worked");
+            is(
+                $res->{content},
+                "Read value changed in hook",
+                "Session var set changed in hook successfully",
+            );
+
+            # Now read once more, to make sure that the session var set in the
+            # after hook in the last test was actually persisted:
+            $res = $ua->get("http://127.0.0.1:$port/session/after_hook");
+            ok($res->{success}, "Fetched the session var");
+            is(
+                $res->{content},
+                "value changed in hook",
+                "Session var set in hook persisted",
+            );
+
+            $res = $ua->get("http://127.0.0.1:$port/session/after_hook/send_file");
+            ok(
+                $res->{success},
+                "after hook accessing session after send_file doesn't explode"
+                . " (GH #1205)",
+            );
+            is(
+                $res->{content},
+                "Hi there, random person (after hook fired)",
+                "send_file route sent expected content and no explosion",
+            );
+
+
         }
     },
     server => sub {
@@ -68,6 +122,8 @@ Test::TCP::test_tcp(
         setting appdir => $tempdir;
         Dancer::Logger->init('File');
         ok(setting(session => $engine), "using engine $engine");
+        setting(log => "debug");
+        setting(logger => "console");
         set( show_errors  => 1,
              startup_info => 0,
              environment  => 'production',

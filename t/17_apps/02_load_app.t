@@ -18,22 +18,23 @@ use lib File::Spec->catdir( 't', 'lib' );
 my $apps = [ Dancer::App->applications ];
 is scalar(@$apps), 3, "3 applications exist";
 
-my $main     = Dancer::App->get('main');
-my $test_app = Dancer::App->get('TestApp');
-my $forum    = Dancer::App->get('Forum');
-
-ok defined($main), "app 'main' is defined";
-ok defined($test_app), "app 'TestApp' is defined";
-ok defined($forum), "app 'Forum' is defined";
-
-is @{ $main->registry->routes->{'get'} }, 1, 
-    "one route is defined in main app";
-
-is @{ $test_app->registry->routes->{'get'} }, 16, 
-    "16 routes are defined in test app";
-
-is @{ $forum->registry->routes->{'get'} }, 5, 
-    "5 routes are defined in forum app";
+for (
+    { name => "main",    routes => 1  },
+    { name => "TestApp", routes => 20 },
+    { name => "Forum",   routes => 5  },
+)
+{
+    my $app = Dancer::App->get($_->{name});
+    ok(
+        defined($app)
+        , "app $_->{name} is defined",
+    );
+    is(
+        @{ $app->registry->routes('get') },
+        $_->{routes},
+        "Expected number of get routes defined for " . $_->{name},
+    );
+}
 
 response_content_is [GET => "/forum/index"], "forum index"; 
 response_content_is [GET => "/forum/admin/index"], "admin index"; 

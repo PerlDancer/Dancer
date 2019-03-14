@@ -126,6 +126,13 @@ sub write_session_id {
     my ($class, $id) = @_;
 
     my $name = $class->session_name();
+
+    # If we've already pushed the appropriate cookie to the response, then we
+    # don't need to do any more
+    if (Dancer::Cookies->cookie($name)) {
+        return;
+    }
+
     my %cookie = (
         name   => $name,
         value  => $id,
