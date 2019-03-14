@@ -119,6 +119,7 @@ t/00_base/13_dancer_singleton.t
 t/00_base/15_dependent_modules.t
 t/00_base/17_globalwarnings_config_on.t
 t/00_base/config.t
+t/00_base/easymocker.t
 t/00_base/lib/AppWithError.pm
 t/00_base/lib/WorkingApp.pm
 t/00_base/normalize_path.t
