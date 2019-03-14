@@ -1,4 +1,5 @@
 package Dancer::Logger::Capture::Trap;
+
 # ABSTRACT: a place to store captured Dancer logs
 use strict;
 use warnings;
