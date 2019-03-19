@@ -2,6 +2,15 @@ Revision history for Dancer
 
 {{$NEXT}}
 
+1.3510    2019-03-19 14:42:26+00:00 Europe/London
+Promoting previous trial release 1.3501  to stable.
+Fix #1204 - more proxy-related test failure fun
+
+1.3501    2019-03-14 19:19:49+00:00 Europe/London (TRIAL RELEASE)
+[BUG FIXES]
+Fix "too late to set cookie" errors if you access a session within an after hook
+after using send_file().
+
 1.3500    2018-10-12 21:31:46+01:00 Europe/London
 Promoting previous trial releases to stable.
 
