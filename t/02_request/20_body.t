@@ -17,15 +17,13 @@ use HTTP::Tiny::NoProxy;
 use constant RAW_DATA => "foo=bar&bar=baz";
 
 plan tests => 2;
-my ($host, $port) = get_host_port();
-diag "Selected $host:$port";
 Test::TCP::test_tcp(
     client => sub {
         my $port = shift;
         my $rawdata = RAW_DATA;
         my $ua = HTTP::Tiny::NoProxy->new;
         my $headers = { 'Content-Length' => length($rawdata), 'Content-Type' => 'application/x-www-form-urlencoded' };
-        my $res = $ua->request(POST => "http://$host:$port/jsondata", { headers => $headers, content => $rawdata });
+        my $res = $ua->request(POST => "http://127.0.0.1:$port/jsondata", { headers => $headers, content => $rawdata });
 
         ok $res->{success}, 'req is success';
         is $res->{content}, $rawdata, "raw_data is OK";
@@ -38,32 +36,9 @@ Test::TCP::test_tcp(
 
         set( environment  => 'production',
              port         => $port,
-             server       => $host,
+             server       => '127.0.0.1',
              startup_info => 0);
         Dancer->dance();
     },
-    host => $host,
-    port => $port,
 );
-
-# Work out the host and available port to use for the tests.
-# Prefer 127.0.0.11, as race conditions on busy hosts are less likely
-# than on 127.0.0.1 (see #1150), but if that won't work (e.g. FreeBSD
-# boxes, which only have 127.0.0.1/32, not 127/8) then fall back to
-# 127.0.0.1.
-sub get_host_port {
-    for my $host (qw(127.0.0.11 127.0.0.1)) {
-        my $sock = IO::Socket::INET->new(
-            Listen => 1,
-            LocalAddr => $host,
-            LocalPort => 0,
-        );
-        if ($sock) {
-            my $port = $sock->sockport;
-            $sock->close;
-            return ($host, $port);
-        }
-    }
-}
-
 
