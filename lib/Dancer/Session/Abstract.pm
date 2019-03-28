@@ -131,8 +131,10 @@ sub write_session_id {
 
     # If we've already pushed the appropriate cookie to the response, then we
     # don't need to do any more
-    if (Dancer::Cookies->cookie($name)) {
-        return;
+    if (my $cookie = Dancer::Cookies->cookie($name)) {
+        if ($cookie eq $id) {
+            return;
+        }
     }
 
     my %cookie = (
