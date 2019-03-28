@@ -41,9 +41,9 @@ sub response {
 }
 sub reset_response { $_response = undef }
 
-# session singleton
-my $_session;
-sub session { (@_ == 2) ? $_session = $_[1] : $_session }
+# sessions singleton
+my $_sessions;
+sub sessions { (@_ == 2) ? $_sessions = $_[1] : $_sessions }
 
 # request timer
 my $_timer;
@@ -60,7 +60,7 @@ sub reset_all {
     if (!$is_forward) {
         $vars = {};
     }
-    undef $_session;
+    undef $_sessions;
     undef $_request;
     undef $_headers;
     reset_timer();

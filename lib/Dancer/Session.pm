@@ -28,7 +28,9 @@ sub get_current_session {
     my $session = undef;
     my $class   = ref(engine);
 
-    if ($session = Dancer::SharedData->session) {
+    my $sessions = Dancer::SharedData->sessions || {};
+    my $name    = $class->session_name();
+    if ($sid and $session = $sessions->{$name}{$sid}) {
         return $session;
     }
     
@@ -38,7 +40,8 @@ sub get_current_session {
         $session = $class->create();
     }
 
-    Dancer::SharedData->session($session);
+    $sessions->{$name}{$session->id} = $session;
+    Dancer::SharedData->sessions($sessions);
 
     # Generate a session cookie; we want to do this regardless of whether the
     # session is new or existing, so that the cookie expiry is updated.
