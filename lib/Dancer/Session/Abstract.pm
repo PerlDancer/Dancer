@@ -54,7 +54,9 @@ sub is_lazy { 0 };
 # that the session ID is still generated.
 sub init {
     my ($self) = @_;
-    $self->id(build_id());
+    if (!$self->id) {
+        $self->id(build_id());
+    }
 }
 
 # this method can be overwritten in any Dancer::Session::* module
