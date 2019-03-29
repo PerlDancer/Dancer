@@ -41,6 +41,10 @@ sub response {
 }
 sub reset_response { $_response = undef }
 
+# sessions singleton
+my $_sessions;
+sub sessions { (@_ == 2) ? $_sessions = $_[1] : $_sessions }
+
 # request timer
 my $_timer;
 sub timer { $_timer ||= Dancer::Timer->new }
@@ -56,6 +60,7 @@ sub reset_all {
     if (!$is_forward) {
         $vars = {};
     }
+    undef $_sessions;
     undef $_request;
     undef $_headers;
     reset_timer();
