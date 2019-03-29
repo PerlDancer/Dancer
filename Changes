@@ -1,6 +1,13 @@
 Revision history for Dancer
 
 {{$NEXT}}
+[BUG FIXES]
+ - More session cookie handling fun - avoid causing test failures in dependencies
+   in some cases (e.g. RT #128911 and others)
+
+[ENHANCEMENTS]
+ - hold session in SharedData, to avoid reading the session contents every time
+   anything is requested, could be a performance win
 
 1.3510    2019-03-19 14:42:26+00:00 Europe/London
 Promoting previous trial release 1.3501  to stable.
