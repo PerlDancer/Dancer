@@ -1,6 +1,8 @@
 Revision history for Dancer
 
 {{$NEXT}}
+
+1.3511    2019-03-29 11:16:08+00:00 Europe/London (TRIAL RELEASE)
 [BUG FIXES]
  - More session cookie handling fun - avoid causing test failures in dependencies
    in some cases (e.g. RT #128911 and others)
