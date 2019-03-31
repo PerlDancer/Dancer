@@ -1,6 +1,7 @@
 Revision history for Dancer
 
 {{$NEXT}}
+Promoting previous trial release 1.3511 to stable.
 
 1.3511    2019-03-29 11:16:08+00:00 Europe/London (TRIAL RELEASE)
 [BUG FIXES]
