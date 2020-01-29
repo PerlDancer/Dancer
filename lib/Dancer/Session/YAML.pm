@@ -74,7 +74,7 @@ sub retrieve {
     my $content = YAML::LoadFile($fh);
     close $fh or die "Can't close '$session_file': $!\n";
 
-    return $content;
+    return bless $content => $class;
 }
 
 # instance
