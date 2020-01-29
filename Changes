@@ -2,6 +2,10 @@ Revision history for Dancer
 
 {{$NEXT}}
 
+[BUG FIXES]
+- Fix test failures since YAML.pm 1.30 (GH #1208)
+- More test failures with proxy env var set (GH #1204)
+
 1.3512    2019-03-31 20:10:08+01:00 Europe/London
 Promoting previous trial release 1.3511 to stable.
 
