@@ -867,8 +867,8 @@ Return the content length of the request.
 =head2 header($name)
 
 Return the value of the given header, if present. If the header has multiple
-values, returns an the list of values if called in list context, the first one
-in scalar.
+values, return a list with its values if called in list context, or the first
+one if called in scalar context.
 
 =head2 headers()
 
