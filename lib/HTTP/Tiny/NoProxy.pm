@@ -13,7 +13,7 @@ use base 'HTTP::Tiny';
 sub new {
     my ($self, %args) = @_;
 
-    $args{no_proxy} = "127.0.0.1";
+    $args{no_proxy} = [127.0.0.1, 127.0.0.11];
 
     return $self->SUPER::new(%args);
 }
