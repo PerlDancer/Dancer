@@ -350,7 +350,8 @@ sub dancer_response {
                 if ( $file->{data} ) {
                     $content .= $file->{data};
                 } else {
-                    open my $fh, '<', $file->{filename};
+                    open my $fh, '<', $file->{filename}
+                        or die "Failed to open $file->{filename} - $!";
                     if ( -B $file->{filename} ) {
                         binmode $fh;
                     }
