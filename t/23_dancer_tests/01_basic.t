@@ -58,6 +58,11 @@ response_content_is [
     }
 ], 'bar', "a POST request with form urlencoded is ok";
 
+response_content_like(
+   [ GET => '/largepage' ],
+    qr{large page}, 'match "large page" in /largepage' 
+);
+
 note "capture logs"; {
     is setting("logger"), "capture";
     is setting("log"),    "debug";

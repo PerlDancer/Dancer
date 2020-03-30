@@ -7,6 +7,7 @@ use strict;
 use warnings;
 use Test::Builder;
 use Test::More import => [ '!pass' ];
+use Test::LongString;
 
 use Carp;
 use HTTP::Headers;
@@ -189,8 +190,7 @@ sub response_content_like {
     $test_name ||= "response content looks good for " . _req_label($req);
 
     my $response = _req_to_response($req);
-    my $tb = Test::Builder->new;
-    return $tb->like( $response->{content}, $matcher, $test_name );
+    return like_string( $response->{content}, $matcher, $test_name );   # better output for long content than Test::Builder
 }
 
 sub response_content_unlike {
@@ -198,8 +198,7 @@ sub response_content_unlike {
     $test_name ||= "response content looks good for " , _req_label($req);
 
     my $response = _req_to_response($req);
-    my $tb = Test::Builder->new;
-    return $tb->unlike( $response->{content}, $matcher, $test_name );
+    return unlike_string( $response->{content}, $matcher, $test_name ); # better for long content than Test::Builder
 }
 
 sub response_content_is_deeply {
