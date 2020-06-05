@@ -115,7 +115,7 @@ Test::TCP::test_tcp(
                 "called session destroy route",
             );
             # ... and the previous session has indeed gone
-            my $res = $ua->get("http://127.0.0.1:$port/read_session");
+            $res = $ua->get("http://127.0.0.1:$port/read_session");
             like $res->{content}, qr/name=''/, 
             "empty session for client $client after destroy";
 
