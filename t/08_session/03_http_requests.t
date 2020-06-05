@@ -48,7 +48,7 @@ if ($ENV{DANCER_TEST_SESSION_DBI_DSN}) {
 }
 
 
-plan tests => 11 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
+plan tests => 13 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
 foreach my $engine (@engines) {
 
@@ -107,6 +107,17 @@ Test::TCP::test_tcp(
                 "Hi there, random person (after hook fired)",
                 "send_file route sent expected content and no explosion",
             );
+
+            # Now destroy the session (e.g. logging out)
+            $res = $ua->get("http://127.0.0.1:$port/session/destroy");
+            ok(
+                $res->{success},
+                "called session destroy route",
+            );
+            # ... and the previous session has indeed gone
+            my $res = $ua->get("http://127.0.0.1:$port/read_session");
+            like $res->{content}, qr/name=''/, 
+            "empty session for client $client after destroy";
 
 
         }

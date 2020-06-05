@@ -106,6 +106,10 @@ hook after => sub {
         );
     }
 };
+get '/session/destroy' => sub {
+    session->destroy;
+    return "OK, destroyed";
+};
 
 any['put','post'] => '/jsondata' => sub {
     request->body;
