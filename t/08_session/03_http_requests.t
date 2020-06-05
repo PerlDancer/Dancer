@@ -47,6 +47,13 @@ if ($ENV{DANCER_TEST_SESSION_DBI_DSN}) {
     );
 }
 
+# Support testing with Dancer::Session::Storable if explicitly told to
+# (non-core module, so not tested by default; if you want to run these
+# tests against it, make sure it's installed first)
+if ($ENV{DANCER_TEST_SESSION_STORABLE}) {
+    push @engines, "Storable";
+}
+
 
 plan tests => 13 * scalar(@clients) * scalar(@engines) + (scalar(@engines));
 
