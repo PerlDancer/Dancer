@@ -68,6 +68,7 @@ sub serialize {
 
     %options = (%options, @_);
 
+
     $_xs->XMLout($entity, %options);
 }
 
