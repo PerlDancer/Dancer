@@ -41,7 +41,17 @@ sub init {
       unless $self->loaded_xmlsimple;
     die 'XML::Simple needs XML::Parser or XML::SAX and neither is installed'
       unless $self->loaded_xmlbackends;
-    $_xs = XML::Simple->new();
+    # Disable fetching external entities, as that's a security hole: this allows
+    # someone to fetch remote websites from the server, or to read local files.
+    $_xs = XML::Simple->new(
+        ParserOpts => [
+            Handlers => {
+                ExternEnt => sub {
+                    return '';
+                }
+            }
+        ],
+    );
 }
 
 sub serialize {
