@@ -1,16 +1,21 @@
 language: perl
-
 perl:
-    - "5.26"
-    - "5.24"
-    - "5.22"
-    - "5.20"
-    - "5.18"
-    - "5.16"
-    - "5.14"
-    - "5.12"
-    - "5.10"
-
+  - "5.8"               # normal preinstalled perl
+  - "5.8.4"             # downloads a pre-built 5.8.4
+  - "5.8.4-thr"         # pre-built 5.8.4 with threading
+  - "5.12.2"            # builds perl 5.12.2 from source (pre-built not available)
+  - "5.20"              # installs latest perl 5.20 (if not already available)
+  - "dev"               # installs latest developer release of perl (e.g. 5.21.8)
+  - "blead"             # builds perl from git
+matrix:
+  include:
+    - perl: 5.18
+      env: COVERAGE=1   # enables coverage+coveralls reporting
+  allow_failures:
+    - perl: blead       # ignore failures for blead perl
+sudo: false             # faster builds as long as you don't need sudo access
+before_install:
+  - eval $(curl https://travis-perl.github.io/init) --auto
 notifications:
   irc:
     channels:
@@ -23,16 +28,3 @@ notifications:
 before_install:
     - git config --global user.email "dancer-dev@dancer.pm"
     - git config --global user.name "Perl Dancer dev team"
-install:
-#Safe fails to install due to failing tests since version 2.35 on perl < 5.14
-    - perl -E 'exit($] < 5.014)' || cpanm --no-skip-satisfied Safe || cpanm --no-skip-satisfied --notest Safe || { cat ~/.cpanm/build.log ; false ; }
-#Moo fails to install without Class::Method::Modifiers since 2012/10/19 
-    - cpanm --no-skip-satisfied Class::Method::Modifiers YAML::XS || { cat ~/.cpanm/build.log ; false ; }
-    - dzil authordeps --missing | cpanm --no-skip-satisfied --notest || { cat ~/.cpanm/build.log ; false ; }
-    - dzil listdeps --author --missing | cpanm --no-skip-satisfied || { cat ~/.cpanm/build.log ; false ; }
-
-# We do not need sudo. Setting this allows travis to use (Docker) containers on EC2
-sudo: false
-
-script:
-    - dzil smoke --author --release
