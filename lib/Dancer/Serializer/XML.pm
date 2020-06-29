@@ -41,7 +41,19 @@ sub init {
       unless $self->loaded_xmlsimple;
     die 'XML::Simple needs XML::Parser or XML::SAX and neither is installed'
       unless $self->loaded_xmlbackends;
-    $_xs = XML::Simple->new();
+    # Disable fetching external entities, as that's a security hole: this allows
+    # someone to fetch remote websites from the server, or to read local files.
+    # This only works for XML::Parser when called directly from XML::Simple;
+    # for XML::SAX we'll need to do some even *more* horrible stuff later on.
+    $_xs = XML::Simple->new(
+        ParserOpts => [
+            Handlers => {
+                ExternEnt => sub {
+                    return '';
+                }
+            }
+        ],
+    );
 }
 
 sub serialize {
@@ -71,7 +83,18 @@ sub deserialize {
     }
 
     %options = (%options, @_);
+    # This is the promised terrible hack: claim that the LWP-talking code has
+    # already been loaded, and make sure that the handler that's called when
+    # we're dealing with an external entity does nothing.
+    # For whichever reason, this handler is called despite XML::Parser
+    # (which on my machine is the only XML::SAX backend that can handle
+    # external entities) having a ParseParamEnt option which is off by default,
+    # but appears to only be used deep in the XML::Parser XS guts.
+    no warnings 'redefine';
+    local *XML::Parser::lwp_ext_ent_handler = sub { return };
+    local $INC{'XML/Parser/LWPExternEnt.pl'} = 'Do not load this!';
     $_xs->XMLin($xml, %options);
+    use warnings 'redefine';
 }
 
 sub content_type {'text/xml'}
