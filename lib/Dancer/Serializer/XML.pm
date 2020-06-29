@@ -92,7 +92,9 @@ sub deserialize {
     # but appears to only be used deep in the XML::Parser XS guts.
     no warnings 'redefine';
     local *XML::Parser::lwp_ext_ent_handler = sub { return };
-    local $INC{'XML/Parser/LWPExternEnt.pl'} = 'Do not load this!';
+    local $INC{'XML/Parser/LWPExternEnt.pl'}
+        = 'Dancer::Serializer::XML disabled loading this to patch around '
+        . 'XXE vulnerabilities';
     $_xs->XMLin($xml, %options);
     use warnings 'redefine';
 }
