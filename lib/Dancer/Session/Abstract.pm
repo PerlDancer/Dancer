@@ -145,7 +145,7 @@ sub write_session_id {
         http_only => defined(setting("session_is_http_only")) ?
                      setting("session_is_http_only") : 1,
         same_site => defined(setting("session_same_site")) ?
-                    setting("session_same_site") ? 'None',
+                    setting("session_same_site") : 'None',
     );
     if (my $expires = setting('session_expires')) {
         # It's # of seconds from the current time
