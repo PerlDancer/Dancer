@@ -9,7 +9,7 @@ my @tests = (
     { name => 'ss',  value => 'samesitetest', opts => { same_site => 'Lax' } },
 );
 
-plan tests => scalar (@tests * 5) + 12;
+plan tests => scalar (@tests * 6) + 12;
 
 is_deeply(cookies, {}, "cookies() return a hashref");
 
