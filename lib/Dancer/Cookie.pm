@@ -4,10 +4,11 @@ package Dancer::Cookie;
 use strict;
 use warnings;
 
+use Carp;
 use URI::Escape;
 
 use base 'Dancer::Object';
-__PACKAGE__->attributes( qw/name expires domain path secure http_only/ );
+__PACKAGE__->attributes( qw/name expires domain path same_site secure http_only/ );
 
 sub init {
     my ($self, %args) = @_;
@@ -22,6 +23,16 @@ sub init {
         $self->expires($time);
     }
     $self->path('/') unless defined $self->path;
+
+    # If we have a same_site attribute, ensure it's sane:
+    if (my $same_site = $self->same_site) {
+        if ($same_site !~ m{^(Strict|Lax|None)$}) {
+            Carp::croak(
+                "Invalid same_site value '$same_site'"
+                . " - must be 'Strict', 'Lax' or 'None', see RFC6265bis"
+            );
+        }
+    }
 }
 
 sub to_header {
@@ -35,10 +46,11 @@ sub to_header {
     $name =~ s/[=,; \t\r\n\013\014]//mg;
 
     my @headers = $name . '=' . $value;
-    push @headers, "path=" . $self->path        if $self->path;
-    push @headers, "expires=" . $self->expires  if $self->expires;
-    push @headers, "domain=" . $self->domain    if $self->domain;
-    push @headers, "Secure"                     if $self->secure;
+    push @headers, "path="     . $self->path      if $self->path;
+    push @headers, "expires="  . $self->expires   if $self->expires;
+    push @headers, "domain="   . $self->domain    if $self->domain;
+    push @headers, "Secure"                       if $self->secure;
+    push @headers, "SameSite=" . $self->same_site if $self->same_site;
     push @headers, 'HttpOnly'                   unless $no_httponly;
 
     return join '; ', @headers;

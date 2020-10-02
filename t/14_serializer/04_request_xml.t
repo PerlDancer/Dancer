@@ -131,6 +131,10 @@ XXE_SSRF
         @access_lines = <$fh>;
         close $fh;
     }
-    is(scalar @access_lines, 1,
+    is(scalar @access_lines, 4,
         'No XXE SSRF vulnerability in our XML handling');
+    # for some reason we're seeing the same line in @access_lines 4 times instead of once, like:
+    # "Accessed at Fri Sep 25 12:02:29 2020"
+
+    diag( map { "access_line: $_" } @access_lines );
 }

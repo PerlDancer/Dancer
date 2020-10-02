@@ -3,12 +3,13 @@ use Dancer ':syntax';
 
 my @tests = (
     { name => 'foo', value => 42 ,            opts => {}},
-    { name => 'foo', value => 42 ,            opts => { http_only => 1 } },
-    { name => 'msg', value => 'hello; world', opts => {} },
-    { name => 'msg', value => 'hello; world', opts => { http_only => 0 } },
+    { name => 'foo', value => 42 ,            opts => { http_only => 1 }     },
+    { name => 'msg', value => 'hello; world', opts => {}                     },
+    { name => 'msg', value => 'hello; world', opts => { http_only => 0 }     },
+    { name => 'ss',  value => 'samesitetest', opts => { same_site => 'Lax' } },
 );
 
-plan tests => scalar (@tests * 5) + 12;
+plan tests => scalar (@tests * 6) + 12;
 
 is_deeply(cookies, {}, "cookies() return a hashref");
 
@@ -21,6 +22,9 @@ foreach my $test (@tests) {
     is $c->http_only,
        (exists($test->{opts}{http_only}) ? $test->{opts}{http_only} : undef),
        "HttpOnly is correctly set";
+    is $c->same_site,
+       (exists($test->{opts}{same_site}) ? $test->{opts}{same_site} : undef),
+       "SameSite is correctly set";
 }
 
 {
