@@ -26,11 +26,14 @@ sub init {
 
     # If we have a same_site attribute, ensure it's sane:
     if (my $same_site = $self->same_site) {
-        if ($same_site !~ m{^(Strict|Lax|None)$}) {
+        if ($same_site !~ m{^(Strict|Lax|None)$}i) {
             Carp::croak(
                 "Invalid same_site value '$same_site'"
                 . " - must be 'Strict', 'Lax' or 'None', see RFC6265bis"
             );
+        } else {
+            # Normalise case
+            $self->same_site(ucfirst lc $same_site);
         }
     }
 }
