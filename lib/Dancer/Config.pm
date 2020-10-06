@@ -671,6 +671,25 @@ override the default.  This is useful for setting the session cookie's
 domain to something like C<.domain.com> so that the same cookie will
 be applicable and usable across subdomains of a base domain.
 
+=head3 session_same_site
+
+If set, session cookies will have the SameSite attribute set to the specified
+value to control cross-site request cookie handling.  If set, the value
+must be one of the values described in RFC6265bis - 'Strict', 'Lax' or 'None'.
+
+=over
+
+=item C<Strict> - Cookies will only be sent in a first-party context and not 
+be sent along with requests initiated by third party websites.
+
+=item C<Lax> - Cookies are allowed to be sent with top-level navigations and 
+will be sent along with GET request initiated by third party website. This 
+is the default value in modern browsers.
+
+=item C<None> - Cookies will be sent in all contexts, i.e sending cross-origin
+is allowed.
+
+=back
 
 =head2 auto_page (boolean)
 
