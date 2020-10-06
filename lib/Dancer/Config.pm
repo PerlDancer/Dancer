@@ -93,6 +93,14 @@ my $normalizers = {
           and $name = 'utf-8';
         return $name;
     },
+    session_same_site => sub {
+        my ($setting, $same_site_setting) = @_;
+        if ($same_site_setting =~ m{^(strict|lax|none)$}i) {
+            return ucfirst lc $same_site_setting;
+        } else {
+            raise core_config => "Invalid session_same_site value $same_site_setting";
+        }
+    },
 };
 
 sub normalize_setting {
