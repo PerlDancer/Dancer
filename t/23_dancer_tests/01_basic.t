@@ -1,4 +1,4 @@
-use Test::More import => ['!pass'], tests => 21;
+use Test::More import => ['!pass'], tests => 22;
 
 use strict;
 use warnings;
@@ -57,6 +57,11 @@ response_content_is [
         body    => 'foo=bar'
     }
 ], 'bar', "a POST request with form urlencoded is ok";
+
+response_content_like(
+   [ GET => '/largepage' ],
+    qr{large page}, 'match "large page" in /largepage' 
+);
 
 note "capture logs"; {
     is setting("logger"), "capture";
