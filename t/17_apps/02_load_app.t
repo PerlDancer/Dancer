@@ -20,7 +20,7 @@ is scalar(@$apps), 3, "3 applications exist";
 
 for (
     { name => "main",    routes => 1  },
-    { name => "TestApp", routes => 21 },
+    { name => "TestApp", routes => 22 },
     { name => "Forum",   routes => 5  },
 )
 {
