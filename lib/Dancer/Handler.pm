@@ -88,6 +88,7 @@ sub render_request {
         # workflow exception (continuation)
         my ($continuation) = @_;
         $continuation->isa('Dancer::Continuation::Halted')
+        || $continuation->isa('Dancer::Continuation::Route')
           or $continuation->rethrow();
         # special case for halted workflow continuation: still render the response
         Dancer::Serializer->process_response(Dancer::SharedData->response);
