@@ -13,6 +13,7 @@ Revision history for Dancer
 [BUG FIXES]
 - Fix test failures since YAML.pm 1.30 (GH #1208)
 - More test failures with proxy env var set (GH #1204)
+- Skip tests when HTTP::Message >= 6.44 (GH #1237)
 
 [ENHANCEMENTS]
 - Don't show whole web page differences in Dancer::Test's

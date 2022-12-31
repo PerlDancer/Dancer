@@ -4,6 +4,9 @@ use warnings;
 BEGIN {
     use Test::More;
 
+    use Dancer::ModuleLoader;
+    plan skip_all => 'skip tests with HTTP::Message >= 6.44, GH #1237'
+        if Dancer::ModuleLoader->load('HTTP::Message' => '6.44');
     plan skip_all => 'Devel::Hide required' unless eval 'use Devel::Hide; 1';
 }
 
