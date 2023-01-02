@@ -1,6 +1,19 @@
 Revision history for Dancer
 
-{{$NEXT}}
+1.3520   2023-01-01
+Previous trial releases promoted to stable. 
+
+[BUG FIXES]
+- Test failures with HTTP::Message >= 6.44
+  (GH #1237, thanks to gregoa & Debian team)
+
+[ENHANCEMENTS]
+- Allow send_error from before hooks (GH #1234)
+- Let `before_error_render` hooks modify token values (GH #1218) 
+
+
+
+1.3514_04 2022-06-29 22:38:57+01:00 Europe/London (TRIAL RELEASE)
 
 1.3514_03 2020-10-06 22:22:51+01:00 Europe/London (TRIAL RELEASE)
 
