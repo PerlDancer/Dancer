@@ -1,5 +1,11 @@
 Revision history for Dancer
 
+1.3521   2023-02-05
+
+[BUG FIXES]
+- Fix test failures in t/14_serializer/04_request_xml.t
+  (GH #1239, cromedome, thanks to gregoa & Debian team)
+
 1.3520   2023-01-01
 Previous trial releases promoted to stable. 
 
