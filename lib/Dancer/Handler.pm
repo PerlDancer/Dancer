@@ -63,8 +63,11 @@ sub handle_request {
     Dancer::SharedData->request($request);
 
     # deserialize the request body if possible
-    $request = Dancer::Serializer->process_request($request)
-      if Dancer::App->current->setting('serializer');
+    if (Dancer::App->current->setting('serializer')) {
+        $request = Dancer::Serializer->process_request($request);
+        return $self->render_response unless $request;
+    }
+
 
     # read cookies from client
 
