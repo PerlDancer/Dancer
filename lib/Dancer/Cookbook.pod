@@ -301,6 +301,33 @@ The following routes will be generated for us:
 
 
 
+=head2 Low-level access to PSGI interface
+
+You may return a PSGI-formatted response from your Dancer route if needed.
+This ability is useful if you are building a streaming app. Note that you will
+need a PSGI-compliant server with streaming support.
+
+    get '/streaming' => sub {
+        # use my app infrastructure to make database lookups, session checks etc.
+        # then return a callback-style response
+        return sub {
+            my $respond = shift;
+            my $writer = $respond->(
+                [ 200, [ 'Content-Type', 'text/event-stream' ] ]
+            );
+            subscribe_user($writer); # set up events in your app
+            $writer->write(
+                HTTP::ServerEvent->as_string(
+                    data    => 'connected'
+                )
+            );
+        }
+    };
+
+See L<PSGI> for more details.
+
+
+
 =head1 MUSCLE MEMORY: STORING DATA
 
 =head2 Handling sessions

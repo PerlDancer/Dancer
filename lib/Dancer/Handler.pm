@@ -145,7 +145,16 @@ sub render_response {
 
     my $content = $response->content;
 
-    unless ( ref($content) eq 'GLOB' ) {
+    if (ref($content) eq 'CODE') {
+        unless (
+            Dancer::SharedData->request
+            && Dancer::SharedData->request->env->{'psgi.streaming'}
+        ) {
+            raise core => 'Sorry, streaming is not supported on this server.';
+        }
+        return $content;
+    }
+    elsif ( ref($content) ne 'GLOB' ) {
         my $charset = setting('charset');
         my $ctype   = $response->header('Content-Type');
 
