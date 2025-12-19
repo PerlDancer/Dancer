@@ -3,8 +3,6 @@ use Test::More import => ['!pass'];
 use Dancer ':syntax';
 use Dancer::FileUtils;
 
-use File::Spec qw/catfile/;
-
 plan skip_all => "File::Temp 0.22 required"
     unless Dancer::ModuleLoader->load( 'File::Temp', '0.22' );
 
