@@ -1,5 +1,13 @@
 Revision history for Dancer
 
+{{$NEXT}}
+
+1.3522    2026-01-26 22:27:39+00:00 Europe/London
+
+[ENHANCEMENTS]
+- Remove unnecessary import from test file (avoid test failures on newer Perls)
+- Add security policy document
+
 1.3521   2023-02-05
 
 [BUG FIXES]
