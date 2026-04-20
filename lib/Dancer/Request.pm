@@ -453,7 +453,8 @@ sub _build_params {
         %$previous,                %{$self->{_query_params}},
         %{$self->{_route_params}}, %{$self->{_body_params}},
     };
-
+    # there may be new parameters in need of _decode()ing
+    $self->{_params_are_decoded} = 0;
 }
 
 # Written from PSGI specs:

@@ -92,16 +92,21 @@ sub process_request {
 
     my $old_params = $request->params('body');
 
-    # try to deserialize
+    # deserialize
     my $new_params;
     eval {
         $new_params = engine->deserialize($request->body)
     };
     if ($@) {
+        Dancer::Error->new(
+          code      => 400,
+          title     => "Bad request",
+          message   => "Deserialization failed",
+        )->render;
         Dancer::Logger::core "Unable to deserialize request body with "
           . engine()
           . " : \n$@";
-        return $request;
+        return;
     }
 
     if(!ref $new_params or ref $new_params ne 'HASH'){
