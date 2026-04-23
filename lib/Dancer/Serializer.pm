@@ -41,7 +41,7 @@ sub process_response {
 
     my $content = $response->{content};
 
-    if (ref($content) && (ref($content) ne 'GLOB')) {
+    if (ref($content) && ref($content) ne 'GLOB' && ref($content) ne 'CODE') {
         local $@;
         eval { $content = engine->serialize($content) };
 
