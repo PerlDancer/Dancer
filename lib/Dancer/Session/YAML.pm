@@ -61,7 +61,7 @@ sub reset {
 sub retrieve {
     my ($class, $id) = @_;
 
-    unless( $id =~ /^[\da-z]+$/i ) {
+    unless( $id =~ m/\A[A-Za-z0-9_\-~]+\z/ ) {
         warn "session id '$id' contains illegal characters\n";
         return;
     }
@@ -84,7 +84,7 @@ sub yaml_file {
 
     # Untaint Session ID before using it in file actions
     # required when running under Perl Taint mode
-    $id =~ m/^([\d]*)$/;
+    $id =~ m/\A([A-Za-z0-9_\-~]+)\z/;
     return unless $1;
     my $yaml_file = "$1.yml";
 

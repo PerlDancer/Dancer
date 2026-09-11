@@ -2,14 +2,18 @@ Revision history for Dancer
 
 {{$NEXT}}
 
-    [ SECURITY ]
-    * Serializer::YAML no longer lets a request body instantiate arbitrary
-      blessed objects via a !!perl/hash:Some::Class tag, or ask for a string
-      eval via !!perl/code. Both are now refused explicitly rather than left
-      to the loader's ambient defaults, for each supported engine: the
-      YAML:: namespace (YAML.pm) and the YAML::XS:: namespace (YAML::XS), plus
-      the UseCode flags either one ORs in. Minimum versions raised to YAML
-      1.30 and YAML::XS 0.81 (backported from Dancer2, GH #1838)
+[SECURITY]
+- Serializer::YAML no longer lets a request body instantiate arbitrary
+  blessed objects via a !!perl/hash:Some::Class tag, or ask for a string
+  eval via !!perl/code. Both are now refused explicitly rather than left
+  to the loader's ambient defaults, for each supported engine: the
+  YAML:: namespace (YAML.pm) and the YAML::XS:: namespace (YAML::XS), plus
+  the UseCode flags either one ORs in. Minimum versions raised to YAML
+  1.30 and YAML::XS 0.81 (backported from Dancer2, GH #1838)
+
+- Make session ID generation always use Crypt::URandom and harden the
+  default validate_session_id to avoid insecure or malformed session IDs
+  being accepted or stored (GHSA-hq28-g3w4-vc44)
 
 1.3522    2026-01-26 22:27:39+00:00 Europe/London
 
