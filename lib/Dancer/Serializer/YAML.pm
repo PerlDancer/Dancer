@@ -54,6 +54,34 @@ sub deserialize {
     my ($self, $content) = @_;
     my $module = Dancer::Config::settings->{engines}{YAML}{module} || 'YAML';
     return unless $content;
+
+    # Content reaching here is untrusted -- for an app with 'serializer: YAML'
+    # (or Serializer::Mutable, which maps both text/x-yaml and text/html to
+    # this class) it is the raw request body.
+    #
+    # YAML tags can ask the loader to build things that are not data.
+    # !!perl/hash:Some::Class instantiates an arbitrary blessed object, the
+    # entry point for DESTROY/AUTOLOAD gadget chains, and !!perl/code asks for
+    # a string eval. Both are refused here.
+    #
+    # These are set explicitly rather than left to the module's ambient
+    # defaults so the behaviour does not depend on which YAML module is
+    # configured or the version resolved, and holds even when the surrounding
+    # process has set them to something hostile. Both loaders are covered:
+    # YAML.pm honours the YAML:: variables, while YAML::XS honours its own
+    # YAML::XS:: variables; and a loader that does OR-in an "also allow" flag
+    # (YAML::UseCode / YAML::XS::UseCode) is covered too. The two namespaces
+    # and the code-loading flags only exist as variables from specific
+    # versions -- which is why dist.ini floors YAML at 1.30 and YAML::XS at
+    # 0.81 (see the note there).
+    no warnings 'once';
+    local $YAML::LoadBlessed      = 0;
+    local $YAML::LoadCode         = 0;
+    local $YAML::UseCode          = 0;
+    local $YAML::XS::LoadBlessed  = 0;
+    local $YAML::XS::LoadCode     = 0;
+    local $YAML::XS::UseCode      = 0;
+
     {
         no strict 'refs';
         &{ $module . '::Load' }($content);
