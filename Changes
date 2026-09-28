@@ -2,6 +2,17 @@ Revision history for Dancer
 
 {{$NEXT}}
 
+[DOCUMENTATION]
+- Document Dancer::Serializer::Dumper as the bad idea it is. Deserializing
+  with it evals the request body as Perl code, so setting
+  `serializer: Dumper` hands remote code execution to any client. It stays
+  in core for backwards compatibility (Dancer 1 being in maintenance mode),
+  but is now documented as unsuitable for untrusted input, and is no longer
+  listed as a REST serialization option in the Cookbook. Dancer 2 removed
+  it from core entirely. Also documented that the Mutable serializer
+  deliberately does not - and will not - map text/x-data-dumper, since
+  there the client would get to choose "run this as Perl".
+
 [SECURITY]
 - Serializer::YAML no longer lets a request body instantiate arbitrary
   blessed objects via a !!perl/hash:Some::Class tag, or ask for a string

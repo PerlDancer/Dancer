@@ -145,6 +145,18 @@ Or in the application code:
     # setting JSON as the default serializer
     set serializer => 'JSON';
 
+The serializers shipped with Dancer are L<JSON|Dancer::Serializer::JSON>,
+L<JSONP|Dancer::Serializer::JSONP>, L<YAML|Dancer::Serializer::YAML>,
+L<XML|Dancer::Serializer::XML>, L<Mutable|Dancer::Serializer::Mutable> and
+L<Dumper|Dancer::Serializer::Dumper>. C<JSON> is the sensible default for most
+applications.
+
+B<Do not set C<serializer: Dumper>.> Deserializing with
+L<Dancer::Serializer::Dumper> C<eval>s the request body as Perl code, so it
+gives arbitrary code execution to anyone who can send your application a
+request. It remains in core only for backwards compatibility. See
+L<Dancer::Serializer::Dumper/"WARNING - DO NOT USE THIS AS A SERIALIZER">.
+
 In your routes you can access parameters just like any route.
 
 When in a route you return a Perl data structure, it will be
