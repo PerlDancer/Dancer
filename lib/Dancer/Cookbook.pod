@@ -807,9 +807,12 @@ serialize and deserialize for the following data formats:
 
 =item XML
 
-=item Data::Dumper
-
 =back
+
+There is also a C<Dumper> serializer, but you should not use it: deserializing
+runs the request body through C<eval>, which hands remote code execution to
+your clients. See
+L<Dancer::Serializer::Dumper/"WARNING - DO NOT USE THIS AS A SERIALIZER">.
 
 To activate this feature, you only have to set the C<serializer> setting to the
 format you require, for instance in your config.yml:

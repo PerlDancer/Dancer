@@ -858,6 +858,12 @@ only used to change the method of your request. Use with caution.
 
 Deserializes a L<< Data::Dumper >> structure.
 
+B<WARNING:> this C<eval>s its argument as Perl code. Never call it on anything
+a client can influence, and do not set C<serializer: Dumper> on an application
+that accepts untrusted requests. See
+L<Dancer::Serializer::Dumper/"WARNING - DO NOT USE THIS AS A SERIALIZER">, and
+prefer L<< from_json|Dancer/from_json >>.
+
 =head2 from_json ($structure, \%options)
 
 Deserializes a JSON structure. Can receive optional arguments. Those arguments
@@ -1823,6 +1829,11 @@ L<Dancer::Template::Abstract> for further details.
 =head2 to_dumper ($structure)
 
 Serializes a structure with L<< Data::Dumper >>.
+
+Serializing is safe in itself, but the output is only useful to something
+willing to C<eval> it, so it is a poor choice of wire format - see
+L<Dancer::Serializer::Dumper/"WARNING - DO NOT USE THIS AS A SERIALIZER">.
+Prefer L<< to_json|Dancer/to_json >>.
 
 =head2 to_json ($structure, \%options)
 

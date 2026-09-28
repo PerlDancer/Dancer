@@ -190,6 +190,29 @@ uses is
     Dancer::Serializer::XML  | text/xml
     Dancer::Serializer::JSON | text/x-json, application/json
 
+This mapping is fixed and cannot be changed from the config file.
+
+=head2 Dumper is deliberately not supported
+
+L<Dancer::Serializer::Dumper> is B<not> in the mapping above, and will not be
+added to it. It deserializes by C<eval>ing the request body as Perl code,
+which would hand remote code execution to any client that sent a
+C<Content-Type> of C<text/x-data-dumper> - see
+L<Dancer::Serializer::Dumper/"WARNING - DO NOT USE THIS AS A SERIALIZER">.
+
+Because C<Mutable> lets the I<client> pick the format, supporting C<Dumper>
+here would be especially bad: the choice of "run this as Perl" would belong to
+the attacker rather than to you.
+
+A request body sent as C<text/x-data-dumper> is therefore simply not
+deserialized, and is left available as C<< request->body >>. An C<Accept> of
+C<text/x-data-dumper> falls through to the next acceptable content type,
+defaulting to C<application/json>.
+
+If an application genuinely needs Data::Dumper round-tripping, it has to opt
+in explicitly by setting C<serializer: Dumper> as its only serializer - which
+is a bad idea, for the reasons given in that module's documentation.
+
 =head1 EXPORTABLE FUNCTIONS
 
 =head2 template_or_serialize( $template, $data, $options )
